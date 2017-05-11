@@ -1,6 +1,6 @@
 {
   "name": "nodeql",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "main": "dist/src/index.js",
   "typings": "./dist/src/index.d.ts",
   "files": [
