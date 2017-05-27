@@ -1,6 +1,6 @@
 {
   "name": "nodeql",
-  "version": "0.1.4",
+  "version": "0.2.1",
   "main": "dist/src/index.js",
   "typings": "./dist/src/index.d.ts",
   "files": [
@@ -14,5 +14,9 @@
   "devDependencies": {
     "@types/node": "^7.0.18",
     "typescript": "^2.3.2"
+  },
+  "dependencies": {
+    "@types/node-fetch": "^1.6.7",
+    "node-fetch": "^1.7.0"
   }
 }
