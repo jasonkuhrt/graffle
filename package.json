@@ -1,5 +1,5 @@
 {
-  "name": "nodeql",
+  "name": "graphql-request",
   "version": "0.2.1",
   "main": "dist/src/index.js",
   "typings": "./dist/src/index.d.ts",
@@ -9,14 +9,17 @@
   "license": "MIT",
   "scripts": {
     "prepublish": "npm run build",
-    "build": "rm -rf dist && tsc -d"
+    "build": "rm -rf dist && tsc -d",
+    "test": "npm run build && ava --serial"
   },
   "devDependencies": {
+    "@types/fetch-mock": "^5.8.2",
     "@types/node": "^7.0.18",
+    "ava": "^0.19.1",
+    "fetch-mock": "^5.11.0",
     "typescript": "^2.3.2"
   },
   "dependencies": {
-    "@types/node-fetch": "^1.6.7",
-    "node-fetch": "^1.7.0"
+    "isomorphic-fetch": "^2.2.1"
   }
 }
