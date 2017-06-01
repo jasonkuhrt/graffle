@@ -14,7 +14,8 @@ npm install graphql-request
 import request from 'graphql-request'
 
 async function printMovie() {
-  const { Movie } = await request('https://api.graph.cool/simple/v1/movies', `{
+  const { Movie } = await request('https://api.graph.cool/simple/v1/movies', `
+  {
     Movie(title: "Inception") {
       releaseDate
       actors {
