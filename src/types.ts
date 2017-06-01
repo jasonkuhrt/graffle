@@ -14,6 +14,7 @@ export interface GraphQLResponse {
   data?: any
   errors: GraphQLError[]
   status: number
+  [key: string]: any
 }
 
 export interface GraphQLRequestContext {
