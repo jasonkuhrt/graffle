@@ -31,8 +31,7 @@ const query = `{
   }
 }`
   
-request('https://api.graph.cool/simple/v1/movies', query)
-  .then(({ Movie }) => console.log(Movie))
+request('https://api.graph.cool/simple/v1/movies', query).then(({ Movie }) => console.log(Movie))
 ```
 
 ## Usage
