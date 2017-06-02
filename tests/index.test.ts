@@ -1,6 +1,6 @@
 import test from 'ava'
 import * as fetchMock from 'fetch-mock'
-import query, { ClientError } from '../src/index'
+import { ClientError, request } from '../src/index'
 
 test('minimal query', async (t) => {
   const data = {
@@ -10,7 +10,7 @@ test('minimal query', async (t) => {
   }
 
   await mock({data}, async () => {
-    t.deepEqual(await query('https://mock-api.com/graphql', `{ viewer { id } }`), data)
+    t.deepEqual(await request('https://mock-api.com/graphql', `{ viewer { id } }`), data)
   })
 })
 
@@ -26,7 +26,7 @@ test('basic error', async (t) => {
   }
 
   await mock({errors}, async () => {
-    const err: ClientError = await t.throws(query('https://mock-api.com/graphql', `x`))
+    const err: ClientError = await t.throws(request('https://mock-api.com/graphql', `x`))
     t.deepEqual<any>(err.response.errors, errors)
   })
 })

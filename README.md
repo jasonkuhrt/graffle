@@ -20,7 +20,7 @@ npm install graphql-request
 Send a GraphQL query with a single line of code:
 
 ```js
-import request from 'graphql-request'
+import { request } from 'graphql-request'
 
 const query = `{
   Movie(title: "Inception") {
@@ -31,13 +31,13 @@ const query = `{
   }
 }`
   
-request('https://api.graph.cool/simple/v1/movies', query).then(({ Movie }) => console.log(Movie))
+request('https://api.graph.cool/simple/v1/movies', query).then(data => console.log(data))
 ```
 
 ## Usage
 
 ```js
-import request, { GraphQLClient } from 'graphql-request'
+import { request, GraphQLClient } from 'graphql-request'
 
 // Run GraphQL queries/mutations using a static function
 request(endpoint, query, variables).then(data => console.log(data))
@@ -49,7 +49,7 @@ client.request(query, variables).then(data => console.log(data))
 
 ## Examples
 
-### Authentication via HTTP header
+### Authenication via HTTP header
 
 ```js
 import { GraphQLClient } from 'graphql-request'
@@ -75,7 +75,7 @@ client.request(query).then(data => console.log(data))
 ### Using variables
 
 ```js
-import request from 'graphql-request'
+import { request } from 'graphql-request'
 
 const query = `query getMovie(title: String!) {
   Movie(title: $title) {
@@ -96,7 +96,7 @@ request('my-endpoint', query, variables).then(data => console.log(data))
 ### Error handling
 
 ```js
-import request from 'graphql-request'
+import { request } from 'graphql-request'
 
 const wrongQuery = `{
   some random stuff
@@ -108,6 +108,23 @@ request('my-endpoint', query)
     console.log(err.response.errors) // GraphQL response errors
     console.log(err.response.data) // Response data if available
   })
+```
+
+### Using `require` instead of `import`
+
+```js
+const { request } = require('graphql-request')
+
+const query = `{
+  Movie(title: "Inception") {
+    releaseDate
+    actors {
+      name
+    }
+  }
+}`
+  
+request('my-endpoint', query).then(data => console.log(data))
 ```
 
 ### More examples coming soon...

@@ -2,7 +2,7 @@ import { ClientError, Options, Variables } from './types'
 export { ClientError } from './types'
 import 'isomorphic-fetch'
 
-export default async function request<T extends any>(url: string, query: string, variables?: Variables): Promise<T> {
+export async function request<T extends any>(url: string, query: string, variables?: Variables): Promise<T> {
   const client = new GraphQLClient(url)
 
   return client.request<T>(query, variables)
