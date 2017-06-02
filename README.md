@@ -76,6 +76,8 @@ client.request(query).then(data => console.log(data))
 ### Using variables
 
 ```js
+import request from 'graphql-request'
+
 const query = `query getMovie(title: String!) {
   Movie(title: $title) {
     releaseDate
@@ -95,6 +97,8 @@ request('my-endpoint', query, variables).then(data => console.log(data))
 ### Error handling
 
 ```js
+import request from 'graphql-request'
+
 const wrongQuery = `{
   some random stuff
 }`
