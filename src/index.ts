@@ -8,6 +8,8 @@ export async function request<T extends any>(url: string, query: string, variabl
   return client.request<T>(query, variables)
 }
 
+export default request
+
 export class GraphQLClient {
   private url: string
   private options: Options
