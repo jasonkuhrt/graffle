@@ -17,7 +17,7 @@ npm install graphql-request
 
 ## Quickstart
 
-Send a GraphQL query with a single line of code:
+Send a GraphQL query with a single line of code. ▶️ [Try it out](https://runkit.com/593130bdfad7120012472003/593130bdfad7120012472004).
 
 ```js
 import { request } from 'graphql-request'
