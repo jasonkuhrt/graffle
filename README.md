@@ -1,6 +1,13 @@
 # graphql-request
 
-Minimal GraphQL client supporting Node and browsers for scripts or simple apps
+📡 Minimal GraphQL client supporting Node and browsers for scripts or simple apps
+
+## Features
+
+* Most **simple and lightweight** GraphQL client
+* Promise-based API (works with `async` / `await`)
+* Typescript support (Flow coming soon)
+
 
 ## Install
 
@@ -10,40 +17,114 @@ npm install graphql-request
 
 ## Quickstart
 
+Send a GraphQL query with a single line of code:
+
 ```js
 import request from 'graphql-request'
 
-async function printMovie() {
-  const { Movie } = await request('https://api.graph.cool/simple/v1/movies', `
-  {
-    Movie(title: "Inception") {
-      releaseDate
-      actors {
-        name
-      }
+const query = `{
+  Movie(title: "Inception") {
+    releaseDate
+    actors {
+      name
     }
-  }`
-
-  console.log(Movie)
-}
-
-printMovie()
-
+  }
+}`
+  
+request('https://api.graph.cool/simple/v1/movies', query)
+  .then(({ Movie }) => console.log(Movie))
 ```
 
 ## Usage
 
-### Single function: `request`
+```js
+import request, { GraphQLClient } from 'graphql-request'
 
-> TODO
+// Run GraphQL queries/mutations using a static function
+request(endpoint, query, variables).then(data => console.log(data))
 
-### Client
+// ... or create a GraphQL client instance to send requests
+const client = new GraphQLClient(endpoint, { headers: {} })
+client.request(query, variables).then(data => console.log(data)) 
+```
 
-> TODO
+## Examples
+
+### Authenication via HTTP header
+
+```js
+import { GraphQLClient } from 'graphql-request'
+
+const client = new GraphQLClient('my-endpoint', {
+  headers: {
+    Authorization: 'Bearer my-jwt-token',
+  },
+})
+
+const query = `{
+  Movie(title: "Inception") {
+    releaseDate
+    actors {
+      name
+    }
+  }
+}`
+
+client.request(query).then(data => console.log(data)) 
+```
+
+### Using variables
+
+```js
+const query = `query getMovie(title: String!) {
+  Movie(title: $title) {
+    releaseDate
+    actors {
+      name
+    }
+  }
+}`
+
+const variables = {
+  title: 'Inception',
+}
+
+request('my-endpoint', query, variables).then(data => console.log(data))
+```
 
 ### Error handling
 
-> TODO
+```js
+const wrongQuery = `{
+  some random stuff
+}`
+
+request('my-endpoint', query)
+  .then(data => console.log(data))
+  .catch(err => {
+    console.log(err.response.errors) // GraphQL response errors
+    console.log(err.response.data) // Response data if available
+  })
+```
+
+### More examples coming soon...
+
+* Fragments
+* Using [`graphql-tag`](https://github.com/apollographql/graphql-tag)
+* Typed Typescript return values
+
+## FAQ
+
+### What's the difference between `graphql-request`, Apollo and Relay?
+
+`graphql-request` is the most minimal and simplest to use GraphQL client. It's perfect for small scripts or minimal applications.
+
+Compared to GraphQL clients like Apollo or Relay, `graphql-request` doesn't have a built-in cache and has no integrations for frontend frameworks. The goal is to keep the package and API as minimal as possible.
+
+### So what about Lokka?
+
+Lokka is great but it still requires [a lot of setup code](https://github.com/kadirahq/lokka-transport-http) to be able to send a simple GraphQL query. `graphql-request` does less work compared to Lokka but is a lot simpler to use.
+
 
 ## Help & Community [![Slack Status](https://slack.graph.cool/badge.svg)](https://slack.graph.cool)
 
