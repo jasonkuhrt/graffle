@@ -6,7 +6,23 @@
   "files": [
     "dist"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/graphcool/graphql-request.git"
+  },
+  "keywords": [
+    "graphql",
+    "request",
+    "fetch",
+    "graphql-client",
+    "apollo"
+  ],
+  "author": "Johannes Schickling <johannes@graph.cool>",
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/graphcool/graphql-request/issues"
+  },
+  "homepage": "https://github.com/graphcool/graphql-request",
   "scripts": {
     "prepublish": "npm run build",
     "build": "rm -rf dist && tsc -d",
