@@ -49,7 +49,7 @@ client.request(query, variables).then(data => console.log(data))
 
 ## Examples
 
-### Authenication via HTTP header
+### Authentication via HTTP header
 
 ```js
 import { GraphQLClient } from 'graphql-request'
