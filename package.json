@@ -1,6 +1,6 @@
 {
   "name": "graphql-request",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "main": "dist/src/index.js",
   "typings": "./dist/src/index.d.ts",
   "files": [
