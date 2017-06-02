@@ -77,7 +77,7 @@ client.request(query).then(data => console.log(data))
 ```js
 import { request } from 'graphql-request'
 
-const query = `query getMovie(title: String!) {
+const query = `query getMovie($title: String!) {
   Movie(title: $title) {
     releaseDate
     actors {
