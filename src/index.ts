@@ -44,7 +44,8 @@ export class GraphQLClient {
 }
 
 async function getResult(response: Response): Promise<any> {
-  if (response.headers.get('Content-Type') === 'application/json') {
+  const contentType = response.headers.get('Content-Type');
+  if (contentType && contentType.startsWith('application/json')) {
     return await response.json()
   } else {
     return await response.text()
