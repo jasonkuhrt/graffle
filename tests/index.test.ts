@@ -9,7 +9,7 @@ test('minimal query', async (t) => {
     },
   }
 
-  await mock({data}, async () => {
+  await mock({body: {data}}, async () => {
     t.deepEqual(await request('https://mock-api.com/graphql', `{ viewer { id } }`), data)
   })
 })
@@ -25,9 +25,24 @@ test('basic error', async (t) => {
     ]
   }
 
-  await mock({errors}, async () => {
+  await mock({body: {errors}}, async () => {
     const err: ClientError = await t.throws(request('https://mock-api.com/graphql', `x`))
     t.deepEqual<any>(err.response.errors, errors)
+  })
+})
+
+test('content-type with charset', async (t) => {
+  const data = {
+    viewer: {
+      id: 'some-id',
+    },
+  }
+
+  await mock({
+    headers: {'Content-Type': 'application/json; charset=utf-8'},
+    body: {data}
+  }, async () => {
+    t.deepEqual(await request('https://mock-api.com/graphql', `{ viewer { id } }`), data)
   })
 })
 
@@ -37,8 +52,9 @@ async function mock(response: any, testFn: () => Promise<void>) {
     response: {
       headers: {
         'Content-Type': 'application/json',
+        ...response.headers,
       },
-      body: JSON.stringify(response),
+      body: JSON.stringify(response.body),
     },
   })
 
