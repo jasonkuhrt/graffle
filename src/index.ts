@@ -33,12 +33,12 @@ export class GraphQLClient {
       body,
     })
 
-    const result = await getResult(response)
+    const result = await getResult(response)!
 
-    if (response.ok && !result.errors) {
+    if (response.ok && !result.errors && result.data) {
       return result.data
     } else {
-      throw new ClientError({data: result.data, errors: result.errors, status: response.status}, {query, variables})
+      throw new ClientError({ ...result, status: response.status}, {query, variables})
     }
   }
 }

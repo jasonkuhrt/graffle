@@ -12,7 +12,7 @@ export interface GraphQLError {
 
 export interface GraphQLResponse {
   data?: any
-  errors: GraphQLError[]
+  errors?: GraphQLError[]
   status: number
   [key: string]: any
 }
@@ -40,7 +40,7 @@ export class ClientError extends Error {
 
   private static extractMessage(response: GraphQLResponse): string {
     try {
-      return response.errors[0].message
+      return response.errors![0].message
     } catch (e) {
       return `GraphQL Error (Code: ${response.status})`
     }
