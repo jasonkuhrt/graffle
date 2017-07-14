@@ -1,7 +1,15 @@
 export type Variables = { [key: string]: any }
 
 export interface Options {
+  method?: RequestInit['method']
   headers?: { [key: string]: string }
+  mode?: RequestInit['mode']
+  credentials?: RequestInit['credentials']
+  cache?: RequestInit['cache']
+  redirect?: RequestInit['redirect']
+  referrer?: RequestInit['referrer']
+  referrerPolicy?: RequestInit['referrerPolicy']
+  integrity?: RequestInit['integrity']
 }
 
 export interface GraphQLError {
@@ -46,4 +54,3 @@ export class ClientError extends Error {
     }
   }
 }
-
