@@ -1,6 +1,7 @@
 import test from 'ava'
 import * as fetchMock from 'fetch-mock'
-import { ClientError, request } from '../src/index'
+import { ClientError, request, GraphQLClient } from '../src/index'
+import { Options } from '../src/types'
 
 test('minimal query', async (t) => {
   const data = {
@@ -43,6 +44,26 @@ test('content-type with charset', async (t) => {
     body: {data}
   }, async () => {
     t.deepEqual(await request('https://mock-api.com/graphql', `{ viewer { id } }`), data)
+  })
+})
+
+
+test('extra fetch options', async (t) => {
+  const options: Options = {
+    credentials: 'include',
+    mode: 'cors',
+    cache: 'reload',
+  }
+
+  const client = new GraphQLClient('https://mock-api.com/graphql', options)
+  await mock({
+    body: { data: {test: 'test'} }
+  }, async () => {
+    await client.request('{ test }')
+    const actualOptions = fetchMock.lastCall()[1]
+    for (let name in options) {
+      t.deepEqual(actualOptions[name], options[name])
+    }
   })
 })
 

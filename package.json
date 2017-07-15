@@ -26,13 +26,16 @@
   "scripts": {
     "prepublish": "npm run build",
     "build": "rm -rf dist && tsc -d",
-    "test": "npm run build && ava --serial"
+    "lint": "tslint --type-check --project tsconfig.json {src,test}/**/*.ts",
+    "test": "npm run lint && npm run build && ava --serial"
   },
   "devDependencies": {
     "@types/fetch-mock": "^5.8.2",
     "@types/node": "^7.0.18",
     "ava": "^0.19.1",
     "fetch-mock": "^5.11.0",
+    "tslint": "^5.5.0",
+    "tslint-config-standard": "^6.0.1",
     "typescript": "^2.3.2"
   },
   "dependencies": {
