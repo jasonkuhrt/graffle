@@ -2,7 +2,7 @@ import { ClientError, Options, Variables } from './types'
 export { ClientError } from './types'
 import 'isomorphic-fetch'
 
-export async function request<T extends any>(url: string, query: string, variables?: Variables): Promise<T> {
+export async function request<T extends any> (url: string, query: string, variables?: Variables): Promise<T> {
   const client = new GraphQLClient(url)
 
   return client.request<T>(query, variables)
@@ -14,12 +14,12 @@ export class GraphQLClient {
   private url: string
   private options: Options
 
-  constructor(url: string, options?: Options) {
+  constructor (url: string, options?: Options) {
     this.url = url
     this.options = options || {}
   }
 
-  async request<T extends any>(query: string, variables?: Variables): Promise<T> {
+  async request<T extends any> (query: string, variables?: Variables): Promise<T> {
     const body = JSON.stringify({
       query,
       variables: variables ? variables : undefined,
@@ -42,7 +42,7 @@ export class GraphQLClient {
   }
 }
 
-async function getResult(response: Response): Promise<any> {
+async function getResult (response: Response): Promise<any> {
   const contentType = response.headers.get('Content-Type')
   if (contentType && contentType.startsWith('application/json')) {
     return await response.json()

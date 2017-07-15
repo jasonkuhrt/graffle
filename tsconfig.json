@@ -7,7 +7,7 @@
     "sourceMap": true,
     "strictNullChecks": true,
     "outDir": "dist",
-    "lib": ["es2016", "dom"]
+    "lib": ["es2015", "es2016", "dom"]
   },
   "exclude": [
     "node_modules"
