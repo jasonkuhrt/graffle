@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "UMD",
     "moduleResolution": "node",
     "rootDir": ".",
     "target": "es5",
