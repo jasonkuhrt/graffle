@@ -72,6 +72,28 @@ const query = `{
 client.request(query).then(data => console.log(data)) 
 ```
 
+### Passing more options to fetch
+
+```js
+import { GraphQLClient } from 'graphql-request'
+
+const client = new GraphQLClient('my-endpoint', {
+ credentials: 'include',
+ mode: 'cors'
+})
+
+const query = `{
+  Movie(title: "Inception") {
+    releaseDate
+    actors {
+      name
+    }
+  }
+}`
+
+client.request(query).then(data => console.log(data)) 
+```
+
 ### Using variables
 
 ```js
