@@ -150,24 +150,30 @@ request('my-endpoint', query).then(data => console.log(data))
 ```
 
 ### Working with `node`
-This library can be used inside node to simulate clients,
-for that `node-fetch` needs to be installed.
-```javascript
-global['fetch'] = require('node-fetch');
-```
 
-however, you wont have cookie support so requests are stateless (http-wise),
-to add cookies support you will need to also use `fetch-cookie`
-```javascript
-global['fetch'] = require('fetch-cookie/node-fetch')(require('node-fetch'));
-```
+This library can be used inside node to simulate clients, for that `node-fetch` needs to be installed.
 
-Complete Example:
 ```js
-import { GraphQLClient } from 'graphql-request';
+global['fetch'] = require('node-fetch')
+```
 
-global['fetch'] = require('fetch-cookie/node-fetch')(require('node-fetch'));
-const client = new GraphQLClient('my-endpoint');
+... however, you wont have cookie support so requests are stateless (http-wise),
+to add cookies support you will need to also use `fetch-cookie`
+
+```js
+global['fetch'] = require('fetch-cookie/node-fetch')(require('node-fetch'))
+```
+
+Here is a complete example:
+
+```js
+import { GraphQLClient } from 'graphql-request'
+
+global['fetch'] = require('node-fetch')
+// use this instead for cookie support
+// global['fetch'] = require('fetch-cookie/node-fetch')(require('node-fetch'))
+
+const client = new GraphQLClient('my-endpoint')
 
 const query = `{
   Movie(title: "Inception") {
@@ -178,7 +184,7 @@ const query = `{
   }
 }`
 
-client.request(query).then(data => console.log(data));
+client.request(query).then(data => console.log(data))
 ```
 
 ### More examples coming soon...
