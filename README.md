@@ -149,29 +149,17 @@ const query = `{
 request('my-endpoint', query).then(data => console.log(data))
 ```
 
-### Working with `node`
+### Cookie support for `node`
 
-This library can be used inside node to simulate clients, for that `node-fetch` needs to be installed.
-
-```js
-global['fetch'] = require('node-fetch')
+```sh
+npm install fetch-cookie/node-fetch
 ```
-
-... however, you wont have cookie support so requests are stateless (http-wise),
-to add cookies support you will need to also use `fetch-cookie`
-
-```js
-global['fetch'] = require('fetch-cookie/node-fetch')(require('node-fetch'))
-```
-
-Here is a complete example:
 
 ```js
 import { GraphQLClient } from 'graphql-request'
 
-global['fetch'] = require('node-fetch')
 // use this instead for cookie support
-// global['fetch'] = require('fetch-cookie/node-fetch')(require('node-fetch'))
+global['fetch'] = require('fetch-cookie/node-fetch')(require('node-fetch'))
 
 const client = new GraphQLClient('my-endpoint')
 
