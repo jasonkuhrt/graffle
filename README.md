@@ -149,6 +149,32 @@ const query = `{
 request('my-endpoint', query).then(data => console.log(data))
 ```
 
+### Cookie support for `node`
+
+```sh
+npm install fetch-cookie/node-fetch
+```
+
+```js
+import { GraphQLClient } from 'graphql-request'
+
+// use this instead for cookie support
+global['fetch'] = require('fetch-cookie/node-fetch')(require('node-fetch'))
+
+const client = new GraphQLClient('my-endpoint')
+
+const query = `{
+  Movie(title: "Inception") {
+    releaseDate
+    actors {
+      name
+    }
+  }
+}`
+
+client.request(query).then(data => console.log(data))
+```
+
 ### More examples coming soon...
 
 * Fragments
