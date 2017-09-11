@@ -47,6 +47,8 @@ async function getResult (response: Response): Promise<any> {
   if (contentType && contentType.startsWith('application/json')) {
     return await response.json()
   } else {
-    return await response.text()
+    return {
+      data: await response.text(),
+    }
   }
 }
