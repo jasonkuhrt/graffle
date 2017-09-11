@@ -37,7 +37,7 @@ export class GraphQLClient {
     if (response.ok && !result.errors && result.data) {
       return result.data
     } else {
-      const errorResult = typeof result === 'string' ? {data: result} : result
+      const errorResult = typeof result === 'string' ? {error: result} : result
       throw new ClientError({ ...errorResult, status: response.status}, {query, variables})
     }
   }
