@@ -37,7 +37,8 @@ export class GraphQLClient {
     if (response.ok && !result.errors && result.data) {
       return result.data
     } else {
-      throw new ClientError({ ...result, status: response.status}, {query, variables})
+      const errorResult = typeof result === 'string' ? {data: result} : result
+      throw new ClientError({ ...errorResult, status: response.status}, {query, variables})
     }
   }
 }
@@ -47,8 +48,6 @@ async function getResult (response: Response): Promise<any> {
   if (contentType && contentType.startsWith('application/json')) {
     return await response.json()
   } else {
-    return {
-      data: await response.text(),
-    }
+    return await response.text()
   }
 }
