@@ -1,6 +1,4 @@
-# graphql-request [![Build Status](https://travis-ci.org/graphcool/graphql-request.svg?branch=master)](https://travis-ci.org/graphcool/graphql-request) [![npm version](https://badge.fury.io/js/graphql-request.svg)](https://badge.fury.io/js/graphql-request)
-
-[![Greenkeeper badge](https://badges.greenkeeper.io/graphcool/graphql-request.svg)](https://greenkeeper.io/)
+# graphql-request [![Build Status](https://travis-ci.org/graphcool/graphql-request.svg?branch=master)](https://travis-ci.org/graphcool/graphql-request) [![npm version](https://badge.fury.io/js/graphql-request.svg)](https://badge.fury.io/js/graphql-request) [![Greenkeeper badge](https://badges.greenkeeper.io/graphcool/graphql-request.svg)](https://greenkeeper.io/)
 
 📡 Minimal GraphQL client supporting Node and browsers for scripts or simple apps
 
