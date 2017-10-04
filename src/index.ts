@@ -1,6 +1,6 @@
 import { ClientError, Options, Variables } from './types'
 export { ClientError } from './types'
-import 'isomorphic-fetch'
+import 'cross-fetch/polyfill'
 
 export async function request<T extends any> (url: string, query: string, variables?: Variables): Promise<T> {
   const client = new GraphQLClient(url)
