@@ -39,6 +39,6 @@
     "typescript": "^2.4.2"
   },
   "dependencies": {
-    "isomorphic-fetch": "^2.2.1"
+    "cross-fetch": "0.0.8"
   }
 }
