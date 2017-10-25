@@ -32,7 +32,7 @@
   "devDependencies": {
     "@types/fetch-mock": "^5.8.3",
     "@types/node": "^8.0.16",
-    "ava": "^0.22.0",
+    "ava": "^0.23.0",
     "fetch-mock": "^5.12.1",
     "tslint": "^5.5.0",
     "tslint-config-standard": "^6.0.1",
