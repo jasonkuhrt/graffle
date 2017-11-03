@@ -1,8 +1,12 @@
 export type Variables = { [key: string]: any }
 
+export interface Headers {
+  [key: string]: string
+}
+
 export interface Options {
   method?: RequestInit['method']
-  headers?: { [key: string]: string }
+  headers?: Headers
   mode?: RequestInit['mode']
   credentials?: RequestInit['credentials']
   cache?: RequestInit['cache']

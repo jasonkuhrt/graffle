@@ -1,4 +1,4 @@
-import { ClientError, Options, Variables } from './types'
+import { ClientError, Headers, Options, Variables } from './types'
 export { ClientError } from './types'
 import 'cross-fetch/polyfill'
 
@@ -20,6 +20,11 @@ export class GraphQLClient {
   }
 
   async request<T extends any> (query: string, variables?: Variables): Promise<T> {
+    const {
+      headers,
+      ...others,
+    } = this.options
+
     const body = JSON.stringify({
       query,
       variables: variables ? variables : undefined,
@@ -27,9 +32,9 @@ export class GraphQLClient {
 
     const response = await fetch(this.url, {
       method: 'POST',
-      ...this.options,
-      headers: Object.assign({'Content-Type': 'application/json'}, this.options.headers),
+      headers: Object.assign({'Content-Type': 'application/json'}, headers),
       body,
+      ...others,
     })
 
     const result = await getResult(response)!
@@ -40,6 +45,12 @@ export class GraphQLClient {
       const errorResult = typeof result === 'string' ? {error: result} : result
       throw new ClientError({ ...errorResult, status: response.status}, {query, variables})
     }
+  }
+
+  setHeader (headers: Headers): GraphQLClient {
+    this.options.headers = headers
+
+    return this
   }
 }
 
