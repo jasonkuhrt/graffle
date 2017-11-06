@@ -52,6 +52,17 @@ export class GraphQLClient {
 
     return this
   }
+
+  setHeader (key: string, value: string): GraphQLClient {
+    const { headers } = this.options
+
+    if (headers) {
+      headers[key] = value
+    } else {
+      Object.assign(this.options, { headers: { [key]: value } })
+    }
+    return this
+  }
 }
 
 async function getResult (response: Response): Promise<any> {
