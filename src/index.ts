@@ -47,7 +47,7 @@ export class GraphQLClient {
     }
   }
 
-  setHeader (headers: Headers): GraphQLClient {
+  setHeaders (headers: Headers): GraphQLClient {
     this.options.headers = headers
 
     return this
