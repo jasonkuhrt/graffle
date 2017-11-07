@@ -59,7 +59,7 @@ export class GraphQLClient {
     if (headers) {
       headers[key] = value
     } else {
-      Object.assign(this.options, { headers: { [key]: value } })
+      this.options.headers = { [key]: value }
     }
     return this
   }
