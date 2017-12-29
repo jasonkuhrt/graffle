@@ -1,13 +1,15 @@
 {
   "extends": ["tslint-config-standard"],
   "rules": {
+    "space-before-function-paren": false,
     "trailing-comma": [
       true,
       {
-        "multiline": "always",
+        "multiline": {
+          "typeLiterals": "never"
+        },
         "singleline": "never"
       }
-    ],
-    "no-use-before-declare": false
+    ]
   }
 }
