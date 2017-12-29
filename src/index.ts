@@ -29,7 +29,7 @@ export class GraphQLClient {
       ...others,
     })
 
-    const result = await getResult(response)!
+    const result = await getResult(response)
 
     if (response.ok && !result.errors && result.data) {
       return result.data
@@ -76,8 +76,8 @@ export default request
 async function getResult(response: Response): Promise<any> {
   const contentType = response.headers.get('Content-Type')
   if (contentType && contentType.startsWith('application/json')) {
-    return await response.json()
+    return response.json()
   } else {
-    return await response.text()
+    return response.text()
   }
 }
