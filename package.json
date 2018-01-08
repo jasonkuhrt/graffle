@@ -31,7 +31,7 @@
   },
   "devDependencies": {
     "@types/fetch-mock": "5.12.2",
-    "@types/node": "8.5.5",
+    "@types/node": "8.5.8",
     "ava": "0.24.0",
     "fetch-mock": "5.13.1",
     "tslint": "5.8.0",
