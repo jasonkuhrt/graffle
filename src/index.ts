@@ -1,14 +1,24 @@
-import { ClientError, Headers, Options, Variables } from './types'
+import { ClientError, Headers, Params, Options, Variables } from './types'
 export { ClientError } from './types'
 import 'cross-fetch/polyfill'
 
 export class GraphQLClient {
   private url: string
   private options: Options
+  private enableUglifyQuery: Boolean
 
-  constructor(url: string, options?: Options) {
+  constructor(params: Params) {
+    const {
+      url,
+      options,
+      enableUglifyQuery
+    } = params
+
     this.url = url
     this.options = options || {}
+    this.enableUglifyQuery = Object.prototype.hasOwnProperty.call(params, 'enableUglifyQuery')
+      ? !!enableUglifyQuery
+      : true
   }
 
   async request<T extends any>(
@@ -18,7 +28,9 @@ export class GraphQLClient {
     const { headers, ...others } = this.options
 
     const body = JSON.stringify({
-      query,
+      query: this.enableUglifyQuery ? query
+        .replace(/#.*\n/g, '')
+        .replace(/[\s|,]*\n+[\s|,]*/g, ' ') : query,
       variables: variables ? variables : undefined,
     })
 
@@ -66,7 +78,7 @@ export async function request<T extends any>(
   query: string,
   variables?: Variables,
 ): Promise<T> {
-  const client = new GraphQLClient(url)
+  const client = new GraphQLClient({ url })
 
   return client.request<T>(query, variables)
 }

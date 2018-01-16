@@ -16,6 +16,12 @@ export interface Options {
   integrity?: RequestInit['integrity']
 }
 
+export interface Params {
+  url: string
+  options?: Options
+  enableUglifyQuery?: Boolean
+}
+
 export interface GraphQLError {
   message: string
   locations: { line: number, column: number }[]

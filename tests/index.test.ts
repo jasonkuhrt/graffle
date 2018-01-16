@@ -47,7 +47,6 @@ test('content-type with charset', async (t) => {
   })
 })
 
-
 test('extra fetch options', async (t) => {
   const options: Options = {
     credentials: 'include',
@@ -55,7 +54,11 @@ test('extra fetch options', async (t) => {
     cache: 'reload',
   }
 
-  const client = new GraphQLClient('https://mock-api.com/graphql', options)
+  const client = new GraphQLClient({
+    url: 'https://mock-api.com/graphql',
+    options
+  })
+
   await mock({
     body: { data: {test: 'test'} }
   }, async () => {
