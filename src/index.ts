@@ -7,18 +7,22 @@ export class GraphQLClient {
   private options: Options
   private enableUglifyQuery: Boolean
 
-  constructor(params: Params) {
-    const {
-      url,
-      options,
-      enableUglifyQuery
-    } = params
+  constructor(params: Params | string) {
+    if (typeof params === 'string') {
+      this.url = params
+      this.options = {}
+      this.enableUglifyQuery = true
+    } else {
+      const {
+        url,
+        options = {},
+        enableUglifyQuery = true
+      } = params
 
-    this.url = url
-    this.options = options || {}
-    this.enableUglifyQuery = Object.prototype.hasOwnProperty.call(params, 'enableUglifyQuery')
-      ? !!enableUglifyQuery
-      : true
+      this.url = url
+      this.options = options
+      this.enableUglifyQuery = enableUglifyQuery
+    }
   }
 
   async request<T extends any>(
