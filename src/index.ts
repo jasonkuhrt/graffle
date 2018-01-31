@@ -75,7 +75,7 @@ export default request
 
 async function getResult(response: Response): Promise<any> {
   const contentType = response.headers.get('Content-Type')
-  if (contentType && contentType.startsWith('application/json')) {
+  if (contentType && (contentType.startsWith('application/json') || contentType.startsWith('application/graphql'))) {
     return response.json()
   } else {
     return response.text()
