@@ -36,7 +36,7 @@
     "fetch-mock": "5.13.1",
     "tslint": "5.8.0",
     "tslint-config-standard": "7.0.0",
-    "typescript": "2.6.2"
+    "typescript": "2.7.2"
   },
   "dependencies": {
     "cross-fetch": "1.1.1"
