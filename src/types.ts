@@ -25,6 +25,7 @@ export interface GraphQLError {
 export interface GraphQLResponse {
   data?: any
   errors?: GraphQLError[]
+  extensions?: any
   status: number
   [key: string]: any
 }

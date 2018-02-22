@@ -11,6 +11,38 @@ export class GraphQLClient {
     this.options = options || {}
   }
 
+  async rawRequest<T extends any>(
+    query: string,
+    variables?: Variables,
+  ): Promise<T> {
+    const { headers, ...others } = this.options
+
+    const body = JSON.stringify({
+      query,
+      variables: variables ? variables : undefined,
+    })
+
+    const response = await fetch(this.url, {
+      method: 'POST',
+      headers: Object.assign({ 'Content-Type': 'application/json' }, headers),
+      body,
+      ...others,
+    })
+
+    const result = await getResult(response)
+
+    if (response.ok && !result.errors && result.data) {
+      return result
+    } else {
+      const errorResult =
+        typeof result === 'string' ? { error: result } : result
+      throw new ClientError(
+        { ...errorResult, status: response.status },
+        { query, variables },
+      )
+    }
+  }
+
   async request<T extends any>(
     query: string,
     variables?: Variables,
@@ -59,6 +91,16 @@ export class GraphQLClient {
     }
     return this
   }
+}
+
+export async function rawRequest<T extends any>(
+  url: string,
+  query: string,
+  variables?: Variables,
+): Promise<T> {
+  const client = new GraphQLClient(url)
+
+  return client.rawRequest<T>(query, variables)
 }
 
 export async function request<T extends any>(
