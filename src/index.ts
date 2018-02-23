@@ -1,4 +1,4 @@
-import { ClientError, Headers, Options, Variables } from './types'
+import { ClientError, GraphQLError, Headers, Options, Variables } from './types'
 export { ClientError } from './types'
 import 'cross-fetch/polyfill'
 
@@ -14,7 +14,7 @@ export class GraphQLClient {
   async rawRequest<T extends any>(
     query: string,
     variables?: Variables,
-  ): Promise<T> {
+  ): Promise<{ data?: T, extensions?: any, errors?: GraphQLError }> {
     const { headers, ...others } = this.options
 
     const body = JSON.stringify({
@@ -97,7 +97,7 @@ export async function rawRequest<T extends any>(
   url: string,
   query: string,
   variables?: Variables,
-): Promise<T> {
+): Promise<{ data?: T, extensions?: any, errors?: GraphQLError }> {
   const client = new GraphQLClient(url)
 
   return client.rawRequest<T>(query, variables)
