@@ -14,7 +14,7 @@ export class GraphQLClient {
   async rawRequest<T extends any>(
     query: string,
     variables?: Variables,
-  ): Promise<{ data?: T, extensions?: any, errors?: GraphQLError }> {
+  ): Promise<{ data?: T, extensions?: any, errors?: GraphQLError[] }> {
     const { headers, ...others } = this.options
 
     const body = JSON.stringify({
@@ -97,7 +97,7 @@ export async function rawRequest<T extends any>(
   url: string,
   query: string,
   variables?: Variables,
-): Promise<{ data?: T, extensions?: any, errors?: GraphQLError }> {
+): Promise<{ data?: T, extensions?: any, errors?: GraphQLError[] }> {
   const client = new GraphQLClient(url)
 
   return client.rawRequest<T>(query, variables)
