@@ -1,6 +1,6 @@
 import test from 'ava'
 import * as fetchMock from 'fetch-mock'
-import { ClientError, request, GraphQLClient } from '../src/index'
+import { ClientError, rawRequest, request, GraphQLClient } from '../src/index'
 import { Options } from '../src/types'
 
 test('minimal query', async (t) => {
@@ -12,6 +12,22 @@ test('minimal query', async (t) => {
 
   await mock({body: {data}}, async () => {
     t.deepEqual(await request('https://mock-api.com/graphql', `{ viewer { id } }`), data)
+  })
+})
+
+test('minimal raw query', async (t) => {
+  const data = {
+    viewer: {
+      id: 'some-id',
+    },
+  }
+
+  const extensions = {
+    version: '1',
+  }
+
+  await mock({body: {data, extensions}}, async () => {
+    t.deepEqual(await rawRequest('https://mock-api.com/graphql', `{ viewer { id } }`), {data, extensions})
   })
 })
 
@@ -28,6 +44,23 @@ test('basic error', async (t) => {
 
   await mock({body: {errors}}, async () => {
     const err: ClientError = await t.throws(request('https://mock-api.com/graphql', `x`))
+    t.deepEqual<any>(err.response.errors, errors)
+  })
+})
+
+test('raw request error', async (t) => {
+  const errors = {
+    message: "Syntax Error GraphQL request (1:1) Unexpected Name \"x\"\n\n1: x\n   ^\n",
+    locations: [
+      {
+        line: 1,
+        column: 1
+      }
+    ]
+  }
+
+  await mock({body: {errors}}, async () => {
+    const err: ClientError = await t.throws(rawRequest('https://mock-api.com/graphql', `x`))
     t.deepEqual<any>(err.response.errors, errors)
   })
 })

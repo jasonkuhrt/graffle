@@ -30,7 +30,7 @@ const query = `{
     }
   }
 }`
-  
+
 request('https://api.graph.cool/simple/v1/movies', query).then(data => console.log(data))
 ```
 
@@ -44,7 +44,7 @@ request(endpoint, query, variables).then(data => console.log(data))
 
 // ... or create a GraphQL client instance to send requests
 const client = new GraphQLClient(endpoint, { headers: {} })
-client.request(query, variables).then(data => console.log(data)) 
+client.request(query, variables).then(data => console.log(data))
 ```
 
 ## Examples
@@ -69,7 +69,7 @@ const query = `{
   }
 }`
 
-client.request(query).then(data => console.log(data)) 
+client.request(query).then(data => console.log(data))
 ```
 
 ### Passing more options to fetch
@@ -91,7 +91,7 @@ const query = `{
   }
 }`
 
-client.request(query).then(data => console.log(data)) 
+client.request(query).then(data => console.log(data))
 ```
 
 ### Using variables
@@ -145,7 +145,7 @@ const query = `{
     }
   }
 }`
-  
+
 request('my-endpoint', query).then(data => console.log(data))
 ```
 
@@ -173,6 +173,26 @@ const query = `{
 }`
 
 client.request(query).then(data => console.log(data))
+```
+
+### Receiving a raw response
+
+The `request` method will return the `data` or `errors` key from the response.
+If you need to access the `extensions` key you can use the `rawRequest` method:
+
+```js
+import { rawRequest } from 'graphql-request'
+
+const query = `{
+  Movie(title: "Inception") {
+    releaseDate
+    actors {
+      name
+    }
+  }
+}`
+
+rawRequest('my-endpoint', query).then(({data, extensions}) => console.log(data, extensions))
 ```
 
 ### More examples coming soon...
