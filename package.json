@@ -1,6 +1,6 @@
 {
   "name": "graphql-request",
-  "version": "1.4.1",
+  "version": "0.0.0-semantic-release",
   "main": "dist/src/index.js",
   "typings": "./dist/src/index.d.ts",
   "files": [
@@ -32,11 +32,11 @@
   "devDependencies": {
     "@types/fetch-mock": "5.12.2",
     "@types/node": "8.5.5",
-    "ava": "0.24.0",
+    "ava": "0.25.0",
     "fetch-mock": "5.13.1",
-    "tslint": "5.8.0",
+    "tslint": "5.9.1",
     "tslint-config-standard": "7.0.0",
-    "typescript": "2.6.2"
+    "typescript": "2.7.2"
   },
   "dependencies": {
     "cross-fetch": "1.1.1"
