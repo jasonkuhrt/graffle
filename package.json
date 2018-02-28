@@ -39,6 +39,6 @@
     "typescript": "2.7.2"
   },
   "dependencies": {
-    "cross-fetch": "1.1.1"
+    "cross-fetch": "2.0.0"
   }
 }
