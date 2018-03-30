@@ -1,6 +1,9 @@
 import { ClientError, GraphQLError, Headers, Options, Variables } from './types'
 export { ClientError } from './types'
 import 'cross-fetch/polyfill'
+import { shim } from 'universal-url'
+
+shim()
 
 export class GraphQLClient {
   private url: string
@@ -15,19 +18,7 @@ export class GraphQLClient {
     query: string,
     variables?: Variables,
   ): Promise<{ data?: T, extensions?: any, errors?: GraphQLError[] }> {
-    const { headers, ...others } = this.options
-
-    const body = JSON.stringify({
-      query,
-      variables: variables ? variables : undefined,
-    })
-
-    const response = await fetch(this.url, {
-      method: 'POST',
-      headers: Object.assign({ 'Content-Type': 'application/json' }, headers),
-      body,
-      ...others,
-    })
+    const response = await this.getResponse(query, variables)
 
     const result = await getResult(response)
 
@@ -47,19 +38,7 @@ export class GraphQLClient {
     query: string,
     variables?: Variables,
   ): Promise<T> {
-    const { headers, ...others } = this.options
-
-    const body = JSON.stringify({
-      query,
-      variables: variables ? variables : undefined,
-    })
-
-    const response = await fetch(this.url, {
-      method: 'POST',
-      headers: Object.assign({ 'Content-Type': 'application/json' }, headers),
-      body,
-      ...others,
-    })
+    const response = await this.getResponse(query, variables)
 
     const result = await getResult(response)
 
@@ -90,6 +69,38 @@ export class GraphQLClient {
       this.options.headers = { [key]: value }
     }
     return this
+  }
+  
+  async getResponse(
+    query: string,
+    variables?: Variables,
+  ) {
+    const { headers, method = 'POST', ...others } = this.options
+    let response: Response
+
+    if (method.toLowerCase() === 'get') {
+      const url = new URL(this.url)
+      url.searchParams.append('query', JSON.stringify(query))
+      if (variables) {
+        url.searchParams.append('variables', JSON.stringify(variables))
+      }
+
+      response = await fetch(url.toString(), { headers })
+    } else {
+      const body = JSON.stringify({
+        query,
+        variables,
+      })
+
+      response = await fetch(this.url, {
+        headers: Object.assign({ 'Content-Type': 'application/json' }, headers),
+        body,
+        ...others,
+        method: 'POST',
+      })
+    }
+
+    return response
   }
 }
 
