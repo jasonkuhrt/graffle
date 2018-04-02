@@ -116,10 +116,14 @@ export async function request<T extends any>(
 export default request
 
 async function getResult(response: Response): Promise<any> {
-  const contentType = response.headers.get('Content-Type')
-  if (contentType && contentType.startsWith('application/json')) {
-    return response.json()
-  } else {
-    return response.text()
+  const r2 = response.clone();
+  try {
+    return response.json();
+  } catch (e) {
+    if (e instanceof FetchError) {
+      return response.text()
+    } else if (e instanceof RangeError) {
+      return e;
+    }
   }
 }
