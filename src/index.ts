@@ -123,7 +123,7 @@ async function getResult(response: Response): Promise<any> {
   } catch (e) {
     if (e instanceof FetchError) {
       return r2.text()
-    } else if (e instanceof RangeError) {
+    } else {
       return e;
     }
   }
