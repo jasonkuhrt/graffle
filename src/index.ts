@@ -1,6 +1,7 @@
 import { ClientError, GraphQLError, Headers, Options, Variables } from './types'
 export { ClientError } from './types'
 import 'cross-fetch/polyfill'
+import { FetchError } from 'node-fetch'
 
 export class GraphQLClient {
   private url: string
@@ -121,7 +122,7 @@ async function getResult(response: Response): Promise<any> {
     return response.json();
   } catch (e) {
     if (e instanceof FetchError) {
-      return response.text()
+      return r2.text()
     } else if (e instanceof RangeError) {
       return e;
     }
