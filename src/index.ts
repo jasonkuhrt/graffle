@@ -77,7 +77,7 @@ export class GraphQLClient {
     const { headers, method = 'POST', ...others } = this.options
     let response: Response
 
-    if (method.toLowerCase() === 'GET') {
+    if (method.toUpperCase() === 'GET') {
       const _url = url.parse(this.url)
       const _query = _url.query ? qs.parse(_url.query) : { }
 
