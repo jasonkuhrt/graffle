@@ -80,14 +80,16 @@ export class GraphQLClient {
     if (method.toUpperCase() === 'GET') {
       const _url = url.parse(this.url)
       const _query = _url.query ? qs.parse(_url.query) : { }
+      const _finalUrl = url.format({
+        ..._url,
+        query: {
+          ..._query,
+          query,
+          variables: JSON.stringify(variables),
+        }
+      })
 
-      if (variables) {
-        Object.assign(query, {
-          variables: JSON.stringify(Object.assign(_query.variables, variables))
-        })
-      }
-
-      response = await fetch(url.format(_url), { headers })
+      response = await fetch(_finalUrl, { headers })
     } else {
       const body = JSON.stringify({
         query,
