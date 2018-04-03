@@ -80,10 +80,12 @@ export class GraphQLClient {
 
     if (method.toLowerCase() === 'get') {
       const url = new URL(this.url)
-      url.searchParams.set('query', JSON.stringify(query))
+      url.searchParams.set('query', query)
       if (variables) {
         url.searchParams.set('variables', JSON.stringify(variables))
       }
+
+      console.log(url.toString());
 
       response = await fetch(url.toString(), { headers })
     } else {
