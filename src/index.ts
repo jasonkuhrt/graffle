@@ -1,6 +1,8 @@
 import { ClientError, GraphQLError, Headers, Options, Variables } from './types'
 export { ClientError } from './types'
 import 'cross-fetch/polyfill'
+import url from 'url'
+import qs from 'querystring'
 
 export class GraphQLClient {
   private url: string
@@ -67,7 +69,7 @@ export class GraphQLClient {
     }
     return this
   }
-  
+
   async getResponse(
     query: string,
     variables?: Variables,
@@ -75,16 +77,17 @@ export class GraphQLClient {
     const { headers, method = 'POST', ...others } = this.options
     let response: Response
 
-    if (method.toLowerCase() === 'get') {
-      const url = new URL(this.url)
-      url.searchParams.set('query', query)
+    if (method.toLowerCase() === 'GET') {
+      const _url = url.parse(this.url)
+      const _query = _url.query ? qs.parse(_url.query) : { }
+
       if (variables) {
-        url.searchParams.set('variables', JSON.stringify(variables))
+        Object.assign(query, {
+          variables: JSON.stringify(Object.assign(_query.variables, variables))
+        })
       }
 
-      console.log(url.toString());
-
-      response = await fetch(url.toString(), { headers })
+      response = await fetch(url.format(_url), { headers })
     } else {
       const body = JSON.stringify({
         query,
