@@ -1,9 +1,6 @@
 import { ClientError, GraphQLError, Headers, Options, Variables } from './types'
 export { ClientError } from './types'
 import 'cross-fetch/polyfill'
-import { shim } from 'universal-url'
-
-shim()
 
 export class GraphQLClient {
   private url: string
