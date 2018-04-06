@@ -1,6 +1,6 @@
 {
-  "name": "@forabi/graphql-request",
-  "version": "1.6.8",
+  "name": "graphql-request",
+  "version": "0.0.0-semantic-release",
   "main": "dist/src/index.js",
   "typings": "./dist/src/index.d.ts",
   "files": [
