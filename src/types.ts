@@ -31,7 +31,7 @@ export interface GraphQLResponse {
 }
 
 export interface GraphQLRequestContext {
-  query: string | object
+  query: string
   variables?: Variables
 }
 

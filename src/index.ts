@@ -14,7 +14,7 @@ export class GraphQLClient {
   }
 
   async rawRequest<T extends any>(
-    query: string | object,
+    query: string,
     variables?: Variables,
   ): Promise<{ data?: T, extensions?: any, errors?: GraphQLError[] }> {
     const response = await this.getResponse(query, variables)
@@ -34,7 +34,7 @@ export class GraphQLClient {
   }
 
   async request<T extends any>(
-    query: string | object,
+    query: string,
     variables?: Variables,
   ): Promise<T> {
     const response = await this.getResponse(query, variables)
@@ -71,7 +71,7 @@ export class GraphQLClient {
   }
 
   async getResponse(
-    query: string | object,
+    query: string,
     variables?: Variables,
   ) {
     const { headers, method = 'POST', ...others } = this.options
@@ -84,7 +84,7 @@ export class GraphQLClient {
         ..._url,
         query: {
           ..._query,
-          query: typeof query === 'string' ? query : JSON.stringify(query),
+          query,
           variables: JSON.stringify(variables),
         }
       })
@@ -110,7 +110,7 @@ export class GraphQLClient {
 
 export async function rawRequest<T extends any>(
   url: string,
-  query: string | object,
+  query: string,
   variables?: Variables,
 ): Promise<{ data?: T, extensions?: any, errors?: GraphQLError[] }> {
   const client = new GraphQLClient(url)
@@ -120,7 +120,7 @@ export async function rawRequest<T extends any>(
 
 export async function request<T extends any>(
   url: string,
-  query: string | object,
+  query: string,
   variables?: Variables,
 ): Promise<T> {
   const client = new GraphQLClient(url)
