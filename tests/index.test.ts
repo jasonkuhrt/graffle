@@ -15,6 +15,23 @@ test('minimal query', async (t) => {
   })
 })
 
+test('minimal raw query', async (t) => {
+  const data = {
+    viewer: {
+      id: 'some-id',
+    },
+  }
+
+  const extensions = {
+    version: '1',
+  }
+
+  await mock({body: {data, extensions}}, async () => {
+    const { headers, ...result } = await rawRequest('https://mock-api.com/graphql', `{ viewer { id } }`)
+    t.deepEqual(result, {data, extensions})
+  })
+})
+
 test('minimal raw query with response headers', async (t) => {
   const data = {
     viewer: {
