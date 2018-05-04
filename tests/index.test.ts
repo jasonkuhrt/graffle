@@ -28,7 +28,7 @@ test('minimal raw query', async (t) => {
 
   await mock({body: {data, extensions}}, async () => {
     const { headers, ...result } = await rawRequest('https://mock-api.com/graphql', `{ viewer { id } }`)
-    t.deepEqual(result, {data, extensions})
+    t.deepEqual(result, {data, extensions, status: 200})
   })
 })
 
@@ -50,7 +50,7 @@ test('minimal raw query with response headers', async (t) => {
 
   await mock({headers: reqHeaders, body: {data, extensions}}, async () => {
     const { headers, ...result } = await rawRequest('https://mock-api.com/graphql', `{ viewer { id } }`)
-    t.deepEqual(result, {data, extensions})
+    t.deepEqual(result, {data, extensions, status: 200})
     t.deepEqual(headers.get('X-Custom-Header'), reqHeaders['X-Custom-Header'])
   })
 })
