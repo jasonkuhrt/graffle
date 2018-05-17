@@ -1,6 +1,6 @@
 # graphql-request
 
-[![CircleCI](https://circleci.com/gh/graphcool/graphql-request.svg?style=shield)](https://circleci.com/gh/graphcool/graphql-request) [![npm version](https://badge.fury.io/js/graphql-request.svg)](https://badge.fury.io/js/graphql-request)
+[![CircleCI](https://circleci.com/gh/prismagraphql/graphql-request.svg?style=shield)](https://circleci.com/gh/prismagraphql/graphql-request) [![npm version](https://badge.fury.io/js/graphql-request.svg)](https://badge.fury.io/js/graphql-request)
 
 📡 Minimal GraphQL client supporting Node and browsers for scripts or simple apps
 
@@ -220,4 +220,4 @@ Lokka is great but it still requires [a lot of setup code](https://github.com/ka
 
 Join our [Slack community](http://slack.graph.cool/) if you run into issues or have questions. We love talking to you!
 
-![](http://i.imgur.com/5RHR6Ku.png)
+<p align="center"><a href="https://oss.prisma.io"><img src="https://imgur.com/IMU2ERq.png" alt="Prisma" height="170px"></a></p>
