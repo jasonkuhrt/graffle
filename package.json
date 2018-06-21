@@ -35,7 +35,7 @@
     "ava": "0.25.0",
     "fetch-mock": "5.13.1",
     "tslint": "5.9.1",
-    "tslint-config-standard": "7.0.0",
+    "tslint-config-standard": "7.1.0",
     "typescript": "2.7.2"
   },
   "dependencies": {
