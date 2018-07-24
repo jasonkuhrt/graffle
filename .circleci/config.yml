@@ -7,4 +7,4 @@ jobs:
       - checkout
       - run: yarn install
       - run: yarn test
-      - run: ./node_modules/.bin/semantic-release
+      - run: npx semantic-release
