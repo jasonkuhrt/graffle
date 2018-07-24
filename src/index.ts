@@ -1,7 +1,7 @@
 import { ClientError, GraphQLError, Headers as HttpHeaders, Options, Variables } from './types'
 export { ClientError } from './types'
 import 'cross-fetch/polyfill'
-
+import { print } from 'graphql'
 export class GraphQLClient {
   private url: string
   private options: Options
@@ -45,13 +45,13 @@ export class GraphQLClient {
   }
 
   async request<T extends any>(
-    query: string,
+    query: string | object,
     variables?: Variables,
   ): Promise<T> {
     const { headers, ...others } = this.options
-
+    const printedQuery = typeof query === 'object' ? print(query) : query
     const body = JSON.stringify({
-      query,
+      query: printedQuery,
       variables: variables ? variables : undefined,
     })
 
@@ -71,7 +71,7 @@ export class GraphQLClient {
         typeof result === 'string' ? { error: result } : result
       throw new ClientError(
         { ...errorResult, status: response.status },
-        { query, variables },
+        { query: printedQuery, variables },
       )
     }
   }
