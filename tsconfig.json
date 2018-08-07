@@ -8,7 +8,7 @@
     "strictNullChecks": true,
     "noUnusedLocals": true,
     "outDir": "dist",
-    "lib": ["es2015", "es2016", "dom", "esnext"]
+    "lib": ["es2015", "es2016", "dom"]
   },
   "exclude": [
     "node_modules"
