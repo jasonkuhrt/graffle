@@ -2,7 +2,6 @@ import test from 'ava'
 import * as fetchMock from 'fetch-mock'
 import { ClientError, rawRequest, request, GraphQLClient } from '../src/index'
 import { Options } from '../src/types'
-import gql from 'graphql-tag'
 
 test('minimal query', async (t) => {
   const data = {
@@ -123,21 +122,6 @@ test('extra fetch options', async (t) => {
       t.deepEqual(actualOptions[name], options[name])
     }
   })
-})
-
-test('minimal parsed query', async (t) => {
-  const data = {
-    Actor: {
-      name: "Tom Hardy"
-    }
-  }
-
-  /*
-  This test is flaky because it relies on the internet 
-  but the mock passed for this feature (parsed query) without
-  the implementation. 
-  */
-  t.deepEqual(await request('https://api.graph.cool/simple/v1/movies', gql`query { Actor(name: "Tom Hardy") { name } }`), data)
 })
 
 async function mock(response: any, testFn: () => Promise<void>) {
