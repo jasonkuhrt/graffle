@@ -32,16 +32,15 @@
   "scripts": {
     "prepublish": "npm run build",
     "build": "rm -rf dist && tsc -d",
-    "lint": "tslint --type-check --project tsconfig.json {src,test}/**/*.ts",
+    "lint": "tslint --project tsconfig.json {src,test}/**/*.ts",
     "test": "npm run lint && npm run build && ava --serial && npm run size",
     "size": "bundlesize"
   },
   "devDependencies": {
-    "@types/fetch-mock": "5.12.2",
     "@types/node": "8.5.5",
     "ava": "0.25.0",
     "bundlesize": "0.17.0",
-    "fetch-mock": "5.13.1",
+    "fetch-mock": "^6.5.2",
     "tslint": "5.9.1",
     "tslint-config-standard": "7.0.0",
     "typescript": "2.7.2"

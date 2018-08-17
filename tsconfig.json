@@ -8,7 +8,11 @@
     "strictNullChecks": true,
     "noUnusedLocals": true,
     "outDir": "dist",
-    "lib": ["es2015", "es2016", "dom", "esnext.asynciterable"]
+    "lib": [
+      "es2015",
+      "es2016",
+      "esnext.asynciterable"
+    ]
   },
   "exclude": [
     "node_modules"
