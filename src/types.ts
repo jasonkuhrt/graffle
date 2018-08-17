@@ -45,6 +45,8 @@ export class ClientError extends Error {
 
     super(message)
 
+    Object.setPrototypeOf(this, ClientError.prototype)
+
     this.response = response
     this.request = request
 
