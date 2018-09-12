@@ -14,10 +14,10 @@ import { rawRequest } from '../src'
     }
   `
 
-  const { data, errors, extensions, headers, status } = await rawRequest(
-    endpoint,
-    query
-  )
+  const { data, errors, extensions, headers, status } = await rawRequest<{
+    Movie: { releaseDate: string; actors: Array<{ name: string }> }
+  }>(endpoint, query)
+
   console.log(
     JSON.stringify({ data, errors, extensions, headers, status }, undefined, 2)
   )
