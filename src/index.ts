@@ -1,3 +1,5 @@
+/// <reference lib="dom" />
+
 import 'cross-fetch/polyfill'
 
 import { ClientError, GraphQLError, Variables } from './types'
