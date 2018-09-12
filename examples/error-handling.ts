@@ -1,0 +1,26 @@
+import { request } from '../src'
+
+;(async () => {
+  const query = /* GraphQL */ `
+    {
+      Movie(title: "Inception") {
+        releaseDate
+        actors {
+          fullname # "Cannot query field 'fullname' on type 'Actor'. Did you mean 'name'?"
+        }
+      }
+    }
+  `
+
+  try {
+    const data = await request(
+      'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr',
+      query
+    )
+
+    console.log(JSON.stringify(data, undefined, 2))
+  } catch (error) {
+    console.error(JSON.stringify(error, undefined, 2))
+    process.exit(1)
+  }
+})()

@@ -140,16 +140,30 @@ import { request } from 'graphql-request'
 ```js
 import { request } from 'graphql-request'
 
-const wrongQuery = `{
-  some random stuff
-}`
+;(async () => {
+  const query = /* GraphQL */ `
+    {
+      Movie(title: "Inception") {
+        releaseDate
+        actors {
+          fullname # "Cannot query field 'fullname' on type 'Actor'. Did you mean 'name'?"
+        }
+      }
+    }
+  `
 
-request('my-endpoint', query)
-  .then(data => console.log(data))
-  .catch(err => {
-    console.log(err.response.errors) // GraphQL response errors
-    console.log(err.response.data) // Response data if available
-  })
+  try {
+    const data = await request(
+      'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr',
+      query
+    )
+
+    console.log(JSON.stringify(data, undefined, 2))
+  } catch (error) {
+    console.error(JSON.stringify(error, undefined, 2))
+    process.exit(1)
+  }
+})()
 ```
 
 ### Using `require` instead of `import`
