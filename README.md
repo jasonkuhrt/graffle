@@ -196,18 +196,27 @@ If you need to access the `extensions` key you can use the `rawRequest` method:
 ```js
 import { rawRequest } from 'graphql-request'
 
-const query = `{
-  Movie(title: "Inception") {
-    releaseDate
-    actors {
-      name
+;(async () => {
+  const query = /* GraphQL */ `
+    {
+      Movie(title: "Inception") {
+        releaseDate
+        actors {
+          name
+        }
+      }
     }
-  }
-}`
+  `
 
-rawRequest('my-endpoint', query).then(({ data, extensions }) =>
-  console.log(data, extensions)
-)
+  const { data, errors, extensions, headers, status } = await rawRequest(
+    'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr',
+    query
+  )
+
+  console.log(
+    JSON.stringify({ data, errors, extensions, headers, status }, undefined, 2)
+  )
+})()
 ```
 
 ### More examples coming soon...
