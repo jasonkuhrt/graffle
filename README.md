@@ -57,22 +57,29 @@ client.request(query, variables).then(data => console.log(data))
 ```js
 import { GraphQLClient } from 'graphql-request'
 
-const client = new GraphQLClient('my-endpoint', {
-  headers: {
-    Authorization: 'Bearer my-jwt-token',
-  },
-})
+;(async () => {
+  const endpoint = 'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr'
 
-const query = `{
-  Movie(title: "Inception") {
-    releaseDate
-    actors {
-      name
+  const graphQLClient = new GraphQLClient(endpoint, {
+    headers: {
+      authorization: 'Bearer MY_TOKEN',
+    },
+  })
+
+  const query = /* GraphQL */ `
+    {
+      Movie(title: "Inception") {
+        releaseDate
+        actors {
+          name
+        }
+      }
     }
-  }
-}`
+  `
 
-client.request(query).then(data => console.log(data))
+  const data = await graphQLClient.request(query)
+  console.log(JSON.stringify(data, undefined, 2))
+})()
 ```
 
 ### Passing more options to fetch
