@@ -78,23 +78,30 @@ client.request(query).then(data => console.log(data))
 ### Passing more options to fetch
 
 ```js
-import { GraphQLClient } from 'graphql-request'
+import { GraphQLClient } from '../src'
 
-const client = new GraphQLClient('my-endpoint', {
-  credentials: 'include',
-  mode: 'cors',
-})
-
-const query = `{
-  Movie(title: "Inception") {
-    releaseDate
-    actors {
-      name
+;(async () => {
+  const graphQLClient = new GraphQLClient(
+    'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr',
+    {
+      credentials: 'include',
+      mode: 'cors',
     }
-  }
-}`
+  )
 
-client.request(query).then(data => console.log(data))
+  const query = /* GraphQL */ `{
+      Movie(title: "Inception") {
+        releaseDate
+        actors {
+          name
+        }
+      }
+    }`
+
+  const data = await graphQLClient.request(query)
+
+  console.log(JSON.stringify(data, undefined, 2))
+})()
 ```
 
 ### Using variables

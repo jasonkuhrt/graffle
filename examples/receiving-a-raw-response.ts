@@ -1,4 +1,4 @@
-import { rawRequest } from '../src/index'
+import { rawRequest } from '../src'
 
 ;(async () => {
   const query = /* GraphQL */ `{
