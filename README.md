@@ -196,27 +196,37 @@ const { request } = require('graphql-request')
 ### Cookie support for `node`
 
 ```sh
-npm install fetch-cookie/node-fetch
+npm install fetch-cookie
 ```
 
 ```js
+require('fetch-cookie/node-fetch')(require('node-fetch'))
+
 import { GraphQLClient } from 'graphql-request'
 
-// use this instead for cookie support
-global['fetch'] = require('fetch-cookie/node-fetch')(require('node-fetch'))
+;(async () => {
+  const endpoint = 'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr'
 
-const client = new GraphQLClient('my-endpoint')
+  const graphQLClient = new GraphQLClient(endpoint, {
+    headers: {
+      authorization: 'Bearer MY_TOKEN',
+    },
+  })
 
-const query = `{
-  Movie(title: "Inception") {
-    releaseDate
-    actors {
-      name
+  const query = /* GraphQL */ `
+    {
+      Movie(title: "Inception") {
+        releaseDate
+        actors {
+          name
+        }
+      }
     }
-  }
-}`
+  `
 
-client.request(query).then(data => console.log(data))
+  const data = await graphQLClient.rawRequest(query)
+  console.log(JSON.stringify(data, undefined, 2))
+})()
 ```
 
 ### Receiving a raw response
