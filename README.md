@@ -81,10 +81,7 @@ async function main() {
   console.log(JSON.stringify(data, undefined, 2))
 }
 
-main().catch(error => {
-  console.error(error)
-  process.exit(1)
-})
+main().catch(error => console.error(error))
 ```
 
 [TypeScript Source](examples/authentication-via-http-header.ts)
@@ -117,10 +114,7 @@ async function main() {
   console.log(JSON.stringify(data, undefined, 2))
 }
 
-main().catch(error => {
-  console.error(error)
-  process.exit(1)
-})
+main().catch(error => console.error(error))
 ```
 
 [TypeScript Source](examples/passing-more-options-to-fetch.ts)
@@ -152,10 +146,7 @@ async function main() {
   console.log(JSON.stringify(data, undefined, 2))
 }
 
-main().catch(error => {
-  console.error(error)
-  process.exit(1)
-})
+main().catch(error => console.error(error))
 ```
 
 [TypeScript Source](examples/using-variables.ts)
@@ -188,10 +179,7 @@ async function main() {
   }
 }
 
-main().catch(error => {
-  console.error(error)
-  process.exit(1)
-})
+main().catch(error => console.error(error))
 ```
 
 [TypeScript Source](examples/error-handling)
@@ -219,10 +207,7 @@ async function main() {
   console.log(JSON.stringify(data, undefined, 2))
 }
 
-main().catch(error => {
-  console.error(error)
-  process.exit(1)
-})
+main().catch(error => console.error(error))
 ```
 
 ### Cookie support for `node`
@@ -260,10 +245,7 @@ async function main() {
   console.log(JSON.stringify(data, undefined, 2))
 }
 
-main().catch(error => {
-  console.error(error)
-  process.exit(1)
-})
+main().catch(error => console.error(error))
 ```
 
 [TypeScript Source](examples/cookie-support-for-node)
@@ -299,10 +281,7 @@ async function main() {
   )
 }
 
-main().catch(error => {
-  console.error(error)
-  process.exit(1)
-})
+main().catch(error => console.error(error))
 ```
 
 [TypeScript Source](examples/receiving-a-raw-response)
