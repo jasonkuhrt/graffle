@@ -1,6 +1,6 @@
 import { GraphQLClient } from '../src'
 
-;(async () => {
+export async function main() {
   const endpoint = 'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr'
 
   const graphQLClient = new GraphQLClient(endpoint, {
@@ -22,4 +22,9 @@ import { GraphQLClient } from '../src'
 
   const data = await graphQLClient.request(query)
   console.log(JSON.stringify(data, undefined, 2))
-})()
+}
+
+main().catch(error => {
+  console.error(error)
+  process.exit(1)
+})

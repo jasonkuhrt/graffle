@@ -57,7 +57,7 @@ client.request(query, variables).then(data => console.log(data))
 ```js
 import { GraphQLClient } from 'graphql-request'
 
-;(async () => {
+async function main() {
   const endpoint = 'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr'
 
   const graphQLClient = new GraphQLClient(endpoint, {
@@ -79,15 +79,22 @@ import { GraphQLClient } from 'graphql-request'
 
   const data = await graphQLClient.request(query)
   console.log(JSON.stringify(data, undefined, 2))
-})()
+}
+
+main().catch(error => {
+  console.error(error)
+  process.exit(1)
+})
 ```
+
+[TypeScript Source](examples/authentication-via-http-header.ts)
 
 ### Passing more options to fetch
 
 ```js
 import { GraphQLClient } from 'graphql-request'
 
-;(async () => {
+async function main() {
   const endpoint = 'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr'
 
   const graphQLClient = new GraphQLClient(endpoint, {
@@ -108,15 +115,22 @@ import { GraphQLClient } from 'graphql-request'
 
   const data = await graphQLClient.request(query)
   console.log(JSON.stringify(data, undefined, 2))
-})()
+}
+
+main().catch(error => {
+  console.error(error)
+  process.exit(1)
+})
 ```
+
+[TypeScript Source](examples/passing-more-options-to-fetch.ts)
 
 ### Using variables
 
 ```js
 import { request } from 'graphql-request'
 
-;(async () => {
+async function main() {
   const endpoint = 'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr'
 
   const query = /* GraphQL */ `
@@ -136,15 +150,22 @@ import { request } from 'graphql-request'
 
   const data = await request(endpoint, query, variables)
   console.log(JSON.stringify(data, undefined, 2))
-})()
+}
+
+main().catch(error => {
+  console.error(error)
+  process.exit(1)
+})
 ```
+
+[TypeScript Source](examples/using-variables.ts)
 
 ### Error handling
 
 ```js
 import { request } from 'graphql-request'
 
-;(async () => {
+async function main() {
   const endpoint = 'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr'
 
   const query = /* GraphQL */ `
@@ -165,15 +186,22 @@ import { request } from 'graphql-request'
     console.error(JSON.stringify(error, undefined, 2))
     process.exit(1)
   }
-})()
+}
+
+main().catch(error => {
+  console.error(error)
+  process.exit(1)
+})
 ```
+
+[TypeScript Source](examples/error-handling)
 
 ### Using `require` instead of `import`
 
 ```js
 const { request } = require('graphql-request')
 
-;(async () => {
+async function main() {
   const endpoint = 'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr'
 
   const query = /* GraphQL */ `
@@ -189,8 +217,12 @@ const { request } = require('graphql-request')
 
   const data = await request(endpoint, query)
   console.log(JSON.stringify(data, undefined, 2))
-})()
+}
 
+main().catch(error => {
+  console.error(error)
+  process.exit(1)
+})
 ```
 
 ### Cookie support for `node`
@@ -204,7 +236,7 @@ require('fetch-cookie/node-fetch')(require('node-fetch'))
 
 import { GraphQLClient } from 'graphql-request'
 
-;(async () => {
+async function main() {
   const endpoint = 'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr'
 
   const graphQLClient = new GraphQLClient(endpoint, {
@@ -226,8 +258,15 @@ import { GraphQLClient } from 'graphql-request'
 
   const data = await graphQLClient.rawRequest(query)
   console.log(JSON.stringify(data, undefined, 2))
-})()
+}
+
+main().catch(error => {
+  console.error(error)
+  process.exit(1)
+})
 ```
+
+[TypeScript Source](examples/cookie-support-for-node)
 
 ### Receiving a raw response
 
@@ -237,7 +276,7 @@ If you need to access the `extensions` key you can use the `rawRequest` method:
 ```js
 import { rawRequest } from 'graphql-request'
 
-;(async () => {
+async function main() {
   const endpoint = 'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr'
 
   const query = /* GraphQL */ `
@@ -258,8 +297,15 @@ import { rawRequest } from 'graphql-request'
   console.log(
     JSON.stringify({ data, errors, extensions, headers, status }, undefined, 2)
   )
-})()
+}
+
+main().catch(error => {
+  console.error(error)
+  process.exit(1)
+})
 ```
+
+[TypeScript Source](examples/receiving-a-raw-response)
 
 ### More examples coming soon...
 
