@@ -1,16 +1,14 @@
 {
   "compilerOptions": {
+    "lib": ["es2015", "es2016", "dom", "esnext.asynciterable"],
     "module": "commonjs",
     "moduleResolution": "node",
-    "rootDir": ".",
-    "target": "es5",
-    "sourceMap": true,
-    "strictNullChecks": true,
     "noUnusedLocals": true,
     "outDir": "dist",
-    "lib": ["es2015", "es2016", "dom", "esnext.asynciterable"]
+    "rootDir": ".",
+    "sourceMap": true,
+    "strictNullChecks": true,
+    "target": "es5"
   },
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"]
 }
