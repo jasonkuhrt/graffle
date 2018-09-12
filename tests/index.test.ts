@@ -2,7 +2,6 @@ import test from 'ava'
 import * as fetchMock from 'fetch-mock'
 
 import { ClientError, rawRequest, request, GraphQLClient } from '../src/index'
-import { Options } from '../src/types'
 
 test('minimal query', async (t) => {
   const data = {
@@ -60,6 +59,7 @@ test('minimal raw query with response headers', async (t) => {
       'https://mock-api.com/graphql',
       `{ viewer { id } }`,
     )
+
     t.deepEqual(result, { data, extensions, status: 200 })
     t.deepEqual(headers.get('X-Custom-Header'), reqHeaders['X-Custom-Header'])
   })
@@ -127,7 +127,7 @@ test('content-type with charset', async (t) => {
 })
 
 test('extra fetch options', async (t) => {
-  const options: Options = {
+  const options: RequestInit = {
     credentials: 'include',
     mode: 'cors',
     cache: 'reload',

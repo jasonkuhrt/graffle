@@ -1,20 +1,14 @@
 import 'cross-fetch/polyfill'
 
-import {
-  ClientError,
-  GraphQLError,
-  Headers as HttpHeaders,
-  Options,
-  Variables,
-} from './types'
+import { ClientError, GraphQLError, Variables } from './types'
 
 export { ClientError } from './types'
 
 export class GraphQLClient {
   private url: string
-  private options: Options
+  private options: RequestInit
 
-  constructor(url: string, options?: Options) {
+  constructor(url: string, options?: RequestInit) {
     this.url = url
     this.options = options || {}
   }
@@ -25,7 +19,7 @@ export class GraphQLClient {
   ): Promise<{
     data?: T
     extensions?: any
-    headers: Headers
+    headers: Request['headers']
     status: number
     errors?: GraphQLError[]
   }> {
@@ -38,7 +32,7 @@ export class GraphQLClient {
 
     const response = await fetch(this.url, {
       method: 'POST',
-      headers: Object.assign({ 'Content-Type': 'application/json' }, headers),
+      headers: { 'Content-Type': 'application/json', ...headers },
       body,
       ...others,
     })
@@ -68,7 +62,7 @@ export class GraphQLClient {
 
     const response = await fetch(this.url, {
       method: 'POST',
-      headers: Object.assign({ 'Content-Type': 'application/json' }, headers),
+      headers: { 'Content-Type': 'application/json', ...headers },
       body,
       ...others,
     })
@@ -87,7 +81,7 @@ export class GraphQLClient {
     }
   }
 
-  setHeaders(headers: HttpHeaders): GraphQLClient {
+  setHeaders(headers: Response['headers']): GraphQLClient {
     this.options.headers = headers
 
     return this
@@ -99,7 +93,7 @@ export class GraphQLClient {
     if (headers) {
       headers[key] = value
     } else {
-      this.options.headers = { [key]: value }
+      this.options.headers = new Headers({ [key]: value })
     }
     return this
   }
@@ -112,7 +106,7 @@ export async function rawRequest<T = any>(
 ): Promise<{
   data?: T
   extensions?: any
-  headers: Headers
+  headers: Request['headers']
   status: number
   errors?: GraphQLError[]
 }> {
