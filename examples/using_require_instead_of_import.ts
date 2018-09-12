@@ -1,4 +1,4 @@
-import { rawRequest } from '../src'
+const { request } = require('../src')
 
 ;(async () => {
   const endpoint = 'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr'
@@ -14,11 +14,6 @@ import { rawRequest } from '../src'
     }
   `
 
-  const { data, errors, extensions, headers, status } = await rawRequest(
-    endpoint,
-    query
-  )
-  console.log(
-    JSON.stringify({ data, errors, extensions, headers, status }, undefined, 2)
-  )
+  const data = await request(endpoint, query)
+  console.log(JSON.stringify(data, undefined, 2))
 })()

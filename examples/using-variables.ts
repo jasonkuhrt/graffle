@@ -1,6 +1,8 @@
 import { request } from '../src'
 
 ;(async () => {
+  const endpoint = 'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr'
+
   const query = /* GraphQL */ `
     query getMovie($title: String!) {
       Movie(title: $title) {
@@ -16,11 +18,6 @@ import { request } from '../src'
     title: 'Inception',
   }
 
-  const data = await request(
-    'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr',
-    query,
-    variables
-  )
-
+  const data = await request(endpoint, query, variables)
   console.log(JSON.stringify(data, undefined, 2))
 })()

@@ -78,28 +78,28 @@ client.request(query).then(data => console.log(data))
 ### Passing more options to fetch
 
 ```js
-import { GraphQLClient } from '../src'
+import { GraphQLClient } from 'graphql-request'
 
 ;(async () => {
-  const graphQLClient = new GraphQLClient(
-    'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr',
-    {
-      credentials: 'include',
-      mode: 'cors',
-    }
-  )
+  const endpoint = 'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr'
 
-  const query = /* GraphQL */ `{
+  const graphQLClient = new GraphQLClient(endpoint, {
+    credentials: 'include',
+    mode: 'cors',
+  })
+
+  const query = /* GraphQL */ `
+    {
       Movie(title: "Inception") {
         releaseDate
         actors {
           name
         }
       }
-    }`
+    }
+  `
 
   const data = await graphQLClient.request(query)
-
   console.log(JSON.stringify(data, undefined, 2))
 })()
 ```
@@ -110,6 +110,8 @@ import { GraphQLClient } from '../src'
 import { request } from 'graphql-request'
 
 ;(async () => {
+  const endpoint = 'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr'
+
   const query = /* GraphQL */ `
     query getMovie($title: String!) {
       Movie(title: $title) {
@@ -125,12 +127,7 @@ import { request } from 'graphql-request'
     title: 'Inception',
   }
 
-  const data = await request(
-    'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr',
-    query,
-    variables
-  )
-
+  const data = await request(endpoint, query, variables)
   console.log(JSON.stringify(data, undefined, 2))
 })()
 ```
@@ -141,6 +138,8 @@ import { request } from 'graphql-request'
 import { request } from 'graphql-request'
 
 ;(async () => {
+  const endpoint = 'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr'
+
   const query = /* GraphQL */ `
     {
       Movie(title: "Inception") {
@@ -153,11 +152,7 @@ import { request } from 'graphql-request'
   `
 
   try {
-    const data = await request(
-      'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr',
-      query
-    )
-
+    const data = await request(endpoint, query)
     console.log(JSON.stringify(data, undefined, 2))
   } catch (error) {
     console.error(JSON.stringify(error, undefined, 2))
@@ -171,16 +166,24 @@ import { request } from 'graphql-request'
 ```js
 const { request } = require('graphql-request')
 
-const query = `{
-  Movie(title: "Inception") {
-    releaseDate
-    actors {
-      name
-    }
-  }
-}`
+;(async () => {
+  const endpoint = 'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr'
 
-request('my-endpoint', query).then(data => console.log(data))
+  const query = /* GraphQL */ `
+    {
+      Movie(title: "Inception") {
+        releaseDate
+        actors {
+          name
+        }
+      }
+    }
+  `
+
+  const data = await request(endpoint, query)
+  console.log(JSON.stringify(data, undefined, 2))
+})()
+
 ```
 
 ### Cookie support for `node`
@@ -218,6 +221,8 @@ If you need to access the `extensions` key you can use the `rawRequest` method:
 import { rawRequest } from 'graphql-request'
 
 ;(async () => {
+  const endpoint = 'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr'
+
   const query = /* GraphQL */ `
     {
       Movie(title: "Inception") {
@@ -230,10 +235,9 @@ import { rawRequest } from 'graphql-request'
   `
 
   const { data, errors, extensions, headers, status } = await rawRequest(
-    'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr',
+    endpoint,
     query
   )
-
   console.log(
     JSON.stringify({ data, errors, extensions, headers, status }, undefined, 2)
   )
