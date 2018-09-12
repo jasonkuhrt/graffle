@@ -6,10 +6,9 @@
 
 ## Features
 
-* Most **simple and lightweight** GraphQL client
-* Promise-based API (works with `async` / `await`)
-* Typescript support (Flow coming soon)
-
+- Most **simple and lightweight** GraphQL client
+- Promise-based API (works with `async` / `await`)
+- Typescript support (Flow coming soon)
 
 ## Install
 
@@ -33,7 +32,9 @@ const query = `{
   }
 }`
 
-request('https://api.graph.cool/simple/v1/movies', query).then(data => console.log(data))
+request('https://api.graph.cool/simple/v1/movies', query).then(data =>
+  console.log(data)
+)
 ```
 
 ## Usage
@@ -80,8 +81,8 @@ client.request(query).then(data => console.log(data))
 import { GraphQLClient } from 'graphql-request'
 
 const client = new GraphQLClient('my-endpoint', {
- credentials: 'include',
- mode: 'cors'
+  credentials: 'include',
+  mode: 'cors',
 })
 
 const query = `{
@@ -101,20 +102,30 @@ client.request(query).then(data => console.log(data))
 ```js
 import { request } from 'graphql-request'
 
-const query = `query getMovie($title: String!) {
-  Movie(title: $title) {
-    releaseDate
-    actors {
-      name
+;(async () => {
+  const query = /* GraphQL */ `
+    query getMovie($title: String!) {
+      Movie(title: $title) {
+        releaseDate
+        actors {
+          name
+        }
+      }
     }
+  `
+
+  const variables = {
+    title: 'Inception',
   }
-}`
 
-const variables = {
-  title: 'Inception',
-}
+  const data = await request(
+    'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr',
+    query,
+    variables
+  )
 
-request('my-endpoint', query, variables).then(data => console.log(data))
+  console.log(JSON.stringify(data, undefined, 2))
+})()
 ```
 
 ### Error handling
@@ -194,14 +205,16 @@ const query = `{
   }
 }`
 
-rawRequest('my-endpoint', query).then(({data, extensions}) => console.log(data, extensions))
+rawRequest('my-endpoint', query).then(({ data, extensions }) =>
+  console.log(data, extensions)
+)
 ```
 
 ### More examples coming soon...
 
-* Fragments
-* Using [`graphql-tag`](https://github.com/apollographql/graphql-tag)
-* Typed Typescript return values
+- Fragments
+- Using [`graphql-tag`](https://github.com/apollographql/graphql-tag)
+- Typed Typescript return values
 
 ## FAQ
 
@@ -214,7 +227,6 @@ Compared to GraphQL clients like Apollo or Relay, `graphql-request` doesn't have
 ### So what about Lokka?
 
 Lokka is great but it still requires [a lot of setup code](https://github.com/kadirahq/lokka-transport-http) to be able to send a simple GraphQL query. `graphql-request` does less work compared to Lokka but is a lot simpler to use.
-
 
 ## Help & Community [![Slack Status](https://slack.prisma.io/badge.svg)](https://slack.prisma.io)
 
