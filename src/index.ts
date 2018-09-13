@@ -10,9 +10,9 @@ export class GraphQLClient {
   private url: string
   private options: RequestInit
 
-  constructor(url: string, options?: RequestInit) {
+  constructor(url: string, options: RequestInit = {}) {
     this.url = url
-    this.options = options || {}
+    this.options = options
   }
 
   async rawRequest<T = any>(
@@ -93,7 +93,8 @@ export class GraphQLClient {
     const { headers } = this.options
 
     if (headers) {
-      headers[key] = value
+      // FIXME code smell
+      (headers as Record<string, string>)[key] = value
     } else {
       this.options.headers = { [key]: value }
     }

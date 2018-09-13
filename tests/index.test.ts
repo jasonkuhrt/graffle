@@ -128,9 +128,9 @@ test('content-type with charset', async (t) => {
 
 test('extra fetch options', async (t) => {
   const options: RequestInit = {
+    cache: 'reload',
     credentials: 'include',
     mode: 'cors',
-    cache: 'reload',
   }
 
   const client = new GraphQLClient('https://mock-api.com/graphql', options)
@@ -142,7 +142,11 @@ test('extra fetch options', async (t) => {
       await client.request('{ test }')
       const actualOptions = fetchMock.lastCall()[1]
       for (let name in options) {
-        t.deepEqual(actualOptions[name], options[name])
+        t.deepEqual(
+          // FIXME code smell
+          (actualOptions as Record<string, string>)[name],
+          (options as Record<string, string>)[name],
+        )
       }
     },
   )

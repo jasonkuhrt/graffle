@@ -4,11 +4,12 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "outDir": "dist",
     "rootDir": ".",
     "sourceMap": true,
-    "strictNullChecks": true,
+    "strict": true,
     "target": "es5"
   },
-  "exclude": ["node_modules"]
+  "include": ["examples", "src", "tests"]
 }
