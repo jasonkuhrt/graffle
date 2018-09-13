@@ -1,5 +1,3 @@
-export type Variables = { [key: string]: any }
-
 export interface GraphQLError {
   message: string
   locations: { line: number; column: number }[]
@@ -16,7 +14,7 @@ export interface GraphQLResponse {
 
 export interface GraphQLRequestContext {
   query: string
-  variables?: Variables
+  variables?: Record<string, any>
 }
 
 export class ClientError extends Error {

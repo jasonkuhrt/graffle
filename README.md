@@ -32,8 +32,8 @@ const query = `{
   }
 }`
 
-request('https://api.graph.cool/simple/v1/movies', query).then(data =>
-  console.log(data)
+request('https://api.graph.cool/simple/v1/movies', query).then((data) =>
+  console.log(data),
 )
 ```
 
@@ -43,11 +43,11 @@ request('https://api.graph.cool/simple/v1/movies', query).then(data =>
 import { request, GraphQLClient } from 'graphql-request'
 
 // Run GraphQL queries/mutations using a static function
-request(endpoint, query, variables).then(data => console.log(data))
+request(endpoint, query, variables).then((data) => console.log(data))
 
 // ... or create a GraphQL client instance to send requests
 const client = new GraphQLClient(endpoint, { headers: {} })
-client.request(query, variables).then(data => console.log(data))
+client.request(query, variables).then((data) => console.log(data))
 ```
 
 ## Examples
@@ -81,7 +81,7 @@ async function main() {
   console.log(JSON.stringify(data, undefined, 2))
 }
 
-main().catch(error => console.error(error))
+main().catch((error) => console.error(error))
 ```
 
 [TypeScript Source](examples/authentication-via-http-header.ts)
@@ -114,7 +114,7 @@ async function main() {
   console.log(JSON.stringify(data, undefined, 2))
 }
 
-main().catch(error => console.error(error))
+main().catch((error) => console.error(error))
 ```
 
 [TypeScript Source](examples/passing-more-options-to-fetch.ts)
@@ -146,7 +146,7 @@ async function main() {
   console.log(JSON.stringify(data, undefined, 2))
 }
 
-main().catch(error => console.error(error))
+main().catch((error) => console.error(error))
 ```
 
 [TypeScript Source](examples/using-variables.ts)
@@ -179,7 +179,7 @@ async function main() {
   }
 }
 
-main().catch(error => console.error(error))
+main().catch((error) => console.error(error))
 ```
 
 [TypeScript Source](examples/error-handling)
@@ -207,7 +207,7 @@ async function main() {
   console.log(JSON.stringify(data, undefined, 2))
 }
 
-main().catch(error => console.error(error))
+main().catch((error) => console.error(error))
 ```
 
 ### Cookie support for `node`
@@ -245,7 +245,7 @@ async function main() {
   console.log(JSON.stringify(data, undefined, 2))
 }
 
-main().catch(error => console.error(error))
+main().catch((error) => console.error(error))
 ```
 
 [TypeScript Source](examples/cookie-support-for-node)
@@ -274,14 +274,14 @@ async function main() {
 
   const { data, errors, extensions, headers, status } = await rawRequest(
     endpoint,
-    query
+    query,
   )
   console.log(
-    JSON.stringify({ data, errors, extensions, headers, status }, undefined, 2)
+    JSON.stringify({ data, errors, extensions, headers, status }, undefined, 2),
   )
 }
 
-main().catch(error => console.error(error))
+main().catch((error) => console.error(error))
 ```
 
 [TypeScript Source](examples/receiving-a-raw-response)

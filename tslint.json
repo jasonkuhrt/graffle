@@ -2,6 +2,7 @@
   "extends": ["tslint-config-standard"],
   "rules": {
     "space-before-function-paren": false,
+    "ter-func-call-spacing": false,
     "trailing-comma": [
       true,
       {

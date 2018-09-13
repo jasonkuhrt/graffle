@@ -2,7 +2,7 @@
 
 import 'cross-fetch/polyfill'
 
-import { ClientError, GraphQLError, Variables } from './types'
+import { ClientError, GraphQLError } from './types'
 
 export { ClientError } from './types'
 
@@ -15,9 +15,9 @@ export class GraphQLClient {
     this.options = options
   }
 
-  async rawRequest<TData = any>(
+  async rawRequest<TData = any, TVariables = Record<string, any>>(
     query: string,
-    variables?: Variables,
+    variables?: TVariables,
   ): Promise<{
     data?: TData
     extensions?: any
@@ -54,9 +54,9 @@ export class GraphQLClient {
     }
   }
 
-  async request<TData = any>(
+  async request<TData = any, TVariables = Record<string, any>>(
     query: string,
-    variables?: Variables,
+    variables?: TVariables,
   ): Promise<TData> {
     const { headers, ...others } = this.options
 
@@ -105,10 +105,10 @@ export class GraphQLClient {
   }
 }
 
-export async function rawRequest<TData = any>(
+export async function rawRequest<TData = any, TVariables = Record<string, any>>(
   url: string,
   query: string,
-  variables?: Variables,
+  variables?: TVariables,
 ): Promise<{
   data?: TData
   extensions?: any
@@ -118,17 +118,17 @@ export async function rawRequest<TData = any>(
 }> {
   const client = new GraphQLClient(url)
 
-  return client.rawRequest<TData>(query, variables)
+  return client.rawRequest<TData, TVariables>(query, variables)
 }
 
-export async function request<TData = any>(
+export async function request<TData = any, TVariables = Record<string, any>>(
   url: string,
   query: string,
-  variables?: Variables,
+  variables?: TVariables,
 ): Promise<TData> {
   const client = new GraphQLClient(url)
 
-  return client.request<TData>(query, variables)
+  return client.request<TData, TVariables>(query, variables)
 }
 
 export default request
