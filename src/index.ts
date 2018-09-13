@@ -93,7 +93,7 @@ export class GraphQLClient {
     if (headers) {
       headers[key] = value
     } else {
-      this.options.headers = new Headers({ [key]: value })
+      this.options.headers = { [key]: value }
     }
     return this
   }
