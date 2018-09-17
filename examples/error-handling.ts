@@ -15,7 +15,9 @@ import { request } from '../src'
   `
 
   try {
-    const data = await request(endpoint, query)
+    const data = await request<{
+      Movie: { releaseDate: string; actors: Array<{ name: string }> }
+    }>(endpoint, query)
     console.log(JSON.stringify(data, undefined, 2))
   } catch (error) {
     console.error(JSON.stringify(error, undefined, 2))
