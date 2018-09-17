@@ -1,6 +1,6 @@
 # graphql-request
 
-[![CircleCI](https://circleci.com/gh/prismagraphql/graphql-request.svg?style=shield)](https://circleci.com/gh/prismagraphql/graphql-request) [![npm version](https://badge.fury.io/js/graphql-request.svg)](https://badge.fury.io/js/graphql-request)
+[![CircleCI](https://circleci.com/gh/prisma/graphql-request.svg?style=shield)](https://circleci.com/gh/prisma/graphql-request) [![npm version](https://badge.fury.io/js/graphql-request.svg)](https://badge.fury.io/js/graphql-request)
 
 📡 Minimal GraphQL client supporting Node and browsers for scripts or simple apps
 
