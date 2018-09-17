@@ -14,7 +14,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/graphcool/graphql-request.git"
+    "url": "git+https://github.com/prisma/graphql-request.git"
   },
   "keywords": [
     "graphql",
@@ -26,27 +26,28 @@
   "author": "Johannes Schickling <johannes@graph.cool>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/graphcool/graphql-request/issues"
+    "url": "https://github.com/prisma/graphql-request/issues"
   },
-  "homepage": "https://github.com/graphcool/graphql-request",
+  "homepage": "https://github.com/prisma/graphql-request",
   "scripts": {
     "prepublish": "npm run build",
     "build": "rm -rf dist && tsc -d",
-    "lint": "tslint --type-check --project tsconfig.json {src,test}/**/*.ts",
+    "lint": "tslint --project . {examples,src,test}/**/*.ts",
     "test": "npm run lint && npm run build && ava --serial && npm run size",
     "size": "bundlesize"
+  },
+  "dependencies": {
+    "cross-fetch": "2.2.2"
   },
   "devDependencies": {
     "@types/fetch-mock": "5.12.2",
     "@types/node": "8.5.5",
     "ava": "0.25.0",
     "bundlesize": "0.17.0",
+    "fetch-cookie": "0.7.2",
     "fetch-mock": "5.13.1",
     "tslint": "5.9.1",
     "tslint-config-standard": "7.0.0",
     "typescript": "2.7.2"
-  },
-  "dependencies": {
-    "cross-fetch": "2.2.2"
   }
 }

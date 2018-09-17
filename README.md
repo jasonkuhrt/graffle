@@ -6,10 +6,9 @@
 
 ## Features
 
-* Most **simple and lightweight** GraphQL client
-* Promise-based API (works with `async` / `await`)
-* Typescript support (Flow coming soon)
-
+- Most **simple and lightweight** GraphQL client
+- Promise-based API (works with `async` / `await`)
+- Typescript support (Flow coming soon)
 
 ## Install
 
@@ -33,7 +32,9 @@ const query = `{
   }
 }`
 
-request('https://api.graph.cool/simple/v1/movies', query).then(data => console.log(data))
+request('https://api.graph.cool/simple/v1/movies', query).then(data =>
+  console.log(data)
+)
 ```
 
 ## Usage
@@ -56,126 +57,198 @@ client.request(query, variables).then(data => console.log(data))
 ```js
 import { GraphQLClient } from 'graphql-request'
 
-const client = new GraphQLClient('my-endpoint', {
-  headers: {
-    Authorization: 'Bearer my-jwt-token',
-  },
-})
+async function main() {
+  const endpoint = 'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr'
 
-const query = `{
-  Movie(title: "Inception") {
-    releaseDate
-    actors {
-      name
+  const graphQLClient = new GraphQLClient(endpoint, {
+    headers: {
+      authorization: 'Bearer MY_TOKEN',
+    },
+  })
+
+  const query = /* GraphQL */ `
+    {
+      Movie(title: "Inception") {
+        releaseDate
+        actors {
+          name
+        }
+      }
     }
-  }
-}`
+  `
 
-client.request(query).then(data => console.log(data))
+  const data = await graphQLClient.request(query)
+  console.log(JSON.stringify(data, undefined, 2))
+}
+
+main().catch(error => console.error(error))
 ```
+
+[TypeScript Source](examples/authentication-via-http-header.ts)
 
 ### Passing more options to fetch
 
 ```js
 import { GraphQLClient } from 'graphql-request'
 
-const client = new GraphQLClient('my-endpoint', {
- credentials: 'include',
- mode: 'cors'
-})
+async function main() {
+  const endpoint = 'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr'
 
-const query = `{
-  Movie(title: "Inception") {
-    releaseDate
-    actors {
-      name
+  const graphQLClient = new GraphQLClient(endpoint, {
+    credentials: 'include',
+    mode: 'cors',
+  })
+
+  const query = /* GraphQL */ `
+    {
+      Movie(title: "Inception") {
+        releaseDate
+        actors {
+          name
+        }
+      }
     }
-  }
-}`
+  `
 
-client.request(query).then(data => console.log(data))
+  const data = await graphQLClient.request(query)
+  console.log(JSON.stringify(data, undefined, 2))
+}
+
+main().catch(error => console.error(error))
 ```
+
+[TypeScript Source](examples/passing-more-options-to-fetch.ts)
 
 ### Using variables
 
 ```js
 import { request } from 'graphql-request'
 
-const query = `query getMovie($title: String!) {
-  Movie(title: $title) {
-    releaseDate
-    actors {
-      name
-    }
-  }
-}`
+async function main() {
+  const endpoint = 'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr'
 
-const variables = {
-  title: 'Inception',
+  const query = /* GraphQL */ `
+    query getMovie($title: String!) {
+      Movie(title: $title) {
+        releaseDate
+        actors {
+          name
+        }
+      }
+    }
+  `
+
+  const variables = {
+    title: 'Inception',
+  }
+
+  const data = await request(endpoint, query, variables)
+  console.log(JSON.stringify(data, undefined, 2))
 }
 
-request('my-endpoint', query, variables).then(data => console.log(data))
+main().catch(error => console.error(error))
 ```
+
+[TypeScript Source](examples/using-variables.ts)
 
 ### Error handling
 
 ```js
 import { request } from 'graphql-request'
 
-const wrongQuery = `{
-  some random stuff
-}`
+async function main() {
+  const endpoint = 'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr'
 
-request('my-endpoint', query)
-  .then(data => console.log(data))
-  .catch(err => {
-    console.log(err.response.errors) // GraphQL response errors
-    console.log(err.response.data) // Response data if available
-  })
+  const query = /* GraphQL */ `
+    {
+      Movie(title: "Inception") {
+        releaseDate
+        actors {
+          fullname # "Cannot query field 'fullname' on type 'Actor'. Did you mean 'name'?"
+        }
+      }
+    }
+  `
+
+  try {
+    const data = await request(endpoint, query)
+    console.log(JSON.stringify(data, undefined, 2))
+  } catch (error) {
+    console.error(JSON.stringify(error, undefined, 2))
+    process.exit(1)
+  }
+}
+
+main().catch(error => console.error(error))
 ```
+
+[TypeScript Source](examples/error-handling)
 
 ### Using `require` instead of `import`
 
 ```js
 const { request } = require('graphql-request')
 
-const query = `{
-  Movie(title: "Inception") {
-    releaseDate
-    actors {
-      name
-    }
-  }
-}`
+async function main() {
+  const endpoint = 'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr'
 
-request('my-endpoint', query).then(data => console.log(data))
+  const query = /* GraphQL */ `
+    {
+      Movie(title: "Inception") {
+        releaseDate
+        actors {
+          name
+        }
+      }
+    }
+  `
+
+  const data = await request(endpoint, query)
+  console.log(JSON.stringify(data, undefined, 2))
+}
+
+main().catch(error => console.error(error))
 ```
 
 ### Cookie support for `node`
 
 ```sh
-npm install fetch-cookie/node-fetch
+npm install fetch-cookie
 ```
 
 ```js
+require('fetch-cookie/node-fetch')(require('node-fetch'))
+
 import { GraphQLClient } from 'graphql-request'
 
-// use this instead for cookie support
-global['fetch'] = require('fetch-cookie/node-fetch')(require('node-fetch'))
+async function main() {
+  const endpoint = 'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr'
 
-const client = new GraphQLClient('my-endpoint')
+  const graphQLClient = new GraphQLClient(endpoint, {
+    headers: {
+      authorization: 'Bearer MY_TOKEN',
+    },
+  })
 
-const query = `{
-  Movie(title: "Inception") {
-    releaseDate
-    actors {
-      name
+  const query = /* GraphQL */ `
+    {
+      Movie(title: "Inception") {
+        releaseDate
+        actors {
+          name
+        }
+      }
     }
-  }
-}`
+  `
 
-client.request(query).then(data => console.log(data))
+  const data = await graphQLClient.rawRequest(query)
+  console.log(JSON.stringify(data, undefined, 2))
+}
+
+main().catch(error => console.error(error))
 ```
+
+[TypeScript Source](examples/cookie-support-for-node)
 
 ### Receiving a raw response
 
@@ -185,23 +258,39 @@ If you need to access the `extensions` key you can use the `rawRequest` method:
 ```js
 import { rawRequest } from 'graphql-request'
 
-const query = `{
-  Movie(title: "Inception") {
-    releaseDate
-    actors {
-      name
-    }
-  }
-}`
+async function main() {
+  const endpoint = 'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr'
 
-rawRequest('my-endpoint', query).then(({data, extensions}) => console.log(data, extensions))
+  const query = /* GraphQL */ `
+    {
+      Movie(title: "Inception") {
+        releaseDate
+        actors {
+          name
+        }
+      }
+    }
+  `
+
+  const { data, errors, extensions, headers, status } = await rawRequest(
+    endpoint,
+    query
+  )
+  console.log(
+    JSON.stringify({ data, errors, extensions, headers, status }, undefined, 2)
+  )
+}
+
+main().catch(error => console.error(error))
 ```
+
+[TypeScript Source](examples/receiving-a-raw-response)
 
 ### More examples coming soon...
 
-* Fragments
-* Using [`graphql-tag`](https://github.com/apollographql/graphql-tag)
-* Typed Typescript return values
+- Fragments
+- Using [`graphql-tag`](https://github.com/apollographql/graphql-tag)
+- Typed Typescript return values
 
 ## FAQ
 
@@ -214,7 +303,6 @@ Compared to GraphQL clients like Apollo or Relay, `graphql-request` doesn't have
 ### So what about Lokka?
 
 Lokka is great but it still requires [a lot of setup code](https://github.com/kadirahq/lokka-transport-http) to be able to send a simple GraphQL query. `graphql-request` does less work compared to Lokka but is a lot simpler to use.
-
 
 ## Help & Community [![Slack Status](https://slack.prisma.io/badge.svg)](https://slack.prisma.io)
 
