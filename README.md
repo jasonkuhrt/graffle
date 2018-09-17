@@ -290,7 +290,6 @@ main().catch(error => console.error(error))
 
 - Fragments
 - Using [`graphql-tag`](https://github.com/apollographql/graphql-tag)
-- Typed Typescript return values
 
 ## FAQ
 
