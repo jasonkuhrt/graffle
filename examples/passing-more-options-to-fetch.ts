@@ -19,8 +19,10 @@ import { GraphQLClient } from '../src'
     }
   `
 
-  const data = await graphQLClient.request<{
+  interface TData {
     Movie: { releaseDate: string; actors: Array<{ name: string }> }
-  }>(query)
+  }
+
+  const data = await graphQLClient.request<TData>(query)
   console.log(JSON.stringify(data, undefined, 2))
 })().catch(error => console.error(error))

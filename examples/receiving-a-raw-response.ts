@@ -14,10 +14,14 @@ import { rawRequest } from '../src'
     }
   `
 
-  const { data, errors, extensions, headers, status } = await rawRequest<{
+  interface TData {
     Movie: { releaseDate: string; actors: Array<{ name: string }> }
-  }>(endpoint, query)
+  }
 
+  const { data, errors, extensions, headers, status } = await rawRequest<TData>(
+    endpoint,
+    query
+  )
   console.log(
     JSON.stringify({ data, errors, extensions, headers, status }, undefined, 2)
   )
