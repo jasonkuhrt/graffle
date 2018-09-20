@@ -22,6 +22,10 @@ import { GraphQLClient } from '../src'
       }
     `
 
-  const data = await graphQLClient.rawRequest(query)
+  interface TData {
+    Movie: { releaseDate: string; actors: Array<{ name: string }> }
+  }
+
+  const data = await graphQLClient.rawRequest<TData>(query)
   console.log(JSON.stringify(data, undefined, 2))
 })().catch(error => console.error(error))

@@ -18,6 +18,10 @@ import { request } from '../src'
     title: 'Inception',
   }
 
-  const data = await request(endpoint, query, variables)
+  interface TData {
+    Movie: { releaseDate: string; actors: Array<{ name: string }> }
+  }
+
+  const data = await request<TData>(endpoint, query, variables)
   console.log(JSON.stringify(data, undefined, 2))
 })().catch(error => console.error(error))

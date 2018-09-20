@@ -14,7 +14,11 @@ import { rawRequest } from '../src'
     }
   `
 
-  const { data, errors, extensions, headers, status } = await rawRequest(
+  interface TData {
+    Movie: { releaseDate: string; actors: Array<{ name: string }> }
+  }
+
+  const { data, errors, extensions, headers, status } = await rawRequest<TData>(
     endpoint,
     query
   )
