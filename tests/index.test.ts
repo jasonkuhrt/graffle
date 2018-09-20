@@ -1,7 +1,6 @@
 import test from 'ava'
 import * as fetchMock from 'fetch-mock'
 import { ClientError, rawRequest, request, GraphQLClient } from '../src/index'
-import { Options } from '../src/types'
 
 test('minimal query', async (t) => {
   const data = {
@@ -104,9 +103,8 @@ test('content-type with charset', async (t) => {
   })
 })
 
-
 test('extra fetch options', async (t) => {
-  const options: Options = {
+  const options: RequestInit = {
     credentials: 'include',
     mode: 'cors',
     cache: 'reload',
