@@ -1,5 +1,6 @@
 import test from 'ava'
 import * as fetchMock from 'fetch-mock'
+
 import { ClientError, rawRequest, request, GraphQLClient } from '../src/index'
 
 test('minimal query', async (t) => {
