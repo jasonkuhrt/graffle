@@ -20,7 +20,6 @@ export interface GraphQLRequestContext {
 }
 
 export class ClientError extends Error {
-
   response: GraphQLResponse
   request: GraphQLRequestContext
 
