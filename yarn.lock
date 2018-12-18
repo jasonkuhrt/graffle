@@ -53,9 +53,9 @@
     pretty-ms "^0.2.1"
     text-table "^0.2.0"
 
-"@types/fetch-mock@5.12.2":
-  version "5.12.2"
-  resolved "https://registry.yarnpkg.com/@types/fetch-mock/-/fetch-mock-5.12.2.tgz#8c96517ff74303031c65c5da2d99858e34c844d2"
+"@types/fetch-mock@6.0.5":
+  version "6.0.5"
+  resolved "https://registry.yarnpkg.com/@types/fetch-mock/-/fetch-mock-6.0.5.tgz#acbc6771d43d7ebc1f0a8b7e3d57147618f8eacb"
 
 "@types/node@8.5.5":
   version "8.5.5"
