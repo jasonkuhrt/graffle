@@ -1,5 +1,5 @@
-import http from 'http';
-import https from 'https';
+import http = require('http');
+import https = require('https');
 
 export type Variables = { [key: string]: any }
 
