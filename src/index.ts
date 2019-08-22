@@ -11,9 +11,9 @@ export class GraphQLClient {
     this.options = options || {}
   }
 
-  async rawRequest<T extends any>(
+  async rawRequest<T extends any, V = Variables>(
     query: string,
-    variables?: Variables,
+    variables?: V,
   ): Promise<{ data?: T, extensions?: any, headers: Headers, status: number, errors?: GraphQLError[] }> {
     const { headers, ...others } = this.options
 
@@ -44,9 +44,9 @@ export class GraphQLClient {
     }
   }
 
-  async request<T extends any>(
+  async request<T extends any, V = Variables>(
     query: string,
-    variables?: Variables,
+    variables?: V,
   ): Promise<T> {
     const { headers, ...others } = this.options
 
@@ -94,24 +94,24 @@ export class GraphQLClient {
   }
 }
 
-export async function rawRequest<T extends any>(
+export async function rawRequest<T extends any, V = Variables>(
   url: string,
   query: string,
-  variables?: Variables,
+  variables?: V,
 ): Promise<{ data?: T, extensions?: any, headers: Headers, status: number, errors?: GraphQLError[] }> {
   const client = new GraphQLClient(url)
 
-  return client.rawRequest<T>(query, variables)
+  return client.rawRequest<T, V>(query, variables)
 }
 
-export async function request<T extends any>(
+export async function request<T extends any, V = Variables>(
   url: string,
   query: string,
-  variables?: Variables,
+  variables?: V,
 ): Promise<T> {
   const client = new GraphQLClient(url)
 
-  return client.request<T>(query, variables)
+  return client.request<T, V>(query, variables)
 }
 
 export default request
