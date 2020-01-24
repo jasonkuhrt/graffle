@@ -1,4 +1,4 @@
-require('fetch-cookie/node-fetch')(require('node-fetch'))
+(global as any).fetch = require('fetch-cookie/node-fetch')(require('node-fetch'))
 
 import { GraphQLClient } from '../src'
 
