@@ -9,7 +9,7 @@ on:
       - alpha
 
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -28,7 +28,7 @@ jobs:
             ${{ runner.os }}-yarn-
       - run: yarn install
       - run: yarn test
-      - run: npx semantic-release
+      - run: yarn semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_PUBLISH }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

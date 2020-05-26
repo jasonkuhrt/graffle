@@ -14,7 +14,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/prisma/graphql-request.git"
+    "url": "https://github.com/prisma/graphql-request.git"
   },
   "keywords": [
     "graphql",
@@ -34,7 +34,8 @@
     "build": "rm -rf dist && tsc -d",
     "lint": "tslint --project . {examples,src,test}/**/*.ts",
     "test": "npm run lint && npm run build && ava --serial && npm run size",
-    "size": "bundlesize"
+    "size": "bundlesize",
+    "semantic-release": "semantic-release"
   },
   "dependencies": {
     "cross-fetch": "2.2.2"
@@ -46,6 +47,7 @@
     "bundlesize": "0.18.0",
     "fetch-cookie": "0.7.2",
     "fetch-mock": "5.13.1",
+    "semantic-release": "17.0.8",
     "tslint": "5.9.1",
     "tslint-config-standard": "7.0.0",
     "typescript": "2.7.2"
