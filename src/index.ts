@@ -94,7 +94,7 @@ export class GraphQLClient {
   }
 }
 
-export async function rawRequest<T extends any>(
+export function rawRequest<T extends any>(
   url: string,
   query: string,
   variables?: Variables,
@@ -104,7 +104,7 @@ export async function rawRequest<T extends any>(
   return client.rawRequest<T>(query, variables)
 }
 
-export async function request<T extends any>(
+export function request<T extends any>(
   url: string,
   query: string,
   variables?: Variables,
