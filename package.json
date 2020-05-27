@@ -37,7 +37,7 @@
     "size": "bundlesize",
     "semantic-release": "semantic-release"
   },
-  "engines":{
+  "engines": {
     "node": "10.x || 12.x || 13.x || 14.x"
   },
   "dependencies": {
@@ -48,11 +48,24 @@
     "@types/node": "10.17.24",
     "ava": "0.25.0",
     "bundlesize": "0.18.0",
+    "commitizen": "4.1.2",
+    "cz-conventional-changelog": "3.2.0",
     "fetch-cookie": "0.7.2",
     "fetch-mock": "5.13.1",
+    "husky": "4.2.5",
     "semantic-release": "17.0.8",
     "tslint": "5.9.1",
     "tslint-config-standard": "7.0.0",
     "typescript": "2.7.2"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "husky": {
+    "hooks": {
+      "prepare-commit-msg": "exec < /dev/tty && git cz --hook || true"
+    }
   }
 }
