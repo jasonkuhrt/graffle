@@ -4,6 +4,10 @@ export interface Headers {
   [key: string]: string
 }
 
+export interface HasOperationNameKey {
+  operationNameKey?: string;
+}
+
 export interface Options {
   method?: RequestInit['method']
   headers?: Headers

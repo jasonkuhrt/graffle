@@ -1,25 +1,39 @@
-import { ClientError, GraphQLError, Headers as HttpHeaders, Options, Variables } from './types'
+import { ClientError, GraphQLError, Headers as HttpHeaders, Options, Variables, HasOperationNameKey } from './types'
 export { ClientError } from './types'
 import 'cross-fetch/polyfill'
 
 export class GraphQLClient {
   private url: string
-  private options: Options
+  private options: Options & HasOperationNameKey
 
-  constructor(url: string, options?: Options) {
+  constructor(url: string, options?: Options & HasOperationNameKey) {
     this.url = url
     this.options = options || {}
+  }
+
+  private extractOperationName(operationNameKey?: string, variables?: Variables) {
+    if (!operationNameKey)
+      operationNameKey = "__operation";
+
+    var operationName = variables ? variables[operationNameKey] : null;
+    if (operationName) {
+      // Cleanup operationNameKey from variables
+      delete (variables as any)[operationNameKey];
+      return { operationName }
+    }
+    return null;
   }
 
   async rawRequest<T extends any>(
     query: string,
     variables?: Variables,
   ): Promise<{ data?: T, extensions?: any, headers: Headers, status: number, errors?: GraphQLError[] }> {
-    const { headers, ...others } = this.options
+    const { headers, operationNameKey, ...others } = this.options
 
     const body = JSON.stringify({
       query,
       variables: variables ? variables : undefined,
+      ...this.extractOperationName(operationNameKey, variables)
     })
 
     const response = await fetch(this.url, {
@@ -48,11 +62,12 @@ export class GraphQLClient {
     query: string,
     variables?: Variables,
   ): Promise<T> {
-    const { headers, ...others } = this.options
+    const { headers, operationNameKey, ...others } = this.options
 
     const body = JSON.stringify({
       query,
       variables: variables ? variables : undefined,
+      ...this.extractOperationName(operationNameKey, variables)
     })
 
     const response = await fetch(this.url, {
