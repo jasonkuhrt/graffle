@@ -1,6 +1,3 @@
 {
-  "extends": [
-    "config:base",
-    "docker:disable"
-  ]
+  "extends": ["config:base", "docker:disable"]
 }

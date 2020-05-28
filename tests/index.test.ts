@@ -10,10 +10,7 @@ test('minimal query', async (t) => {
   }
 
   await mock({ body: { data } }, async () => {
-    t.deepEqual(
-      await request('https://mock-api.com/graphql', `{ viewer { id } }`),
-      data,
-    )
+    t.deepEqual(await request('https://mock-api.com/graphql', `{ viewer { id } }`), data)
   })
 })
 
@@ -29,10 +26,7 @@ test('minimal raw query', async (t) => {
   }
 
   await mock({ body: { data, extensions } }, async () => {
-    const { headers, ...result } = await rawRequest(
-      'https://mock-api.com/graphql',
-      `{ viewer { id } }`,
-    )
+    const { headers, ...result } = await rawRequest('https://mock-api.com/graphql', `{ viewer { id } }`)
     t.deepEqual(result, { data, extensions, status: 200 })
   })
 })
@@ -54,10 +48,7 @@ test('minimal raw query with response headers', async (t) => {
   }
 
   await mock({ headers: reqHeaders, body: { data, extensions } }, async () => {
-    const { headers, ...result } = await rawRequest(
-      'https://mock-api.com/graphql',
-      `{ viewer { id } }`,
-    )
+    const { headers, ...result } = await rawRequest('https://mock-api.com/graphql', `{ viewer { id } }`)
 
     t.deepEqual(result, { data, extensions, status: 200 })
     t.deepEqual(headers.get('X-Custom-Header'), reqHeaders['X-Custom-Header'])
@@ -66,8 +57,7 @@ test('minimal raw query with response headers', async (t) => {
 
 test('basic error', async (t) => {
   const errors = {
-    message:
-      'Syntax Error GraphQL request (1:1) Unexpected Name "x"\n\n1: x\n   ^\n',
+    message: 'Syntax Error GraphQL request (1:1) Unexpected Name "x"\n\n1: x\n   ^\n',
     locations: [
       {
         line: 1,
@@ -77,17 +67,14 @@ test('basic error', async (t) => {
   }
 
   await mock({ body: { errors } }, async () => {
-    const err = await t.throwsAsync<ClientError>(
-      request('https://mock-api.com/graphql', `x`),
-    )
+    const err = await t.throwsAsync<ClientError>(request('https://mock-api.com/graphql', `x`))
     t.deepEqual<any>(err.response.errors, errors)
   })
 })
 
 test('raw request error', async (t) => {
   const errors = {
-    message:
-      'Syntax Error GraphQL request (1:1) Unexpected Name "x"\n\n1: x\n   ^\n',
+    message: 'Syntax Error GraphQL request (1:1) Unexpected Name "x"\n\n1: x\n   ^\n',
     locations: [
       {
         line: 1,
@@ -97,9 +84,7 @@ test('raw request error', async (t) => {
   }
 
   await mock({ body: { errors } }, async () => {
-    const err = await t.throwsAsync<ClientError>(
-      rawRequest('https://mock-api.com/graphql', `x`),
-    )
+    const err = await t.throwsAsync<ClientError>(rawRequest('https://mock-api.com/graphql', `x`))
     t.deepEqual<any>(err.response.errors, errors)
   })
 })
@@ -117,11 +102,8 @@ test('content-type with charset', async (t) => {
       body: { data },
     },
     async () => {
-      t.deepEqual(
-        await request('https://mock-api.com/graphql', `{ viewer { id } }`),
-        data,
-      )
-    },
+      t.deepEqual(await request('https://mock-api.com/graphql', `{ viewer { id } }`), data)
+    }
   )
 })
 
@@ -143,7 +125,7 @@ test('extra fetch options', async (t) => {
       for (let name in options) {
         t.deepEqual(actualOptions[name], options[name])
       }
-    },
+    }
   )
 })
 
