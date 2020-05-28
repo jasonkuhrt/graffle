@@ -6,5 +6,5 @@ jobs:
     steps:
       - checkout
       - run: yarn install
-      - run: yarn test
+      - run: yarn test:ci
       - run: npx semantic-release

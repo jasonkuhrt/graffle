@@ -1,7 +1,6 @@
 import test from 'ava'
 import * as fetchMock from 'fetch-mock'
-
-import { ClientError, rawRequest, request, GraphQLClient } from '../src/index'
+import { ClientError, GraphQLClient, rawRequest, request } from '../src/index'
 
 test('minimal query', async (t) => {
   const data = {
@@ -77,8 +76,10 @@ test('basic error', async (t) => {
     ],
   }
 
-  await mock({body: {errors}}, async () => {
-    const err: ClientError = await t.throws(request('https://mock-api.com/graphql', `x`), ClientError)
+  await mock({ body: { errors } }, async () => {
+    const err = await t.throwsAsync<ClientError>(
+      request('https://mock-api.com/graphql', `x`),
+    )
     t.deepEqual<any>(err.response.errors, errors)
   })
 })
@@ -96,9 +97,8 @@ test('raw request error', async (t) => {
   }
 
   await mock({ body: { errors } }, async () => {
-    const err: ClientError = await t.throws(
+    const err = await t.throwsAsync<ClientError>(
       rawRequest('https://mock-api.com/graphql', `x`),
-      ClientError
     )
     t.deepEqual<any>(err.response.errors, errors)
   })

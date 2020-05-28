@@ -33,15 +33,15 @@
     "prepublish": "npm run build",
     "build": "rm -rf dist && tsc -d",
     "lint": "tslint --project . {examples,src,test}/**/*.ts",
-    "test": "npm run lint && npm run build && ava --serial && npm run size",
-    "size": "bundlesize"
+    "test": "yarn lint && yarn build && ava --serial",
+    "test:ci": "yarn test && bundlesize"
   },
   "dependencies": {},
   "devDependencies": {
     "@types/fetch-mock": "5.12.2",
     "@types/node": "8.5.5",
-    "ava": "0.25.0",
-    "bundlesize": "0.17.0",
+    "ava": "^3.8.2",
+    "bundlesize": "^0.18.0",
     "fetch-cookie": "0.7.2",
     "fetch-mock": "5.13.1",
     "prettier": "1.14.2",

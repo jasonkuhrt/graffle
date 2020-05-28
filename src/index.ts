@@ -2,7 +2,7 @@
 
 import { ClientError, GraphQLError, Variables } from './types'
 
-export { ClientError, Options } from './types'
+export { ClientError } from './types'
 
 export class GraphQLClient {
   private url: string
