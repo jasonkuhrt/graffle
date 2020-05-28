@@ -33,11 +33,12 @@
   "homepage": "https://github.com/prisma/graphql-request",
   "scripts": {
     "dev": "rm -rf dist && tsc --watch",
+    "dev:test": "jest --watch",
     "format": "prettier --write .",
     "prepublish": "npm run build",
     "build": "rm -rf dist && tsc -d",
     "lint": "tslint --project . {examples,src,test}/**/*.ts",
-    "test": "yarn lint && yarn build && ava --serial",
+    "test": "yarn lint && yarn build && jest",
     "test:ci": "yarn test && bundlesize",
     "semantic-release": "semantic-release"
   },
@@ -45,16 +46,21 @@
   "devDependencies": {
     "@prisma-labs/prettier-config": "^0.1.0",
     "@types/fetch-mock": "5.12.2",
+    "@types/jest": "^25.2.3",
     "@types/node": "10.17.24",
-    "ava": "^3.8.2",
     "bundlesize": "^0.18.0",
     "fetch-cookie": "0.7.2",
     "fetch-mock": "5.13.1",
+    "jest": "^26.0.1",
     "prettier": "^2.0.5",
     "semantic-release": "17.0.8",
+    "ts-jest": "^26.0.0",
     "tslint": "5.11.0",
     "tslint-config-standard": "8.0.1",
     "typescript": "^3.9.3"
   },
-  "prettier": "@prisma-labs/prettier-config"
+  "prettier": "@prisma-labs/prettier-config",
+  "jest": {
+    "preset": "ts-jest"
+  }
 }

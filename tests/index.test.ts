@@ -1,20 +1,18 @@
-import test from 'ava'
 import * as fetchMock from 'fetch-mock'
-import { ClientError, GraphQLClient, rawRequest, request } from '../src/index'
+import { GraphQLClient, rawRequest, request } from '../src'
 
-test('minimal query', async (t) => {
+test('minimal query', async () => {
   const data = {
     viewer: {
       id: 'some-id',
     },
   }
 
-  await mock({ body: { data } }, async () => {
-    t.deepEqual(await request('https://mock-api.com/graphql', `{ viewer { id } }`), data)
-  })
+  mock({ body: { data } })
+  expect(await request('https://mock-api.com/graphql', `{ viewer { id } }`)).toEqual(data)
 })
 
-test('minimal raw query', async (t) => {
+test('minimal raw query', async () => {
   const data = {
     viewer: {
       id: 'some-id',
@@ -25,13 +23,12 @@ test('minimal raw query', async (t) => {
     version: '1',
   }
 
-  await mock({ body: { data, extensions } }, async () => {
-    const { headers, ...result } = await rawRequest('https://mock-api.com/graphql', `{ viewer { id } }`)
-    t.deepEqual(result, { data, extensions, status: 200 })
-  })
+  mock({ body: { data, extensions } })
+  const { headers, ...result } = await rawRequest('https://mock-api.com/graphql', `{ viewer { id } }`)
+  expect(result).toEqual({ data, extensions, status: 200 })
 })
 
-test('minimal raw query with response headers', async (t) => {
+test('minimal raw query with response headers', async () => {
   const data = {
     viewer: {
       id: 'some-id',
@@ -47,15 +44,14 @@ test('minimal raw query with response headers', async (t) => {
     'X-Custom-Header': 'test-custom-header',
   }
 
-  await mock({ headers: reqHeaders, body: { data, extensions } }, async () => {
-    const { headers, ...result } = await rawRequest('https://mock-api.com/graphql', `{ viewer { id } }`)
+  mock({ headers: reqHeaders, body: { data, extensions } })
+  const { headers, ...result } = await rawRequest('https://mock-api.com/graphql', `{ viewer { id } }`)
 
-    t.deepEqual(result, { data, extensions, status: 200 })
-    t.deepEqual(headers.get('X-Custom-Header'), reqHeaders['X-Custom-Header'])
-  })
+  expect(result).toEqual({ data, extensions, status: 200 })
+  expect(headers.get('X-Custom-Header')).toEqual(reqHeaders['X-Custom-Header'])
 })
 
-test('basic error', async (t) => {
+test('basic error', async () => {
   const errors = {
     message: 'Syntax Error GraphQL request (1:1) Unexpected Name "x"\n\n1: x\n   ^\n',
     locations: [
@@ -66,13 +62,13 @@ test('basic error', async (t) => {
     ],
   }
 
-  await mock({ body: { errors } }, async () => {
-    const err = await t.throwsAsync<ClientError>(request('https://mock-api.com/graphql', `x`))
-    t.deepEqual<any>(err.response.errors, errors)
-  })
+  mock({ body: { errors } })
+  expect(() => request('https://mock-api.com/graphql', `x`)).rejects.toThrowErrorMatchingInlineSnapshot(
+    `"GraphQL Error (Code: 200): {\\"response\\":{\\"errors\\":{\\"message\\":\\"Syntax Error GraphQL request (1:1) Unexpected Name \\\\\\"x\\\\\\"\\\\n\\\\n1: x\\\\n   ^\\\\n\\",\\"locations\\":[{\\"line\\":1,\\"column\\":1}]},\\"status\\":200},\\"request\\":{\\"query\\":\\"x\\"}}"`
+  )
 })
 
-test('raw request error', async (t) => {
+test('raw request error', async () => {
   const errors = {
     message: 'Syntax Error GraphQL request (1:1) Unexpected Name "x"\n\n1: x\n   ^\n',
     locations: [
@@ -83,31 +79,27 @@ test('raw request error', async (t) => {
     ],
   }
 
-  await mock({ body: { errors } }, async () => {
-    const err = await t.throwsAsync<ClientError>(rawRequest('https://mock-api.com/graphql', `x`))
-    t.deepEqual<any>(err.response.errors, errors)
-  })
+  mock({ body: { errors } })
+  expect(rawRequest('https://mock-api.com/graphql', `x`)).rejects.toThrowErrorMatchingInlineSnapshot(
+    `"GraphQL Error (Code: 200): {\\"response\\":{\\"errors\\":{\\"message\\":\\"Syntax Error GraphQL request (1:1) Unexpected Name \\\\\\"x\\\\\\"\\\\n\\\\n1: x\\\\n   ^\\\\n\\",\\"locations\\":[{\\"line\\":1,\\"column\\":1}]},\\"status\\":200,\\"headers\\":{\\"_headers\\":{\\"content-type\\":[\\"application/json\\"]}}},\\"request\\":{\\"query\\":\\"x\\"}}"`
+  )
 })
 
-test('content-type with charset', async (t) => {
+test('content-type with charset', async () => {
   const data = {
     viewer: {
       id: 'some-id',
     },
   }
 
-  await mock(
-    {
-      headers: { 'Content-Type': 'application/json; charset=utf-8' },
-      body: { data },
-    },
-    async () => {
-      t.deepEqual(await request('https://mock-api.com/graphql', `{ viewer { id } }`), data)
-    }
-  )
+  mock({
+    headers: { 'Content-Type': 'application/json; charset=utf-8' },
+    body: { data },
+  })
+  expect(await request('https://mock-api.com/graphql', `{ viewer { id } }`)).toEqual(data)
 })
 
-test('extra fetch options', async (t) => {
+test('extra fetch options', async () => {
   const options: RequestInit = {
     credentials: 'include',
     mode: 'cors',
@@ -115,21 +107,21 @@ test('extra fetch options', async (t) => {
   }
 
   const client = new GraphQLClient('https://mock-api.com/graphql', options)
-  await mock(
-    {
-      body: { data: { test: 'test' } },
-    },
-    async () => {
-      await client.request('{ test }')
-      const actualOptions = fetchMock.lastCall()[1]
-      for (let name in options) {
-        t.deepEqual(actualOptions[name], options[name])
-      }
-    }
-  )
+  mock({
+    body: { data: { test: 'test' } },
+  })
+  await client.request('{ test }')
+  const actualOptions = fetchMock.lastCall()[1]
+  for (let name in options) {
+    expect(actualOptions[name]).toEqual(options[name])
+  }
 })
 
-async function mock(response: any, testFn: () => Promise<void>) {
+/**
+ * Helpers
+ */
+
+async function mock(response: any) {
   fetchMock.mock({
     matcher: '*',
     response: {
@@ -140,8 +132,8 @@ async function mock(response: any, testFn: () => Promise<void>) {
       body: JSON.stringify(response.body),
     },
   })
-
-  await testFn()
-
-  fetchMock.restore()
 }
+
+afterEach(() => {
+  fetchMock.restore()
+})
