@@ -14,10 +14,12 @@ import { request } from '../src'
     }
   `
 
+  interface TData {
+    Movie: { releaseDate: string; actors: Array<{ name: string }> }
+  }
+
   try {
-    const data = await request<{
-      Movie: { releaseDate: string; actors: Array<{ name: string }> }
-    }>(endpoint, query)
+    const data = await request<TData>(endpoint, query)
     console.log(JSON.stringify(data, undefined, 2))
   } catch (error) {
     console.error(JSON.stringify(error, undefined, 2))
