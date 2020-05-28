@@ -77,10 +77,8 @@ test('basic error', async (t) => {
     ],
   }
 
-  await mock({ body: { errors } }, async () => {
-    const err: ClientError = await t.throws(
-      request('https://mock-api.com/graphql', `x`),
-    )
+  await mock({body: {errors}}, async () => {
+    const err: ClientError = await t.throws(request('https://mock-api.com/graphql', `x`), ClientError)
     t.deepEqual<any>(err.response.errors, errors)
   })
 })
@@ -100,6 +98,7 @@ test('raw request error', async (t) => {
   await mock({ body: { errors } }, async () => {
     const err: ClientError = await t.throws(
       rawRequest('https://mock-api.com/graphql', `x`),
+      ClientError
     )
     t.deepEqual<any>(err.response.errors, errors)
   })
