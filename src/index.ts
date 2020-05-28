@@ -101,7 +101,7 @@ export class GraphQLClient {
   }
 }
 
-export async function rawRequest<T = any>(
+export function rawRequest<T = any>(
   url: string,
   query: string,
   variables?: Variables,
@@ -117,7 +117,7 @@ export async function rawRequest<T = any>(
   return client.rawRequest<T>(query, variables)
 }
 
-export async function request<T = any>(
+export function request<T = any>(
   url: string,
   query: string,
   variables?: Variables,
@@ -129,7 +129,7 @@ export async function request<T = any>(
 
 export default request
 
-async function getResult(response: Response): Promise<any> {
+function getResult(response: Response): Promise<any> {
   const contentType = response.headers.get('Content-Type')
   if (contentType && contentType.startsWith('application/json')) {
     return response.json()
