@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "lib": ["es2015", "es2016", "dom", "esnext.asynciterable"],
+    "lib": ["es2015"],
     "module": "commonjs",
     "moduleResolution": "node",
     "noUnusedLocals": true,
