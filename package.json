@@ -1,14 +1,13 @@
 {
   "name": "graphql-request",
   "version": "0.0.0-semantic-release",
-  "main": "dist/src/index.js",
-  "typings": "./dist/src/index.d.ts",
+  "main": "dist/index.js",
   "files": [
     "dist"
   ],
   "bundlesize": [
     {
-      "path": "./dist/src/index.js",
+      "path": "./dist/index.js",
       "maxSize": "15 kB"
     }
   ],
@@ -29,10 +28,11 @@
     "url": "https://github.com/prisma/graphql-request/issues"
   },
   "engines": {
-    "node": "10.x || 12.x || 13.x || 14.x"
+    "node": "10.x || 12.x || 14.x"
   },
   "homepage": "https://github.com/prisma/graphql-request",
   "scripts": {
+    "dev": "rm -rf dist && tsc --watch",
     "format": "prettier --write .",
     "prepublish": "npm run build",
     "build": "rm -rf dist && tsc -d",
