@@ -28,6 +28,9 @@
   "bugs": {
     "url": "https://github.com/prisma/graphql-request/issues"
   },
+  "engines": {
+    "node": ">=10"
+  },
   "homepage": "https://github.com/prisma/graphql-request",
   "scripts": {
     "format": "prettier --write .",
