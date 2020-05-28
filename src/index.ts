@@ -1,20 +1,28 @@
-import { ClientError, GraphQLError, Headers as HttpHeaders, Options, Variables } from './types'
+/// <reference lib="dom" />
+
+import { ClientError, GraphQLError, Variables } from './types'
+
 export { ClientError } from './types'
-import 'cross-fetch/polyfill'
 
 export class GraphQLClient {
   private url: string
-  private options: Options
+  private options: RequestInit
 
-  constructor(url: string, options?: Options) {
+  constructor(url: string, options?: RequestInit) {
     this.url = url
     this.options = options || {}
   }
 
-  async rawRequest<T extends any>(
+  async rawRequest<T = any>(
     query: string,
     variables?: Variables,
-  ): Promise<{ data?: T, extensions?: any, headers: Headers, status: number, errors?: GraphQLError[] }> {
+  ): Promise<{
+    data?: T
+    extensions?: any
+    headers: Request['headers']
+    status: number
+    errors?: GraphQLError[]
+  }> {
     const { headers, ...others } = this.options
 
     const body = JSON.stringify({
@@ -24,7 +32,7 @@ export class GraphQLClient {
 
     const response = await fetch(this.url, {
       method: 'POST',
-      headers: Object.assign({ 'Content-Type': 'application/json' }, headers),
+      headers: { 'Content-Type': 'application/json', ...headers },
       body,
       ...others,
     })
@@ -44,10 +52,7 @@ export class GraphQLClient {
     }
   }
 
-  async request<T extends any>(
-    query: string,
-    variables?: Variables,
-  ): Promise<T> {
+  async request<T = any>(query: string, variables?: Variables): Promise<T> {
     const { headers, ...others } = this.options
 
     const body = JSON.stringify({
@@ -57,7 +62,7 @@ export class GraphQLClient {
 
     const response = await fetch(this.url, {
       method: 'POST',
-      headers: Object.assign({ 'Content-Type': 'application/json' }, headers),
+      headers: { 'Content-Type': 'application/json', ...headers },
       body,
       ...others,
     })
@@ -76,7 +81,7 @@ export class GraphQLClient {
     }
   }
 
-  setHeaders(headers: HttpHeaders): GraphQLClient {
+  setHeaders(headers: Response['headers']): GraphQLClient {
     this.options.headers = headers
 
     return this
@@ -94,17 +99,23 @@ export class GraphQLClient {
   }
 }
 
-export async function rawRequest<T extends any>(
+export function rawRequest<T = any>(
   url: string,
   query: string,
   variables?: Variables,
-): Promise<{ data?: T, extensions?: any, headers: Headers, status: number, errors?: GraphQLError[] }> {
+): Promise<{
+  data?: T
+  extensions?: any
+  headers: Request['headers']
+  status: number
+  errors?: GraphQLError[]
+}> {
   const client = new GraphQLClient(url)
 
   return client.rawRequest<T>(query, variables)
 }
 
-export async function request<T extends any>(
+export function request<T = any>(
   url: string,
   query: string,
   variables?: Variables,
@@ -116,7 +127,7 @@ export async function request<T extends any>(
 
 export default request
 
-async function getResult(response: Response): Promise<any> {
+function getResult(response: Response): Promise<any> {
   const contentType = response.headers.get('Content-Type')
   if (contentType && contentType.startsWith('application/json')) {
     return response.json()
