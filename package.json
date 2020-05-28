@@ -36,9 +36,7 @@
     "test": "npm run lint && npm run build && ava --serial && npm run size",
     "size": "bundlesize"
   },
-  "dependencies": {
-    "cross-fetch": "2.2.2"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@types/fetch-mock": "5.12.2",
     "@types/node": "8.5.5",
