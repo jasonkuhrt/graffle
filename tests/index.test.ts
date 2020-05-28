@@ -1,139 +1,153 @@
-import * as fetchMock from 'fetch-mock'
 import { GraphQLClient, rawRequest, request } from '../src'
+import { setupTestServer } from './__helpers'
+
+const ctx = setupTestServer()
 
 test('minimal query', async () => {
-  const data = {
-    viewer: {
-      id: 'some-id',
+  const data = ctx.mock({
+    body: {
+      data: {
+        viewer: {
+          id: 'some-id',
+        },
+      },
     },
-  }
+  }).body.data
 
-  mock({ body: { data } })
-  expect(await request('https://mock-api.com/graphql', `{ viewer { id } }`)).toEqual(data)
+  expect(await request(ctx.url, `{ viewer { id } }`)).toEqual(data)
 })
 
 test('minimal raw query', async () => {
-  const data = {
-    viewer: {
-      id: 'some-id',
+  const { extensions, data } = ctx.mock({
+    body: {
+      data: {
+        viewer: {
+          id: 'some-id',
+        },
+      },
+      extensions: {
+        version: '1',
+      },
     },
-  }
-
-  const extensions = {
-    version: '1',
-  }
-
-  mock({ body: { data, extensions } })
-  const { headers, ...result } = await rawRequest('https://mock-api.com/graphql', `{ viewer { id } }`)
+  }).body
+  const { headers, ...result } = await rawRequest(ctx.url, `{ viewer { id } }`)
   expect(result).toEqual({ data, extensions, status: 200 })
 })
 
 test('minimal raw query with response headers', async () => {
-  const data = {
-    viewer: {
-      id: 'some-id',
+  const {
+    headers: reqHeaders,
+    body: { data, extensions },
+  } = ctx.mock({
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Custom-Header': 'test-custom-header',
     },
-  }
-
-  const extensions = {
-    version: '1',
-  }
-
-  const reqHeaders = {
-    'Content-Type': 'application/json',
-    'X-Custom-Header': 'test-custom-header',
-  }
-
-  mock({ headers: reqHeaders, body: { data, extensions } })
-  const { headers, ...result } = await rawRequest('https://mock-api.com/graphql', `{ viewer { id } }`)
+    body: {
+      data: {
+        viewer: {
+          id: 'some-id',
+        },
+      },
+      extensions: {
+        version: '1',
+      },
+    },
+  })
+  const { headers, ...result } = await rawRequest(ctx.url, `{ viewer { id } }`)
 
   expect(result).toEqual({ data, extensions, status: 200 })
   expect(headers.get('X-Custom-Header')).toEqual(reqHeaders['X-Custom-Header'])
 })
 
-test('basic error', async () => {
-  const errors = {
-    message: 'Syntax Error GraphQL request (1:1) Unexpected Name "x"\n\n1: x\n   ^\n',
-    locations: [
-      {
-        line: 1,
-        column: 1,
-      },
-    ],
-  }
-
-  mock({ body: { errors } })
-  expect(() => request('https://mock-api.com/graphql', `x`)).rejects.toThrowErrorMatchingInlineSnapshot(
-    `"GraphQL Error (Code: 200): {\\"response\\":{\\"errors\\":{\\"message\\":\\"Syntax Error GraphQL request (1:1) Unexpected Name \\\\\\"x\\\\\\"\\\\n\\\\n1: x\\\\n   ^\\\\n\\",\\"locations\\":[{\\"line\\":1,\\"column\\":1}]},\\"status\\":200},\\"request\\":{\\"query\\":\\"x\\"}}"`
-  )
-})
-
-test('raw request error', async () => {
-  const errors = {
-    message: 'Syntax Error GraphQL request (1:1) Unexpected Name "x"\n\n1: x\n   ^\n',
-    locations: [
-      {
-        line: 1,
-        column: 1,
-      },
-    ],
-  }
-
-  mock({ body: { errors } })
-  expect(rawRequest('https://mock-api.com/graphql', `x`)).rejects.toThrowErrorMatchingInlineSnapshot(
-    `"GraphQL Error (Code: 200): {\\"response\\":{\\"errors\\":{\\"message\\":\\"Syntax Error GraphQL request (1:1) Unexpected Name \\\\\\"x\\\\\\"\\\\n\\\\n1: x\\\\n   ^\\\\n\\",\\"locations\\":[{\\"line\\":1,\\"column\\":1}]},\\"status\\":200,\\"headers\\":{\\"_headers\\":{\\"content-type\\":[\\"application/json\\"]}}},\\"request\\":{\\"query\\":\\"x\\"}}"`
-  )
-})
-
 test('content-type with charset', async () => {
-  const data = {
-    viewer: {
-      id: 'some-id',
+  const { data } = ctx.mock({
+    // headers: { 'Content-Type': 'application/json; charset=utf-8' },
+    body: {
+      data: {
+        viewer: {
+          id: 'some-id',
+        },
+      },
     },
-  }
+  }).body
 
-  mock({
-    headers: { 'Content-Type': 'application/json; charset=utf-8' },
-    body: { data },
-  })
-  expect(await request('https://mock-api.com/graphql', `{ viewer { id } }`)).toEqual(data)
+  expect(await request(ctx.url, `{ viewer { id } }`)).toEqual(data)
 })
 
-test('extra fetch options', async () => {
+test('basic error', async () => {
+  ctx.mock({
+    body: {
+      errors: {
+        message: 'Syntax Error GraphQL request (1:1) Unexpected Name "x"\n\n1: x\n   ^\n',
+        locations: [
+          {
+            line: 1,
+            column: 1,
+          },
+        ],
+      },
+    },
+  }).body
+
+  const res = await request(ctx.url, `x`).catch((x) => x)
+
+  expect(res).toMatchInlineSnapshot(
+    `[Error: GraphQL Error (Code: 200): {"response":{"errors":{"message":"Syntax Error GraphQL request (1:1) Unexpected Name \\"x\\"\\n\\n1: x\\n   ^\\n","locations":[{"line":1,"column":1}]},"status":200},"request":{"query":"x"}}]`
+  )
+})
+
+test('basic error with raw request', async () => {
+  ctx.mock({
+    body: {
+      errors: {
+        message: 'Syntax Error GraphQL request (1:1) Unexpected Name "x"\n\n1: x\n   ^\n',
+        locations: [
+          {
+            line: 1,
+            column: 1,
+          },
+        ],
+      },
+    },
+  })
+  const res = await rawRequest(ctx.url, `x`).catch((x) => x)
+  expect(res).toMatchInlineSnapshot(
+    `[Error: GraphQL Error (Code: 200): {"response":{"errors":{"message":"Syntax Error GraphQL request (1:1) Unexpected Name \\"x\\"\\n\\n1: x\\n   ^\\n","locations":[{"line":1,"column":1}]},"status":200,"headers":{}},"request":{"query":"x"}}]`
+  )
+})
+
+// todo needs to be tested in browser environment
+// the options under test here aren't used by node-fetch
+test.skip('extra fetch options', async () => {
   const options: RequestInit = {
     credentials: 'include',
     mode: 'cors',
     cache: 'reload',
   }
 
-  const client = new GraphQLClient('https://mock-api.com/graphql', options)
-  mock({
+  const client = new GraphQLClient(ctx.url, options)
+  const { requests } = ctx.mock({
     body: { data: { test: 'test' } },
   })
   await client.request('{ test }')
-  const actualOptions = fetchMock.lastCall()[1]
-  for (let name in options) {
-    expect(actualOptions[name]).toEqual(options[name])
-  }
-})
-
-/**
- * Helpers
- */
-
-async function mock(response: any) {
-  fetchMock.mock({
-    matcher: '*',
-    response: {
-      headers: {
-        'Content-Type': 'application/json',
-        ...response.headers,
+  expect(requests).toMatchInlineSnapshot(`
+    Array [
+      Object {
+        "body": Object {
+          "query": "{ test }",
+        },
+        "headers": Object {
+          "accept": "*/*",
+          "accept-encoding": "gzip,deflate",
+          "connection": "close",
+          "content-length": "20",
+          "content-type": "application/json",
+          "host": "localhost:3210",
+          "user-agent": "node-fetch/1.0 (+https://github.com/bitinn/node-fetch)",
+        },
+        "method": "POST",
       },
-      body: JSON.stringify(response.body),
-    },
-  })
-}
-
-afterEach(() => {
-  fetchMock.restore()
+    ]
+  `)
 })

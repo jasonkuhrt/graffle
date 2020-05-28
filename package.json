@@ -42,21 +42,27 @@
     "test:ci": "yarn test && bundlesize",
     "semantic-release": "semantic-release"
   },
-  "dependencies": {},
+  "dependencies": {
+    "cross-fetch": "^3.0.4"
+  },
   "devDependencies": {
     "@prisma-labs/prettier-config": "^0.1.0",
+    "@types/body-parser": "^1.19.0",
+    "@types/express": "^4.17.6",
     "@types/fetch-mock": "5.12.2",
     "@types/jest": "^25.2.3",
     "@types/node": "10.17.24",
+    "body-parser": "^1.19.0",
     "bundlesize": "^0.18.0",
+    "express": "^4.17.1",
     "fetch-cookie": "0.7.2",
-    "fetch-mock": "5.13.1",
     "jest": "^26.0.1",
     "prettier": "^2.0.5",
     "semantic-release": "17.0.8",
     "ts-jest": "^26.0.0",
     "tslint": "5.11.0",
     "tslint-config-standard": "8.0.1",
+    "type-fest": "^0.15.0",
     "typescript": "^3.9.3"
   },
   "prettier": "@prisma-labs/prettier-config",
