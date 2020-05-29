@@ -87,6 +87,8 @@ export class GraphQLClient {
     const { headers } = this.options
 
     if (headers) {
+      // todo what if headers is in nested array form... ?
+      //@ts-ignore
       headers[key] = value
     } else {
       this.options.headers = { [key]: value }
