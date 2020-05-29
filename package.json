@@ -37,7 +37,6 @@
     "format": "prettier --write .",
     "prepublish": "npm run build",
     "build": "rm -rf dist && tsc -d",
-    "lint": "tslint --project . {examples,src,test}/**/*.ts",
     "test": "jest",
     "release:stable": "dripip stable",
     "release:preview": "dripip preview",
@@ -61,8 +60,6 @@
     "jest": "^26.0.1",
     "prettier": "^2.0.5",
     "ts-jest": "^26.0.0",
-    "tslint": "5.11.0",
-    "tslint-config-standard": "8.0.1",
     "type-fest": "^0.15.0",
     "typescript": "^3.9.3"
   },
