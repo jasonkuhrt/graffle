@@ -29,7 +29,6 @@ jobs:
       - run: yarn install
       - run: yarn build
       - run: yarn test
-      - run: yarn lint
   release:
     needs: [tests]
     runs-on: ubuntu-latest
