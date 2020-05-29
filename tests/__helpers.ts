@@ -43,7 +43,7 @@ export function setupTestServer() {
 
   afterEach(() => {
     // https://stackoverflow.com/questions/10378690/remove-route-mappings-in-nodejs-express/28369539#28369539
-    ctx.server._router.stack.forEach((item, i) => {
+    ctx.server._router.stack.forEach((item: any, i: number) => {
       if (item.name === 'mock') ctx.server._router.stack.splice(i, 1)
     })
   })
