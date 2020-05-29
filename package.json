@@ -35,7 +35,7 @@
     "dev": "rm -rf dist && tsc --watch",
     "dev:test": "jest --watch",
     "format": "prettier --write .",
-    "prepublish": "npm run build",
+    "prepublishOnly": "yarn build",
     "build": "rm -rf dist && tsc -d",
     "test": "jest",
     "release:stable": "dripip stable",
