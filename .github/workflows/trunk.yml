@@ -1,12 +1,15 @@
-name: release
-on: [push, pull_request]
+name: trunk
+
+on:
+  push:
+    branches: [master]
 
 jobs:
-  test:
+  tests:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: ['10', '12', '14']
+        node: [10.x, 12.x, 14.x]
     name: Node ${{ matrix.node }}
     steps:
       - uses: actions/checkout@v2
@@ -24,15 +27,17 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-
       - run: yarn install
-      - run: yarn test:ci
+      - run: yarn build
+      - run: yarn test
+      - run: yarn lint
   release:
-    needs: [test]
+    needs: [tests]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
         with:
-          node-version: '10.x'
+          fetch-depth: 0
+      - uses: actions/setup-node@v1
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
@@ -44,8 +49,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-
       - run: yarn install
-      - run: yarn build
-      - run: yarn semantic-release
+      - name: Make release
+        id: release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_TOKEN: ${{secrets.NPM_TOKEN}}
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        run: |
+          yarn -s dripip preview --json > result.json
+          echo '==> Publish Result'
+          jq '.' < result.json

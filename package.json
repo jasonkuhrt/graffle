@@ -1,6 +1,6 @@
 {
   "name": "graphql-request",
-  "version": "0.0.0-semantic-release",
+  "version": "0.0.0-dripip",
   "main": "dist/index.js",
   "files": [
     "dist"
@@ -22,7 +22,7 @@
     "graphql-client",
     "apollo"
   ],
-  "author": "Johannes Schickling <johannes@graph.cool>",
+  "author": "Prisma Labs Team",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/prisma/graphql-request/issues"
@@ -38,9 +38,10 @@
     "prepublish": "npm run build",
     "build": "rm -rf dist && tsc -d",
     "lint": "tslint --project . {examples,src,test}/**/*.ts",
-    "test": "yarn lint && yarn build && jest",
-    "test:ci": "yarn test && bundlesize",
-    "semantic-release": "semantic-release"
+    "test": "jest",
+    "release:stable": "dripip stable",
+    "release:preview": "dripip preview",
+    "release:pr": "dripip pr"
   },
   "dependencies": {
     "cross-fetch": "^3.0.4"
@@ -54,11 +55,11 @@
     "@types/node": "10.17.24",
     "body-parser": "^1.19.0",
     "bundlesize": "^0.18.0",
+    "dripip": "^0.9.0",
     "express": "^4.17.1",
     "fetch-cookie": "0.7.2",
     "jest": "^26.0.1",
     "prettier": "^2.0.5",
-    "semantic-release": "17.0.8",
     "ts-jest": "^26.0.0",
     "tslint": "5.11.0",
     "tslint-config-standard": "8.0.1",
