@@ -1,19 +1,20 @@
 # graphql-request
 
-📡 Minimal GraphQL client supporting Node and browsers for scripts or simple apps
+Minimal GraphQL client supporting Node and browsers for scripts or simple apps
 
 ![GitHub Action](https://github.com/prisma-labs/graphql-request/workflows/release/badge.svg) [![npm version](https://badge.fury.io/js/graphql-request.svg)](https://badge.fury.io/js/graphql-request)
 
 ## Features
 
-- Most **simple and lightweight** GraphQL client
+- Most **simple & lightweight** GraphQL client
 - Promise-based API (works with `async` / `await`)
-- Typescript support (Flow coming soon)
+- Typescript support
+- Isomorphic (works with Node / browsers)
 
 ## Install
 
 ```sh
-npm install graphql-request
+npm add graphql-request
 ```
 
 ## Quickstart
@@ -291,13 +292,3 @@ main().catch((error) => console.error(error))
 `graphql-request` is the most minimal and simplest to use GraphQL client. It's perfect for small scripts or simple apps.
 
 Compared to GraphQL clients like Apollo or Relay, `graphql-request` doesn't have a built-in cache and has no integrations for frontend frameworks. The goal is to keep the package and API as minimal as possible.
-
-### So what about Lokka?
-
-Lokka is great but it still requires [a lot of setup code](https://github.com/kadirahq/lokka-transport-http) to be able to send a simple GraphQL query. `graphql-request` does less work compared to Lokka but is a lot simpler to use.
-
-## Help & Community [![Slack Status](https://slack.prisma.io/badge.svg)](https://slack.prisma.io)
-
-Join our [Slack community](http://slack.prisma.io/) if you run into issues or have questions. We love talking to you!
-
-<p align="center"><a href="https://oss.prisma.io"><img src="https://imgur.com/IMU2ERq.png" alt="Prisma" height="170px"></a></p>
