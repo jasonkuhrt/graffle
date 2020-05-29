@@ -1,7 +1,6 @@
-/// <reference lib="dom" />
-
 import fetch from 'cross-fetch'
 import { ClientError, GraphQLError, Variables } from './types'
+import { Request, RequestInit, Response } from './types.dom'
 
 export { ClientError } from './types'
 
