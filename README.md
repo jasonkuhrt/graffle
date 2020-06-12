@@ -85,6 +85,24 @@ main().catch((error) => console.error(error))
 
 [TypeScript Source](examples/authentication-via-http-header.ts)
 
+#### Dynamically setting headers
+If you want to set headers after the GraphQLClient has been initialised, you can use the `setHeader()` or `setHeaders()` functions.
+
+```js
+import { setHeaders, setHeader GraphQLClient } from 'graphql-request'
+
+const client = new GraphQLClient(endpoint)
+
+// Set a single header
+client.setHeader('authorization', 'Bearer MY_TOKEN')
+
+// Override all existing headers
+client.setHeaders({
+  authorization: 'Bearer MY_TOKEN'
+  anotherheader: 'header_value'
+})
+```
+
 ### Passing more options to fetch
 
 ```js
