@@ -1,4 +1,5 @@
 import fetch from 'cross-fetch'
+import createRequestBody from './createRequestBody'
 import { ClientError, GraphQLError, Variables } from './types'
 import { Request, RequestInit, Response } from './types.dom'
 
@@ -17,7 +18,7 @@ export class GraphQLClient {
     query: string,
     variables?: Variables
   ): Promise<{
-    data?: T
+    data: T
     extensions?: any
     headers: Request['headers']
     status: number
@@ -25,14 +26,14 @@ export class GraphQLClient {
   }> {
     const { headers, ...others } = this.options
 
-    const body = JSON.stringify({
-      query,
-      variables: variables ? variables : undefined,
-    })
+    const body = createRequestBody(query, variables)
 
     const response = await fetch(this.url, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', ...headers },
+      headers: {
+        ...(typeof body === 'string' ? { 'Content-Type': 'application/json' } : {}),
+        ...headers,
+      },
       body,
       ...others,
     })
@@ -54,14 +55,14 @@ export class GraphQLClient {
   async request<T = any>(query: string, variables?: Variables): Promise<T> {
     const { headers, ...others } = this.options
 
-    const body = JSON.stringify({
-      query,
-      variables: variables ? variables : undefined,
-    })
+    const body = createRequestBody(query, variables)
 
     const response = await fetch(this.url, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', ...headers },
+      headers: {
+        ...(typeof body === 'string' ? { 'Content-Type': 'application/json' } : {}),
+        ...headers,
+      },
       body,
       ...others,
     })
