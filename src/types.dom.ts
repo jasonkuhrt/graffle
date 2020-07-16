@@ -293,6 +293,7 @@ export interface RequestInit {
   referrerPolicy?: ReferrerPolicy
   signal?: AbortSignal | null
   window?: any
+  fetch?: any
 }
 
 interface Body {

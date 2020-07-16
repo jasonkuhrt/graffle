@@ -1,4 +1,4 @@
-import fetch from 'cross-fetch'
+import crossFetch from 'cross-fetch'
 import { ClientError, GraphQLError, Variables } from './types'
 import { Request, RequestInit, Response } from './types.dom'
 
@@ -23,14 +23,14 @@ export class GraphQLClient {
     status: number
     errors?: GraphQLError[]
   }> {
-    const { headers, ...others } = this.options
+    const { headers, fetch: localFetch = crossFetch, ...others } = this.options
 
     const body = JSON.stringify({
       query,
       variables: variables ? variables : undefined,
     })
 
-    const response = await fetch(this.url, {
+    const response = await localFetch(this.url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', ...headers },
       body,
@@ -52,14 +52,14 @@ export class GraphQLClient {
   }
 
   async request<T = any>(query: string, variables?: Variables): Promise<T> {
-    const { headers, ...others } = this.options
+    const { headers, fetch: localFetch = crossFetch, ...others } = this.options
 
     const body = JSON.stringify({
       query,
       variables: variables ? variables : undefined,
     })
 
-    const response = await fetch(this.url, {
+    const response = await localFetch(this.url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', ...headers },
       body,
