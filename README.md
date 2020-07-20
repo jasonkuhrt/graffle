@@ -45,7 +45,7 @@ import { request, GraphQLClient } from 'graphql-request'
 request(endpoint, query, variables).then((data) => console.log(data))
 
 // ... or create a GraphQL client instance to send requests
-const client = new GraphQLClient(endpoint, { headers: {} })
+const client = new GraphQLClient(endpoint, { headers: {}, fetch: customFetch })
 client.request(query, variables).then((data) => console.log(data))
 ```
 
