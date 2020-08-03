@@ -308,7 +308,15 @@ main().catch((error) => console.error(error))
 
 ## FAQ
 
-### What's the difference between `graphql-request`, Apollo and Relay?
+#### Why do I have to install `graphql`?
+
+`graphql-request` uses a TypeScript type from the `graphql` package such that if you are using TypeScript to build your project and you are using `graphql-request` but don't have `graphql` installed TypeScript build will fail. Details [here](https://github.com/prisma-labs/graphql-request/pull/183#discussion_r464453076). If you are a JS user then you do not technically need to install `graphql`. However if you use an IDE that picks up TS types even for JS (like VSCode) then its still in your interest to install `graphql` so that you can benefit from enhanced type safety during development.
+
+#### Do I need to wrap my GraphQL documents inside the `gql` template exported by `graphql-request`?
+
+No. It is there for convenience so that you can get the tooling support like prettier formatting and IDE syntax highlighting. You can use `gql` from `graphql-tag` if you need it for some reason too.
+
+#### What's the difference between `graphql-request`, Apollo and Relay?
 
 `graphql-request` is the most minimal and simplest to use GraphQL client. It's perfect for small scripts or simple apps.
 
