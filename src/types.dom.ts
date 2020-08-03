@@ -292,6 +292,7 @@ export interface RequestInit {
   referrer?: string
   referrerPolicy?: ReferrerPolicy
   signal?: AbortSignal | null
+  timeout?: number
   window?: any
 }
 
