@@ -9,7 +9,25 @@ type Context = {
   server: Application
   nodeServer: Server
   url: string
-  mock: <D extends JsonObject>(data: D) => D & { requests: CapturedRequest[] }
+  res: <S extends MockSpec>(spec: S) => MockResult<S>
+}
+
+type MockSpec = {
+  headers?: Record<string, string>
+  body?: {
+    data?: JsonObject
+    extensions?: JsonObject
+    errors?: JsonObject
+  }
+}
+
+type MockResult<Spec extends MockSpec> = {
+  spec: Spec
+  requests: {
+    method: string
+    headers: Record<string, string>
+    body: JsonObject
+  }[]
 }
 
 export function setupTestServer() {
@@ -22,7 +40,7 @@ export function setupTestServer() {
     ctx.url = 'http://localhost:3210'
     ctx.nodeServer.on('request', ctx.server)
     ctx.nodeServer.once('listening', done)
-    ctx.mock = (spec) => {
+    ctx.res = (spec) => {
       const requests: CapturedRequest[] = []
       ctx.server.use('*', function mock(req, res) {
         requests.push({
@@ -37,7 +55,7 @@ export function setupTestServer() {
         }
         res.send(spec.body ?? {})
       })
-      return { ...spec, requests }
+      return { spec, requests: requests as any } as any
     }
   })
 
