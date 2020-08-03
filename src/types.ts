@@ -6,17 +6,17 @@ export interface GraphQLError {
   path: string[]
 }
 
-export interface GraphQLResponse {
-  data?: any
+export interface GraphQLResponse<T = any> {
+  data?: T
   errors?: GraphQLError[]
   extensions?: any
   status: number
   [key: string]: any
 }
 
-export interface GraphQLRequestContext {
+export interface GraphQLRequestContext<V = Variables> {
   query: string
-  variables?: Variables
+  variables?: V
 }
 
 export class ClientError extends Error {

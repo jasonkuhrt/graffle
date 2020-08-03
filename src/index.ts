@@ -1,6 +1,6 @@
 import fetch from 'cross-fetch'
 import { ClientError, GraphQLError, Variables } from './types'
-import { Request, RequestInit, Response } from './types.dom'
+import { RequestInit, Response } from './types.dom'
 
 export { ClientError } from './types'
 
@@ -13,16 +13,10 @@ export class GraphQLClient {
     this.options = options || {}
   }
 
-  async rawRequest<T = any>(
+  async rawRequest<T = any, V = Variables>(
     query: string,
-    variables?: Variables
-  ): Promise<{
-    data?: T
-    extensions?: any
-    headers: Request['headers']
-    status: number
-    errors?: GraphQLError[]
-  }> {
+    variables?: V
+  ): Promise<{ data?: T; extensions?: any; headers: Headers; status: number; errors?: GraphQLError[] }> {
     const { headers, ...others } = this.options
 
     const body = JSON.stringify({
@@ -51,7 +45,7 @@ export class GraphQLClient {
     }
   }
 
-  async request<T = any>(query: string, variables?: Variables): Promise<T> {
+  async request<T = any, V = Variables>(query: string, variables?: V): Promise<T> {
     const { headers, ...others } = this.options
 
     const body = JSON.stringify({
@@ -96,26 +90,20 @@ export class GraphQLClient {
   }
 }
 
-export function rawRequest<T = any>(
+export async function rawRequest<T = any, V = Variables>(
   url: string,
   query: string,
-  variables?: Variables
-): Promise<{
-  data?: T
-  extensions?: any
-  headers: Request['headers']
-  status: number
-  errors?: GraphQLError[]
-}> {
+  variables?: V
+): Promise<{ data?: T; extensions?: any; headers: Headers; status: number; errors?: GraphQLError[] }> {
   const client = new GraphQLClient(url)
 
-  return client.rawRequest<T>(query, variables)
+  return client.rawRequest<T, V>(query, variables)
 }
 
-export function request<T = any>(url: string, query: string, variables?: Variables): Promise<T> {
+export async function request<T = any, V = Variables>(url: string, query: string, variables?: V): Promise<T> {
   const client = new GraphQLClient(url)
 
-  return client.request<T>(query, variables)
+  return client.request<T, V>(query, variables)
 }
 
 export default request
