@@ -1,6 +1,5 @@
 import { request } from '../src'
-
-;(async function() {
+;(async function () {
   const endpoint = 'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr'
 
   const query = /* GraphQL */ `
@@ -24,4 +23,4 @@ import { request } from '../src'
 
   const data = await request<TData>(endpoint, query, variables)
   console.log(JSON.stringify(data, undefined, 2))
-})().catch(error => console.error(error))
+})().catch((error) => console.error(error))

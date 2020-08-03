@@ -1,6 +1,5 @@
 import { request } from '../src'
-
-;(async function() {
+;(async function () {
   const endpoint = 'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr'
 
   const query = /* GraphQL */ `
@@ -25,4 +24,4 @@ import { request } from '../src'
     console.error(JSON.stringify(error, undefined, 2))
     process.exit(1)
   }
-})().catch(error => console.error(error))
+})().catch((error) => console.error(error))
