@@ -1,4 +1,4 @@
-import { DocumentNode } from 'graphql/language/ast'
+import type { DocumentNode } from 'graphql/language/ast'
 
 export type Variables = { [key: string]: any }
 
