@@ -1,3 +1,5 @@
+import type { DocumentNode } from 'graphql/language/ast'
+
 export type Variables = { [key: string]: any }
 
 export interface GraphQLError {
@@ -50,3 +52,5 @@ export class ClientError extends Error {
     }
   }
 }
+
+export type RequestDocument = string | DocumentNode

@@ -45,6 +45,9 @@
   "dependencies": {
     "cross-fetch": "^3.0.4"
   },
+  "peerDependencies": {
+    "graphql": "14.x || 15.x"
+  },
   "devDependencies": {
     "@prisma-labs/prettier-config": "^0.1.0",
     "@types/body-parser": "^1.19.0",
@@ -57,6 +60,8 @@
     "dripip": "^0.9.0",
     "express": "^4.17.1",
     "fetch-cookie": "0.7.2",
+    "graphql": "^15.3.0",
+    "graphql-tag": "^2.11.0",
     "jest": "^26.0.1",
     "prettier": "^2.0.5",
     "ts-jest": "^26.0.0",

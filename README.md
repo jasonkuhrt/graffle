@@ -14,7 +14,7 @@ Minimal GraphQL client supporting Node and browsers for scripts or simple apps
 ## Install
 
 ```sh
-npm add graphql-request
+npm add graphql-request graphql
 ```
 
 ## Quickstart
@@ -22,16 +22,18 @@ npm add graphql-request
 Send a GraphQL query with a single line of code. ▶️ [Try it out](https://runkit.com/593130bdfad7120012472003/593130bdfad7120012472004).
 
 ```js
-import { request } from 'graphql-request'
+import { request, gql } from 'graphql-request'
 
-const query = `{
-  Movie(title: "Inception") {
-    releaseDate
-    actors {
-      name
+const query = gql`
+  {
+    Movie(title: "Inception") {
+      releaseDate
+      actors {
+        name
+      }
     }
   }
-}`
+`
 
 request('https://api.graph.cool/simple/v1/movies', query).then((data) => console.log(data))
 ```
@@ -54,7 +56,7 @@ client.request(query, variables).then((data) => console.log(data))
 ### Authentication via HTTP header
 
 ```js
-import { GraphQLClient } from 'graphql-request'
+import { GraphQLClient, gql } from 'graphql-request'
 
 async function main() {
   const endpoint = 'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr'
@@ -65,7 +67,7 @@ async function main() {
     },
   })
 
-  const query = /* GraphQL */ `
+  const query = gql`
     {
       Movie(title: "Inception") {
         releaseDate
@@ -86,6 +88,7 @@ main().catch((error) => console.error(error))
 [TypeScript Source](examples/authentication-via-http-header.ts)
 
 #### Dynamically setting headers
+
 If you want to set headers after the GraphQLClient has been initialised, you can use the `setHeader()` or `setHeaders()` functions.
 
 ```js
@@ -106,7 +109,7 @@ client.setHeaders({
 ### Passing more options to fetch
 
 ```js
-import { GraphQLClient } from 'graphql-request'
+import { GraphQLClient, gql } from 'graphql-request'
 
 async function main() {
   const endpoint = 'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr'
@@ -116,7 +119,7 @@ async function main() {
     mode: 'cors',
   })
 
-  const query = /* GraphQL */ `
+  const query = gql`
     {
       Movie(title: "Inception") {
         releaseDate
@@ -139,12 +142,12 @@ main().catch((error) => console.error(error))
 ### Using variables
 
 ```js
-import { request } from 'graphql-request'
+import { request, gql } from 'graphql-request'
 
 async function main() {
   const endpoint = 'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr'
 
-  const query = /* GraphQL */ `
+  const query = gql`
     query getMovie($title: String!) {
       Movie(title: $title) {
         releaseDate
@@ -171,12 +174,12 @@ main().catch((error) => console.error(error))
 ### Error handling
 
 ```js
-import { request } from 'graphql-request'
+import { request, gql } from 'graphql-request'
 
 async function main() {
   const endpoint = 'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr'
 
-  const query = /* GraphQL */ `
+  const query = gql`
     {
       Movie(title: "Inception") {
         releaseDate
@@ -204,12 +207,12 @@ main().catch((error) => console.error(error))
 ### Using `require` instead of `import`
 
 ```js
-const { request } = require('graphql-request')
+const { request, gql } = require('graphql-request')
 
 async function main() {
   const endpoint = 'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr'
 
-  const query = /* GraphQL */ `
+  const query = gql`
     {
       Movie(title: "Inception") {
         releaseDate
@@ -236,7 +239,7 @@ npm install fetch-cookie
 ```js
 require('fetch-cookie/node-fetch')(require('node-fetch'))
 
-import { GraphQLClient } from 'graphql-request'
+import { GraphQLClient, gql } from 'graphql-request'
 
 async function main() {
   const endpoint = 'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr'
@@ -247,7 +250,7 @@ async function main() {
     },
   })
 
-  const query = /* GraphQL */ `
+  const query = gql`
     {
       Movie(title: "Inception") {
         releaseDate
@@ -273,12 +276,12 @@ The `request` method will return the `data` or `errors` key from the response.
 If you need to access the `extensions` key you can use the `rawRequest` method:
 
 ```js
-import { rawRequest } from 'graphql-request'
+import { rawRequest, gql } from 'graphql-request'
 
 async function main() {
   const endpoint = 'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr'
 
-  const query = /* GraphQL */ `
+  const query = gql`
     {
       Movie(title: "Inception") {
         releaseDate
@@ -305,7 +308,15 @@ main().catch((error) => console.error(error))
 
 ## FAQ
 
-### What's the difference between `graphql-request`, Apollo and Relay?
+#### Why do I have to install `graphql`?
+
+`graphql-request` uses a TypeScript type from the `graphql` package such that if you are using TypeScript to build your project and you are using `graphql-request` but don't have `graphql` installed TypeScript build will fail. Details [here](https://github.com/prisma-labs/graphql-request/pull/183#discussion_r464453076). If you are a JS user then you do not technically need to install `graphql`. However if you use an IDE that picks up TS types even for JS (like VSCode) then its still in your interest to install `graphql` so that you can benefit from enhanced type safety during development.
+
+#### Do I need to wrap my GraphQL documents inside the `gql` template exported by `graphql-request`?
+
+No. It is there for convenience so that you can get the tooling support like prettier formatting and IDE syntax highlighting. You can use `gql` from `graphql-tag` if you need it for some reason too.
+
+#### What's the difference between `graphql-request`, Apollo and Relay?
 
 `graphql-request` is the most minimal and simplest to use GraphQL client. It's perfect for small scripts or simple apps.
 

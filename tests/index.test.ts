@@ -1,10 +1,11 @@
-import { GraphQLClient, rawRequest, request } from '../src'
+import graphqlTag from 'graphql-tag'
+import { gql, GraphQLClient, rawRequest, request } from '../src'
 import { setupTestServer } from './__helpers'
 
 const ctx = setupTestServer()
 
 test('minimal query', async () => {
-  const data = ctx.mock({
+  const { data } = ctx.res({
     body: {
       data: {
         viewer: {
@@ -12,13 +13,13 @@ test('minimal query', async () => {
         },
       },
     },
-  }).body.data
+  }).spec.body
 
   expect(await request(ctx.url, `{ viewer { id } }`)).toEqual(data)
 })
 
 test('minimal raw query', async () => {
-  const { extensions, data } = ctx.mock({
+  const { extensions, data } = ctx.res({
     body: {
       data: {
         viewer: {
@@ -29,7 +30,7 @@ test('minimal raw query', async () => {
         version: '1',
       },
     },
-  }).body
+  }).spec.body
   const { headers, ...result } = await rawRequest(ctx.url, `{ viewer { id } }`)
   expect(result).toEqual({ data, extensions, status: 200 })
 })
@@ -38,7 +39,7 @@ test('minimal raw query with response headers', async () => {
   const {
     headers: reqHeaders,
     body: { data, extensions },
-  } = ctx.mock({
+  } = ctx.res({
     headers: {
       'Content-Type': 'application/json',
       'X-Custom-Header': 'test-custom-header',
@@ -53,7 +54,7 @@ test('minimal raw query with response headers', async () => {
         version: '1',
       },
     },
-  })
+  }).spec
   const { headers, ...result } = await rawRequest(ctx.url, `{ viewer { id } }`)
 
   expect(result).toEqual({ data, extensions, status: 200 })
@@ -61,7 +62,7 @@ test('minimal raw query with response headers', async () => {
 })
 
 test('content-type with charset', async () => {
-  const { data } = ctx.mock({
+  const { data } = ctx.res({
     // headers: { 'Content-Type': 'application/json; charset=utf-8' },
     body: {
       data: {
@@ -70,13 +71,13 @@ test('content-type with charset', async () => {
         },
       },
     },
-  }).body
+  }).spec.body
 
   expect(await request(ctx.url, `{ viewer { id } }`)).toEqual(data)
 })
 
 test('basic error', async () => {
-  ctx.mock({
+  ctx.res({
     body: {
       errors: {
         message: 'Syntax Error GraphQL request (1:1) Unexpected Name "x"\n\n1: x\n   ^\n',
@@ -88,7 +89,7 @@ test('basic error', async () => {
         ],
       },
     },
-  }).body
+  })
 
   const res = await request(ctx.url, `x`).catch((x) => x)
 
@@ -98,7 +99,7 @@ test('basic error', async () => {
 })
 
 test('basic error with raw request', async () => {
-  ctx.mock({
+  ctx.res({
     body: {
       errors: {
         message: 'Syntax Error GraphQL request (1:1) Unexpected Name "x"\n\n1: x\n   ^\n',
@@ -127,7 +128,7 @@ test.skip('extra fetch options', async () => {
   }
 
   const client = new GraphQLClient(ctx.url, options)
-  const { requests } = ctx.mock({
+  const { requests } = ctx.res({
     body: { data: { test: 'test' } },
   })
   await client.request('{ test }')
@@ -150,4 +151,57 @@ test.skip('extra fetch options', async () => {
       },
     ]
   `)
+})
+
+describe('DocumentNode', () => {
+  it('accepts graphql DocumentNode as alternative to raw string', async () => {
+    const mock = ctx.res({ body: { data: { foo: 1 } } })
+    await request(
+      ctx.url,
+      graphqlTag`
+        {
+          query {
+            users
+          }
+        }
+      `
+    )
+    expect(mock.requests[0].body).toMatchInlineSnapshot(`
+      Object {
+        "query": "{
+        query {
+          users
+        }
+      }
+      ",
+      }
+    `)
+  })
+})
+
+describe('gql', () => {
+  it('passthrough allowing benefits of tooling for gql template tag', async () => {
+    const mock = ctx.res({ body: { data: { foo: 1 } } })
+    await request(
+      ctx.url,
+      gql`
+        {
+          query {
+            users
+          }
+        }
+      `
+    )
+    expect(mock.requests[0].body).toMatchInlineSnapshot(`
+      Object {
+        "query": "
+              {
+                query {
+                  users
+                }
+              }
+            ",
+      }
+    `)
+  })
 })
