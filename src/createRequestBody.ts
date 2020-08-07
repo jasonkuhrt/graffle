@@ -1,4 +1,5 @@
 import { isExtractableFile, extractFiles, ExtractableFile } from 'extract-files'
+import { Variables } from './types'
 
 /**
  * Duck type if NodeJS stream
@@ -14,7 +15,7 @@ const isExtractableFileEnhanced = (value: any): value is ExtractableFile | { pip
  *
  * Otherwise returns JSON
  */
-export default function createRequestBody(query: string, variables?: object) {
+export default function createRequestBody(query: string, variables?: Variables) {
   const { clone, files } = extractFiles({ query, variables }, '', isExtractableFileEnhanced)
 
   if (files.size > 0) {
