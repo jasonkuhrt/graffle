@@ -12,31 +12,39 @@ const isExtractableFileEnhanced = (value: any): value is ExtractableFile | { pip
 /**
  * Returns Multipart Form if body contains files
  * (https://github.com/jaydenseric/graphql-multipart-request-spec)
- *
  * Otherwise returns JSON
  */
-export default function createRequestBody(query: string, variables?: Variables) {
+export default function createRequestBody(query: string, variables?: Variables): string | FormData {
   const { clone, files } = extractFiles({ query, variables }, '', isExtractableFileEnhanced)
 
-  if (files.size > 0) {
-    const form = new FormData()
-
-    form.append('operations', JSON.stringify(clone))
-
-    const map: { [key: number]: string[] } = {}
-    let i = 0
-    files.forEach((paths) => {
-      map[++i] = paths
-    })
-    form.append('map', JSON.stringify(map))
-
-    i = 0
-    files.forEach((paths, file) => {
-      form.append(`${++i}`, file as any)
-    })
-
-    return form
+  if (files.size === 0) {
+    return JSON.stringify(clone)
   }
 
-  return JSON.stringify(clone)
+  if (typeof FormData === 'undefined') {
+    throw new Error(
+      [
+        'FormData is not defined, it must be polyfilled to use file upload.',
+        'See https://github.com/prisma-labs/graphql-request#File-Upload',
+      ].join(' ')
+    )
+  }
+
+  const form = new FormData()
+
+  form.append('operations', JSON.stringify(clone))
+
+  const map: { [key: number]: string[] } = {}
+  let i = 0
+  files.forEach((paths) => {
+    map[++i] = paths
+  })
+  form.append('map', JSON.stringify(map))
+
+  i = 0
+  files.forEach((paths, file) => {
+    form.append(`${++i}`, file as any)
+  })
+
+  return form
 }
