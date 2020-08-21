@@ -44,7 +44,7 @@
   },
   "dependencies": {
     "cross-fetch": "^3.0.4",
-    "extract-files": "^8.1.0"
+    "extract-files": "^9.0.0"
   },
   "peerDependencies": {
     "graphql": "14.x || 15.x"
