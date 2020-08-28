@@ -23,7 +23,7 @@ export default function createRequestBody(query: string, variables?: Variables):
     return JSON.stringify(clone)
   }
 
-  const Form = typeof FormData === 'undefined' ? (FormDataNode as typeof FormData) : FormData
+  const Form = typeof FormData === 'undefined' ? FormDataNode : FormData
 
   const form = new Form()
 
@@ -41,5 +41,5 @@ export default function createRequestBody(query: string, variables?: Variables):
     form.append(`${++i}`, file as any)
   })
 
-  return form
+  return form as FormData
 }
