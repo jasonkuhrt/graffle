@@ -21,7 +21,7 @@ beforeAll(async () => {
 })
 
 beforeEach(() => {
-  ;(global as any).FormData = FormData
+  ;(global as any).FormData = undefined
 })
 
 afterAll((done) => server.close(done))
@@ -230,7 +230,7 @@ describe('gql', () => {
   })
 })
 
-test('file upload', async () => {
+test('file upload using global.FormData', async () => {
   ;(global as any).FormData = FormData
 
   const query = gql`
@@ -246,18 +246,16 @@ test('file upload', async () => {
   expect(result).toEqual({ uploadFile: 'index.test.ts' })
 })
 
-test('throws an error on file upload if FormData is not polyfilled', async () => {
-  ;(global as any).FormData = undefined
-
+test('file upload still works if no global.FormData provided', async () => {
   const query = gql`
     mutation uploadFile($file: Upload!) {
       uploadFile(file: $file)
     }
   `
 
-  await expect(
-    request(url, query, {
-      file: createReadStream(join(__dirname, 'index.test.ts')),
-    })
-  ).rejects.toThrow(/FormData is not defined, it must be polyfilled/)
+  const result = await request(url, query, {
+    file: createReadStream(join(__dirname, 'index.test.ts')),
+  })
+
+  expect(result).toEqual({ uploadFile: 'index.test.ts' })
 })

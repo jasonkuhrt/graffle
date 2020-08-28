@@ -321,13 +321,8 @@ request('/api/graphql', UploadUserAvatar, {
 #### NodeJS
 
 ```js
-import 'cross-fetch/polyfill' // fetch polyfill
-
 import { createReadStream } from 'fs'
-import FormData from 'form-data'
 import { request } from 'graphql-request'
-
-global.FormData = FormData
 
 const UploadUserAvatar = gql`
   mutation uploadUserAvatar($userId: Int!, $file: Upload!) {

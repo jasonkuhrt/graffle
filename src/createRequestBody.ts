@@ -1,4 +1,6 @@
 import { isExtractableFile, extractFiles, ExtractableFile } from 'extract-files'
+import FormDataNode from 'form-data'
+
 import { Variables } from './types'
 
 /**
@@ -21,16 +23,9 @@ export default function createRequestBody(query: string, variables?: Variables):
     return JSON.stringify(clone)
   }
 
-  if (typeof FormData === 'undefined') {
-    throw new Error(
-      [
-        'FormData is not defined, it must be polyfilled to use file upload.',
-        'See https://github.com/prisma-labs/graphql-request#File-Upload',
-      ].join(' ')
-    )
-  }
+  const Form = typeof FormData === 'undefined' ? (FormDataNode as typeof FormData) : FormData
 
-  const form = new FormData()
+  const form = new Form()
 
   form.append('operations', JSON.stringify(clone))
 
