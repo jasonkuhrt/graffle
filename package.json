@@ -43,7 +43,9 @@
     "release:pr": "dripip pr"
   },
   "dependencies": {
-    "cross-fetch": "^3.0.4"
+    "cross-fetch": "^3.0.4",
+    "extract-files": "^9.0.0",
+    "form-data": "^3.0.0"
   },
   "peerDependencies": {
     "graphql": "14.x || 15.x"
@@ -52,9 +54,11 @@
     "@prisma-labs/prettier-config": "^0.1.0",
     "@types/body-parser": "^1.19.0",
     "@types/express": "^4.17.6",
+    "@types/extract-files": "^8.1.0",
     "@types/fetch-mock": "5.12.2",
     "@types/jest": "^25.2.3",
     "@types/node": "10.17.24",
+    "apollo-server-express": "^2.16.1",
     "body-parser": "^1.19.0",
     "bundlesize": "^0.18.0",
     "dripip": "^0.10.0",
@@ -62,6 +66,7 @@
     "fetch-cookie": "0.7.2",
     "graphql": "^15.3.0",
     "graphql-tag": "^2.11.0",
+    "graphql-upload": "^11.0.0",
     "jest": "^26.0.1",
     "prettier": "^2.0.5",
     "ts-jest": "^26.0.0",

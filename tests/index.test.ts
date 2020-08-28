@@ -1,6 +1,30 @@
+import { Server } from 'http'
 import graphqlTag from 'graphql-tag'
+import { createReadStream } from 'fs'
+import { join } from 'path'
+import FormData from 'form-data'
+
 import { gql, GraphQLClient, rawRequest, request } from '../src'
+
 import { setupTestServer } from './__helpers'
+import startServer from './startServer'
+
+let server: Server
+let url: string
+
+beforeAll(async () => {
+  server = await startServer()
+  const address = server.address()
+  if (typeof address === 'object') {
+    url = `http://localhost:${address.port}/graphql`
+  }
+})
+
+beforeEach(() => {
+  ;(global as any).FormData = undefined
+})
+
+afterAll((done) => server.close(done))
 
 const ctx = setupTestServer()
 
@@ -204,4 +228,34 @@ describe('gql', () => {
       }
     `)
   })
+})
+
+test('file upload using global.FormData', async () => {
+  ;(global as any).FormData = FormData
+
+  const query = gql`
+    mutation uploadFile($file: Upload!) {
+      uploadFile(file: $file)
+    }
+  `
+
+  const result = await request(url, query, {
+    file: createReadStream(join(__dirname, 'index.test.ts')),
+  })
+
+  expect(result).toEqual({ uploadFile: 'index.test.ts' })
+})
+
+test('file upload still works if no global.FormData provided', async () => {
+  const query = gql`
+    mutation uploadFile($file: Upload!) {
+      uploadFile(file: $file)
+    }
+  `
+
+  const result = await request(url, query, {
+    file: createReadStream(join(__dirname, 'index.test.ts')),
+  })
+
+  expect(result).toEqual({ uploadFile: 'index.test.ts' })
 })

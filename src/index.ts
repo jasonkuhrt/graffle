@@ -1,5 +1,7 @@
 import fetch from 'cross-fetch'
 import { print } from 'graphql/language/printer'
+
+import createRequestBody from './createRequestBody'
 import { ClientError, GraphQLError, RequestDocument, Variables } from './types'
 import { Headers, RequestInit, Response } from './types.dom'
 
@@ -23,14 +25,14 @@ export class GraphQLClient {
   ): Promise<{ data?: T; extensions?: any; headers: Headers; status: number; errors?: GraphQLError[] }> {
     const { headers, ...others } = this.options
 
-    const body = JSON.stringify({
-      query,
-      variables: variables ? variables : undefined,
-    })
+    const body = createRequestBody(query, variables)
 
     const response = await fetch(this.url, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', ...headers },
+      headers: {
+        ...(typeof body === 'string' ? { 'Content-Type': 'application/json' } : {}),
+        ...headers,
+      },
       body,
       ...others,
     })
@@ -56,14 +58,14 @@ export class GraphQLClient {
     const { headers, ...others } = this.options
     const resolvedDoc = resolveRequestDocument(document)
 
-    const body = JSON.stringify({
-      query: resolvedDoc,
-      variables: variables ? variables : undefined,
-    })
+    const body = createRequestBody(resolvedDoc, variables)
 
     const response = await fetch(this.url, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', ...headers },
+      headers: {
+        ...(typeof body === 'string' ? { 'Content-Type': 'application/json' } : {}),
+        ...headers,
+      },
       body,
       ...others,
     })

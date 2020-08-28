@@ -335,6 +335,43 @@ async function main() {
 main().catch((error) => console.error(error))
 ```
 
+### File Upload
+
+#### Browser
+
+```js
+import { request } from 'graphql-request'
+
+const UploadUserAvatar = gql`
+  mutation uploadUserAvatar($userId: Int!, $file: Upload!) {
+    updateUser(id: $userId, input: { avatar: $file })
+  }
+`
+
+request('/api/graphql', UploadUserAvatar, {
+  userId: 1,
+  file: document.querySelector('input#avatar').files[0],
+})
+```
+
+#### NodeJS
+
+```js
+import { createReadStream } from 'fs'
+import { request } from 'graphql-request'
+
+const UploadUserAvatar = gql`
+  mutation uploadUserAvatar($userId: Int!, $file: Upload!) {
+    updateUser(id: $userId, input: { avatar: $file })
+  }
+`
+
+request('/api/graphql', UploadUserAvatar, {
+  userId: 1,
+  file: createReadStream('./avatar.img'),
+})
+```
+
 [TypeScript Source](examples/receiving-a-raw-response)
 
 ### More examples coming soon...
