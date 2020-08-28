@@ -3,7 +3,7 @@ import { print } from 'graphql/language/printer'
 
 import createRequestBody from './createRequestBody'
 import { ClientError, GraphQLError, RequestDocument, Variables } from './types'
-import { RequestInit, Response } from './types.dom'
+import { Headers, RequestInit, Response } from './types.dom'
 
 export { ClientError } from './types'
 
