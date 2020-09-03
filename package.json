@@ -64,6 +64,7 @@
     "dripip": "^0.10.0",
     "express": "^4.17.1",
     "fetch-cookie": "0.7.2",
+    "get-port": "^5.1.1",
     "graphql": "^15.3.0",
     "graphql-tag": "^2.11.0",
     "graphql-upload": "^11.0.0",

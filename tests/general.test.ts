@@ -1,5 +1,4 @@
-import graphqlTag from 'graphql-tag'
-import { gql, GraphQLClient, rawRequest, request } from '../src'
+import { GraphQLClient, rawRequest, request } from '../src'
 import { setupTestServer } from './__helpers'
 
 const ctx = setupTestServer()
@@ -8,21 +7,21 @@ test('minimal query', async () => {
   const { data } = ctx.res({
     body: {
       data: {
-        viewer: {
+        me: {
           id: 'some-id',
         },
       },
     },
   }).spec.body
 
-  expect(await request(ctx.url, `{ viewer { id } }`)).toEqual(data)
+  expect(await request(ctx.url, `{ me { id } }`)).toEqual(data)
 })
 
 test('minimal raw query', async () => {
   const { extensions, data } = ctx.res({
     body: {
       data: {
-        viewer: {
+        me: {
           id: 'some-id',
         },
       },
@@ -31,7 +30,7 @@ test('minimal raw query', async () => {
       },
     },
   }).spec.body
-  const { headers, ...result } = await rawRequest(ctx.url, `{ viewer { id } }`)
+  const { headers, ...result } = await rawRequest(ctx.url, `{ me { id } }`)
   expect(result).toEqual({ data, extensions, status: 200 })
 })
 
@@ -46,7 +45,7 @@ test('minimal raw query with response headers', async () => {
     },
     body: {
       data: {
-        viewer: {
+        me: {
           id: 'some-id',
         },
       },
@@ -55,7 +54,7 @@ test('minimal raw query with response headers', async () => {
       },
     },
   }).spec
-  const { headers, ...result } = await rawRequest(ctx.url, `{ viewer { id } }`)
+  const { headers, ...result } = await rawRequest(ctx.url, `{ me { id } }`)
 
   expect(result).toEqual({ data, extensions, status: 200 })
   expect(headers.get('X-Custom-Header')).toEqual(reqHeaders['X-Custom-Header'])
@@ -66,14 +65,14 @@ test('content-type with charset', async () => {
     // headers: { 'Content-Type': 'application/json; charset=utf-8' },
     body: {
       data: {
-        viewer: {
+        me: {
           id: 'some-id',
         },
       },
     },
   }).spec.body
 
-  expect(await request(ctx.url, `{ viewer { id } }`)).toEqual(data)
+  expect(await request(ctx.url, `{ me { id } }`)).toEqual(data)
 })
 
 test('basic error', async () => {
@@ -151,57 +150,4 @@ test.skip('extra fetch options', async () => {
       },
     ]
   `)
-})
-
-describe('DocumentNode', () => {
-  it('accepts graphql DocumentNode as alternative to raw string', async () => {
-    const mock = ctx.res({ body: { data: { foo: 1 } } })
-    await request(
-      ctx.url,
-      graphqlTag`
-        {
-          query {
-            users
-          }
-        }
-      `
-    )
-    expect(mock.requests[0].body).toMatchInlineSnapshot(`
-      Object {
-        "query": "{
-        query {
-          users
-        }
-      }
-      ",
-      }
-    `)
-  })
-})
-
-describe('gql', () => {
-  it('passthrough allowing benefits of tooling for gql template tag', async () => {
-    const mock = ctx.res({ body: { data: { foo: 1 } } })
-    await request(
-      ctx.url,
-      gql`
-        {
-          query {
-            users
-          }
-        }
-      `
-    )
-    expect(mock.requests[0].body).toMatchInlineSnapshot(`
-      Object {
-        "query": "
-              {
-                query {
-                  users
-                }
-              }
-            ",
-      }
-    `)
-  })
 })

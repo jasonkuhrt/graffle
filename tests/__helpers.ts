@@ -1,6 +1,7 @@
 import { ApolloServer } from 'apollo-server-express'
 import body from 'body-parser'
 import express, { Application, Request } from 'express'
+import getPort from 'get-port'
 import { graphqlUploadExpress } from 'graphql-upload'
 import { createServer, Server } from 'http'
 import { JsonObject } from 'type-fest'
@@ -34,17 +35,19 @@ type MockResult<Spec extends MockSpec> = {
 
 export function setupTestServer() {
   const ctx = {} as Context
-  beforeAll((done) => {
+  beforeAll(async (done) => {
+    const port = await getPort()
     ctx.server = express()
     ctx.server.use(body.json())
     ctx.nodeServer = createServer()
-    ctx.nodeServer.listen({ port: 3210 })
-    ctx.url = 'http://localhost:3210'
+    ctx.nodeServer.listen({ port })
     ctx.nodeServer.on('request', ctx.server)
     ctx.nodeServer.once('listening', done)
+    ctx.url = `http://localhost:${port}`
     ctx.res = (spec) => {
       const requests: CapturedRequest[] = []
       ctx.server.use('*', function mock(req, res) {
+        req.headers.host = 'DYNAMIC'
         requests.push({
           method: req.method,
           headers: req.headers,
@@ -105,7 +108,11 @@ export function createApolloServerContext({ typeDefs, resolvers }: ApolloServerC
     }
   })
 
-  afterEach((done) => ctx?.server.close(done))
+  afterEach(async () => {
+    await new Promise((res, rej) => {
+      ctx.server.close((e) => (e ? rej(e) : res()))
+    })
+  })
 
   return ctx
 }

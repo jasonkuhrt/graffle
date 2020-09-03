@@ -44,6 +44,8 @@ beforeEach(() => {
   ;(global as any).FormData = undefined
 })
 
+const fileName = 'upload.test.ts'
+
 test('file upload using global.FormData', async () => {
   ;(global as any).FormData = FormData
 
@@ -54,10 +56,10 @@ test('file upload using global.FormData', async () => {
   `
 
   const result = await request(ctx.url, query, {
-    file: createReadStream(join(__dirname, 'index.test.ts')),
+    file: createReadStream(join(__dirname, fileName)),
   })
 
-  expect(result).toEqual({ uploadFile: 'index.test.ts' })
+  expect(result).toEqual({ uploadFile: fileName })
 })
 
 test('file upload still works if no global.FormData provided', async () => {
@@ -68,8 +70,8 @@ test('file upload still works if no global.FormData provided', async () => {
   `
 
   const result = await request(ctx.url, query, {
-    file: createReadStream(join(__dirname, 'index.test.ts')),
+    file: createReadStream(join(__dirname, fileName)),
   })
 
-  expect(result).toEqual({ uploadFile: 'index.test.ts' })
+  expect(result).toEqual({ uploadFile: fileName })
 })
