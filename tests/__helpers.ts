@@ -1,5 +1,7 @@
+import { ApolloServer } from 'apollo-server-express'
 import body from 'body-parser'
 import express, { Application, Request } from 'express'
+import { graphqlUploadExpress } from 'graphql-upload'
 import { createServer, Server } from 'http'
 import { JsonObject } from 'type-fest'
 
@@ -69,6 +71,41 @@ export function setupTestServer() {
   afterAll((done) => {
     ctx.nodeServer.close(done)
   })
+
+  return ctx
+}
+
+type ApolloServerContextOptions = { typeDefs: string; resolvers: any }
+
+export async function startApolloServer({ typeDefs, resolvers }: ApolloServerContextOptions) {
+  const app = express()
+
+  const apolloServer = new ApolloServer({ typeDefs, resolvers, uploads: false })
+
+  app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }))
+  apolloServer.applyMiddleware({ app })
+
+  let server: Server
+
+  await new Promise<void>((resolve, reject) => {
+    server = app.listen(0, (err) => (err ? reject(err) : resolve()))
+  })
+
+  return server!
+}
+
+export function createApolloServerContext({ typeDefs, resolvers }: ApolloServerContextOptions) {
+  const ctx: { url: string; server: Server } = {} as any
+
+  beforeEach(async () => {
+    ctx.server = await startApolloServer({ typeDefs, resolvers })
+    const address = ctx.server.address()
+    if (typeof address === 'object') {
+      ctx.url = `http://localhost:${address.port}/graphql`
+    }
+  })
+
+  afterEach((done) => ctx?.server.close(done))
 
   return ctx
 }
