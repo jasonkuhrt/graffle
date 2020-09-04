@@ -12,7 +12,10 @@ type Context = {
   server: Application
   nodeServer: Server
   url: string
-  res: <S extends MockSpec>(spec: S) => MockResult<S>
+  /**
+   * Setup a response that will be sent to requests
+   */
+  res: <S extends MockSpec>(spec?: S) => MockResult<S>
 }
 
 type MockSpec = {
@@ -53,12 +56,12 @@ export function setupTestServer() {
           headers: req.headers,
           body: req.body,
         })
-        if (spec.headers) {
+        if (spec?.headers) {
           Object.entries(spec.headers).forEach(([name, value]) => {
             res.setHeader(name, value)
           })
         }
-        res.send(spec.body ?? {})
+        res.send(spec?.body ?? { data: {} })
       })
       return { spec, requests: requests as any } as any
     }

@@ -1,26 +1,27 @@
 import fetch from 'cross-fetch'
 import { print } from 'graphql/language/printer'
-
 import createRequestBody from './createRequestBody'
 import { ClientError, GraphQLError, RequestDocument, Variables } from './types'
 import { Headers, RequestInit, Response } from './types.dom'
 
 export { ClientError } from './types'
 
-const transformHeaders = (headers: RequestInit["headers"]): Record<string, string> => {
-  let oHeaders: Record<string, string> = {};
+const resolveHeaders = (headers: RequestInit['headers']): Record<string, string> => {
+  let oHeaders: Record<string, string> = {}
   if (headers) {
     if (headers instanceof Headers) {
-      headers.forEach((v, k) => { oHeaders[k] = v })
+      oHeaders = HeadersInstanceToPlainObject(headers)
     } else if (headers instanceof Array) {
-      headers.forEach(([k, v]) => { oHeaders[k] = v })
+      headers.forEach(([name, value]) => {
+        oHeaders[name] = value
+      })
     } else {
       oHeaders = headers as Record<string, string>
     }
   }
 
   return oHeaders
-};
+}
 
 /**
  * todo
@@ -38,15 +39,15 @@ export class GraphQLClient {
     query: string,
     variables?: V
   ): Promise<{ data?: T; extensions?: any; headers: Headers; status: number; errors?: GraphQLError[] }> {
-    const { headers, ...others } = this.options
-    const oHeaders = transformHeaders(headers)
+    let { headers, ...others } = this.options
     const body = createRequestBody(query, variables)
+    headers = resolveHeaders(headers)
 
     const response = await fetch(this.url, {
       method: 'POST',
       headers: {
         ...(typeof body === 'string' ? { 'Content-Type': 'application/json' } : {}),
-        ...oHeaders,
+        ...headers,
       },
       body,
       ...others,
@@ -67,20 +68,19 @@ export class GraphQLClient {
   }
 
   /**
-   * todo
+   * Send a GraphQL document to the server.
    */
   async request<T = any, V = Variables>(document: RequestDocument, variables?: V): Promise<T> {
-    const { headers, ...others } = this.options
-    const oHeaders = transformHeaders(headers)
+    let { headers, ...others } = this.options
+    headers = resolveHeaders(headers)
     const resolvedDoc = resolveRequestDocument(document)
-
     const body = createRequestBody(resolvedDoc, variables)
 
     const response = await fetch(this.url, {
       method: 'POST',
       headers: {
         ...(typeof body === 'string' ? { 'Content-Type': 'application/json' } : {}),
-        ...oHeaders,
+        ...headers,
       },
       body,
       ...others,
@@ -101,6 +101,9 @@ export class GraphQLClient {
     return this
   }
 
+  /**
+   * Attach a header to the client. All subsequent requests will have this header.
+   */
   setHeader(key: string, value: string): GraphQLClient {
     const { headers } = this.options
 
@@ -213,4 +216,15 @@ export function gql(chunks: TemplateStringsArray, ...variables: any[]): string {
     (accumulator, chunk, index) => `${accumulator}${chunk}${index in variables ? variables[index] : ''}`,
     ''
   )
+}
+
+/**
+ * Convert Headers instance into regular object
+ */
+function HeadersInstanceToPlainObject(headers: Response['headers']): Record<string, string> {
+  const o: any = {}
+  headers.forEach((v, k) => {
+    o[k] = v
+  })
+  return o
 }
