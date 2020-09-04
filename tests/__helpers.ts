@@ -93,8 +93,8 @@ export async function startApolloServer({ typeDefs, resolvers }: ApolloServerCon
 
   let server: Server
 
-  await new Promise<void>((resolve, reject) => {
-    server = app.listen(0, (err) => (err ? reject(err) : resolve()))
+  await new Promise<void>((resolve) => {
+    server = app.listen(0, resolve)
   })
 
   return server!
@@ -106,7 +106,7 @@ export function createApolloServerContext({ typeDefs, resolvers }: ApolloServerC
   beforeEach(async () => {
     ctx.server = await startApolloServer({ typeDefs, resolvers })
     const address = ctx.server.address()
-    if (typeof address === 'object') {
+    if (address && typeof address === 'object') {
       ctx.url = `http://localhost:${address.port}/graphql`
     }
   })
