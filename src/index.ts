@@ -1,4 +1,4 @@
-import fetch from 'cross-fetch'
+import crossFetch from 'cross-fetch'
 import { print } from 'graphql/language/printer'
 import createRequestBody from './createRequestBody'
 import { ClientError, GraphQLError, RequestDocument, Variables } from './types'
@@ -26,13 +26,23 @@ const resolveHeaders = (headers: RequestInit['headers']): Record<string, string>
 /**
  * todo
  */
-export class GraphQLClient {
+export class GraphQLClientBase {
   private url: string
   private options: RequestInit
+  private fetch: typeof globalThis.fetch
 
-  constructor(url: string, options?: RequestInit) {
+  constructor(
+    url: string,
+    {
+      fetch,
+      ...options
+    }: RequestInit & {
+      fetch: typeof globalThis.fetch
+    }
+  ) {
     this.url = url
-    this.options = options || {}
+    this.options = options
+    this.fetch = fetch
   }
 
   async rawRequest<T = any, V = Variables>(
@@ -43,7 +53,7 @@ export class GraphQLClient {
     const body = createRequestBody(query, variables)
     headers = resolveHeaders(headers)
 
-    const response = await fetch(this.url, {
+    const response = await this.fetch(this.url, {
       method: 'POST',
       headers: {
         ...(typeof body === 'string' ? { 'Content-Type': 'application/json' } : {}),
@@ -76,7 +86,7 @@ export class GraphQLClient {
     const resolvedDoc = resolveRequestDocument(document)
     const body = createRequestBody(resolvedDoc, variables)
 
-    const response = await fetch(this.url, {
+    const response = await this.fetch(this.url, {
       method: 'POST',
       headers: {
         ...(typeof body === 'string' ? { 'Content-Type': 'application/json' } : {}),
@@ -116,6 +126,15 @@ export class GraphQLClient {
     }
 
     return this
+  }
+}
+
+export class GraphQLClient extends GraphQLClientBase {
+  constructor(url: string, options?: RequestInit) {
+    super(url, {
+      ...options,
+      fetch: crossFetch,
+    })
   }
 }
 

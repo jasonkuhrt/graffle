@@ -184,17 +184,17 @@ async function main() {
   })
 
   const mutation = gql`
-      mutation AddMovie($title: String!, $releaseDate: Int!) {
-        insert_movies_one(object: { title: $title, releaseDate: $releaseDate }) {
-            title
-            releaseDate
-        }
+    mutation AddMovie($title: String!, $releaseDate: Int!) {
+      insert_movies_one(object: { title: $title, releaseDate: $releaseDate }) {
+        title
+        releaseDate
+      }
     }
   `
 
   const variables = {
     title: 'Inception',
-    releaseDate: 2010
+    releaseDate: 2010,
   }
   const data = await graphQLClient.request(mutation, variables)
 
@@ -203,7 +203,6 @@ async function main() {
 
 main().catch((error) => console.error(error))
 ```
-
 
 [TypeScript Source](examples/using-variables.ts)
 
@@ -373,6 +372,19 @@ request('/api/graphql', UploadUserAvatar, {
 ```
 
 [TypeScript Source](examples/receiving-a-raw-response)
+
+### Custom fetch implementation
+
+```js
+import { GraphQLClientBase, gql } from 'graphql-request'
+import customFetch from './custom-fetch'
+
+const client = new GraphQLClientBase(endpoint, {
+  credentials: 'include',
+  mode: 'cors',
+  fetch: customFetch,
+})
+```
 
 ### More examples coming soon...
 
