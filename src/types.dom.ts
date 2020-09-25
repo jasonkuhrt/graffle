@@ -294,6 +294,7 @@ export interface RequestInit {
   signal?: AbortSignal | null
   timeout?: number
   window?: any
+  fetch?: any
 }
 
 interface Body {
