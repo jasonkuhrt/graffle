@@ -39,11 +39,11 @@ export class GraphQLClient {
     query: string,
     variables?: V
   ): Promise<{ data?: T; extensions?: any; headers: Headers; status: number; errors?: GraphQLError[] }> {
-    let { headers, ...others } = this.options
+    let { headers, signRequest, ...others } = this.options
     const body = createRequestBody(query, variables)
     headers = resolveHeaders(headers)
 
-    const response = await fetch(this.url, {
+    const payload = {
       method: 'POST',
       headers: {
         ...(typeof body === 'string' ? { 'Content-Type': 'application/json' } : {}),
@@ -51,7 +51,11 @@ export class GraphQLClient {
       },
       body,
       ...others,
-    })
+    }
+
+    const fetchOptions = (signRequest) ? await signRequest(payload) : payload
+
+    const response = await fetch(this.url, fetchOptions)
 
     const result = await getResult(response)
 
