@@ -294,7 +294,7 @@ export interface RequestInit {
   signal?: AbortSignal | null
   timeout?: number
   window?: any,
-  signRequest?: (payload: RequestInit) => Promise<RequestInit> | RequestInit;
+  requestFormatter?: (payload: RequestInit) => Promise<RequestInit> | RequestInit;
 }
 
 interface Body {
