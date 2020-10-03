@@ -62,7 +62,7 @@ async function main() {
   const endpoint = 'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr'
 
   const graphQLClient = new GraphQLClient(endpoint, {
-    headers: {
+    Headers: {
       authorization: 'Bearer MY_TOKEN',
     },
   })
