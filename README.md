@@ -306,6 +306,41 @@ main().catch((error) => console.error(error))
 
 [TypeScript Source](examples/cookie-support-for-node)
 
+### Using a custom fetch method
+
+```sh
+npm install fetch-cookie
+```
+
+```js
+import { GraphQLClient, gql } from 'graphql-request'
+import crossFetch from 'cross-fetch';
+
+async function main() {
+  const endpoint = 'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr'
+
+  // a cookie jar scoped to the client object
+  const fetch = require('fetch-cookie')(crossFetch)
+  const graphQLClient = new GraphQLClient(endpoint, { fetch: fetch})
+
+  const query = gql`
+    {
+      Movie(title: "Inception") {
+        releaseDate
+        actors {
+          name
+        }
+      }
+    }
+  `
+
+  const data = await graphQLClient.rawRequest(query)
+  console.log(JSON.stringify(data, undefined, 2))
+}
+
+main().catch((error) => console.error(error))
+```
+
 ### Receiving a raw response
 
 The `request` method will return the `data` or `errors` key from the response.
