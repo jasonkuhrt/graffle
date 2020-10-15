@@ -1,17 +1,23 @@
-import crossFetch from 'cross-fetch'
+import crossFetch, * as CrossFetch from 'cross-fetch'
 import { print } from 'graphql/language/printer'
 import createRequestBody from './createRequestBody'
 import { ClientError, GraphQLError, RequestDocument, Variables } from './types'
-import { Headers, RequestInit, Response } from './types.dom'
+import * as Dom from './types.dom'
 
 export { ClientError } from './types'
 
-const resolveHeaders = (headers: RequestInit['headers']): Record<string, string> => {
+/**
+ * Convert the given headers configuration into a plain object.
+ */
+const resolveHeaders = (headers: Dom.RequestInit['headers']): Record<string, string> => {
   let oHeaders: Record<string, string> = {}
   if (headers) {
-    if (headers instanceof Headers) {
+    if (
+      (typeof Headers !== 'undefined' && headers instanceof Headers) ||
+      headers instanceof CrossFetch.Headers
+    ) {
       oHeaders = HeadersInstanceToPlainObject(headers)
-    } else if (headers instanceof Array) {
+    } else if (Array.isArray(headers)) {
       headers.forEach(([name, value]) => {
         oHeaders[name] = value
       })
@@ -28,9 +34,9 @@ const resolveHeaders = (headers: RequestInit['headers']): Record<string, string>
  */
 export class GraphQLClient {
   private url: string
-  private options: RequestInit
+  private options: Dom.RequestInit
 
-  constructor(url: string, options?: RequestInit) {
+  constructor(url: string, options?: Dom.RequestInit) {
     this.url = url
     this.options = options || {}
   }
@@ -38,7 +44,7 @@ export class GraphQLClient {
   async rawRequest<T = any, V = Variables>(
     query: string,
     variables?: V
-  ): Promise<{ data?: T; extensions?: any; headers: Headers; status: number; errors?: GraphQLError[] }> {
+  ): Promise<{ data?: T; extensions?: any; headers: Dom.Headers; status: number; errors?: GraphQLError[] }> {
     let { headers, fetch: localFetch = crossFetch, ...others } = this.options
     const body = createRequestBody(query, variables)
     headers = resolveHeaders(headers)
@@ -96,7 +102,7 @@ export class GraphQLClient {
     }
   }
 
-  setHeaders(headers: RequestInit['headers']): GraphQLClient {
+  setHeaders(headers: Dom.RequestInit['headers']): GraphQLClient {
     this.options.headers = headers
     return this
   }
@@ -126,7 +132,7 @@ export async function rawRequest<T = any, V = Variables>(
   url: string,
   query: string,
   variables?: V
-): Promise<{ data?: T; extensions?: any; headers: Headers; status: number; errors?: GraphQLError[] }> {
+): Promise<{ data?: T; extensions?: any; headers: Dom.Headers; status: number; errors?: GraphQLError[] }> {
   const client = new GraphQLClient(url)
   return client.rawRequest<T, V>(query, variables)
 }
@@ -179,7 +185,7 @@ export default request
 /**
  * todo
  */
-function getResult(response: Response): Promise<any> {
+function getResult(response: Dom.Response): Promise<any> {
   const contentType = response.headers.get('Content-Type')
   if (contentType && contentType.startsWith('application/json')) {
     return response.json()
@@ -221,7 +227,7 @@ export function gql(chunks: TemplateStringsArray, ...variables: any[]): string {
 /**
  * Convert Headers instance into regular object
  */
-function HeadersInstanceToPlainObject(headers: Response['headers']): Record<string, string> {
+function HeadersInstanceToPlainObject(headers: Dom.Response['headers']): Record<string, string> {
   const o: any = {}
   headers.forEach((v, k) => {
     o[k] = v

@@ -37,7 +37,9 @@
     "format": "prettier --write .",
     "prepublishOnly": "yarn build",
     "build": "rm -rf dist && tsc -d",
-    "test": "jest",
+    "test:node": "jest --testEnvironment node",
+    "test:dom": "jest --testEnvironment jsdom",
+    "test": "yarn test:node && yarn test:dom",
     "release:stable": "dripip stable",
     "release:preview": "dripip preview",
     "release:pr": "dripip pr"

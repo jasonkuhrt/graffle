@@ -1,3 +1,4 @@
+import * as CrossFetch from 'cross-fetch'
 import { GraphQLClient } from '../src'
 import { setupTestServer } from './__helpers'
 
@@ -15,7 +16,9 @@ describe('using class', () => {
   describe('.setHeaders() sets headers that get sent to the server', () => {
     test('with headers instance', async () => {
       const client = new GraphQLClient(ctx.url)
-      client.setHeaders(new Headers({ 'x-foo': 'bar' }))
+      // Headers not defined globally in Node
+      const H = typeof Headers === 'undefined' ? CrossFetch.Headers : Headers
+      client.setHeaders(new H({ 'x-foo': 'bar' }))
       const mock = ctx.res()
       await client.request(`{ me { id } }`)
       expect(mock.requests[0].headers['x-foo']).toEqual('bar')
