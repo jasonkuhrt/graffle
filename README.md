@@ -87,7 +87,7 @@ main().catch((error) => console.error(error))
 
 [TypeScript Source](examples/authentication-via-http-header.ts)
 
-#### Dynamically setting headers
+#### Incrementally setting headers
 
 If you want to set headers after the GraphQLClient has been initialised, you can use the `setHeader()` or `setHeaders()` functions.
 
@@ -106,7 +106,7 @@ client.setHeaders({
 })
 ```
 
-### Passing more options to fetch
+### Passing more options to `fetch`
 
 ```js
 import { GraphQLClient, gql } from 'graphql-request'
@@ -139,7 +139,7 @@ main().catch((error) => console.error(error))
 
 [TypeScript Source](examples/passing-more-options-to-fetch.ts)
 
-### Using variables
+### Using GraphQL Document variables
 
 ```js
 import { request, gql } from 'graphql-request'
@@ -169,7 +169,7 @@ async function main() {
 main().catch((error) => console.error(error))
 ```
 
-### Mutations
+### GraphQL Mutations
 
 ```js
 import { GraphQLClient, gql } from 'graphql-request'
@@ -184,17 +184,17 @@ async function main() {
   })
 
   const mutation = gql`
-      mutation AddMovie($title: String!, $releaseDate: Int!) {
-        insert_movies_one(object: { title: $title, releaseDate: $releaseDate }) {
-            title
-            releaseDate
-        }
+    mutation AddMovie($title: String!, $releaseDate: Int!) {
+      insert_movies_one(object: { title: $title, releaseDate: $releaseDate }) {
+        title
+        releaseDate
+      }
     }
   `
 
   const variables = {
     title: 'Inception',
-    releaseDate: 2010
+    releaseDate: 2010,
   }
   const data = await graphQLClient.request(mutation, variables)
 
@@ -203,7 +203,6 @@ async function main() {
 
 main().catch((error) => console.error(error))
 ```
-
 
 [TypeScript Source](examples/using-variables.ts)
 
@@ -306,7 +305,7 @@ main().catch((error) => console.error(error))
 
 [TypeScript Source](examples/cookie-support-for-node)
 
-### Using a custom fetch method
+### Using a custom `fetch` method
 
 ```sh
 npm install fetch-cookie
@@ -314,14 +313,14 @@ npm install fetch-cookie
 
 ```js
 import { GraphQLClient, gql } from 'graphql-request'
-import crossFetch from 'cross-fetch';
+import crossFetch from 'cross-fetch'
 
 async function main() {
   const endpoint = 'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr'
 
   // a cookie jar scoped to the client object
   const fetch = require('fetch-cookie')(crossFetch)
-  const graphQLClient = new GraphQLClient(endpoint, { fetch: fetch})
+  const graphQLClient = new GraphQLClient(endpoint, { fetch })
 
   const query = gql`
     {
@@ -389,7 +388,7 @@ request('/api/graphql', UploadUserAvatar, {
 })
 ```
 
-#### NodeJS
+#### Node
 
 ```js
 import { createReadStream } from 'fs'
@@ -408,11 +407,6 @@ request('/api/graphql', UploadUserAvatar, {
 ```
 
 [TypeScript Source](examples/receiving-a-raw-response)
-
-### More examples coming soon...
-
-- Fragments
-- Using [`graphql-tag`](https://github.com/apollographql/graphql-tag)
 
 ## FAQ
 

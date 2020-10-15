@@ -10,6 +10,7 @@ jobs:
     strategy:
       matrix:
         node: [10.x, 12.x, 14.x]
+        environment: [dom, node]
     name: Node ${{ matrix.node }}
     steps:
       - uses: actions/checkout@v2
@@ -28,4 +29,4 @@ jobs:
             ${{ runner.os }}-yarn-
       - run: yarn install
       - run: yarn build
-      - run: yarn test
+      - run: yarn test:${{ matrix.environment }}
