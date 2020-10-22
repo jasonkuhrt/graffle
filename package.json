@@ -28,7 +28,7 @@
     "url": "https://github.com/prisma/graphql-request/issues"
   },
   "engines": {
-    "node": "10.x || 12.x || 14.x"
+    "node": "10.x || 12.x || 14.x || 15.x"
   },
   "homepage": "https://github.com/prisma/graphql-request",
   "scripts": {
