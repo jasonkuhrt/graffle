@@ -51,6 +51,15 @@ const client = new GraphQLClient(endpoint, { headers: {} })
 client.request(query, variables).then((data) => console.log(data))
 ```
 
+## Node Version Support
+
+We only officially support [LTS Node versions](https://github.com/nodejs/Release#release-schedule). We also make an effort to support two additional versions:
+
+1. The latest even Node version if it is not LTS already.
+2. The odd Node version directly following the latest even version.
+
+You are free to try using other versions of Node (e.g. `13.x`) with `graphql-request` but at your own risk.
+
 ## Examples
 
 ### Authentication via HTTP header
