@@ -62,7 +62,8 @@ You are free to try using other versions of Node (e.g. `13.x`) with `graphql-req
 
 ## Examples
 
-### Authentication via HTTP header
+<details>
+<summary>Authentication via HTTP header</summary>
 
 ```js
 import { GraphQLClient, gql } from 'graphql-request'
@@ -95,8 +96,10 @@ main().catch((error) => console.error(error))
 ```
 
 [TypeScript Source](examples/authentication-via-http-header.ts)
+</details>
 
-#### Incrementally setting headers
+<details>
+<summary>Incrementally setting headers</summary>
 
 If you want to set headers after the GraphQLClient has been initialised, you can use the `setHeader()` or `setHeaders()` functions.
 
@@ -114,8 +117,10 @@ client.setHeaders({
   anotherheader: 'header_value'
 })
 ```
+</details>
 
-### Passing more options to `fetch`
+<details>
+<summary>Passing more options to `fetch`</summary>
 
 ```js
 import { GraphQLClient, gql } from 'graphql-request'
@@ -147,8 +152,10 @@ main().catch((error) => console.error(error))
 ```
 
 [TypeScript Source](examples/passing-more-options-to-fetch.ts)
+</details>
 
-### Using GraphQL Document variables
+<details>
+<summary>Using GraphQL Document variables</summary>
 
 ```js
 import { request, gql } from 'graphql-request'
@@ -178,7 +185,10 @@ async function main() {
 main().catch((error) => console.error(error))
 ```
 
-### GraphQL Mutations
+</details>
+
+<details>
+<summary>GraphQL Mutations</summary>
 
 ```js
 import { GraphQLClient, gql } from 'graphql-request'
@@ -215,7 +225,10 @@ main().catch((error) => console.error(error))
 
 [TypeScript Source](examples/using-variables.ts)
 
-### Error handling
+</details>
+
+<details>
+<summary>Error handling</summary>
 
 ```js
 import { request, gql } from 'graphql-request'
@@ -248,7 +261,10 @@ main().catch((error) => console.error(error))
 
 [TypeScript Source](examples/error-handling)
 
-### Using `require` instead of `import`
+</details>
+
+<details>
+<summary>Using `require` instead of `import`</summary>
 
 ```js
 const { request, gql } = require('graphql-request')
@@ -274,7 +290,10 @@ async function main() {
 main().catch((error) => console.error(error))
 ```
 
-### Cookie support for `node`
+</details>
+
+<details>
+<summary>Cookie support for `node`</summary>
 
 ```sh
 npm install fetch-cookie
@@ -314,7 +333,10 @@ main().catch((error) => console.error(error))
 
 [TypeScript Source](examples/cookie-support-for-node)
 
-### Using a custom `fetch` method
+</details>
+
+<details>
+<summary>Using a custom `fetch` method</summary>
 
 ```sh
 npm install fetch-cookie
@@ -349,7 +371,11 @@ async function main() {
 main().catch((error) => console.error(error))
 ```
 
-### Receiving a raw response
+</details>
+
+
+<details>
+<summary>Receiving a raw response</summary>
 
 The `request` method will return the `data` or `errors` key from the response.
 If you need to access the `extensions` key you can use the `rawRequest` method:
@@ -378,7 +404,10 @@ async function main() {
 main().catch((error) => console.error(error))
 ```
 
-### File Upload
+</details>
+
+<details>
+<summary>File Upload</summary>
 
 #### Browser
 
@@ -416,6 +445,15 @@ request('/api/graphql', UploadUserAvatar, {
 ```
 
 [TypeScript Source](examples/receiving-a-raw-response)
+
+</details>
+
+
+## Community
+
+### GraphQL Code Generator's GraphQL-Request TypeScript Plugin
+
+A [GraphQL-Codegen plugin](https://graphql-code-generator.com/docs/plugins/typescript-graphql-request) that generates a `graphql-request` ready-to-use SDK, which is fully-typed.
 
 ## FAQ
 
