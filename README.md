@@ -4,6 +4,38 @@ Minimal GraphQL client supporting Node and browsers for scripts or simple apps
 
 ![GitHub Action](https://github.com/prisma-labs/graphql-request/workflows/trunk/badge.svg) [![npm version](https://badge.fury.io/js/graphql-request.svg)](https://badge.fury.io/js/graphql-request)
 
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+
+- [Features](#features)
+- [Install](#install)
+- [Quickstart](#quickstart)
+- [Usage](#usage)
+- [Node Version Support](#node-version-support)
+- [Community](#community)
+    - [GraphQL Code Generator's GraphQL-Request TypeScript Plugin](#graphql-code-generators-graphql-request-typescript-plugin)
+- [Examples](#examples)
+  - [Authentication via HTTP header](#authentication-via-http-header)
+    - [Incrementally setting headers](#incrementally-setting-headers)
+  - [Passing more options to `fetch`](#passing-more-options-to-fetch)
+  - [Using GraphQL Document variables](#using-graphql-document-variables)
+  - [GraphQL Mutations](#graphql-mutations)
+  - [Error handling](#error-handling)
+  - [Using `require` instead of `import`](#using-require-instead-of-import)
+  - [Cookie support for `node`](#cookie-support-for-node)
+  - [Using a custom `fetch` method](#using-a-custom-fetch-method)
+  - [Receiving a raw response](#receiving-a-raw-response)
+  - [File Upload](#file-upload)
+    - [Browser](#browser)
+    - [Node](#node)
+- [FAQ](#faq)
+    - [Why do I have to install `graphql`?](#why-do-i-have-to-install-graphql)
+    - [Do I need to wrap my GraphQL documents inside the `gql` template exported by `graphql-request`?](#do-i-need-to-wrap-my-graphql-documents-inside-the-gql-template-exported-by-graphql-request)
+    - [What's the difference between `graphql-request`, Apollo and Relay?](#whats-the-difference-between-graphql-request-apollo-and-relay)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 ## Features
 
 - Most **simple & lightweight** GraphQL client

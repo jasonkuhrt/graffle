@@ -29,6 +29,7 @@
   },
   "homepage": "https://github.com/prisma/graphql-request",
   "scripts": {
+    "build:docs": "doctoc README.md --notitle",
     "dev": "rm -rf dist && tsc --watch",
     "dev:test": "jest --watch",
     "format": "prettier --write .",
@@ -59,6 +60,7 @@
     "apollo-server-express": "^2.18.2",
     "body-parser": "^1.19.0",
     "bundlesize": "^0.18.0",
+    "doctoc": "^1.4.0",
     "dripip": "^0.10.0",
     "express": "^4.17.1",
     "fetch-cookie": "^0.10.1",
