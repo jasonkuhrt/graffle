@@ -60,10 +60,15 @@ We only officially support [LTS Node versions](https://github.com/nodejs/Release
 
 You are free to try using other versions of Node (e.g. `13.x`) with `graphql-request` but at your own risk.
 
+## Community
+
+#### GraphQL Code Generator's GraphQL-Request TypeScript Plugin
+
+A [GraphQL-Codegen plugin](https://graphql-code-generator.com/docs/plugins/typescript-graphql-request) that generates a `graphql-request` ready-to-use SDK, which is fully-typed.
+
 ## Examples
 
-<details>
-<summary>Authentication via HTTP header</summary>
+### Authentication via HTTP header
 
 ```js
 import { GraphQLClient, gql } from 'graphql-request'
@@ -96,10 +101,8 @@ main().catch((error) => console.error(error))
 ```
 
 [TypeScript Source](examples/authentication-via-http-header.ts)
-</details>
 
-<details>
-<summary>Incrementally setting headers</summary>
+#### Incrementally setting headers
 
 If you want to set headers after the GraphQLClient has been initialised, you can use the `setHeader()` or `setHeaders()` functions.
 
@@ -117,10 +120,8 @@ client.setHeaders({
   anotherheader: 'header_value'
 })
 ```
-</details>
 
-<details>
-<summary>Passing more options to `fetch`</summary>
+### Passing more options to `fetch`
 
 ```js
 import { GraphQLClient, gql } from 'graphql-request'
@@ -152,10 +153,8 @@ main().catch((error) => console.error(error))
 ```
 
 [TypeScript Source](examples/passing-more-options-to-fetch.ts)
-</details>
 
-<details>
-<summary>Using GraphQL Document variables</summary>
+### Using GraphQL Document variables
 
 ```js
 import { request, gql } from 'graphql-request'
@@ -185,10 +184,7 @@ async function main() {
 main().catch((error) => console.error(error))
 ```
 
-</details>
-
-<details>
-<summary>GraphQL Mutations</summary>
+### GraphQL Mutations
 
 ```js
 import { GraphQLClient, gql } from 'graphql-request'
@@ -225,10 +221,7 @@ main().catch((error) => console.error(error))
 
 [TypeScript Source](examples/using-variables.ts)
 
-</details>
-
-<details>
-<summary>Error handling</summary>
+### Error handling
 
 ```js
 import { request, gql } from 'graphql-request'
@@ -259,12 +252,9 @@ async function main() {
 main().catch((error) => console.error(error))
 ```
 
-[TypeScript Source](examples/error-handling)
+[TypeScript Source](examples/error-handling.ts)
 
-</details>
-
-<details>
-<summary>Using `require` instead of `import`</summary>
+### Using `require` instead of `import`
 
 ```js
 const { request, gql } = require('graphql-request')
@@ -290,10 +280,7 @@ async function main() {
 main().catch((error) => console.error(error))
 ```
 
-</details>
-
-<details>
-<summary>Cookie support for `node`</summary>
+### Cookie support for `node`
 
 ```sh
 npm install fetch-cookie
@@ -331,12 +318,9 @@ async function main() {
 main().catch((error) => console.error(error))
 ```
 
-[TypeScript Source](examples/cookie-support-for-node)
+[TypeScript Source](examples/cookie-support-for-node.ts)
 
-</details>
-
-<details>
-<summary>Using a custom `fetch` method</summary>
+### Using a custom `fetch` method
 
 ```sh
 npm install fetch-cookie
@@ -371,11 +355,7 @@ async function main() {
 main().catch((error) => console.error(error))
 ```
 
-</details>
-
-
-<details>
-<summary>Receiving a raw response</summary>
+### Receiving a raw response
 
 The `request` method will return the `data` or `errors` key from the response.
 If you need to access the `extensions` key you can use the `rawRequest` method:
@@ -404,10 +384,7 @@ async function main() {
 main().catch((error) => console.error(error))
 ```
 
-</details>
-
-<details>
-<summary>File Upload</summary>
+### File Upload
 
 #### Browser
 
@@ -444,16 +421,7 @@ request('/api/graphql', UploadUserAvatar, {
 })
 ```
 
-[TypeScript Source](examples/receiving-a-raw-response)
-
-</details>
-
-
-## Community
-
-### GraphQL Code Generator's GraphQL-Request TypeScript Plugin
-
-A [GraphQL-Codegen plugin](https://graphql-code-generator.com/docs/plugins/typescript-graphql-request) that generates a `graphql-request` ready-to-use SDK, which is fully-typed.
+[TypeScript Source](examples/receiving-a-raw-response.ts)
 
 ## FAQ
 
