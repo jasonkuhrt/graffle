@@ -43,17 +43,19 @@ export class GraphQLClient {
 
   async rawRequest<T = any, V = Variables>(
     query: string,
-    variables?: V
+    variables?: V,
+    requestHeaders?: Dom.RequestInit['headers']
   ): Promise<{ data?: T; extensions?: any; headers: Dom.Headers; status: number; errors?: GraphQLError[] }> {
     let { headers, fetch: localFetch = crossFetch, ...others } = this.options
     const body = createRequestBody(query, variables)
-    headers = resolveHeaders(headers)
+ 
 
     const response = await localFetch(this.url, {
       method: 'POST',
       headers: {
         ...(typeof body === 'string' ? { 'Content-Type': 'application/json' } : {}),
-        ...headers,
+        ...resolveHeaders(headers),
+        ...resolveHeaders(requestHeaders)
       },
       body,
       ...others,
@@ -76,9 +78,9 @@ export class GraphQLClient {
   /**
    * Send a GraphQL document to the server.
    */
-  async request<T = any, V = Variables>(document: RequestDocument, variables?: V): Promise<T> {
+  async request<T = any, V = Variables>(document: RequestDocument, variables?: V, 
+    requestHeaders?: Dom.RequestInit['headers']): Promise<T> {
     let { headers, fetch: localFetch = crossFetch, ...others } = this.options
-    headers = resolveHeaders(headers)
     const resolvedDoc = resolveRequestDocument(document)
     const body = createRequestBody(resolvedDoc, variables)
 
@@ -86,7 +88,8 @@ export class GraphQLClient {
       method: 'POST',
       headers: {
         ...(typeof body === 'string' ? { 'Content-Type': 'application/json' } : {}),
-        ...headers,
+        ...resolveHeaders(headers),
+        ...resolveHeaders(requestHeaders)
       },
       body,
       ...others,
