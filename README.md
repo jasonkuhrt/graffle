@@ -149,7 +149,7 @@ client.setHeader('authorization', 'Bearer MY_TOKEN')
 
 // Override all existing headers
 client.setHeaders({
-  authorization: 'Bearer MY_TOKEN'
+  authorization: 'Bearer MY_TOKEN',
   anotherheader: 'header_value'
 })
 ```
