@@ -184,7 +184,7 @@ const requestHeaders = {
 }
 
 // Overrides the clients headers with the passed values
-const data = await graphQLClient.request(query, variables, requestHeaders)
+const data = await client.request(query, variables, requestHeaders)
 ```
 
 ### Passing more options to `fetch`
