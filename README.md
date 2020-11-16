@@ -18,6 +18,7 @@ Minimal GraphQL client supporting Node and browsers for scripts or simple apps
 - [Examples](#examples)
   - [Authentication via HTTP header](#authentication-via-http-header)
     - [Incrementally setting headers](#incrementally-setting-headers)
+  - [Passing Headers in each request](#passing-headers-in-each-request)
   - [Passing more options to `fetch`](#passing-more-options-to-fetch)
   - [Using GraphQL Document variables](#using-graphql-document-variables)
   - [GraphQL Mutations](#graphql-mutations)
@@ -151,6 +152,39 @@ client.setHeaders({
   authorization: 'Bearer MY_TOKEN'
   anotherheader: 'header_value'
 })
+```
+
+#### passing-headers-in-each-request
+
+It is possible to pass custom headers for each request. `request()` and `rawRequest()` accept a header object as the third parameter
+
+
+```js
+import { GraphQLClient } from 'graphql-request'
+
+const client = new GraphQLClient(endpoint)
+
+const query = gql`
+  query getMovie($title: String!) {
+    Movie(title: $title) {
+      releaseDate
+      actors {
+        name
+      }
+    }
+  }
+`
+
+const variables = {
+  title: 'Inception',
+}
+
+const requestHeaders = {
+  authorization: 'Bearer MY_TOKEN'
+}
+
+// Overrides the clients headers with the passed values
+const data = await client.request(query, variables, requestHeaders)
 ```
 
 ### Passing more options to `fetch`
