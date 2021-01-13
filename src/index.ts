@@ -101,7 +101,10 @@ export class GraphQLClient {
       return result.data
     } else {
       const errorResult = typeof result === 'string' ? { error: result } : result
-      throw new ClientError({ ...errorResult, status: response.status }, { query: resolvedDoc, variables })
+      throw new ClientError(
+        { ...errorResult, status: response.status, headers: response.headers },
+        { query: resolvedDoc, variables }
+      )
     }
   }
 
