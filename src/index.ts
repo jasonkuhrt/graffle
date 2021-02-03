@@ -45,7 +45,7 @@ export class GraphQLClient {
     query: string,
     variables?: V,
     requestHeaders?: Dom.RequestInit['headers']
-  ): Promise<{ data?: T; extensions?: any; headers: Dom.Headers; status: number; errors?: GraphQLError[] }> {
+  ): Promise<{ data?: T; extensions?: any; headers: Dom.Headers; status: number; }> {
     let { headers, fetch: localFetch = crossFetch, ...others } = this.options
     const body = createRequestBody(query, variables)
  
@@ -78,8 +78,11 @@ export class GraphQLClient {
   /**
    * Send a GraphQL document to the server.
    */
-  async request<T = any, V = Variables>(document: RequestDocument, variables?: V, 
-    requestHeaders?: Dom.RequestInit['headers']): Promise<T> {
+  async request<T = any, V = Variables>(
+    document: RequestDocument,
+    variables?: V, 
+    requestHeaders?: Dom.RequestInit['headers']
+  ): Promise<T> {
     let { headers, fetch: localFetch = crossFetch, ...others } = this.options
     const resolvedDoc = resolveRequestDocument(document)
     const body = createRequestBody(resolvedDoc, variables)
@@ -138,7 +141,7 @@ export async function rawRequest<T = any, V = Variables>(
   url: string,
   query: string,
   variables?: V
-): Promise<{ data?: T; extensions?: any; headers: Dom.Headers; status: number; errors?: GraphQLError[] }> {
+): Promise<{ data?: T; extensions?: any; headers: Dom.Headers; status: number; }> {
   const client = new GraphQLClient(url)
   return client.rawRequest<T, V>(query, variables)
 }
