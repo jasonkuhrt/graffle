@@ -1,6 +1,6 @@
 import * as CrossFetch from 'cross-fetch'
 import * as Dom from '../src/types.dom'
-import { GraphQLClient } from '../src'
+import { GraphQLClient, request } from '../src'
 import { setupTestServer } from './__helpers'
 
 const ctx = setupTestServer()
@@ -92,5 +92,20 @@ describe('using class', () => {
       });
 
     })
+  })
+})
+
+describe('using request function', () => {
+  describe.each([
+    [new H({ 'x-request-foo': 'request-bar' })],
+    [{ 'x-request-foo': 'request-bar' }],
+    [[['x-request-foo', 'request-bar']]]
+  ])('request unique header with request', (headerCase: Dom.RequestInit['headers']) => {
+    test('sets header', async () => {
+      const mock = ctx.res()
+      await request(ctx.url, `{ me { id } }`, {}, headerCase)
+
+      expect(mock.requests[0].headers['x-request-foo']).toEqual('request-bar')
+    });
   })
 })

@@ -180,10 +180,11 @@ export async function rawRequest<T = any, V = Variables>(
 export async function request<T = any, V = Variables>(
   url: string,
   document: RequestDocument,
-  variables?: V
+  variables?: V,
+  requestHeaders?: Dom.RequestInit['headers']
 ): Promise<T> {
   const client = new GraphQLClient(url)
-  return client.request<T, V>(document, variables)
+  return client.request<T, V>(document, variables, requestHeaders)
 }
 
 export default request
