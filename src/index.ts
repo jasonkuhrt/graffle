@@ -48,7 +48,6 @@ export class GraphQLClient {
   ): Promise<{ data?: T; extensions?: any; headers: Dom.Headers; status: number; }> {
     let { headers, fetch: localFetch = crossFetch, ...others } = this.options
     const body = createRequestBody(query, variables)
- 
 
     const response = await localFetch(this.url, {
       method: 'POST',
@@ -80,7 +79,7 @@ export class GraphQLClient {
    */
   async request<T = any, V = Variables>(
     document: RequestDocument,
-    variables?: V, 
+    variables?: V,
     requestHeaders?: Dom.RequestInit['headers']
   ): Promise<T> {
     let { headers, fetch: localFetch = crossFetch, ...others } = this.options
@@ -140,10 +139,11 @@ export class GraphQLClient {
 export async function rawRequest<T = any, V = Variables>(
   url: string,
   query: string,
-  variables?: V
+  variables?: V,
+  requestHeaders?: Dom.RequestInit['headers']
 ): Promise<{ data?: T; extensions?: any; headers: Dom.Headers; status: number; }> {
   const client = new GraphQLClient(url)
-  return client.rawRequest<T, V>(query, variables)
+  return client.rawRequest<T, V>(query, variables, requestHeaders)
 }
 
 /**
