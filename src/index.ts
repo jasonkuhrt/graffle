@@ -45,7 +45,7 @@ export class GraphQLClient {
     query: string,
     variables?: V,
     requestHeaders?: Dom.RequestInit['headers']
-  ): Promise<{ data?: T; extensions?: any; headers: Dom.Headers; status: number; }> {
+  ): Promise<{ data: T; extensions?: any; headers: Dom.Headers; status: number }> {
     let { headers, fetch: localFetch = crossFetch, ...others } = this.options
     const body = createRequestBody(query, variables)
 
@@ -57,7 +57,7 @@ export class GraphQLClient {
         ...resolveHeaders(requestHeaders)
       },
       body,
-      ...others,
+      ...others
     })
 
     const result = await getResult(response)
@@ -82,32 +82,9 @@ export class GraphQLClient {
     variables?: V,
     requestHeaders?: Dom.RequestInit['headers']
   ): Promise<T> {
-    let { headers, fetch: localFetch = crossFetch, ...others } = this.options
-    const resolvedDoc = resolveRequestDocument(document)
-    const body = createRequestBody(resolvedDoc, variables)
-
-    const response = await localFetch(this.url, {
-      method: 'POST',
-      headers: {
-        ...(typeof body === 'string' ? { 'Content-Type': 'application/json' } : {}),
-        ...resolveHeaders(headers),
-        ...resolveHeaders(requestHeaders)
-      },
-      body,
-      ...others,
-    })
-
-    const result = await getResult(response)
-
-    if (response.ok && !result.errors && result.data) {
-      return result.data
-    } else {
-      const errorResult = typeof result === 'string' ? { error: result } : result
-      throw new ClientError(
-        { ...errorResult, status: response.status, headers: response.headers },
-        { query: resolvedDoc, variables }
-      )
-    }
+    const query = resolveRequestDocument(document)
+    const { data } = await this.rawRequest<T, V>(query, variables, requestHeaders)
+    return data
   }
 
   setHeaders(headers: Dom.RequestInit['headers']): GraphQLClient {
@@ -141,7 +118,7 @@ export async function rawRequest<T = any, V = Variables>(
   query: string,
   variables?: V,
   requestHeaders?: Dom.RequestInit['headers']
-): Promise<{ data?: T; extensions?: any; headers: Dom.Headers; status: number; }> {
+): Promise<{ data: T; extensions?: any; headers: Dom.Headers; status: number }> {
   const client = new GraphQLClient(url)
   return client.rawRequest<T, V>(query, variables, requestHeaders)
 }
@@ -210,7 +187,6 @@ function getResult(response: Dom.Response): Promise<any> {
 
 function resolveRequestDocument(document: RequestDocument): string {
   if (typeof document === 'string') return document
-
   return print(document)
 }
 
