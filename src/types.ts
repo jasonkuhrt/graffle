@@ -4,8 +4,9 @@ export type Variables = { [key: string]: any }
 
 export interface GraphQLError {
   message: string
-  locations: { line: number; column: number }[]
-  path: string[]
+  locations?: { line: number; column: number }[]
+  path?: string[]
+  extensions?: any
 }
 
 export interface GraphQLResponse<T = any> {
