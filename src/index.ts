@@ -1,7 +1,7 @@
 import crossFetch, * as CrossFetch from 'cross-fetch'
 import { print } from 'graphql/language/printer'
 import createRequestBody from './createRequestBody'
-import { ClientError, GraphQLError, RequestDocument, Variables } from './types'
+import { ClientError, RequestDocument, Variables } from './types'
 import * as Dom from './types.dom'
 
 export { ClientError } from './types'
@@ -30,6 +30,62 @@ const resolveHeaders = (headers: Dom.RequestInit['headers']): Record<string, str
 }
 
 /**
+ * Fetch data using POST method
+ */
+const post = async <V = Variables>(
+  url: string,
+  query: string,
+  fetch: any,
+  options: Dom.RequestInit,
+  variables?: V,
+  headers?: HeadersInit,
+  requestHeaders?: Dom.RequestInit['headers'],
+) => {
+  const body = createRequestBody(query, variables)
+
+  return await fetch(url, {
+    method: 'POST',
+    headers: {
+      ...(typeof body === 'string' ? { 'Content-Type': 'application/json' } : {}),
+      ...resolveHeaders(headers),
+      ...resolveHeaders(requestHeaders)
+    },
+    body,
+    ...options
+  })
+}
+
+/**
+ * Fetch data using GET method
+ */
+const get = async <V = Variables>(
+  url: string,
+  query: string,
+  fetch: any,
+  options: Dom.RequestInit,
+  variables?: V,
+  headers?: HeadersInit,
+  requestHeaders?: Dom.RequestInit['headers'],
+) => {
+  const search: string[] = [
+    `query=${encodeURIComponent(query.replace(/([\s,]|#[^\n\r]+)+/g, ' ').trim())}`,
+  ]
+
+  if (variables) {
+    search.push(`variables=${encodeURIComponent(JSON.stringify(variables))}`)
+  }
+
+  return await fetch(`${url}?${search.join('&')}`, {
+    method: 'GET',
+    headers: {
+      ...resolveHeaders(headers),
+      ...resolveHeaders(requestHeaders)
+    },
+    ...options
+  })
+}
+
+/**
  * todo
  */
 export class GraphQLClient {
@@ -46,20 +102,10 @@ export class GraphQLClient {
     variables?: V,
     requestHeaders?: Dom.RequestInit['headers']
   ): Promise<{ data: T; extensions?: any; headers: Dom.Headers; status: number }> {
-    let { headers, fetch: localFetch = crossFetch, ...others } = this.options
-    const body = createRequestBody(query, variables)
+    let { headers, fetch: localFetch = crossFetch, method = 'POST',  ...others } = this.options
 
-    const response = await localFetch(this.url, {
-      method: 'POST',
-      headers: {
-        ...(typeof body === 'string' ? { 'Content-Type': 'application/json' } : {}),
-        ...resolveHeaders(headers),
-        ...resolveHeaders(requestHeaders)
-      },
-      body,
-      ...others
-    })
-
+    const fetcher = method.toUpperCase() === 'POST' ? post : get
+    const response = await fetcher(this.url, query, localFetch, others, variables, headers, requestHeaders)
     const result = await getResult(response)
 
     if (response.ok && !result.errors && result.data) {
