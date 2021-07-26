@@ -1,4 +1,5 @@
 import crossFetch, * as CrossFetch from 'cross-fetch'
+import { OperationDefinitionNode } from 'graphql/language/ast'
 import { print } from 'graphql/language/printer'
 import createRequestBody from './createRequestBody'
 import { ClientError, RequestDocument, Variables } from './types'
@@ -32,56 +33,70 @@ const resolveHeaders = (headers: Dom.RequestInit['headers']): Record<string, str
 /**
  * Fetch data using POST method
  */
-const post = async <V = Variables>(
-  url: string,
-  query: string,
-  fetch: any,
-  options: Dom.RequestInit,
-  variables?: V,
-  headers?: HeadersInit,
-  requestHeaders?: Dom.RequestInit['headers'],
-) => {
-  const body = createRequestBody(query, variables)
+const post = async <V = Variables>({
+  url,
+  query,
+  variables,
+  operationName,
+  headers,
+  fetch,
+  fetchOptions,
+}: {
+  url: string
+  query: string
+  fetch: any
+  fetchOptions: Dom.RequestInit
+  variables?: V
+  headers?: Dom.RequestInit['headers']
+  operationName?: string
+}) => {
+  const body = createRequestBody(query, variables, operationName)
 
   return await fetch(url, {
     method: 'POST',
     headers: {
       ...(typeof body === 'string' ? { 'Content-Type': 'application/json' } : {}),
-      ...resolveHeaders(headers),
-      ...resolveHeaders(requestHeaders)
+      ...headers,
     },
     body,
-    ...options
+    ...fetchOptions,
   })
 }
 
 /**
  * Fetch data using GET method
  */
-const get = async <V = Variables>(
-  url: string,
-  query: string,
-  fetch: any,
-  options: Dom.RequestInit,
-  variables?: V,
-  headers?: HeadersInit,
-  requestHeaders?: Dom.RequestInit['headers'],
-) => {
-  const search: string[] = [
-    `query=${encodeURIComponent(query.replace(/([\s,]|#[^\n\r]+)+/g, ' ').trim())}`,
-  ]
+const get = async <V = Variables>({
+  url,
+  query,
+  variables,
+  operationName,
+  headers,
+  fetch,
+  fetchOptions,
+}: {
+  url: string
+  query: string
+  fetch: any
+  fetchOptions: Dom.RequestInit
+  variables?: V
+  headers?: HeadersInit
+  operationName?: string
+}) => {
+  const search: string[] = [`query=${encodeURIComponent(query.replace(/([\s,]|#[^\n\r]+)+/g, ' ').trim())}`]
 
   if (variables) {
     search.push(`variables=${encodeURIComponent(JSON.stringify(variables))}`)
   }
 
+  if (operationName) {
+    search.push(`operationName=${encodeURIComponent(operationName)}`)
+  }
+
   return await fetch(`${url}?${search.join('&')}`, {
     method: 'GET',
-    headers: {
-      ...resolveHeaders(headers),
-      ...resolveHeaders(requestHeaders)
-    },
-    ...options
+    headers,
+    ...fetchOptions,
   })
 }
 
@@ -97,27 +112,27 @@ export class GraphQLClient {
     this.options = options || {}
   }
 
-  async rawRequest<T = any, V = Variables>(
+  rawRequest<T = any, V = Variables>(
     query: string,
     variables?: V,
     requestHeaders?: Dom.RequestInit['headers']
   ): Promise<{ data: T; extensions?: any; headers: Dom.Headers; status: number }> {
-    let { headers, fetch: localFetch = crossFetch, method = 'POST',  ...others } = this.options
+    let { headers, fetch = crossFetch, method = 'POST', ...fetchOptions } = this.options
+    let { url } = this
 
-    const fetcher = method.toUpperCase() === 'POST' ? post : get
-    const response = await fetcher(this.url, query, localFetch, others, variables, headers, requestHeaders)
-    const result = await getResult(response)
-
-    if (response.ok && !result.errors && result.data) {
-      const { headers, status } = response
-      return { ...result, headers, status }
-    } else {
-      const errorResult = typeof result === 'string' ? { error: result } : result
-      throw new ClientError(
-        { ...errorResult, status: response.status, headers: response.headers },
-        { query, variables }
-      )
-    }
+    return makeRequest<T, V>({
+      url,
+      query,
+      variables,
+      headers: {
+        ...resolveHeaders(headers),
+        ...resolveHeaders(requestHeaders),
+      },
+      operationName: undefined,
+      fetch,
+      method,
+      fetchOptions,
+    })
   }
 
   /**
@@ -128,8 +143,25 @@ export class GraphQLClient {
     variables?: V,
     requestHeaders?: Dom.RequestInit['headers']
   ): Promise<T> {
-    const query = resolveRequestDocument(document)
-    const { data } = await this.rawRequest<T, V>(query, variables, requestHeaders)
+    let { headers, fetch = crossFetch, method = 'POST', ...fetchOptions } = this.options
+    let { url } = this
+
+    const { query, operationName } = resolveRequestDocument(document)
+
+    const { data } = await makeRequest<T, V>({
+      url,
+      query,
+      variables,
+      headers: {
+        ...resolveHeaders(headers),
+        ...resolveHeaders(requestHeaders),
+      },
+      operationName,
+      fetch,
+      method,
+      fetchOptions,
+    })
+
     return data
   }
 
@@ -153,6 +185,50 @@ export class GraphQLClient {
     }
 
     return this
+  }
+}
+
+async function makeRequest<T = any, V = Variables>({
+  url,
+  query,
+  variables,
+  headers,
+  operationName,
+  fetch,
+  method = 'POST',
+  fetchOptions,
+}: {
+  url: string
+  query: string
+  variables?: V
+  headers?: Dom.RequestInit['headers']
+  operationName?: string
+  fetch: any
+  method: string
+  fetchOptions: Dom.RequestInit
+}): Promise<{ data: T; extensions?: any; headers: Dom.Headers; status: number }> {
+  const fetcher = method.toUpperCase() === 'POST' ? post : get
+
+  const response = await fetcher({
+    url,
+    query,
+    variables,
+    operationName,
+    headers,
+    fetch,
+    fetchOptions,
+  })
+  const result = await getResult(response)
+
+  if (response.ok && !result.errors && result.data) {
+    const { headers, status } = response
+    return { ...result, headers, status }
+  } else {
+    const errorResult = typeof result === 'string' ? { error: result } : result
+    throw new ClientError(
+      { ...errorResult, status: response.status, headers: response.headers },
+      { query, variables }
+    )
   }
 }
 
@@ -231,9 +307,20 @@ function getResult(response: Dom.Response): Promise<any> {
  * helpers
  */
 
-function resolveRequestDocument(document: RequestDocument): string {
-  if (typeof document === 'string') return document
-  return print(document)
+function resolveRequestDocument(document: RequestDocument): { query: string; operationName?: string } {
+  if (typeof document === 'string') return { query: document }
+
+  let operationName = undefined
+
+  let operationDefinitions = document.definitions.filter(
+    (definition) => definition.kind === 'OperationDefinition'
+  ) as OperationDefinitionNode[]
+
+  if (operationDefinitions.length === 1) {
+    operationName = operationDefinitions[0].name?.value
+  }
+
+  return { query: print(document), operationName }
 }
 
 /**
