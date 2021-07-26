@@ -5,10 +5,9 @@ Object {
   "requests": Array [
     Object {
       "body": Object {
-        "query": "{
-  query {
-    users
-  }
+        "operationName": "allUsers",
+        "query": "query allUsers {
+  users
 }
 ",
       },
@@ -16,7 +15,7 @@ Object {
         "accept": "*/*",
         "accept-encoding": "gzip,deflate",
         "connection": "close",
-        "content-length": "45",
+        "content-length": "69",
         "content-type": "application/json",
         "host": "DYNAMIC",
         "user-agent": "node-fetch/1.0 (+https://github.com/bitinn/node-fetch)",

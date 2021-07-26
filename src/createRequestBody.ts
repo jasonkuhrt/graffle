@@ -16,8 +16,8 @@ const isExtractableFileEnhanced = (value: any): value is ExtractableFile | { pip
  * (https://github.com/jaydenseric/graphql-multipart-request-spec)
  * Otherwise returns JSON
  */
-export default function createRequestBody(query: string, variables?: Variables): string | FormData {
-  const { clone, files } = extractFiles({ query, variables }, '', isExtractableFileEnhanced)
+export default function createRequestBody(query: string, variables?: Variables, operationName?: string): string | FormData {
+  const { clone, files } = extractFiles({ query, variables, operationName }, '', isExtractableFileEnhanced)
 
   if (files.size === 0) {
     return JSON.stringify(clone)
