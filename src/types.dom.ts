@@ -79,7 +79,6 @@ interface FormData {
 interface ReadableStream<R = any> {
   readonly locked: boolean
   cancel(reason?: any): Promise<void>
-  getReader(options: { mode: 'byob' }): ReadableStreamBYOBReader
   getReader(): ReadableStreamDefaultReader<R>
   pipeThrough<T>(
     { writable, readable }: { writable: WritableStream<R>; readable: ReadableStream<T> },
@@ -111,7 +110,7 @@ interface ReadableStreamReadValueResult<T> {
 interface ReadableStreamDefaultReader<R = any> {
   readonly closed: Promise<void>
   cancel(reason?: any): Promise<void>
-  read(): Promise<ReadableStreamReadResult<R>>
+  read(): Promise<ReadableStreamReadResult<R | undefined>>
   releaseLock(): void
 }
 

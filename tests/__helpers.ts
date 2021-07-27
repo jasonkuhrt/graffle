@@ -38,14 +38,16 @@ type MockResult<Spec extends MockSpec> = {
 
 export function setupTestServer() {
   const ctx = {} as Context
-  beforeAll(async (done) => {
+  beforeAll(async () => {
     const port = await getPort()
     ctx.server = express()
     ctx.server.use(body.json())
     ctx.nodeServer = createServer()
     ctx.nodeServer.listen({ port })
     ctx.nodeServer.on('request', ctx.server)
-    ctx.nodeServer.once('listening', done)
+    await new Promise((res) => {
+      ctx.nodeServer.once('listening', res)
+    })
     ctx.url = `http://localhost:${port}`
     ctx.res = (spec) => {
       const requests: CapturedRequest[] = []
@@ -86,10 +88,11 @@ type ApolloServerContextOptions = { typeDefs: string; resolvers: any }
 export async function startApolloServer({ typeDefs, resolvers }: ApolloServerContextOptions) {
   const app = express()
 
-  const apolloServer = new ApolloServer({ typeDefs, resolvers, uploads: false })
+  const apolloServer = new ApolloServer({ typeDefs, resolvers })
 
   app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }))
-  apolloServer.applyMiddleware({ app })
+  await apolloServer.start()
+  apolloServer.applyMiddleware({ app: app as any })
 
   let server: Server
 
@@ -112,7 +115,7 @@ export function createApolloServerContext({ typeDefs, resolvers }: ApolloServerC
   })
 
   afterEach(async () => {
-    await new Promise((res, rej) => {
+    await new Promise<void>((res, rej) => {
       ctx.server.close((e) => (e ? rej(e) : res()))
     })
   })
