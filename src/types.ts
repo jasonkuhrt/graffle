@@ -17,16 +17,20 @@ export interface GraphQLResponse<T = any> {
   [key: string]: any
 }
 
+export interface GraphQLResponseWithErrors<T = any> extends GraphQLResponse<T> {
+  errors: GraphQLError[]
+}
+
 export interface GraphQLRequestContext<V = Variables> {
   query: string
   variables?: V
 }
 
 export class ClientError extends Error {
-  response: GraphQLResponse
+  response: GraphQLResponseWithErrors
   request: GraphQLRequestContext
 
-  constructor(response: GraphQLResponse, request: GraphQLRequestContext) {
+  constructor(response: GraphQLResponseWithErrors, request: GraphQLRequestContext) {
     const message = `${ClientError.extractMessage(response)}: ${JSON.stringify({
       response,
       request,
@@ -45,9 +49,9 @@ export class ClientError extends Error {
     }
   }
 
-  private static extractMessage(response: GraphQLResponse): string {
+  private static extractMessage(response: GraphQLResponseWithErrors): string {
     try {
-      return response.errors![0].message
+      return response.errors[0].message
     } catch (e) {
       return `GraphQL Error (Code: ${response.status})`
     }
