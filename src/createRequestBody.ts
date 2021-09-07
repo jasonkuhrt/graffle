@@ -16,11 +16,32 @@ const isExtractableFileEnhanced = (value: any): value is ExtractableFile | { pip
  * (https://github.com/jaydenseric/graphql-multipart-request-spec)
  * Otherwise returns JSON
  */
-export default function createRequestBody(query: string, variables?: Variables, operationName?: string): string | FormData {
+export default function createRequestBody(
+  query: string | string[],
+  variables?: Variables | Variables[],
+  operationName?: string
+): string | FormData {
   const { clone, files } = extractFiles({ query, variables, operationName }, '', isExtractableFileEnhanced)
 
   if (files.size === 0) {
-    return JSON.stringify(clone)
+    if (!Array.isArray(query)) {
+      return JSON.stringify(clone)
+    }
+
+    if (typeof variables !== 'undefined' && !Array.isArray(variables)) {
+      throw new Error('Cannot create request body with given variable type, array expected')
+    }
+
+    // Batch support
+    const payload = query.reduce<{ query: string; variables: Variables | undefined }[]>(
+      (accu, currentQuery, index) => {
+        accu.push({ query: currentQuery, variables: variables ? variables[index] : undefined })
+        return accu
+      },
+      []
+    )
+
+    return JSON.stringify(payload)
   }
 
   const Form = typeof FormData === 'undefined' ? FormDataNode : FormData

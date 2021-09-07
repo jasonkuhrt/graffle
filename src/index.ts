@@ -2,7 +2,7 @@ import crossFetch, * as CrossFetch from 'cross-fetch'
 import { OperationDefinitionNode } from 'graphql/language/ast'
 import { print } from 'graphql/language/printer'
 import createRequestBody from './createRequestBody'
-import { ClientError, RequestDocument, Variables } from './types'
+import { BatchRequestDocument, ClientError, RequestDocument, Variables } from './types'
 import * as Dom from './types.dom'
 
 export { ClientError } from './types'
@@ -43,7 +43,7 @@ const post = async <V = Variables>({
   fetchOptions,
 }: {
   url: string
-  query: string
+  query: string | string[]
   fetch: any
   fetchOptions: Dom.RequestInit
   variables?: V
@@ -76,21 +76,44 @@ const get = async <V = Variables>({
   fetchOptions,
 }: {
   url: string
-  query: string
+  query: string | string[]
   fetch: any
   fetchOptions: Dom.RequestInit
   variables?: V
   headers?: HeadersInit
   operationName?: string
 }) => {
-  const search: string[] = [`query=${encodeURIComponent(query.replace(/([\s,]|#[^\n\r]+)+/g, ' ').trim())}`]
+  const search: string[] = []
+  const isBathchingQuery = Array.isArray(query)
+  const queryCleanner = (str: string): string => str.replace(/([\s,]|#[^\n\r]+)+/g, ' ').trim()
 
-  if (variables) {
-    search.push(`variables=${encodeURIComponent(JSON.stringify(variables))}`)
-  }
+  if (isBathchingQuery) {
+    if (typeof variables !== 'undefined' && !Array.isArray(variables)) {
+      throw new Error('Cannot create query with given variable type, array expected')
+    }
 
-  if (operationName) {
-    search.push(`operationName=${encodeURIComponent(operationName)}`)
+    // Batch support
+    const payload = query.reduce<{ query: string; variables: string | undefined }[]>(
+      (accu, currentQuery, index) => {
+        accu.push({
+          query: queryCleanner(currentQuery),
+          variables: variables ? JSON.stringify(variables[index]) : undefined,
+        })
+        return accu
+      },
+      []
+    )
+
+    search.push(`query=${encodeURIComponent(JSON.stringify(payload))}`)
+  } else {
+    search.push(`query=${encodeURIComponent(queryCleanner(query))}`)
+    if (variables) {
+      search.push(`variables=${encodeURIComponent(JSON.stringify(variables))}`)
+    }
+
+    if (operationName) {
+      search.push(`operationName=${encodeURIComponent(operationName)}`)
+    }
   }
 
   return await fetch(`${url}?${search.join('&')}`, {
@@ -165,6 +188,36 @@ export class GraphQLClient {
     return data
   }
 
+  /**
+   * Send a GraphQL document to the server.
+   */
+  async batchRequests<T extends any[] = any[], V = Variables>(
+    documents: BatchRequestDocument<V>[],
+    requestHeaders?: Dom.RequestInit['headers']
+  ): Promise<T> {
+    let { headers, fetch = crossFetch, method = 'POST', ...fetchOptions } = this.options
+    let { url } = this
+
+    const queries = documents.map(({ document }) => resolveRequestDocument(document).query)
+    const variables = documents.map(({ variables }) => variables)
+
+    const { data } = await makeRequest<T, (V | undefined)[]>({
+      url,
+      query: queries,
+      variables,
+      headers: {
+        ...resolveHeaders(headers),
+        ...resolveHeaders(requestHeaders),
+      },
+      operationName: undefined,
+      fetch,
+      method,
+      fetchOptions,
+    })
+
+    return data
+  }
+
   setHeaders(headers: Dom.RequestInit['headers']): GraphQLClient {
     this.options.headers = headers
     return this
@@ -199,7 +252,7 @@ async function makeRequest<T = any, V = Variables>({
   fetchOptions,
 }: {
   url: string
-  query: string
+  query: string | string[]
   variables?: V
   headers?: Dom.RequestInit['headers']
   operationName?: string
@@ -208,6 +261,7 @@ async function makeRequest<T = any, V = Variables>({
   fetchOptions: Dom.RequestInit
 }): Promise<{ data: T; extensions?: any; headers: Dom.Headers; status: number }> {
   const fetcher = method.toUpperCase() === 'POST' ? post : get
+  const isBathchingQuery = Array.isArray(query)
 
   const response = await fetcher({
     url,
@@ -220,9 +274,15 @@ async function makeRequest<T = any, V = Variables>({
   })
   const result = await getResult(response)
 
-  if (response.ok && !result.errors && result.data) {
+  const successfullyBatched = isBathchingQuery && Array.isArray(result) && !result.some(({ data }) => !data)
+
+  if (response.ok && !result.errors && (isBathchingQuery ? successfullyBatched : result.data)) {
     const { headers, status } = response
-    return { ...result, headers, status }
+    return {
+      ...(isBathchingQuery ? { data: result } : result),
+      headers,
+      status,
+    }
   } else {
     const errorResult = typeof result === 'string' ? { error: result } : result
     throw new ClientError(
@@ -287,6 +347,49 @@ export async function request<T = any, V = Variables>(
 ): Promise<T> {
   const client = new GraphQLClient(url)
   return client.request<T, V>(document, variables, requestHeaders)
+}
+
+/**
+ * Send a batch of GraphQL Document to the GraphQL server for exectuion.
+ *
+ * @example
+ *
+ * ```ts
+ * // You can pass a raw string
+ *
+ * await request('https://foo.bar/graphql', [
+ * {
+ *  query: `
+ *   {
+ *     query {
+ *       users
+ *     }
+ *   }`
+ * },
+ * {
+ *   query: `
+ *   {
+ *     query {
+ *       users
+ *     }
+ *   }`
+ * }])
+ *
+ * // You can also pass a GraphQL DocumentNode as query. Convenient if you
+ * // are using graphql-tag package.
+ *
+ * import gql from 'graphql-tag'
+ *
+ * await request('https://foo.bar/graphql', [{ query: gql`...` }])
+ * ```
+ */
+export async function batchRequests<T extends any[] = any[], V = Variables>(
+  url: string,
+  documents: BatchRequestDocument<V>[],
+  requestHeaders?: Dom.RequestInit['headers']
+): Promise<T> {
+  const client = new GraphQLClient(url)
+  return client.batchRequests<T, V>(documents, requestHeaders)
 }
 
 export default request

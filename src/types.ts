@@ -18,7 +18,7 @@ export interface GraphQLResponse<T = any> {
 }
 
 export interface GraphQLRequestContext<V = Variables> {
-  query: string
+  query: string | string[]
   variables?: V
 }
 
@@ -55,3 +55,8 @@ export class ClientError extends Error {
 }
 
 export type RequestDocument = string | DocumentNode
+
+export type BatchRequestDocument<V = Variables> = {
+  document: RequestDocument
+  variables?: V
+}
