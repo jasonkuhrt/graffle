@@ -31,6 +31,61 @@ const resolveHeaders = (headers: Dom.RequestInit['headers']): Record<string, str
 }
 
 /**
+ * Clean a GraphQL document to send it via a GET query
+ *
+ * @param {string} str GraphQL query
+ * @returns {string} Cleaned query
+ */
+const queryCleanner = (str: string): string => str.replace(/([\s,]|#[^\n\r]+)+/g, ' ').trim()
+
+type TBuildGetQueryParams<V> =
+  | { query: string; variables: V | undefined; operationName: string | undefined }
+  | { query: string[]; variables: V[] | undefined; operationName: undefined }
+
+/**
+ * Create query string for GraphQL request
+ *
+ * @param {object} param0 -
+ *
+ * @param {string|string[]} param0.query the GraphQL document or array of document if it's a batch request
+ * @param {string|undefined} param0.operationName the GraphQL operation name
+ * @param {any|any[]} param0.variables the GraphQL variables to use
+ */
+const buildGetQueryParams = <V>({ query, variables, operationName }: TBuildGetQueryParams<V>): string => {
+  if (!Array.isArray(query)) {
+    const search: string[] = [`query=${encodeURIComponent(queryCleanner(query))}`]
+
+    if (variables) {
+      search.push(`variables=${encodeURIComponent(JSON.stringify(variables))}`)
+    }
+
+    if (operationName) {
+      search.push(`operationName=${encodeURIComponent(operationName)}`)
+    }
+
+    return search.join('&')
+  }
+
+  if (typeof variables !== 'undefined' && !Array.isArray(variables)) {
+    throw new Error('Cannot create query with given variable type, array expected')
+  }
+
+  // Batch support
+  const payload = query.reduce<{ query: string; variables: string | undefined }[]>(
+    (accu, currentQuery, index) => {
+      accu.push({
+        query: queryCleanner(currentQuery),
+        variables: variables ? JSON.stringify(variables[index]) : undefined,
+      })
+      return accu
+    },
+    []
+  )
+
+  return `query=${encodeURIComponent(JSON.stringify(payload))}`
+}
+
+/**
  * Fetch data using POST method
  */
 const post = async <V = Variables>({
@@ -83,40 +138,13 @@ const get = async <V = Variables>({
   headers?: HeadersInit
   operationName?: string
 }) => {
-  const search: string[] = []
-  const isBathchingQuery = Array.isArray(query)
-  const queryCleanner = (str: string): string => str.replace(/([\s,]|#[^\n\r]+)+/g, ' ').trim()
+  const queryParams = buildGetQueryParams<V>({
+    query,
+    variables,
+    operationName,
+  } as TBuildGetQueryParams<V>)
 
-  if (isBathchingQuery) {
-    if (typeof variables !== 'undefined' && !Array.isArray(variables)) {
-      throw new Error('Cannot create query with given variable type, array expected')
-    }
-
-    // Batch support
-    const payload = query.reduce<{ query: string; variables: string | undefined }[]>(
-      (accu, currentQuery, index) => {
-        accu.push({
-          query: queryCleanner(currentQuery),
-          variables: variables ? JSON.stringify(variables[index]) : undefined,
-        })
-        return accu
-      },
-      []
-    )
-
-    search.push(`query=${encodeURIComponent(JSON.stringify(payload))}`)
-  } else {
-    search.push(`query=${encodeURIComponent(queryCleanner(query))}`)
-    if (variables) {
-      search.push(`variables=${encodeURIComponent(JSON.stringify(variables))}`)
-    }
-
-    if (operationName) {
-      search.push(`operationName=${encodeURIComponent(operationName)}`)
-    }
-  }
-
-  return await fetch(`${url}?${search.join('&')}`, {
+  return await fetch(`${url}?${queryParams}`, {
     method: 'GET',
     headers,
     ...fetchOptions,
