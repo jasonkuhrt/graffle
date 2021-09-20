@@ -41,7 +41,7 @@ Minimal GraphQL client supporting Node and browsers for scripts or simple apps
 
 - Most **simple & lightweight** GraphQL client
 - Promise-based API (works with `async` / `await`)
-- Typescript support
+- TypeScript support
 - Isomorphic (works with Node / browsers)
 
 ## Install
