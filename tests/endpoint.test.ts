@@ -21,6 +21,4 @@ describe('using class', () => {
     expect(mock_0.requests.length).toEqual(1)
     expect(mock_1.requests.length).toEqual(2)
   })
-
 })
-
