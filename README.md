@@ -163,7 +163,6 @@ import { GraphQLClient } from 'graphql-request'
 
 const client = new GraphQLClient(endpoint)
 
-// Set a single header
 client.setEndpoint(newEndpoint)
 
 ```
