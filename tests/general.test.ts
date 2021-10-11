@@ -12,7 +12,7 @@ test('minimal query', async () => {
         },
       },
     },
-  }).spec.body
+  }).spec.body!
 
   expect(await request(ctx.url, `{ me { id } }`)).toEqual(data)
 })
@@ -29,16 +29,13 @@ test('minimal raw query', async () => {
         version: '1',
       },
     },
-  }).spec.body
+  }).spec.body!
   const { headers, ...result } = await rawRequest(ctx.url, `{ me { id } }`)
   expect(result).toEqual({ data, extensions, status: 200 })
 })
 
 test('minimal raw query with response headers', async () => {
-  const {
-    headers: reqHeaders,
-    body: { data, extensions },
-  } = ctx.res({
+  const { headers: reqHeaders, body } = ctx.res({
     headers: {
       'Content-Type': 'application/json',
       'X-Custom-Header': 'test-custom-header',
@@ -54,10 +51,11 @@ test('minimal raw query with response headers', async () => {
       },
     },
   }).spec
+
   const { headers, ...result } = await rawRequest(ctx.url, `{ me { id } }`)
 
-  expect(result).toEqual({ data, extensions, status: 200 })
-  expect(headers.get('X-Custom-Header')).toEqual(reqHeaders['X-Custom-Header'])
+  expect(result).toEqual({ ...body, status: 200 })
+  expect(headers.get('X-Custom-Header')).toEqual(reqHeaders!['X-Custom-Header'])
 })
 
 test('content-type with charset', async () => {
@@ -70,7 +68,7 @@ test('content-type with charset', async () => {
         },
       },
     },
-  }).spec.body
+  }).spec.body!
 
   expect(await request(ctx.url, `{ me { id } }`)).toEqual(data)
 })

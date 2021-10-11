@@ -219,7 +219,7 @@ export class GraphQLClient {
   /**
    * Send a GraphQL document to the server.
    */
-  async batchRequests<T extends any[] = any[], V = Variables>(
+  async batchRequests<T extends any = any, V = Variables>(
     documents: BatchRequestDocument<V>[],
     requestHeaders?: Dom.RequestInit['headers']
   ): Promise<T> {
@@ -302,9 +302,10 @@ async function makeRequest<T = any, V = Variables>({
   })
   const result = await getResult(response)
 
-  const successfullyBatched = isBathchingQuery && Array.isArray(result) && !result.some(({ data }) => !data)
+  const successfullyReceivedData =
+    isBathchingQuery && Array.isArray(result) ? !result.some(({ data }) => !data) : !!result.data
 
-  if (response.ok && !result.errors && (isBathchingQuery ? successfullyBatched : result.data)) {
+  if (response.ok && !result.errors && successfullyReceivedData) {
     const { headers, status } = response
     return {
       ...(isBathchingQuery ? { data: result } : result),
@@ -411,7 +412,7 @@ export async function request<T = any, V = Variables>(
  * await request('https://foo.bar/graphql', [{ query: gql`...` }])
  * ```
  */
-export async function batchRequests<T extends any[] = any[], V = Variables>(
+export async function batchRequests<T extends any = any, V = Variables>(
   url: string,
   documents: BatchRequestDocument<V>[],
   requestHeaders?: Dom.RequestInit['headers']
