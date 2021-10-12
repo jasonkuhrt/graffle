@@ -267,6 +267,14 @@ export class GraphQLClient {
 
     return this
   }
+
+  /**
+   * Change the client endpoint. All subsequent requests will send to this endpoint.
+   */
+  setEndpoint(value: string): GraphQLClient {
+    this.url = value
+    return this
+  }
 }
 
 async function makeRequest<T = any, V = Variables>({

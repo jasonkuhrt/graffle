@@ -154,6 +154,19 @@ client.setHeaders({
 })
 ```
 
+#### Set endpoint
+
+If you want to change the endpoint after the GraphQLClient has been initialised, you can use the `setEndpoint()` function.
+
+```js
+import { GraphQLClient } from 'graphql-request'
+
+const client = new GraphQLClient(endpoint)
+
+client.setEndpoint(newEndpoint)
+
+```
+
 #### passing-headers-in-each-request
 
 It is possible to pass custom headers for each request. `request()` and `rawRequest()` accept a header object as the third parameter
