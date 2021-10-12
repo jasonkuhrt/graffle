@@ -8,26 +8,33 @@ import { JsonObject } from 'type-fest'
 
 type CapturedRequest = Pick<Request, 'headers' | 'method' | 'body'>
 
-type Context = {
+type Context<S extends MockSpec | MockSpecBatch = MockSpec> = {
   server: Application
   nodeServer: Server
   url: string
   /**
    * Setup a response that will be sent to requests
    */
-  res: <S extends MockSpec>(spec?: S) => MockResult<S>
+  res: (spec?: S) => MockResult<S>
+}
+
+type MockSpecBody = {
+  data?: JsonObject
+  extensions?: JsonObject
+  errors?: JsonObject
 }
 
 type MockSpec = {
   headers?: Record<string, string>
-  body?: {
-    data?: JsonObject
-    extensions?: JsonObject
-    errors?: JsonObject
-  }
+  body?: MockSpecBody
 }
 
-type MockResult<Spec extends MockSpec> = {
+export type MockSpecBatch = {
+  headers?: Record<string, string>
+  body?: MockSpecBody[]
+}
+
+type MockResult<Spec extends MockSpec | MockSpecBatch = MockSpec> = {
   spec: Spec
   requests: {
     method: string
@@ -36,8 +43,8 @@ type MockResult<Spec extends MockSpec> = {
   }[]
 }
 
-export function setupTestServer() {
-  const ctx = {} as Context
+export function setupTestServer<T extends MockSpec | MockSpecBatch = MockSpec>(): Context<T> {
+  const ctx = {} as Context<T>
   beforeAll(async () => {
     const port = await getPort()
     ctx.server = express()
@@ -49,7 +56,7 @@ export function setupTestServer() {
       ctx.nodeServer.once('listening', res)
     })
     ctx.url = `http://localhost:${port}`
-    ctx.res = (spec) => {
+    ctx.res = (spec?: T): MockResult<T> => {
       const requests: CapturedRequest[] = []
       ctx.server.use('*', function mock(req, res) {
         req.headers.host = 'DYNAMIC'
@@ -65,7 +72,8 @@ export function setupTestServer() {
         }
         res.send(spec?.body ?? { data: {} })
       })
-      return { spec, requests: requests as any } as any
+
+      return { spec, requests: requests } as MockResult<T>
     }
   })
 
