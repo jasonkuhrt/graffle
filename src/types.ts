@@ -1,4 +1,5 @@
 import { DocumentNode } from 'graphql/language/ast'
+import * as Dom from './types.dom'
 
 export type Variables = { [key: string]: any }
 
@@ -59,4 +60,43 @@ export type RequestDocument = string | DocumentNode
 export type BatchRequestDocument<V = Variables> = {
   document: RequestDocument
   variables?: V
+}
+
+export interface GraphQLRequestClient {
+  rawRequest<T = any, V = Variables, E = any>(
+    query: string,
+    variables?: V,
+    requestHeaders?: Dom.RequestInit['headers']
+  ): Promise<{ data: T; extensions?: E; headers?: Dom.Headers; status?: number }>
+
+  request<T = any, V = Variables>(
+    document: RequestDocument,
+    variables?: V,
+    requestHeaders?: Dom.RequestInit['headers']
+  ): Promise<T>
+
+}
+
+export type UnsubsciribeCallback = () => void;
+
+export interface GraphQLSubscriber<T, E> {
+  next?(data: T, extensions?: E): void;
+  error?(errorValue: ClientError): void;
+  complete?(): void;
+}
+
+export interface GraphQLSubscriptionClient extends GraphQLRequestClient {
+  subscribe<T = any, V = Variables, E = any>(
+      document: RequestDocument,
+      variables: V,
+      observer: GraphQLSubscriber<T, E>
+  ): UnsubsciribeCallback;
+
+  rawSubscribe<T = any, V = Variables, E = any>(
+      query: string,
+      variables: V,
+      observer: GraphQLSubscriber<T, E>
+  ): UnsubsciribeCallback;
+
+  ping(payload: Variables): void;
 }

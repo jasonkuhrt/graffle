@@ -2,7 +2,7 @@ import crossFetch, * as CrossFetch from 'cross-fetch'
 import { OperationDefinitionNode } from 'graphql/language/ast'
 import { print } from 'graphql/language/printer'
 import createRequestBody from './createRequestBody'
-import { BatchRequestDocument, ClientError, RequestDocument, Variables } from './types'
+import { BatchRequestDocument, ClientError, GraphQLRequestClient, RequestDocument, Variables } from './types'
 import * as Dom from './types.dom'
 
 export { ClientError } from './types'
@@ -154,7 +154,7 @@ const get = async <V = Variables>({
 /**
  * todo
  */
-export class GraphQLClient {
+export class GraphQLClient implements GraphQLRequestClient {
   private url: string
   private options: Dom.RequestInit
 
@@ -447,7 +447,7 @@ function getResult(response: Dom.Response): Promise<any> {
  * helpers
  */
 
-function resolveRequestDocument(document: RequestDocument): { query: string; operationName?: string } {
+export function resolveRequestDocument(document: RequestDocument): { query: string; operationName?: string } {
   if (typeof document === 'string') return { query: document }
 
   let operationName = undefined
@@ -493,3 +493,5 @@ function HeadersInstanceToPlainObject(headers: Dom.Response['headers']): Record<
   })
   return o
 }
+
+export { GraphQLWebSocketClient } from './graphql-ws'
