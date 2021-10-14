@@ -77,9 +77,9 @@ export interface GraphQLRequestClient {
 
 }
 
-export type UnsubsciribeCallback = () => void;
+export type UnsubscribeCallback = () => void;
 
-export interface GraphQLSubscriber<T, E> {
+export interface GraphQLSubscriber<T, E=unknown> {
   next?(data: T, extensions?: E): void;
   error?(errorValue: ClientError): void;
   complete?(): void;
@@ -88,15 +88,15 @@ export interface GraphQLSubscriber<T, E> {
 export interface GraphQLSubscriptionClient extends GraphQLRequestClient {
   subscribe<T = any, V = Variables, E = any>(
       document: RequestDocument,
-      variables: V,
-      observer: GraphQLSubscriber<T, E>
-  ): UnsubsciribeCallback;
+      subscriber: GraphQLSubscriber<T, E>,
+      variables?: V
+  ): UnsubscribeCallback;
 
   rawSubscribe<T = any, V = Variables, E = any>(
       query: string,
-      variables: V,
-      observer: GraphQLSubscriber<T, E>
-  ): UnsubsciribeCallback;
+      subscriber: GraphQLSubscriber<T, E>,
+      variables?: V
+  ): UnsubscribeCallback;
 
   ping(payload: Variables): void;
 }
