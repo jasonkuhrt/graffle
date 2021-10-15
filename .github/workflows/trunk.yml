@@ -49,6 +49,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-
       - run: yarn install
+        with:
+          node-version: '14'
       - name: Make release
         id: release
         env:
