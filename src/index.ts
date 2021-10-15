@@ -394,7 +394,7 @@ export async function request<T = any, V = Variables>(
  * ```ts
  * // You can pass a raw string
  *
- * await request('https://foo.bar/graphql', [
+ * await batchRequests('https://foo.bar/graphql', [
  * {
  *  query: `
  *   {
@@ -417,7 +417,7 @@ export async function request<T = any, V = Variables>(
  *
  * import gql from 'graphql-tag'
  *
- * await request('https://foo.bar/graphql', [{ query: gql`...` }])
+ * await batchRequests('https://foo.bar/graphql', [{ query: gql`...` }])
  * ```
  */
 export async function batchRequests<T extends any = any, V = Variables>(

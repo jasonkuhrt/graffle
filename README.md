@@ -30,6 +30,7 @@ Minimal GraphQL client supporting Node and browsers for scripts or simple apps
   - [File Upload](#file-upload)
     - [Browser](#browser)
     - [Node](#node)
+  - [Batching](#batching)
 - [FAQ](#faq)
     - [Why do I have to install `graphql`?](#why-do-i-have-to-install-graphql)
     - [Do I need to wrap my GraphQL documents inside the `gql` template exported by `graphql-request`?](#do-i-need-to-wrap-my-graphql-documents-inside-the-gql-template-exported-by-graphql-request)
@@ -501,6 +502,43 @@ request('/api/graphql', UploadUserAvatar, {
 ```
 
 [TypeScript Source](examples/receiving-a-raw-response.ts)
+
+
+### Batching
+
+It is possible with `graphql-request` to use [batching](https://github.com/graphql/graphql-over-http/blob/main/rfcs/Batching.md) via the `batchRequests()` function. Example available at [examples/batching-requests.ts](examples/batching-requests.ts)
+
+```ts
+import { batchRequests } from 'graphql-request';
+
+(async function () {
+  const endpoint = 'https://api.spacex.land/graphql/';
+
+  const query1 = /* GraphQL */ `
+    query ($id: ID!) {
+      capsule(id: $id) {
+        id
+        landings
+      }
+    }
+  `;
+
+  const query2 = /* GraphQL */ `
+    {
+      rockets(limit: 10) {
+        active
+      }
+    }
+  `;
+
+  const data = await batchRequests(endpoint, [
+    { document: query1, variables: { id: 'C105' } },
+    { document: query2 },
+  ])
+  console.log(JSON.stringify(data, undefined, 2))
+})().catch((error) => console.error(error))
+```
+
 
 ## FAQ
 
