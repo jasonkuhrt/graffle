@@ -31,6 +31,7 @@ Minimal GraphQL client supporting Node and browsers for scripts or simple apps
     - [Browser](#browser)
     - [Node](#node)
   - [Batching](#batching)
+  - [Cancellation](#cancellation)
 - [FAQ](#faq)
     - [Why do I have to install `graphql`?](#why-do-i-have-to-install-graphql)
     - [Do I need to wrap my GraphQL documents inside the `gql` template exported by `graphql-request`?](#do-i-need-to-wrap-my-graphql-documents-inside-the-gql-template-exported-by-graphql-request)
@@ -539,6 +540,30 @@ import { batchRequests } from 'graphql-request';
 })().catch((error) => console.error(error))
 ```
 
+### Cancellation
+
+It is possible to cancel a request using an `AbortController` signal.
+
+You can define the `signal` in the `GraphQLClient` constructor:
+
+```ts
+  const abortController = new AbortController()
+
+  const client = new GraphQLClient(endpoint, { signal: abortController.signal })
+  client.request(query)
+
+  abortController.abort()
+```
+
+You can also set the signal per request (this will override an existing GraphQLClient signal):
+
+```ts
+  const abortController = new AbortController()
+
+  request(endpoint, query, undefined, undefined, abortController.signal)
+
+  abortController.abort()
+```
 
 ## FAQ
 
