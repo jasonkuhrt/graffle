@@ -48,7 +48,7 @@
     "form-data": "^3.0.0"
   },
   "peerDependencies": {
-    "graphql": "14.x || 15.x"
+    "graphql": "14.x || 16.x"
   },
   "devDependencies": {
     "@prisma-labs/prettier-config": "^0.1.0",
