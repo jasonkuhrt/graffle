@@ -5,7 +5,7 @@ import createRequestBody from './createRequestBody'
 import { BatchRequestDocument, ClientError, RequestDocument, Variables } from './types'
 import * as Dom from './types.dom'
 
-export { ClientError } from './types'
+export { BatchRequestDocument, ClientError, RequestDocument, Variables }
 
 /**
  * Convert the given headers configuration into a plain object.
