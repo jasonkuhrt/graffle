@@ -76,6 +76,7 @@
   },
   "prettier": "@prisma-labs/prettier-config",
   "jest": {
-    "preset": "ts-jest"
+    "preset": "ts-jest",
+    "snapshotResolver": "<rootDir>/snapshot-resolver.js"
   }
 }
