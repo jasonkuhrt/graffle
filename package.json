@@ -48,7 +48,7 @@
     "form-data": "^3.0.0"
   },
   "peerDependencies": {
-    "graphql": "14.x || 15.x"
+    "graphql": "14 - 16"
   },
   "devDependencies": {
     "@prisma-labs/prettier-config": "^0.1.0",
@@ -58,14 +58,14 @@
     "@types/graphql-upload": "^8.0.6",
     "@types/jest": "^26.0.24",
     "@types/node": "^16.4.3",
-    "apollo-server-express": "^3.0.2",
+    "apollo-server-express": "^3.5.0",
     "body-parser": "^1.19.0",
     "doctoc": "^2.0.1",
     "dripip": "^0.10.0",
     "express": "^4.17.1",
     "fetch-cookie": "^1.0.0",
     "get-port": "^5.1.1",
-    "graphql": "^15.5.1",
+    "graphql": "16",
     "graphql-tag": "^2.12.5",
     "graphql-upload": "^12.0.0",
     "jest": "^27.0.6",
@@ -76,6 +76,7 @@
   },
   "prettier": "@prisma-labs/prettier-config",
   "jest": {
-    "preset": "ts-jest"
+    "preset": "ts-jest",
+    "snapshotResolver": "<rootDir>/snapshot-resolver.js"
   }
 }
