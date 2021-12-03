@@ -560,7 +560,8 @@ You can also set the signal per request (this will override an existing GraphQLC
 ```ts
   const abortController = new AbortController()
 
-  request(endpoint, query, undefined, undefined, abortController.signal)
+  const client = new GraphQLClient(endpoint)
+  client.request({ document: query, signal: abortController.signal })
 
   abortController.abort()
 ```

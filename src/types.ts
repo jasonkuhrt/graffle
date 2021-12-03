@@ -1,4 +1,5 @@
 import { DocumentNode } from 'graphql/language/ast'
+import * as Dom from './types.dom'
 
 export type Variables = { [key: string]: any }
 
@@ -59,4 +60,24 @@ export type RequestDocument = string | DocumentNode
 export type BatchRequestDocument<V = Variables> = {
   document: RequestDocument
   variables?: V
+}
+
+export type RawRequestOptions<V = Variables> = {
+  query: string
+  variables?: V
+  requestHeaders?: Dom.RequestInit['headers']
+  signal?: Dom.RequestInit['signal']
+}
+
+export type RequestOptions<V = Variables> = {
+  document: RequestDocument
+  variables?: V
+  requestHeaders?: Dom.RequestInit['headers']
+  signal?: Dom.RequestInit['signal']
+}
+
+export type BatchRequestOptions<V = Variables> = {
+  documents: BatchRequestDocument<V>[]
+  requestHeaders?: Dom.RequestInit['headers']
+  signal?: Dom.RequestInit['signal']
 }
