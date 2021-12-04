@@ -12,11 +12,11 @@ import {
 import * as Dom from './types.dom'
 
 export function parseRequestArgs<V = Variables>(
-  arg1: RequestDocument | RequestOptions,
+  arg1: RequestDocument | RequestOptions<V>,
   arg2?: V,
   arg3?: Dom.RequestInit['headers']
-) {
-  return (arg1 as RequestOptions).document
+): RequestOptions<V> {
+  return (arg1 as RequestOptions<V>).document
     ? (arg1 as RequestOptions<V>)
     : {
         document: arg1 as RequestDocument,
@@ -27,11 +27,11 @@ export function parseRequestArgs<V = Variables>(
 }
 
 export function parseRawRequestArgs<V = Variables>(
-  arg1: RequestDocument | RawRequestOptions,
+  arg1: RequestDocument | RawRequestOptions<V>,
   arg2?: V,
   arg3?: Dom.RequestInit['headers']
-) {
-  return (arg1 as RawRequestOptions).query
+): RawRequestOptions<V> {
+  return (arg1 as RawRequestOptions<V>).query
     ? (arg1 as RawRequestOptions<V>)
     : {
         query: arg1 as string,
@@ -42,10 +42,10 @@ export function parseRawRequestArgs<V = Variables>(
 }
 
 export function parseBatchRequestArgs<V = Variables>(
-  arg1: BatchRequestDocument<V>[] | BatchRequestsOptions,
+  arg1: BatchRequestDocument<V>[] | BatchRequestsOptions<V>,
   arg2?: Dom.RequestInit['headers']
-) {
-  return (arg1 as BatchRequestsOptions).documents
+): BatchRequestsOptions<V> {
+  return (arg1 as BatchRequestsOptions<V>).documents
     ? (arg1 as BatchRequestsOptions<V>)
     : {
         documents: arg1 as BatchRequestDocument<V>[],
@@ -55,12 +55,12 @@ export function parseBatchRequestArgs<V = Variables>(
 }
 
 export function parseRequestExtendedArgs<V = Variables>(
-  arg1: string | RequestExtendedOptions,
+  arg1: string | RequestExtendedOptions<V>,
   arg2?: RequestDocument,
   arg3?: V,
   arg4?: Dom.RequestInit['headers']
-) {
-  return (arg1 as RequestExtendedOptions).document
+): RequestExtendedOptions<V> {
+  return (arg1 as RequestExtendedOptions<V>).document
     ? (arg1 as RequestExtendedOptions<V>)
     : {
         url: arg1 as string,
@@ -72,12 +72,12 @@ export function parseRequestExtendedArgs<V = Variables>(
 }
 
 export function parseRawRequestExtendedArgs<V = Variables>(
-  arg1: string | RawRequestExtendedOptions,
+  arg1: string | RawRequestExtendedOptions<V>,
   arg2?: string,
   arg3?: V,
   arg4?: Dom.RequestInit['headers']
-) {
-  return (arg1 as RawRequestExtendedOptions).query
+): RawRequestExtendedOptions<V> {
+  return (arg1 as RawRequestExtendedOptions<V>).query
     ? (arg1 as RawRequestExtendedOptions<V>)
     : {
         url: arg1 as string,
@@ -89,11 +89,11 @@ export function parseRawRequestExtendedArgs<V = Variables>(
 }
 
 export function parseBatchRequestsExtendedArgs<V = Variables>(
-  arg1: string | BatchRequestsExtendedOptions,
+  arg1: string | BatchRequestsExtendedOptions<V>,
   arg2?: BatchRequestDocument<V>[],
   arg3?: Dom.RequestInit['headers']
-) {
-  return (arg1 as BatchRequestsExtendedOptions).documents
+): BatchRequestsExtendedOptions<V> {
+  return (arg1 as BatchRequestsExtendedOptions<V>).documents
     ? (arg1 as BatchRequestsExtendedOptions<V>)
     : {
         url: arg1 as string,
