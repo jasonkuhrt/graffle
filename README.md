@@ -86,6 +86,17 @@ const client = new GraphQLClient(endpoint, { headers: {} })
 client.request(query, variables).then((data) => console.log(data))
 ```
 
+You can also use the single argument function variant:
+
+```js
+request({
+  url: endpoint,
+  document: query,
+  variables: variables,
+  requestHeaders: headers,
+}).then((data) => console.log(data))
+```
+
 ## Node Version Support
 
 We only officially support [LTS Node versions](https://github.com/nodejs/Release#release-schedule). We also make an effort to support two additional versions:

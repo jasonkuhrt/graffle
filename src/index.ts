@@ -3,67 +3,38 @@ import { OperationDefinitionNode } from 'graphql/language/ast'
 import { print } from 'graphql/language/printer'
 import createRequestBody from './createRequestBody'
 import {
+  parseBatchRequestArgs,
+  parseRawRequestArgs,
+  parseRequestArgs,
+  parseBatchRequestsExtendedArgs,
+  parseRawRequestExtendedArgs,
+  parseRequestExtendedArgs,
+} from './parseArgs'
+import {
   BatchRequestDocument,
-  BatchRequestOptions,
+  BatchRequestsOptions,
   ClientError,
   RawRequestOptions,
   RequestDocument,
   RequestOptions,
+  BatchRequestsExtendedOptions,
+  RawRequestExtendedOptions,
+  RequestExtendedOptions,
   Variables,
 } from './types'
 import * as Dom from './types.dom'
 
 export {
   BatchRequestDocument,
-  BatchRequestOptions,
+  BatchRequestsOptions,
+  BatchRequestsExtendedOptions,
   ClientError,
-  RequestDocument,
-  Variables,
   RawRequestOptions,
+  RawRequestExtendedOptions,
+  RequestDocument,
   RequestOptions,
-}
-
-function parseRequestArgs<V = Variables>(
-  arg1: RequestDocument | RequestOptions,
-  arg2?: V,
-  arg3?: Dom.RequestInit['headers']
-) {
-  return (arg1 as RequestOptions).document
-    ? (arg1 as RequestOptions<V>)
-    : {
-        document: arg1 as RequestDocument,
-        variables: arg2,
-        requestHeaders: arg3,
-        signal: undefined,
-      }
-}
-
-function parseRawRequestArgs<V = Variables>(
-  arg1: RequestDocument | RawRequestOptions,
-  arg2?: V,
-  arg3?: Dom.RequestInit['headers']
-) {
-  return (arg1 as RawRequestOptions).query
-    ? (arg1 as RawRequestOptions<V>)
-    : {
-        query: arg1 as string,
-        variables: arg2,
-        requestHeaders: arg3,
-        signal: undefined,
-      }
-}
-
-function parseBatchRequestArgs<V = Variables>(
-  arg1: BatchRequestDocument<V>[] | BatchRequestOptions,
-  arg2?: Dom.RequestInit['headers']
-) {
-  return (arg1 as BatchRequestOptions).documents
-    ? (arg1 as BatchRequestOptions<V>)
-    : {
-        documents: arg1 as BatchRequestDocument<V>[],
-        requestHeaders: arg2,
-        signal: undefined,
-      }
+  RequestExtendedOptions,
+  Variables,
 }
 
 /**
@@ -309,9 +280,9 @@ export class GraphQLClient {
     documents: BatchRequestDocument<V>[],
     requestHeaders?: Dom.RequestInit['headers']
   ): Promise<T>
-  async batchRequests<T = any, V = Variables>(options: BatchRequestOptions): Promise<T>
+  async batchRequests<T = any, V = Variables>(options: BatchRequestsOptions): Promise<T>
   async batchRequests<T = any, V = Variables>(
-    arg1: BatchRequestDocument<V>[] | BatchRequestOptions,
+    arg1: BatchRequestDocument<V>[] | BatchRequestsOptions,
     arg2?: Dom.RequestInit['headers']
   ): Promise<T> {
     const batchRequestOptions = parseBatchRequestArgs(arg1, arg2)
@@ -428,20 +399,32 @@ async function makeRequest<T = any, V = Variables>({
 }
 
 /**
- * todo
+ * Send a GraphQL Query to the GraphQL server for execution.
  */
 export async function rawRequest<T = any, V = Variables>(
   url: string,
   query: string,
   variables?: V,
   requestHeaders?: Dom.RequestInit['headers']
+): Promise<{ data: T; extensions?: any; headers: Dom.Headers; status: number }>
+export async function rawRequest<T = any, V = Variables>(
+  options: RawRequestExtendedOptions
+): Promise<{ data: T; extensions?: any; headers: Dom.Headers; status: number }>
+export async function rawRequest<T = any, V = Variables>(
+  arg1: string | RawRequestExtendedOptions,
+  arg2?: string,
+  arg3?: V,
+  arg4?: Dom.RequestInit['headers']
 ): Promise<{ data: T; extensions?: any; headers: Dom.Headers; status: number }> {
-  const client = new GraphQLClient(url)
-  return client.rawRequest<T, V>(query, variables, requestHeaders)
+  const requestOptions = parseRawRequestExtendedArgs(arg1, arg2, arg3, arg4)
+  const client = new GraphQLClient(requestOptions.url)
+  return client.rawRequest<T, V>({
+    ...requestOptions,
+  })
 }
 
 /**
- * Send a GraphQL Document to the GraphQL server for exectuion.
+ * Send a GraphQL Document to the GraphQL server for execution.
  *
  * @example
  *
@@ -479,9 +462,19 @@ export async function request<T = any, V = Variables>(
   document: RequestDocument,
   variables?: V,
   requestHeaders?: Dom.RequestInit['headers']
+): Promise<T>
+export async function request<T = any, V = Variables>(options: RequestExtendedOptions): Promise<T>
+export async function request<T = any, V = Variables>(
+  arg1: string | RequestExtendedOptions,
+  arg2?: RequestDocument,
+  arg3?: V,
+  arg4?: Dom.RequestInit['headers']
 ): Promise<T> {
-  const client = new GraphQLClient(url)
-  return client.request<T, V>(document, variables, requestHeaders)
+  const requestOptions = parseRequestExtendedArgs(arg1, arg2, arg3, arg4)
+  const client = new GraphQLClient(requestOptions.url)
+  return client.request<T, V>({
+    ...requestOptions,
+  })
 }
 
 /**
@@ -518,13 +511,20 @@ export async function request<T = any, V = Variables>(
  * await batchRequests('https://foo.bar/graphql', [{ query: gql`...` }])
  * ```
  */
-export async function batchRequests<T extends any = any, V = Variables>(
+export async function batchRequests<T = any, V = Variables>(
   url: string,
   documents: BatchRequestDocument<V>[],
   requestHeaders?: Dom.RequestInit['headers']
+): Promise<T>
+export async function batchRequests<T = any, V = Variables>(options: BatchRequestsExtendedOptions): Promise<T>
+export async function batchRequests<T = any, V = Variables>(
+  arg1: string | BatchRequestsExtendedOptions,
+  arg2?: BatchRequestDocument<V>[],
+  arg3?: Dom.RequestInit['headers']
 ): Promise<T> {
-  const client = new GraphQLClient(url)
-  return client.batchRequests<T, V>(documents, requestHeaders)
+  const requestOptions = parseBatchRequestsExtendedArgs(arg1, arg2, arg3)
+  const client = new GraphQLClient(requestOptions.url)
+  return client.batchRequests<T, V>({ ...requestOptions })
 }
 
 export default request

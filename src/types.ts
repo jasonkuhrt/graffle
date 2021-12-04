@@ -76,8 +76,14 @@ export type RequestOptions<V = Variables> = {
   signal?: Dom.RequestInit['signal']
 }
 
-export type BatchRequestOptions<V = Variables> = {
+export type BatchRequestsOptions<V = Variables> = {
   documents: BatchRequestDocument<V>[]
   requestHeaders?: Dom.RequestInit['headers']
   signal?: Dom.RequestInit['signal']
 }
+
+export type RequestExtendedOptions<V = Variables> = { url: string } & RequestOptions<V>
+
+export type RawRequestExtendedOptions<V = Variables> = { url: string } & RawRequestOptions<V>
+
+export type BatchRequestsExtendedOptions<V = Variables> = { url: string } & BatchRequestsOptions<V>
