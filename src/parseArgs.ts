@@ -12,93 +12,93 @@ import {
 import * as Dom from './types.dom'
 
 export function parseRequestArgs<V = Variables>(
-  arg1: RequestDocument | RequestOptions<V>,
-  arg2?: V,
-  arg3?: Dom.RequestInit['headers']
+  documentOrOptions: RequestDocument | RequestOptions<V>,
+  variables?: V,
+  requestHeaders?: Dom.RequestInit['headers']
 ): RequestOptions<V> {
-  return (arg1 as RequestOptions<V>).document
-    ? (arg1 as RequestOptions<V>)
+  return (documentOrOptions as RequestOptions<V>).document
+    ? (documentOrOptions as RequestOptions<V>)
     : {
-        document: arg1 as RequestDocument,
-        variables: arg2,
-        requestHeaders: arg3,
+        document: documentOrOptions as RequestDocument,
+        variables: variables,
+        requestHeaders: requestHeaders,
         signal: undefined,
       }
 }
 
 export function parseRawRequestArgs<V = Variables>(
-  arg1: RequestDocument | RawRequestOptions<V>,
-  arg2?: V,
-  arg3?: Dom.RequestInit['headers']
+  queryOrOptions: string | RawRequestOptions<V>,
+  variables?: V,
+  requestHeaders?: Dom.RequestInit['headers']
 ): RawRequestOptions<V> {
-  return (arg1 as RawRequestOptions<V>).query
-    ? (arg1 as RawRequestOptions<V>)
+  return (queryOrOptions as RawRequestOptions<V>).query
+    ? (queryOrOptions as RawRequestOptions<V>)
     : {
-        query: arg1 as string,
-        variables: arg2,
-        requestHeaders: arg3,
+        query: queryOrOptions as string,
+        variables: variables,
+        requestHeaders: requestHeaders,
         signal: undefined,
       }
 }
 
 export function parseBatchRequestArgs<V = Variables>(
-  arg1: BatchRequestDocument<V>[] | BatchRequestsOptions<V>,
-  arg2?: Dom.RequestInit['headers']
+  documentsOrOptions: BatchRequestDocument<V>[] | BatchRequestsOptions<V>,
+  requestHeaders?: Dom.RequestInit['headers']
 ): BatchRequestsOptions<V> {
-  return (arg1 as BatchRequestsOptions<V>).documents
-    ? (arg1 as BatchRequestsOptions<V>)
+  return (documentsOrOptions as BatchRequestsOptions<V>).documents
+    ? (documentsOrOptions as BatchRequestsOptions<V>)
     : {
-        documents: arg1 as BatchRequestDocument<V>[],
-        requestHeaders: arg2,
+        documents: documentsOrOptions as BatchRequestDocument<V>[],
+        requestHeaders: requestHeaders,
         signal: undefined,
       }
 }
 
 export function parseRequestExtendedArgs<V = Variables>(
-  arg1: string | RequestExtendedOptions<V>,
-  arg2?: RequestDocument,
-  arg3?: V,
-  arg4?: Dom.RequestInit['headers']
+  urlOrOptions: string | RequestExtendedOptions<V>,
+  document?: RequestDocument,
+  variables?: V,
+  requestHeaders?: Dom.RequestInit['headers']
 ): RequestExtendedOptions<V> {
-  return (arg1 as RequestExtendedOptions<V>).document
-    ? (arg1 as RequestExtendedOptions<V>)
+  return (urlOrOptions as RequestExtendedOptions<V>).document
+    ? (urlOrOptions as RequestExtendedOptions<V>)
     : {
-        url: arg1 as string,
-        document: arg2 as RequestDocument,
-        variables: arg3,
-        requestHeaders: arg4,
+        url: urlOrOptions as string,
+        document: document as RequestDocument,
+        variables: variables,
+        requestHeaders: requestHeaders,
         signal: undefined,
       }
 }
 
 export function parseRawRequestExtendedArgs<V = Variables>(
-  arg1: string | RawRequestExtendedOptions<V>,
-  arg2?: string,
-  arg3?: V,
-  arg4?: Dom.RequestInit['headers']
+  urlOrOptions: string | RawRequestExtendedOptions<V>,
+  query?: string,
+  variables?: V,
+  requestHeaders?: Dom.RequestInit['headers']
 ): RawRequestExtendedOptions<V> {
-  return (arg1 as RawRequestExtendedOptions<V>).query
-    ? (arg1 as RawRequestExtendedOptions<V>)
+  return (urlOrOptions as RawRequestExtendedOptions<V>).query
+    ? (urlOrOptions as RawRequestExtendedOptions<V>)
     : {
-        url: arg1 as string,
-        query: arg2 as string,
-        variables: arg3,
-        requestHeaders: arg4,
+        url: urlOrOptions as string,
+        query: query as string,
+        variables: variables,
+        requestHeaders: requestHeaders,
         signal: undefined,
       }
 }
 
 export function parseBatchRequestsExtendedArgs<V = Variables>(
-  arg1: string | BatchRequestsExtendedOptions<V>,
-  arg2?: BatchRequestDocument<V>[],
-  arg3?: Dom.RequestInit['headers']
+  urlOrOptions: string | BatchRequestsExtendedOptions<V>,
+  documents?: BatchRequestDocument<V>[],
+  requestHeaders?: Dom.RequestInit['headers']
 ): BatchRequestsExtendedOptions<V> {
-  return (arg1 as BatchRequestsExtendedOptions<V>).documents
-    ? (arg1 as BatchRequestsExtendedOptions<V>)
+  return (urlOrOptions as BatchRequestsExtendedOptions<V>).documents
+    ? (urlOrOptions as BatchRequestsExtendedOptions<V>)
     : {
-        url: arg1 as string,
-        documents: arg2 as BatchRequestDocument<V>[],
-        requestHeaders: arg3,
+        url: urlOrOptions as string,
+        documents: documents as BatchRequestDocument<V>[],
+        requestHeaders: requestHeaders,
         signal: undefined,
       }
 }
