@@ -1,5 +1,6 @@
 import { batchRequests, GraphQLClient, rawRequest, request } from '../src'
 import { setupTestServer, sleep } from './__helpers'
+import 'abort-controller/polyfill'
 
 const ctx = setupTestServer(20)
 
