@@ -577,6 +577,15 @@ You can also set the signal per request (this will override an existing GraphQLC
   abortController.abort()
 ```
 
+In Node environment, `AbortController` is supported since version v14.17.0.
+For Node.js v12 you can use [abort-controller](https://github.com/mysticatea/abort-controller) polyfill.
+
+````
+ import 'abort-controller/polyfill'
+
+ const abortController = new AbortController()
+````
+
 ## FAQ
 
 #### Why do I have to install `graphql`?
