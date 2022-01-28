@@ -538,7 +538,7 @@ function getResult(response: Dom.Response): Promise<any> {
   let contentType: string | undefined
 
   response.headers.forEach((value, key) => {
-    if (key.toLowerCase() === 'Content-Type'.toLowerCase()) {
+    if (key.toLowerCase() === 'content-type') {
       contentType = value
     }
   })
