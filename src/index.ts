@@ -535,14 +535,20 @@ export default request
  * todo
  */
 function getResult(response: Dom.Response): Promise<any> {
-  const contentType = response.headers.get('Content-Type')
-  if (contentType && contentType.startsWith('application/json')) {
+  let contentType: string | undefined
+
+  response.headers.forEach((value, key) => {
+    if (key.toLowerCase() === 'content-type') {
+      contentType = value
+    }
+  })
+
+  if (contentType && contentType.toLowerCase().startsWith('application/json')) {
     return response.json()
   } else {
     return response.text()
   }
 }
-
 /**
  * helpers
  */

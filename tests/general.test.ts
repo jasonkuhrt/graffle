@@ -1,5 +1,6 @@
 import { GraphQLClient, rawRequest, request } from '../src'
 import { setupTestServer } from './__helpers'
+import * as Dom from '../src/types.dom'
 
 const ctx = setupTestServer()
 
@@ -148,4 +149,33 @@ test.skip('extra fetch options', async () => {
       },
     ]
   `)
+})
+
+test('case-insensitive content-type header for custom fetch', async () => {
+  const testData = { data: { test: 'test' } }
+  const testResponseHeaders = new Map()
+  testResponseHeaders.set('ConTENT-type', 'apPliCatiON/JSON')
+
+  const options: Dom.RequestInit = {
+    fetch: function (url: string) {
+      return Promise.resolve({
+        headers: testResponseHeaders,
+        data: testData,
+        json: function () {
+          return testData
+        },
+        text: function () {
+          return JSON.stringify(testData)
+        },
+        ok: true,
+        status: 200,
+        url,
+      })
+    },
+  }
+
+  const client = new GraphQLClient(ctx.url, options)
+  const result = await client.request('{ test }')
+
+  expect(result).toBe(testData.data)
 })
