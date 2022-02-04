@@ -2,6 +2,7 @@ import crossFetch, * as CrossFetch from 'cross-fetch'
 import { OperationDefinitionNode } from 'graphql/language/ast'
 import { print } from 'graphql/language/printer'
 import createRequestBody from './createRequestBody'
+import { defaultJsonSerializer } from './defaultJsonSerializer'
 import {
   parseBatchRequestArgs,
   parseRawRequestArgs,
@@ -69,8 +70,8 @@ const resolveHeaders = (headers: Dom.RequestInit['headers']): Record<string, str
 const queryCleanner = (str: string): string => str.replace(/([\s,]|#[^\n\r]+)+/g, ' ').trim()
 
 type TBuildGetQueryParams<V> =
-  | { query: string; variables: V | undefined; operationName: string | undefined }
-  | { query: string[]; variables: V[] | undefined; operationName: undefined }
+  | { query: string; variables: V | undefined; operationName: string | undefined; jsonSerializer: Dom.JsonSerializer }
+  | { query: string[]; variables: V[] | undefined; operationName: undefined; jsonSerializer: Dom.JsonSerializer }
 
 /**
  * Create query string for GraphQL request
@@ -81,12 +82,12 @@ type TBuildGetQueryParams<V> =
  * @param {string|undefined} param0.operationName the GraphQL operation name
  * @param {any|any[]} param0.variables the GraphQL variables to use
  */
-const buildGetQueryParams = <V>({ query, variables, operationName }: TBuildGetQueryParams<V>): string => {
+const buildGetQueryParams = <V>({ query, variables, operationName, jsonSerializer }: TBuildGetQueryParams<V>): string => {
   if (!Array.isArray(query)) {
     const search: string[] = [`query=${encodeURIComponent(queryCleanner(query))}`]
 
     if (variables) {
-      search.push(`variables=${encodeURIComponent(JSON.stringify(variables))}`)
+      search.push(`variables=${encodeURIComponent(jsonSerializer.stringify(variables))}`)
     }
 
     if (operationName) {
@@ -105,14 +106,14 @@ const buildGetQueryParams = <V>({ query, variables, operationName }: TBuildGetQu
     (accu, currentQuery, index) => {
       accu.push({
         query: queryCleanner(currentQuery),
-        variables: variables ? JSON.stringify(variables[index]) : undefined,
+        variables: variables ? jsonSerializer.stringify(variables[index]) : undefined,
       })
       return accu
     },
     []
   )
 
-  return `query=${encodeURIComponent(JSON.stringify(payload))}`
+  return `query=${encodeURIComponent(jsonSerializer.stringify(payload))}`
 }
 
 /**
@@ -135,7 +136,7 @@ const post = async <V = Variables>({
   headers?: Dom.RequestInit['headers']
   operationName?: string
 }) => {
-  const body = createRequestBody(query, variables, operationName)
+  const body = createRequestBody(query, variables, operationName, fetchOptions.jsonSerializer)
 
   return await fetch(url, {
     method: 'POST',
@@ -172,6 +173,7 @@ const get = async <V = Variables>({
     query,
     variables,
     operationName,
+    jsonSerializer: fetchOptions.jsonSerializer
   } as TBuildGetQueryParams<V>)
 
   return await fetch(`${url}?${queryParams}`, {
@@ -377,7 +379,7 @@ async function makeRequest<T = any, V = Variables>({
     fetch,
     fetchOptions,
   })
-  const result = await getResult(response)
+  const result = await getResult(response, fetchOptions.jsonSerializer)
 
   const successfullyReceivedData =
     isBathchingQuery && Array.isArray(result) ? !result.some(({ data }) => !data) : !!result.data
@@ -534,7 +536,7 @@ export default request
 /**
  * todo
  */
-function getResult(response: Dom.Response): Promise<any> {
+async function getResult(response: Dom.Response, jsonSerializer = defaultJsonSerializer): Promise<any> {
   let contentType: string | undefined
 
   response.headers.forEach((value, key) => {
@@ -544,7 +546,7 @@ function getResult(response: Dom.Response): Promise<any> {
   })
 
   if (contentType && contentType.toLowerCase().startsWith('application/json')) {
-    return response.json()
+    return jsonSerializer.parse(await response.text())
   } else {
     return response.text()
   }
