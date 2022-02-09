@@ -6,6 +6,7 @@ const ctx = setupTestServer()
 
 test('minimal query', async () => {
   const { data } = ctx.res({
+    url: '/',
     body: {
       data: {
         me: {
@@ -20,6 +21,7 @@ test('minimal query', async () => {
 
 test('minimal raw query', async () => {
   const { extensions, data } = ctx.res({
+    url: '/',
     body: {
       data: {
         me: {
@@ -37,6 +39,7 @@ test('minimal raw query', async () => {
 
 test('minimal raw query with response headers', async () => {
   const { headers: reqHeaders, body } = ctx.res({
+    url: '/',
     headers: {
       'Content-Type': 'application/json',
       'X-Custom-Header': 'test-custom-header',
@@ -61,6 +64,7 @@ test('minimal raw query with response headers', async () => {
 
 test('content-type with charset', async () => {
   const { data } = ctx.res({
+    url: '/',
     // headers: { 'Content-Type': 'application/json; charset=utf-8' },
     body: {
       data: {
@@ -76,6 +80,7 @@ test('content-type with charset', async () => {
 
 test('basic error', async () => {
   ctx.res({
+    url: '/',
     body: {
       errors: {
         message: 'Syntax Error GraphQL request (1:1) Unexpected Name "x"\n\n1: x\n   ^\n',
@@ -98,6 +103,7 @@ test('basic error', async () => {
 
 test('basic error with raw request', async () => {
   ctx.res({
+    url: '/',
     body: {
       errors: {
         message: 'Syntax Error GraphQL request (1:1) Unexpected Name "x"\n\n1: x\n   ^\n',
@@ -127,6 +133,7 @@ test.skip('extra fetch options', async () => {
 
   const client = new GraphQLClient(ctx.url, options)
   const { requests } = ctx.res({
+    url: '/',
     body: { data: { test: 'test' } },
   })
   await client.request('{ test }')

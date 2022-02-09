@@ -21,6 +21,7 @@ import {
   RawRequestExtendedOptions,
   RequestExtendedOptions,
   Variables,
+  GraphQLExtensions,
 } from './types'
 import * as Dom from './types.dom'
 
@@ -69,8 +70,13 @@ const resolveHeaders = (headers: Dom.RequestInit['headers']): Record<string, str
 const queryCleanner = (str: string): string => str.replace(/([\s,]|#[^\n\r]+)+/g, ' ').trim()
 
 type TBuildGetQueryParams<V> =
-  | { query: string; variables: V | undefined; operationName: string | undefined }
-  | { query: string[]; variables: V[] | undefined; operationName: undefined }
+  | {
+      query: string
+      variables: V | undefined
+      operationName: string | undefined
+      extensions?: GraphQLExtensions
+    }
+  | { query: string[]; variables: V[] | undefined; operationName: undefined; extensions?: GraphQLExtensions }
 
 /**
  * Create query string for GraphQL request
@@ -81,7 +87,12 @@ type TBuildGetQueryParams<V> =
  * @param {string|undefined} param0.operationName the GraphQL operation name
  * @param {any|any[]} param0.variables the GraphQL variables to use
  */
-const buildGetQueryParams = <V>({ query, variables, operationName }: TBuildGetQueryParams<V>): string => {
+const buildGetQueryParams = <V>({
+  query,
+  variables,
+  operationName,
+  extensions,
+}: TBuildGetQueryParams<V>): string => {
   if (!Array.isArray(query)) {
     const search: string[] = [`query=${encodeURIComponent(queryCleanner(query))}`]
 
@@ -91,6 +102,10 @@ const buildGetQueryParams = <V>({ query, variables, operationName }: TBuildGetQu
 
     if (operationName) {
       search.push(`operationName=${encodeURIComponent(operationName)}`)
+    }
+
+    if (extensions) {
+      search.push(`extensions=${encodeURIComponent(JSON.stringify(extensions))}`)
     }
 
     return search.join('&')
@@ -123,6 +138,7 @@ const post = async <V = Variables>({
   query,
   variables,
   operationName,
+  extensions,
   headers,
   fetch,
   fetchOptions,
@@ -134,8 +150,9 @@ const post = async <V = Variables>({
   variables?: V
   headers?: Dom.RequestInit['headers']
   operationName?: string
+  extensions?: GraphQLExtensions
 }) => {
-  const body = createRequestBody(query, variables, operationName)
+  const body = createRequestBody(query, variables, operationName, extensions)
 
   return await fetch(url, {
     method: 'POST',
@@ -159,6 +176,7 @@ const get = async <V = Variables>({
   headers,
   fetch,
   fetchOptions,
+  extensions,
 }: {
   url: string
   query: string | string[]
@@ -167,11 +185,13 @@ const get = async <V = Variables>({
   variables?: V
   headers?: HeadersInit
   operationName?: string
+  extensions?: GraphQLExtensions
 }) => {
   const queryParams = buildGetQueryParams<V>({
     query,
     variables,
     operationName,
+    extensions,
   } as TBuildGetQueryParams<V>)
 
   return await fetch(`${url}?${queryParams}`, {
@@ -226,6 +246,7 @@ export class GraphQLClient {
         ...resolveHeaders(rawRequestOptions.requestHeaders),
       },
       operationName: undefined,
+      extensions: rawRequestOptions.extensions,
       fetch,
       method,
       fetchOptions,
@@ -265,6 +286,7 @@ export class GraphQLClient {
         ...resolveHeaders(requestOptions.requestHeaders),
       },
       operationName,
+      extensions: requestOptions.extensions,
       fetch,
       method,
       fetchOptions,
@@ -352,6 +374,7 @@ async function makeRequest<T = any, V = Variables>({
   variables,
   headers,
   operationName,
+  extensions,
   fetch,
   method = 'POST',
   fetchOptions,
@@ -361,6 +384,7 @@ async function makeRequest<T = any, V = Variables>({
   variables?: V
   headers?: Dom.RequestInit['headers']
   operationName?: string
+  extensions?: GraphQLExtensions
   fetch: any
   method: string
   fetchOptions: Dom.RequestInit
@@ -373,6 +397,7 @@ async function makeRequest<T = any, V = Variables>({
     query,
     variables,
     operationName,
+    extensions,
     headers,
     fetch,
     fetchOptions,

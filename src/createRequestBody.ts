@@ -19,9 +19,14 @@ const isExtractableFileEnhanced = (value: any): value is ExtractableFile | { pip
 export default function createRequestBody(
   query: string | string[],
   variables?: Variables | Variables[],
-  operationName?: string
+  operationName?: string,
+  extensions?: any
 ): string | FormData {
-  const { clone, files } = extractFiles({ query, variables, operationName }, '', isExtractableFileEnhanced)
+  const { clone, files } = extractFiles(
+    { query, variables, operationName, extensions },
+    '',
+    isExtractableFileEnhanced
+  )
 
   if (files.size === 0) {
     if (!Array.isArray(query)) {

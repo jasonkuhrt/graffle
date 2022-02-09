@@ -6,7 +6,7 @@ const ctx = setupTestServer()
 
 describe('gql', () => {
   it('passthrough allowing benefits of tooling for gql template tag', async () => {
-    const mock = ctx.res({ body: { data: { foo: 1 } } })
+    const mock = ctx.res({ url: '/', body: { data: { foo: 1 } } })
     await request(
       ctx.url,
       gql`query allUsers {

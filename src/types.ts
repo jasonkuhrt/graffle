@@ -55,6 +55,8 @@ export class ClientError extends Error {
   }
 }
 
+export type GraphQLExtensions = Record<string, any>
+
 export type RequestDocument = string | DocumentNode
 
 export type BatchRequestDocument<V = Variables> = {
@@ -67,6 +69,7 @@ export type RawRequestOptions<V = Variables> = {
   variables?: V
   requestHeaders?: Dom.RequestInit['headers']
   signal?: Dom.RequestInit['signal']
+  extensions?: GraphQLExtensions
 }
 
 export type RequestOptions<V = Variables> = {
@@ -74,6 +77,7 @@ export type RequestOptions<V = Variables> = {
   variables?: V
   requestHeaders?: Dom.RequestInit['headers']
   signal?: Dom.RequestInit['signal']
+  extensions?: GraphQLExtensions
 }
 
 export type BatchRequestsOptions<V = Variables> = {

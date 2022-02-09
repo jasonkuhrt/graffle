@@ -6,7 +6,7 @@ import { graphqlUploadExpress } from 'graphql-upload'
 import { createServer, Server } from 'http'
 import { JsonObject } from 'type-fest'
 
-type CapturedRequest = Pick<Request, 'headers' | 'method' | 'body'>
+type CapturedRequest = Pick<Request, 'headers' | 'method' | 'body' | 'url'>
 
 type Context<S extends MockSpec | MockSpecBatch = MockSpec> = {
   server: Application
@@ -27,11 +27,13 @@ type MockSpecBody = {
 type MockSpec = {
   headers?: Record<string, string>
   body?: MockSpecBody
+  url: string
 }
 
 export type MockSpecBatch = {
   headers?: Record<string, string>
   body?: MockSpecBody[]
+  url: string
 }
 
 type MockResult<Spec extends MockSpec | MockSpecBatch = MockSpec> = {
@@ -40,6 +42,7 @@ type MockResult<Spec extends MockSpec | MockSpecBatch = MockSpec> = {
     method: string
     headers: Record<string, string>
     body: JsonObject
+    url: string
   }[]
 }
 
@@ -68,6 +71,7 @@ export function setupTestServer<T extends MockSpec | MockSpecBatch = MockSpec>(d
           method: req.method,
           headers: req.headers,
           body: req.body,
+          url: req.url,
         })
         if (spec?.headers) {
           Object.entries(spec.headers).forEach(([name, value]) => {

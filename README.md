@@ -94,6 +94,7 @@ request({
   document: query,
   variables: variables,
   requestHeaders: headers,
+  extensions: extensions,
 }).then((data) => console.log(data))
 ```
 

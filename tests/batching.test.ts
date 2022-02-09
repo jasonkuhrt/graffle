@@ -8,6 +8,7 @@ test('minimal double query', async () => {
   const firstResult = { me: { id: 'some-id' } }
   const secondResult = { me: { id: 'another-id' } }
   const okq = ctx.res({
+    url: '/',
     body: [{ data: firstResult }, { data: secondResult }],
   })
 
@@ -22,6 +23,7 @@ test('minimal double query', async () => {
 
 test('basic error', async () => {
   ctx.res({
+    url: '/',
     body: [
       {
         errors: {
@@ -57,6 +59,7 @@ test('successful query with another which make an error', async () => {
   }
 
   ctx.res({
+    url: '/',
     body: [firstResult, secondResult],
   })
 

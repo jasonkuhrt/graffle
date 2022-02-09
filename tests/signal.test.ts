@@ -21,6 +21,7 @@ it('should abort a request when the signal is defined in the GraphQLClient', asy
 it('should abort a request when the signal is defined in GraphQLClient and after the request has been sent', async () => {
   const abortController = new AbortController()
   ctx.res({
+    url: '/',
     body: {
       data: {
         me: {
@@ -137,6 +138,7 @@ it('should abort a request', async () => {
 it('should abort a request after the request has been sent', async () => {
   const abortController = new AbortController()
   ctx.res({
+    url: '/',
     body: {
       data: {
         me: {
@@ -180,6 +182,7 @@ it('should abort a raw request', async () => {
 it('should abort a raw request after the request has been sent', async () => {
   const abortController = new AbortController()
   ctx.res({
+    url: '/',
     body: {
       data: {
         me: {
@@ -223,6 +226,7 @@ it('should abort batch requests', async () => {
 it('should abort batch requests after a request has been sent', async () => {
   const abortController = new AbortController()
   ctx.res({
+    url: '/',
     body: {
       data: {
         me: {
