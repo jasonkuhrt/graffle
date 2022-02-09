@@ -39,6 +39,7 @@
     "test:node": "jest --testEnvironment node",
     "test:dom": "jest --testEnvironment jsdom",
     "test": "yarn test:node && yarn test:dom",
+    "test:updateSnapshot": "yarn jest --testEnvironment node --updateSnapshot",
     "test:coverage": "yarn test --coverage",
     "release:stable": "dripip stable",
     "release:preview": "dripip preview",
@@ -53,7 +54,6 @@
     "graphql": "14 - 16"
   },
   "devDependencies": {
-    "abort-controller": "^3.0.0",
     "@prisma-labs/prettier-config": "^0.1.0",
     "@types/body-parser": "^1.19.1",
     "@types/express": "^4.17.13",
@@ -61,6 +61,7 @@
     "@types/graphql-upload": "^8.0.6",
     "@types/jest": "^26.0.24",
     "@types/node": "^16.4.3",
+    "abort-controller": "^3.0.0",
     "apollo-server-express": "^3.5.0",
     "body-parser": "^1.19.0",
     "doctoc": "^2.0.1",

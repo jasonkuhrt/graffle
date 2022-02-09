@@ -1,7 +1,7 @@
 install_and_test()
 {
   yarn add graphql@"$((GRAPHQL_VERSION))" --dev
-  yarn test
+  yarn test:updateSnapshot
 }
 
 export GRAPHQL_VERSION=14

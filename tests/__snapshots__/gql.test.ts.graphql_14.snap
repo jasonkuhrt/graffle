@@ -21,6 +21,7 @@ Object {
         "user-agent": "node-fetch/1.0 (+https://github.com/bitinn/node-fetch)",
       },
       "method": "POST",
+      "url": "/",
     },
   ],
   "spec": Object {
@@ -29,6 +30,7 @@ Object {
         "foo": 1,
       },
     },
+    "url": "/",
   },
 }
 `;
