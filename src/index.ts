@@ -1,5 +1,7 @@
 import crossFetch, * as CrossFetch from 'cross-fetch'
-import { OperationDefinitionNode } from 'graphql/language/ast'
+import { OperationDefinitionNode, DocumentNode } from 'graphql/language/ast'
+
+import { parse } from 'graphql/language/parser'
 import { print } from 'graphql/language/printer'
 import createRequestBody from './createRequestBody'
 import {
@@ -553,18 +555,35 @@ function getResult(response: Dom.Response): Promise<any> {
  * helpers
  */
 
-function resolveRequestDocument(document: RequestDocument): { query: string; operationName?: string } {
-  if (typeof document === 'string') return { query: document }
-
+function extractOperationName(document: DocumentNode): string | undefined {
   let operationName = undefined
 
-  let operationDefinitions = document.definitions.filter(
+  const operationDefinitions = document.definitions.filter(
     (definition) => definition.kind === 'OperationDefinition'
   ) as OperationDefinitionNode[]
 
   if (operationDefinitions.length === 1) {
     operationName = operationDefinitions[0].name?.value
   }
+
+  return operationName
+}
+
+function resolveRequestDocument(document: RequestDocument): { query: string; operationName?: string } {
+  if (typeof document === 'string') {
+    let operationName = undefined
+
+    try {
+      const parsedDocument = parse(document)
+      operationName = extractOperationName(parsedDocument)
+    } catch (err) {
+      // Failed parsing the document, the operationName will be undefined
+    }
+
+    return { query: document, operationName }
+  }
+
+  const operationName = extractOperationName(document)
 
   return { query: print(document), operationName }
 }

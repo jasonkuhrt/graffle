@@ -590,7 +590,7 @@ For Node.js v12 you can use [abort-controller](https://github.com/mysticatea/abo
 
 #### Why do I have to install `graphql`?
 
-`graphql-request` uses a TypeScript type from the `graphql` package such that if you are using TypeScript to build your project and you are using `graphql-request` but don't have `graphql` installed TypeScript build will fail. Details [here](https://github.com/prisma-labs/graphql-request/pull/183#discussion_r464453076). If you are a JS user then you do not technically need to install `graphql`. However if you use an IDE that picks up TS types even for JS (like VSCode) then its still in your interest to install `graphql` so that you can benefit from enhanced type safety during development.
+`graphql-request` uses methods exposed by the `graphql` package to handle some internal logic. On top of that, for TypeScript users, some types are used from the `graphql` package to provide better typings.
 
 #### Do I need to wrap my GraphQL documents inside the `gql` template exported by `graphql-request`?
 
