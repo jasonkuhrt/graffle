@@ -43,7 +43,7 @@ type MockResult<Spec extends MockSpec | MockSpecBatch = MockSpec> = {
   }[]
 }
 
-export function setupTestServer<T extends MockSpec | MockSpecBatch = MockSpec>(): Context<T> {
+export function setupTestServer<T extends MockSpec | MockSpecBatch = MockSpec>(delay?: number): Context<T> {
   const ctx = {} as Context<T>
   beforeAll(async () => {
     const port = await getPort()
@@ -58,7 +58,11 @@ export function setupTestServer<T extends MockSpec | MockSpecBatch = MockSpec>()
     ctx.url = `http://localhost:${port}`
     ctx.res = (spec?: T): MockResult<T> => {
       const requests: CapturedRequest[] = []
-      ctx.server.use('*', function mock(req, res) {
+      ctx.server.use('*', async function mock(req, res) {
+        if (delay) {
+          await sleep(delay)
+        }
+
         req.headers.host = 'DYNAMIC'
         requests.push({
           method: req.method,
@@ -129,4 +133,10 @@ export function createApolloServerContext({ typeDefs, resolvers }: ApolloServerC
   })
 
   return ctx
+}
+
+export function sleep(timeout: number): Promise<void> {
+  return new Promise((resolve) => {
+    setTimeout(resolve, timeout)
+  })
 }

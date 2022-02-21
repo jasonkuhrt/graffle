@@ -30,6 +30,8 @@ Minimal GraphQL client supporting Node and browsers for scripts or simple apps
   - [File Upload](#file-upload)
     - [Browser](#browser)
     - [Node](#node)
+  - [Batching](#batching)
+  - [Cancellation](#cancellation)
 - [FAQ](#faq)
     - [Why do I have to install `graphql`?](#why-do-i-have-to-install-graphql)
     - [Do I need to wrap my GraphQL documents inside the `gql` template exported by `graphql-request`?](#do-i-need-to-wrap-my-graphql-documents-inside-the-gql-template-exported-by-graphql-request)
@@ -82,6 +84,17 @@ request(endpoint, query, variables).then((data) => console.log(data))
 // ... or create a GraphQL client instance to send requests
 const client = new GraphQLClient(endpoint, { headers: {} })
 client.request(query, variables).then((data) => console.log(data))
+```
+
+You can also use the single argument function variant:
+
+```js
+request({
+  url: endpoint,
+  document: query,
+  variables: variables,
+  requestHeaders: headers,
+}).then((data) => console.log(data))
 ```
 
 ## Node Version Support
@@ -502,11 +515,82 @@ request('/api/graphql', UploadUserAvatar, {
 
 [TypeScript Source](examples/receiving-a-raw-response.ts)
 
+
+### Batching
+
+It is possible with `graphql-request` to use [batching](https://github.com/graphql/graphql-over-http/blob/main/rfcs/Batching.md) via the `batchRequests()` function. Example available at [examples/batching-requests.ts](examples/batching-requests.ts)
+
+```ts
+import { batchRequests } from 'graphql-request';
+
+(async function () {
+  const endpoint = 'https://api.spacex.land/graphql/';
+
+  const query1 = /* GraphQL */ `
+    query ($id: ID!) {
+      capsule(id: $id) {
+        id
+        landings
+      }
+    }
+  `;
+
+  const query2 = /* GraphQL */ `
+    {
+      rockets(limit: 10) {
+        active
+      }
+    }
+  `;
+
+  const data = await batchRequests(endpoint, [
+    { document: query1, variables: { id: 'C105' } },
+    { document: query2 },
+  ])
+  console.log(JSON.stringify(data, undefined, 2))
+})().catch((error) => console.error(error))
+```
+
+### Cancellation
+
+It is possible to cancel a request using an `AbortController` signal.
+
+You can define the `signal` in the `GraphQLClient` constructor:
+
+```ts
+  const abortController = new AbortController()
+
+  const client = new GraphQLClient(endpoint, { signal: abortController.signal })
+  client.request(query)
+
+  abortController.abort()
+```
+
+You can also set the signal per request (this will override an existing GraphQLClient signal):
+
+```ts
+  const abortController = new AbortController()
+
+  const client = new GraphQLClient(endpoint)
+  client.request({ document: query, signal: abortController.signal })
+
+  abortController.abort()
+```
+
+In Node environment, `AbortController` is supported since version v14.17.0.
+For Node.js v12 you can use [abort-controller](https://github.com/mysticatea/abort-controller) polyfill.
+
+````
+ import 'abort-controller/polyfill'
+
+ const abortController = new AbortController()
+````
+
 ## FAQ
 
 #### Why do I have to install `graphql`?
 
-`graphql-request` uses a TypeScript type from the `graphql` package such that if you are using TypeScript to build your project and you are using `graphql-request` but don't have `graphql` installed TypeScript build will fail. Details [here](https://github.com/prisma-labs/graphql-request/pull/183#discussion_r464453076). If you are a JS user then you do not technically need to install `graphql`. However if you use an IDE that picks up TS types even for JS (like VSCode) then its still in your interest to install `graphql` so that you can benefit from enhanced type safety during development.
+`graphql-request` uses methods exposed by the `graphql` package to handle some internal logic. On top of that, for TypeScript users, some types are used from the `graphql` package to provide better typings.
 
 #### Do I need to wrap my GraphQL documents inside the `gql` template exported by `graphql-request`?
 

@@ -62,6 +62,32 @@ export type BatchRequestDocument<V = Variables> = {
   variables?: V
 }
 
+export type RawRequestOptions<V = Variables> = {
+  query: string
+  variables?: V
+  requestHeaders?: Dom.RequestInit['headers']
+  signal?: Dom.RequestInit['signal']
+}
+
+export type RequestOptions<V = Variables> = {
+  document: RequestDocument
+  variables?: V
+  requestHeaders?: Dom.RequestInit['headers']
+  signal?: Dom.RequestInit['signal']
+}
+
+export type BatchRequestsOptions<V = Variables> = {
+  documents: BatchRequestDocument<V>[]
+  requestHeaders?: Dom.RequestInit['headers']
+  signal?: Dom.RequestInit['signal']
+}
+
+export type RequestExtendedOptions<V = Variables> = { url: string } & RequestOptions<V>
+
+export type RawRequestExtendedOptions<V = Variables> = { url: string } & RawRequestOptions<V>
+
+export type BatchRequestsExtendedOptions<V = Variables> = { url: string } & BatchRequestsOptions<V>
+
 export interface GraphQLRequestClient {
   rawRequest<T = any, V = Variables, E = any>(
     query: string,
