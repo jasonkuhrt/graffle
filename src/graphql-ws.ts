@@ -1,4 +1,4 @@
-import { ClientError, RequestDocument, Variables, GraphQLSubscriber, GraphQLSubscriptionClient, UnsubscribeCallback } from './types';
+import { ClientError, RequestDocument, Variables } from './types';
 import * as Dom from './types.dom'
 import { resolveRequestDocument } from '.';
 
@@ -57,6 +57,14 @@ type SocketHandler = {
     onClose?: () => any
 }
 
+export type UnsubscribeCallback = () => void;
+
+export interface GraphQLSubscriber<T, E=unknown> {
+  next?(data: T, extensions?: E): void;
+  error?(errorValue: ClientError): void;
+  complete?(): void;
+}
+
 type SubscriptionRecord = {
     subscriber: GraphQLSubscriber<unknown, unknown>
     query: string,
@@ -69,7 +77,7 @@ type SocketState = {
     subscriptions: { [key: string]: SubscriptionRecord }
 }
 
-export class GraphQLWebSocketClient implements GraphQLSubscriptionClient {
+export class GraphQLWebSocketClient {
 
     static PROTOCOL: string = "graphql-transport-ws"
 

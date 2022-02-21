@@ -16,7 +16,6 @@ import {
   BatchRequestDocument,
   BatchRequestsOptions,
   ClientError,
-  GraphQLRequestClient,
   RawRequestOptions,
   RequestDocument,
   RequestOptions,
@@ -187,7 +186,7 @@ const get = async <V = Variables>({
 /**
  * GraphQL Client.
  */
-export class GraphQLClient implements GraphQLRequestClient {
+export class GraphQLClient {
   private url: string
   private options: Dom.RequestInit
 
