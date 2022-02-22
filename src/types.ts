@@ -21,6 +21,7 @@ export interface GraphQLResponse<T = any> {
 export interface GraphQLRequestContext<V = Variables> {
   query: string | string[]
   variables?: V
+  headers: Record<string, string>;
 }
 
 export class ClientError extends Error {
