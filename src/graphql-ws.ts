@@ -225,6 +225,10 @@ export class GraphQLWebSocketClient {
     ping(payload: Variables) {
         this.socket.send(Ping(payload).text)
     }
+
+    close() {
+        this.socket.close(1000);
+    }
 }
 
 // Helper functions
