@@ -219,6 +219,8 @@ export class GraphQLClient {
       fetchOptions.signal = rawRequestOptions.signal
     }
 
+    const { operationName } = resolveRequestDocument(rawRequestOptions.query)
+
     return makeRequest<T, V>({
       url,
       query: rawRequestOptions.query,
@@ -227,7 +229,7 @@ export class GraphQLClient {
         ...resolveHeaders(headers),
         ...resolveHeaders(rawRequestOptions.requestHeaders),
       },
-      operationName: undefined,
+      operationName,
       fetch,
       method,
       fetchOptions,
