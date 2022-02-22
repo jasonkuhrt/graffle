@@ -49,7 +49,7 @@ class GraphQLWebSocketMessage<A = MessagePayload> {
     }
 }
 
-type SocketHandler = {
+export type SocketHandler = {
     onInit?: <T>() => Promise<T>,
     onAcknowledged?: <A>(payload?: A) => Promise<void>,
     onPing?: <In, Out>(payload: In) => Promise<Out>
