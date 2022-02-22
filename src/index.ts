@@ -370,7 +370,7 @@ async function makeRequest<T = any, V = Variables>({
   fetchOptions: Dom.RequestInit
 }): Promise<{ data: T; extensions?: any; headers: Dom.Headers; status: number }> {
   const fetcher = method.toUpperCase() === 'POST' ? post : get
-  const isBathchingQuery = Array.isArray(query)
+  const isBatchingQuery = Array.isArray(query)
 
   const response = await fetcher({
     url,
@@ -384,12 +384,12 @@ async function makeRequest<T = any, V = Variables>({
   const result = await getResult(response)
 
   const successfullyReceivedData =
-    isBathchingQuery && Array.isArray(result) ? !result.some(({ data }) => !data) : !!result.data
+    isBatchingQuery && Array.isArray(result) ? !result.some(({ data }) => !data) : !!result.data
 
   if (response.ok && !result.errors && successfullyReceivedData) {
     const { headers, status } = response
     return {
-      ...(isBathchingQuery ? { data: result } : result),
+      ...(isBatchingQuery ? { data: result } : result),
       headers,
       status,
     }
@@ -397,7 +397,7 @@ async function makeRequest<T = any, V = Variables>({
     const errorResult = typeof result === 'string' ? { error: result } : result
     throw new ClientError(
       { ...errorResult, status: response.status, headers: response.headers },
-      { query, variables }
+      { query, variables, headers: headers || {} }
     )
   }
 }
