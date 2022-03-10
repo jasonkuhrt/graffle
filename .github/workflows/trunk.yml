@@ -5,7 +5,7 @@ on:
     branches: [master]
 
 jobs:
-  tests:
+  test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -25,24 +25,10 @@ jobs:
       - run: yarn test:${{ matrix.environment }}
         env:
           GRAPHQL_VERSION: ${{ matrix.graphql-version }}
-  release:
-    needs: [tests]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - uses: actions/setup-node@v3
-        with:
-          node-version: v16
-          cache: yarn
-      - run: yarn install
-      - name: Make release
-        id: release
-        env:
-          NPM_TOKEN: ${{secrets.NPM_TOKEN}}
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-        run: |
-          yarn -s dripip preview --json > result.json
-          echo '==> Publish Result'
-          jq '.' < result.json
+
+  release-canary:
+    needs: [test]
+    uses: prisma-labs/dripip/.github/workflows/release.yml@master
+    secrets:
+      npmToken: ${{secrets.NPM_TOKEN}}
+      githubToken: ${{secrets.GITHUB_TOKEN}}
