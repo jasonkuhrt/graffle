@@ -278,6 +278,11 @@ interface AbortSignal extends EventTarget {
   ): void
 }
 
+export interface JsonSerializer {
+  stringify(obj: any): string;
+  parse(obj: string): unknown;
+}
+
 export interface RequestInit {
   body?: BodyInit | null
   cache?: RequestCache
@@ -294,6 +299,7 @@ export interface RequestInit {
   timeout?: number
   window?: any
   fetch?: any
+  jsonSerializer?: JsonSerializer
 }
 
 interface Body {

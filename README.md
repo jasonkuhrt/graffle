@@ -20,6 +20,7 @@ Minimal GraphQL client supporting Node and browsers for scripts or simple apps
     - [Incrementally setting headers](#incrementally-setting-headers)
   - [Passing Headers in each request](#passing-headers-in-each-request)
   - [Passing more options to `fetch`](#passing-more-options-to-fetch)
+    - [Custom JSON serializer](#custom-json-serializer)
   - [Using GraphQL Document variables](#using-graphql-document-variables)
   - [GraphQL Mutations](#graphql-mutations)
   - [Error handling](#error-handling)
@@ -245,6 +246,30 @@ main().catch((error) => console.error(error))
 ```
 
 [TypeScript Source](examples/passing-more-options-to-fetch.ts)
+
+### Custom JSON serializer
+
+If you want to use non-standard JSON types, you can use your own JSON serializer to replace `JSON.parse`/`JSON.stringify` used by the `GraphQLClient`.
+
+An original use case for this feature is `BigInt` support:
+
+```js
+import JSONbig from 'json-bigint'
+import { GraphQLClient, gql } from 'graphql-request'
+
+async function main() {
+  const jsonSerializer = JSONbig({ useNativeBigInt: true })
+  const graphQLClient = new GraphQLClient(endpoint, { jsonSerializer })
+  const data = await graphQLClient.request(
+    gql`
+      {
+        someBigInt
+      }
+    `
+  )
+  console.log(typeof data.someBigInt) // if >MAX_SAFE_INTEGER then 'bigint' else 'number'
+}
+```
 
 ### Using GraphQL Document variables
 

@@ -178,7 +178,7 @@ test('case-insensitive content-type header for custom fetch', async () => {
   const client = new GraphQLClient(ctx.url, options)
   const result = await client.request('{ test }')
 
-  expect(result).toBe(testData.data)
+  expect(result).toEqual(testData.data)
 })
 
 describe('operationName parsing', () => {

@@ -1,5 +1,6 @@
 import { isExtractableFile, extractFiles, ExtractableFile } from 'extract-files'
 import FormDataNode from 'form-data'
+import { defaultJsonSerializer } from './defaultJsonSerializer'
 
 import { Variables } from './types'
 
@@ -19,13 +20,14 @@ const isExtractableFileEnhanced = (value: any): value is ExtractableFile | { pip
 export default function createRequestBody(
   query: string | string[],
   variables?: Variables | Variables[],
-  operationName?: string
+  operationName?: string,
+  jsonSerializer = defaultJsonSerializer
 ): string | FormData {
   const { clone, files } = extractFiles({ query, variables, operationName }, '', isExtractableFileEnhanced)
 
   if (files.size === 0) {
     if (!Array.isArray(query)) {
-      return JSON.stringify(clone)
+      return jsonSerializer.stringify(clone)
     }
 
     if (typeof variables !== 'undefined' && !Array.isArray(variables)) {
@@ -41,21 +43,21 @@ export default function createRequestBody(
       []
     )
 
-    return JSON.stringify(payload)
+    return jsonSerializer.stringify(payload)
   }
 
   const Form = typeof FormData === 'undefined' ? FormDataNode : FormData
 
   const form = new Form()
 
-  form.append('operations', JSON.stringify(clone))
+  form.append('operations', jsonSerializer.stringify(clone))
 
   const map: { [key: number]: string[] } = {}
   let i = 0
   files.forEach((paths) => {
     map[++i] = paths
   })
-  form.append('map', JSON.stringify(map))
+  form.append('map', jsonSerializer.stringify(map))
 
   i = 0
   files.forEach((paths, file) => {
