@@ -92,6 +92,26 @@ describe('using class', () => {
       });
 
     })
+
+    describe('gets fresh dynamic headers before each request', () => {
+      test('with request method', async () => {
+        const objectChangedThroughReference = { 'x-foo': 'old' }
+        const client = new GraphQLClient(ctx.url, { headers: () => objectChangedThroughReference });
+        objectChangedThroughReference['x-foo'] = 'new';
+        const mock = ctx.res()
+        await client.request(`{ me { id } }`);
+        expect(mock.requests[0].headers['x-foo']).toEqual('new')
+      })
+
+      test('with rawRequest method', async () => {
+        const objectChangedThroughReference = { 'x-foo': 'old' }
+        const client = new GraphQLClient(ctx.url, { headers: () => objectChangedThroughReference });
+        objectChangedThroughReference['x-foo'] = 'new';
+        const mock = ctx.res()
+        await client.rawRequest(`{ me { id } }`);
+        expect(mock.requests[0].headers['x-foo']).toEqual('new')
+      })
+    })
   })
 })
 

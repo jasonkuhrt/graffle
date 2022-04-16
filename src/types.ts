@@ -55,7 +55,12 @@ export class ClientError extends Error {
   }
 }
 
+export type MaybeFunction<T> = T | (() => T);
+
 export type RequestDocument = string | DocumentNode
+
+export type PatchedRequestInit = Omit<Dom.RequestInit, "headers">
+  & {headers?: MaybeFunction<Dom.RequestInit['headers']>};
 
 export type BatchRequestDocument<V = Variables> = {
   document: RequestDocument

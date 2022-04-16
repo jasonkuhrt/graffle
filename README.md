@@ -19,6 +19,7 @@ Minimal GraphQL client supporting Node and browsers for scripts or simple apps
   - [Authentication via HTTP header](#authentication-via-http-header)
     - [Incrementally setting headers](#incrementally-setting-headers)
   - [Passing Headers in each request](#passing-headers-in-each-request)
+  - [Passing dynamic headers to the client](#passing-dynamic-headers-to-the-client)
   - [Passing more options to `fetch`](#passing-more-options-to-fetch)
     - [Custom JSON serializer](#custom-json-serializer)
   - [Using GraphQL Document variables](#using-graphql-document-variables)
@@ -212,6 +213,31 @@ const requestHeaders = {
 
 // Overrides the clients headers with the passed values
 const data = await client.request(query, variables, requestHeaders)
+```
+
+#### Passing dynamic headers to the client
+
+It's possible to recalculate the global client headers dynamically before each request.
+To do that, pass a function that returns the headers to the `headers` property when creating a new `GraphQLClient`.
+
+```js
+import { GraphQLClient } from 'graphql-request'
+
+const client = new GraphQLClient(endpoint,
+  { 
+    headers: () => ({ 'X-Sent-At-Time': Date.now() })
+  }
+)
+
+const query = gql`
+  query getCars {
+    cars {
+      name
+    }
+  }
+
+// Function saved in the client runs and calculates fresh headers before each request
+const data = await client.request(query)
 ```
 
 ### Passing more options to `fetch`
