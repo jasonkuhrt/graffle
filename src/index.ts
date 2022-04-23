@@ -575,7 +575,7 @@ function extractOperationName(document: DocumentNode): string | undefined {
   return operationName
 }
 
-function resolveRequestDocument(document: RequestDocument): { query: string; operationName?: string } {
+export function resolveRequestDocument(document: RequestDocument): { query: string; operationName?: string } {
   if (typeof document === 'string') {
     let operationName = undefined
 
@@ -628,3 +628,5 @@ function HeadersInstanceToPlainObject(headers: Dom.Response['headers']): Record<
   })
   return o
 }
+
+export { GraphQLWebSocketClient } from './graphql-ws'
