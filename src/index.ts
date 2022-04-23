@@ -24,6 +24,8 @@ import {
   RawRequestExtendedOptions,
   RequestExtendedOptions,
   Variables,
+  PatchedRequestInit,
+  MaybeFunction,
 } from './types'
 import * as Dom from './types.dom'
 
@@ -190,9 +192,9 @@ const get = async <V = Variables>({
  */
 export class GraphQLClient {
   private url: string
-  private options: Dom.RequestInit
+  private options: PatchedRequestInit
 
-  constructor(url: string, options?: Dom.RequestInit) {
+  constructor(url: string, options?: PatchedRequestInit) {
     this.url = url
     this.options = options || {}
   }
@@ -228,7 +230,7 @@ export class GraphQLClient {
       query: rawRequestOptions.query,
       variables: rawRequestOptions.variables,
       headers: {
-        ...resolveHeaders(headers),
+        ...resolveHeaders(callOrIdentity(headers)),
         ...resolveHeaders(rawRequestOptions.requestHeaders),
       },
       operationName,
@@ -267,7 +269,7 @@ export class GraphQLClient {
       query,
       variables: requestOptions.variables,
       headers: {
-        ...resolveHeaders(headers),
+        ...resolveHeaders(callOrIdentity(headers)),
         ...resolveHeaders(requestOptions.requestHeaders),
       },
       operationName,
@@ -309,7 +311,7 @@ export class GraphQLClient {
       query: queries,
       variables,
       headers: {
-        ...resolveHeaders(headers),
+        ...resolveHeaders(callOrIdentity(headers)),
         ...resolveHeaders(batchRequestOptions.requestHeaders),
       },
       operationName: undefined,
@@ -590,6 +592,10 @@ function resolveRequestDocument(document: RequestDocument): { query: string; ope
   const operationName = extractOperationName(document)
 
   return { query: print(document), operationName }
+}
+
+function callOrIdentity<T>(value: MaybeFunction<T>) {
+  return typeof value === 'function' ? (value as () => T)() : value;
 }
 
 /**
