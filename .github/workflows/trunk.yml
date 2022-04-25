@@ -1,9 +1,7 @@
 name: trunk
-
 on:
   push:
     branches: [master]
-
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -27,8 +25,10 @@ jobs:
           GRAPHQL_VERSION: ${{ matrix.graphql-version }}
 
   release-canary:
-    needs: [test]
-    uses: prisma-labs/dripip/.github/workflows/release.yml@master
-    secrets:
-      npmToken: ${{secrets.NPM_TOKEN}}
-      githubToken: ${{secrets.GITHUB_TOKEN}}
+    runs-on: ubuntu-latest
+    needs: [test-unit]
+    steps:
+      - uses: prisma-labs/dripip@master
+        with:
+          npmToken: ${{secrets.NPM_TOKEN}}
+          githubToken: ${{secrets.GITHUB_TOKEN}}

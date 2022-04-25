@@ -1,8 +1,6 @@
 name: pr
-
 on:
   pull_request: {}
-
 jobs:
   tests:
     runs-on: ubuntu-latest
@@ -18,7 +16,7 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
           cache: yarn
-      - run: yarn install
+      - uses: prisma/action-node-cache-dependencies@main
       - run: yarn add graphql@${{ matrix.graphql-version }}
       - run: yarn build
       - run: yarn test:${{ matrix.environment }}
