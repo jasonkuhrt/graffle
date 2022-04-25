@@ -1,25 +1,11 @@
-name: Release Stable
-
+name: Release
 on: workflow_dispatch
-
 jobs:
-  bump-version:
+  run:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: prisma-labs/dripip@master
         with:
-          fetch-depth: 0
-      - uses: actions/setup-node@v3
-        with:
-          node-version: v16
-          cache: yarn
-      - name: Install dependencies
-        run: yarn --frozen-lockfile
-      - name: Release
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git config user.name "GitHub Actions Bot"
-          git config user.email "<>"
-          yarn -s dripip stable
+          isStable: true
+          npmToken: ${{secrets.NPM_TOKEN}}
+          githubToken: ${{secrets.DRIPIP_GITHUB_TOKEN}}

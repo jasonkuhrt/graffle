@@ -1,8 +1,6 @@
 name: pr
-
 on:
   pull_request: {}
-
 jobs:
   tests:
     runs-on: ubuntu-latest
