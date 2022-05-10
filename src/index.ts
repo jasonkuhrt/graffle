@@ -1,4 +1,5 @@
 import crossFetch, * as CrossFetch from 'cross-fetch'
+import { TypedDocumentNode } from '@graphql-typed-document-node/core'
 import { OperationDefinitionNode, DocumentNode } from 'graphql/language/ast'
 
 import { parse } from 'graphql/language/parser'
@@ -244,13 +245,13 @@ export class GraphQLClient {
    * Send a GraphQL document to the server.
    */
   async request<T = any, V = Variables>(
-    document: RequestDocument,
+    document: RequestDocument | TypedDocumentNode<T, V>,
     variables?: V,
     requestHeaders?: Dom.RequestInit['headers']
   ): Promise<T>
-  async request<T = any, V = Variables>(options: RequestOptions<V>): Promise<T>
+  async request<T = any, V = Variables>(options: RequestOptions<V, T>): Promise<T>
   async request<T = any, V = Variables>(
-    documentOrOptions: RequestDocument | RequestOptions<V>,
+    documentOrOptions: RequestDocument | TypedDocumentNode<T, V> | RequestOptions<V, T>,
     variables?: V,
     requestHeaders?: Dom.RequestInit['headers']
   ): Promise<T> {
@@ -467,14 +468,16 @@ export async function rawRequest<T = any, V = Variables>(
  */
 export async function request<T = any, V = Variables>(
   url: string,
-  document: RequestDocument,
-  variables?: V,
-  requestHeaders?: Dom.RequestInit['headers']
+  document: RequestDocument | TypedDocumentNode<T, V>,
+  ..._variablesAndRequestHeaders:
+    (V extends never ?
+    [variables?: never, requestHeaders?: Dom.RequestInit['headers']]
+    : [variables: V, requestHeaders?: Dom.RequestInit['headers']])
 ): Promise<T>
-export async function request<T = any, V = Variables>(options: RequestExtendedOptions<V>): Promise<T>
+export async function request<T = any, V = Variables>(options: RequestExtendedOptions<V, T>): Promise<T>
 export async function request<T = any, V = Variables>(
-  urlOrOptions: string | RequestExtendedOptions<V>,
-  document?: RequestDocument,
+  urlOrOptions: string | RequestExtendedOptions<V, T>,
+  document?: RequestDocument | TypedDocumentNode<T, V>,
   variables?: V,
   requestHeaders?: Dom.RequestInit['headers']
 ): Promise<T> {

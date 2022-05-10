@@ -1,3 +1,4 @@
+import { TypedDocumentNode } from '@graphql-typed-document-node/core'
 import { DocumentNode } from 'graphql/language/ast'
 import * as Dom from './types.dom'
 
@@ -74,12 +75,11 @@ export type RawRequestOptions<V = Variables> = {
   signal?: Dom.RequestInit['signal']
 }
 
-export type RequestOptions<V = Variables> = {
-  document: RequestDocument
-  variables?: V
+export type RequestOptions<V = Variables, T = any> = {
+  document: RequestDocument | TypedDocumentNode<T, V>
   requestHeaders?: Dom.RequestInit['headers']
   signal?: Dom.RequestInit['signal']
-}
+} & (V extends never ? { variables?: never } : { variables: V })
 
 export type BatchRequestsOptions<V = Variables> = {
   documents: BatchRequestDocument<V>[]
@@ -87,7 +87,7 @@ export type BatchRequestsOptions<V = Variables> = {
   signal?: Dom.RequestInit['signal']
 }
 
-export type RequestExtendedOptions<V = Variables> = { url: string } & RequestOptions<V>
+export type RequestExtendedOptions<V = Variables, T = any> = { url: string } & RequestOptions<V, T>
 
 export type RawRequestExtendedOptions<V = Variables> = { url: string } & RawRequestOptions<V>
 
