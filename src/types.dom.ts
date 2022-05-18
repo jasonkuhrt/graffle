@@ -122,6 +122,8 @@ type RequestCredentials = 'omit' | 'same-origin' | 'include'
 
 type HeadersInit = Headers | string[][] | Record<string, string>
 
+export type ErrorPolicy = 'none' | 'ignore' | 'all'
+
 type RequestMode = 'navigate' | 'same-origin' | 'no-cors' | 'cors'
 
 type RequestRedirect = 'follow' | 'error' | 'manual'
@@ -300,6 +302,7 @@ export interface RequestInit {
   window?: any
   fetch?: any
   jsonSerializer?: JsonSerializer
+  errorPolicy?: ErrorPolicy
 }
 
 interface Body {

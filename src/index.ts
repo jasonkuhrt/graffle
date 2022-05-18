@@ -74,8 +74,18 @@ const resolveHeaders = (headers: Dom.RequestInit['headers']): Record<string, str
 const queryCleanner = (str: string): string => str.replace(/([\s,]|#[^\n\r]+)+/g, ' ').trim()
 
 type TBuildGetQueryParams<V> =
-  | { query: string; variables: V | undefined; operationName: string | undefined; jsonSerializer: Dom.JsonSerializer }
-  | { query: string[]; variables: V[] | undefined; operationName: undefined; jsonSerializer: Dom.JsonSerializer }
+  | {
+      query: string
+      variables: V | undefined
+      operationName: string | undefined
+      jsonSerializer: Dom.JsonSerializer
+    }
+  | {
+      query: string[]
+      variables: V[] | undefined
+      operationName: undefined
+      jsonSerializer: Dom.JsonSerializer
+    }
 
 /**
  * Create query string for GraphQL request
@@ -86,7 +96,12 @@ type TBuildGetQueryParams<V> =
  * @param {string|undefined} param0.operationName the GraphQL operation name
  * @param {any|any[]} param0.variables the GraphQL variables to use
  */
-const buildGetQueryParams = <V>({ query, variables, operationName, jsonSerializer }: TBuildGetQueryParams<V>): string => {
+const buildGetQueryParams = <V>({
+  query,
+  variables,
+  operationName,
+  jsonSerializer,
+}: TBuildGetQueryParams<V>): string => {
   if (!Array.isArray(query)) {
     const search: string[] = [`query=${encodeURIComponent(queryCleanner(query))}`]
 
@@ -177,7 +192,7 @@ const get = async <V = Variables>({
     query,
     variables,
     operationName,
-    jsonSerializer: fetchOptions.jsonSerializer
+    jsonSerializer: fetchOptions.jsonSerializer,
   } as TBuildGetQueryParams<V>)
 
   return await fetch(`${url}?${queryParams}`, {
@@ -390,10 +405,17 @@ async function makeRequest<T = any, V = Variables>({
   const successfullyReceivedData =
     isBathchingQuery && Array.isArray(result) ? !result.some(({ data }) => !data) : !!result.data
 
-  if (response.ok && !result.errors && successfullyReceivedData) {
+  const successfullyPassedErrorPolicy =
+    !response.errors || fetchOptions.errorPolicy === 'all' || fetchOptions.errorPolicy === 'ignore'
+
+  if (response.ok && successfullyPassedErrorPolicy && successfullyReceivedData) {
     const { headers, status } = response
+
+    const { errors, ...rest } = result
+    const data = fetchOptions === 'ignore' ? rest : result
+    
     return {
-      ...(isBathchingQuery ? { data: result } : result),
+      ...(isBathchingQuery ? { data } : data),
       headers,
       status,
     }
@@ -595,7 +617,7 @@ export function resolveRequestDocument(document: RequestDocument): { query: stri
 }
 
 function callOrIdentity<T>(value: MaybeFunction<T>) {
-  return typeof value === 'function' ? (value as () => T)() : value;
+  return typeof value === 'function' ? (value as () => T)() : value
 }
 
 /**
