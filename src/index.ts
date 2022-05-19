@@ -74,18 +74,8 @@ const resolveHeaders = (headers: Dom.RequestInit['headers']): Record<string, str
 const queryCleanner = (str: string): string => str.replace(/([\s,]|#[^\n\r]+)+/g, ' ').trim()
 
 type TBuildGetQueryParams<V> =
-  | {
-      query: string
-      variables: V | undefined
-      operationName: string | undefined
-      jsonSerializer: Dom.JsonSerializer
-    }
-  | {
-      query: string[]
-      variables: V[] | undefined
-      operationName: undefined
-      jsonSerializer: Dom.JsonSerializer
-    }
+  | { query: string; variables: V | undefined; operationName: string | undefined; jsonSerializer: Dom.JsonSerializer }
+  | { query: string[]; variables: V[] | undefined; operationName: undefined; jsonSerializer: Dom.JsonSerializer }
 
 /**
  * Create query string for GraphQL request
@@ -96,12 +86,7 @@ type TBuildGetQueryParams<V> =
  * @param {string|undefined} param0.operationName the GraphQL operation name
  * @param {any|any[]} param0.variables the GraphQL variables to use
  */
-const buildGetQueryParams = <V>({
-  query,
-  variables,
-  operationName,
-  jsonSerializer,
-}: TBuildGetQueryParams<V>): string => {
+const buildGetQueryParams = <V>({ query, variables, operationName, jsonSerializer }: TBuildGetQueryParams<V>): string => {
   if (!Array.isArray(query)) {
     const search: string[] = [`query=${encodeURIComponent(queryCleanner(query))}`]
 
@@ -192,7 +177,7 @@ const get = async <V = Variables>({
     query,
     variables,
     operationName,
-    jsonSerializer: fetchOptions.jsonSerializer,
+    jsonSerializer: fetchOptions.jsonSerializer
   } as TBuildGetQueryParams<V>)
 
   return await fetch(`${url}?${queryParams}`, {
@@ -617,7 +602,7 @@ export function resolveRequestDocument(document: RequestDocument): { query: stri
 }
 
 function callOrIdentity<T>(value: MaybeFunction<T>) {
-  return typeof value === 'function' ? (value as () => T)() : value
+  return typeof value === 'function' ? (value as () => T)() : value;
 }
 
 /**

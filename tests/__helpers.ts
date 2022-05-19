@@ -43,7 +43,7 @@ type MockResult<Spec extends MockSpec | MockSpecBatch = MockSpec> = {
   }[]
 }
 
-export function setupTestServer<T extends MockSpec | MockSpecBatch = MockSpec>(delay?: number): Context<T> {
+export function setupTestServer<T extends MockSpec | MockSpecBatch = MockSpec>(delay?: number, throwsError?: boolean): Context<T> {
   const ctx = {} as Context<T>
   beforeAll(async () => {
     const port = await getPort()
@@ -74,7 +74,7 @@ export function setupTestServer<T extends MockSpec | MockSpecBatch = MockSpec>(d
             res.setHeader(name, value)
           })
         }
-        res.send(spec?.body ?? { data: {} })
+        res.send(spec?.body ?? { data: {}, ...(throwsError ? {errors: [{message: "throws a error"}]} : {}) })
       })
 
       return { spec, requests: requests } as MockResult<T>
