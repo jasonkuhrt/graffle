@@ -406,7 +406,7 @@ async function makeRequest<T = any, V = Variables>({
     isBathchingQuery && Array.isArray(result) ? !result.some(({ data }) => !data) : !!result.data
 
   const successfullyPassedErrorPolicy =
-    !response.errors || fetchOptions.errorPolicy === 'all' || fetchOptions.errorPolicy === 'ignore'
+    !result.errors || fetchOptions.errorPolicy === 'all' || fetchOptions.errorPolicy === 'ignore'
 
   if (response.ok && successfullyPassedErrorPolicy && successfullyReceivedData) {
     const { headers, status } = response
