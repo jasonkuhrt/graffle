@@ -639,7 +639,7 @@ For Node.js v12 you can use [abort-controller](https://github.com/mysticatea/abo
 
 ### ErrorPolicy
 
-By default GraphqlClient will throw when an error is receiver. However, sometimes you still want to resolve the (partial) data you received. 
+By default GraphQLClient will throw when an error is received. However, sometimes you still want to resolve the (partial) data you received. 
 You can define `errorPolicy` in the `GraphQLClient` constructor.
 
 ```ts
