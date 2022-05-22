@@ -122,6 +122,13 @@ type RequestCredentials = 'omit' | 'same-origin' | 'include'
 
 type HeadersInit = Headers | string[][] | Record<string, string>
 
+/**
+ * 'None' will throw whenever the response contains errors
+ *
+ * 'Ignore' will ignore incoming errors and resolve like no errors occurred
+ *
+ * 'All' will return both the errors and data
+ */
 export type ErrorPolicy = 'none' | 'ignore' | 'all'
 
 type RequestMode = 'navigate' | 'same-origin' | 'no-cors' | 'cors'
@@ -281,8 +288,8 @@ interface AbortSignal extends EventTarget {
 }
 
 export interface JsonSerializer {
-  stringify(obj: any): string;
-  parse(obj: string): unknown;
+  stringify(obj: any): string
+  parse(obj: string): unknown
 }
 
 export interface RequestInit {
@@ -303,10 +310,7 @@ export interface RequestInit {
   fetch?: any
   jsonSerializer?: JsonSerializer
   /**
-   * Decide how to handle GraphQLErrors
-   * 'None' will throw whenever the response contains errors
-   * 'Ignore' will ignore incoming errors and resolve like no errors occurred
-   * 'All' will return both the errors and data
+   * Decide how to handle GraphQLErrors in response
    */
   errorPolicy?: ErrorPolicy
 }

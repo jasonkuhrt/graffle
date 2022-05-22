@@ -650,10 +650,10 @@ const client = new GraphQLClient(endpoint, {errorPolicy: "all"});
 Allow no errors at all. If you receive a GraphQL error the client will throw.
 
 #### Ignore
-Whenever a GraphQL error is received, ignore the error and only return the data.
+Ignore incoming errors and resolve like no errors occurred
 
 #### All
-When a Graphql error is received, return the data and the errors that come with it.
+Return both the errors and data.
 
 ## FAQ
 
