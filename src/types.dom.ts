@@ -302,6 +302,12 @@ export interface RequestInit {
   window?: any
   fetch?: any
   jsonSerializer?: JsonSerializer
+  /**
+   * Decide how to handle GraphQLErrors
+   * 'None' will throw whenever the response contains errors
+   * 'Ignore' will ignore incoming errors and resolve like no errors occurred
+   * 'All' will return both the errors and data
+   */
   errorPolicy?: ErrorPolicy
 }
 

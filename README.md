@@ -637,6 +637,24 @@ For Node.js v12 you can use [abort-controller](https://github.com/mysticatea/abo
  const abortController = new AbortController()
 ````
 
+### ErrorPolicy
+
+By default GraphqlClient will throw when an error is receiver. However, sometimes you still want to resolve the (partial) data you received. 
+You can define `errorPolicy` in the `GraphQLClient` constructor.
+
+```ts
+const client = new GraphQLClient(endpoint, {errorPolicy: "all"});
+```
+
+#### None (default)
+Allow no errors at all. If you receive a GraphQL error the client will throw.
+
+#### Ignore
+Whenever a GraphQL error is received, ignore the error and only return the data.
+
+#### All
+When a Graphql error is received, return the data and the errors that come with it.
+
 ## FAQ
 
 #### Why do I have to install `graphql`?
