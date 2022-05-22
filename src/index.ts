@@ -397,7 +397,7 @@ async function makeRequest<T = any, V = Variables>({
     const { headers, status } = response
 
     const { errors, ...rest } = result
-    const data = fetchOptions === 'ignore' ? rest : result
+    const data = fetchOptions.errorPolicy === 'ignore' ? rest : result
     
     return {
       ...(isBathchingQuery ? { data } : data),
