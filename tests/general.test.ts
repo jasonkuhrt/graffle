@@ -93,7 +93,32 @@ test('basic error', async () => {
   const res = await request(ctx.url, `x`).catch((x) => x)
 
   expect(res).toMatchInlineSnapshot(
-    `[Error: GraphQL Error (Code: 200): {"response":{"errors":{"message":"Syntax Error GraphQL request (1:1) Unexpected Name \\"x\\"\\n\\n1: x\\n   ^\\n","locations":[{"line":1,"column":1}]},"status":200,"headers":{}},"request":{"query":"x"}}]`
+    `[Error: GraphQL Error (Code: 200): {"response":{"errors":{"message":"Syntax Error GraphQL request (1:1) Unexpected Name \\"x\\"\\n\\n1: x\\n   ^\\n","locations":[{"line":1,"column":1}]},"status":200,"headers":{}},"request":{"query":"x","headers":{}}}]`
+  )
+})
+
+test('basic error with request headers', async () => {
+  ctx.res({
+    body: {
+      errors: {
+        message: 'Syntax Error GraphQL request (1:1) Unexpected Name "x"\n\n1: x\n   ^\n',
+        locations: [
+          {
+            line: 1,
+            column: 1,
+          },
+        ],
+      },
+    },
+  })
+
+  const res = await request(ctx.url, `x`, undefined, {
+    'X-Custom-Header': 'test-custom-header',
+  }).catch((x) => x)
+
+  expect(res.request.headers).toMatchObject({ 'X-Custom-Header': 'test-custom-header' })
+  expect(res).toMatchInlineSnapshot(
+    `[Error: GraphQL Error (Code: 200): {"response":{"errors":{"message":"Syntax Error GraphQL request (1:1) Unexpected Name \\"x\\"\\n\\n1: x\\n   ^\\n","locations":[{"line":1,"column":1}]},"status":200,"headers":{}},"request":{"query":"x","headers":{"X-Custom-Header":"test-custom-header"}}}]`
   )
 })
 
@@ -113,7 +138,7 @@ test('basic error with raw request', async () => {
   })
   const res = await rawRequest(ctx.url, `x`).catch((x) => x)
   expect(res).toMatchInlineSnapshot(
-    `[Error: GraphQL Error (Code: 200): {"response":{"errors":{"message":"Syntax Error GraphQL request (1:1) Unexpected Name \\"x\\"\\n\\n1: x\\n   ^\\n","locations":[{"line":1,"column":1}]},"status":200,"headers":{}},"request":{"query":"x"}}]`
+    `[Error: GraphQL Error (Code: 200): {"response":{"errors":{"message":"Syntax Error GraphQL request (1:1) Unexpected Name \\"x\\"\\n\\n1: x\\n   ^\\n","locations":[{"line":1,"column":1}]},"status":200,"headers":{}},"request":{"query":"x","headers":{}}}]`
   )
 })
 
