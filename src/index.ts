@@ -26,6 +26,7 @@ import {
   Variables,
   PatchedRequestInit,
   MaybeFunction,
+  GraphQLError,
 } from './types'
 import * as Dom from './types.dom'
 
@@ -206,15 +207,15 @@ export class GraphQLClient {
     query: string,
     variables?: V,
     requestHeaders?: Dom.RequestInit['headers']
-  ): Promise<{ data: T; extensions?: any; headers: Dom.Headers; status: number }>
+  ): Promise<{ data: T; extensions?: any; headers: Dom.Headers; errors?: GraphQLError[]; status: number }>
   async rawRequest<T = any, V = Variables>(
     options: RawRequestOptions<V>
-  ): Promise<{ data: T; extensions?: any; headers: Dom.Headers; status: number }>
+  ): Promise<{ data: T; extensions?: any; headers: Dom.Headers; errors?: GraphQLError[]; status: number }>
   async rawRequest<T = any, V = Variables>(
     queryOrOptions: string | RawRequestOptions<V>,
     variables?: V,
     requestHeaders?: Dom.RequestInit['headers']
-  ): Promise<{ data: T; extensions?: any; headers: Dom.Headers; status: number }> {
+  ): Promise<{ data: T; extensions?: any; headers: Dom.Headers; errors?: GraphQLError[]; status: number }> {
     const rawRequestOptions = parseRawRequestArgs<V>(queryOrOptions, variables, requestHeaders)
 
     let { headers, fetch = crossFetch, method = 'POST', ...fetchOptions } = this.options
@@ -372,7 +373,7 @@ async function makeRequest<T = any, V = Variables>({
   fetch: any
   method: string
   fetchOptions: Dom.RequestInit
-}): Promise<{ data: T; extensions?: any; headers: Dom.Headers; status: number }> {
+}): Promise<{ data: T; extensions?: any; headers: Dom.Headers; errors?: GraphQLError[]; status: number }> {
   const fetcher = method.toUpperCase() === 'POST' ? post : get
   const isBathchingQuery = Array.isArray(query)
 
