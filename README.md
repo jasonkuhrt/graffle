@@ -653,7 +653,7 @@ Allow no errors at all. If you receive a GraphQL error the client will throw.
 Ignore incoming errors and resolve like no errors occurred
 
 #### All
-Return both the errors and data.
+Return both the errors and data, only works with `rawRequest`.
 
 ## FAQ
 
