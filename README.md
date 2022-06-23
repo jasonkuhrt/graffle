@@ -668,7 +668,7 @@ function middleware(response: Response<unknown>) {
   }
 }
 
-const client = new GraphQLClient(endpoint, { requestMiddleware: middleware })
+const client = new GraphQLClient(endpoint, { responseMiddleware: middleware })
 ```
 
 ### ErrorPolicy
