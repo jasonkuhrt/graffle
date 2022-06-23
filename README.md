@@ -34,6 +34,7 @@ Minimal GraphQL client supporting Node and browsers for scripts or simple apps
     - [Node](#node)
   - [Batching](#batching)
   - [Cancellation](#cancellation)
+  - [Middleware](#middleware)
 - [FAQ](#faq)
     - [Why do I have to install `graphql`?](#why-do-i-have-to-install-graphql)
     - [Do I need to wrap my GraphQL documents inside the `gql` template exported by `graphql-request`?](#do-i-need-to-wrap-my-graphql-documents-inside-the-gql-template-exported-by-graphql-request)
@@ -235,7 +236,7 @@ const query = gql`
       name
     }
   }
-
+`
 // Function saved in the client runs and calculates fresh headers before each request
 const data = await client.request(query)
 ```
@@ -636,6 +637,39 @@ For Node.js v12 you can use [abort-controller](https://github.com/mysticatea/abo
 
  const abortController = new AbortController()
 ````
+
+### Middleware
+
+It's possible to use a middleware to pre-process any request or handle raw response.
+
+Request middleware example (set actual auth token to each request):
+```ts
+function middleware(request: RequestInit) {
+  const token = getToken();
+  return {
+    ...request,
+    headers: { ...request.headers, 'x-auth-token': token },
+  }
+}
+
+const client = new GraphQLClient(endpoint, { requestMiddleware: middleware })
+```
+
+Response middleware example (log request trace id if error caused):
+```ts
+function middleware(response: Response<unknown>) {
+  if (response.errors) {
+    const traceId = response.headers.get('x-b3-traceid') || 'unknown'
+    console.error(
+        `[${traceId}] Request error:
+        status ${response.status}
+        details: ${response.errors}`
+    )
+  }
+}
+
+const client = new GraphQLClient(endpoint, { requestMiddleware: middleware })
+```
 
 ### ErrorPolicy
 
