@@ -59,8 +59,19 @@ export type MaybeFunction<T> = T | (() => T);
 
 export type RequestDocument = string | DocumentNode
 
-export type PatchedRequestInit = Omit<Dom.RequestInit, "headers">
-  & {headers?: MaybeFunction<Dom.RequestInit['headers']>};
+export interface Response<T> {
+  data: T
+  extensions?: any
+  headers: Dom.Headers
+  errors?: GraphQLError[]
+  status: number
+}
+
+export type PatchedRequestInit = Omit<Dom.RequestInit, "headers"> & {
+  headers?: MaybeFunction<Dom.RequestInit['headers']>
+  requestMiddleware?: (request: Dom.RequestInit) => Dom.RequestInit
+  responseMiddleware?: (response: Response<unknown>) => void
+};
 
 export type BatchRequestDocument<V = Variables> = {
   document: RequestDocument
