@@ -1,14 +1,10 @@
 import { DocumentNode } from 'graphql/language/ast'
+import type { GraphQLError } from 'graphql/error/GraphQLError'
 import * as Dom from './types.dom'
 
-export type Variables = { [key: string]: any }
+export type { GraphQLError }
 
-export interface GraphQLError {
-  message: string
-  locations?: { line: number; column: number }[]
-  path?: string[]
-  extensions?: any
-}
+export type Variables = { [key: string]: any }
 
 export interface GraphQLResponse<T = any> {
   data?: T
