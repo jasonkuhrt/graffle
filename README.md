@@ -23,6 +23,7 @@ Minimal GraphQL client supporting Node and browsers for scripts or simple apps
   - [Passing more options to `fetch`](#passing-more-options-to-fetch)
     - [Custom JSON serializer](#custom-json-serializer)
   - [Using GraphQL Document variables](#using-graphql-document-variables)
+  - [Making a GET request](#making-a-get-request)
   - [GraphQL Mutations](#graphql-mutations)
   - [Error handling](#error-handling)
   - [Using `require` instead of `import`](#using-require-instead-of-import)
@@ -322,6 +323,46 @@ async function main() {
   }
 
   const data = await request(endpoint, query, variables)
+  console.log(JSON.stringify(data, undefined, 2))
+}
+
+main().catch((error) => console.error(error))
+```
+
+### Making a GET request
+
+Queries can be sent as an HTTP GET request:
+
+```js
+import { GraphQLClient, gql } from 'graphql-request'
+
+async function main() {
+  const endpoint = 'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr'
+
+  const graphQLClient = new GraphQLClient(endpoint, {
+    method: 'GET',
+    jsonSerializer: {
+      parse: JSON.parse,
+      stringify: JSON.stringify,
+    },
+  });
+
+  const query = gql`
+    query getMovie($title: String!) {
+      Movie(title: $title) {
+        releaseDate
+        actors {
+          name
+        }
+      }
+    }
+  `
+
+  const variables = {
+    title: 'Inception',
+  }
+
+  const data = await graphQLClient.request(query, variables)
   console.log(JSON.stringify(data, undefined, 2))
 }
 
