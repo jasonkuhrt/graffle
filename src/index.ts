@@ -28,6 +28,7 @@ import {
   PatchedRequestInit,
   MaybeFunction,
   Response,
+  RemoveIndex,
 } from './types'
 import * as Dom from './types.dom'
 
@@ -278,16 +279,23 @@ export class GraphQLClient {
    * Send a GraphQL document to the server.
    */
   request<T = any, V = Variables>(
-    document: RequestDocument,
-    variables?: V,
-    requestHeaders?: Dom.RequestInit['headers']
+    document: RequestDocument | TypedDocumentNode<T, V>,
+    ..._variablesAndRequestHeaders: V extends Record<any, never> // do we have explicitly no variables allowed?
+      ? [variables?: V, requestHeaders?: Dom.RequestInit['headers']]
+      : keyof RemoveIndex<V> extends never // do we get an empty variables object?
+      ? [variables?: V, requestHeaders?: Dom.RequestInit['headers']]
+      : [variables: V, requestHeaders?: Dom.RequestInit['headers']]
   ): Promise<T>
   request<T = any, V = Variables>(options: RequestOptions<V>): Promise<T>
   request<T = any, V = Variables>(
-    documentOrOptions: RequestDocument | RequestOptions<V>,
-    variables?: V,
-    requestHeaders?: Dom.RequestInit['headers']
+    documentOrOptions: RequestDocument | TypedDocumentNode<T, V> | RequestOptions<V>,
+    ...variablesAndRequestHeaders: V extends Record<any, never> // do we have explicitly no variables allowed?
+      ? [variables?: V, requestHeaders?: Dom.RequestInit['headers']]
+      : keyof RemoveIndex<V> extends never // do we get an empty variables object?
+      ? [variables?: V, requestHeaders?: Dom.RequestInit['headers']]
+      : [variables: V, requestHeaders?: Dom.RequestInit['headers']]
   ): Promise<T> {
+    const [variables, requestHeaders] = variablesAndRequestHeaders
     const requestOptions = parseRequestArgs<V>(documentOrOptions, variables, requestHeaders)
 
     let {
@@ -534,17 +542,23 @@ export async function rawRequest<T = any, V = Variables>(
 export async function request<T = any, V = Variables>(
   url: string,
   document: RequestDocument | TypedDocumentNode<T, V>,
-  ..._variablesAndRequestHeaders: V extends never
-    ? [variables?: never, requestHeaders?: Dom.RequestInit['headers']]
+  ..._variablesAndRequestHeaders: V extends Record<any, never> // do we have explicitly no variables allowed?
+    ? [variables?: V, requestHeaders?: Dom.RequestInit['headers']]
+    : keyof RemoveIndex<V> extends never // do we get an empty variables object?
+    ? [variables?: V, requestHeaders?: Dom.RequestInit['headers']]
     : [variables: V, requestHeaders?: Dom.RequestInit['headers']]
 ): Promise<T>
 export async function request<T = any, V = Variables>(options: RequestExtendedOptions<V, T>): Promise<T>
 export async function request<T = any, V = Variables>(
   urlOrOptions: string | RequestExtendedOptions<V, T>,
   document?: RequestDocument | TypedDocumentNode<T, V>,
-  variables?: V,
-  requestHeaders?: Dom.RequestInit['headers']
+  ...variablesAndRequestHeaders: V extends Record<any, never> // do we have explicitly no variables allowed?
+    ? [variables?: V, requestHeaders?: Dom.RequestInit['headers']]
+    : keyof RemoveIndex<V> extends never // do we get an empty variables object?
+    ? [variables?: V, requestHeaders?: Dom.RequestInit['headers']]
+    : [variables: V, requestHeaders?: Dom.RequestInit['headers']]
 ): Promise<T> {
+  const [variables, requestHeaders] = variablesAndRequestHeaders
   const requestOptions = parseRequestExtendedArgs<V>(urlOrOptions, document, variables, requestHeaders)
   const client = new GraphQLClient(requestOptions.url)
   return client.request<T, V>({

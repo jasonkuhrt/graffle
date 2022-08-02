@@ -18,12 +18,12 @@ export function parseRequestArgs<V = Variables>(
 ): RequestOptions<V> {
   return (documentOrOptions as RequestOptions<V>).document
     ? (documentOrOptions as RequestOptions<V>)
-    : {
+    : ({
         document: documentOrOptions as RequestDocument,
         variables: variables,
         requestHeaders: requestHeaders,
         signal: undefined,
-      }
+      } as unknown as RequestOptions<V>)
 }
 
 export function parseRawRequestArgs<V = Variables>(
@@ -62,13 +62,13 @@ export function parseRequestExtendedArgs<V = Variables>(
 ): RequestExtendedOptions<V> {
   return (urlOrOptions as RequestExtendedOptions<V>).document
     ? (urlOrOptions as RequestExtendedOptions<V>)
-    : {
+    : ({
         url: urlOrOptions as string,
         document: document as RequestDocument,
         variables: variables,
         requestHeaders: requestHeaders,
         signal: undefined,
-      }
+      } as unknown as RequestExtendedOptions<V>)
 }
 
 export function parseRawRequestExtendedArgs<V = Variables>(

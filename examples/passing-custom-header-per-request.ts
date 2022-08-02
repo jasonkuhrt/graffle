@@ -21,7 +21,7 @@ import { GraphQLClient } from '../src'
 
   const requestHeaders = {
     authorization: 'Bearer MY_TOKEN_2',
-    'x-custom': 'foo'
+    'x-custom': 'foo',
   }
 
   interface TData {
