@@ -53,7 +53,7 @@ const resolveHeaders = (headers: Dom.RequestInit['headers']): Record<string, str
   if (headers) {
     if (
       (typeof Headers !== 'undefined' && headers instanceof Headers) ||
-      headers instanceof CrossFetch.Headers
+      (CrossFetch && CrossFetch.Headers && headers instanceof CrossFetch.Headers)
     ) {
       oHeaders = HeadersInstanceToPlainObject(headers)
     } else if (Array.isArray(headers)) {
