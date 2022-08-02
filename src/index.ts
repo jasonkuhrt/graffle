@@ -267,12 +267,19 @@ export class GraphQLClient {
       method,
       fetchOptions,
       middleware: requestMiddleware,
-    }).then((response) => {
-      if (responseMiddleware) {
-        responseMiddleware(response)
-      }
-      return response
     })
+      .then((response) => {
+        if (responseMiddleware) {
+          responseMiddleware(response)
+        }
+        return response
+      })
+      .catch((error) => {
+        if (responseMiddleware) {
+          responseMiddleware(error)
+        }
+        throw error
+      })
   }
 
   /**
@@ -326,12 +333,19 @@ export class GraphQLClient {
       method,
       fetchOptions,
       middleware: requestMiddleware,
-    }).then((response) => {
-      if (responseMiddleware) {
-        responseMiddleware(response)
-      }
-      return response.data
     })
+      .then((response) => {
+        if (responseMiddleware) {
+          responseMiddleware(response)
+        }
+        return response.data
+      })
+      .catch((error) => {
+        if (responseMiddleware) {
+          responseMiddleware(error)
+        }
+        throw error
+      })
   }
 
   /**
@@ -379,12 +393,19 @@ export class GraphQLClient {
       method,
       fetchOptions,
       middleware: requestMiddleware,
-    }).then((response) => {
-      if (responseMiddleware) {
-        responseMiddleware(response)
-      }
-      return response.data
     })
+      .then((response) => {
+        if (responseMiddleware) {
+          responseMiddleware(response)
+        }
+        return response.data
+      })
+      .catch((error) => {
+        if (responseMiddleware) {
+          responseMiddleware(error)
+        }
+        throw error
+      })
   }
 
   setHeaders(headers: Dom.RequestInit['headers']): GraphQLClient {

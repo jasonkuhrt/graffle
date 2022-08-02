@@ -122,40 +122,91 @@ describe('middleware', () => {
   let requestMiddleware: jest.Mock
   let responseMiddleware: jest.Mock
 
-  beforeEach(() => {
-    ctx.res({
-      body: {
-        data: {
-          result: 123,
+  describe('successful requests', () => {
+    beforeEach(() => {
+      ctx.res({
+        body: {
+          data: {
+            result: 123,
+          },
         },
-      },
+      })
+
+      requestMiddleware = jest.fn((req) => ({ ...req }))
+      responseMiddleware = jest.fn()
+      client = new GraphQLClient(ctx.url, {
+        requestMiddleware,
+        responseMiddleware,
+      })
     })
 
-    requestMiddleware = jest.fn((req) => ({ ...req }))
-    responseMiddleware = jest.fn()
-    client = new GraphQLClient(ctx.url, { requestMiddleware, responseMiddleware })
+    it('request', async () => {
+      const requestPromise = client.request<{ result: number }>(`x`)
+      expect(requestMiddleware).toBeCalledTimes(1)
+      const res = await requestPromise
+      expect(responseMiddleware).toBeCalledTimes(1)
+      expect(res.result).toBe(123)
+    })
+
+    it('rawRequest', async () => {
+      const requestPromise = client.rawRequest<{ result: number }>(`x`)
+      expect(requestMiddleware).toBeCalledTimes(1)
+      await requestPromise
+      expect(responseMiddleware).toBeCalledTimes(1)
+    })
+
+    it('batchRequests', async () => {
+      const requestPromise = client.batchRequests<{ result: number }>([{ document: `x` }])
+      expect(requestMiddleware).toBeCalledTimes(1)
+      await requestPromise
+      expect(responseMiddleware).toBeCalledTimes(1)
+    })
   })
 
-  it('request', async () => {
-    const requestPromise = client.request<{ result: number }>(`x`)
-    expect(requestMiddleware).toBeCalledTimes(1)
-    const res = await requestPromise
-    expect(responseMiddleware).toBeCalledTimes(1)
-    expect(res.result).toBe(123)
-  })
+  describe('failed requests', () => {
+    beforeEach(() => {
+      ctx.res({
+        body: {
+          errors: {
+            message: 'Syntax Error GraphQL request (1:1) Unexpected Name "x"\n\n1: x\n   ^\n',
+            locations: [
+              {
+                line: 1,
+                column: 1,
+              },
+            ],
+          },
+        },
+      })
 
-  it('rawRequest', async () => {
-    const requestPromise = client.rawRequest<{ result: number }>(`x`)
-    expect(requestMiddleware).toBeCalledTimes(1)
-    await requestPromise
-    expect(responseMiddleware).toBeCalledTimes(1)
-  })
+      requestMiddleware = jest.fn((req) => ({ ...req }))
+      responseMiddleware = jest.fn()
+      client = new GraphQLClient(ctx.url, {
+        requestMiddleware,
+        responseMiddleware,
+      })
+    })
 
-  it('batchRequests', async () => {
-    const requestPromise = client.batchRequests<{ result: number }>([{ document: `x` }])
-    expect(requestMiddleware).toBeCalledTimes(1)
-    await requestPromise
-    expect(responseMiddleware).toBeCalledTimes(1)
+    it('request', async () => {
+      const requestPromise = client.request<{ result: number }>(`x`)
+      expect(requestMiddleware).toBeCalledTimes(1)
+      await expect(requestPromise).rejects.toThrowError()
+      expect(responseMiddleware).toBeCalledTimes(1)
+    })
+
+    it('rawRequest', async () => {
+      const requestPromise = client.rawRequest<{ result: number }>(`x`)
+      expect(requestMiddleware).toBeCalledTimes(1)
+      await expect(requestPromise).rejects.toThrowError()
+      expect(responseMiddleware).toBeCalledTimes(1)
+    })
+
+    it('batchRequests', async () => {
+      const requestPromise = client.batchRequests<{ result: number }>([{ document: `x` }])
+      expect(requestMiddleware).toBeCalledTimes(1)
+      await expect(requestPromise).rejects.toThrowError()
+      expect(responseMiddleware).toBeCalledTimes(1)
+    })
   })
 })
 
