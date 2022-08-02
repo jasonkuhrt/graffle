@@ -23,6 +23,7 @@ Minimal GraphQL client supporting Node and browsers for scripts or simple apps
   - [Passing more options to `fetch`](#passing-more-options-to-fetch)
     - [Custom JSON serializer](#custom-json-serializer)
   - [Using GraphQL Document variables](#using-graphql-document-variables)
+  - [Making a GET request](#making-a-get-request)
   - [GraphQL Mutations](#graphql-mutations)
   - [Error handling](#error-handling)
   - [Using `require` instead of `import`](#using-require-instead-of-import)
@@ -34,6 +35,7 @@ Minimal GraphQL client supporting Node and browsers for scripts or simple apps
     - [Node](#node)
   - [Batching](#batching)
   - [Cancellation](#cancellation)
+  - [Middleware](#middleware)
 - [FAQ](#faq)
     - [Why do I have to install `graphql`?](#why-do-i-have-to-install-graphql)
     - [Do I need to wrap my GraphQL documents inside the `gql` template exported by `graphql-request`?](#do-i-need-to-wrap-my-graphql-documents-inside-the-gql-template-exported-by-graphql-request)
@@ -235,7 +237,7 @@ const query = gql`
       name
     }
   }
-
+`
 // Function saved in the client runs and calculates fresh headers before each request
 const data = await client.request(query)
 ```
@@ -321,6 +323,46 @@ async function main() {
   }
 
   const data = await request(endpoint, query, variables)
+  console.log(JSON.stringify(data, undefined, 2))
+}
+
+main().catch((error) => console.error(error))
+```
+
+### Making a GET request
+
+Queries can be sent as an HTTP GET request:
+
+```js
+import { GraphQLClient, gql } from 'graphql-request'
+
+async function main() {
+  const endpoint = 'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr'
+
+  const graphQLClient = new GraphQLClient(endpoint, {
+    method: 'GET',
+    jsonSerializer: {
+      parse: JSON.parse,
+      stringify: JSON.stringify,
+    },
+  });
+
+  const query = gql`
+    query getMovie($title: String!) {
+      Movie(title: $title) {
+        releaseDate
+        actors {
+          name
+        }
+      }
+    }
+  `
+
+  const variables = {
+    title: 'Inception',
+  }
+
+  const data = await graphQLClient.request(query, variables)
   console.log(JSON.stringify(data, undefined, 2))
 }
 
@@ -636,6 +678,57 @@ For Node.js v12 you can use [abort-controller](https://github.com/mysticatea/abo
 
  const abortController = new AbortController()
 ````
+
+### Middleware
+
+It's possible to use a middleware to pre-process any request or handle raw response.
+
+Request middleware example (set actual auth token to each request):
+```ts
+function middleware(request: RequestInit) {
+  const token = getToken();
+  return {
+    ...request,
+    headers: { ...request.headers, 'x-auth-token': token },
+  }
+}
+
+const client = new GraphQLClient(endpoint, { requestMiddleware: middleware })
+```
+
+Response middleware example (log request trace id if error caused):
+```ts
+function middleware(response: Response<unknown>) {
+  if (response.errors) {
+    const traceId = response.headers.get('x-b3-traceid') || 'unknown'
+    console.error(
+        `[${traceId}] Request error:
+        status ${response.status}
+        details: ${response.errors}`
+    )
+  }
+}
+
+const client = new GraphQLClient(endpoint, { responseMiddleware: middleware })
+```
+
+### ErrorPolicy
+
+By default GraphQLClient will throw when an error is received. However, sometimes you still want to resolve the (partial) data you received. 
+You can define `errorPolicy` in the `GraphQLClient` constructor.
+
+```ts
+const client = new GraphQLClient(endpoint, {errorPolicy: "all"});
+```
+
+#### None (default)
+Allow no errors at all. If you receive a GraphQL error the client will throw.
+
+#### Ignore
+Ignore incoming errors and resolve like no errors occurred
+
+#### All
+Return both the errors and data, only works with `rawRequest`.
 
 ## FAQ
 

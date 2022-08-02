@@ -27,6 +27,7 @@ import {
   Variables,
   PatchedRequestInit,
   MaybeFunction,
+  Response,
 } from './types'
 import * as Dom from './types.dom'
 
@@ -75,8 +76,18 @@ const resolveHeaders = (headers: Dom.RequestInit['headers']): Record<string, str
 const queryCleanner = (str: string): string => str.replace(/([\s,]|#[^\n\r]+)+/g, ' ').trim()
 
 type TBuildGetQueryParams<V> =
-  | { query: string; variables: V | undefined; operationName: string | undefined; jsonSerializer: Dom.JsonSerializer }
-  | { query: string[]; variables: V[] | undefined; operationName: undefined; jsonSerializer: Dom.JsonSerializer }
+  | {
+      query: string
+      variables: V | undefined
+      operationName: string | undefined
+      jsonSerializer: Dom.JsonSerializer
+    }
+  | {
+      query: string[]
+      variables: V[] | undefined
+      operationName: undefined
+      jsonSerializer: Dom.JsonSerializer
+    }
 
 /**
  * Create query string for GraphQL request
@@ -87,7 +98,12 @@ type TBuildGetQueryParams<V> =
  * @param {string|undefined} param0.operationName the GraphQL operation name
  * @param {any|any[]} param0.variables the GraphQL variables to use
  */
-const buildGetQueryParams = <V>({ query, variables, operationName, jsonSerializer }: TBuildGetQueryParams<V>): string => {
+const buildGetQueryParams = <V>({
+  query,
+  variables,
+  operationName,
+  jsonSerializer,
+}: TBuildGetQueryParams<V>): string => {
   if (!Array.isArray(query)) {
     const search: string[] = [`query=${encodeURIComponent(queryCleanner(query))}`]
 
@@ -132,6 +148,7 @@ const post = async <V = Variables>({
   headers,
   fetch,
   fetchOptions,
+  middleware,
 }: {
   url: string
   query: string | string[]
@@ -140,10 +157,11 @@ const post = async <V = Variables>({
   variables?: V
   headers?: Dom.RequestInit['headers']
   operationName?: string
+  middleware?: (request: Dom.RequestInit) => Dom.RequestInit
 }) => {
   const body = createRequestBody(query, variables, operationName, fetchOptions.jsonSerializer)
 
-  return await fetch(url, {
+  let options: Dom.RequestInit = {
     method: 'POST',
     headers: {
       ...(typeof body === 'string' ? { 'Content-Type': 'application/json' } : {}),
@@ -151,7 +169,11 @@ const post = async <V = Variables>({
     },
     body,
     ...fetchOptions,
-  })
+  }
+  if (middleware) {
+    options = middleware(options)
+  }
+  return await fetch(url, options)
 }
 
 /**
@@ -165,6 +187,7 @@ const get = async <V = Variables>({
   headers,
   fetch,
   fetchOptions,
+  middleware,
 }: {
   url: string
   query: string | string[]
@@ -173,32 +196,31 @@ const get = async <V = Variables>({
   variables?: V
   headers?: HeadersInit
   operationName?: string
+  middleware?: (request: Dom.RequestInit) => Dom.RequestInit
 }) => {
   const queryParams = buildGetQueryParams<V>({
     query,
     variables,
     operationName,
-    jsonSerializer: fetchOptions.jsonSerializer
+    jsonSerializer: fetchOptions.jsonSerializer,
   } as TBuildGetQueryParams<V>)
 
-  return await fetch(`${url}?${queryParams}`, {
+  let options: Dom.RequestInit = {
     method: 'GET',
     headers,
     ...fetchOptions,
-  })
+  }
+  if (middleware) {
+    options = middleware(options)
+  }
+  return await fetch(`${url}?${queryParams}`, options)
 }
 
 /**
  * GraphQL Client.
  */
 export class GraphQLClient {
-  private url: string
-  private options: PatchedRequestInit
-
-  constructor(url: string, options?: PatchedRequestInit) {
-    this.url = url
-    this.options = options || {}
-  }
+  constructor(private url: string, private readonly options: PatchedRequestInit = {}) {}
 
   /**
    * Send a GraphQL query to the server.
@@ -207,18 +229,23 @@ export class GraphQLClient {
     query: string,
     variables?: V,
     requestHeaders?: Dom.RequestInit['headers']
-  ): Promise<{ data: T; extensions?: any; headers: Dom.Headers; status: number }>
-  async rawRequest<T = any, V = Variables>(
-    options: RawRequestOptions<V>
-  ): Promise<{ data: T; extensions?: any; headers: Dom.Headers; status: number }>
+  ): Promise<Response<T>>
+  async rawRequest<T = any, V = Variables>(options: RawRequestOptions<V>): Promise<Response<T>>
   async rawRequest<T = any, V = Variables>(
     queryOrOptions: string | RawRequestOptions<V>,
     variables?: V,
     requestHeaders?: Dom.RequestInit['headers']
-  ): Promise<{ data: T; extensions?: any; headers: Dom.Headers; status: number }> {
+  ): Promise<Response<T>> {
     const rawRequestOptions = parseRawRequestArgs<V>(queryOrOptions, variables, requestHeaders)
 
-    let { headers, fetch = crossFetch, method = 'POST', ...fetchOptions } = this.options
+    let {
+      headers,
+      fetch = crossFetch,
+      method = 'POST',
+      requestMiddleware,
+      responseMiddleware,
+      ...fetchOptions
+    } = this.options
     let { url } = this
     if (rawRequestOptions.signal !== undefined) {
       fetchOptions.signal = rawRequestOptions.signal
@@ -238,26 +265,39 @@ export class GraphQLClient {
       fetch,
       method,
       fetchOptions,
+      middleware: requestMiddleware,
+    }).then((response) => {
+      if (responseMiddleware) {
+        responseMiddleware(response)
+      }
+      return response
     })
   }
 
   /**
    * Send a GraphQL document to the server.
    */
-  async request<T = any, V = Variables>(
-    document: RequestDocument | TypedDocumentNode<T, V>,
+  request<T = any, V = Variables>(
+    document: RequestDocument,
     variables?: V,
     requestHeaders?: Dom.RequestInit['headers']
   ): Promise<T>
-  async request<T = any, V = Variables>(options: RequestOptions<V, T>): Promise<T>
-  async request<T = any, V = Variables>(
-    documentOrOptions: RequestDocument | TypedDocumentNode<T, V> | RequestOptions<V, T>,
+  request<T = any, V = Variables>(options: RequestOptions<V>): Promise<T>
+  request<T = any, V = Variables>(
+    documentOrOptions: RequestDocument | RequestOptions<V>,
     variables?: V,
     requestHeaders?: Dom.RequestInit['headers']
   ): Promise<T> {
     const requestOptions = parseRequestArgs<V>(documentOrOptions, variables, requestHeaders)
 
-    let { headers, fetch = crossFetch, method = 'POST', ...fetchOptions } = this.options
+    let {
+      headers,
+      fetch = crossFetch,
+      method = 'POST',
+      requestMiddleware,
+      responseMiddleware,
+      ...fetchOptions
+    } = this.options
     let { url } = this
     if (requestOptions.signal !== undefined) {
       fetchOptions.signal = requestOptions.signal
@@ -265,7 +305,7 @@ export class GraphQLClient {
 
     const { query, operationName } = resolveRequestDocument(requestOptions.document)
 
-    const { data } = await makeRequest<T, V>({
+    return makeRequest<T, V>({
       url,
       query,
       variables: requestOptions.variables,
@@ -277,26 +317,37 @@ export class GraphQLClient {
       fetch,
       method,
       fetchOptions,
+      middleware: requestMiddleware,
+    }).then((response) => {
+      if (responseMiddleware) {
+        responseMiddleware(response)
+      }
+      return response.data
     })
-
-    return data
   }
 
   /**
    * Send GraphQL documents in batch to the server.
    */
-  async batchRequests<T extends any = any, V = Variables>(
+  batchRequests<T extends any = any, V = Variables>(
     documents: BatchRequestDocument<V>[],
     requestHeaders?: Dom.RequestInit['headers']
   ): Promise<T>
-  async batchRequests<T = any, V = Variables>(options: BatchRequestsOptions<V>): Promise<T>
-  async batchRequests<T = any, V = Variables>(
+  batchRequests<T = any, V = Variables>(options: BatchRequestsOptions<V>): Promise<T>
+  batchRequests<T = any, V = Variables>(
     documentsOrOptions: BatchRequestDocument<V>[] | BatchRequestsOptions<V>,
     requestHeaders?: Dom.RequestInit['headers']
   ): Promise<T> {
     const batchRequestOptions = parseBatchRequestArgs<V>(documentsOrOptions, requestHeaders)
 
-    let { headers, fetch = crossFetch, method = 'POST', ...fetchOptions } = this.options
+    let {
+      headers,
+      fetch = crossFetch,
+      method = 'POST',
+      requestMiddleware,
+      responseMiddleware,
+      ...fetchOptions
+    } = this.options
     let { url } = this
     if (batchRequestOptions.signal !== undefined) {
       fetchOptions.signal = batchRequestOptions.signal
@@ -307,7 +358,7 @@ export class GraphQLClient {
     )
     const variables = batchRequestOptions.documents.map(({ variables }) => variables)
 
-    const { data } = await makeRequest<T, (V | undefined)[]>({
+    return makeRequest<T, (V | undefined)[]>({
       url,
       query: queries,
       variables,
@@ -319,9 +370,13 @@ export class GraphQLClient {
       fetch,
       method,
       fetchOptions,
+      middleware: requestMiddleware,
+    }).then((response) => {
+      if (responseMiddleware) {
+        responseMiddleware(response)
+      }
+      return response.data
     })
-
-    return data
   }
 
   setHeaders(headers: Dom.RequestInit['headers']): GraphQLClient {
@@ -364,6 +419,7 @@ async function makeRequest<T = any, V = Variables>({
   fetch,
   method = 'POST',
   fetchOptions,
+  middleware,
 }: {
   url: string
   query: string | string[]
@@ -373,7 +429,8 @@ async function makeRequest<T = any, V = Variables>({
   fetch: any
   method: string
   fetchOptions: Dom.RequestInit
-}): Promise<{ data: T; extensions?: any; headers: Dom.Headers; status: number }> {
+  middleware?: (request: Dom.RequestInit) => Dom.RequestInit
+}): Promise<Response<T>> {
   const fetcher = method.toUpperCase() === 'POST' ? post : get
   const isBathchingQuery = Array.isArray(query)
 
@@ -385,16 +442,24 @@ async function makeRequest<T = any, V = Variables>({
     headers,
     fetch,
     fetchOptions,
+    middleware,
   })
   const result = await getResult(response, fetchOptions.jsonSerializer)
 
   const successfullyReceivedData =
     isBathchingQuery && Array.isArray(result) ? !result.some(({ data }) => !data) : !!result.data
 
-  if (response.ok && !result.errors && successfullyReceivedData) {
+  const successfullyPassedErrorPolicy =
+    !result.errors || fetchOptions.errorPolicy === 'all' || fetchOptions.errorPolicy === 'ignore'
+
+  if (response.ok && successfullyPassedErrorPolicy && successfullyReceivedData) {
     const { headers, status } = response
+
+    const { errors, ...rest } = result
+    const data = fetchOptions.errorPolicy === 'ignore' ? rest : result
+
     return {
-      ...(isBathchingQuery ? { data: result } : result),
+      ...(isBathchingQuery ? { data } : data),
       headers,
       status,
     }
@@ -415,16 +480,16 @@ export async function rawRequest<T = any, V = Variables>(
   query: string,
   variables?: V,
   requestHeaders?: Dom.RequestInit['headers']
-): Promise<{ data: T; extensions?: any; headers: Dom.Headers; status: number }>
+): Promise<Response<T>>
 export async function rawRequest<T = any, V = Variables>(
   options: RawRequestExtendedOptions<V>
-): Promise<{ data: T; extensions?: any; headers: Dom.Headers; status: number }>
+): Promise<Response<T>>
 export async function rawRequest<T = any, V = Variables>(
   urlOrOptions: string | RawRequestExtendedOptions<V>,
   query?: string,
   variables?: V,
   requestHeaders?: Dom.RequestInit['headers']
-): Promise<{ data: T; extensions?: any; headers: Dom.Headers; status: number }> {
+): Promise<Response<T>> {
   const requestOptions = parseRawRequestExtendedArgs<V>(urlOrOptions, query, variables, requestHeaders)
   const client = new GraphQLClient(requestOptions.url)
   return client.rawRequest<T, V>({
@@ -469,10 +534,9 @@ export async function rawRequest<T = any, V = Variables>(
 export async function request<T = any, V = Variables>(
   url: string,
   document: RequestDocument | TypedDocumentNode<T, V>,
-  ..._variablesAndRequestHeaders:
-    (V extends never ?
-    [variables?: never, requestHeaders?: Dom.RequestInit['headers']]
-    : [variables: V, requestHeaders?: Dom.RequestInit['headers']])
+  ..._variablesAndRequestHeaders: V extends never
+    ? [variables?: never, requestHeaders?: Dom.RequestInit['headers']]
+    : [variables: V, requestHeaders?: Dom.RequestInit['headers']]
 ): Promise<T>
 export async function request<T = any, V = Variables>(options: RequestExtendedOptions<V, T>): Promise<T>
 export async function request<T = any, V = Variables>(
@@ -598,7 +662,7 @@ export function resolveRequestDocument(document: RequestDocument): { query: stri
 }
 
 function callOrIdentity<T>(value: MaybeFunction<T>) {
-  return typeof value === 'function' ? (value as () => T)() : value;
+  return typeof value === 'function' ? (value as () => T)() : value
 }
 
 /**

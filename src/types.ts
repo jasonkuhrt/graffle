@@ -1,15 +1,11 @@
 import { TypedDocumentNode } from '@graphql-typed-document-node/core'
 import { DocumentNode } from 'graphql/language/ast'
+import type { GraphQLError } from 'graphql/error/GraphQLError'
 import * as Dom from './types.dom'
 
-export type Variables = { [key: string]: any }
+export type { GraphQLError }
 
-export interface GraphQLError {
-  message: string
-  locations?: { line: number; column: number }[]
-  path?: string[]
-  extensions?: any
-}
+export type Variables = { [key: string]: any }
 
 export interface GraphQLResponse<T = any> {
   data?: T
@@ -60,8 +56,19 @@ export type MaybeFunction<T> = T | (() => T);
 
 export type RequestDocument = string | DocumentNode
 
-export type PatchedRequestInit = Omit<Dom.RequestInit, "headers">
-  & {headers?: MaybeFunction<Dom.RequestInit['headers']>};
+export interface Response<T> {
+  data: T
+  extensions?: any
+  headers: Dom.Headers
+  errors?: GraphQLError[]
+  status: number
+}
+
+export type PatchedRequestInit = Omit<Dom.RequestInit, "headers"> & {
+  headers?: MaybeFunction<Dom.RequestInit['headers']>
+  requestMiddleware?: (request: Dom.RequestInit) => Dom.RequestInit
+  responseMiddleware?: (response: Response<unknown>) => void
+};
 
 export type BatchRequestDocument<V = Variables> = {
   document: RequestDocument
