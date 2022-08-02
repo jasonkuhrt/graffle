@@ -16,4 +16,4 @@ import { request } from '../src'
   const data = await request(endpoint, query, variables)
 
   console.log(data.greetings)
-})().catch((error) => console.error(error))
+})().catch(console.error)
