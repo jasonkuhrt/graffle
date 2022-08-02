@@ -131,7 +131,7 @@ describe('middleware', () => {
       },
     })
 
-    requestMiddleware = jest.fn(req => ({ ...req }))
+    requestMiddleware = jest.fn((req) => ({ ...req }))
     responseMiddleware = jest.fn()
     client = new GraphQLClient(ctx.url, { requestMiddleware, responseMiddleware })
   })

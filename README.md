@@ -7,14 +7,13 @@ Minimal GraphQL client supporting Node and browsers for scripts or simple apps
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-
 - [Features](#features)
 - [Install](#install)
 - [Quickstart](#quickstart)
 - [Usage](#usage)
 - [Node Version Support](#node-version-support)
 - [Community](#community)
-    - [GraphQL Code Generator's GraphQL-Request TypeScript Plugin](#graphql-code-generators-graphql-request-typescript-plugin)
+  - [GraphQL Code Generator's GraphQL-Request TypeScript Plugin](#graphql-code-generators-graphql-request-typescript-plugin)
 - [Examples](#examples)
   - [Authentication via HTTP header](#authentication-via-http-header)
     - [Incrementally setting headers](#incrementally-setting-headers)
@@ -37,9 +36,9 @@ Minimal GraphQL client supporting Node and browsers for scripts or simple apps
   - [Cancellation](#cancellation)
   - [Middleware](#middleware)
 - [FAQ](#faq)
-    - [Why do I have to install `graphql`?](#why-do-i-have-to-install-graphql)
-    - [Do I need to wrap my GraphQL documents inside the `gql` template exported by `graphql-request`?](#do-i-need-to-wrap-my-graphql-documents-inside-the-gql-template-exported-by-graphql-request)
-    - [What's the difference between `graphql-request`, Apollo and Relay?](#whats-the-difference-between-graphql-request-apollo-and-relay)
+  - [Why do I have to install `graphql`?](#why-do-i-have-to-install-graphql)
+  - [Do I need to wrap my GraphQL documents inside the `gql` template exported by `graphql-request`?](#do-i-need-to-wrap-my-graphql-documents-inside-the-gql-template-exported-by-graphql-request)
+  - [What's the difference between `graphql-request`, Apollo and Relay?](#whats-the-difference-between-graphql-request-apollo-and-relay)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -167,7 +166,7 @@ client.setHeader('authorization', 'Bearer MY_TOKEN')
 // Override all existing headers
 client.setHeaders({
   authorization: 'Bearer MY_TOKEN',
-  anotherheader: 'header_value'
+  anotherheader: 'header_value',
 })
 ```
 
@@ -181,13 +180,11 @@ import { GraphQLClient } from 'graphql-request'
 const client = new GraphQLClient(endpoint)
 
 client.setEndpoint(newEndpoint)
-
 ```
 
 #### passing-headers-in-each-request
 
 It is possible to pass custom headers for each request. `request()` and `rawRequest()` accept a header object as the third parameter
-
 
 ```js
 import { GraphQLClient } from 'graphql-request'
@@ -210,7 +207,7 @@ const variables = {
 }
 
 const requestHeaders = {
-  authorization: 'Bearer MY_TOKEN'
+  authorization: 'Bearer MY_TOKEN',
 }
 
 // Overrides the clients headers with the passed values
@@ -225,11 +222,9 @@ To do that, pass a function that returns the headers to the `headers` property w
 ```js
 import { GraphQLClient } from 'graphql-request'
 
-const client = new GraphQLClient(endpoint,
-  { 
-    headers: () => ({ 'X-Sent-At-Time': Date.now() })
-  }
-)
+const client = new GraphQLClient(endpoint, {
+  headers: () => ({ 'X-Sent-At-Time': Date.now() }),
+})
 
 const query = gql`
   query getCars {
@@ -345,7 +340,7 @@ async function main() {
       parse: JSON.parse,
       stringify: JSON.stringify,
     },
-  });
+  })
 
   const query = gql`
     query getMovie($title: String!) {
@@ -608,16 +603,15 @@ request('/api/graphql', UploadUserAvatar, {
 
 [TypeScript Source](examples/receiving-a-raw-response.ts)
 
-
 ### Batching
 
 It is possible with `graphql-request` to use [batching](https://github.com/graphql/graphql-over-http/blob/main/rfcs/Batching.md) via the `batchRequests()` function. Example available at [examples/batching-requests.ts](examples/batching-requests.ts)
 
 ```ts
-import { batchRequests } from 'graphql-request';
+import { batchRequests } from 'graphql-request'
 
-(async function () {
-  const endpoint = 'https://api.spacex.land/graphql/';
+;(async function () {
+  const endpoint = 'https://api.spacex.land/graphql/'
 
   const query1 = /* GraphQL */ `
     query ($id: ID!) {
@@ -626,7 +620,7 @@ import { batchRequests } from 'graphql-request';
         landings
       }
     }
-  `;
+  `
 
   const query2 = /* GraphQL */ `
     {
@@ -634,7 +628,7 @@ import { batchRequests } from 'graphql-request';
         active
       }
     }
-  `;
+  `
 
   const data = await batchRequests(endpoint, [
     { document: query1, variables: { id: 'C105' } },
@@ -651,42 +645,43 @@ It is possible to cancel a request using an `AbortController` signal.
 You can define the `signal` in the `GraphQLClient` constructor:
 
 ```ts
-  const abortController = new AbortController()
+const abortController = new AbortController()
 
-  const client = new GraphQLClient(endpoint, { signal: abortController.signal })
-  client.request(query)
+const client = new GraphQLClient(endpoint, { signal: abortController.signal })
+client.request(query)
 
-  abortController.abort()
+abortController.abort()
 ```
 
 You can also set the signal per request (this will override an existing GraphQLClient signal):
 
 ```ts
-  const abortController = new AbortController()
+const abortController = new AbortController()
 
-  const client = new GraphQLClient(endpoint)
-  client.request({ document: query, signal: abortController.signal })
+const client = new GraphQLClient(endpoint)
+client.request({ document: query, signal: abortController.signal })
 
-  abortController.abort()
+abortController.abort()
 ```
 
 In Node environment, `AbortController` is supported since version v14.17.0.
 For Node.js v12 you can use [abort-controller](https://github.com/mysticatea/abort-controller) polyfill.
 
-````
+```
  import 'abort-controller/polyfill'
 
  const abortController = new AbortController()
-````
+```
 
 ### Middleware
 
 It's possible to use a middleware to pre-process any request or handle raw response.
 
 Request middleware example (set actual auth token to each request):
+
 ```ts
 function middleware(request: RequestInit) {
-  const token = getToken();
+  const token = getToken()
   return {
     ...request,
     headers: { ...request.headers, 'x-auth-token': token },
@@ -697,12 +692,13 @@ const client = new GraphQLClient(endpoint, { requestMiddleware: middleware })
 ```
 
 Response middleware example (log request trace id if error caused):
+
 ```ts
 function middleware(response: Response<unknown>) {
   if (response.errors) {
     const traceId = response.headers.get('x-b3-traceid') || 'unknown'
     console.error(
-        `[${traceId}] Request error:
+      `[${traceId}] Request error:
         status ${response.status}
         details: ${response.errors}`
     )
@@ -714,20 +710,23 @@ const client = new GraphQLClient(endpoint, { responseMiddleware: middleware })
 
 ### ErrorPolicy
 
-By default GraphQLClient will throw when an error is received. However, sometimes you still want to resolve the (partial) data you received. 
+By default GraphQLClient will throw when an error is received. However, sometimes you still want to resolve the (partial) data you received.
 You can define `errorPolicy` in the `GraphQLClient` constructor.
 
 ```ts
-const client = new GraphQLClient(endpoint, {errorPolicy: "all"});
+const client = new GraphQLClient(endpoint, { errorPolicy: 'all' })
 ```
 
 #### None (default)
+
 Allow no errors at all. If you receive a GraphQL error the client will throw.
 
 #### Ignore
+
 Ignore incoming errors and resolve like no errors occurred
 
 #### All
+
 Return both the errors and data, only works with `rawRequest`.
 
 ## FAQ

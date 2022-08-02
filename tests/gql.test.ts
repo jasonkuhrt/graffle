@@ -9,10 +9,11 @@ describe('gql', () => {
     const mock = ctx.res({ body: { data: { foo: 1 } } })
     await request(
       ctx.url,
-      gql`query allUsers {
-  users
-}
-`
+      gql`
+        query allUsers {
+          users
+        }
+      `
     )
     expect(mock).toMatchSnapshot()
   })

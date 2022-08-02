@@ -44,16 +44,15 @@ describe('using class', () => {
     describe.each([
       [new H({ 'x-request-foo': 'request-bar' })],
       [{ 'x-request-foo': 'request-bar' }],
-      [[['x-request-foo', 'request-bar']]]
+      [[['x-request-foo', 'request-bar']]],
     ])('request unique header with request', (headerCase: Dom.RequestInit['headers']) => {
-      
       test('with request method', async () => {
         const client = new GraphQLClient(ctx.url)
 
         client.setHeaders(new H({ 'x-foo': 'bar' }))
         const mock = ctx.res()
         await client.request(`{ me { id } }`, {}, headerCase)
-  
+
         expect(mock.requests[0].headers['x-foo']).toEqual('bar')
         expect(mock.requests[0].headers['x-request-foo']).toEqual('request-bar')
       })
@@ -64,51 +63,50 @@ describe('using class', () => {
         client.setHeaders(new H({ 'x-foo': 'bar' }))
         const mock = ctx.res()
         await client.rawRequest(`{ me { id } }`, {}, headerCase)
-  
+
         expect(mock.requests[0].headers['x-foo']).toEqual('bar')
         expect(mock.requests[0].headers['x-request-foo']).toEqual('request-bar')
       })
     })
-  
+
     describe.each([
       [new H({ 'x-foo': 'request-bar' })],
       [{ 'x-foo': 'request-bar' }],
-      [[['x-foo', 'request-bar']]]
+      [[['x-foo', 'request-bar']]],
     ])('request header overriding the client header', (headerCase: Dom.RequestInit['headers']) => {
       test('with request method', async () => {
         const client = new GraphQLClient(ctx.url)
         client.setHeader('x-foo', 'bar')
         const mock = ctx.res()
-        await client.request(`{ me { id } }`, {}, headerCase);
+        await client.request(`{ me { id } }`, {}, headerCase)
         expect(mock.requests[0].headers['x-foo']).toEqual('request-bar')
-      });
+      })
 
       test('with rawRequest method', async () => {
         const client = new GraphQLClient(ctx.url)
         client.setHeader('x-foo', 'bar')
         const mock = ctx.res()
-        await client.rawRequest(`{ me { id } }`, {}, headerCase);
+        await client.rawRequest(`{ me { id } }`, {}, headerCase)
         expect(mock.requests[0].headers['x-foo']).toEqual('request-bar')
-      });
-
+      })
     })
 
     describe('gets fresh dynamic headers before each request', () => {
       test('with request method', async () => {
         const objectChangedThroughReference = { 'x-foo': 'old' }
-        const client = new GraphQLClient(ctx.url, { headers: () => objectChangedThroughReference });
-        objectChangedThroughReference['x-foo'] = 'new';
+        const client = new GraphQLClient(ctx.url, { headers: () => objectChangedThroughReference })
+        objectChangedThroughReference['x-foo'] = 'new'
         const mock = ctx.res()
-        await client.request(`{ me { id } }`);
+        await client.request(`{ me { id } }`)
         expect(mock.requests[0].headers['x-foo']).toEqual('new')
       })
 
       test('with rawRequest method', async () => {
         const objectChangedThroughReference = { 'x-foo': 'old' }
-        const client = new GraphQLClient(ctx.url, { headers: () => objectChangedThroughReference });
-        objectChangedThroughReference['x-foo'] = 'new';
+        const client = new GraphQLClient(ctx.url, { headers: () => objectChangedThroughReference })
+        objectChangedThroughReference['x-foo'] = 'new'
         const mock = ctx.res()
-        await client.rawRequest(`{ me { id } }`);
+        await client.rawRequest(`{ me { id } }`)
         expect(mock.requests[0].headers['x-foo']).toEqual('new')
       })
     })
@@ -119,13 +117,13 @@ describe('using request function', () => {
   describe.each([
     [new H({ 'x-request-foo': 'request-bar' })],
     [{ 'x-request-foo': 'request-bar' }],
-    [[['x-request-foo', 'request-bar']]]
+    [[['x-request-foo', 'request-bar']]],
   ])('request unique header with request', (headerCase: Dom.RequestInit['headers']) => {
     test('sets header', async () => {
       const mock = ctx.res()
       await request(ctx.url, `{ me { id } }`, {}, headerCase)
 
       expect(mock.requests[0].headers['x-request-foo']).toEqual('request-bar')
-    });
+    })
   })
 })

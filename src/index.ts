@@ -1,4 +1,5 @@
 import crossFetch, * as CrossFetch from 'cross-fetch'
+import { TypedDocumentNode } from '@graphql-typed-document-node/core'
 import { OperationDefinitionNode, DocumentNode } from 'graphql/language/ast'
 
 import { parse } from 'graphql/language/parser'
@@ -27,6 +28,7 @@ import {
   PatchedRequestInit,
   MaybeFunction,
   Response,
+  RemoveIndex,
 } from './types'
 import * as Dom from './types.dom'
 
@@ -75,8 +77,18 @@ const resolveHeaders = (headers: Dom.RequestInit['headers']): Record<string, str
 const queryCleanner = (str: string): string => str.replace(/([\s,]|#[^\n\r]+)+/g, ' ').trim()
 
 type TBuildGetQueryParams<V> =
-  | { query: string; variables: V | undefined; operationName: string | undefined; jsonSerializer: Dom.JsonSerializer }
-  | { query: string[]; variables: V[] | undefined; operationName: undefined; jsonSerializer: Dom.JsonSerializer }
+  | {
+      query: string
+      variables: V | undefined
+      operationName: string | undefined
+      jsonSerializer: Dom.JsonSerializer
+    }
+  | {
+      query: string[]
+      variables: V[] | undefined
+      operationName: undefined
+      jsonSerializer: Dom.JsonSerializer
+    }
 
 /**
  * Create query string for GraphQL request
@@ -87,7 +99,12 @@ type TBuildGetQueryParams<V> =
  * @param {string|undefined} param0.operationName the GraphQL operation name
  * @param {any|any[]} param0.variables the GraphQL variables to use
  */
-const buildGetQueryParams = <V>({ query, variables, operationName, jsonSerializer }: TBuildGetQueryParams<V>): string => {
+const buildGetQueryParams = <V>({
+  query,
+  variables,
+  operationName,
+  jsonSerializer,
+}: TBuildGetQueryParams<V>): string => {
   if (!Array.isArray(query)) {
     const search: string[] = [`query=${encodeURIComponent(queryCleanner(query))}`]
 
@@ -153,7 +170,7 @@ const post = async <V = Variables>({
     },
     body,
     ...fetchOptions,
-  };
+  }
   if (middleware) {
     options = middleware(options)
   }
@@ -186,14 +203,14 @@ const get = async <V = Variables>({
     query,
     variables,
     operationName,
-    jsonSerializer: fetchOptions.jsonSerializer
+    jsonSerializer: fetchOptions.jsonSerializer,
   } as TBuildGetQueryParams<V>)
 
   let options: Dom.RequestInit = {
     method: 'GET',
     headers,
     ...fetchOptions,
-  };
+  }
   if (middleware) {
     options = middleware(options)
   }
@@ -214,9 +231,7 @@ export class GraphQLClient {
     variables?: V,
     requestHeaders?: Dom.RequestInit['headers']
   ): Promise<Response<T>>
-  async rawRequest<T = any, V = Variables>(
-    options: RawRequestOptions<V>
-  ): Promise<Response<T>>
+  async rawRequest<T = any, V = Variables>(options: RawRequestOptions<V>): Promise<Response<T>>
   async rawRequest<T = any, V = Variables>(
     queryOrOptions: string | RawRequestOptions<V>,
     variables?: V,
@@ -224,7 +239,14 @@ export class GraphQLClient {
   ): Promise<Response<T>> {
     const rawRequestOptions = parseRawRequestArgs<V>(queryOrOptions, variables, requestHeaders)
 
-    let { headers, fetch = crossFetch, method = 'POST', requestMiddleware, responseMiddleware , ...fetchOptions } = this.options
+    let {
+      headers,
+      fetch = crossFetch,
+      method = 'POST',
+      requestMiddleware,
+      responseMiddleware,
+      ...fetchOptions
+    } = this.options
     let { url } = this
     if (rawRequestOptions.signal !== undefined) {
       fetchOptions.signal = rawRequestOptions.signal
@@ -245,7 +267,7 @@ export class GraphQLClient {
       method,
       fetchOptions,
       middleware: requestMiddleware,
-    }).then(response => {
+    }).then((response) => {
       if (responseMiddleware) {
         responseMiddleware(response)
       }
@@ -257,19 +279,33 @@ export class GraphQLClient {
    * Send a GraphQL document to the server.
    */
   request<T = any, V = Variables>(
-    document: RequestDocument,
-    variables?: V,
-    requestHeaders?: Dom.RequestInit['headers']
+    document: RequestDocument | TypedDocumentNode<T, V>,
+    ..._variablesAndRequestHeaders: V extends Record<any, never> // do we have explicitly no variables allowed?
+      ? [variables?: V, requestHeaders?: Dom.RequestInit['headers']]
+      : keyof RemoveIndex<V> extends never // do we get an empty variables object?
+      ? [variables?: V, requestHeaders?: Dom.RequestInit['headers']]
+      : [variables: V, requestHeaders?: Dom.RequestInit['headers']]
   ): Promise<T>
   request<T = any, V = Variables>(options: RequestOptions<V>): Promise<T>
   request<T = any, V = Variables>(
-    documentOrOptions: RequestDocument | RequestOptions<V>,
-    variables?: V,
-    requestHeaders?: Dom.RequestInit['headers']
+    documentOrOptions: RequestDocument | TypedDocumentNode<T, V> | RequestOptions<V>,
+    ...variablesAndRequestHeaders: V extends Record<any, never> // do we have explicitly no variables allowed?
+      ? [variables?: V, requestHeaders?: Dom.RequestInit['headers']]
+      : keyof RemoveIndex<V> extends never // do we get an empty variables object?
+      ? [variables?: V, requestHeaders?: Dom.RequestInit['headers']]
+      : [variables: V, requestHeaders?: Dom.RequestInit['headers']]
   ): Promise<T> {
+    const [variables, requestHeaders] = variablesAndRequestHeaders
     const requestOptions = parseRequestArgs<V>(documentOrOptions, variables, requestHeaders)
 
-    let { headers, fetch = crossFetch, method = 'POST', requestMiddleware, responseMiddleware, ...fetchOptions } = this.options
+    let {
+      headers,
+      fetch = crossFetch,
+      method = 'POST',
+      requestMiddleware,
+      responseMiddleware,
+      ...fetchOptions
+    } = this.options
     let { url } = this
     if (requestOptions.signal !== undefined) {
       fetchOptions.signal = requestOptions.signal
@@ -290,7 +326,7 @@ export class GraphQLClient {
       method,
       fetchOptions,
       middleware: requestMiddleware,
-    }).then(response => {
+    }).then((response) => {
       if (responseMiddleware) {
         responseMiddleware(response)
       }
@@ -312,7 +348,14 @@ export class GraphQLClient {
   ): Promise<T> {
     const batchRequestOptions = parseBatchRequestArgs<V>(documentsOrOptions, requestHeaders)
 
-    let { headers, fetch = crossFetch, method = 'POST', requestMiddleware, responseMiddleware, ...fetchOptions } = this.options
+    let {
+      headers,
+      fetch = crossFetch,
+      method = 'POST',
+      requestMiddleware,
+      responseMiddleware,
+      ...fetchOptions
+    } = this.options
     let { url } = this
     if (batchRequestOptions.signal !== undefined) {
       fetchOptions.signal = batchRequestOptions.signal
@@ -336,7 +379,7 @@ export class GraphQLClient {
       method,
       fetchOptions,
       middleware: requestMiddleware,
-    }).then(response => {
+    }).then((response) => {
       if (responseMiddleware) {
         responseMiddleware(response)
       }
@@ -422,7 +465,7 @@ async function makeRequest<T = any, V = Variables>({
 
     const { errors, ...rest } = result
     const data = fetchOptions.errorPolicy === 'ignore' ? rest : result
-    
+
     return {
       ...(isBathchingQuery ? { data } : data),
       headers,
@@ -498,17 +541,24 @@ export async function rawRequest<T = any, V = Variables>(
  */
 export async function request<T = any, V = Variables>(
   url: string,
-  document: RequestDocument,
-  variables?: V,
-  requestHeaders?: Dom.RequestInit['headers']
+  document: RequestDocument | TypedDocumentNode<T, V>,
+  ..._variablesAndRequestHeaders: V extends Record<any, never> // do we have explicitly no variables allowed?
+    ? [variables?: V, requestHeaders?: Dom.RequestInit['headers']]
+    : keyof RemoveIndex<V> extends never // do we get an empty variables object?
+    ? [variables?: V, requestHeaders?: Dom.RequestInit['headers']]
+    : [variables: V, requestHeaders?: Dom.RequestInit['headers']]
 ): Promise<T>
-export async function request<T = any, V = Variables>(options: RequestExtendedOptions<V>): Promise<T>
+export async function request<T = any, V = Variables>(options: RequestExtendedOptions<V, T>): Promise<T>
 export async function request<T = any, V = Variables>(
-  urlOrOptions: string | RequestExtendedOptions<V>,
-  document?: RequestDocument,
-  variables?: V,
-  requestHeaders?: Dom.RequestInit['headers']
+  urlOrOptions: string | RequestExtendedOptions<V, T>,
+  document?: RequestDocument | TypedDocumentNode<T, V>,
+  ...variablesAndRequestHeaders: V extends Record<any, never> // do we have explicitly no variables allowed?
+    ? [variables?: V, requestHeaders?: Dom.RequestInit['headers']]
+    : keyof RemoveIndex<V> extends never // do we get an empty variables object?
+    ? [variables?: V, requestHeaders?: Dom.RequestInit['headers']]
+    : [variables: V, requestHeaders?: Dom.RequestInit['headers']]
 ): Promise<T> {
+  const [variables, requestHeaders] = variablesAndRequestHeaders
   const requestOptions = parseRequestExtendedArgs<V>(urlOrOptions, document, variables, requestHeaders)
   const client = new GraphQLClient(requestOptions.url)
   return client.request<T, V>({
@@ -626,7 +676,7 @@ export function resolveRequestDocument(document: RequestDocument): { query: stri
 }
 
 function callOrIdentity<T>(value: MaybeFunction<T>) {
-  return typeof value === 'function' ? (value as () => T)() : value;
+  return typeof value === 'function' ? (value as () => T)() : value
 }
 
 /**

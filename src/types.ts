@@ -1,3 +1,4 @@
+import { TypedDocumentNode } from '@graphql-typed-document-node/core'
 import { DocumentNode } from 'graphql/language/ast'
 import type { GraphQLError } from 'graphql/error/GraphQLError'
 import * as Dom from './types.dom'
@@ -5,6 +6,10 @@ import * as Dom from './types.dom'
 export type { GraphQLError }
 
 export type Variables = { [key: string]: any }
+
+export type RemoveIndex<T> = {
+  [K in keyof T as string extends K ? never : number extends K ? never : K]: T[K]
+}
 
 export interface GraphQLResponse<T = any> {
   data?: T
@@ -51,7 +56,7 @@ export class ClientError extends Error {
   }
 }
 
-export type MaybeFunction<T> = T | (() => T);
+export type MaybeFunction<T> = T | (() => T)
 
 export type RequestDocument = string | DocumentNode
 
@@ -63,11 +68,11 @@ export interface Response<T> {
   status: number
 }
 
-export type PatchedRequestInit = Omit<Dom.RequestInit, "headers"> & {
+export type PatchedRequestInit = Omit<Dom.RequestInit, 'headers'> & {
   headers?: MaybeFunction<Dom.RequestInit['headers']>
   requestMiddleware?: (request: Dom.RequestInit) => Dom.RequestInit
   responseMiddleware?: (response: Response<unknown>) => void
-};
+}
 
 export type BatchRequestDocument<V = Variables> = {
   document: RequestDocument
@@ -81,12 +86,15 @@ export type RawRequestOptions<V = Variables> = {
   signal?: Dom.RequestInit['signal']
 }
 
-export type RequestOptions<V = Variables> = {
-  document: RequestDocument
-  variables?: V
+export type RequestOptions<V = Variables, T = any> = {
+  document: RequestDocument | TypedDocumentNode<T, V>
   requestHeaders?: Dom.RequestInit['headers']
   signal?: Dom.RequestInit['signal']
-}
+} & (V extends Record<any, never>
+  ? { variables?: V }
+  : keyof RemoveIndex<V> extends never
+  ? { variables?: V }
+  : { variables: V })
 
 export type BatchRequestsOptions<V = Variables> = {
   documents: BatchRequestDocument<V>[]
@@ -94,7 +102,7 @@ export type BatchRequestsOptions<V = Variables> = {
   signal?: Dom.RequestInit['signal']
 }
 
-export type RequestExtendedOptions<V = Variables> = { url: string } & RequestOptions<V>
+export type RequestExtendedOptions<V = Variables, T = any> = { url: string } & RequestOptions<V, T>
 
 export type RawRequestExtendedOptions<V = Variables> = { url: string } & RawRequestOptions<V>
 
