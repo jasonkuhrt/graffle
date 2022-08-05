@@ -7,38 +7,44 @@ Minimal GraphQL client supporting Node and browsers for scripts or simple apps
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-- [Features](#features)
-- [Install](#install)
-- [Quickstart](#quickstart)
-- [Usage](#usage)
-- [Node Version Support](#node-version-support)
-- [Community](#community)
-  - [GraphQL Code Generator's GraphQL-Request TypeScript Plugin](#graphql-code-generators-graphql-request-typescript-plugin)
-- [Examples](#examples)
-  - [Authentication via HTTP header](#authentication-via-http-header)
-    - [Incrementally setting headers](#incrementally-setting-headers)
-  - [Passing Headers in each request](#passing-headers-in-each-request)
-  - [Passing dynamic headers to the client](#passing-dynamic-headers-to-the-client)
-  - [Passing more options to `fetch`](#passing-more-options-to-fetch)
+- [graphql-request](#graphql-request)
+  - [Features](#features)
+  - [Install](#install)
+  - [Quickstart](#quickstart)
+  - [Usage](#usage)
+  - [Node Version Support](#node-version-support)
+  - [Community](#community)
+      - [GraphQL Code Generator's GraphQL-Request TypeScript Plugin](#graphql-code-generators-graphql-request-typescript-plugin)
+  - [Examples](#examples)
+    - [Authentication via HTTP header](#authentication-via-http-header)
+      - [Incrementally setting headers](#incrementally-setting-headers)
+      - [Set endpoint](#set-endpoint)
+      - [passing-headers-in-each-request](#passing-headers-in-each-request)
+      - [Passing dynamic headers to the client](#passing-dynamic-headers-to-the-client)
+    - [Passing more options to `fetch`](#passing-more-options-to-fetch)
     - [Custom JSON serializer](#custom-json-serializer)
-  - [Using GraphQL Document variables](#using-graphql-document-variables)
-  - [Making a GET request](#making-a-get-request)
-  - [GraphQL Mutations](#graphql-mutations)
-  - [Error handling](#error-handling)
-  - [Using `require` instead of `import`](#using-require-instead-of-import)
-  - [Cookie support for `node`](#cookie-support-for-node)
-  - [Using a custom `fetch` method](#using-a-custom-fetch-method)
-  - [Receiving a raw response](#receiving-a-raw-response)
-  - [File Upload](#file-upload)
-    - [Browser](#browser)
-    - [Node](#node)
-  - [Batching](#batching)
-  - [Cancellation](#cancellation)
-  - [Middleware](#middleware)
-- [FAQ](#faq)
-  - [Why do I have to install `graphql`?](#why-do-i-have-to-install-graphql)
-  - [Do I need to wrap my GraphQL documents inside the `gql` template exported by `graphql-request`?](#do-i-need-to-wrap-my-graphql-documents-inside-the-gql-template-exported-by-graphql-request)
-  - [What's the difference between `graphql-request`, Apollo and Relay?](#whats-the-difference-between-graphql-request-apollo-and-relay)
+    - [Using GraphQL Document variables](#using-graphql-document-variables)
+    - [Making a GET request](#making-a-get-request)
+    - [GraphQL Mutations](#graphql-mutations)
+    - [Error handling](#error-handling)
+    - [Using `require` instead of `import`](#using-require-instead-of-import)
+    - [Cookie support for `node`](#cookie-support-for-node)
+    - [Using a custom `fetch` method](#using-a-custom-fetch-method)
+    - [Receiving a raw response](#receiving-a-raw-response)
+    - [File Upload](#file-upload)
+      - [Browser](#browser)
+      - [Node](#node)
+    - [Batching](#batching)
+    - [Cancellation](#cancellation)
+    - [Middleware](#middleware)
+    - [ErrorPolicy](#errorpolicy)
+      - [None (default)](#none-default)
+      - [Ignore](#ignore)
+      - [All](#all)
+  - [FAQ](#faq)
+      - [Why do I have to install `graphql`?](#why-do-i-have-to-install-graphql)
+      - [Do I need to wrap my GraphQL documents inside the `gql` template exported by `graphql-request`?](#do-i-need-to-wrap-my-graphql-documents-inside-the-gql-template-exported-by-graphql-request)
+      - [What's the difference between `graphql-request`, Apollo and Relay?](#whats-the-difference-between-graphql-request-apollo-and-relay)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -64,16 +70,16 @@ import { request, gql } from 'graphql-request'
 
 const query = gql`
   {
-    Movie(title: "Inception") {
-      releaseDate
-      actors {
-        name
-      }
+    company {
+      ceo
+    }
+    roadster {
+      apoapsis_au
     }
   }
 `
 
-request('https://api.graph.cool/simple/v1/movies', query).then((data) => console.log(data))
+request('https://api.spacex.land/graphql/', query).then((data) => console.log(data))
 ```
 
 ## Usage
