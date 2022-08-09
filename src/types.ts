@@ -71,7 +71,7 @@ export interface Response<T> {
 export type PatchedRequestInit = Omit<Dom.RequestInit, 'headers'> & {
   headers?: MaybeFunction<Dom.RequestInit['headers']>
   requestMiddleware?: (request: Dom.RequestInit) => Dom.RequestInit
-  responseMiddleware?: (response: Response<unknown>) => void
+  responseMiddleware?: (response: Response<unknown> | Error) => void
 }
 
 export type BatchRequestDocument<V = Variables> = {
