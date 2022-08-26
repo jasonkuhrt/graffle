@@ -163,6 +163,41 @@ describe('middleware', () => {
     })
   })
 
+  describe('async request middleware', () => {
+    beforeEach(() => {
+      ctx.res({
+        body: {
+          data: {
+            result: 123,
+          },
+        },
+      })
+
+      requestMiddleware = jest.fn(async (req) => ({ ...req }))
+      client = new GraphQLClient(ctx.url, {
+        requestMiddleware,
+      })
+    })
+
+    it('request', async () => {
+      const requestPromise = client.request<{ result: number }>(`x`)
+      expect(requestMiddleware).toBeCalledTimes(1)
+      await requestPromise
+    })
+
+    it('rawRequest', async () => {
+      const requestPromise = client.rawRequest<{ result: number }>(`x`)
+      expect(requestMiddleware).toBeCalledTimes(1)
+      await requestPromise
+    })
+
+    it('batchRequests', async () => {
+      const requestPromise = client.batchRequests<{ result: number }>([{ document: `x` }])
+      expect(requestMiddleware).toBeCalledTimes(1)
+      await requestPromise
+    })
+  })
+
   describe('failed requests', () => {
     beforeEach(() => {
       ctx.res({
