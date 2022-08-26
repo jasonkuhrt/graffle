@@ -158,7 +158,7 @@ const post = async <V = Variables>({
   variables?: V
   headers?: Dom.RequestInit['headers']
   operationName?: string
-  middleware?: (request: Dom.RequestInit) => Dom.RequestInit
+  middleware?: (request: Dom.RequestInit) => Dom.RequestInit | Promise<Dom.RequestInit>
 }) => {
   const body = createRequestBody(query, variables, operationName, fetchOptions.jsonSerializer)
 
@@ -172,7 +172,7 @@ const post = async <V = Variables>({
     ...fetchOptions,
   }
   if (middleware) {
-    options = middleware(options)
+    options = await Promise.resolve(middleware(options))
   }
   return await fetch(url, options)
 }
@@ -197,7 +197,7 @@ const get = async <V = Variables>({
   variables?: V
   headers?: HeadersInit
   operationName?: string
-  middleware?: (request: Dom.RequestInit) => Dom.RequestInit
+  middleware?: (request: Dom.RequestInit) => Dom.RequestInit | Promise<Dom.RequestInit>
 }) => {
   const queryParams = buildGetQueryParams<V>({
     query,
@@ -212,7 +212,7 @@ const get = async <V = Variables>({
     ...fetchOptions,
   }
   if (middleware) {
-    options = middleware(options)
+    options = await Promise.resolve(middleware(options))
   }
   return await fetch(`${url}?${queryParams}`, options)
 }
@@ -458,7 +458,7 @@ async function makeRequest<T = any, V = Variables>({
   fetch: any
   method: string
   fetchOptions: Dom.RequestInit
-  middleware?: (request: Dom.RequestInit) => Dom.RequestInit
+  middleware?: (request: Dom.RequestInit) => Dom.RequestInit | Promise<Dom.RequestInit>
 }): Promise<Response<T>> {
   const fetcher = method.toUpperCase() === 'POST' ? post : get
   const isBathchingQuery = Array.isArray(query)
