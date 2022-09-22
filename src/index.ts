@@ -286,7 +286,7 @@ export class GraphQLClient {
       ? [variables?: V, requestHeaders?: Dom.RequestInit['headers']]
       : [variables: V, requestHeaders?: Dom.RequestInit['headers']]
   ): Promise<T>
-  request<T = any, V = Variables>(options: RequestOptions<V>): Promise<T>
+  request<T = any, V = Variables>(options: RequestOptions<V, T>): Promise<T>
   request<T = any, V = Variables>(
     documentOrOptions: RequestDocument | TypedDocumentNode<T, V> | RequestOptions<V>,
     ...variablesAndRequestHeaders: V extends Record<any, never> // do we have explicitly no variables allowed?
