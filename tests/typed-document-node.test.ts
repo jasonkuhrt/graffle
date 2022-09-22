@@ -60,6 +60,12 @@ test('typed-document-node code should TS compile', async () => {
 
   await request({
     url: ctx.url,
+    document: 'a graphql query',
+    variables: { whatever: 'not typed' },
+  })
+
+  await request({
+    url: ctx.url,
     document,
     variables: {
       str: 'foo',
