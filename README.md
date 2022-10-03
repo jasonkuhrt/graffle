@@ -115,7 +115,7 @@ You are free to try using other versions of Node (e.g. `13.x`) with `graphql-req
 
 `graphql-request@^5` supports `TypedDocumentNode`, the typed counterpart of `graphql`'s `DocumentNode`.
 
-Installing and configuring GraphQL Code Generator requires a few steps in order to get end-to-end typed GraphQL operations using the provided `graphql()` helper:
+Installing and configuring [GraphQL Code Generator](https://www.the-guild.dev/graphql/codegen) requires a few steps in order to get end-to-end typed GraphQL operations using the provided `graphql()` helper:
 
 ```ts
 import request from 'graphql-request';
