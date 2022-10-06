@@ -728,6 +728,20 @@ function middleware(request: RequestInit) {
 const client = new GraphQLClient(endpoint, { requestMiddleware: middleware })
 ```
 
+It's also possible to use an async function as a request middleware. The resolved data will be passed to the request:
+
+```ts
+async function middleware(request: RequestInit) {
+  const token = await getToken()
+  return {
+    ...request,
+    headers: { ...request.headers, 'x-auth-token': token },
+  }
+}
+
+const client = new GraphQLClient(endpoint, { requestMiddleware: middleware })
+```
+
 Response middleware example (log request trace id if error caused):
 
 ```ts
