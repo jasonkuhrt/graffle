@@ -1,9 +1,6 @@
 import crossFetch, * as CrossFetch from 'cross-fetch'
 import { TypedDocumentNode } from '@graphql-typed-document-node/core'
-import { OperationDefinitionNode, DocumentNode } from 'graphql/language/ast'
-
-import { parse } from 'graphql/language/parser'
-import { print } from 'graphql/language/printer'
+import { DocumentNode } from 'graphql/language/ast'
 import createRequestBody from './createRequestBody'
 import { defaultJsonSerializer } from './defaultJsonSerializer'
 import {
@@ -31,6 +28,7 @@ import {
   RemoveIndex,
 } from './types'
 import * as Dom from './types.dom'
+import { resolveRequestDocument } from './resolveRequestDocument'
 
 export {
   BatchRequestDocument,
@@ -670,42 +668,6 @@ async function getResult(response: Dom.Response, jsonSerializer = defaultJsonSer
     return response.text()
   }
 }
-/**
- * helpers
- */
-
-function extractOperationName(document: DocumentNode): string | undefined {
-  let operationName = undefined
-
-  const operationDefinitions = document.definitions.filter(
-    (definition) => definition.kind === 'OperationDefinition'
-  ) as OperationDefinitionNode[]
-
-  if (operationDefinitions.length === 1) {
-    operationName = operationDefinitions[0].name?.value
-  }
-
-  return operationName
-}
-
-export function resolveRequestDocument(document: RequestDocument): { query: string; operationName?: string } {
-  if (typeof document === 'string') {
-    let operationName = undefined
-
-    try {
-      const parsedDocument = parse(document)
-      operationName = extractOperationName(parsedDocument)
-    } catch (err) {
-      // Failed parsing the document, the operationName will be undefined
-    }
-
-    return { query: document, operationName }
-  }
-
-  const operationName = extractOperationName(document)
-
-  return { query: print(document), operationName }
-}
 
 function callOrIdentity<T>(value: MaybeFunction<T>) {
   return typeof value === 'function' ? (value as () => T)() : value
@@ -743,3 +705,4 @@ function HeadersInstanceToPlainObject(headers: Dom.Response['headers']): Record<
 }
 
 export { GraphQLWebSocketClient } from './graphql-ws'
+export { resolveRequestDocument } from './resolveRequestDocument'

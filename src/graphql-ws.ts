@@ -1,6 +1,6 @@
 import { ClientError, RequestDocument, Variables } from './types'
 import * as Dom from './types.dom'
-import { resolveRequestDocument } from '.'
+import { resolveRequestDocument } from './resolveRequestDocument'
 
 const CONNECTION_INIT = 'connection_init'
 const CONNECTION_ACK = 'connection_ack'
