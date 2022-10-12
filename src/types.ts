@@ -70,7 +70,7 @@ export interface Response<T> {
 
 export type PatchedRequestInit = Omit<Dom.RequestInit, 'headers'> & {
   headers?: MaybeFunction<Dom.RequestInit['headers']>
-  requestMiddleware?: (request: Dom.RequestInit) => Dom.RequestInit | Promise<Dom.RequestInit>
+  requestMiddleware?: RequestMiddlware
   responseMiddleware?: (response: Response<unknown> | Error) => void
 }
 
@@ -107,3 +107,11 @@ export type RequestExtendedOptions<V = Variables, T = any> = { url: string } & R
 export type RawRequestExtendedOptions<V = Variables> = { url: string } & RawRequestOptions<V>
 
 export type BatchRequestsExtendedOptions<V = Variables> = { url: string } & BatchRequestsOptions<V>
+
+export type RequestMiddlware = (
+  request: RequestExtendedInit
+) => RequestExtendedInit | Promise<RequestExtendedInit>
+
+type RequestExtendedInit = Dom.RequestInit & {
+  url: string
+}

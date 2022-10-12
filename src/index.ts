@@ -26,6 +26,7 @@ import {
   MaybeFunction,
   Response,
   RemoveIndex,
+  RequestMiddlware,
 } from './types'
 import * as Dom from './types.dom'
 import { resolveRequestDocument } from './resolveRequestDocument'
@@ -156,11 +157,11 @@ const post = async <V = Variables>({
   variables?: V
   headers?: Dom.RequestInit['headers']
   operationName?: string
-  middleware?: (request: Dom.RequestInit) => Dom.RequestInit | Promise<Dom.RequestInit>
+  middleware?: RequestMiddlware
 }) => {
   const body = createRequestBody(query, variables, operationName, fetchOptions.jsonSerializer)
 
-  let options: Dom.RequestInit = {
+  let init: Dom.RequestInit = {
     method: 'POST',
     headers: {
       ...(typeof body === 'string' ? { 'Content-Type': 'application/json' } : {}),
@@ -170,9 +171,9 @@ const post = async <V = Variables>({
     ...fetchOptions,
   }
   if (middleware) {
-    options = await Promise.resolve(middleware(options))
+    ;({ url, ...init } = await Promise.resolve(middleware({ ...init, url })))
   }
-  return await fetch(url, options)
+  return await fetch(url, init)
 }
 
 /**
@@ -195,7 +196,7 @@ const get = async <V = Variables>({
   variables?: V
   headers?: HeadersInit
   operationName?: string
-  middleware?: (request: Dom.RequestInit) => Dom.RequestInit | Promise<Dom.RequestInit>
+  middleware?: RequestMiddlware
 }) => {
   const queryParams = buildGetQueryParams<V>({
     query,
@@ -204,15 +205,15 @@ const get = async <V = Variables>({
     jsonSerializer: fetchOptions.jsonSerializer,
   } as TBuildGetQueryParams<V>)
 
-  let options: Dom.RequestInit = {
+  let init: Dom.RequestInit = {
     method: 'GET',
     headers,
     ...fetchOptions,
   }
   if (middleware) {
-    options = await Promise.resolve(middleware(options))
+    ;({ url, ...init } = await Promise.resolve(middleware({ ...init, url })))
   }
-  return await fetch(`${url}?${queryParams}`, options)
+  return await fetch(`${url}?${queryParams}`, init)
 }
 
 /**
@@ -461,7 +462,7 @@ async function makeRequest<T = any, V = Variables>({
   fetch: any
   method: string
   fetchOptions: Dom.RequestInit
-  middleware?: (request: Dom.RequestInit) => Dom.RequestInit | Promise<Dom.RequestInit>
+  middleware?: RequestMiddlware
 }): Promise<Response<T>> {
   const fetcher = method.toUpperCase() === 'POST' ? post : get
   const isBathchingQuery = Array.isArray(query)

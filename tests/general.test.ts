@@ -161,6 +161,17 @@ describe('middleware', () => {
       await requestPromise
       expect(responseMiddleware).toBeCalledTimes(1)
     })
+
+    it('url changes', async () => {
+      requestMiddleware = jest.fn((req) => ({ ...req, url: ctx.url }))
+      const _client = new GraphQLClient('https://graphql.org', {
+        requestMiddleware,
+      })
+      const requestPromise = _client.request<{ result: number }>(`x`)
+      const res = await requestPromise
+      expect(requestMiddleware).toBeCalledTimes(1)
+      expect(res.result).toBe(123)
+    })
   })
 
   describe('async request middleware', () => {
