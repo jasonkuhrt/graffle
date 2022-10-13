@@ -25,7 +25,7 @@ import {
   MaybeFunction,
   Response,
   RemoveIndex,
-  RequestMiddlware,
+  RequestMiddleware,
   VariablesAndRequestHeaders,
 } from './types'
 import * as Dom from './types.dom'
@@ -157,7 +157,7 @@ const post = async <V extends Variables = Variables>({
   variables?: V
   headers?: Dom.RequestInit['headers']
   operationName?: string
-  middleware?: RequestMiddlware
+  middleware?: RequestMiddleware<V>
 }) => {
   const body = createRequestBody(query, variables, operationName, fetchOptions.jsonSerializer)
 
@@ -171,7 +171,7 @@ const post = async <V extends Variables = Variables>({
     ...fetchOptions,
   }
   if (middleware) {
-    ;({ url, ...init } = await Promise.resolve(middleware({ ...init, url })))
+    ;({ url, ...init } = await Promise.resolve(middleware({ ...init, url, operationName, variables })))
   }
   return await fetch(url, init)
 }
@@ -196,7 +196,7 @@ const get = async <V extends Variables = Variables>({
   variables?: V
   headers?: Dom.RequestInit['headers']
   operationName?: string
-  middleware?: RequestMiddlware
+  middleware?: RequestMiddleware<V>
 }) => {
   const queryParams = buildGetQueryParams<V>({
     query,
@@ -211,7 +211,7 @@ const get = async <V extends Variables = Variables>({
     ...fetchOptions,
   }
   if (middleware) {
-    ;({ url, ...init } = await Promise.resolve(middleware({ ...init, url })))
+    ;({ url, ...init } = await Promise.resolve(middleware({ ...init, url, operationName, variables })))
   }
   return await fetch(`${url}?${queryParams}`, init)
 }
@@ -459,7 +459,7 @@ async function makeRequest<T = any, V extends Variables = Variables>({
   fetch: any
   method: string
   fetchOptions: Dom.RequestInit
-  middleware?: RequestMiddlware
+  middleware?: RequestMiddleware<V>
 }): Promise<Response<T>> {
   const fetcher = method.toUpperCase() === 'POST' ? post : get
   const isBathchingQuery = Array.isArray(query)

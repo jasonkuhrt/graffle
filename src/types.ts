@@ -70,7 +70,7 @@ export interface Response<T> {
 
 export type PatchedRequestInit = Omit<Dom.RequestInit, 'headers'> & {
   headers?: MaybeFunction<Dom.RequestInit['headers']>
-  requestMiddleware?: RequestMiddlware
+  requestMiddleware?: RequestMiddleware
   responseMiddleware?: (response: Response<unknown> | Error) => void
 }
 
@@ -117,12 +117,14 @@ export type BatchRequestsExtendedOptions<V extends Variables = Variables> = {
   url: string
 } & BatchRequestsOptions<V>
 
-export type RequestMiddlware = (
-  request: RequestExtendedInit
+export type RequestMiddleware<V extends Variables = Variables> = (
+  request: RequestExtendedInit<V>
 ) => RequestExtendedInit | Promise<RequestExtendedInit>
 
-type RequestExtendedInit = Dom.RequestInit & {
+type RequestExtendedInit<V extends Variables = Variables> = Dom.RequestInit & {
   url: string
+  operationName?: string
+  variables?: V
 }
 
 export type VariablesAndRequestHeaders<V extends Variables> = V extends Record<any, never> // do we have explicitly no variables allowed?
