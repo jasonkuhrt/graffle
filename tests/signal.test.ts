@@ -50,7 +50,7 @@ it('should abort a raw request when the signal is defined in the GraphQLClient',
   const client = new GraphQLClient(ctx.url, { signal: abortController.signal })
 
   try {
-    await client.rawRequest(ctx.url, `{ me { id } }`)
+    await client.rawRequest(`{ me { id } }`)
   } catch (error) {
     expect((error as Error).message).toEqual('The user aborted a request.')
   }

@@ -65,7 +65,7 @@ interface URLSearchParams {
   forEach(callbackfn: (value: string, key: string, parent: URLSearchParams) => void, thisArg?: any): void
 }
 
-interface FormData {
+export interface FormData {
   append(name: string, value: string | Blob, fileName?: string): void
   delete(name: string): void
   get(name: string): FormDataEntryValue | null
@@ -80,38 +80,40 @@ interface ReadableStream<R = any> {
   readonly locked: boolean
   cancel(reason?: any): Promise<void>
   getReader(): ReadableStreamDefaultReader<R>
-  pipeThrough<T>(
-    { writable, readable }: { writable: WritableStream<R>; readable: ReadableStream<T> },
-    options?: PipeOptions
-  ): ReadableStream<T>
-  pipeTo(dest: WritableStream<R>, options?: PipeOptions): Promise<void>
+  pipeThrough<T>(transform: ReadableWritablePair<T, R>, options?: StreamPipeOptions): ReadableStream<T>
+  pipeTo(destination: WritableStream<R>, options?: StreamPipeOptions): Promise<void>
   tee(): [ReadableStream<R>, ReadableStream<R>]
 }
 
-interface ReadableStreamBYOBReader {
-  readonly closed: Promise<void>
+interface ReadableWritablePair<R = any, W = any> {
+  readable: ReadableStream<R>
+  writable: WritableStream<W>
+}
+
+interface StreamPipeOptions {
+  preventAbort?: boolean
+  preventCancel?: boolean
+  preventClose?: boolean
+  signal?: AbortSignal
+}
+
+interface ReadableStreamDefaultReader<R = any> {
+  readonly closed: Promise<undefined>
   cancel(reason?: any): Promise<void>
-  read<T extends ArrayBufferView>(view: T): Promise<ReadableStreamReadResult<T>>
+  read(): Promise<ReadableStreamReadResult<R>>
   releaseLock(): void
 }
 
-type ReadableStreamReadResult<T> = ReadableStreamReadValueResult<T> | ReadableStreamReadDoneResult<T>
+type ReadableStreamReadResult<T> = ReadableStreamReadValueResult<T> | ReadableStreamReadDoneResult
 
-interface ReadableStreamReadDoneResult<T> {
+interface ReadableStreamReadDoneResult {
   done: true
-  value?: T
+  value?: undefined
 }
 
 interface ReadableStreamReadValueResult<T> {
   done: false
   value: T
-}
-
-interface ReadableStreamDefaultReader<R = any> {
-  readonly closed: Promise<void>
-  cancel(reason?: any): Promise<void>
-  read(): Promise<ReadableStreamReadResult<R | undefined>>
-  releaseLock(): void
 }
 
 type BodyInit = Blob | BufferSource | FormData | URLSearchParams | ReadableStream | string
@@ -260,11 +262,11 @@ interface AbortSignalEventMap {
 
 /** A signal object that allows you to communicate with a DOM request (such as a Fetch) and abort it if required via an AbortController object. */
 interface AbortSignal extends EventTarget {
-  /**
-   * Returns true if this AbortSignal's AbortController has signaled to abort, and false otherwise.
-   */
+  /** Returns true if this AbortSignal's AbortController has signaled to abort, and false otherwise. */
   readonly aborted: boolean
   onabort: ((this: AbortSignal, ev: Event) => any) | null
+  readonly reason: any
+  throwIfAborted(): void
   addEventListener<K extends keyof AbortSignalEventMap>(
     type: K,
     listener: (this: AbortSignal, ev: AbortSignalEventMap[K]) => any,
@@ -445,23 +447,17 @@ export interface Request extends Body {
 interface WritableStream<W = any> {
   readonly locked: boolean
   abort(reason?: any): Promise<void>
+  close(): Promise<void>
   getWriter(): WritableStreamDefaultWriter<W>
 }
 
 /** This Streams API interface is the object returned by WritableStream.getWriter() and once created locks the < writer to the WritableStream ensuring that no other streams can write to the underlying sink. */
 interface WritableStreamDefaultWriter<W = any> {
-  readonly closed: Promise<void>
+  readonly closed: Promise<undefined>
   readonly desiredSize: number | null
-  readonly ready: Promise<void>
+  readonly ready: Promise<undefined>
   abort(reason?: any): Promise<void>
   close(): Promise<void>
   releaseLock(): void
-  write(chunk: W): Promise<void>
-}
-
-interface PipeOptions {
-  preventAbort?: boolean
-  preventCancel?: boolean
-  preventClose?: boolean
-  signal?: AbortSignal
+  write(chunk?: W): Promise<void>
 }

@@ -19,7 +19,7 @@ export interface GraphQLResponse<T = any> {
   [key: string]: any
 }
 
-export interface GraphQLRequestContext<V = Variables> {
+export interface GraphQLRequestContext<V extends Variables = Variables> {
   query: string | string[]
   variables?: V
 }
@@ -74,19 +74,22 @@ export type PatchedRequestInit = Omit<Dom.RequestInit, 'headers'> & {
   responseMiddleware?: (response: Response<unknown> | Error) => void
 }
 
-export type BatchRequestDocument<V = Variables> = {
+export type BatchRequestDocument<V extends Variables = Variables> = {
   document: RequestDocument
   variables?: V
 }
 
-export type RawRequestOptions<V = Variables> = {
+export type RawRequestOptions<V extends Variables = Variables> = {
   query: string
-  variables?: V
   requestHeaders?: Dom.RequestInit['headers']
   signal?: Dom.RequestInit['signal']
-}
+} & (V extends Record<any, never>
+  ? { variables?: V }
+  : keyof RemoveIndex<V> extends never
+  ? { variables?: V }
+  : { variables: V })
 
-export type RequestOptions<V = Variables, T = any> = {
+export type RequestOptions<V extends Variables = Variables, T = any> = {
   document: RequestDocument | TypedDocumentNode<T, V>
   requestHeaders?: Dom.RequestInit['headers']
   signal?: Dom.RequestInit['signal']
@@ -96,17 +99,23 @@ export type RequestOptions<V = Variables, T = any> = {
   ? { variables?: V }
   : { variables: V })
 
-export type BatchRequestsOptions<V = Variables> = {
+export type BatchRequestsOptions<V extends Variables = Variables> = {
   documents: BatchRequestDocument<V>[]
   requestHeaders?: Dom.RequestInit['headers']
   signal?: Dom.RequestInit['signal']
 }
 
-export type RequestExtendedOptions<V = Variables, T = any> = { url: string } & RequestOptions<V, T>
+export type RequestExtendedOptions<V extends Variables = Variables, T = any> = {
+  url: string
+} & RequestOptions<V, T>
 
-export type RawRequestExtendedOptions<V = Variables> = { url: string } & RawRequestOptions<V>
+export type RawRequestExtendedOptions<V extends Variables = Variables> = {
+  url: string
+} & RawRequestOptions<V>
 
-export type BatchRequestsExtendedOptions<V = Variables> = { url: string } & BatchRequestsOptions<V>
+export type BatchRequestsExtendedOptions<V extends Variables = Variables> = {
+  url: string
+} & BatchRequestsOptions<V>
 
 export type RequestMiddlware = (
   request: RequestExtendedInit
@@ -115,3 +124,9 @@ export type RequestMiddlware = (
 type RequestExtendedInit = Dom.RequestInit & {
   url: string
 }
+
+export type VariablesAndRequestHeaders<V extends Variables> = V extends Record<any, never> // do we have explicitly no variables allowed?
+  ? [variables?: V, requestHeaders?: Dom.RequestInit['headers']]
+  : keyof RemoveIndex<V> extends never // do we get an empty variables object?
+  ? [variables?: V, requestHeaders?: Dom.RequestInit['headers']]
+  : [variables: V, requestHeaders?: Dom.RequestInit['headers']]
