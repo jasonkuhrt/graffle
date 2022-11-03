@@ -60,6 +60,50 @@ test('minimal raw query with response headers', async () => {
   expect(headers.get('X-Custom-Header')).toEqual(reqHeaders!['X-Custom-Header'])
 })
 
+test('minimal raw query with response headers and new graphql content type', async () => {
+  const { headers: reqHeaders, body } = ctx.res({
+    headers: {
+      'Content-Type': 'application/graphql+json',
+    },
+    body: {
+      data: {
+        me: {
+          id: 'some-id',
+        },
+      },
+      extensions: {
+        version: '1',
+      },
+    },
+  }).spec
+
+  const { headers, ...result } = await rawRequest(ctx.url, `{ me { id } }`)
+
+  expect(result).toEqual({ ...body, status: 200 })
+})
+
+test('minimal raw query with response headers and application/graphql-response+json response type', async () => {
+  const { headers: reqHeaders, body } = ctx.res({
+    headers: {
+      'Content-Type': 'application/graphql-response+json',
+    },
+    body: {
+      data: {
+        me: {
+          id: 'some-id',
+        },
+      },
+      extensions: {
+        version: '1',
+      },
+    },
+  }).spec
+
+  const { headers, ...result } = await rawRequest(ctx.url, `{ me { id } }`)
+
+  expect(result).toEqual({ ...body, status: 200 })
+})
+
 test('content-type with charset', async () => {
   const { data } = ctx.res({
     // headers: { 'Content-Type': 'application/json; charset=utf-8' },
