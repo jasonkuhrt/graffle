@@ -663,7 +663,7 @@ async function getResult(response: Dom.Response, jsonSerializer = defaultJsonSer
     }
   })
 
-  if (contentType && contentType.toLowerCase().startsWith('application/json')) {
+  if (contentType && (contentType.toLowerCase().startsWith('application/json') || contentType.toLowerCase().startsWith("application/graphql+json") || contentType.toLowerCase().startsWith("application/graphql-response+json"))) {
     return jsonSerializer.parse(await response.text())
   } else {
     return response.text()
