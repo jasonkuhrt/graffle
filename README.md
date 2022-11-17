@@ -14,7 +14,7 @@ Minimal GraphQL client supporting Node and browsers for scripts or simple apps
   - [Usage](#usage)
   - [Node Version Support](#node-version-support)
   - [Community](#community)
-      - [GraphQL Code Generator's GraphQL-Request TypeScript Plugin](#graphql-code-generators-graphql-request-typescript-plugin)
+    - [GraphQL Code Generator's GraphQL-Request TypeScript Plugin](#graphql-code-generators-graphql-request-typescript-plugin)
   - [Examples](#examples)
     - [Authentication via HTTP header](#authentication-via-http-header)
       - [Incrementally setting headers](#incrementally-setting-headers)
@@ -42,9 +42,9 @@ Minimal GraphQL client supporting Node and browsers for scripts or simple apps
       - [Ignore](#ignore)
       - [All](#all)
   - [FAQ](#faq)
-      - [Why do I have to install `graphql`?](#why-do-i-have-to-install-graphql)
-      - [Do I need to wrap my GraphQL documents inside the `gql` template exported by `graphql-request`?](#do-i-need-to-wrap-my-graphql-documents-inside-the-gql-template-exported-by-graphql-request)
-      - [What's the difference between `graphql-request`, Apollo and Relay?](#whats-the-difference-between-graphql-request-apollo-and-relay)
+    - [Why do I have to install `graphql`?](#why-do-i-have-to-install-graphql)
+    - [Do I need to wrap my GraphQL documents inside the `gql` template exported by `graphql-request`?](#do-i-need-to-wrap-my-graphql-documents-inside-the-gql-template-exported-by-graphql-request)
+    - [What's the difference between `graphql-request`, Apollo and Relay?](#whats-the-difference-between-graphql-request-apollo-and-relay)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -124,8 +124,8 @@ You are free to try using other versions of Node (e.g. `13.x`) with `graphql-req
 Installing and configuring [GraphQL Code Generator](https://www.the-guild.dev/graphql/codegen) requires a few steps in order to get end-to-end typed GraphQL operations using the provided `graphql()` helper:
 
 ```ts
-import request from 'graphql-request';
-import { graphql } from './gql/gql';
+import request from 'graphql-request'
+import { graphql } from './gql/gql'
 
 const getMovieQueryDocument = graphql(/* GraphQL */ `
   query getMovie($title: String!) {
@@ -136,18 +136,18 @@ const getMovieQueryDocument = graphql(/* GraphQL */ `
       }
     }
   }
-`);
-
+`)
 
 const data = await request(
   'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr',
   getMovieQueryDocument,
   // variables are type-checked!
-  { title: "Inception" }
+  { title: 'Inception' }
 )
 
 // `data.Movie` is typed!
 ```
+
 [_The complete example is available in the GraphQL Code Generator repository_](https://github.com/dotansimha/graphql-code-generator/tree/master/examples/front-end/react/graphql-request)
 
 Visit GraphQL Code Generator's dedicated guide to get started: https://www.the-guild.dev/graphql/codegen/docs/guides/react-vue.
@@ -646,7 +646,6 @@ It is possible with `graphql-request` to use [batching](https://github.com/graph
 
 ```ts
 import { batchRequests } from 'graphql-request'
-
 ;(async function () {
   const endpoint = 'https://api.spacex.land/graphql/'
 

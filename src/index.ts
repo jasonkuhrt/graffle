@@ -285,13 +285,8 @@ export class GraphQLClient {
    * Send a GraphQL document to the server.
    */
   request<T = any, V = Variables>(
-    document: string,
-    variables?: V,
-    requestHeaders?: Dom.RequestInit['headers']
-  ): Promise<T>
-  request<T = any, V = Variables>(
-    document: DocumentNode | TypedDocumentNode<T, V>,
-    ..._variablesAndRequestHeaders: V extends Record<any, never> // do we have explicitly no variables allowed?
+    document: RequestDocument | TypedDocumentNode<T, V>,
+    ...variablesAndRequestHeaders: V extends Record<any, never> // do we have explicitly no variables allowed?
       ? [variables?: V, requestHeaders?: Dom.RequestInit['headers']]
       : keyof RemoveIndex<V> extends never // do we get an empty variables object?
       ? [variables?: V, requestHeaders?: Dom.RequestInit['headers']]
@@ -566,18 +561,12 @@ export async function rawRequest<T = any, V = Variables>(
  */
 export async function request<T = any, V = Variables>(
   url: string,
-  document: DocumentNode | TypedDocumentNode<T, V>,
-  ..._variablesAndRequestHeaders: V extends Record<any, never> // do we have explicitly no variables allowed?
+  document: RequestDocument | TypedDocumentNode<T, V>,
+  ...variablesAndRequestHeaders: V extends Record<any, never> // do we have explicitly no variables allowed?
     ? [variables?: V, requestHeaders?: Dom.RequestInit['headers']]
     : keyof RemoveIndex<V> extends never // do we get an empty variables object?
     ? [variables?: V, requestHeaders?: Dom.RequestInit['headers']]
     : [variables: V, requestHeaders?: Dom.RequestInit['headers']]
-): Promise<T>
-export async function request<T = any, V = Variables>(
-  url: string,
-  document: string,
-  variables?: V,
-  requestHeaders?: Dom.RequestInit['headers']
 ): Promise<T>
 export async function request<T = any, V = Variables>(options: RequestExtendedOptions<V, T>): Promise<T>
 export async function request<T = any, V = Variables>(
@@ -663,7 +652,12 @@ async function getResult(response: Dom.Response, jsonSerializer = defaultJsonSer
     }
   })
 
-  if (contentType && (contentType.toLowerCase().startsWith('application/json') || contentType.toLowerCase().startsWith("application/graphql+json") || contentType.toLowerCase().startsWith("application/graphql-response+json"))) {
+  if (
+    contentType &&
+    (contentType.toLowerCase().startsWith('application/json') ||
+      contentType.toLowerCase().startsWith('application/graphql+json') ||
+      contentType.toLowerCase().startsWith('application/graphql-response+json'))
+  ) {
     return jsonSerializer.parse(await response.text())
   } else {
     return response.text()
