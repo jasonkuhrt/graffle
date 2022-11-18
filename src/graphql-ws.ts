@@ -13,7 +13,7 @@ const COMPLETE = 'complete'
 
 type MessagePayload = { [key: string]: any }
 
-type SubscribePayload<V = Variables, E = any> = {
+type SubscribePayload<V extends Variables = Variables, E = any> = {
   operationName?: string | null
   query: string
   variables?: V
@@ -73,7 +73,7 @@ export interface GraphQLSubscriber<T, E = unknown> {
 type SubscriptionRecord = {
   subscriber: GraphQLSubscriber<unknown, unknown>
   query: string
-  variables: Variables
+  variables?: Variables
 }
 
 type SocketState = {
@@ -177,11 +177,11 @@ export class GraphQLWebSocketClient {
     }
   }
 
-  private makeSubscribe<T, V, E>(
+  private makeSubscribe<T, V extends Variables, E>(
     query: string,
     operationName: string | undefined,
-    variables: V,
-    subscriber: GraphQLSubscriber<T, E>
+    subscriber: GraphQLSubscriber<T, E>,
+    variables?: V
   ): UnsubscribeCallback {
     const subscriptionId = (this.socketState.lastRequestId++).toString()
     this.socketState.subscriptions[subscriptionId] = { query, variables, subscriber }
@@ -192,7 +192,7 @@ export class GraphQLWebSocketClient {
     }
   }
 
-  rawRequest<T = any, V = Variables, E = any>(
+  rawRequest<T = any, V extends Variables = Variables, E = any>(
     query: string,
     variables?: V
   ): Promise<{ data: T; extensions?: E }> {
@@ -212,7 +212,7 @@ export class GraphQLWebSocketClient {
     )
   }
 
-  request<T = any, V = Variables>(document: RequestDocument, variables?: V): Promise<T> {
+  request<T = any, V extends Variables = Variables>(document: RequestDocument, variables?: V): Promise<T> {
     return new Promise<T>((resolve, reject) => {
       let result: T
       this.subscribe(
@@ -227,21 +227,21 @@ export class GraphQLWebSocketClient {
     })
   }
 
-  subscribe<T = any, V = Variables, E = any>(
+  subscribe<T = any, V extends Variables = Variables, E = any>(
     document: RequestDocument,
     subscriber: GraphQLSubscriber<T, E>,
     variables?: V
   ): UnsubscribeCallback {
     const { query, operationName } = resolveRequestDocument(document)
-    return this.makeSubscribe(query, operationName, variables, subscriber)
+    return this.makeSubscribe(query, operationName, subscriber, variables)
   }
 
-  rawSubscribe<T = any, V = Variables, E = any>(
+  rawSubscribe<T = any, V extends Variables = Variables, E = any>(
     query: string,
     subscriber: GraphQLSubscriber<T, E>,
     variables?: V
   ): UnsubscribeCallback {
-    return this.makeSubscribe(query, undefined, variables, subscriber)
+    return this.makeSubscribe(query, undefined, subscriber, variables)
   }
 
   ping(payload: Variables) {

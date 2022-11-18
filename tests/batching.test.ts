@@ -1,5 +1,4 @@
-import { response } from 'express'
-import { GraphQLClient, batchRequests } from '../src'
+import { batchRequests } from '../src'
 import { setupTestServer, MockSpecBatch } from './__helpers'
 
 const ctx = setupTestServer<MockSpecBatch>()

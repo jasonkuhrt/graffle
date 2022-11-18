@@ -1,8 +1,8 @@
 import { isExtractableFile, extractFiles, ExtractableFile } from 'extract-files'
 import FormDataNode from 'form-data'
 import { defaultJsonSerializer } from './defaultJsonSerializer'
-
 import { Variables } from './types'
+import * as Dom from './types.dom'
 
 /**
  * Duck type if NodeJS stream
@@ -22,7 +22,7 @@ export default function createRequestBody(
   variables?: Variables | Variables[],
   operationName?: string,
   jsonSerializer = defaultJsonSerializer
-): string | FormData {
+): string | Dom.FormData {
   const { clone, files } = extractFiles({ query, variables, operationName }, '', isExtractableFileEnhanced)
 
   if (files.size === 0) {
@@ -64,5 +64,5 @@ export default function createRequestBody(
     form.append(`${++i}`, file as any)
   })
 
-  return form as FormData
+  return form as Dom.FormData
 }

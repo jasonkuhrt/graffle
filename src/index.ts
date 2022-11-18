@@ -1,6 +1,5 @@
 import crossFetch, * as CrossFetch from 'cross-fetch'
 import { TypedDocumentNode } from '@graphql-typed-document-node/core'
-import { DocumentNode } from 'graphql/language/ast'
 import createRequestBody from './createRequestBody'
 import { defaultJsonSerializer } from './defaultJsonSerializer'
 import {
@@ -27,6 +26,7 @@ import {
   Response,
   RemoveIndex,
   RequestMiddlware,
+  VariablesAndRequestHeaders,
 } from './types'
 import * as Dom from './types.dom'
 import { resolveRequestDocument } from './resolveRequestDocument'
@@ -140,7 +140,7 @@ const buildGetQueryParams = <V>({
 /**
  * Fetch data using POST method
  */
-const post = async <V = Variables>({
+const post = async <V extends Variables = Variables>({
   url,
   query,
   variables,
@@ -179,7 +179,7 @@ const post = async <V = Variables>({
 /**
  * Fetch data using GET method
  */
-const get = async <V = Variables>({
+const get = async <V extends Variables = Variables>({
   url,
   query,
   variables,
@@ -194,7 +194,7 @@ const get = async <V = Variables>({
   fetch: any
   fetchOptions: Dom.RequestInit
   variables?: V
-  headers?: HeadersInit
+  headers?: Dom.RequestInit['headers']
   operationName?: string
   middleware?: RequestMiddlware
 }) => {
@@ -225,13 +225,15 @@ export class GraphQLClient {
   /**
    * Send a GraphQL query to the server.
    */
-  async rawRequest<T = any, V = Variables>(
+  async rawRequest<T = any, V extends Variables = Variables>(
     query: string,
     variables?: V,
     requestHeaders?: Dom.RequestInit['headers']
   ): Promise<Response<T>>
-  async rawRequest<T = any, V = Variables>(options: RawRequestOptions<V>): Promise<Response<T>>
-  async rawRequest<T = any, V = Variables>(
+  async rawRequest<T = any, V extends Variables = Variables>(
+    options: RawRequestOptions<V>
+  ): Promise<Response<T>>
+  async rawRequest<T = any, V extends Variables = Variables>(
     queryOrOptions: string | RawRequestOptions<V>,
     variables?: V,
     requestHeaders?: Dom.RequestInit['headers']
@@ -256,7 +258,7 @@ export class GraphQLClient {
     return makeRequest<T, V>({
       url,
       query: rawRequestOptions.query,
-      variables: rawRequestOptions.variables,
+      variables: rawRequestOptions.variables as V,
       headers: {
         ...resolveHeaders(callOrIdentity(headers)),
         ...resolveHeaders(rawRequestOptions.requestHeaders),
@@ -292,8 +294,8 @@ export class GraphQLClient {
       ? [variables?: V, requestHeaders?: Dom.RequestInit['headers']]
       : [variables: V, requestHeaders?: Dom.RequestInit['headers']]
   ): Promise<T>
-  request<T = any, V = Variables>(options: RequestOptions<V, T>): Promise<T>
-  request<T = any, V = Variables>(
+  async request<T = any, V extends Variables = Variables>(options: RequestOptions<V, T>): Promise<T>
+  async request<T = any, V extends Variables = Variables>(
     documentOrOptions: RequestDocument | TypedDocumentNode<T, V> | RequestOptions<V>,
     ...variablesAndRequestHeaders: V extends Record<any, never> // do we have explicitly no variables allowed?
       ? [variables?: V, requestHeaders?: Dom.RequestInit['headers']]
@@ -302,7 +304,7 @@ export class GraphQLClient {
       : [variables: V, requestHeaders?: Dom.RequestInit['headers']]
   ): Promise<T> {
     const [variables, requestHeaders] = variablesAndRequestHeaders
-    const requestOptions = parseRequestArgs<V>(documentOrOptions, variables, requestHeaders)
+    const requestOptions = parseRequestArgs(documentOrOptions, variables, requestHeaders)
 
     let {
       headers,
@@ -319,7 +321,7 @@ export class GraphQLClient {
 
     const { query, operationName } = resolveRequestDocument(requestOptions.document)
 
-    return makeRequest<T, V>({
+    return makeRequest({
       url,
       query,
       variables: requestOptions.variables,
@@ -350,12 +352,12 @@ export class GraphQLClient {
   /**
    * Send GraphQL documents in batch to the server.
    */
-  batchRequests<T extends any = any, V = Variables>(
+  batchRequests<T extends any = any, V extends Variables = Variables>(
     documents: BatchRequestDocument<V>[],
     requestHeaders?: Dom.RequestInit['headers']
   ): Promise<T>
-  batchRequests<T = any, V = Variables>(options: BatchRequestsOptions<V>): Promise<T>
-  batchRequests<T = any, V = Variables>(
+  batchRequests<T = any, V extends Variables = Variables>(options: BatchRequestsOptions<V>): Promise<T>
+  batchRequests<T = any, V extends Variables = Variables>(
     documentsOrOptions: BatchRequestDocument<V>[] | BatchRequestsOptions<V>,
     requestHeaders?: Dom.RequestInit['headers']
   ): Promise<T> {
@@ -438,7 +440,7 @@ export class GraphQLClient {
   }
 }
 
-async function makeRequest<T = any, V = Variables>({
+async function makeRequest<T = any, V extends Variables = Variables>({
   url,
   query,
   variables,
@@ -503,22 +505,20 @@ async function makeRequest<T = any, V = Variables>({
 /**
  * Send a GraphQL Query to the GraphQL server for execution.
  */
-export async function rawRequest<T = any, V = Variables>(
+export async function rawRequest<T = any, V extends Variables = Variables>(
   url: string,
   query: string,
-  variables?: V,
-  requestHeaders?: Dom.RequestInit['headers']
+  ...variablesAndRequestHeaders: VariablesAndRequestHeaders<V>
 ): Promise<Response<T>>
-export async function rawRequest<T = any, V = Variables>(
+export async function rawRequest<T = any, V extends Variables = Variables>(
   options: RawRequestExtendedOptions<V>
 ): Promise<Response<T>>
-export async function rawRequest<T = any, V = Variables>(
+export async function rawRequest<T = any, V extends Variables = Variables>(
   urlOrOptions: string | RawRequestExtendedOptions<V>,
   query?: string,
-  variables?: V,
-  requestHeaders?: Dom.RequestInit['headers']
+  ...variablesAndRequestHeaders: VariablesAndRequestHeaders<V>
 ): Promise<Response<T>> {
-  const requestOptions = parseRawRequestExtendedArgs<V>(urlOrOptions, query, variables, requestHeaders)
+  const requestOptions = parseRawRequestExtendedArgs<V>(urlOrOptions, query, ...variablesAndRequestHeaders)
   const client = new GraphQLClient(requestOptions.url)
   return client.rawRequest<T, V>({
     ...requestOptions,
@@ -559,27 +559,20 @@ export async function rawRequest<T = any, V = Variables>(
  * await request('https://foo.bar/graphql', gql`...`)
  * ```
  */
-export async function request<T = any, V = Variables>(
+export async function request<T = any, V extends Variables = Variables>(
   url: string,
   document: RequestDocument | TypedDocumentNode<T, V>,
-  ...variablesAndRequestHeaders: V extends Record<any, never> // do we have explicitly no variables allowed?
-    ? [variables?: V, requestHeaders?: Dom.RequestInit['headers']]
-    : keyof RemoveIndex<V> extends never // do we get an empty variables object?
-    ? [variables?: V, requestHeaders?: Dom.RequestInit['headers']]
-    : [variables: V, requestHeaders?: Dom.RequestInit['headers']]
+  ...variablesAndRequestHeaders: VariablesAndRequestHeaders<V>
 ): Promise<T>
-export async function request<T = any, V = Variables>(options: RequestExtendedOptions<V, T>): Promise<T>
-export async function request<T = any, V = Variables>(
+export async function request<T = any, V extends Variables = Variables>(
+  options: RequestExtendedOptions<V, T>
+): Promise<T>
+export async function request<T = any, V extends Variables = Variables>(
   urlOrOptions: string | RequestExtendedOptions<V, T>,
   document?: RequestDocument | TypedDocumentNode<T, V>,
-  ...variablesAndRequestHeaders: V extends Record<any, never> // do we have explicitly no variables allowed?
-    ? [variables?: V, requestHeaders?: Dom.RequestInit['headers']]
-    : keyof RemoveIndex<V> extends never // do we get an empty variables object?
-    ? [variables?: V, requestHeaders?: Dom.RequestInit['headers']]
-    : [variables: V, requestHeaders?: Dom.RequestInit['headers']]
+  ...variablesAndRequestHeaders: VariablesAndRequestHeaders<V>
 ): Promise<T> {
-  const [variables, requestHeaders] = variablesAndRequestHeaders
-  const requestOptions = parseRequestExtendedArgs<V>(urlOrOptions, document, variables, requestHeaders)
+  const requestOptions = parseRequestExtendedArgs<V>(urlOrOptions, document, ...variablesAndRequestHeaders)
   const client = new GraphQLClient(requestOptions.url)
   return client.request<T, V>({
     ...requestOptions,
@@ -620,15 +613,15 @@ export async function request<T = any, V = Variables>(
  * await batchRequests('https://foo.bar/graphql', [{ query: gql`...` }])
  * ```
  */
-export async function batchRequests<T = any, V = Variables>(
+export async function batchRequests<T = any, V extends Variables = Variables>(
   url: string,
   documents: BatchRequestDocument<V>[],
   requestHeaders?: Dom.RequestInit['headers']
 ): Promise<T>
-export async function batchRequests<T = any, V = Variables>(
+export async function batchRequests<T = any, V extends Variables = Variables>(
   options: BatchRequestsExtendedOptions<V>
 ): Promise<T>
-export async function batchRequests<T = any, V = Variables>(
+export async function batchRequests<T = any, V extends Variables = Variables>(
   urlOrOptions: string | BatchRequestsExtendedOptions<V>,
   documents?: BatchRequestDocument<V>[],
   requestHeaders?: Dom.RequestInit['headers']
