@@ -462,7 +462,7 @@ async function makeRequest<T = any, V extends Variables = Variables>({
   middleware?: RequestMiddleware<V>
 }): Promise<Response<T>> {
   const fetcher = method.toUpperCase() === 'POST' ? post : get
-  const isBathchingQuery = Array.isArray(query)
+  const isBatchingQuery = Array.isArray(query)
 
   const response = await fetcher({
     url,
@@ -477,7 +477,7 @@ async function makeRequest<T = any, V extends Variables = Variables>({
   const result = await getResult(response, fetchOptions.jsonSerializer)
 
   const successfullyReceivedData =
-    isBathchingQuery && Array.isArray(result) ? !result.some(({ data }) => !data) : !!result.data
+    isBatchingQuery && Array.isArray(result) ? !result.some(({ data }) => !data) : !!result.data
 
   const successfullyPassedErrorPolicy =
     !result.errors || fetchOptions.errorPolicy === 'all' || fetchOptions.errorPolicy === 'ignore'
@@ -489,7 +489,7 @@ async function makeRequest<T = any, V extends Variables = Variables>({
     const data = fetchOptions.errorPolicy === 'ignore' ? rest : result
 
     return {
-      ...(isBathchingQuery ? { data } : data),
+      ...(isBatchingQuery ? { data } : data),
       headers,
       status,
     }
