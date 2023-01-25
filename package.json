@@ -60,7 +60,7 @@
     "@types/extract-files": "^8.1.1",
     "@types/graphql-upload": "^8.0.6",
     "@types/jest": "^26.0.24",
-    "@types/node": "^16.4.3",
+    "@types/node": "^18.0.0",
     "@types/ws": "^8.2.3",
     "abort-controller": "^3.0.0",
     "apollo-server-express": "^3.5.0",
