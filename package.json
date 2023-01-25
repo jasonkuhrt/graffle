@@ -47,7 +47,7 @@
   "dependencies": {
     "@graphql-typed-document-node/core": "^3.1.1",
     "cross-fetch": "^3.1.5",
-    "extract-files": "^9.0.0",
+    "extract-files": "^13.0.0",
     "form-data": "^3.0.0"
   },
   "peerDependencies": {
