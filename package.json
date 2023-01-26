@@ -14,7 +14,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/prisma/graphql-request.git"
+    "url": "https://github.com/jasonkuhrt/graphql-request.git"
   },
   "keywords": [
     "graphql",
@@ -23,12 +23,16 @@
     "graphql-client",
     "apollo"
   ],
-  "author": "Prisma Labs Team",
+  "author": {
+    "name" : "Jason Kuhrt",
+    "email" : "jasonkuhrt@me.com",
+    "url" : "https://kuhrt.me"
+  },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/prisma/graphql-request/issues"
+    "url": "https://github.com/jasonkuhrt/graphql-request/issues"
   },
-  "homepage": "https://github.com/prisma/graphql-request",
+  "homepage": "https://github.com/jasonkuhrt/graphql-request",
   "scripts": {
     "build:docs": "doctoc README.md --notitle",
     "dev": "rm -rf dist && tsc --watch",
