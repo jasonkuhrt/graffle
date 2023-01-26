@@ -2,9 +2,9 @@ import { ApolloServer } from 'apollo-server-express'
 import body from 'body-parser'
 import express, { Application, Request } from 'express'
 import getPort from 'get-port'
-import { graphqlUploadExpress } from 'graphql-upload'
 import { createServer, Server } from 'http'
 import { JsonObject } from 'type-fest'
+import { beforeAll, afterEach, afterAll, beforeEach } from 'vitest'
 
 type CapturedRequest = Pick<Request, 'headers' | 'method' | 'body'>
 
@@ -88,8 +88,12 @@ export function setupTestServer<T extends MockSpec | MockSpecBatch = MockSpec>(d
     })
   })
 
-  afterAll((done) => {
-    ctx.nodeServer.close(done)
+  afterAll(async () => {
+    await new Promise((resolve) => {
+      ctx.nodeServer?.close(() => {
+        resolve(undefined)
+      })
+    })
   })
 
   return ctx
@@ -102,7 +106,6 @@ export async function startApolloServer({ typeDefs, resolvers }: ApolloServerCon
 
   const apolloServer = new ApolloServer({ typeDefs, resolvers })
 
-  app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }))
   await apolloServer.start()
   apolloServer.applyMiddleware({ app: app as any })
 
@@ -127,8 +130,8 @@ export function createApolloServerContext({ typeDefs, resolvers }: ApolloServerC
   })
 
   afterEach(async () => {
-    await new Promise<void>((res, rej) => {
-      ctx.server.close((e) => (e ? rej(e) : res()))
+    await new Promise((res) => {
+      ctx.server?.close(() => res(undefined)) ?? res(undefined)
     })
   })
 

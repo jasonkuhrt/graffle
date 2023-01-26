@@ -2,6 +2,7 @@ import gql from 'graphql-tag'
 import { GraphQLClient, rawRequest, request } from '../src'
 import { setupTestServer } from './__helpers'
 import * as Dom from '../src/types.dom'
+import { beforeEach, describe, expect, it, test, Mock, vitest } from 'vitest'
 
 const ctx = setupTestServer()
 
@@ -163,8 +164,8 @@ test('basic error with raw request', async () => {
 
 describe('middleware', () => {
   let client: GraphQLClient
-  let requestMiddleware: jest.Mock
-  let responseMiddleware: jest.Mock
+  let requestMiddleware: Mock
+  let responseMiddleware: Mock
 
   describe('successful requests', () => {
     beforeEach(() => {
@@ -176,8 +177,8 @@ describe('middleware', () => {
         },
       })
 
-      requestMiddleware = jest.fn((req) => ({ ...req }))
-      responseMiddleware = jest.fn()
+      requestMiddleware = vitest.fn((req) => ({ ...req }))
+      responseMiddleware = vitest.fn()
       client = new GraphQLClient(ctx.url, {
         requestMiddleware,
         responseMiddleware,
@@ -207,7 +208,7 @@ describe('middleware', () => {
     })
 
     it('url changes', async () => {
-      requestMiddleware = jest.fn((req) => ({ ...req, url: ctx.url }))
+      requestMiddleware = vitest.fn((req) => ({ ...req, url: ctx.url }))
       const _client = new GraphQLClient('https://graphql.org', {
         requestMiddleware,
       })
@@ -228,7 +229,7 @@ describe('middleware', () => {
         },
       })
 
-      requestMiddleware = jest.fn(async (req) => ({ ...req }))
+      requestMiddleware = vitest.fn(async (req) => ({ ...req }))
       client = new GraphQLClient(ctx.url, {
         requestMiddleware,
       })
@@ -269,8 +270,8 @@ describe('middleware', () => {
         },
       })
 
-      requestMiddleware = jest.fn((req) => ({ ...req }))
-      responseMiddleware = jest.fn()
+      requestMiddleware = vitest.fn((req) => ({ ...req }))
+      responseMiddleware = vitest.fn()
       client = new GraphQLClient(ctx.url, {
         requestMiddleware,
         responseMiddleware,

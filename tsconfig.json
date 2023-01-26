@@ -1,15 +1,12 @@
 {
   "compilerOptions": {
-    "lib": ["es2015"],
     "module": "commonjs",
     "moduleResolution": "node",
     "esModuleInterop": true,
     "outDir": "dist",
     "rootDir": "src",
-    "sourceMap": true,
-    "declaration": true,
     "strict": true,
-    "target": "es5"
+    "target": "ES2020"
   },
   "exclude": ["node_modules"],
   "include": ["src"]

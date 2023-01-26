@@ -2,6 +2,7 @@ import * as CrossFetch from 'cross-fetch'
 import * as Dom from '../src/types.dom'
 import { GraphQLClient, request } from '../src'
 import { setupTestServer } from './__helpers'
+import { describe, expect, test } from 'vitest'
 
 const ctx = setupTestServer()
 // Headers not defined globally in Node

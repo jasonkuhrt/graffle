@@ -3,6 +3,7 @@ import { join } from 'path'
 import { GraphQLClient } from '../src'
 import { setupTestServer } from './__helpers'
 import * as Dom from '../src/types.dom'
+import { beforeEach, describe, expect, test, vitest } from 'vitest'
 
 const ctx = setupTestServer()
 
@@ -13,8 +14,8 @@ describe('jsonSerializer option', () => {
 
   beforeEach(() => {
     serializer = {
-      stringify: jest.fn(JSON.stringify),
-      parse: jest.fn(JSON.parse),
+      stringify: vitest.fn(JSON.stringify),
+      parse: vitest.fn(JSON.parse),
     }
     fetch = (url: string) =>
       Promise.resolve({
@@ -71,7 +72,7 @@ describe('jsonSerializer option', () => {
       })
 
       describe('with files', () => {
-        const fileName = 'upload.test.ts'
+        const fileName = 'signal.test.ts'
         const file = createReadStream(join(__dirname, fileName))
 
         test('single query', testSingleQuery(2, { ...simpleVariable, file }))

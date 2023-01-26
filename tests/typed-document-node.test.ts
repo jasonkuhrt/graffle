@@ -1,5 +1,6 @@
 import { TypedDocumentNode } from '@graphql-typed-document-node/core'
 import { parse } from 'graphql'
+import { expect, test } from 'vitest'
 import request from '../src'
 import { setupTestServer } from './__helpers'
 
