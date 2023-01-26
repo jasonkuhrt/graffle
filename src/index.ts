@@ -304,6 +304,7 @@ export class GraphQLClient {
       : [variables: V, requestHeaders?: Dom.RequestInit['headers']]
   ): Promise<T> {
     const [variables, requestHeaders] = variablesAndRequestHeaders
+    // @ts-ignore
     const requestOptions = parseRequestArgs(documentOrOptions, variables, requestHeaders)
 
     let {
@@ -319,6 +320,7 @@ export class GraphQLClient {
       fetchOptions.signal = requestOptions.signal
     }
 
+    // @ts-ignore
     const { query, operationName } = resolveRequestDocument(requestOptions.document)
 
     return makeRequest({
@@ -569,6 +571,7 @@ export async function request<T = any, V extends Variables = Variables>(
 ): Promise<T>
 export async function request<T = any, V extends Variables = Variables>(
   urlOrOptions: string | RequestExtendedOptions<V, T>,
+  // @ts-ignore
   document?: RequestDocument | TypedDocumentNode<T, V>,
   ...variablesAndRequestHeaders: VariablesAndRequestHeaders<V>
 ): Promise<T> {
