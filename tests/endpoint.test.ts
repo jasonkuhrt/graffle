@@ -1,3 +1,4 @@
+import { describe, expect, test } from 'vitest'
 import { GraphQLClient } from '../src'
 import { setupTestServer } from './__helpers'
 

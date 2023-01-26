@@ -1,4 +1,5 @@
 import gql from 'graphql-tag'
+import { describe, expect, it } from 'vitest'
 import { request } from '../src'
 import { setupTestServer } from './__helpers'
 

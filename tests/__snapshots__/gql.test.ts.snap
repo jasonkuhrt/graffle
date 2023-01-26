@@ -1,0 +1,33 @@
+// Vitest Snapshot v1
+
+exports[`gql > passthrough allowing benefits of tooling for gql template tag 1`] = `
+{
+  "requests": [
+    {
+      "body": {
+        "operationName": "allUsers",
+        "query": "query allUsers {
+  users
+}",
+      },
+      "headers": {
+        "accept": "*/*",
+        "accept-encoding": "gzip,deflate",
+        "connection": "close",
+        "content-length": "67",
+        "content-type": "application/json",
+        "host": "DYNAMIC",
+        "user-agent": "node-fetch/1.0 (+https://github.com/bitinn/node-fetch)",
+      },
+      "method": "POST",
+    },
+  ],
+  "spec": {
+    "body": {
+      "data": {
+        "foo": 1,
+      },
+    },
+  },
+}
+`;

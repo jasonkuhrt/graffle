@@ -1,4 +1,5 @@
 import graphqlTag from 'graphql-tag'
+import { expect, it } from 'vitest'
 import { request } from '../src'
 import { setupTestServer } from './__helpers'
 
