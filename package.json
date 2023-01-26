@@ -68,7 +68,7 @@
     "express": "^4.18.2",
     "fetch-cookie": "^2.1.0",
     "get-port": "^5",
-    "graphql": "16.6.0",
+    "graphql": "17.0.0-alpha.2",
     "graphql-tag": "^2.12.5",
     "graphql-ws": "^5.11.2",
     "happy-dom": "^8.1.5",
