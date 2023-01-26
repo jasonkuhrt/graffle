@@ -1,0 +1,40 @@
+name: Setup
+description: Boilerplate steps needed by most jobs.
+inputs:
+  node-version:
+    description: Version of Node to use.
+    required: false
+    default: 18.x
+  install-deps:
+    description: Should deps be installed?
+    required: false
+    default: 'true'
+runs:
+  using: composite
+  steps:
+    - name: Use Node.js ${{inputs.node-version}}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{inputs.node-version}}
+    - name: Enable Corepack
+      run: |
+        corepack enable
+        echo "PnPM version is $(pnpm --version)"
+      shell: bash
+    # https://github.com/pnpm/action-setup#use-cache-to-reduce-installation-time
+    - name: Get pnpm store directory
+      id: pnpm-cache
+      shell: bash
+      run: |
+        echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
+    - uses: actions/cache@v3
+      name: Setup pnpm cache
+      with:
+        path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
+        key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+        restore-keys: |
+          ${{ runner.os }}-pnpm-store-
+    - name: Install dependencies
+      run: pnpm install
+      shell: bash
+      if: ${{inputs.install-deps}} == 'true'
