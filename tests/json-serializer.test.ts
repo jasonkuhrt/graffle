@@ -72,7 +72,7 @@ describe('jsonSerializer option', () => {
       })
 
       describe('with files', () => {
-        const fileName = 'upload.test.ts'
+        const fileName = 'signal.test.ts'
         const file = createReadStream(join(__dirname, fileName))
 
         test('single query', testSingleQuery(2, { ...simpleVariable, file }))
