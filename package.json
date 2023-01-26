@@ -39,6 +39,7 @@
     "build:docs": "doctoc README.md --notitle",
     "dev": "rm -rf dist && tsc --watch",
     "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "prepublishOnly": "pnpm build",
     "build": "rm -rf dist && tsc --project tsconfig.build.json",
     "test": "vitest",
