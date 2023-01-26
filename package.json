@@ -35,11 +35,11 @@
   },
   "homepage": "https://github.com/jasonkuhrt/graphql-request",
   "scripts": {
-    "types:check": "pnpm tsc --noEmit",
     "build:docs": "doctoc README.md --notitle",
     "dev": "rm -rf dist && tsc --watch",
     "format": "prettier --write .",
-    "format:check": "prettier --check .",
+    "check:types": "pnpm tsc --noEmit",
+    "check:format": "prettier --check .",
     "prepublishOnly": "pnpm build",
     "build": "rm -rf dist && tsc --project tsconfig.build.json",
     "test": "vitest",

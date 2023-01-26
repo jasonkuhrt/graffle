@@ -13,14 +13,14 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/setup
-      - run: pnpm format:check
+      - run: pnpm check:format
   types:
     needs: setup
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/setup
-      - run: pnpm types:check
+      - run: pnpm check:types
 
   tests:
     needs: setup
@@ -36,4 +36,4 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
       - run: pnpm build
-      - run: pnpm test --environment ${{ matrix.environment }}
+      - run: pnpm test -- --environment ${{ matrix.environment }}
