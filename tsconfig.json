@@ -5,8 +5,6 @@
     "esModuleInterop": true,
     "outDir": "dist",
     "rootDir": "src",
-    "sourceMap": true,
-    "declaration": true,
     "strict": true,
     "target": "ES2020"
   },

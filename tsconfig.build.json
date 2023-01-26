@@ -3,6 +3,8 @@
   "compilerOptions": {
     "skipLibCheck": true,
     "lib": ["es2015"],
-    "target": "es5"
+    "target": "es5",
+    "sourceMap": true,
+    "declaration": true
   }
 }

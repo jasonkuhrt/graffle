@@ -563,6 +563,7 @@ export async function rawRequest<T = any, V extends Variables = Variables>(
  */
 export async function request<T = any, V extends Variables = Variables>(
   url: string,
+  // @ts-ignore
   document: RequestDocument | TypedDocumentNode<T, V>,
   ...variablesAndRequestHeaders: VariablesAndRequestHeaders<V>
 ): Promise<T>
@@ -583,7 +584,7 @@ export async function request<T = any, V extends Variables = Variables>(
 }
 
 /**
- * Send a batch of GraphQL Document to the GraphQL server for exectuion.
+ * Send a batch of GraphQL Document to the GraphQL server for execution.
  *
  * @example
  *
