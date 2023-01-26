@@ -2,7 +2,6 @@
   "name": "graphql-request",
   "version": "0.0.0-dripip",
   "main": "dist/index.js",
-  "type": "module",
   "files": [
     "dist",
     "src"
