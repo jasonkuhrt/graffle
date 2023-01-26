@@ -7,7 +7,7 @@ jobs:
     strategy:
       matrix:
         node: [14, 16]
-        environment: [dom, node]
+        environment: [happy-dom, node]
         graphql-version: [14, 15, 16]
     name: Node ${{ matrix.node }} @env ${{matrix.environment}} with grahpql@${{ matrix.graphql-version }}
     steps:
@@ -19,6 +19,6 @@ jobs:
       - uses: prisma/action-node-cache-dependencies@main
       - run: yarn add graphql@${{ matrix.graphql-version }}
       - run: yarn build
-      - run: yarn test:${{ matrix.environment }}
+      - run: yarn test --environment ${{ matrix.environment }}
         env:
           GRAPHQL_VERSION: ${{ matrix.graphql-version }}
