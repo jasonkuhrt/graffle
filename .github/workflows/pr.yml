@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: [14, 16]
+        node: [16,18]
         environment: [happy-dom, node]
         graphql-version: [14, 15, 16]
     name: Node ${{ matrix.node }} @env ${{matrix.environment}} with grahpql@${{ matrix.graphql-version }}
