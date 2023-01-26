@@ -1742,10 +1742,10 @@ graphql-ws@^5.11.2:
   resolved "https://registry.npmjs.org/graphql-ws/-/graphql-ws-5.11.2.tgz"
   integrity sha512-4EiZ3/UXYcjm+xFGP544/yW1+DVI8ZpKASFbzrV5EDTFWJp0ZvLl4Dy2fSZAzz9imKp5pZMIcjB0x/H69Pv/6w==
 
-graphql@17.0.0-alpha.2:
-  version "17.0.0-alpha.2"
-  resolved "https://registry.yarnpkg.com/graphql/-/graphql-17.0.0-alpha.2.tgz#c8be4605f7beb47abb70f67fead4854aab22152d"
-  integrity sha512-aRAd/BQ5hSO0+l7x+sHBfJVUp2JUOjPTE/iwJ3BhtYNH/MC7n4gjlZbKvnBVFZZAczyMS3vezS4teEZivoqIzw==
+graphql@^16.6.0:
+  version "16.6.0"
+  resolved "https://registry.yarnpkg.com/graphql/-/graphql-16.6.0.tgz#c2dcffa4649db149f6282af726c8c83f1c7c5fdb"
+  integrity sha512-KPIBPDlW7NxrbT/eh4qPXz5FiFdL5UbaA0XUNz2Rp3Z3hqBSkbj0GVjwFDztsWVauZUWsbKHgMg++sk8UX0bkw==
 
 happy-dom@^8.1.5:
   version "8.1.5"
