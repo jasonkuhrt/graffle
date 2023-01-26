@@ -576,6 +576,7 @@ export async function request<T = any, V extends Variables = Variables>(
   document?: RequestDocument | TypedDocumentNode<T, V>,
   ...variablesAndRequestHeaders: VariablesAndRequestHeaders<V>
 ): Promise<T> {
+  // @ts-ignore
   const requestOptions = parseRequestExtendedArgs<V>(urlOrOptions, document, ...variablesAndRequestHeaders)
   const client = new GraphQLClient(requestOptions.url)
   return client.request<T, V>({
