@@ -1,6 +1,7 @@
 {
   "name": "graphql-request",
   "version": "0.0.0-dripip",
+  "packageManager": "pnpm@7.26.0",
   "main": "dist/index.js",
   "files": [
     "dist",
@@ -37,10 +38,12 @@
     "build:docs": "doctoc README.md --notitle",
     "dev": "rm -rf dist && tsc --watch",
     "format": "prettier --write .",
-    "prepublishOnly": "yarn build",
+    "check:types": "pnpm tsc --noEmit",
+    "check:format": "prettier --check .",
+    "prepublishOnly": "pnpm build",
     "build": "rm -rf dist && tsc --project tsconfig.build.json",
     "test": "vitest",
-    "test:coverage": "yarn test --coverage",
+    "test:coverage": "pnpm test -- --coverage",
     "release:stable": "dripip stable",
     "release:preview": "dripip preview",
     "release:pr": "dripip pr"
@@ -61,6 +64,7 @@
     "@types/extract-files": "^8.1.1",
     "@types/node": "^18.11.18",
     "@types/ws": "^8.5.4",
+    "@vitest/coverage-c8": "^0.28.2",
     "apollo-server-express": "^3.11.1",
     "body-parser": "^1.20.1",
     "doctoc": "^2.2.1",

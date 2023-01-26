@@ -2,7 +2,28 @@ name: pr
 on:
   pull_request: {}
 jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/setup
+  format:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/setup
+      - run: pnpm check:format
+  types:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/setup
+      - run: pnpm check:types
+
   tests:
+    needs: setup
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -11,10 +32,8 @@ jobs:
     name: Node ${{ matrix.node }} @env ${{matrix.environment}}
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: ./.github/actions/setup
         with:
           node-version: ${{ matrix.node }}
-          cache: yarn
-      - uses: prisma/action-node-cache-dependencies@main
-      - run: yarn build
-      - run: yarn test --environment ${{ matrix.environment }}
+      - run: pnpm build
+      - run: pnpm test -- --environment ${{ matrix.environment }}

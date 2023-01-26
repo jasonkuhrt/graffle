@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "skipLibCheck": true,
     "module": "commonjs",
     "moduleResolution": "node",
     "esModuleInterop": true,
