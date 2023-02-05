@@ -37,6 +37,7 @@ Minimal GraphQL client supporting Node and browsers for scripts or simple apps
     - [Batching](#batching)
     - [Cancellation](#cancellation)
     - [Middleware](#middleware)
+    - [Hooks](#hooks)
     - [ErrorPolicy](#errorpolicy)
       - [None (default)](#none-default)
       - [Ignore](#ignore)
@@ -756,6 +757,35 @@ function middleware(response: Response<unknown>) {
 }
 
 const client = new GraphQLClient(endpoint, { responseMiddleware: middleware })
+```
+
+### Hooks
+
+Hooks allow you to get better observability into your requests.
+
+```ts
+const client = new GraphQLClient(endpoint, {
+  hooks: {
+    beforeRequest(req) {
+      const requestId = Math.random().toString(16).slice(2)
+      console.log(`${req.operationName}:${requestId} started`)
+      return {
+        requestId,
+        startTime: new Date(),
+      }
+    },
+    onError(err, req, state) {
+      if (err instanceof Error) {
+        const durationMs = new Date().getTime() - state.startTime.getTime()
+        console.error(`${req.operationName}:${state.requestId} -> ${err.message} (${durationMs}ms)`)
+      }
+    },
+    onCompleted(res, req, state) {
+      const durationMs = new Date().getTime() - state.startTime.getTime()
+      console.log(`${req.operationName}:${state.requestId} -> ${res.status} (${durationMs}ms)`)
+    },
+  },
+})
 ```
 
 ### ErrorPolicy

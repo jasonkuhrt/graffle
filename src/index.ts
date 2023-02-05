@@ -27,6 +27,8 @@ import {
   RemoveIndex,
   RequestMiddleware,
   VariablesAndRequestHeaders,
+  Hooks,
+  HooksState,
 } from './types'
 import * as Dom from './types.dom'
 import { resolveRequestDocument } from './resolveRequestDocument'
@@ -140,7 +142,7 @@ const buildGetQueryParams = <V>({
 /**
  * Fetch data using POST method
  */
-const post = async <V extends Variables = Variables>({
+const post = async <V extends Variables = Variables, H extends Hooks = Hooks>({
   url,
   query,
   variables,
@@ -149,6 +151,7 @@ const post = async <V extends Variables = Variables>({
   fetch,
   fetchOptions,
   middleware,
+  hooks,
 }: {
   url: string
   query: string | string[]
@@ -158,6 +161,7 @@ const post = async <V extends Variables = Variables>({
   headers?: Dom.RequestInit['headers']
   operationName?: string
   middleware?: RequestMiddleware<V>
+  hooks?: H
 }) => {
   const body = createRequestBody(query, variables, operationName, fetchOptions.jsonSerializer)
 
@@ -173,13 +177,30 @@ const post = async <V extends Variables = Variables>({
   if (middleware) {
     ;({ url, ...init } = await Promise.resolve(middleware({ ...init, url, operationName, variables })))
   }
-  return await fetch(url, init)
+
+  const request = { ...init, url, operationName, variables } as const
+
+  const hooksState = hooks?.beforeRequest
+    ? await Promise.resolve(hooks.beforeRequest(request)).then((s) =>
+        // Convert void to undefined
+        s === undefined ? undefined : s
+      )
+    : undefined
+
+  const response = await fetch(url, init).catch(async (err: any) => {
+    if (hooks?.onError) {
+      await Promise.resolve(hooks.onError(err, request, hooksState))
+    }
+    throw err
+  })
+
+  return { request, response, hooksState }
 }
 
 /**
  * Fetch data using GET method
  */
-const get = async <V extends Variables = Variables>({
+const get = async <V extends Variables = Variables, H extends Hooks = Hooks>({
   url,
   query,
   variables,
@@ -188,6 +209,7 @@ const get = async <V extends Variables = Variables>({
   fetch,
   fetchOptions,
   middleware,
+  hooks,
 }: {
   url: string
   query: string | string[]
@@ -197,6 +219,7 @@ const get = async <V extends Variables = Variables>({
   headers?: Dom.RequestInit['headers']
   operationName?: string
   middleware?: RequestMiddleware<V>
+  hooks?: H
 }) => {
   const queryParams = buildGetQueryParams<V>({
     query,
@@ -213,14 +236,31 @@ const get = async <V extends Variables = Variables>({
   if (middleware) {
     ;({ url, ...init } = await Promise.resolve(middleware({ ...init, url, operationName, variables })))
   }
-  return await fetch(`${url}?${queryParams}`, init)
+
+  const request = { ...init, url, operationName, variables } as const
+
+  const hooksState = hooks?.beforeRequest
+    ? await Promise.resolve(hooks.beforeRequest(request)).then((s) =>
+        // Convert void to undefined
+        s === undefined ? undefined : s
+      )
+    : undefined
+
+  const response = await fetch(`${url}?${queryParams}`, init).catch(async (err: any) => {
+    if (hooks?.onError) {
+      await Promise.resolve(hooks.onError(err, request, hooksState))
+    }
+    throw err
+  })
+
+  return { request, response, hooksState }
 }
 
 /**
  * GraphQL Client.
  */
-export class GraphQLClient {
-  constructor(private url: string, private readonly options: PatchedRequestInit = {}) {}
+export class GraphQLClient<H extends HooksState = undefined> {
+  constructor(private url: string, private readonly options: PatchedRequestInit<H> = {}) {}
 
   /**
    * Send a GraphQL query to the server.
@@ -246,6 +286,7 @@ export class GraphQLClient {
       method = 'POST',
       requestMiddleware,
       responseMiddleware,
+      hooks,
       ...fetchOptions
     } = this.options
     let { url } = this
@@ -268,6 +309,7 @@ export class GraphQLClient {
       method,
       fetchOptions,
       middleware: requestMiddleware,
+      hooks,
     })
       .then((response) => {
         if (responseMiddleware) {
@@ -313,6 +355,7 @@ export class GraphQLClient {
       method = 'POST',
       requestMiddleware,
       responseMiddleware,
+      hooks,
       ...fetchOptions
     } = this.options
     let { url } = this
@@ -336,6 +379,7 @@ export class GraphQLClient {
       method,
       fetchOptions,
       middleware: requestMiddleware,
+      hooks,
     })
       .then((response) => {
         if (responseMiddleware) {
@@ -371,6 +415,7 @@ export class GraphQLClient {
       method = 'POST',
       requestMiddleware,
       responseMiddleware,
+      hooks,
       ...fetchOptions
     } = this.options
     let { url } = this
@@ -396,6 +441,7 @@ export class GraphQLClient {
       method,
       fetchOptions,
       middleware: requestMiddleware,
+      hooks,
     })
       .then((response) => {
         if (responseMiddleware) {
@@ -411,7 +457,7 @@ export class GraphQLClient {
       })
   }
 
-  setHeaders(headers: Dom.RequestInit['headers']): GraphQLClient {
+  setHeaders(headers: Dom.RequestInit['headers']): GraphQLClient<H> {
     this.options.headers = headers
     return this
   }
@@ -419,7 +465,7 @@ export class GraphQLClient {
   /**
    * Attach a header to the client. All subsequent requests will have this header.
    */
-  setHeader(key: string, value: string): GraphQLClient {
+  setHeader(key: string, value: string): GraphQLClient<H> {
     const { headers } = this.options
 
     if (headers) {
@@ -436,13 +482,13 @@ export class GraphQLClient {
   /**
    * Change the client endpoint. All subsequent requests will send to this endpoint.
    */
-  setEndpoint(value: string): GraphQLClient {
+  setEndpoint(value: string): GraphQLClient<H> {
     this.url = value
     return this
   }
 }
 
-async function makeRequest<T = any, V extends Variables = Variables>({
+async function makeRequest<T = any, V extends Variables = Variables, H extends HooksState = HooksState>({
   url,
   query,
   variables,
@@ -452,6 +498,7 @@ async function makeRequest<T = any, V extends Variables = Variables>({
   method = 'POST',
   fetchOptions,
   middleware,
+  hooks,
 }: {
   url: string
   query: string | string[]
@@ -462,11 +509,12 @@ async function makeRequest<T = any, V extends Variables = Variables>({
   method: string
   fetchOptions: Dom.RequestInit
   middleware?: RequestMiddleware<V>
+  hooks?: H
 }): Promise<Response<T>> {
   const fetcher = method.toUpperCase() === 'POST' ? post : get
   const isBatchingQuery = Array.isArray(query)
 
-  const response = await fetcher({
+  const { request, response, hooksState } = await fetcher({
     url,
     query,
     variables,
@@ -475,6 +523,7 @@ async function makeRequest<T = any, V extends Variables = Variables>({
     fetch,
     fetchOptions,
     middleware,
+    hooks,
   })
   const result = await getResult(response, fetchOptions.jsonSerializer)
 
@@ -485,6 +534,9 @@ async function makeRequest<T = any, V extends Variables = Variables>({
     !result.errors || fetchOptions.errorPolicy === 'all' || fetchOptions.errorPolicy === 'ignore'
 
   if (response.ok && successfullyPassedErrorPolicy && successfullyReceivedData) {
+    if (hooks?.onCompleted) {
+      await Promise.resolve(hooks.onCompleted(response, request, hooksState))
+    }
     const { headers, status } = response
 
     const { errors, ...rest } = result
@@ -497,10 +549,14 @@ async function makeRequest<T = any, V extends Variables = Variables>({
     }
   } else {
     const errorResult = typeof result === 'string' ? { error: result } : result
-    throw new ClientError(
+    const err = new ClientError(
       { ...errorResult, status: response.status, headers: response.headers },
       { query, variables }
     )
+    if (hooks?.onError) {
+      await Promise.resolve(hooks.onError(err, request, hooksState))
+    }
+    throw err
   }
 }
 

@@ -301,6 +301,172 @@ describe('middleware', () => {
   })
 })
 
+describe('hooks', () => {
+  let client: GraphQLClient
+  let beforeRequest: Mock
+  let onCompleted: Mock
+  let onError: Mock
+
+  describe('successful requests', () => {
+    beforeEach(() => {
+      ctx.res({
+        body: {
+          data: {
+            result: 123,
+          },
+        },
+      })
+
+      beforeRequest = vitest.fn()
+      onCompleted = vitest.fn()
+      onError = vitest.fn()
+      client = new GraphQLClient(ctx.url, {
+        hooks: { beforeRequest, onCompleted, onError },
+      })
+    })
+
+    it('request', async () => {
+      const requestPromise = client.request<{ result: number }>(`x`)
+      const res = await requestPromise
+      expect(beforeRequest).toBeCalledTimes(1)
+      expect(onCompleted).toBeCalledTimes(1)
+      expect(onError).toBeCalledTimes(0)
+      expect(res.result).toBe(123)
+    })
+
+    it('rawRequest', async () => {
+      const requestPromise = client.rawRequest<{ result: number }>(`x`)
+      await requestPromise
+      expect(beforeRequest).toBeCalledTimes(1)
+      expect(onCompleted).toBeCalledTimes(1)
+      expect(onError).toBeCalledTimes(0)
+    })
+
+    it('batchRequests', async () => {
+      const requestPromise = client.batchRequests<{ result: number }>([{ document: `x` }])
+      await requestPromise
+      expect(beforeRequest).toBeCalledTimes(1)
+      expect(onCompleted).toBeCalledTimes(1)
+      expect(onError).toBeCalledTimes(0)
+    })
+
+    it('state passed to hooks', async () => {
+      beforeRequest = vitest.fn(() => ({ requestId: 1 }))
+      onCompleted = vitest.fn((_, __, { requestId }) => {
+        expect(requestId).toBe(1)
+      })
+      client = new GraphQLClient(ctx.url, {
+        hooks: { beforeRequest, onCompleted },
+      })
+      const requestPromise = client.request<{ result: number }>(`x`)
+      const res = await requestPromise
+      expect(onCompleted).toBeCalledTimes(1)
+      expect(res.result).toBe(123)
+    })
+  })
+
+  describe('async hook', () => {
+    beforeEach(() => {
+      ctx.res({
+        body: {
+          data: {
+            result: 123,
+          },
+        },
+      })
+
+      beforeRequest = vitest.fn(async () => {})
+      client = new GraphQLClient(ctx.url, {
+        hooks: { beforeRequest },
+      })
+    })
+
+    it('request', async () => {
+      const requestPromise = client.request<{ result: number }>(`x`)
+      expect(beforeRequest).toBeCalledTimes(1)
+      await requestPromise
+    })
+
+    it('rawRequest', async () => {
+      const requestPromise = client.rawRequest<{ result: number }>(`x`)
+      expect(beforeRequest).toBeCalledTimes(1)
+      await requestPromise
+    })
+
+    it('batchRequests', async () => {
+      const requestPromise = client.batchRequests<{ result: number }>([{ document: `x` }])
+      expect(beforeRequest).toBeCalledTimes(1)
+      await requestPromise
+    })
+  })
+
+  describe('failed requests', () => {
+    beforeEach(() => {
+      ctx.res({
+        body: {
+          errors: {
+            message: 'Syntax Error GraphQL request (1:1) Unexpected Name "x"\n\n1: x\n   ^\n',
+            locations: [
+              {
+                line: 1,
+                column: 1,
+              },
+            ],
+          },
+        },
+      })
+
+      beforeRequest = vitest.fn()
+      onCompleted = vitest.fn()
+      onError = vitest.fn()
+      client = new GraphQLClient(ctx.url, {
+        hooks: {
+          beforeRequest,
+          onCompleted,
+          onError,
+        },
+      })
+    })
+
+    it('request', async () => {
+      const requestPromise = client.request<{ result: number }>(`x`)
+      await expect(requestPromise).rejects.toThrowError()
+      expect(beforeRequest).toBeCalledTimes(1)
+      expect(onCompleted).toBeCalledTimes(0)
+      expect(onError).toBeCalledTimes(1)
+    })
+
+    it('rawRequest', async () => {
+      const requestPromise = client.rawRequest<{ result: number }>(`x`)
+      await expect(requestPromise).rejects.toThrowError()
+      expect(beforeRequest).toBeCalledTimes(1)
+      expect(onCompleted).toBeCalledTimes(0)
+      expect(onError).toBeCalledTimes(1)
+    })
+
+    it('batchRequests', async () => {
+      const requestPromise = client.batchRequests<{ result: number }>([{ document: `x` }])
+      await expect(requestPromise).rejects.toThrowError()
+      expect(beforeRequest).toBeCalledTimes(1)
+      expect(onCompleted).toBeCalledTimes(0)
+      expect(onError).toBeCalledTimes(1)
+    })
+
+    it('state passed to hooks', async () => {
+      beforeRequest = vitest.fn(() => ({ requestId: 1 }))
+      onError = vitest.fn((_, __, { requestId }) => {
+        expect(requestId).toBe(1)
+      })
+      client = new GraphQLClient(ctx.url, {
+        hooks: { beforeRequest, onError },
+      })
+      const requestPromise = client.request<{ result: number }>(`x`)
+      await expect(requestPromise).rejects.toThrowError()
+      expect(onError).toBeCalledTimes(1)
+    })
+  })
+})
+
 // todo needs to be tested in browser environment
 // the options under test here aren't used by node-fetch
 test.skip('extra fetch options', async () => {

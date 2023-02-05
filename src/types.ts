@@ -68,10 +68,11 @@ export interface Response<T> {
   status: number
 }
 
-export type PatchedRequestInit = Omit<Dom.RequestInit, 'headers'> & {
+export type PatchedRequestInit<H extends HooksState> = Omit<Dom.RequestInit, 'headers'> & {
   headers?: MaybeFunction<Dom.RequestInit['headers']>
   requestMiddleware?: RequestMiddleware
   responseMiddleware?: (response: Response<unknown> | Error) => void
+  hooks?: Hooks<H>
 }
 
 export type BatchRequestDocument<V extends Variables = Variables> = {
@@ -132,3 +133,27 @@ export type VariablesAndRequestHeaders<V extends Variables> = V extends Record<a
   : keyof RemoveIndex<V> extends never // do we get an empty variables object?
   ? [variables?: V, requestHeaders?: Dom.RequestInit['headers']]
   : [variables: V, requestHeaders?: Dom.RequestInit['headers']]
+
+export type HooksState = Record<string, any> | undefined
+
+export type BeforeRequestHook<H extends HooksState = undefined> = (
+  request: RequestExtendedInit
+) => H | Promise<H> | void
+
+export type OnErrorHook<H extends HooksState = undefined> = (
+  error: unknown,
+  request: RequestExtendedInit,
+  requestState: H
+) => void | Promise<void>
+
+export type OnCompletedHook<H extends HooksState = undefined> = (
+  response: Response<unknown>,
+  request: RequestExtendedInit,
+  requestState: H
+) => void | Promise<void>
+
+export type Hooks<H extends HooksState = undefined> = {
+  beforeRequest?: BeforeRequestHook<H>
+  onCompleted?: OnCompletedHook<H>
+  onError?: OnErrorHook<H>
+}
