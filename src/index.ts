@@ -27,8 +27,11 @@ import {
   RemoveIndex,
   RequestMiddleware,
   VariablesAndRequestHeaders,
-  Hooks,
-  HooksState,
+  ClientHooks,
+  ClientBeforeRequestHook,
+  ClientOnCompletedHook,
+  ClientOnErrorHook,
+  ClientHooksState,
 } from './types'
 import * as Dom from './types.dom'
 import { resolveRequestDocument } from './resolveRequestDocument'
@@ -44,6 +47,10 @@ export {
   RequestOptions,
   RequestExtendedOptions,
   Variables,
+  ClientHooks,
+  ClientBeforeRequestHook,
+  ClientOnCompletedHook,
+  ClientOnErrorHook,
 }
 
 /**
@@ -142,7 +149,7 @@ const buildGetQueryParams = <V>({
 /**
  * Fetch data using POST method
  */
-const post = async <V extends Variables = Variables, H extends Hooks = Hooks>({
+const post = async <V extends Variables = Variables, H extends ClientHooks = ClientHooks>({
   url,
   query,
   variables,
@@ -189,7 +196,7 @@ const post = async <V extends Variables = Variables, H extends Hooks = Hooks>({
 
   const response = await fetch(url, init).catch(async (err: any) => {
     if (hooks?.onError) {
-      await Promise.resolve(hooks.onError(err, request, hooksState))
+      await Promise.resolve(hooks.onError(err, response, request, hooksState))
     }
     throw err
   })
@@ -200,7 +207,7 @@ const post = async <V extends Variables = Variables, H extends Hooks = Hooks>({
 /**
  * Fetch data using GET method
  */
-const get = async <V extends Variables = Variables, H extends Hooks = Hooks>({
+const get = async <V extends Variables = Variables, H extends ClientHooks = ClientHooks>({
   url,
   query,
   variables,
@@ -248,7 +255,7 @@ const get = async <V extends Variables = Variables, H extends Hooks = Hooks>({
 
   const response = await fetch(`${url}?${queryParams}`, init).catch(async (err: any) => {
     if (hooks?.onError) {
-      await Promise.resolve(hooks.onError(err, request, hooksState))
+      await Promise.resolve(hooks.onError(err, response, request, hooksState))
     }
     throw err
   })
@@ -259,7 +266,7 @@ const get = async <V extends Variables = Variables, H extends Hooks = Hooks>({
 /**
  * GraphQL Client.
  */
-export class GraphQLClient<H extends HooksState = undefined> {
+export class GraphQLClient<H extends ClientHooksState = undefined> {
   constructor(private url: string, private readonly options: PatchedRequestInit<H> = {}) {}
 
   /**
@@ -488,7 +495,11 @@ export class GraphQLClient<H extends HooksState = undefined> {
   }
 }
 
-async function makeRequest<T = any, V extends Variables = Variables, H extends HooksState = HooksState>({
+async function makeRequest<
+  T = any,
+  V extends Variables = Variables,
+  H extends ClientHooksState = ClientHooksState
+>({
   url,
   query,
   variables,
@@ -554,7 +565,7 @@ async function makeRequest<T = any, V extends Variables = Variables, H extends H
       { query, variables }
     )
     if (hooks?.onError) {
-      await Promise.resolve(hooks.onError(err, request, hooksState))
+      await Promise.resolve(hooks.onError(err, response, request, hooksState))
     }
     throw err
   }

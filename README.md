@@ -767,22 +767,26 @@ Hooks allow you to get better observability into your requests.
 const client = new GraphQLClient(endpoint, {
   hooks: {
     beforeRequest(req) {
-      const requestId = Math.random().toString(16).slice(2)
-      console.log(`${req.operationName}:${requestId} started`)
+      const startTime = new Date()
+      const requestId = `${req.operationName}:${Math.random().toString(16).slice(2)}`
+      console.log(`${requestId} -> Started`)
       return {
         requestId,
-        startTime: new Date(),
-      }
-    },
-    onError(err, req, state) {
-      if (err instanceof Error) {
-        const durationMs = new Date().getTime() - state.startTime.getTime()
-        console.error(`${req.operationName}:${state.requestId} -> ${err.message} (${durationMs}ms)`)
+        startTime,
       }
     },
     onCompleted(res, req, state) {
       const durationMs = new Date().getTime() - state.startTime.getTime()
-      console.log(`${req.operationName}:${state.requestId} -> ${res.status} (${durationMs}ms)`)
+      console.log(`${state.requestId} -> ${res.statusText} (${durationMs}ms)`)
+    },
+    onError(err, res, req, state) {
+      const durationMs = new Date().getTime() - state.startTime.getTime()
+      if (err instanceof Error) {
+        console.error(
+          `${state.requestId} -> ${res.statusText === 'OK' ? 'GQL Error' : res.statusText} (${durationMs}ms)`,
+          `\n${' '.repeat(state.requestId.length)} -> ${err.message.replace(/(.{75})..+/, '$1…')}`
+        )
+      }
     },
   },
 })

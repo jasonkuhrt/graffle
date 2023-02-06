@@ -157,7 +157,10 @@ export class GraphQLWebSocketClient {
           case ERROR: {
             subscriber.error &&
               subscriber.error(
-                new ClientError({ errors: message.payload, status: 200 }, { query, variables })
+                new ClientError(
+                  { errors: message.payload, status: 200, statusText: 'OK' },
+                  { query, variables }
+                )
               )
             return
           }

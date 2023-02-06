@@ -16,6 +16,7 @@ export interface GraphQLResponse<T = any> {
   errors?: GraphQLError[]
   extensions?: any
   status: number
+  statusText: string
   [key: string]: any
 }
 
@@ -66,13 +67,14 @@ export interface Response<T> {
   headers: Dom.Headers
   errors?: GraphQLError[]
   status: number
+  statusText: string
 }
 
-export type PatchedRequestInit<H extends HooksState> = Omit<Dom.RequestInit, 'headers'> & {
+export type PatchedRequestInit<H extends ClientHooksState> = Omit<Dom.RequestInit, 'headers'> & {
   headers?: MaybeFunction<Dom.RequestInit['headers']>
   requestMiddleware?: RequestMiddleware
   responseMiddleware?: (response: Response<unknown> | Error) => void
-  hooks?: Hooks<H>
+  hooks?: ClientHooks<H>
 }
 
 export type BatchRequestDocument<V extends Variables = Variables> = {
@@ -134,26 +136,27 @@ export type VariablesAndRequestHeaders<V extends Variables> = V extends Record<a
   ? [variables?: V, requestHeaders?: Dom.RequestInit['headers']]
   : [variables: V, requestHeaders?: Dom.RequestInit['headers']]
 
-export type HooksState = Record<string, any> | undefined
+export type ClientHooksState = Record<string, any> | undefined
 
-export type BeforeRequestHook<H extends HooksState = undefined> = (
+export type ClientBeforeRequestHook<H extends ClientHooksState = undefined> = (
   request: RequestExtendedInit
 ) => H | Promise<H> | void
 
-export type OnErrorHook<H extends HooksState = undefined> = (
+export type ClientOnErrorHook<H extends ClientHooksState = undefined> = (
   error: unknown,
-  request: RequestExtendedInit,
-  requestState: H
-) => void | Promise<void>
-
-export type OnCompletedHook<H extends HooksState = undefined> = (
   response: Response<unknown>,
   request: RequestExtendedInit,
-  requestState: H
+  state: H
 ) => void | Promise<void>
 
-export type Hooks<H extends HooksState = undefined> = {
-  beforeRequest?: BeforeRequestHook<H>
-  onCompleted?: OnCompletedHook<H>
-  onError?: OnErrorHook<H>
+export type ClientOnCompletedHook<H extends ClientHooksState = undefined> = (
+  response: Response<unknown>,
+  request: RequestExtendedInit,
+  state: H
+) => void | Promise<void>
+
+export type ClientHooks<H extends ClientHooksState = undefined> = {
+  beforeRequest?: ClientBeforeRequestHook<H>
+  onCompleted?: ClientOnCompletedHook<H>
+  onError?: ClientOnErrorHook<H>
 }
