@@ -196,7 +196,7 @@ const post = async <V extends Variables = Variables, H extends ClientHooks = Cli
 
   const response = await fetch(url, init).catch(async (err: any) => {
     if (hooks?.onError) {
-      await Promise.resolve(hooks.onError(err, response, request, hooksState))
+      await Promise.resolve(hooks.onError(err, undefined, request, hooksState))
     }
     throw err
   })

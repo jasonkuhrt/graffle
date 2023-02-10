@@ -144,7 +144,7 @@ export type ClientBeforeRequestHook<H extends ClientHooksState = undefined> = (
 
 export type ClientOnErrorHook<H extends ClientHooksState = undefined> = (
   error: unknown,
-  response: Response<unknown>,
+  response: Response<unknown> | undefined,
   request: RequestExtendedInit,
   state: H
 ) => void | Promise<void>
