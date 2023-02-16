@@ -1,6 +1,7 @@
 import { ClientError, RequestDocument, Variables } from './types'
 import * as Dom from './types.dom'
 import { resolveRequestDocument } from './resolveRequestDocument'
+import WebSocket from 'ws'
 
 const CONNECTION_INIT = 'connection_init'
 const CONNECTION_ACK = 'connection_ack'
