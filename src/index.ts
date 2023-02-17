@@ -482,7 +482,8 @@ async function makeRequest<T = any, V extends Variables = Variables>({
     isBatchingQuery && Array.isArray(result) ? !result.some(({ data }) => !data) : !!result.data
 
   const successfullyPassedErrorPolicy =
-    !result.errors || !result.errors.length || fetchOptions.errorPolicy === 'all' || fetchOptions.errorPolicy === 'ignore'
+    !result.errors || (Array.isArray(result.errors) && !result.errors.length)
+    || fetchOptions.errorPolicy === 'all' || fetchOptions.errorPolicy === 'ignore'
 
   if (response.ok && successfullyPassedErrorPolicy && successfullyReceivedData) {
     const { headers, status } = response
