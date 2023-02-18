@@ -3,7 +3,7 @@ import body from 'body-parser'
 import express, { Application, Request } from 'express'
 import getPort from 'get-port'
 import { createServer, Server } from 'http'
-import { JsonObject } from 'type-fest'
+import { JsonArray, JsonObject } from 'type-fest'
 import { beforeAll, afterEach, afterAll, beforeEach } from 'vitest'
 
 type CapturedRequest = Pick<Request, 'headers' | 'method' | 'body'>
@@ -21,7 +21,7 @@ type Context<S extends MockSpec | MockSpecBatch = MockSpec> = {
 type MockSpecBody = {
   data?: JsonObject
   extensions?: JsonObject
-  errors?: JsonObject
+  errors?: JsonObject | JsonArray
 }
 
 type MockSpec = {

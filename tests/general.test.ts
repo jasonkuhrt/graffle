@@ -396,3 +396,16 @@ describe('operationName parsing', () => {
     expect(requestBody.operationName).toEqual('myStringOperation')
   })
 })
+
+test('should not throw error when errors property is an empty array (occured when using UltraGraphQL)', async () => {
+  ctx.res({
+    body: {
+      data: { test: 'test' },
+      errors: [],
+    },
+  })
+
+  const res = await new GraphQLClient(ctx.url).request(`{ test }`)
+
+  expect(res).toEqual(expect.objectContaining({ test: 'test' }))
+})
