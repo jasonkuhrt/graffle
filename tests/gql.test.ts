@@ -1,12 +1,12 @@
+import { request } from '../src/index.js'
+import { setupMockServer } from './__helpers.js'
 import { gql } from 'graphql-tag'
 import { describe, expect, it } from 'vitest'
-import { request } from '../src/index.js'
-import { setupTestServer } from './__helpers.js'
 
-const ctx = setupTestServer()
+const ctx = setupMockServer()
 
-describe('gql', () => {
-  it('passthrough allowing benefits of tooling for gql template tag', async () => {
+describe(`gql`, () => {
+  it(`passthrough allowing benefits of tooling for gql template tag`, async () => {
     const mock = ctx.res({ body: { data: { foo: 1 } } })
     await request(
       ctx.url,

@@ -1,6 +1,6 @@
 import { batchRequests } from '../src/index.js'
 ;(async function () {
-  const endpoint = 'https://api.spacex.land/graphql/'
+  const endpoint = `https://api.spacex.land/graphql/`
 
   const query1 = /* GraphQL */ `
     query ($id: ID!) {
@@ -11,7 +11,7 @@ import { batchRequests } from '../src/index.js'
     }
   `
   const variables1 = {
-    id: 'C105',
+    id: `C105`,
   }
 
   interface TData1 {
@@ -41,7 +41,7 @@ import { batchRequests } from '../src/index.js'
   `
 
   const variables3 = {
-    id: 'B1015',
+    id: `B1015`,
   }
 
   interface TData3 {

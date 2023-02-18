@@ -1,11 +1,11 @@
 import { GraphQLClient } from '../src/index.js'
-import { setupTestServer } from './__helpers.js'
+import { setupMockServer } from './__helpers.js'
 import fetch from 'cross-fetch'
 import { expect, test } from 'vitest'
 
-const ctx = setupTestServer()
+const ctx = setupMockServer()
 
-test('with custom fetch', async () => {
+test(`with custom fetch`, async () => {
   let touched = false
   // wrap fetch in a custom method
   const customFetch = function (input: RequestInfo, init?: RequestInit) {

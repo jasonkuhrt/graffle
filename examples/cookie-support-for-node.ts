@@ -1,12 +1,12 @@
-;(global as any).fetch = require('fetch-cookie/node-fetch')(require('node-fetch'))
+;(global as any).fetch = require(`fetch-cookie/node-fetch`)(require(`node-fetch`))
 
 import { GraphQLClient } from '../src/index.js'
 ;(async function () {
-  const endpoint = 'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr'
+  const endpoint = `https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr`
 
   const graphQLClient = new GraphQLClient(endpoint, {
     headers: {
-      authorization: 'Bearer MY_TOKEN',
+      authorization: `Bearer MY_TOKEN`,
     },
   })
 

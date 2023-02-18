@@ -1,10 +1,10 @@
 import { batchRequests, GraphQLClient, rawRequest, request } from '../src/index.js'
-import { setupTestServer, sleep } from './__helpers.js'
+import { setupMockServer, sleep } from './__helpers.js'
 import { expect, it } from 'vitest'
 
-const ctx = setupTestServer(20)
+const ctx = setupMockServer(20)
 
-it('should abort a request when the signal is defined in the GraphQLClient', async () => {
+it(`should abort a request when the signal is defined in the GraphQLClient`, async () => {
   const abortController = new AbortController()
   abortController.abort()
   expect.assertions(1)
@@ -12,19 +12,19 @@ it('should abort a request when the signal is defined in the GraphQLClient', asy
   const client = new GraphQLClient(ctx.url, { signal: abortController.signal })
 
   try {
-    await client.request('{ me { id } }')
+    await client.request(`{ me { id } }`)
   } catch (error) {
-    expect((error as Error).message).toEqual('The user aborted a request.')
+    expect((error as Error).message).toEqual(`The user aborted a request.`)
   }
 })
 
-it('should abort a request when the signal is defined in GraphQLClient and after the request has been sent', async () => {
+it(`should abort a request when the signal is defined in GraphQLClient and after the request has been sent`, async () => {
   const abortController = new AbortController()
   ctx.res({
     body: {
       data: {
         me: {
-          id: 'some-id',
+          id: `some-id`,
         },
       },
     },
@@ -33,8 +33,8 @@ it('should abort a request when the signal is defined in GraphQLClient and after
   expect.assertions(1)
 
   const client = new GraphQLClient(ctx.url, { signal: abortController.signal })
-  client.request('{ me { id } }').catch((error) => {
-    expect((error as Error).message).toEqual('The user aborted a request.')
+  client.request(`{ me { id } }`).catch((error) => {
+    expect((error as Error).message).toEqual(`The user aborted a request.`)
   })
 
   await sleep(10)
@@ -42,7 +42,7 @@ it('should abort a request when the signal is defined in GraphQLClient and after
   await sleep(20)
 })
 
-it('should abort a raw request when the signal is defined in the GraphQLClient', async () => {
+it(`should abort a raw request when the signal is defined in the GraphQLClient`, async () => {
   const abortController = new AbortController()
   abortController.abort()
   expect.assertions(1)
@@ -52,11 +52,11 @@ it('should abort a raw request when the signal is defined in the GraphQLClient',
   try {
     await client.rawRequest(`{ me { id } }`)
   } catch (error) {
-    expect((error as Error).message).toEqual('The user aborted a request.')
+    expect((error as Error).message).toEqual(`The user aborted a request.`)
   }
 })
 
-it('should abort batch requests when the signal is defined in the GraphQLClient', async () => {
+it(`should abort batch requests when the signal is defined in the GraphQLClient`, async () => {
   const abortController = new AbortController()
   abortController.abort()
   expect.assertions(1)
@@ -66,11 +66,11 @@ it('should abort batch requests when the signal is defined in the GraphQLClient'
   try {
     await client.batchRequests([{ document: `{ me { id } }` }, { document: `{ me { id } }` }])
   } catch (error) {
-    expect((error as Error).message).toEqual('The user aborted a request.')
+    expect((error as Error).message).toEqual(`The user aborted a request.`)
   }
 })
 
-it('should abort a request when the signal overrides GraphQLClient settings', async () => {
+it(`should abort a request when the signal overrides GraphQLClient settings`, async () => {
   const abortController = new AbortController()
   abortController.abort()
   expect.assertions(1)
@@ -79,15 +79,15 @@ it('should abort a request when the signal overrides GraphQLClient settings', as
 
   try {
     await client.request({
-      document: '{ me { id } }',
+      document: `{ me { id } }`,
       signal: abortController.signal,
     })
   } catch (error) {
-    expect((error as Error).message).toEqual('The user aborted a request.')
+    expect((error as Error).message).toEqual(`The user aborted a request.`)
   }
 })
 
-it('should abort a raw request when the signal overrides GraphQLClient settings', async () => {
+it(`should abort a raw request when the signal overrides GraphQLClient settings`, async () => {
   const abortController = new AbortController()
   abortController.abort()
   expect.assertions(1)
@@ -95,13 +95,13 @@ it('should abort a raw request when the signal overrides GraphQLClient settings'
   const client = new GraphQLClient(ctx.url)
 
   try {
-    await client.rawRequest({ query: '{ me { id } }', signal: abortController.signal })
+    await client.rawRequest({ query: `{ me { id } }`, signal: abortController.signal })
   } catch (error) {
-    expect((error as Error).message).toEqual('The user aborted a request.')
+    expect((error as Error).message).toEqual(`The user aborted a request.`)
   }
 })
 
-it('should abort batch requests when the signal overrides GraphQLClient settings', async () => {
+it(`should abort batch requests when the signal overrides GraphQLClient settings`, async () => {
   const abortController = new AbortController()
   abortController.abort()
   expect.assertions(1)
@@ -114,11 +114,11 @@ it('should abort batch requests when the signal overrides GraphQLClient settings
       signal: abortController.signal,
     })
   } catch (error) {
-    expect((error as Error).message).toEqual('The user aborted a request.')
+    expect((error as Error).message).toEqual(`The user aborted a request.`)
   }
 })
 
-it('should abort a request', async () => {
+it(`should abort a request`, async () => {
   const abortController = new AbortController()
   abortController.abort()
   expect.assertions(1)
@@ -126,21 +126,21 @@ it('should abort a request', async () => {
   try {
     await request({
       url: ctx.url,
-      document: '{ me { id } }',
+      document: `{ me { id } }`,
       signal: abortController.signal,
     })
   } catch (error) {
-    expect((error as Error).message).toEqual('The user aborted a request.')
+    expect((error as Error).message).toEqual(`The user aborted a request.`)
   }
 })
 
-it('should abort a request after the request has been sent', async () => {
+it(`should abort a request after the request has been sent`, async () => {
   const abortController = new AbortController()
   ctx.res({
     body: {
       data: {
         me: {
-          id: 'some-id',
+          id: `some-id`,
         },
       },
     },
@@ -150,10 +150,10 @@ it('should abort a request after the request has been sent', async () => {
 
   request({
     url: ctx.url,
-    document: '{ me { id } }',
+    document: `{ me { id } }`,
     signal: abortController.signal,
   }).catch((error) => {
-    expect((error as Error).message).toEqual('The user aborted a request.')
+    expect((error as Error).message).toEqual(`The user aborted a request.`)
   })
 
   await sleep(10)
@@ -161,7 +161,7 @@ it('should abort a request after the request has been sent', async () => {
   await sleep(20)
 })
 
-it('should abort a raw request', async () => {
+it(`should abort a raw request`, async () => {
   const abortController = new AbortController()
   abortController.abort()
   expect.assertions(1)
@@ -169,21 +169,21 @@ it('should abort a raw request', async () => {
   try {
     await rawRequest({
       url: ctx.url,
-      query: '{ me { id } }',
+      query: `{ me { id } }`,
       signal: abortController.signal,
     })
   } catch (error) {
-    expect((error as Error).message).toEqual('The user aborted a request.')
+    expect((error as Error).message).toEqual(`The user aborted a request.`)
   }
 })
 
-it('should abort a raw request after the request has been sent', async () => {
+it(`should abort a raw request after the request has been sent`, async () => {
   const abortController = new AbortController()
   ctx.res({
     body: {
       data: {
         me: {
-          id: 'some-id',
+          id: `some-id`,
         },
       },
     },
@@ -193,10 +193,10 @@ it('should abort a raw request after the request has been sent', async () => {
 
   rawRequest({
     url: ctx.url,
-    query: '{ me { id } }',
+    query: `{ me { id } }`,
     signal: abortController.signal,
   }).catch((error) => {
-    expect((error as Error).message).toEqual('The user aborted a request.')
+    expect((error as Error).message).toEqual(`The user aborted a request.`)
   })
 
   await sleep(10)
@@ -204,7 +204,7 @@ it('should abort a raw request after the request has been sent', async () => {
   await sleep(20)
 })
 
-it('should abort batch requests', async () => {
+it(`should abort batch requests`, async () => {
   const abortController = new AbortController()
   abortController.abort()
   expect.assertions(1)
@@ -216,17 +216,17 @@ it('should abort batch requests', async () => {
       signal: abortController.signal,
     })
   } catch (error) {
-    expect((error as Error).message).toEqual('The user aborted a request.')
+    expect((error as Error).message).toEqual(`The user aborted a request.`)
   }
 })
 
-it('should abort batch requests after a request has been sent', async () => {
+it(`should abort batch requests after a request has been sent`, async () => {
   const abortController = new AbortController()
   ctx.res({
     body: {
       data: {
         me: {
-          id: 'some-id',
+          id: `some-id`,
         },
       },
     },
@@ -239,7 +239,7 @@ it('should abort batch requests after a request has been sent', async () => {
     documents: [{ document: `{ me { id } }` }, { document: `{ me { id } }` }],
     signal: abortController.signal,
   }).catch((error) => {
-    expect((error as Error).message).toEqual('The user aborted a request.')
+    expect((error as Error).message).toEqual(`The user aborted a request.`)
   })
 
   await sleep(10)

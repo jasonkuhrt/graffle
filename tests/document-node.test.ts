@@ -1,11 +1,11 @@
+import { request } from '../src/index.js'
+import { setupMockServer } from './__helpers.js'
 import { gql } from 'graphql-tag'
 import { expect, it } from 'vitest'
-import { request } from '../src/index.js'
-import { setupTestServer } from './__helpers.js'
 
-const ctx = setupTestServer()
+const ctx = setupMockServer()
 
-it('accepts graphql DocumentNode as alternative to raw string', async () => {
+it(`accepts graphql DocumentNode as alternative to raw string`, async () => {
   const mock = ctx.res({ body: { data: { foo: 1 } } })
   await request(
     ctx.url,

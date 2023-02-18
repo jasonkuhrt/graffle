@@ -1,12 +1,12 @@
-import { TypedDocumentNode } from '@graphql-typed-document-node/core'
+import request from '../src/index.js'
+import { setupMockServer } from './__helpers.js'
+import type { TypedDocumentNode } from '@graphql-typed-document-node/core'
 import { parse } from 'graphql'
 import { expect, test } from 'vitest'
-import request from '../src/index.js'
-import { setupTestServer } from './__helpers.js'
 
-const ctx = setupTestServer()
+const ctx = setupMockServer()
 
-test('typed-document-node code should TS compile with variables', async () => {
+test(`typed-document-node code should TS compile with variables`, async () => {
   ctx.res({ body: { data: { foo: 1 } } })
 
   const query: TypedDocumentNode<{ echo: string }, { str: string }> = parse(/* GraphQL */ `
@@ -22,7 +22,7 @@ test('typed-document-node code should TS compile with variables', async () => {
   // @ts-expect-error Arguments for the rest parameter '_variablesAndRequestHeaders' were not provided.
   await request(ctx.url, query)
 
-  await request(ctx.url, query, { str: 'Hi' })
+  await request(ctx.url, query, { str: `Hi` })
 
   // @ts-expect-error 'variables' is declared here.
   await request({
@@ -41,7 +41,7 @@ test('typed-document-node code should TS compile with variables', async () => {
     url: ctx.url,
     document: query,
     // @ts-expect-error Type '{ aaa: string; }' is not assignable to type '{ str: string; }'.
-    variables: { aaa: 'aaa' },
+    variables: { aaa: `aaa` },
   })
 
   await request({
@@ -53,42 +53,42 @@ test('typed-document-node code should TS compile with variables', async () => {
 
   await request({
     url: ctx.url,
-    document: 'a graphql query',
-    variables: { whatever: 'not typed' },
+    document: `a graphql query`,
+    variables: { whatever: `not typed` },
   })
 
   await request<{ echo: string }, { str: string }>({
     url: ctx.url,
-    document: 'a graphql query',
-    variables: { str: 'Hi' },
+    document: `a graphql query`,
+    variables: { str: `Hi` },
   })
 
   await request<{ echo: string }, { str: string }>({
     url: ctx.url,
-    document: 'a graphql query',
+    document: `a graphql query`,
     // @ts-expect-error Type 'number' is not assignable to type 'string'.ts(2322)
     variables: { str: 1 },
   })
 
   await request<{ echo: string }, { str: string }>({
     url: ctx.url,
-    document: 'a graphql query',
+    document: `a graphql query`,
     // @ts-expect-error Type '{ aaa: string; }' is not assignable to type '{ str: string; }'.
-    variables: { aaa: 'aaa' },
+    variables: { aaa: `aaa` },
   })
 
   await request({
     url: ctx.url,
     document: query,
     variables: {
-      str: 'foo',
+      str: `foo`,
     },
   })
 
   expect(1).toBe(1)
 })
 
-test('typed-document-node code should TS compile without variables', async () => {
+test(`typed-document-node code should TS compile without variables`, async () => {
   ctx.res({ body: { data: { foo: 1 } } })
 
   const query: TypedDocumentNode<{ echo: string }> = parse(/* GraphQL */ `
@@ -115,13 +115,13 @@ test('typed-document-node code should TS compile without variables', async () =>
 
   await request({
     url: ctx.url,
-    document: 'a graphql query',
+    document: `a graphql query`,
     variables: {},
   })
 
   await request({
     url: ctx.url,
-    document: 'a graphql query',
+    document: `a graphql query`,
   })
 
   expect(1).toBe(1)

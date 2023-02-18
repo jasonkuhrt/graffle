@@ -1,22 +1,20 @@
-import { TypedDocumentNode } from '@graphql-typed-document-node/core'
-import { DocumentNode } from 'graphql/language/ast.js'
+import type { RemoveIndex } from './helpers.js'
+import type * as Dom from './types.dom.js'
+import type { TypedDocumentNode } from '@graphql-typed-document-node/core'
 import type { GraphQLError } from 'graphql/error/GraphQLError.js'
-import * as Dom from './types.dom.js'
+import type { DocumentNode } from 'graphql/language/ast.js'
 
 export type { GraphQLError }
 
-export type Variables = { [key: string]: any }
+export type Variables = Record<string, unknown>
+export type BatchVariables = (Record<string, unknown> | undefined)[]
 
-export type RemoveIndex<T> = {
-  [K in keyof T as string extends K ? never : number extends K ? never : K]: T[K]
-}
-
-export interface GraphQLResponse<T = any> {
+export interface GraphQLResponse<T = unknown> {
   data?: T
   errors?: GraphQLError[]
-  extensions?: any
+  extensions?: unknown
   status: number
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export interface GraphQLRequestContext<V extends Variables = Variables> {
@@ -42,7 +40,7 @@ export class ClientError extends Error {
     this.request = request
 
     // this is needed as Safari doesn't support .captureStackTrace
-    if (typeof Error.captureStackTrace === 'function') {
+    if (typeof Error.captureStackTrace === `function`) {
       Error.captureStackTrace(this, ClientError)
     }
   }
@@ -58,13 +56,16 @@ export type RequestDocument = string | DocumentNode
 
 export interface Response<T> {
   data: T
-  extensions?: any
+  extensions?: unknown
   headers: Dom.Headers
   errors?: GraphQLError[]
   status: number
 }
 
-export type PatchedRequestInit = Omit<Dom.RequestInit, 'headers'> & {
+export type HTTPMethodInput = 'GET' | 'POST' | 'get' | 'post'
+
+export type RequestConfig = Omit<Dom.RequestInit, 'headers' | 'method'> & {
+  method?: HTTPMethodInput
   headers?: MaybeFunction<Dom.RequestInit['headers']>
   requestMiddleware?: RequestMiddleware
   responseMiddleware?: (response: Response<unknown> | Error) => void
@@ -85,7 +86,7 @@ export type RawRequestOptions<V extends Variables = Variables> = {
   ? { variables?: V }
   : { variables: V })
 
-export type RequestOptions<V extends Variables = Variables, T = any> = {
+export type RequestOptions<V extends Variables = Variables, T = unknown> = {
   document: RequestDocument | TypedDocumentNode<T, V>
   requestHeaders?: Dom.RequestInit['headers']
   signal?: Dom.RequestInit['signal']
@@ -101,7 +102,7 @@ export type BatchRequestsOptions<V extends Variables = Variables> = {
   signal?: Dom.RequestInit['signal']
 }
 
-export type RequestExtendedOptions<V extends Variables = Variables, T = any> = {
+export type RequestExtendedOptions<V extends Variables = Variables, T = unknown> = {
   url: string
 } & RequestOptions<V, T>
 
@@ -123,8 +124,10 @@ type RequestExtendedInit<V extends Variables = Variables> = Dom.RequestInit & {
   variables?: V
 }
 
-export type VariablesAndRequestHeaders<V extends Variables> = V extends Record<any, never> // do we have explicitly no variables allowed?
-  ? [variables?: V, requestHeaders?: Dom.RequestInit['headers']]
+// prettier-ignore
+export type VariablesAndRequestHeadersArgs<V extends Variables> =
+  V extends Record<any, never> // do we have explicitly no variables allowed?
+    ? [variables?: V, requestHeaders?: Dom.RequestInit['headers']]
   : keyof RemoveIndex<V> extends never // do we get an empty variables object?
-  ? [variables?: V, requestHeaders?: Dom.RequestInit['headers']]
-  : [variables: V, requestHeaders?: Dom.RequestInit['headers']]
+    ? [variables?: V, requestHeaders?: Dom.RequestInit['headers']]
+    : [variables: V, requestHeaders?: Dom.RequestInit['headers']]
