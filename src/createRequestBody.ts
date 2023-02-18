@@ -1,8 +1,8 @@
 import { isExtractableFile, extractFiles, ExtractableFile } from 'extract-files'
 import FormDataNode from 'form-data'
-import { defaultJsonSerializer } from './defaultJsonSerializer'
-import { Variables } from './types'
-import * as Dom from './types.dom'
+import { defaultJsonSerializer } from './defaultJsonSerializer.js'
+import { Variables } from './types.js'
+import * as Dom from './types.dom.js'
 
 /**
  * Duck type if NodeJS stream

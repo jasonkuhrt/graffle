@@ -1,4 +1,4 @@
-import { batchRequests } from '../src'
+import { batchRequests } from '../src/index.js'
 ;(async function () {
   const endpoint = 'https://api.spacex.land/graphql/'
 

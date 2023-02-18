@@ -1,5 +1,5 @@
 import { DocumentNode, OperationDefinitionNode, parse, print } from 'graphql'
-import { RequestDocument } from './types'
+import { RequestDocument } from './types.js'
 
 /**
  * helpers
@@ -13,7 +13,7 @@ function extractOperationName(document: DocumentNode): string | undefined {
   ) as OperationDefinitionNode[]
 
   if (operationDefinitions.length === 1) {
-    operationName = operationDefinitions[0].name?.value
+    operationName = operationDefinitions[0]?.name?.value
   }
 
   return operationName

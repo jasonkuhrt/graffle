@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest'
-import { GraphQLClient } from '../src'
-import { setupTestServer } from './__helpers'
+import { GraphQLClient } from '../src/index.js'
+import { setupTestServer } from './__helpers.js'
 
 const ctx = setupTestServer()
 const errors = {

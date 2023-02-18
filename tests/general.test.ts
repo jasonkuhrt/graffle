@@ -1,7 +1,7 @@
-import gql from 'graphql-tag'
-import { GraphQLClient, rawRequest, request } from '../src'
-import { setupTestServer } from './__helpers'
-import * as Dom from '../src/types.dom'
+import { gql } from 'graphql-tag'
+import { GraphQLClient, rawRequest, request } from '../src/index.js'
+import { setupTestServer } from './__helpers.js'
+import * as Dom from '../src/types.dom.js'
 import { beforeEach, describe, expect, it, test, Mock, vitest } from 'vitest'
 
 const ctx = setupTestServer()
@@ -310,7 +310,7 @@ test.skip('extra fetch options', async () => {
     cache: 'reload',
   }
 
-  const client = new GraphQLClient(ctx.url, options)
+  const client = new GraphQLClient(ctx.url, options as any)
   const { requests } = ctx.res({
     body: { data: { test: 'test' } },
   })
@@ -377,8 +377,8 @@ describe('operationName parsing', () => {
       `
     )
 
-    const requestBody = mock.requests[0].body
-    expect(requestBody.operationName).toEqual('myGqlOperation')
+    const requestBody = mock.requests[0]?.body
+    expect(requestBody?.['operationName']).toEqual('myGqlOperation')
   })
 
   it('should work for string documents', async () => {
@@ -392,8 +392,8 @@ describe('operationName parsing', () => {
       `
     )
 
-    const requestBody = mock.requests[0].body
-    expect(requestBody.operationName).toEqual('myStringOperation')
+    const requestBody = mock.requests[0]?.body
+    expect(requestBody?.['operationName']).toEqual('myStringOperation')
   })
 })
 

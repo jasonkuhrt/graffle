@@ -1,7 +1,7 @@
 import { TypedDocumentNode } from '@graphql-typed-document-node/core'
-import { DocumentNode } from 'graphql/language/ast'
-import type { GraphQLError } from 'graphql/error/GraphQLError'
-import * as Dom from './types.dom'
+import { DocumentNode } from 'graphql/language/ast.js'
+import type { GraphQLError } from 'graphql/error/GraphQLError.js'
+import * as Dom from './types.dom.js'
 
 export type { GraphQLError }
 
@@ -48,11 +48,7 @@ export class ClientError extends Error {
   }
 
   private static extractMessage(response: GraphQLResponse): string {
-    try {
-      return response.errors![0].message
-    } catch (e) {
-      return `GraphQL Error (Code: ${response.status})`
-    }
+    return response.errors?.[0]?.message ?? `GraphQL Error (Code: ${response.status})`
   }
 }
 

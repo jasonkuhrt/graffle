@@ -1,5 +1,5 @@
-import { GraphQLClient } from '../src'
-import { setupTestServer } from './__helpers'
+import { GraphQLClient } from '../src/index.js'
+import { setupTestServer } from './__helpers.js'
 import fetch from 'cross-fetch'
 import { expect, test } from 'vitest'
 

@@ -1,8 +1,8 @@
 import { createReadStream } from 'fs'
 import { join } from 'path'
-import { GraphQLClient } from '../src'
-import { setupTestServer } from './__helpers'
-import * as Dom from '../src/types.dom'
+import { GraphQLClient } from '../src/index.js'
+import { setupTestServer } from './__helpers.js'
+import * as Dom from '../src/types.dom.js'
 import { beforeEach, describe, expect, test, vitest } from 'vitest'
 
 const ctx = setupTestServer()
