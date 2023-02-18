@@ -1,5 +1,5 @@
-import { batchRequests, GraphQLClient, rawRequest, request } from '../src'
-import { setupTestServer, sleep } from './__helpers'
+import { batchRequests, GraphQLClient, rawRequest, request } from '../src/index.js'
+import { setupTestServer, sleep } from './__helpers.js'
 import { expect, it } from 'vitest'
 
 const ctx = setupTestServer(20)

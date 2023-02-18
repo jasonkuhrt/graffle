@@ -1,6 +1,6 @@
-import { ClientError, RequestDocument, Variables } from './types'
-import * as Dom from './types.dom'
-import { resolveRequestDocument } from './resolveRequestDocument'
+import { ClientError, RequestDocument, Variables } from './types.js'
+import * as Dom from './types.dom.js'
+import { resolveRequestDocument } from './resolveRequestDocument.js'
 // import type WebSocket from 'ws'
 
 const CONNECTION_INIT = 'connection_init'
@@ -140,7 +140,7 @@ export class GraphQLWebSocketClient {
           // No subscription identifer or subscription indentifier is not found
           return
         }
-        const { query, variables, subscriber } = this.socketState.subscriptions[message.id]
+        const { query, variables, subscriber } = this.socketState.subscriptions[message.id]!
 
         switch (message.type) {
           case NEXT: {

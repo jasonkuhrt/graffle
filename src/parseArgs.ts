@@ -10,8 +10,8 @@ import {
   Variables,
   RemoveIndex,
   VariablesAndRequestHeaders,
-} from './types'
-import * as Dom from './types.dom'
+} from './types.js'
+import * as Dom from './types.dom.js'
 
 export function parseRequestArgs<V extends Variables = Variables>(
   documentOrOptions: RequestDocument | RequestOptions<V>,

@@ -1,7 +1,7 @@
 import crossFetch, * as CrossFetch from 'cross-fetch'
 import { TypedDocumentNode } from '@graphql-typed-document-node/core'
-import createRequestBody from './createRequestBody'
-import { defaultJsonSerializer } from './defaultJsonSerializer'
+import createRequestBody from './createRequestBody.js'
+import { defaultJsonSerializer } from './defaultJsonSerializer.js'
 import {
   parseBatchRequestArgs,
   parseRawRequestArgs,
@@ -9,7 +9,7 @@ import {
   parseBatchRequestsExtendedArgs,
   parseRawRequestExtendedArgs,
   parseRequestExtendedArgs,
-} from './parseArgs'
+} from './parseArgs.js'
 import {
   BatchRequestDocument,
   BatchRequestsOptions,
@@ -27,9 +27,9 @@ import {
   RemoveIndex,
   RequestMiddleware,
   VariablesAndRequestHeaders,
-} from './types'
-import * as Dom from './types.dom'
-import { resolveRequestDocument } from './resolveRequestDocument'
+} from './types.js'
+import * as Dom from './types.dom.js'
+import { resolveRequestDocument } from './resolveRequestDocument.js'
 
 export {
   BatchRequestDocument,
@@ -57,7 +57,9 @@ const resolveHeaders = (headers: Dom.RequestInit['headers']): Record<string, str
       oHeaders = HeadersInstanceToPlainObject(headers)
     } else if (Array.isArray(headers)) {
       headers.forEach(([name, value]) => {
-        oHeaders[name] = value
+        if (name && value !== undefined) {
+          oHeaders[name] = value
+        }
       })
     } else {
       oHeaders = headers as Record<string, string>
@@ -692,7 +694,7 @@ export function gql(chunks: TemplateStringsArray, ...variables: any[]): string {
 /**
  * Convert Headers instance into regular object
  */
-function HeadersInstanceToPlainObject(headers: Dom.Response['headers']): Record<string, string> {
+const HeadersInstanceToPlainObject = (headers: Dom.Response['headers']): Record<string, string> => {
   const o: any = {}
   headers.forEach((v, k) => {
     o[k] = v
@@ -700,5 +702,5 @@ function HeadersInstanceToPlainObject(headers: Dom.Response['headers']): Record<
   return o
 }
 
-export { GraphQLWebSocketClient } from './graphql-ws'
-export { resolveRequestDocument } from './resolveRequestDocument'
+export { GraphQLWebSocketClient } from './graphql-ws.js'
+export { resolveRequestDocument } from './resolveRequestDocument.js'

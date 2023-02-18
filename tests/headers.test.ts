@@ -1,7 +1,7 @@
 import * as CrossFetch from 'cross-fetch'
-import * as Dom from '../src/types.dom'
-import { GraphQLClient, request } from '../src'
-import { setupTestServer } from './__helpers'
+import * as Dom from '../src/types.dom.js'
+import { GraphQLClient, request } from '../src/index.js'
+import { setupTestServer } from './__helpers.js'
 import { describe, expect, test } from 'vitest'
 
 const ctx = setupTestServer()
@@ -14,7 +14,7 @@ describe('using class', () => {
     client.setHeader('x-foo', 'bar')
     const mock = ctx.res()
     await client.request(`{ me { id } }`)
-    expect(mock.requests[0].headers['x-foo']).toEqual('bar')
+    expect(mock.requests[0]?.headers['x-foo']).toEqual('bar')
   })
 
   describe('.setHeaders() sets headers that get sent to the server', () => {
@@ -23,21 +23,21 @@ describe('using class', () => {
       client.setHeaders(new H({ 'x-foo': 'bar' }))
       const mock = ctx.res()
       await client.request(`{ me { id } }`)
-      expect(mock.requests[0].headers['x-foo']).toEqual('bar')
+      expect(mock.requests[0]?.headers['x-foo']).toEqual('bar')
     })
     test('with headers object', async () => {
       const client = new GraphQLClient(ctx.url)
       client.setHeaders({ 'x-foo': 'bar' })
       const mock = ctx.res()
       await client.request(`{ me { id } }`)
-      expect(mock.requests[0].headers['x-foo']).toEqual('bar')
+      expect(mock.requests[0]?.headers['x-foo']).toEqual('bar')
     })
     test('with header tuples', async () => {
       const client = new GraphQLClient(ctx.url)
       client.setHeaders([['x-foo', 'bar']])
       const mock = ctx.res()
       await client.request(`{ me { id } }`)
-      expect(mock.requests[0].headers['x-foo']).toEqual('bar')
+      expect(mock.requests[0]?.headers['x-foo']).toEqual('bar')
     })
   })
 
@@ -54,8 +54,8 @@ describe('using class', () => {
         const mock = ctx.res()
         await client.request(`{ me { id } }`, {}, headerCase)
 
-        expect(mock.requests[0].headers['x-foo']).toEqual('bar')
-        expect(mock.requests[0].headers['x-request-foo']).toEqual('request-bar')
+        expect(mock.requests[0]?.headers['x-foo']).toEqual('bar')
+        expect(mock.requests[0]?.headers['x-request-foo']).toEqual('request-bar')
       })
 
       test('with rawRequest method', async () => {
@@ -65,8 +65,8 @@ describe('using class', () => {
         const mock = ctx.res()
         await client.rawRequest(`{ me { id } }`, {}, headerCase)
 
-        expect(mock.requests[0].headers['x-foo']).toEqual('bar')
-        expect(mock.requests[0].headers['x-request-foo']).toEqual('request-bar')
+        expect(mock.requests[0]?.headers['x-foo']).toEqual('bar')
+        expect(mock.requests[0]?.headers['x-request-foo']).toEqual('request-bar')
       })
     })
 
@@ -80,7 +80,7 @@ describe('using class', () => {
         client.setHeader('x-foo', 'bar')
         const mock = ctx.res()
         await client.request(`{ me { id } }`, {}, headerCase)
-        expect(mock.requests[0].headers['x-foo']).toEqual('request-bar')
+        expect(mock.requests[0]?.headers['x-foo']).toEqual('request-bar')
       })
 
       test('with rawRequest method', async () => {
@@ -88,7 +88,7 @@ describe('using class', () => {
         client.setHeader('x-foo', 'bar')
         const mock = ctx.res()
         await client.rawRequest(`{ me { id } }`, {}, headerCase)
-        expect(mock.requests[0].headers['x-foo']).toEqual('request-bar')
+        expect(mock.requests[0]?.headers['x-foo']).toEqual('request-bar')
       })
     })
 
@@ -99,7 +99,7 @@ describe('using class', () => {
         objectChangedThroughReference['x-foo'] = 'new'
         const mock = ctx.res()
         await client.request(`{ me { id } }`)
-        expect(mock.requests[0].headers['x-foo']).toEqual('new')
+        expect(mock.requests[0]?.headers['x-foo']).toEqual('new')
       })
 
       test('with rawRequest method', async () => {
@@ -108,7 +108,7 @@ describe('using class', () => {
         objectChangedThroughReference['x-foo'] = 'new'
         const mock = ctx.res()
         await client.rawRequest(`{ me { id } }`)
-        expect(mock.requests[0].headers['x-foo']).toEqual('new')
+        expect(mock.requests[0]?.headers['x-foo']).toEqual('new')
       })
     })
   })
@@ -124,7 +124,7 @@ describe('using request function', () => {
       const mock = ctx.res()
       await request(ctx.url, `{ me { id } }`, {}, headerCase)
 
-      expect(mock.requests[0].headers['x-request-foo']).toEqual('request-bar')
+      expect(mock.requests[0]?.headers['x-request-foo']).toEqual('request-bar')
     })
   })
 })

@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest'
-import { batchRequests } from '../src'
-import { setupTestServer, MockSpecBatch } from './__helpers'
+import { batchRequests } from '../src/index.js'
+import { setupTestServer, MockSpecBatch } from './__helpers.js'
 
 const ctx = setupTestServer<MockSpecBatch>()
 

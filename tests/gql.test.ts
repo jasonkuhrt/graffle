@@ -1,7 +1,7 @@
-import gql from 'graphql-tag'
+import { gql } from 'graphql-tag'
 import { describe, expect, it } from 'vitest'
-import { request } from '../src'
-import { setupTestServer } from './__helpers'
+import { request } from '../src/index.js'
+import { setupTestServer } from './__helpers.js'
 
 const ctx = setupTestServer()
 
