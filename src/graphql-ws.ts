@@ -256,7 +256,7 @@ export class GraphQLWebSocketClient {
 
 // Helper functions
 
-function parseMessage<A = any>(data: string, f: (payload: any) => A = (a) => a): GraphQLWebSocketMessage<A> {
+function parseMessage<A = any>(data: any, f: (payload: any) => A = (a) => a): GraphQLWebSocketMessage<A> {
   const m = GraphQLWebSocketMessage.parse<A>(data, f)
   return m
 }
