@@ -1,26 +1,29 @@
-import { DocumentNode, OperationDefinitionNode, parse, print } from 'graphql'
-import { RequestDocument } from './types'
+import type { RequestDocument } from './types.js'
+import type { DocumentNode, OperationDefinitionNode } from 'graphql'
+import { parse, print } from 'graphql'
 
 /**
  * helpers
  */
 
-function extractOperationName(document: DocumentNode): string | undefined {
+const extractOperationName = (document: DocumentNode): string | undefined => {
   let operationName = undefined
 
   const operationDefinitions = document.definitions.filter(
-    (definition) => definition.kind === 'OperationDefinition'
+    (definition) => definition.kind === `OperationDefinition`
   ) as OperationDefinitionNode[]
 
   if (operationDefinitions.length === 1) {
-    operationName = operationDefinitions[0].name?.value
+    operationName = operationDefinitions[0]?.name?.value
   }
 
   return operationName
 }
 
-export function resolveRequestDocument(document: RequestDocument): { query: string; operationName?: string } {
-  if (typeof document === 'string') {
+export const resolveRequestDocument = (
+  document: RequestDocument
+): { query: string; operationName?: string } => {
+  if (typeof document === `string`) {
     let operationName = undefined
 
     try {

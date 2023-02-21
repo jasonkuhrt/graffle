@@ -1,16 +1,17 @@
-import { ClientError, RequestDocument, Variables } from './types'
-import * as Dom from './types.dom'
-import { resolveRequestDocument } from './resolveRequestDocument'
-import WebSocket from 'ws'
+import { resolveRequestDocument } from './resolveRequestDocument.js'
+import type * as Dom from './types.dom.js'
+import type { RequestDocument, Variables } from './types.js';
+import { ClientError } from './types.js'
+import type WebSocket from 'ws'
 
-const CONNECTION_INIT = 'connection_init'
-const CONNECTION_ACK = 'connection_ack'
-const PING = 'ping'
-const PONG = 'pong'
-const SUBSCRIBE = 'subscribe'
-const NEXT = 'next'
-const ERROR = 'error'
-const COMPLETE = 'complete'
+const CONNECTION_INIT = `connection_init`
+const CONNECTION_ACK = `connection_ack`
+const PING = `ping`
+const PONG = `pong`
+const SUBSCRIBE = `subscribe`
+const NEXT = `next`
+const ERROR = `error`
+const COMPLETE = `complete`
 
 type MessagePayload = { [key: string]: any }
 
@@ -84,7 +85,7 @@ type SocketState = {
 }
 
 export class GraphQLWebSocketClient {
-  static PROTOCOL: string = 'graphql-transport-ws'
+  static PROTOCOL = `graphql-transport-ws`
 
   private socket: WebSocket
   private socketState: SocketState = { acknowledged: false, lastRequestId: 0, subscriptions: {} }
@@ -113,7 +114,7 @@ export class GraphQLWebSocketClient {
         switch (message.type) {
           case CONNECTION_ACK: {
             if (this.socketState.acknowledged) {
-              console.warn('Duplicate CONNECTION_ACK message ignored')
+              console.warn(`Duplicate CONNECTION_ACK message ignored`)
             } else {
               this.socketState.acknowledged = true
               if (onAcknowledged) onAcknowledged(message.payload)
@@ -140,7 +141,7 @@ export class GraphQLWebSocketClient {
           // No subscription identifer or subscription indentifier is not found
           return
         }
-        const { query, variables, subscriber } = this.socketState.subscriptions[message.id]
+        const { query, variables, subscriber } = this.socketState.subscriptions[message.id]!
 
         switch (message.type) {
           case NEXT: {
@@ -174,7 +175,7 @@ export class GraphQLWebSocketClient {
         console.error(e)
         socket.close(1006)
       }
-      socket.close(4400, 'Unknown graphql-ws message.')
+      socket.close(4400, `Unknown graphql-ws message.`)
     }
   }
 

@@ -1,10 +1,10 @@
+import { GraphQLClient } from '../src/index.js'
+import { setupMockServer } from './__helpers.js'
 import { expect, test } from 'vitest'
-import { GraphQLClient } from '../src'
-import { setupTestServer } from './__helpers'
 
-const ctx = setupTestServer()
+const ctx = setupMockServer()
 const errors = {
-  message: 'Syntax Error GraphQL request (1:1) Unexpected Name "x"\n\n1: x\n   ^\n',
+  message: `Syntax Error GraphQL request (1:1) Unexpected Name "x"\n\n1: x\n   ^\n`,
   locations: [
     {
       line: 1,
@@ -13,7 +13,7 @@ const errors = {
   ],
 }
 
-test('should throw error when error policy not set', async () => {
+test(`should throw error when error policy not set`, async () => {
   ctx.res({
     body: {
       data: {},
@@ -21,10 +21,10 @@ test('should throw error when error policy not set', async () => {
     },
   })
 
-  expect(async () => await new GraphQLClient(ctx.url).rawRequest(`x`)).rejects.toThrow('GraphQL Error')
+  expect(async () => await new GraphQLClient(ctx.url).rawRequest(`x`)).rejects.toThrow(`GraphQL Error`)
 })
 
-test('should throw error when error policy set to "none"', async () => {
+test(`should throw error when error policy set to "none"`, async () => {
   ctx.res({
     body: {
       data: {},
@@ -32,10 +32,10 @@ test('should throw error when error policy set to "none"', async () => {
     },
   })
 
-  expect(async () => await new GraphQLClient(ctx.url).rawRequest(`x`)).rejects.toThrow('GraphQL Error')
+  expect(async () => await new GraphQLClient(ctx.url).rawRequest(`x`)).rejects.toThrow(`GraphQL Error`)
 })
 
-test('should not throw error when error policy set to "ignore" and return only data', async () => {
+test(`should not throw error when error policy set to "ignore" and return only data`, async () => {
   ctx.res({
     body: {
       data: { test: {} },
@@ -43,13 +43,13 @@ test('should not throw error when error policy set to "ignore" and return only d
     },
   })
 
-  const res = await new GraphQLClient(ctx.url, { errorPolicy: 'ignore' }).rawRequest(`x`)
+  const res = await new GraphQLClient(ctx.url, { errorPolicy: `ignore` }).rawRequest(`x`)
 
   expect(res).toEqual(expect.objectContaining({ data: { test: {} } }))
   expect(res).toEqual(expect.not.objectContaining({ errors }))
 })
 
-test('should not throw error when error policy set to "all" and return both data and error', async () => {
+test(`should not throw error when error policy set to "all" and return both data and error`, async () => {
   ctx.res({
     body: {
       data: { test: {} },
@@ -57,7 +57,7 @@ test('should not throw error when error policy set to "all" and return both data
     },
   })
 
-  const res = await new GraphQLClient(ctx.url, { errorPolicy: 'all' }).rawRequest(`x`)
+  const res = await new GraphQLClient(ctx.url, { errorPolicy: `all` }).rawRequest(`x`)
 
   expect(res).toEqual(expect.objectContaining({ data: { test: {} }, errors }))
 })

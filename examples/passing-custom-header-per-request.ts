@@ -1,10 +1,10 @@
-import { GraphQLClient } from '../src'
+import { GraphQLClient } from '../src/index.js'
 ;(async function () {
-  const endpoint = 'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr'
+  const endpoint = `https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr`
 
   const client = new GraphQLClient(endpoint, {
     headers: {
-      authorization: 'Bearer MY_TOKEN',
+      authorization: `Bearer MY_TOKEN`,
     },
   })
 
@@ -20,8 +20,8 @@ import { GraphQLClient } from '../src'
   `
 
   const requestHeaders = {
-    authorization: 'Bearer MY_TOKEN_2',
-    'x-custom': 'foo',
+    authorization: `Bearer MY_TOKEN_2`,
+    'x-custom': `foo`,
   }
 
   interface TData {

@@ -1,23 +1,22 @@
-import {
+import type * as Dom from './types.dom.js'
+import type {
   BatchRequestDocument,
+  BatchRequestsExtendedOptions,
   BatchRequestsOptions,
+  RawRequestExtendedOptions,
   RawRequestOptions,
   RequestDocument,
-  RequestOptions,
-  BatchRequestsExtendedOptions,
-  RawRequestExtendedOptions,
   RequestExtendedOptions,
+  RequestOptions,
   Variables,
-  RemoveIndex,
-  VariablesAndRequestHeaders,
-} from './types'
-import * as Dom from './types.dom'
+  VariablesAndRequestHeadersArgs,
+} from './types.js'
 
-export function parseRequestArgs<V extends Variables = Variables>(
+export const parseRequestArgs = <V extends Variables = Variables>(
   documentOrOptions: RequestDocument | RequestOptions<V>,
   variables?: V,
   requestHeaders?: Dom.RequestInit['headers']
-): RequestOptions<V> {
+): RequestOptions<V> => {
   return (documentOrOptions as RequestOptions<V>).document
     ? (documentOrOptions as RequestOptions<V>)
     : ({
@@ -28,11 +27,11 @@ export function parseRequestArgs<V extends Variables = Variables>(
       } as unknown as RequestOptions<V>)
 }
 
-export function parseRawRequestArgs<V extends Variables = Variables>(
+export const parseRawRequestArgs = <V extends Variables = Variables>(
   queryOrOptions: string | RawRequestOptions<V>,
   variables?: V,
   requestHeaders?: Dom.RequestInit['headers']
-): RawRequestOptions<V> {
+): RawRequestOptions<V> => {
   return (queryOrOptions as RawRequestOptions<V>).query
     ? (queryOrOptions as RawRequestOptions<V>)
     : ({
@@ -43,10 +42,10 @@ export function parseRawRequestArgs<V extends Variables = Variables>(
       } as unknown as RawRequestOptions<V>)
 }
 
-export function parseBatchRequestArgs<V extends Variables = Variables>(
+export const parseBatchRequestArgs = <V extends Variables = Variables>(
   documentsOrOptions: BatchRequestDocument<V>[] | BatchRequestsOptions<V>,
   requestHeaders?: Dom.RequestInit['headers']
-): BatchRequestsOptions<V> {
+): BatchRequestsOptions<V> => {
   return (documentsOrOptions as BatchRequestsOptions<V>).documents
     ? (documentsOrOptions as BatchRequestsOptions<V>)
     : {
@@ -56,11 +55,11 @@ export function parseBatchRequestArgs<V extends Variables = Variables>(
       }
 }
 
-export function parseRequestExtendedArgs<V extends Variables = Variables>(
+export const parseRequestExtendedArgs = <V extends Variables = Variables>(
   urlOrOptions: string | RequestExtendedOptions<V>,
   document?: RequestDocument,
-  ...variablesAndRequestHeaders: VariablesAndRequestHeaders<V>
-): RequestExtendedOptions<V> {
+  ...variablesAndRequestHeaders: VariablesAndRequestHeadersArgs<V>
+): RequestExtendedOptions<V> => {
   const [variables, requestHeaders] = variablesAndRequestHeaders
   return (urlOrOptions as RequestExtendedOptions<V>).document
     ? (urlOrOptions as RequestExtendedOptions<V>)
@@ -73,11 +72,11 @@ export function parseRequestExtendedArgs<V extends Variables = Variables>(
       } as unknown as RequestExtendedOptions<V>)
 }
 
-export function parseRawRequestExtendedArgs<V extends Variables = Variables>(
+export const parseRawRequestExtendedArgs = <V extends Variables = Variables>(
   urlOrOptions: string | RawRequestExtendedOptions<V>,
   query?: string,
-  ...variablesAndRequestHeaders: VariablesAndRequestHeaders<V>
-): RawRequestExtendedOptions<V> {
+  ...variablesAndRequestHeaders: VariablesAndRequestHeadersArgs<V>
+): RawRequestExtendedOptions<V> => {
   const [variables, requestHeaders] = variablesAndRequestHeaders
   return (urlOrOptions as RawRequestExtendedOptions<V>).query
     ? (urlOrOptions as RawRequestExtendedOptions<V>)
@@ -90,11 +89,11 @@ export function parseRawRequestExtendedArgs<V extends Variables = Variables>(
       } as unknown as RawRequestExtendedOptions<V>)
 }
 
-export function parseBatchRequestsExtendedArgs<V extends Variables = Variables>(
+export const parseBatchRequestsExtendedArgs = <V extends Variables = Variables>(
   urlOrOptions: string | BatchRequestsExtendedOptions<V>,
   documents?: BatchRequestDocument<V>[],
   requestHeaders?: Dom.RequestInit['headers']
-): BatchRequestsExtendedOptions<V> {
+): BatchRequestsExtendedOptions<V> => {
   return (urlOrOptions as BatchRequestsExtendedOptions<V>).documents
     ? (urlOrOptions as BatchRequestsExtendedOptions<V>)
     : {
