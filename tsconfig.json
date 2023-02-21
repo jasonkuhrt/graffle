@@ -26,4 +26,4 @@
   },
   "include": ["src", "tests", "examples"],
   "exclude": ["build"]
-}
+} // TODO configuration regression testing needed. As per PR https://github.com/jasonkuhrt/graphql-request/pull/453
