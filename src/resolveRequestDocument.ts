@@ -9,7 +9,7 @@ import { parse, print } from 'graphql'
 const dedupFragmentsDefinitions = (document: DocumentNode): DocumentNode => {
   const seen: string[] = []
 
-  const fragmentDefinitions = document.definitions.filter((definition) => {
+  const fragmentsDefinitions = document.definitions.filter((definition) => {
     if (definition.kind !== `FragmentDefinition`) {
       return true
     }
@@ -24,7 +24,7 @@ const dedupFragmentsDefinitions = (document: DocumentNode): DocumentNode => {
 
   return {
     ...document,
-    definitions: fragmentDefinitions,
+    definitions: fragmentsDefinitions,
   }
 }
 
