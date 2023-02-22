@@ -1,32 +1,10 @@
 import type { RequestDocument } from './types.js'
 import type { DocumentNode, OperationDefinitionNode } from 'graphql'
-import { parse, print } from 'graphql'
+import { parse, print, visit } from 'graphql'
 
 /**
  * helpers
  */
-
-const dedupFragmentsDefinitions = (document: DocumentNode): DocumentNode => {
-  const seen: string[] = []
-
-  const fragmentsDefinitions = document.definitions.filter((definition) => {
-    if (definition.kind !== `FragmentDefinition`) {
-      return true
-    }
-
-    const id = `${definition.name.value}-${definition.typeCondition.name.value}`
-    const haveSeen = seen.includes(id)
-
-    seen.push(id)
-
-    return !haveSeen
-  })
-
-  return {
-    ...document,
-    definitions: fragmentsDefinitions,
-  }
-}
 
 const extractOperationName = (document: DocumentNode): string | undefined => {
   let operationName = undefined
@@ -58,8 +36,19 @@ export const resolveRequestDocument = (
     return { query: document, operationName }
   }
 
-  const dedupedDocument = dedupFragmentsDefinitions(document)
-  const operationName = extractOperationName(dedupedDocument)
+  const fragmentsNames: Set<string> = new Set()
+  const fragmentsDedupedDocument = visit(document, {
+    FragmentDefinition: (node) => {
+      const fragmentName = `${node.name.value}-${node.typeCondition.name.value}`
+      if (fragmentsNames.has(fragmentName)) {
+        return null
+      }
+      fragmentsNames.add(fragmentName)
+      return undefined
+    },
+  })
 
-  return { query: print(dedupedDocument), operationName }
+  const operationName = extractOperationName(fragmentsDedupedDocument)
+
+  return { query: print(fragmentsDedupedDocument), operationName }
 }
