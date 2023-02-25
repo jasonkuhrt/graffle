@@ -1,4 +1,4 @@
-import { GraphQLClient,request } from '../src/index.js'
+import { GraphQLClient, request } from '../src/index.js'
 import type { TypedDocumentNode } from '@graphql-typed-document-node/core'
 import { parse } from 'graphql'
 ;(async function () {

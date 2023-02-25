@@ -41,9 +41,9 @@ Minimal GraphQL client supporting Node and browsers for scripts or simple apps
     - [Ignore](#ignore)
     - [All](#all)
 - [FAQ](#faq)
-    - [Why do I have to install `graphql`?](#why-do-i-have-to-install-graphql)
-    - [Do I need to wrap my GraphQL documents inside the `gql` template exported by `graphql-request`?](#do-i-need-to-wrap-my-graphql-documents-inside-the-gql-template-exported-by-graphql-request)
-    - [What's the difference between `graphql-request`, Apollo and Relay?](#whats-the-difference-between-graphql-request-apollo-and-relay)
+  - [Why do I have to install `graphql`?](#why-do-i-have-to-install-graphql)
+  - [Do I need to wrap my GraphQL documents inside the `gql` template exported by `graphql-request`?](#do-i-need-to-wrap-my-graphql-documents-inside-the-gql-template-exported-by-graphql-request)
+  - [What's the difference between `graphql-request`, Apollo and Relay?](#whats-the-difference-between-graphql-request-apollo-and-relay)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 

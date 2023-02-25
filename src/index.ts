@@ -3,7 +3,6 @@ import { defaultJsonSerializer } from './defaultJsonSerializer.js'
 import { HeadersInstanceToPlainObject, uppercase } from './helpers.js'
 import {
   parseBatchRequestArgs,
-  parseBatchRequestsExtendedArgs,
   parseRawRequestArgs,
   parseRawRequestExtendedArgs,
   parseRequestArgs,
@@ -33,6 +32,7 @@ import {
 } from './types.js'
 import type { TypedDocumentNode } from '@graphql-typed-document-node/core'
 import crossFetch, * as CrossFetch from 'cross-fetch'
+import type { T, V } from 'vitest/dist/types-7cd96283.js'
 
 export {
   BatchRequestDocument,
@@ -310,12 +310,12 @@ export class GraphQLClient {
   /**
    * Send GraphQL documents in batch to the server.
    */
-  batchRequests<T = unknown, V extends Variables = Variables>(
-    documents: BatchRequestDocument<V>[],
-    requestHeaders?: Dom.RequestInit['headers']
-  ): Promise<T>
-  batchRequests<T = unknown, V extends Variables = Variables>(options: BatchRequestsOptions<V>): Promise<T>
-  batchRequests<T = unknown, V extends Variables = Variables>(
+  // prettier-ignore
+  batchRequests<T extends BatchResult, V extends Variables = Variables>(documents: BatchRequestDocument<V>[], requestHeaders?: Dom.RequestInit['headers']): Promise<T>
+  // prettier-ignore
+  batchRequests<T extends BatchResult, V extends Variables = Variables>(options: BatchRequestsOptions<V>): Promise<T>
+  // prettier-ignore
+  batchRequests<T extends BatchResult, V extends Variables = Variables>(
     documentsOrOptions: BatchRequestDocument<V>[] | BatchRequestsOptions<V>,
     requestHeaders?: Dom.RequestInit['headers']
   ): Promise<T> {
@@ -573,22 +573,39 @@ export async function request<T, V extends Variables = Variables>(
  * await batchRequests('https://foo.bar/graphql', [{ query: gql`...` }])
  * ```
  */
-export async function batchRequests<T, V extends Variables = Variables>(
-  url: string,
-  documents: BatchRequestDocument<V>[],
-  requestHeaders?: Dom.RequestInit['headers']
-): Promise<T>
-export async function batchRequests<T, V extends Variables = Variables>(
-  options: BatchRequestsExtendedOptions<V>
-): Promise<T>
-export async function batchRequests<T, V extends Variables = Variables>(
-  urlOrOptions: string | BatchRequestsExtendedOptions<V>,
-  documents?: BatchRequestDocument<V>[],
-  requestHeaders?: Dom.RequestInit['headers']
-): Promise<T> {
-  const params = parseBatchRequestsExtendedArgs<V>(urlOrOptions, documents, requestHeaders)
+export const batchRequests: BatchRequests = async (...args: BatchRequestsArgs) => {
+  const params = parseBatchRequestsArgsExtended(args)
   const client = new GraphQLClient(params.url)
-  return client.batchRequests<T, V>(params)
+  return client.batchRequests(params)
+}
+
+interface Result<Data extends object = object> {
+  data: Data
+}
+
+type BatchResult = [Result, ...Result[]]
+
+// prettier-ignore
+interface BatchRequests {
+  <T extends BatchResult, V extends Variables = Variables>(url: string, documents: BatchRequestDocument<V>[], requestHeaders?: Dom.RequestInit['headers']): Promise<T>
+  <T extends BatchResult, V extends Variables = Variables>(options: BatchRequestsExtendedOptions<V>): Promise<T>
+}
+
+type BatchRequestsArgs =
+  | [url: string, documents: BatchRequestDocument[], requestHeaders?: Dom.RequestInit['headers']]
+  | [options: BatchRequestsExtendedOptions]
+
+const parseBatchRequestsArgsExtended = (args: BatchRequestsArgs): BatchRequestsExtendedOptions => {
+  if (args.length === 1) {
+    return args[0]
+  } else {
+    return {
+      url: args[0],
+      documents: args[1],
+      requestHeaders: args[2],
+      signal: undefined,
+    }
+  }
 }
 
 export default request
