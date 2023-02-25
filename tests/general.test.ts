@@ -1,5 +1,4 @@
 import { GraphQLClient, rawRequest, request } from '../src/index.js'
-import type * as Dom from '../src/types.dom.js'
 import type { RequestConfig } from '../src/types.js'
 import { setupMockServer } from './__helpers.js'
 import { gql } from 'graphql-tag'
@@ -203,7 +202,7 @@ describe(`middleware`, () => {
     })
 
     it(`batchRequests`, async () => {
-      const requestPromise = client.batchRequests<{ result: number }>([{ document: `x` }])
+      const requestPromise = client.batchRequests([{ document: `x` }])
       expect(requestMiddleware).toBeCalledTimes(1)
       await requestPromise
       expect(responseMiddleware).toBeCalledTimes(1)
@@ -250,7 +249,7 @@ describe(`middleware`, () => {
     })
 
     it(`batchRequests`, async () => {
-      const requestPromise = client.batchRequests<{ result: number }>([{ document: `x` }])
+      const requestPromise = client.batchRequests([{ document: `x` }])
       expect(requestMiddleware).toBeCalledTimes(1)
       await requestPromise
     })
@@ -295,7 +294,7 @@ describe(`middleware`, () => {
     })
 
     it(`batchRequests`, async () => {
-      const requestPromise = client.batchRequests<{ result: number }>([{ document: `x` }])
+      const requestPromise = client.batchRequests([{ document: `x` }])
       expect(requestMiddleware).toBeCalledTimes(1)
       await expect(requestPromise).rejects.toThrowError()
       expect(responseMiddleware).toBeCalledTimes(1)

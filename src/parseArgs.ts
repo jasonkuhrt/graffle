@@ -88,18 +88,3 @@ export const parseRawRequestExtendedArgs = <V extends Variables = Variables>(
         signal: undefined,
       } as unknown as RawRequestExtendedOptions<V>)
 }
-
-export const parseBatchRequestsExtendedArgs = <V extends Variables = Variables>(
-  urlOrOptions: string | BatchRequestsExtendedOptions<V>,
-  documents?: BatchRequestDocument<V>[],
-  requestHeaders?: Dom.RequestInit['headers']
-): BatchRequestsExtendedOptions<V> => {
-  return (urlOrOptions as BatchRequestsExtendedOptions<V>).documents
-    ? (urlOrOptions as BatchRequestsExtendedOptions<V>)
-    : {
-        url: urlOrOptions as string,
-        documents: documents as BatchRequestDocument<V>[],
-        requestHeaders: requestHeaders,
-        signal: undefined,
-      }
-}
