@@ -96,7 +96,7 @@ export type RequestOptions<V extends Variables = Variables, T = unknown> = {
   ? { variables?: V }
   : { variables: V })
 
-export type BatchRequestsOptions<V extends Variables = Variables> = {
+export interface BatchRequestsOptions<V extends Variables = Variables> {
   documents: BatchRequestDocument<V>[]
   requestHeaders?: Dom.RequestInit['headers']
   signal?: Dom.RequestInit['signal']
@@ -110,9 +110,10 @@ export type RawRequestExtendedOptions<V extends Variables = Variables> = {
   url: string
 } & RawRequestOptions<V>
 
-export type BatchRequestsExtendedOptions<V extends Variables = Variables> = {
+export interface BatchRequestsExtendedOptions<V extends Variables = Variables>
+  extends BatchRequestsOptions<V> {
   url: string
-} & BatchRequestsOptions<V>
+}
 
 export type RequestMiddleware<V extends Variables = Variables> = (
   request: RequestExtendedInit<V>

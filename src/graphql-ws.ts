@@ -1,6 +1,6 @@
 import { resolveRequestDocument } from './resolveRequestDocument.js'
 import type * as Dom from './types.dom.js'
-import type { RequestDocument, Variables } from './types.js';
+import type { RequestDocument, Variables } from './types.js'
 import { ClientError } from './types.js'
 // import type WebSocket from 'ws'
 
