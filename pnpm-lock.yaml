@@ -11,7 +11,7 @@ specifiers:
   '@types/ws': ^8.5.4
   '@typescript-eslint/eslint-plugin': ^5.52.0
   '@typescript-eslint/parser': ^5.52.0
-  '@vitest/coverage-c8': ^0.28.2
+  '@vitest/coverage-c8': ^0.29.0
   apollo-server-express: ^3.11.1
   body-parser: ^1.20.1
   cross-fetch: ^3.1.5
@@ -55,7 +55,7 @@ devDependencies:
   '@types/ws': 8.5.4
   '@typescript-eslint/eslint-plugin': 5.52.0_2facupdxlvm55gtp63dnpqcawi
   '@typescript-eslint/parser': 5.52.0_ehfyfk7qbmgzg5nk6xmobqdh3a
-  '@vitest/coverage-c8': 0.28.2_happy-dom@8.1.5
+  '@vitest/coverage-c8': 0.29.1_vitest@0.28.2
   apollo-server-express: 3.11.1_5ha345eiak62qiwwva5z4dp6gu
   body-parser: 1.20.1
   doctoc: 2.2.1
@@ -1140,25 +1140,15 @@ packages:
       eslint-visitor-keys: 3.3.0
     dev: true
 
-  /@vitest/coverage-c8/0.28.2_happy-dom@8.1.5:
-    resolution: {integrity: sha512-BWiOUk+d5LvK/9pKaYbL8eLng2EFXgTQMH9QN5nOoizWWKXGNO6LjduVpoz8ZQfb8/6tMVhae7SAS+w0zkRkNw==}
+  /@vitest/coverage-c8/0.29.1_vitest@0.28.2:
+    resolution: {integrity: sha512-YQZp1xGNxOcZD/zQBvD4bNpUDMJW7+FhBAEBlgvJp+DQ+aNK+dKcoWOTfsod27KQhXSr6UUYI8EYXWCOQqY6Eg==}
+    peerDependencies:
+      vitest: '>=0.29.0 <1'
     dependencies:
-      c8: 7.12.0
+      c8: 7.13.0
       picocolors: 1.0.0
       std-env: 3.3.1
       vitest: 0.28.2_happy-dom@8.1.5
-    transitivePeerDependencies:
-      - '@edge-runtime/vm'
-      - '@vitest/browser'
-      - '@vitest/ui'
-      - happy-dom
-      - jsdom
-      - less
-      - sass
-      - stylus
-      - sugarss
-      - supports-color
-      - terser
     dev: true
 
   /@vitest/expect/0.28.2:
@@ -1512,8 +1502,8 @@ packages:
     engines: {node: '>= 0.8'}
     dev: true
 
-  /c8/7.12.0:
-    resolution: {integrity: sha512-CtgQrHOkyxr5koX1wEUmN/5cfDa2ckbHRA4Gy5LAL0zaCFtVWJS5++n+w4/sr2GWGerBxgTjpKeDclk/Qk6W/A==}
+  /c8/7.13.0:
+    resolution: {integrity: sha512-/NL4hQTv1gBL6J6ei80zu3IiTrmePDKXKXOTLpHvcIWZTVYQlDhVWjjWvkhICylE8EwwnMVzDZugCvdx0/DIIA==}
     engines: {node: '>=10.12.0'}
     hasBin: true
     dependencies:
