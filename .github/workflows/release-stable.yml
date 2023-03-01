@@ -8,4 +8,4 @@ jobs:
         with:
           isStable: true
           npmToken: ${{secrets.NPM_TOKEN}}
-          githubToken: ${{secrets.DRIPIP_GITHUB_TOKEN}}
+          githubToken: ${{secrets.GITHUB_TOKEN}}
