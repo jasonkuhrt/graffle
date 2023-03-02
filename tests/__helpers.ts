@@ -1,10 +1,12 @@
 import { ApolloServer } from 'apollo-server-express'
 import body from 'body-parser'
-import express, { Application, Request } from 'express'
+import type { Application, Request } from 'express'
+import express from 'express'
 import getPort from 'get-port'
-import { graphqlUploadExpress } from 'graphql-upload'
-import { createServer, Server } from 'http'
-import { JsonObject } from 'type-fest'
+import type { Server } from 'http'
+import { createServer } from 'http'
+import type { JsonArray, JsonObject } from 'type-fest'
+import { afterAll, afterEach, beforeAll, beforeEach } from 'vitest'
 
 type CapturedRequest = Pick<Request, 'headers' | 'method' | 'body'>
 
@@ -21,7 +23,7 @@ type Context<S extends MockSpec | MockSpecBatch = MockSpec> = {
 type MockSpecBody = {
   data?: JsonObject
   extensions?: JsonObject
-  errors?: JsonObject
+  errors?: JsonObject | JsonArray
 }
 
 type MockSpec = {
@@ -43,7 +45,7 @@ type MockResult<Spec extends MockSpec | MockSpecBatch = MockSpec> = {
   }[]
 }
 
-export function setupTestServer<T extends MockSpec | MockSpecBatch = MockSpec>(delay?: number): Context<T> {
+export function setupMockServer<T extends MockSpec | MockSpecBatch = MockSpec>(delay?: number): Context<T> {
   const ctx = {} as Context<T>
   beforeAll(async () => {
     const port = await getPort()
@@ -51,19 +53,19 @@ export function setupTestServer<T extends MockSpec | MockSpecBatch = MockSpec>(d
     ctx.server.use(body.json())
     ctx.nodeServer = createServer()
     ctx.nodeServer.listen({ port })
-    ctx.nodeServer.on('request', ctx.server)
+    ctx.nodeServer.on(`request`, ctx.server)
     await new Promise((res) => {
-      ctx.nodeServer.once('listening', res)
+      ctx.nodeServer.once(`listening`, res)
     })
     ctx.url = `http://localhost:${port}`
     ctx.res = (spec?: T): MockResult<T> => {
       const requests: CapturedRequest[] = []
-      ctx.server.use('*', async function mock(req, res) {
+      ctx.server.use(`*`, async function mock(req, res) {
         if (delay) {
           await sleep(delay)
         }
 
-        req.headers.host = 'DYNAMIC'
+        req.headers.host = `DYNAMIC`
         requests.push({
           method: req.method,
           headers: req.headers,
@@ -84,12 +86,16 @@ export function setupTestServer<T extends MockSpec | MockSpecBatch = MockSpec>(d
   afterEach(() => {
     // https://stackoverflow.com/questions/10378690/remove-route-mappings-in-nodejs-express/28369539#28369539
     ctx.server._router.stack.forEach((item: any, i: number) => {
-      if (item.name === 'mock') ctx.server._router.stack.splice(i, 1)
+      if (item.name === `mock`) ctx.server._router.stack.splice(i, 1)
     })
   })
 
-  afterAll((done) => {
-    ctx.nodeServer.close(done)
+  afterAll(async () => {
+    await new Promise((resolve) => {
+      ctx.nodeServer?.close(() => {
+        resolve(undefined)
+      })
+    })
   })
 
   return ctx
@@ -102,7 +108,6 @@ export async function startApolloServer({ typeDefs, resolvers }: ApolloServerCon
 
   const apolloServer = new ApolloServer({ typeDefs, resolvers })
 
-  app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }))
   await apolloServer.start()
   apolloServer.applyMiddleware({ app: app as any })
 
@@ -121,14 +126,14 @@ export function createApolloServerContext({ typeDefs, resolvers }: ApolloServerC
   beforeEach(async () => {
     ctx.server = await startApolloServer({ typeDefs, resolvers })
     const address = ctx.server.address()
-    if (address && typeof address === 'object') {
+    if (address && typeof address === `object`) {
       ctx.url = `http://localhost:${address.port}/graphql`
     }
   })
 
   afterEach(async () => {
-    await new Promise<void>((res, rej) => {
-      ctx.server.close((e) => (e ? rej(e) : res()))
+    await new Promise((res) => {
+      ctx.server?.close(() => res(undefined)) ?? res(undefined)
     })
   })
 

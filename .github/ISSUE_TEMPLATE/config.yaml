@@ -1,0 +1,6 @@
+# https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/configuring-issue-templates-for-your-repository#configuring-the-template-chooser
+blank_issues_enabled: false
+contact_links:
+  - name: ✋ Question
+    about: You have a question about something you're not sure about
+    url: https://github.com/jasonkuhrt/graphql-request/discussions/new

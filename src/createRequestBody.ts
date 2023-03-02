@@ -1,8 +1,9 @@
-import { isExtractableFile, extractFiles, ExtractableFile } from 'extract-files'
+import { defaultJsonSerializer } from './defaultJsonSerializer.js'
+import type * as Dom from './types.dom.js'
+import type { Variables } from './types.js'
+import type { ExtractableFile } from 'extract-files'
+import { extractFiles, isExtractableFile } from 'extract-files'
 import FormDataNode from 'form-data'
-import { defaultJsonSerializer } from './defaultJsonSerializer'
-
-import { Variables } from './types'
 
 /**
  * Duck type if NodeJS stream
@@ -10,28 +11,28 @@ import { Variables } from './types'
  */
 const isExtractableFileEnhanced = (value: any): value is ExtractableFile | { pipe: Function } =>
   isExtractableFile(value) ||
-  (value !== null && typeof value === 'object' && typeof value.pipe === 'function')
+  (value !== null && typeof value === `object` && typeof value.pipe === `function`)
 
 /**
  * Returns Multipart Form if body contains files
  * (https://github.com/jaydenseric/graphql-multipart-request-spec)
  * Otherwise returns JSON
  */
-export default function createRequestBody(
+const createRequestBody = (
   query: string | string[],
   variables?: Variables | Variables[],
   operationName?: string,
   jsonSerializer = defaultJsonSerializer
-): string | FormData {
-  const { clone, files } = extractFiles({ query, variables, operationName }, '', isExtractableFileEnhanced)
+): string | Dom.FormData => {
+  const { clone, files } = extractFiles({ query, variables, operationName }, ``, isExtractableFileEnhanced)
 
   if (files.size === 0) {
     if (!Array.isArray(query)) {
       return jsonSerializer.stringify(clone)
     }
 
-    if (typeof variables !== 'undefined' && !Array.isArray(variables)) {
-      throw new Error('Cannot create request body with given variable type, array expected')
+    if (typeof variables !== `undefined` && !Array.isArray(variables)) {
+      throw new Error(`Cannot create request body with given variable type, array expected`)
     }
 
     // Batch support
@@ -46,23 +47,25 @@ export default function createRequestBody(
     return jsonSerializer.stringify(payload)
   }
 
-  const Form = typeof FormData === 'undefined' ? FormDataNode : FormData
+  const Form = typeof FormData === `undefined` ? FormDataNode : FormData
 
   const form = new Form()
 
-  form.append('operations', jsonSerializer.stringify(clone))
+  form.append(`operations`, jsonSerializer.stringify(clone))
 
   const map: { [key: number]: string[] } = {}
   let i = 0
   files.forEach((paths) => {
     map[++i] = paths
   })
-  form.append('map', jsonSerializer.stringify(map))
+  form.append(`map`, jsonSerializer.stringify(map))
 
   i = 0
   files.forEach((paths, file) => {
     form.append(`${++i}`, file as any)
   })
 
-  return form as FormData
+  return form as Dom.FormData
 }
+
+export default createRequestBody

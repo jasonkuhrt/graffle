@@ -1,34 +1,12 @@
 name: trunk
-
 on:
   push:
-    branches: [master]
-
+    branches: [main]
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node: [14, 16]
-        environment: [dom, node]
-        graphql-version: [14, 15, 16]
-    name: Node ${{ matrix.node }} @env ${{matrix.environment}} with grahpql@${{ matrix.graphql-version }}
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node }}
-          cache: yarn
-      - run: yarn install
-      - run: yarn add graphql@${{ matrix.graphql-version }}
-      - run: yarn build
-      - run: yarn test:${{ matrix.environment }}
-        env:
-          GRAPHQL_VERSION: ${{ matrix.graphql-version }}
-
   release-canary:
-    needs: [test]
-    uses: prisma-labs/dripip/.github/workflows/release.yml@master
-    secrets:
-      npmToken: ${{secrets.NPM_TOKEN}}
-      githubToken: ${{secrets.GITHUB_TOKEN}}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: prisma-labs/dripip@master
+        with:
+          npmToken: ${{secrets.NPM_TOKEN}}
+          githubToken: ${{secrets.GITHUB_TOKEN}}

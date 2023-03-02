@@ -1,16 +1,18 @@
-import gql from 'graphql-tag'
-import { GraphQLClient, rawRequest, request } from '../src'
-import { setupTestServer } from './__helpers'
-import * as Dom from '../src/types.dom'
+import { GraphQLClient, rawRequest, request } from '../src/index.js'
+import type { RequestConfig } from '../src/types.js'
+import { setupMockServer } from './__helpers.js'
+import { gql } from 'graphql-tag'
+import type { Mock } from 'vitest'
+import { beforeEach, describe, expect, it, test, vitest } from 'vitest'
 
-const ctx = setupTestServer()
+const ctx = setupMockServer()
 
-test('minimal query', async () => {
+test(`minimal query`, async () => {
   const { data } = ctx.res({
     body: {
       data: {
         me: {
-          id: 'some-id',
+          id: `some-id`,
         },
       },
     },
@@ -19,16 +21,16 @@ test('minimal query', async () => {
   expect(await request(ctx.url, `{ me { id } }`)).toEqual(data)
 })
 
-test('minimal raw query', async () => {
+test(`minimal raw query`, async () => {
   const { extensions, data } = ctx.res({
     body: {
       data: {
         me: {
-          id: 'some-id',
+          id: `some-id`,
         },
       },
       extensions: {
-        version: '1',
+        version: `1`,
       },
     },
   }).spec.body!
@@ -36,20 +38,20 @@ test('minimal raw query', async () => {
   expect(result).toEqual({ data, extensions, status: 200 })
 })
 
-test('minimal raw query with response headers', async () => {
+test(`minimal raw query with response headers`, async () => {
   const { headers: reqHeaders, body } = ctx.res({
     headers: {
-      'Content-Type': 'application/json',
-      'X-Custom-Header': 'test-custom-header',
+      'Content-Type': `application/json`,
+      'X-Custom-Header': `test-custom-header`,
     },
     body: {
       data: {
         me: {
-          id: 'some-id',
+          id: `some-id`,
         },
       },
       extensions: {
-        version: '1',
+        version: `1`,
       },
     },
   }).spec
@@ -57,16 +59,60 @@ test('minimal raw query with response headers', async () => {
   const { headers, ...result } = await rawRequest(ctx.url, `{ me { id } }`)
 
   expect(result).toEqual({ ...body, status: 200 })
-  expect(headers.get('X-Custom-Header')).toEqual(reqHeaders!['X-Custom-Header'])
+  expect(headers.get(`X-Custom-Header`)).toEqual(reqHeaders![`X-Custom-Header`])
 })
 
-test('content-type with charset', async () => {
+test(`minimal raw query with response headers and new graphql content type`, async () => {
+  const { headers: reqHeaders, body } = ctx.res({
+    headers: {
+      'Content-Type': `application/graphql+json`,
+    },
+    body: {
+      data: {
+        me: {
+          id: `some-id`,
+        },
+      },
+      extensions: {
+        version: `1`,
+      },
+    },
+  }).spec
+
+  const { headers, ...result } = await rawRequest(ctx.url, `{ me { id } }`)
+
+  expect(result).toEqual({ ...body, status: 200 })
+})
+
+test(`minimal raw query with response headers and application/graphql-response+json response type`, async () => {
+  const { headers: reqHeaders, body } = ctx.res({
+    headers: {
+      'Content-Type': `application/graphql-response+json`,
+    },
+    body: {
+      data: {
+        me: {
+          id: `some-id`,
+        },
+      },
+      extensions: {
+        version: `1`,
+      },
+    },
+  }).spec
+
+  const { headers, ...result } = await rawRequest(ctx.url, `{ me { id } }`)
+
+  expect(result).toEqual({ ...body, status: 200 })
+})
+
+test(`content-type with charset`, async () => {
   const { data } = ctx.res({
     // headers: { 'Content-Type': 'application/json; charset=utf-8' },
     body: {
       data: {
         me: {
-          id: 'some-id',
+          id: `some-id`,
         },
       },
     },
@@ -75,11 +121,11 @@ test('content-type with charset', async () => {
   expect(await request(ctx.url, `{ me { id } }`)).toEqual(data)
 })
 
-test('basic error', async () => {
+test(`basic error`, async () => {
   ctx.res({
     body: {
       errors: {
-        message: 'Syntax Error GraphQL request (1:1) Unexpected Name "x"\n\n1: x\n   ^\n',
+        message: `Syntax Error GraphQL request (1:1) Unexpected Name "x"\n\n1: x\n   ^\n`,
         locations: [
           {
             line: 1,
@@ -97,11 +143,11 @@ test('basic error', async () => {
   )
 })
 
-test('basic error with raw request', async () => {
+test(`basic error with raw request`, async () => {
   ctx.res({
     body: {
       errors: {
-        message: 'Syntax Error GraphQL request (1:1) Unexpected Name "x"\n\n1: x\n   ^\n',
+        message: `Syntax Error GraphQL request (1:1) Unexpected Name "x"\n\n1: x\n   ^\n`,
         locations: [
           {
             line: 1,
@@ -117,20 +163,159 @@ test('basic error with raw request', async () => {
   )
 })
 
+describe(`middleware`, () => {
+  let client: GraphQLClient
+  let requestMiddleware: Mock
+  let responseMiddleware: Mock
+
+  describe(`successful requests`, () => {
+    beforeEach(() => {
+      ctx.res({
+        body: {
+          data: {
+            result: 123,
+          },
+        },
+      })
+
+      requestMiddleware = vitest.fn((req) => ({ ...req }))
+      responseMiddleware = vitest.fn()
+      client = new GraphQLClient(ctx.url, {
+        requestMiddleware,
+        responseMiddleware,
+      })
+    })
+
+    it(`request`, async () => {
+      const requestPromise = client.request<{ result: number }>(`x`)
+      expect(requestMiddleware).toBeCalledTimes(1)
+      const res = await requestPromise
+      expect(responseMiddleware).toBeCalledTimes(1)
+      expect(res.result).toBe(123)
+    })
+
+    it(`rawRequest`, async () => {
+      const requestPromise = client.rawRequest<{ result: number }>(`x`)
+      expect(requestMiddleware).toBeCalledTimes(1)
+      await requestPromise
+      expect(responseMiddleware).toBeCalledTimes(1)
+    })
+
+    it(`batchRequests`, async () => {
+      const requestPromise = client.batchRequests([{ document: `x` }])
+      expect(requestMiddleware).toBeCalledTimes(1)
+      await requestPromise
+      expect(responseMiddleware).toBeCalledTimes(1)
+    })
+
+    it(`url changes`, async () => {
+      requestMiddleware = vitest.fn((req) => ({ ...req, url: ctx.url }))
+      const _client = new GraphQLClient(`https://graphql.org`, {
+        requestMiddleware,
+      })
+      const requestPromise = _client.request<{ result: number }>(`x`)
+      const res = await requestPromise
+      expect(requestMiddleware).toBeCalledTimes(1)
+      expect(res.result).toBe(123)
+    })
+  })
+
+  describe(`async request middleware`, () => {
+    beforeEach(() => {
+      ctx.res({
+        body: {
+          data: {
+            result: 123,
+          },
+        },
+      })
+
+      requestMiddleware = vitest.fn(async (req) => ({ ...req }))
+      client = new GraphQLClient(ctx.url, {
+        requestMiddleware,
+      })
+    })
+
+    it(`request`, async () => {
+      const requestPromise = client.request<{ result: number }>(`x`)
+      expect(requestMiddleware).toBeCalledTimes(1)
+      await requestPromise
+    })
+
+    it(`rawRequest`, async () => {
+      const requestPromise = client.rawRequest<{ result: number }>(`x`)
+      expect(requestMiddleware).toBeCalledTimes(1)
+      await requestPromise
+    })
+
+    it(`batchRequests`, async () => {
+      const requestPromise = client.batchRequests([{ document: `x` }])
+      expect(requestMiddleware).toBeCalledTimes(1)
+      await requestPromise
+    })
+  })
+
+  describe(`failed requests`, () => {
+    beforeEach(() => {
+      ctx.res({
+        body: {
+          errors: {
+            message: `Syntax Error GraphQL request (1:1) Unexpected Name "x"\n\n1: x\n   ^\n`,
+            locations: [
+              {
+                line: 1,
+                column: 1,
+              },
+            ],
+          },
+        },
+      })
+
+      requestMiddleware = vitest.fn((req) => ({ ...req }))
+      responseMiddleware = vitest.fn()
+      client = new GraphQLClient(ctx.url, {
+        requestMiddleware,
+        responseMiddleware,
+      })
+    })
+
+    it(`request`, async () => {
+      const requestPromise = client.request<{ result: number }>(`x`)
+      expect(requestMiddleware).toBeCalledTimes(1)
+      await expect(requestPromise).rejects.toThrowError()
+      expect(responseMiddleware).toBeCalledTimes(1)
+    })
+
+    it(`rawRequest`, async () => {
+      const requestPromise = client.rawRequest<{ result: number }>(`x`)
+      expect(requestMiddleware).toBeCalledTimes(1)
+      await expect(requestPromise).rejects.toThrowError()
+      expect(responseMiddleware).toBeCalledTimes(1)
+    })
+
+    it(`batchRequests`, async () => {
+      const requestPromise = client.batchRequests([{ document: `x` }])
+      expect(requestMiddleware).toBeCalledTimes(1)
+      await expect(requestPromise).rejects.toThrowError()
+      expect(responseMiddleware).toBeCalledTimes(1)
+    })
+  })
+})
+
 // todo needs to be tested in browser environment
 // the options under test here aren't used by node-fetch
-test.skip('extra fetch options', async () => {
+test.skip(`extra fetch options`, async () => {
   const options: RequestInit = {
-    credentials: 'include',
-    mode: 'cors',
-    cache: 'reload',
+    credentials: `include`,
+    mode: `cors`,
+    cache: `reload`,
   }
 
-  const client = new GraphQLClient(ctx.url, options)
+  const client = new GraphQLClient(ctx.url, options as any)
   const { requests } = ctx.res({
-    body: { data: { test: 'test' } },
+    body: { data: { test: `test` } },
   })
-  await client.request('{ test }')
+  await client.request(`{ test }`)
   expect(requests).toMatchInlineSnapshot(`
     Array [
       Object {
@@ -152,12 +337,12 @@ test.skip('extra fetch options', async () => {
   `)
 })
 
-test('case-insensitive content-type header for custom fetch', async () => {
-  const testData = { data: { test: 'test' } }
+test(`case-insensitive content-type header for custom fetch`, async () => {
+  const testData = { data: { test: `test` } }
   const testResponseHeaders = new Map()
-  testResponseHeaders.set('ConTENT-type', 'apPliCatiON/JSON')
+  testResponseHeaders.set(`ConTENT-type`, `apPliCatiON/JSON`)
 
-  const options: Dom.RequestInit = {
+  const options: RequestConfig = {
     fetch: function (url: string) {
       return Promise.resolve({
         headers: testResponseHeaders,
@@ -176,13 +361,13 @@ test('case-insensitive content-type header for custom fetch', async () => {
   }
 
   const client = new GraphQLClient(ctx.url, options)
-  const result = await client.request('{ test }')
+  const result = await client.request(`{ test }`)
 
   expect(result).toEqual(testData.data)
 })
 
-describe('operationName parsing', () => {
-  it('should work for gql documents', async () => {
+describe(`operationName parsing`, () => {
+  it(`should work for gql documents`, async () => {
     const mock = ctx.res({ body: { data: { foo: 1 } } })
     await request(
       ctx.url,
@@ -193,11 +378,11 @@ describe('operationName parsing', () => {
       `
     )
 
-    const requestBody = mock.requests[0].body
-    expect(requestBody.operationName).toEqual('myGqlOperation')
+    const requestBody = mock.requests[0]?.body
+    expect(requestBody?.[`operationName`]).toEqual(`myGqlOperation`)
   })
 
-  it('should work for string documents', async () => {
+  it(`should work for string documents`, async () => {
     const mock = ctx.res({ body: { data: { foo: 1 } } })
     await request(
       ctx.url,
@@ -208,7 +393,20 @@ describe('operationName parsing', () => {
       `
     )
 
-    const requestBody = mock.requests[0].body
-    expect(requestBody.operationName).toEqual('myStringOperation')
+    const requestBody = mock.requests[0]?.body
+    expect(requestBody?.[`operationName`]).toEqual(`myStringOperation`)
   })
+})
+
+test(`should not throw error when errors property is an empty array (occured when using UltraGraphQL)`, async () => {
+  ctx.res({
+    body: {
+      data: { test: `test` },
+      errors: [],
+    },
+  })
+
+  const res = await new GraphQLClient(ctx.url).request(`{ test }`)
+
+  expect(res).toEqual(expect.objectContaining({ test: `test` }))
 })

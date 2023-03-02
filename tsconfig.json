@@ -1,16 +1,29 @@
 {
+  "extends": "@tsconfig/node16/tsconfig.json",
   "compilerOptions": {
-    "lib": ["es2015"],
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "esModuleInterop": true,
-    "outDir": "dist",
-    "rootDir": "src",
+    // Use ESM
+    "module": "NodeNext",
+    "moduleResolution": "nodenext",
+
+    // Make the compiler stricter, catch more errors
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+
+    // DX
     "sourceMap": true,
     "declaration": true,
-    "strict": true,
-    "target": "es5"
+    "declarationMap": true,
+    "incremental": true,
+    "tsBuildInfoFile": "node_modules/.cache/.tsbuildinfo",
+    "noErrorTruncation": true,
+
+    // Other
+    "skipLibCheck": true,
+    "esModuleInterop": true
   },
-  "exclude": ["node_modules"],
-  "include": ["src"]
+  "include": ["src", "tests", "examples"],
+  "exclude": ["build"]
 }

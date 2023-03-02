@@ -1,9 +1,9 @@
-import fetch from 'cross-fetch';
-import { GraphQLClient } from '../src'
+import { GraphQLClient } from '../src/index.js'
+import fetch from 'cross-fetch'
 ;(async function () {
-  const endpoint = 'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr'
+  const endpoint = `https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr`
 
-  const graphQLClient = new GraphQLClient(endpoint, { fetch: fetch})
+  const graphQLClient = new GraphQLClient(endpoint, { fetch: fetch })
 
   const query = /* GraphQL */ `
     {

@@ -1,11 +1,12 @@
-import { GraphQLClient } from '../src'
-import { setupTestServer } from './__helpers'
+import { GraphQLClient } from '../src/index.js'
+import { setupMockServer } from './__helpers.js'
+import { describe, expect, test } from 'vitest'
 
-const ctx_0 = setupTestServer()
-const ctx_1 = setupTestServer()
+const ctx_0 = setupMockServer()
+const ctx_1 = setupMockServer()
 
-describe('using class', () => {
-  test('.setEndpoint that send request to new server', async () => {
+describe(`using class`, () => {
+  test(`.setEndpoint that send request to new server`, async () => {
     expect(ctx_0.url === ctx_1.url).toEqual(false)
     const client = new GraphQLClient(ctx_0.url)
     const mock_0 = ctx_0.res()
