@@ -1,6 +1,6 @@
 {
-  "name": "graphql-request",
-  "version": "0.0.0-dripip",
+  "name": "weapp-graphql-request",
+  "version": "0.0.1",
   "type": "module",
   "exports": {
     ".": {
@@ -60,15 +60,13 @@
     "release:pr": "dripip pr"
   },
   "dependencies": {
-    "@graphql-typed-document-node/core": "^3.1.1",
-    "cross-fetch": "^3.1.5",
-    "extract-files": "^9.0.0",
-    "form-data": "^3.0.0"
+    "@graphql-typed-document-node/core": "^3.1.1"
   },
   "peerDependencies": {
     "graphql": "14 - 16"
   },
   "devDependencies": {
+    "@dcloudio/types": "^3.2.11",
     "@prisma-labs/prettier-config": "^0.1.0",
     "@tsconfig/node16": "^1.0.3",
     "@types/body-parser": "^1.19.2",
@@ -97,6 +95,7 @@
     "graphql-tag": "^2.12.5",
     "graphql-ws": "^5.11.2",
     "happy-dom": "^8.1.5",
+    "miniprogram-api-typings": "^3.9.0",
     "prettier": "^2.8.3",
     "type-fest": "^3.5.3",
     "typescript": "^4.9.4",

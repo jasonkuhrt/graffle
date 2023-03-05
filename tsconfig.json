@@ -4,14 +4,12 @@
     // Use ESM
     "module": "NodeNext",
     "moduleResolution": "nodenext",
-
     // Make the compiler stricter, catch more errors
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
-
     // DX
     "sourceMap": true,
     "declaration": true,
@@ -19,11 +17,20 @@
     "incremental": true,
     "tsBuildInfoFile": "node_modules/.cache/.tsbuildinfo",
     "noErrorTruncation": true,
-
     // Other
     "skipLibCheck": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "types": [
+      "@dcloudio/types",
+      "miniprogram-api-typings"
+    ]
   },
-  "include": ["src", "tests", "examples"],
-  "exclude": ["build"]
+  "include": [
+    "src",
+    "tests",
+    "examples"
+  ],
+  "exclude": [
+    "build"
+  ]
 }
