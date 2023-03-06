@@ -19,11 +19,7 @@
     "noErrorTruncation": true,
     // Other
     "skipLibCheck": true,
-    "esModuleInterop": true,
-    "types": [
-      "@dcloudio/types",
-      "miniprogram-api-typings"
-    ]
+    "esModuleInterop": true
   },
   "include": [
     "src",

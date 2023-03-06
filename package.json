@@ -1,7 +1,7 @@
 {
   "name": "weapp-graphql-request",
   "description": "(WIP) this is a util fork form graphql-request and only worked in weapp environment",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "type": "module",
   "main": "./build/cjs/index.js",
   "module": "./build/esm/index.js",
@@ -63,13 +63,13 @@
     "release:pr": "dripip pr"
   },
   "dependencies": {
-    "@graphql-typed-document-node/core": "^3.1.1",
-    "cross-fetch": "^3.1.5"
+    "@graphql-typed-document-node/core": "^3.1.1"
   },
   "peerDependencies": {
     "graphql": "14 - 16"
   },
   "devDependencies": {
+    "cross-fetch": "^3.1.5",
     "@dcloudio/types": "^3.2.11",
     "@prisma-labs/prettier-config": "^0.1.0",
     "@tsconfig/node16": "^1.0.3",
