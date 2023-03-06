@@ -1,10 +1,11 @@
-import { GraphQLSchema, GraphQLObjectType, GraphQLString } from 'graphql';
+import { makeExecutableSchema } from '@graphql-tools/schema'
 import gql from 'graphql-tag'
 import { useServer } from 'graphql-ws/lib/use/ws';
 import { GRAPHQL_TRANSPORT_WS_PROTOCOL } from 'graphql-ws';
-import { GraphQLWebSocketClient } from '../src/graphql-ws';
+import { GraphQLWebSocketClient } from '../src/graphql-ws.js';
 import getPort from 'get-port';
-import WebSocketImpl, { Server as WebSocketServer } from 'ws';
+import WebSocketImpl, { WebSocketServer } from 'ws';
+import { beforeAll, afterAll, expect, test } from 'vitest';
 
 async function createClient(url: string) {
     return new Promise<GraphQLWebSocketClient>((resolve) => {
@@ -13,31 +14,31 @@ async function createClient(url: string) {
     })
 }
 
-const schema = new GraphQLSchema({
-    query: new GraphQLObjectType({
-        name: 'Query',
-        fields: {
-            hello: {
-                type: GraphQLString,
-                resolve: () => 'world',
-            },
-        },
-    }),
-    subscription: new GraphQLObjectType({
-        name: 'Subscription',
-        fields: {
-            greetings: {
-                type: GraphQLString,
-                subscribe: async function* () {
-                    for (const hi of ['Hi', 'Bonjour', 'Hola', 'Ciao', 'Zdravo']) {
-                        yield { greetings: hi };
-                    }
-                },
-            },
-        },
-    }),
-});
+const typeDefs = gql`
+  type Query {
+    hello: String
+  }
+  type Subscription {
+    greetings: String
+  }
+`;
 
+const resolvers = {
+    Query: {
+        hello: () => 'world',
+    },
+    Subscription: {
+        greetings: {
+            subscribe: async function* () {
+                for (const hi of ['Hi', 'Bonjour', 'Hola', 'Ciao', 'Zdravo']) {
+                    yield { greetings: hi };
+                }
+            }
+        }
+    }
+};
+
+const schema = makeExecutableSchema({ typeDefs, resolvers }) 
 
 var ctx: { server: WebSocketServer, url: string }
 
