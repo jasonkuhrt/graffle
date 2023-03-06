@@ -1,7 +1,7 @@
 {
   "name": "weapp-graphql-request",
   "description": "(WIP) this is a util fork form graphql-request and only worked in weapp environment",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "type": "module",
   "main": "./build/cjs/index.js",
   "module": "./build/esm/index.js",
