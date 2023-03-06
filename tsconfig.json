@@ -1,6 +1,9 @@
 {
   "extends": "@tsconfig/node16/tsconfig.json",
   "compilerOptions": {
+    "lib": [
+      "DOM"
+    ],
     // Use ESM
     "module": "NodeNext",
     "moduleResolution": "nodenext",
