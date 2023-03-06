@@ -1,5 +1,6 @@
 {
   "name": "weapp-graphql-request",
+  "description": "(WIP) this is a util fork form graphql-request and only worked in weapp environment",
   "version": "0.0.1",
   "type": "module",
   "exports": {
@@ -60,7 +61,8 @@
     "release:pr": "dripip pr"
   },
   "dependencies": {
-    "@graphql-typed-document-node/core": "^3.1.1"
+    "@graphql-typed-document-node/core": "^3.1.1",
+    "cross-fetch": "^3.1.5"
   },
   "peerDependencies": {
     "graphql": "14 - 16"
