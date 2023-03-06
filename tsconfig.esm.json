@@ -1,6 +1,7 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
+    "target": "ES2015",
     "outDir": "build/esm",
     "rootDir": "src"
   },
