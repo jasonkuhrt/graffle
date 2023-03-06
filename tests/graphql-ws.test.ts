@@ -46,7 +46,7 @@ var ctx: { server: WebSocketServer; url: string }
 
 beforeAll(async () => {
   const port = await getPort()
-  const server = new WebSocketServer({ path: '/graphql', host: '127.0.0.1', port })
+  const server = new WebSocketServer({ path: '/graphql', host: 'localhost', port })
   useServer({ schema }, server)
   ctx = { server, url: `ws://localhost:${port}/graphql` }
 })
