@@ -14,10 +14,10 @@ npm i weapp-graphql-request weapp-fetch graphql
 
 ```js
 import { GraphQLClient, gql } from 'weapp-graphql-request'
-import { weappFetch, createWeappFetch } from 'weapp-fetch'
-// weappFetch is createWeappFetch(wx.request)
-// const uniFetch = createWeappFetch(uni.request)
-// const taroFetch = createWeappFetch(taro.request)
+import { createFetch } from 'weapp-fetch'
+// const weappFetch = createFetch(wx.request)
+// const uniFetch = createFetch(uni.request)
+// const taroFetch = createFetch(taro.request)
 // etc..
 const graphQLClient = new GraphQLClient('http://localhost:3000', {
   fetch: weappFetch
@@ -32,7 +32,7 @@ you should install `weapp-fetch` instead of other `fetch` implement because only
 
 Refers to [graphql-request](https://www.npmjs.com/package/graphql-request)
 
-You can read it's doc for usage, but there are some points not support. 
+You can read it's doc for usage, but there are some points not support.
 
 1. `GraphQLWebSocketClient`, cause weapp have another websocket implement which different from  `the standard`。
 2. `File upload`, weapp has no `Blob`/`File`/`FormData` class.

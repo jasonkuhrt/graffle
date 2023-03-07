@@ -617,19 +617,12 @@ const getResult = async (
   | { data: undefined; errors: object[] }
 > => {
   let contentType: string | undefined
-  // 小程序只有 entriesget has keys
-  // @ts-ignore
-  response.headers.entries().forEach(([key, value]) => {
+  
+  response.headers.forEach((value, key) => {
     if (key.toLowerCase() === `content-type`) {
       contentType = value
     }
   })
-
-  // response.headers.forEach((value, key) => {
-  //   if (key.toLowerCase() === `content-type`) {
-  //     contentType = value
-  //   }
-  // })
 
   if (
     contentType &&
