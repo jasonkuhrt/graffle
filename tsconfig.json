@@ -14,9 +14,9 @@
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
     // DX
-    "sourceMap": true,
+    "sourceMap": false,
     "declaration": true,
-    "declarationMap": true,
+    "declarationMap": false,
     "incremental": true,
     "tsBuildInfoFile": "node_modules/.cache/.tsbuildinfo",
     "noErrorTruncation": true,
