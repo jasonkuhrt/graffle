@@ -40,6 +40,8 @@ Minimal GraphQL client supporting Node and browsers for scripts or simple apps
     - [None (default)](#none-default)
     - [Ignore](#ignore)
     - [All](#all)
+- [Troubleshooting](#troubleshooting)
+  - [React Native + Metro does not support yet `exports` field](#react-native--metro-does-not-support-yet-exports-field)
 - [FAQ](#faq)
   - [Why do I have to install `graphql`?](#why-do-i-have-to-install-graphql)
   - [Do I need to wrap my GraphQL documents inside the `gql` template exported by `graphql-request`?](#do-i-need-to-wrap-my-graphql-documents-inside-the-gql-template-exported-by-graphql-request)
@@ -778,6 +780,35 @@ Ignore incoming errors and resolve like no errors occurred
 #### All
 
 Return both the errors and data, only works with `rawRequest`.
+
+## Troubleshooting
+
+#### React Native + Metro does not support yet `exports` field
+
+You might encounter the error below when you try to build a React Native app that uses `graphql-request`:
+
+```
+Error: While trying to resolve module "graphql-request" from file "/path/to/src/App.ts", the package "/path/to/node_modules/graphql-request/package.json" was successfully found. However, this package itself specifies a "main" module field that could not be resolved ("/path/to/node_modules/graphql-request/index".
+```
+
+This happens because Metro [does not support yet](https://github.com/facebook/metro/issues/670) the `exports` field in package.json. A workaround for this problem is to edit the `metro.config.js` file in your project and add a new [`resolveRequest`](https://facebook.github.io/metro/docs/configuration/#resolverequest) for `graphql-request`. Like this:
+
+```javascript
+resolver: {
+  resolveRequest: (context, moduleName, platform) => {
+    if (moduleName.startsWith('graphql-request')) {
+      return {
+        filePath: `${__dirname}/node_modules/graphql-request/build/esm/index.js`,
+        type: 'sourceFile',
+      }
+    }
+
+    return context.resolveRequest(context, moduleName, platform)
+  }
+}
+```
+
+After doing this change, clear Metro's cache and restart your application.
 
 ## FAQ
 
