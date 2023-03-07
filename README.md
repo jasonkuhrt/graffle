@@ -795,16 +795,16 @@ This happens because Metro [does not support yet](https://github.com/facebook/me
 
 ```javascript
 resolver: {
-    resolveRequest: (context, moduleName, platform) => {
-        if (moduleName.startsWith('graphql-request')) {
-            return {
-                filePath: `${__dirname}/node_modules/graphql-request/build/esm/index.js`,
-                type: 'sourceFile',
-            };
-        }
-
-        return context.resolveRequest(context, moduleName, platform);
+  resolveRequest: (context, moduleName, platform) => {
+    if (moduleName.startsWith('graphql-request')) {
+      return {
+        filePath: `${__dirname}/node_modules/graphql-request/build/esm/index.js`,
+        type: 'sourceFile',
+      }
     }
+
+    return context.resolveRequest(context, moduleName, platform)
+  }
 }
 ```
 
