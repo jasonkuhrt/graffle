@@ -1,4 +1,4 @@
-
+import 'miniprogram-api-typings'
 import { resolveRequestDocument } from './resolveRequestDocument.js'
 import type * as Dom from './types.dom.js'
 import type { RequestDocument, Variables } from './types.js'

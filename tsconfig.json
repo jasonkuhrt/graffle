@@ -2,7 +2,8 @@
   "extends": "@tsconfig/node16/tsconfig.json",
   "compilerOptions": {
     "lib": [
-      "DOM"
+      "DOM",
+      "ES2015"
     ],
     // Use ESM
     "module": "NodeNext",
@@ -22,10 +23,7 @@
     "noErrorTruncation": true,
     // Other
     "skipLibCheck": true,
-    "esModuleInterop": true,
-    "types": [
-      "miniprogram-api-typings"
-    ]
+    "esModuleInterop": true
   },
   "include": [
     "src",
