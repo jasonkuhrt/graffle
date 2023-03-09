@@ -660,5 +660,5 @@ export const gql = (chunks: TemplateStringsArray, ...variables: any[]): string =
   )
 }
 
-// export { GraphQLWebSocketClient } from './graphql-ws.js'
 export { resolveRequestDocument } from './resolveRequestDocument.js'
+export { GraphQLWebSocketClient } from './weapp-graphql-ws.js'

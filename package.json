@@ -1,7 +1,7 @@
 {
   "name": "weapp-graphql-request",
   "description": "(WIP) this is a util fork form graphql-request and only worked in weapp environment",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "type": "module",
   "main": "./build/cjs/index.js",
   "module": "./build/esm/index.js",
@@ -24,24 +24,25 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/jasonkuhrt/graphql-request.git"
+    "url": "https://github.com/sonofmagic/weapp-graphql-request.git"
   },
   "keywords": [
+    "weapp",
     "graphql",
     "request",
     "fetch",
     "graphql-client"
   ],
   "author": {
-    "name": "Jason Kuhrt",
-    "email": "jasonkuhrt@me.com",
-    "url": "https://kuhrt.me"
+    "name": "SonOfMagic",
+    "email": "qq1324318532@gmail.com",
+    "url": "https://icebreaker.top"
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/jasonkuhrt/graphql-request/issues"
+    "url": "https://github.com/sonofmagic/weapp-graphql-request/issues"
   },
-  "homepage": "https://github.com/jasonkuhrt/graphql-request",
+  "homepage": "https://github.com/sonofmagic/weapp-graphql-request",
   "scripts": {
     "build:docs": "doctoc README.md --notitle",
     "dev": "rimraf dist && tsc --watch",
