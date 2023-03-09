@@ -1,4 +1,4 @@
-import 'miniprogram-api-typings'
+/// <reference path="../node_modules/miniprogram-api-typings/index.d.ts" />
 import { resolveRequestDocument } from './resolveRequestDocument.js'
 import type * as Dom from './types.dom.js'
 import type { RequestDocument, Variables } from './types.js'
