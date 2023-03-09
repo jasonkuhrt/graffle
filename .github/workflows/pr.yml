@@ -2,28 +2,19 @@ name: pr
 on:
   pull_request: {}
 jobs:
-  setup:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/actions/setup
   format:
-    needs: setup
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/setup
       - run: pnpm check:format
   types:
-    needs: setup
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/setup
       - run: pnpm check:types
-
-  tests:
-    needs: setup
+  test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
