@@ -1,3 +1,4 @@
+/* eslint-disable prefer-arrow/prefer-arrow-functions */
 /// <reference path="../node_modules/miniprogram-api-typings/index.d.ts" />
 import { resolveRequestDocument } from './resolveRequestDocument.js'
 import type * as Dom from './types.dom.js'
@@ -91,7 +92,7 @@ export class GraphQLWebSocketClient {
   private socket: WechatMiniprogram.SocketTask
   private socketState: SocketState = { acknowledged: false, lastRequestId: 0, subscriptions: {} }
 
-  constructor(socket: WechatMiniprogram.SocketTask, { onInit, onAcknowledged, onPing, onPong }: SocketHandler) {
+  constructor(socket: WechatMiniprogram.SocketTask, { onInit, onAcknowledged, onPing, onPong }: SocketHandler = {}) {
     this.socket = socket
 
     socket.onOpen(async (e) => {
