@@ -15,7 +15,7 @@
     }
   },
   "types": "./build/esm/index.d.ts",
-  "packageManager": "pnpm@7.29.3",
+  "packageManager": "pnpm@7.30.0",
   "files": [
     "build",
     "src"
