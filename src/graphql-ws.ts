@@ -93,22 +93,22 @@ export class GraphQLWebSocketClient {
   constructor(socket: WebSocket, { onInit, onAcknowledged, onPing, onPong }: SocketHandler) {
     this.socket = socket
 
-    socket.onopen = async (e) => {
+    socket.addEventListener('open', async (e) => {
       this.socketState.acknowledged = false
       this.socketState.subscriptions = {}
       socket.send(ConnectionInit(onInit ? await onInit() : null).text)
-    }
+    })
 
-    socket.onclose = (e) => {
+    socket.addEventListener('close', (e) => {
       this.socketState.acknowledged = false
       this.socketState.subscriptions = {}
-    }
+    })
 
-    socket.onerror = (e) => {
+    socket.addEventListener('error', (e) => {
       console.error(e)
-    }
+    })
 
-    socket.onmessage = (e) => {
+    socket.addEventListener('message', (e) => {
       try {
         const message = parseMessage(e.data)
         switch (message.type) {
@@ -176,7 +176,7 @@ export class GraphQLWebSocketClient {
         socket.close(1006)
       }
       socket.close(4400, `Unknown graphql-ws message.`)
-    }
+    })
   }
 
   private makeSubscribe<T, V extends Variables, E>(

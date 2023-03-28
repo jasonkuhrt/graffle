@@ -18,7 +18,7 @@
     }
   },
   "types": "./build/esm/index.d.ts",
-  "packageManager": "pnpm@7.29.0",
+  "packageManager": "pnpm@7.30.5",
   "files": [
     "build"
   ],
@@ -71,6 +71,7 @@
   "devDependencies": {
     "cross-fetch": "^3.1.5",
     "@dcloudio/types": "^3.2.11",
+    "@graphql-tools/schema": "^9.0.16",
     "@prisma-labs/prettier-config": "^0.1.0",
     "@tsconfig/node16": "^1.0.3",
     "@types/body-parser": "^1.19.2",

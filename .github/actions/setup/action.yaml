@@ -22,19 +22,24 @@ runs:
         echo "PnPM version is $(pnpm --version)"
       shell: bash
     # https://github.com/pnpm/action-setup#use-cache-to-reduce-installation-time
+    - name: Get Current Month
+      id: date-month
+      shell: bash
+      run: |
+        DATE=$(date +'%Y-%m')
+        echo "$DATE"
+        echo "date_month=$DATE" >> $GITHUB_OUTPUT
     - name: Get pnpm store directory
       id: pnpm-cache
       shell: bash
-      run: |
-        echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
+      run: echo "pnpm_cache_dir=$(pnpm store path)" >> $GITHUB_OUTPUT
     - uses: actions/cache@v3
       name: Setup pnpm cache
       with:
         path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
-        key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-        restore-keys: |
-          ${{ runner.os }}-pnpm-store-
-    - name: Install dependencies
+        key: ${{ runner.os }}-pnpm-store-${{steps.date-month.outputs.date_month}}-${{ hashFiles('**/pnpm-lock.yaml') }}
+        restore-keys: ${{ runner.os }}-pnpm-store-${{steps.date-month.outputs.date_month}}
+    - name: Install Dependencies
       run: pnpm install
       shell: bash
       if: ${{inputs.install-deps}} == 'true'
