@@ -9,13 +9,15 @@ import {
   parseRequestExtendedArgs,
 } from './parseArgs.js'
 import { resolveRequestDocument } from './resolveRequestDocument.js'
-import type * as Dom from './types.dom.js'
 import type {
+  FetchOptions,
+  GraphQLClientRequestHeaders,
+  GraphQLClientResponse,
   HTTPMethodInput,
+  JsonSerializer,
   MaybeFunction,
   RequestConfig,
   RequestMiddleware,
-  Response,
   VariablesAndRequestHeadersArgs,
 } from './types.js'
 import {
@@ -32,7 +34,6 @@ import {
 } from './types.js'
 import type { TypedDocumentNode } from '@graphql-typed-document-node/core'
 import crossFetch, * as CrossFetch from 'cross-fetch'
-import type { T, V } from 'vitest/dist/types-7cd96283.js'
 
 export {
   BatchRequestDocument,
@@ -50,7 +51,7 @@ export {
 /**
  * Convert the given headers configuration into a plain object.
  */
-const resolveHeaders = (headers: Dom.RequestInit['headers']): Record<string, string> => {
+const resolveHeaders = (headers?: GraphQLClientRequestHeaders): Record<string, string> => {
   let oHeaders: Record<string, string> = {}
   if (headers) {
     if (
@@ -81,14 +82,14 @@ type BuildRequestConfigParamsBatch<V> = {
   query: string[]
   variables: V[] | undefined
   operationName: undefined
-  jsonSerializer: Dom.JsonSerializer
+  jsonSerializer: JsonSerializer
 }
 
 type BuildRequestConfigParamsSingle<V> = {
   query: string
   variables: V | undefined
   operationName: string | undefined
-  jsonSerializer: Dom.JsonSerializer
+  jsonSerializer: JsonSerializer
 }
 
 type BuildRequestConfigParams<V> = BuildRequestConfigParamsSingle<V> | BuildRequestConfigParamsBatch<V>
@@ -132,15 +133,15 @@ const buildRequestConfig = <V extends Variables>(params: BuildRequestConfigParam
   return `query=${encodeURIComponent(params_.jsonSerializer.stringify(payload))}`
 }
 
-type Fetch = (url: string, config: Dom.RequestInit) => Promise<Dom.Response>
+type Fetch = (url: string, config: RequestInit) => Promise<Response>
 
 interface RequestVerbParams<V extends Variables = Variables> {
   url: string
   query: string | string[]
   fetch: Fetch
-  fetchOptions: Dom.RequestInit
+  fetchOptions: FetchOptions
   variables?: V
-  headers?: Dom.RequestInit['headers']
+  headers?: GraphQLClientRequestHeaders
   operationName?: string
   middleware?: RequestMiddleware<V>
 }
@@ -170,7 +171,7 @@ const createHttpMethodFetcher =
       })
     }
 
-    const init: Dom.RequestInit = {
+    const init: RequestInit = {
       method,
       headers,
       body,
@@ -202,7 +203,7 @@ export class GraphQLClient {
    */
   rawRequest: RawRequestMethod = async <T, V extends Variables = Variables>(
     ...args: RawRequestMethodArgs<V>
-  ): Promise<Response<T>> => {
+  ): Promise<GraphQLClientResponse<T>> => {
     const [queryOrOptions, variables, requestHeaders] = args
     const rawRequestOptions = parseRawRequestArgs<V>(queryOrOptions, variables, requestHeaders)
 
@@ -311,13 +312,13 @@ export class GraphQLClient {
    * Send GraphQL documents in batch to the server.
    */
   // prettier-ignore
-  batchRequests<T extends BatchResult, V extends Variables = Variables>(documents: BatchRequestDocument<V>[], requestHeaders?: Dom.RequestInit['headers']): Promise<T>
+  batchRequests<T extends BatchResult, V extends Variables = Variables>(documents: BatchRequestDocument<V>[], requestHeaders?: GraphQLClientRequestHeaders): Promise<T>
   // prettier-ignore
   batchRequests<T extends BatchResult, V extends Variables = Variables>(options: BatchRequestsOptions<V>): Promise<T>
   // prettier-ignore
   batchRequests<T extends BatchResult, V extends Variables = Variables>(
     documentsOrOptions: BatchRequestDocument<V>[] | BatchRequestsOptions<V>,
-    requestHeaders?: Dom.RequestInit['headers']
+    requestHeaders?: GraphQLClientRequestHeaders
   ): Promise<T> {
     const batchRequestOptions = parseBatchRequestArgs<V>(documentsOrOptions, requestHeaders)
     const { headers, ...fetchOptions } = this.requestConfig
@@ -360,7 +361,7 @@ export class GraphQLClient {
       })
   }
 
-  setHeaders(headers: Dom.RequestInit['headers']): GraphQLClient {
+  setHeaders(headers: GraphQLClientRequestHeaders): GraphQLClient {
     this.requestConfig.headers = headers
     return this
   }
@@ -395,13 +396,13 @@ const makeRequest = async <T = unknown, V extends Variables = Variables>(params:
   url: string
   query: string | string[]
   variables?: V
-  headers?: Dom.RequestInit['headers']
+  headers?: GraphQLClientRequestHeaders
   operationName?: string
   fetch: Fetch
   method?: HTTPMethodInput
-  fetchOptions: Dom.RequestInit
+  fetchOptions: FetchOptions
   middleware?: RequestMiddleware<V>
-}): Promise<Response<T>> => {
+}): Promise<GraphQLClientResponse<T>> => {
   const { query, variables, fetchOptions } = params
   const fetcher = createHttpMethodFetcher(uppercase(params.method ?? `post`))
   const isBatchingQuery = Array.isArray(params.query)
@@ -448,19 +449,19 @@ const makeRequest = async <T = unknown, V extends Variables = Variables>(params:
 
 // prettier-ignore
 interface RawRequestMethod {
-  <T, V extends Variables = Variables>(query: string, variables?: V, requestHeaders?: Dom.RequestInit['headers']): Promise<Response<T>>
-  <T, V extends Variables = Variables>(options: RawRequestOptions<V>): Promise<Response<T>>
+  <T, V extends Variables = Variables>(query: string, variables?: V, requestHeaders?: GraphQLClientRequestHeaders): Promise<GraphQLClientResponse<T>>
+  <T, V extends Variables = Variables>(options: RawRequestOptions<V>): Promise<GraphQLClientResponse<T>>
 }
 
 // prettier-ignore
 type RawRequestMethodArgs<V extends Variables> =
-  | [query: string, variables?: V, requestHeaders?: Dom.RequestInit['headers']]
+  | [query: string, variables?: V, requestHeaders?: GraphQLClientRequestHeaders]
   | [RawRequestOptions<V>]
 
 // prettier-ignore
 interface RawRequest {
-  <T, V extends Variables = Variables>(url: string, query: string, ...variablesAndRequestHeaders: VariablesAndRequestHeadersArgs<V>): Promise<Response<T>>
-  <T, V extends Variables = Variables>(options: RawRequestExtendedOptions<V>): Promise<Response<T>>
+  <T, V extends Variables = Variables>(url: string, query: string, ...variablesAndRequestHeaders: VariablesAndRequestHeadersArgs<V>): Promise<GraphQLClientResponse<T>>
+  <T, V extends Variables = Variables>(options: RawRequestExtendedOptions<V>): Promise<GraphQLClientResponse<T>>
 }
 
 // prettier-ignore
@@ -473,7 +474,7 @@ type RawRequestArgs<V extends Variables> =
  */
 export const rawRequest: RawRequest = async <T, V extends Variables>(
   ...args: RawRequestArgs<V>
-): Promise<Response<T>> => {
+): Promise<GraphQLClientResponse<T>> => {
   const [urlOrOptions, query, ...variablesAndRequestHeaders] = args
   const requestOptions = parseRawRequestExtendedArgs<V>(urlOrOptions, query, ...variablesAndRequestHeaders)
   const client = new GraphQLClient(requestOptions.url)
@@ -587,12 +588,12 @@ type BatchResult = [Result, ...Result[]]
 
 // prettier-ignore
 interface BatchRequests {
-  <T extends BatchResult, V extends Variables = Variables>(url: string, documents: BatchRequestDocument<V>[], requestHeaders?: Dom.RequestInit['headers']): Promise<T>
+  <T extends BatchResult, V extends Variables = Variables>(url: string, documents: BatchRequestDocument<V>[], requestHeaders?: GraphQLClientRequestHeaders): Promise<T>
   <T extends BatchResult, V extends Variables = Variables>(options: BatchRequestsExtendedOptions<V>): Promise<T>
 }
 
 type BatchRequestsArgs =
-  | [url: string, documents: BatchRequestDocument[], requestHeaders?: Dom.RequestInit['headers']]
+  | [url: string, documents: BatchRequestDocument[], requestHeaders?: GraphQLClientRequestHeaders]
   | [options: BatchRequestsExtendedOptions]
 
 const parseBatchRequestsArgsExtended = (args: BatchRequestsArgs): BatchRequestsExtendedOptions => {
@@ -611,8 +612,8 @@ const parseBatchRequestsArgsExtended = (args: BatchRequestsArgs): BatchRequestsE
 export default request
 
 const getResult = async (
-  response: Dom.Response,
-  jsonSerializer: Dom.JsonSerializer
+  response: Response,
+  jsonSerializer: JsonSerializer
 ): Promise<
   | { data: object; errors: undefined }[]
   | { data: object; errors: undefined }
