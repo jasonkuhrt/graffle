@@ -1,5 +1,4 @@
 import { defaultJsonSerializer } from './defaultJsonSerializer.js'
-import type * as Dom from './types.dom.js'
 import type { Variables } from './types.js'
 import type { ExtractableFile } from 'extract-files'
 import { extractFiles, isExtractableFile } from 'extract-files'
@@ -23,7 +22,7 @@ const createRequestBody = (
   variables?: Variables | Variables[],
   operationName?: string,
   jsonSerializer = defaultJsonSerializer
-): string | Dom.FormData => {
+): string | FormData => {
   const { clone, files } = extractFiles({ query, variables, operationName }, ``, isExtractableFileEnhanced)
 
   if (files.size === 0) {
@@ -65,7 +64,7 @@ const createRequestBody = (
     form.append(`${++i}`, file as any)
   })
 
-  return form as Dom.FormData
+  return form as FormData
 }
 
 export default createRequestBody

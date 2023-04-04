@@ -17,7 +17,7 @@ test(`minimal double query`, async () => {
   ])
 
   expect(firstResponse.data).toEqual(firstResult)
-  expect(secondResponse.data).toEqual(secondResult)
+  expect(secondResponse?.data).toEqual(secondResult)
 })
 
 test(`basic error`, async () => {
