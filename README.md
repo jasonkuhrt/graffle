@@ -35,14 +35,14 @@ Minimal GraphQL client supporting Node and browsers for scripts or simple apps
     - [None (default)](#none-default)
     - [Ignore](#ignore)
     - [All](#all)
-- [Knowledge Base](#knowledge-base)
-  - [Why was the file upload feature taken away? Will it return?](#why-was-the-file-upload-feature-taken-away-will-it-return)
-  - [Why do I have to install `graphql`?](#why-do-i-have-to-install-graphql)
-  - [Do I need to wrap my GraphQL documents inside the `gql` template exported by `graphql-request`?](#do-i-need-to-wrap-my-graphql-documents-inside-the-gql-template-exported-by-graphql-request)
-  - [What's the difference between `graphql-request`, Apollo and Relay?](#whats-the-difference-between-graphql-request-apollo-and-relay)
-  - [Why is the package `main` field missing?](#why-is-the-package-main-field-missing)
-  - [How do I work around React Native + Metro's lack of `exports` support?](#how-do-i-work-around-react-native--metros-lack-of-exports-support)
-  - [Get typed GraphQL Queries with GraphQL Code Generator](#get-typed-graphql-queries-with-graphql-code-generator)
+- [Knowledge Basee](#knowledge-basee)
+    - [Why was the file upload feature taken away? Will it return?](#why-was-the-file-upload-feature-taken-away-will-it-return)
+    - [Why do I have to install `graphql`?](#why-do-i-have-to-install-graphql)
+    - [Do I need to wrap my GraphQL documents inside the `gql` template exported by `graphql-request`?](#do-i-need-to-wrap-my-graphql-documents-inside-the-gql-template-exported-by-graphql-request)
+    - [What's the difference between `graphql-request`, Apollo and Relay?](#whats-the-difference-between-graphql-request-apollo-and-relay)
+    - [Why is the package `main` field missing?](#why-is-the-package-main-field-missing)
+    - [How do I work around React Native + Metro's lack of `exports` support?](#how-do-i-work-around-react-native--metros-lack-of-exports-support)
+    - [Get typed GraphQL Queries with GraphQL Code Generator](#get-typed-graphql-queries-with-graphql-code-generator)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -702,7 +702,7 @@ Ignore incoming errors and resolve like no errors occurred
 
 Return both the errors and data, only works with `rawRequest`.
 
-## Knowledge Base
+## Knowledge Basee
 
 #### Why was the file upload feature taken away? Will it return?
 
