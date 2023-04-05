@@ -1,65 +1,6 @@
 {
   "root": true,
-  "parser": "@typescript-eslint/parser",
-  "parserOptions": {
-    "project": ["tsconfig.json"]
-  },
-  "plugins": [
-    // This enables using new lint rules powered by the TypeScript compiler API.
-    // https://github.com/typescript-eslint/typescript-eslint
-    "@typescript-eslint",
-    // This makes it so the IDE reports lint rejections as warnings only. This is
-    // better than errors because most lint rejections are not runtime errors. This
-    // allows IDE errors to be exclusive for e.g. static type errors which often are
-    // reflective of real runtime errors.
-    // https://github.com/bfanger/eslint-plugin-only-warn
-    "only-warn",
-    // This enables the use of a lint rule to reject function declarations. This is
-    // preferable as a way to encourage higher order function usage. For example it is not
-    // possible to wrap a function declaration with Open Telemetry instrumentation but it is
-    // possible to wrap an arrow function since its an expression.
-    // https://github.com/TristonJ/eslint-plugin-prefer-arrow
-    "prefer-arrow",
-    // This enables the use of a lint rule to reject use of @deprecated functions.
-    // https://github.com/gund/eslint-plugin-deprecation
-    "deprecation",
-    // Import sorting integrated into ESLint.
-    // https://github.com/lydell/eslint-plugin-simple-import-sort
-    "simple-import-sort",
-    // https://github.com/microsoft/tsdoc/tree/master/eslint-plugin
-    "tsdoc"
-  ],
-  "extends": [
-    "eslint:recommended",
-    "plugin:@typescript-eslint/eslint-recommended",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:@typescript-eslint/recommended-requiring-type-checking",
-    "prettier"
-  ],
+  "extends": ["prisma"],
   "overrides": [],
-  "rules": {
-    "@typescript-eslint/consistent-type-imports": "warn",
-    // Enforce backticks
-    // Note you must disable the base rule as it can report incorrect errors.
-    "quotes": "off",
-    "@typescript-eslint/quotes": ["warn", "backtick"],
-    "tsdoc/syntax": "warn",
-    "simple-import-sort/imports": [
-      "warn",
-      {
-        "groups": []
-      }
-    ],
-    "simple-import-sort/exports": "warn",
-    "deprecation/deprecation": "warn",
-    "prefer-arrow/prefer-arrow-functions": "warn",
-    // TypeScript makes these safe & effective
-    "no-case-declarations": "off",
-    // Same approach used by TypeScript noUnusedLocals
-    "@typescript-eslint/no-unused-vars": ["warn", { "varsIgnorePattern": "^_", "argsIgnorePattern": "^_" }],
-    // Needed when working with .mts/.cts where a lone e.g. <T> is not allowed
-    "@typescript-eslint/no-unnecessary-type-constraint": "off",
-    // Useful for organizing Types
-    "@typescript-eslint/no-namespace": "off"
-  }
+  "rules": {}
 }
