@@ -1,7 +1,10 @@
 import type { RemoveIndex } from './helpers.js'
 import type { TypedDocumentNode } from '@graphql-typed-document-node/core'
+import type { fetch } from 'cross-fetch'
 import type { GraphQLError } from 'graphql/error/GraphQLError.js'
 import type { DocumentNode } from 'graphql/language/ast.js'
+
+export type Fetch = typeof fetch
 
 /**
  * 'None' will throw whenever the response contains errors
@@ -13,8 +16,8 @@ import type { DocumentNode } from 'graphql/language/ast.js'
 export type ErrorPolicy = 'none' | 'ignore' | 'all'
 
 export interface JsonSerializer {
-  stringify(obj: any): string
-  parse(obj: string): unknown
+  stringify: (obj: any) => string
+  parse: (obj: string) => unknown
 }
 
 export interface AdditionalRequestOptions {
@@ -89,7 +92,7 @@ export interface GraphQLClientResponse<T> {
 export type HTTPMethodInput = 'GET' | 'POST' | 'get' | 'post'
 
 export interface RequestConfig extends Omit<RequestInit, 'headers' | 'method'>, AdditionalRequestOptions {
-  fetch?: any
+  fetch?: Fetch
   method?: HTTPMethodInput
   headers?: MaybeFunction<GraphQLClientRequestHeaders>
   requestMiddleware?: RequestMiddleware

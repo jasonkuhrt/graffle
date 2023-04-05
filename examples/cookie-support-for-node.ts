@@ -1,4 +1,4 @@
-;(global as any).fetch = require(`fetch-cookie/node-fetch`)(require(`node-fetch`))
+;(global as any).fetch = require(`fetch-cookie/node-fetch`)(require(`node-fetch`)) //eslint-disable-line
 
 import { gql, GraphQLClient } from '../src/index.js'
 

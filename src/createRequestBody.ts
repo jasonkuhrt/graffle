@@ -8,9 +8,9 @@ import FormDataNode from 'form-data'
  * Duck type if NodeJS stream
  * https://github.com/sindresorhus/is-stream/blob/3750505b0727f6df54324784fe369365ef78841e/index.js#L3
  */
-const isExtractableFileEnhanced = (value: any): value is ExtractableFile | { pipe: Function } =>
+const isExtractableFileEnhanced = (value: unknown): value is ExtractableFile | { pipe: () => unknown } =>
   isExtractableFile(value) ||
-  (value !== null && typeof value === `object` && typeof value.pipe === `function`)
+  (typeof value === `object` && value !== null && `pipe` in value && typeof value.pipe === `function`)
 
 /**
  * Returns Multipart Form if body contains files
@@ -23,6 +23,7 @@ const createRequestBody = (
   operationName?: string,
   jsonSerializer = defaultJsonSerializer
 ): string | FormData => {
+  // eslint-disable-next-line
   const { clone, files } = extractFiles({ query, variables, operationName }, ``, isExtractableFileEnhanced)
 
   if (files.size === 0) {
@@ -36,9 +37,9 @@ const createRequestBody = (
 
     // Batch support
     const payload = query.reduce<{ query: string; variables: Variables | undefined }[]>(
-      (accu, currentQuery, index) => {
-        accu.push({ query: currentQuery, variables: variables ? variables[index] : undefined })
-        return accu
+      (acc, currentQuery, index) => {
+        acc.push({ query: currentQuery, variables: variables ? variables[index] : undefined })
+        return acc
       },
       []
     )

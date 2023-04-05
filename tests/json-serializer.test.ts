@@ -1,5 +1,7 @@
 import { GraphQLClient } from '../src/index.js'
+import type { Fetch, Variables } from '../src/types.js'
 import { setupMockServer } from './__helpers.js'
+import { Headers, Response } from 'cross-fetch'
 import { createReadStream } from 'fs'
 import { join } from 'path'
 import { beforeEach, describe, expect, test, vitest } from 'vitest'
@@ -13,21 +15,19 @@ const createMockSerializer = () => ({
 
 const testData = { data: { test: { name: `test` } } }
 
-const createMockFetch = () => (url: string) =>
-  Promise.resolve({
-    headers: new Map([[`Content-Type`, `application/json; charset=utf-8`]]),
-    data: testData,
-    text: () => {
-      return JSON.stringify(testData)
-    },
-    ok: true,
+const createMockFetch = (): Fetch => () => {
+  const response = new Response(JSON.stringify(testData), {
+    headers: new Headers({
+      'Content-Type': `application/json; charset=utf-8`,
+    }),
     status: 200,
-    url,
   })
+  return Promise.resolve(response)
+}
 
 describe(`jsonSerializer option`, () => {
   test(`is used for parsing response body`, async () => {
-    const client: GraphQLClient = new GraphQLClient(ctx.url, {
+    const client = new GraphQLClient(ctx.url, {
       jsonSerializer: createMockSerializer(),
       fetch: createMockFetch(),
     })
@@ -49,7 +49,7 @@ describe(`jsonSerializer option`, () => {
       }
 
     const testBatchQuery =
-      (expectedNumStringifyCalls: number, variables: any = simpleVariable) =>
+      (expectedNumStringifyCalls: number, variables: Variables = simpleVariable) =>
       async () => {
         await client.batchRequests([{ document, variables }])
         expect(client.requestConfig.jsonSerializer?.stringify).toBeCalledTimes(expectedNumStringifyCalls)

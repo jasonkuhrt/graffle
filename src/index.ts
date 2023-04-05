@@ -316,10 +316,7 @@ export class GraphQLClient {
   // prettier-ignore
   batchRequests<T extends BatchResult, V extends Variables = Variables>(options: BatchRequestsOptions<V>): Promise<T>
   // prettier-ignore
-  batchRequests<T extends BatchResult, V extends Variables = Variables>(
-    documentsOrOptions: BatchRequestDocument<V>[] | BatchRequestsOptions<V>,
-    requestHeaders?: GraphQLClientRequestHeaders
-  ): Promise<T> {
+  batchRequests<T extends BatchResult, V extends Variables = Variables>(documentsOrOptions: BatchRequestDocument<V>[] | BatchRequestsOptions<V>, requestHeaders?: GraphQLClientRequestHeaders): Promise<T> {
     const batchRequestOptions = parseBatchRequestArgs<V>(documentsOrOptions, requestHeaders)
     const { headers, ...fetchOptions } = this.requestConfig
 
@@ -374,7 +371,7 @@ export class GraphQLClient {
 
     if (headers) {
       // todo what if headers is in nested array form... ?
-      //@ts-ignore
+      //@ts-expect-error todo
       headers[key] = value
     } else {
       this.requestConfig.headers = { [key]: value }
@@ -422,7 +419,7 @@ const makeRequest = async <T = unknown, V extends Variables = Variables>(params:
 
   if (response.ok && successfullyPassedErrorPolicy && successfullyReceivedData) {
     // @ts-expect-error TODO fixme
-    const { errors, ...rest } = Array.isArray(result) ? result : result
+    const { errors: _, ...rest } = Array.isArray(result) ? result : result
     const data = fetchOptions.errorPolicy === `ignore` ? rest : result
     const dataEnvelope = isBatchingQuery ? { data } : data
 
@@ -517,22 +514,13 @@ export const rawRequest: RawRequest = async <T, V extends Variables>(
  * await request('https://foo.bar/graphql', gql`...`)
  * ```
  */
-export async function request<T, V extends Variables = Variables>(
-  url: string,
-  // @ts-ignore
-  document: RequestDocument | TypedDocumentNode<T, V>,
-  ...variablesAndRequestHeaders: VariablesAndRequestHeadersArgs<V>
-): Promise<T>
-export async function request<T, V extends Variables = Variables>(
-  options: RequestExtendedOptions<V, T>
-): Promise<T>
-export async function request<T, V extends Variables = Variables>(
-  urlOrOptions: string | RequestExtendedOptions<V, T>,
-  // @ts-ignore
-  document?: RequestDocument | TypedDocumentNode<T, V>,
-  ...variablesAndRequestHeaders: VariablesAndRequestHeadersArgs<V>
-): Promise<T> {
-  // @ts-ignore
+// prettier-ignore
+export async function request<T, V extends Variables = Variables>(url: string, document: RequestDocument | TypedDocumentNode<T, V>, ...variablesAndRequestHeaders: VariablesAndRequestHeadersArgs<V>): Promise<T>
+// prettier-ignore
+export async function request<T, V extends Variables = Variables>(options: RequestExtendedOptions<V, T>): Promise<T>
+// prettier-ignore
+// eslint-disable-next-line
+export async function request<T, V extends Variables = Variables>(urlOrOptions: string | RequestExtendedOptions<V, T>, document?: RequestDocument | TypedDocumentNode<T, V>, ...variablesAndRequestHeaders: VariablesAndRequestHeadersArgs<V>): Promise<T> {
   const requestOptions = parseRequestExtendedArgs<V>(urlOrOptions, document, ...variablesAndRequestHeaders)
   const client = new GraphQLClient(requestOptions.url)
   return client.request<T, V>({
@@ -648,18 +636,19 @@ const callOrIdentity = <T>(value: MaybeFunction<T>) => {
  * Convenience passthrough template tag to get the benefits of tooling for the gql template tag. This does not actually parse the input into a GraphQL DocumentNode like graphql-tag package does. It just returns the string with any variables given interpolated. Can save you a bit of performance and having to install another package.
  *
  * @example
- *
+ * ```
  * import { gql } from 'graphql-request'
  *
  * await request('https://foo.bar/graphql', gql`...`)
+ * ```
  *
  * @remarks
  *
  * Several tools in the Node GraphQL ecosystem are hardcoded to specially treat any template tag named "gql". For example see this prettier issue: https://github.com/prettier/prettier/issues/4360. Using this template tag has no runtime effect beyond variable interpolation.
  */
-export const gql = (chunks: TemplateStringsArray, ...variables: any[]): string => {
+export const gql = (chunks: TemplateStringsArray, ...variables: unknown[]): string => {
   return chunks.reduce(
-    (accumulator, chunk, index) => `${accumulator}${chunk}${index in variables ? variables[index] : ``}`,
+    (acc, chunk, index) => `${acc}${chunk}${index in variables ? String(variables[index]) : ``}`,
     ``
   )
 }

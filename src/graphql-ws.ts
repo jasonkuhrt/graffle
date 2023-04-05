@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { resolveRequestDocument } from './resolveRequestDocument.js'
 import type { RequestDocument, Variables } from './types.js'
 import { ClientError } from './types.js'

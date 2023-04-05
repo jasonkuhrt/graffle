@@ -29,9 +29,8 @@ import { parse } from 'graphql'
     }
   `)
 
-  const variables = {}
-
   const data = await client.request({ document: query })
+  // const variables = {}
   // const data = await client.request({ document: query, variables: { a: 1 } })
 
   console.log(data.greetings)
