@@ -1,5 +1,5 @@
 import { defaultJsonSerializer } from './defaultJsonSerializer.js'
-import type { Variables } from './types.js'
+import type { JsonSerializer, Variables } from './types.js'
 import type { ExtractableFile } from 'extract-files'
 import { extractFiles, isExtractableFile } from 'extract-files'
 import FormDataNode from 'form-data'
@@ -21,14 +21,15 @@ const createRequestBody = (
   query: string | string[],
   variables?: Variables | Variables[],
   operationName?: string,
-  jsonSerializer = defaultJsonSerializer
+  jsonSerializer?: JsonSerializer
 ): string | FormData => {
+  const jsonSerializer_ = jsonSerializer ?? defaultJsonSerializer
   // eslint-disable-next-line
   const { clone, files } = extractFiles({ query, variables, operationName }, ``, isExtractableFileEnhanced)
 
   if (files.size === 0) {
     if (!Array.isArray(query)) {
-      return jsonSerializer.stringify(clone)
+      return jsonSerializer_.stringify(clone)
     }
 
     if (typeof variables !== `undefined` && !Array.isArray(variables)) {
@@ -44,21 +45,21 @@ const createRequestBody = (
       []
     )
 
-    return jsonSerializer.stringify(payload)
+    return jsonSerializer_.stringify(payload)
   }
 
   const Form = typeof FormData === `undefined` ? FormDataNode : FormData
 
   const form = new Form()
 
-  form.append(`operations`, jsonSerializer.stringify(clone))
+  form.append(`operations`, jsonSerializer_.stringify(clone))
 
   const map: { [key: number]: string[] } = {}
   let i = 0
   files.forEach((paths) => {
     map[++i] = paths
   })
-  form.append(`map`, jsonSerializer.stringify(map))
+  form.append(`map`, jsonSerializer_.stringify(map))
 
   i = 0
   files.forEach((paths, file) => {
