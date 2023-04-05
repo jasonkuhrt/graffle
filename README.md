@@ -224,7 +224,7 @@ To do that, pass a function that returns the headers to the `headers` property w
 import { GraphQLClient } from 'graphql-request'
 
 const client = new GraphQLClient(endpoint, {
-  headers: () => ({ 'X-Sent-At-Time': Date.now() }),
+  headers: () => ({ 'X-Sent-At-Time': Date.now().toString() }),
 })
 
 const query = gql`

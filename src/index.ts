@@ -15,7 +15,7 @@ import type {
   GraphQLClientResponse,
   HTTPMethodInput,
   JsonSerializer,
-  MaybeFunction,
+  MaybeLazy,
   RequestConfig,
   RequestMiddleware,
   VariablesAndRequestHeadersArgs,
@@ -628,7 +628,7 @@ const getResult = async (
   }
 }
 
-const callOrIdentity = <T>(value: MaybeFunction<T>) => {
+const callOrIdentity = <T>(value: MaybeLazy<T>) => {
   return typeof value === `function` ? (value as () => T)() : value
 }
 

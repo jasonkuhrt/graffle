@@ -77,7 +77,7 @@ export class ClientError extends Error {
   }
 }
 
-export type MaybeFunction<T> = T | (() => T)
+export type MaybeLazy<T> = T | (() => T)
 
 export type RequestDocument = string | DocumentNode
 
@@ -94,7 +94,7 @@ export type HTTPMethodInput = 'GET' | 'POST' | 'get' | 'post'
 export interface RequestConfig extends Omit<RequestInit, 'headers' | 'method'>, AdditionalRequestOptions {
   fetch?: Fetch
   method?: HTTPMethodInput
-  headers?: MaybeFunction<GraphQLClientRequestHeaders>
+  headers?: MaybeLazy<GraphQLClientRequestHeaders>
   requestMiddleware?: RequestMiddleware
   responseMiddleware?: (response: GraphQLClientResponse<unknown> | Error) => void
   jsonSerializer?: JsonSerializer
