@@ -49,7 +49,7 @@
     "check:format": "prettier --check . && pnpm build:docs && git diff --exit-code README.md",
     "check:lint": "eslint . --ext .ts,.tsx --max-warnings 0",
     "prepublishOnly": "pnpm build",
-    "build:docs": "doctoc README.md --notitle",
+    "build:docs": "doctoc README.md --notitle && prettier --write README.md",
     "build": "pnpm clean && pnpm build:cjs && pnpm build:esm",
     "build:cjs": "pnpm tsc --project tsconfig.cjs.json && echo '{\"type\":\"commonjs\"}' > build/cjs/package.json",
     "build:esm": "pnpm tsc --project tsconfig.esm.json",
