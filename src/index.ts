@@ -1,4 +1,3 @@
-import createRequestBody from './createRequestBody.js'
 import { defaultJsonSerializer } from './defaultJsonSerializer.js'
 import { HeadersInstanceToPlainObject, uppercase } from './helpers.js'
 import {
@@ -597,7 +596,32 @@ const parseBatchRequestsArgsExtended = (args: BatchRequestsArgs): BatchRequestsE
   }
 }
 
-export default request
+const createRequestBody = (
+  query: string | string[],
+  variables?: Variables | Variables[],
+  operationName?: string,
+  jsonSerializer?: JsonSerializer
+): string => {
+  const jsonSerializer_ = jsonSerializer ?? defaultJsonSerializer
+  if (!Array.isArray(query)) {
+    return jsonSerializer_.stringify({ query, variables, operationName })
+  }
+
+  if (typeof variables !== `undefined` && !Array.isArray(variables)) {
+    throw new Error(`Cannot create request body with given variable type, array expected`)
+  }
+
+  // Batch support
+  const payload = query.reduce<{ query: string; variables: Variables | undefined }[]>(
+    (acc, currentQuery, index) => {
+      acc.push({ query: currentQuery, variables: variables ? variables[index] : undefined })
+      return acc
+    },
+    []
+  )
+
+  return jsonSerializer_.stringify(payload)
+}
 
 const getResult = async (
   response: Response,
@@ -655,3 +679,4 @@ export const gql = (chunks: TemplateStringsArray, ...variables: unknown[]): stri
 
 export { GraphQLWebSocketClient } from './graphql-ws.js'
 export { resolveRequestDocument } from './resolveRequestDocument.js'
+export default request

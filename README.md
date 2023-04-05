@@ -28,9 +28,6 @@ Minimal GraphQL client supporting Node and browsers for scripts or simple apps
   - [Cookie support for `node`](#cookie-support-for-node)
   - [Using a custom `fetch` method](#using-a-custom-fetch-method)
   - [Receiving a raw response](#receiving-a-raw-response)
-  - [File Upload](#file-upload)
-    - [Browser](#browser)
-    - [Node](#node)
   - [Batching](#batching)
   - [Cancellation](#cancellation)
   - [Middleware](#middleware)
@@ -39,6 +36,7 @@ Minimal GraphQL client supporting Node and browsers for scripts or simple apps
     - [Ignore](#ignore)
     - [All](#all)
 - [Knowledge Base](#knowledge-base)
+  - [Why was the file upload feature taken away? Will it return?](#why-was-the-file-upload-feature-taken-away-will-it-return)
   - [Why do I have to install `graphql`?](#why-do-i-have-to-install-graphql)
   - [Do I need to wrap my GraphQL documents inside the `gql` template exported by `graphql-request`?](#do-i-need-to-wrap-my-graphql-documents-inside-the-gql-template-exported-by-graphql-request)
   - [What's the difference between `graphql-request`, Apollo and Relay?](#whats-the-difference-between-graphql-request-apollo-and-relay)
@@ -565,45 +563,6 @@ async function main() {
 main().catch((error) => console.error(error))
 ```
 
-### File Upload
-
-#### Browser
-
-```js
-import { request } from 'graphql-request'
-
-const UploadUserAvatar = gql`
-  mutation uploadUserAvatar($userId: Int!, $file: Upload!) {
-    updateUser(id: $userId, input: { avatar: $file })
-  }
-`
-
-request('/api/graphql', UploadUserAvatar, {
-  userId: 1,
-  file: document.querySelector('input#avatar').files[0],
-})
-```
-
-#### Node
-
-```js
-import { createReadStream } from 'fs'
-import { request } from 'graphql-request'
-
-const UploadUserAvatar = gql`
-  mutation uploadUserAvatar($userId: Int!, $file: Upload!) {
-    updateUser(id: $userId, input: { avatar: $file })
-  }
-`
-
-request('/api/graphql', UploadUserAvatar, {
-  userId: 1,
-  file: createReadStream('./avatar.img'),
-})
-```
-
-[TypeScript Source](examples/receiving-a-raw-response.ts)
-
 ### Batching
 
 It is possible with `graphql-request` to use [batching](https://github.com/graphql/graphql-over-http/blob/main/rfcs/Batching.md) via the `batchRequests()` function. Example available at [examples/batching-requests.ts](examples/batching-requests.ts)
@@ -744,6 +703,10 @@ Ignore incoming errors and resolve like no errors occurred
 Return both the errors and data, only works with `rawRequest`.
 
 ## Knowledge Base
+
+#### Why was the file upload feature taken away? Will it return?
+
+In [this issue](https://github.com/jasonkuhrt/graphql-request/issues/500) we decided to make this library more stable and maintainable. In principal the feature is still in scope of this library and will make a return when we find time to do the feature right.
 
 #### Why do I have to install `graphql`?
 
