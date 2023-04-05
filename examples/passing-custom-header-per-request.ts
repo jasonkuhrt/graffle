@@ -1,33 +1,32 @@
-import { GraphQLClient } from '../src/index.js'
-;(async function () {
-  const endpoint = `https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr`
+import { gql, GraphQLClient } from '../src/index.js'
 
-  const client = new GraphQLClient(endpoint, {
-    headers: {
-      authorization: `Bearer MY_TOKEN`,
-    },
-  })
+const endpoint = `https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr`
 
-  const query = /* GraphQL */ `
-    {
-      Movie(title: "Inception") {
-        releaseDate
-        actors {
-          name
-        }
+const client = new GraphQLClient(endpoint, {
+  headers: {
+    authorization: `Bearer MY_TOKEN`,
+  },
+})
+
+const query = gql`
+  {
+    Movie(title: "Inception") {
+      releaseDate
+      actors {
+        name
       }
     }
-  `
-
-  const requestHeaders = {
-    authorization: `Bearer MY_TOKEN_2`,
-    'x-custom': `foo`,
   }
+`
 
-  interface TData {
-    Movie: { releaseDate: string; actors: Array<{ name: string }> }
-  }
+const requestHeaders = {
+  authorization: `Bearer MY_TOKEN_2`,
+  'x-custom': `foo`,
+}
 
-  const data = await client.request<TData>(query, {}, requestHeaders)
-  console.log(JSON.stringify(data, undefined, 2))
-})().catch((error) => console.error(error))
+interface TData {
+  Movie: { releaseDate: string; actors: Array<{ name: string }> }
+}
+
+const data = await client.request<TData>(query, {}, requestHeaders)
+console.log(JSON.stringify(data, undefined, 2))

@@ -1,27 +1,26 @@
-import { GraphQLClient } from '../src/index.js'
-;(async function () {
-  const endpoint = `https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr`
+import { gql, GraphQLClient } from '../src/index.js'
 
-  const graphQLClient = new GraphQLClient(endpoint, {
-    credentials: `include`,
-    mode: `cors`,
-  })
+const endpoint = `https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr`
 
-  const query = /* GraphQL */ `
-    {
-      Movie(title: "Inception") {
-        releaseDate
-        actors {
-          name
-        }
+const graphQLClient = new GraphQLClient(endpoint, {
+  credentials: `include`,
+  mode: `cors`,
+})
+
+const query = gql`
+  {
+    Movie(title: "Inception") {
+      releaseDate
+      actors {
+        name
       }
     }
-  `
-
-  interface TData {
-    Movie: { releaseDate: string; actors: Array<{ name: string }> }
   }
+`
 
-  const data = await graphQLClient.request<TData>(query)
-  console.log(JSON.stringify(data, undefined, 2))
-})().catch((error) => console.error(error))
+interface TData {
+  Movie: { releaseDate: string; actors: Array<{ name: string }> }
+}
+
+const data = await graphQLClient.request<TData>(query)
+console.log(JSON.stringify(data, undefined, 2))

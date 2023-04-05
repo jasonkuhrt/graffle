@@ -609,33 +609,33 @@ request('/api/graphql', UploadUserAvatar, {
 It is possible with `graphql-request` to use [batching](https://github.com/graphql/graphql-over-http/blob/main/rfcs/Batching.md) via the `batchRequests()` function. Example available at [examples/batching-requests.ts](examples/batching-requests.ts)
 
 ```ts
-import { batchRequests } from 'graphql-request'
-;(async function () {
-  const endpoint = 'https://api.spacex.land/graphql/'
+import { batchRequests, gql } from 'graphql-request'
 
-  const query1 = /* GraphQL */ `
-    query ($id: ID!) {
-      capsule(id: $id) {
-        id
-        landings
-      }
+const endpoint = 'https://api.spacex.land/graphql/'
+
+const query1 = gql`
+  query ($id: ID!) {
+    capsule(id: $id) {
+      id
+      landings
     }
-  `
+  }
+`
 
-  const query2 = /* GraphQL */ `
-    {
-      rockets(limit: 10) {
-        active
-      }
+const query2 = gql`
+  {
+    rockets(limit: 10) {
+      active
     }
-  `
+  }
+`
 
-  const data = await batchRequests(endpoint, [
-    { document: query1, variables: { id: 'C105' } },
-    { document: query2 },
-  ])
-  console.log(JSON.stringify(data, undefined, 2))
-})().catch((error) => console.error(error))
+const data = await batchRequests(endpoint, [
+  { document: query1, variables: { id: 'C105' } },
+  { document: query2 },
+])
+
+console.log(JSON.stringify(data, undefined, 2))
 ```
 
 ### Cancellation
@@ -800,7 +800,7 @@ Installing and configuring [GraphQL Code Generator](https://www.the-guild.dev/gr
 import request from 'graphql-request'
 import { graphql } from './gql/gql'
 
-const getMovieQueryDocument = graphql(/* GraphQL */ `
+const getMovieQueryDocument = graphql(gql`
   query getMovie($title: String!) {
     Movie(title: $title) {
       releaseDate

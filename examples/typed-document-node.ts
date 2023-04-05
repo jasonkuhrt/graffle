@@ -1,10 +1,11 @@
-import { GraphQLClient, request } from '../src/index.js'
+import { gql, GraphQLClient, request } from '../src/index.js'
 import type { TypedDocumentNode } from '@graphql-typed-document-node/core'
 import { parse } from 'graphql'
-;(async function () {
+
+{
   const endpoint = `https://graphql-yoga.com/api/graphql`
 
-  const query: TypedDocumentNode<{ greetings: string }, never | Record<any, never>> = parse(/* GraphQL */ `
+  const query: TypedDocumentNode<{ greetings: string }, never | Record<any, never>> = parse(gql`
     query greetings {
       greetings
     }
@@ -15,13 +16,14 @@ import { parse } from 'graphql'
   const data = await request(endpoint, query, variables)
 
   console.log(data.greetings)
-})().catch(console.error)
-;(async function () {
+}
+
+{
   const endpoint = `https://graphql-yoga.com/api/graphql`
 
   const client = new GraphQLClient(endpoint)
 
-  const query: TypedDocumentNode<{ greetings: string }, never | Record<any, never>> = parse(/* GraphQL */ `
+  const query: TypedDocumentNode<{ greetings: string }, never | Record<any, never>> = parse(gql`
     query greetings {
       greetings
     }
@@ -33,4 +35,4 @@ import { parse } from 'graphql'
   // const data = await client.request({ document: query, variables: { a: 1 } })
 
   console.log(data.greetings)
-})().catch(console.error)
+}

@@ -1,4 +1,4 @@
-import request from '../src/index.js'
+import request, { gql } from '../src/index.js'
 import { setupMockServer } from './__helpers.js'
 import type { TypedDocumentNode } from '@graphql-typed-document-node/core'
 import { parse } from 'graphql'
@@ -9,7 +9,7 @@ const ctx = setupMockServer()
 test(`typed-document-node code should TS compile with variables`, async () => {
   ctx.res({ body: { data: { foo: 1 } } })
 
-  const query: TypedDocumentNode<{ echo: string }, { str: string }> = parse(/* GraphQL */ `
+  const query: TypedDocumentNode<{ echo: string }, { str: string }> = parse(gql`
     query greetings($str: String!) {
       echo(str: $echo)
     }
@@ -91,7 +91,7 @@ test(`typed-document-node code should TS compile with variables`, async () => {
 test(`typed-document-node code should TS compile without variables`, async () => {
   ctx.res({ body: { data: { foo: 1 } } })
 
-  const query: TypedDocumentNode<{ echo: string }> = parse(/* GraphQL */ `
+  const query: TypedDocumentNode<{ echo: string }> = parse(gql`
     query greetings {
       echo
     }
