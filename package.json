@@ -42,7 +42,7 @@
   "homepage": "https://github.com/jasonkuhrt/graphql-request",
   "scripts": {
     "dev": "rm -rf dist && tsc --watch",
-    "format": "prettier --write .",
+    "format": "pnpm build:docs && prettier --write .",
     "lint": "eslint . --ext .ts,.tsx --fix",
     "check": "pnpm check:types && pnpm check:format && pnpm check:lint",
     "check:types": "pnpm tsc --noEmit",
