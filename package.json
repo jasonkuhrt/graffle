@@ -77,7 +77,7 @@
     "@types/ws": "^8.5.4",
     "@typescript-eslint/eslint-plugin": "^5.57.1",
     "@typescript-eslint/parser": "^5.57.1",
-    "@vitest/coverage-c8": "^0.29.8",
+    "@vitest/coverage-c8": "^0.30.0",
     "apollo-server-express": "^3.12.0",
     "body-parser": "^1.20.2",
     "doctoc": "^2.2.1",
