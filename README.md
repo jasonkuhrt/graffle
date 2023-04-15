@@ -22,10 +22,9 @@ Minimal GraphQL client supporting Node and browsers for scripts or simple apps
   - [Why was the file upload feature taken away? Will it return?](#why-was-the-file-upload-feature-taken-away-will-it-return)
   - [Why do I have to install `graphql`?](#why-do-i-have-to-install-graphql)
   - [Do I need to wrap my GraphQL documents inside the `gql` template exported by `graphql-request`?](#do-i-need-to-wrap-my-graphql-documents-inside-the-gql-template-exported-by-graphql-request)
-  - [What's the difference between `graphql-request`, Apollo and Relay?](#whats-the-difference-between-graphql-request-apollo-and-relay)
+  - [What sets `graphql-request` apart from other clients like Apollo, Relay, etc.?](#what-sets-graphql-request-apart-from-other-clients-like-apollo-relay-etc)
   - [Why is the package `main` field missing?](#why-is-the-package-main-field-missing)
   - [How do I work around React Native + Metro's lack of `exports` support?](#how-do-i-work-around-react-native--metros-lack-of-exports-support)
-  - [Get typed GraphQL Queries with GraphQL Code Generator](#get-typed-graphql-queries-with-graphql-code-generator)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -35,6 +34,7 @@ Minimal GraphQL client supporting Node and browsers for scripts or simple apps
 - Promise-based API (works with `async` / `await`)
 - ESM native package (CJS build is included for now as well, but will eventually be removed)
 - First class TypeScript support
+  - Including `TypedDocumentNode`
 - Isomorphic (works in both Nodejs and Browsers)
 
 ## Install
@@ -106,6 +106,7 @@ await request('https://api.spacex.land/graphql/', document)
 - [GraphQL: Batch Request](./examples/batching-requests.ts)
 - [Error Handling](./examples/error-handling.ts)
 - [CommonJS Support](./examples/package-commonjs.ts)
+- [Community: GraphQL Code Generator for typed GraphQL Queries](./examples/community-graphql-code-generator.ts)
 
 ## Node Version Support
 
@@ -157,7 +158,7 @@ In [this issue](https://github.com/jasonkuhrt/graphql-request/issues/500) we dec
 
 No. It is there for convenience so that you can get the tooling support like prettier formatting and IDE syntax highlighting. You can use `gql` from `graphql-tag` if you need it for some reason too.
 
-#### What's the difference between `graphql-request`, Apollo and Relay?
+#### What sets `graphql-request` apart from other clients like Apollo, Relay, etc.?
 
 `graphql-request` is the most minimal and simplest to use GraphQL client. It's perfect for small scripts or simple apps.
 
@@ -193,38 +194,3 @@ resolver: {
 ```
 
 After doing this change, clear Metro's cache and restart your application.
-
-#### Get typed GraphQL Queries with GraphQL Code Generator
-
-`graphql-request@^5` supports `TypedDocumentNode`, the typed counterpart of `graphql`'s `DocumentNode`.
-
-Installing and configuring [GraphQL Code Generator](https://www.the-guild.dev/graphql/codegen) requires a few steps in order to get end-to-end typed GraphQL operations using the provided `graphql()` helper:
-
-```ts
-import request from 'graphql-request'
-import { graphql } from './gql/gql'
-
-const getMovieQueryDocument = graphql(gql`
-  query getMovie($title: String!) {
-    Movie(title: $title) {
-      releaseDate
-      actors {
-        name
-      }
-    }
-  }
-`)
-
-const data = await request(
-  'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr',
-  getMovieQueryDocument,
-  // variables are type-checked!
-  { title: 'Inception' }
-)
-
-// `data.Movie` is typed!
-```
-
-[_The complete example is available in the GraphQL Code Generator repository_](https://github.com/dotansimha/graphql-code-generator/tree/master/examples/front-end/react/graphql-request)
-
-Visit GraphQL Code Generator's dedicated guide to get started: https://www.the-guild.dev/graphql/codegen/docs/guides/react-vue.
