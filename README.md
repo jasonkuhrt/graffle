@@ -118,6 +118,8 @@ You are free to try using other versions of Node (e.g. `13.x`) with `graphql-req
 
 ## Reference
 
+⚠️ This reference is incomplete. Check out the [examples](./examples/) for more reference material.
+
 ### Configuration
 
 #### ErrorPolicy
