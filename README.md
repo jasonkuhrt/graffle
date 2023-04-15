@@ -89,24 +89,32 @@ await request('https://api.spacex.land/graphql/', document)
 
 ## Examples
 
-- [Incrementally setting headers](./examples//incrementally-set-headers.ts)
-- [Set endpoint](./examples/set-endpoint.ts)
-- [Use Custom JSON Serializer](./examples/request-json-serializer.ts)
-- [Fetch: Passing Options](./examples/fetch-options.ts)
-- [Fetch: Use custom function](./examples/fetch-custom-function.ts)
-- [Request: Authentication via HTTP header](./examples/request-authentication-via-http-header.ts)
-- [Request: Method GET](./examples/request-method-get.ts)
-- [Request: Cancellation](./examples/request-cancellation.ts)
-- [Request: Headers Per Request (static)](./examples/request-headers-static-per-request.ts)
-- [Request: Headers Per Request (dynamic)](./examples/request-headers-dynamic-per-request.ts)
-- [Request: Cookie support for Nodejs](./examples/request-cookie-support-for-node.ts)
-- [Request: Handle Raw Response](./examples/request-handle-raw-response.ts)
-- [GraphQL: Document Variables](./examples/graphql-document-variables.ts)
-- [GraphQL: Mutation](./examples/graphql-mutations.ts)
-- [GraphQL: Batch Request](./examples/batching-requests.ts)
-- [Error Handling](./examples/error-handling.ts)
-- [CommonJS Support](./examples/package-commonjs.ts)
-- [Community: GraphQL Code Generator for typed GraphQL Queries](./examples/community-graphql-code-generator.ts)
+- Request:
+  - [Authentication via HTTP header](./examples/request-authentication-via-http-header.ts)
+  - [Method GET](./examples/request-method-get.ts)
+  - [Cancellation](./examples/request-cancellation.ts)
+  - [Headers Per Request (static)](./examples/request-headers-static-per-request.ts)
+  - [Headers Per Request (dynamic)](./examples/request-headers-dynamic-per-request.ts)
+  - [Cookie support for Nodejs](./examples/request-cookie-support-for-node.ts)
+  - [Handle Raw Response](./examples/request-handle-raw-response.ts)
+- GraphQL:
+  - [Document Variables](./examples/graphql-document-variables.ts)
+  - [Mutation](./examples/graphql-mutations.ts)
+  - [Batching Requests](./examples/graphql-batching-requests.ts)
+- Configuration:
+  - [Fetch: Passing Options](./examples/configuration-fetch-options.ts)
+  - [Fetch: Use custom function](./examples/configuration-fetch-custom-function.ts)
+  - [Custom JSON Serializer](./examples/configuration-request-json-serializer.ts)
+  - [Incremental: Set Endpoint](./examples/configuration-incremental-endpoint.ts)
+  - [Incremental: Set Request Headers](./examples/configuration-incremental-request-headers.ts)
+- Community
+  - [GraphQL Code Generator for typed GraphQL Queries](./examples/community-graphql-code-generator.ts)
+- TypeScript
+  - [Use `TypedDocumentNode`](./examples/typescript-typed-document-node.ts.ts)
+- Other:
+  - [Middleware](./examples/other-middleware.ts)
+  - [Error Handling](./examples/other-error-handling.ts)
+  - [OCommonJS Support](./examples/other-package-commonjs.ts)
 
 ## Node Version Support
 
