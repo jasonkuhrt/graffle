@@ -110,12 +110,15 @@ await request('https://api.spacex.land/graphql/', document)
 
 ## Node Version Support
 
-We only officially support [LTS Node versions](https://github.com/nodejs/Release#release-schedule). We also make an effort to support two additional versions:
+We only (officially) support [versions of Nodejs](https://github.com/nodejs/Release#release-schedule) of the following status:
 
-1. The latest even Node version if it is not LTS already.
-2. The odd Node version directly following the latest even version.
+- Current
+- LTS
+- Maintenance _and end of life not yet reached_
 
-You are free to try using other versions of Node (e.g. `13.x`) with `graphql-request` but at your own risk.
+So for example on May 1 2023 that would mean these versions: 16, 18, 19.
+
+Any issue that exists solely for an unsupported version of Nodejs will be rejected (not worked on).
 
 ## Reference
 
