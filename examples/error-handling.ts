@@ -19,8 +19,8 @@ interface TData {
 
 try {
   const data = await request<TData>(endpoint, query)
-  console.log(JSON.stringify(data, undefined, 2))
+  console.log(data)
 } catch (error) {
-  console.error(JSON.stringify(error, undefined, 2))
+  console.error(error)
   process.exit(1)
 }

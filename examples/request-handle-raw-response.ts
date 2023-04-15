@@ -1,3 +1,8 @@
+/**
+ * The `request` method will return the `data` or `errors` key from the response.
+ * If you need to access the `extensions` key you can use the `rawRequest` method:
+ */
+
 import { gql, rawRequest } from '../src/index.js'
 
 const endpoint = `https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr`
@@ -18,4 +23,4 @@ interface TData {
 }
 
 const { data, errors, extensions, headers, status } = await rawRequest<TData>(endpoint, query)
-console.log(JSON.stringify({ data, errors, extensions, headers, status }, undefined, 2))
+console.log({ data, errors, extensions, headers, status })

@@ -7,34 +7,17 @@ Minimal GraphQL client supporting Node and browsers for scripts or simple apps
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-- [Features](#features)
+- [Highlights](#highlights)
 - [Install](#install)
 - [Quick Start](#quick-start)
-- [Usage](#usage)
-- [Node Version Support](#node-version-support)
 - [Examples](#examples)
-  - [Authentication via HTTP header](#authentication-via-http-header)
-    - [Incrementally setting headers](#incrementally-setting-headers)
-    - [Set endpoint](#set-endpoint)
-    - [passing-headers-in-each-request](#passing-headers-in-each-request)
-    - [Passing dynamic headers to the client](#passing-dynamic-headers-to-the-client)
-  - [Passing more options to `fetch`](#passing-more-options-to-fetch)
-  - [Custom JSON serializer](#custom-json-serializer)
-  - [Using GraphQL Document variables](#using-graphql-document-variables)
-  - [Making a GET request](#making-a-get-request)
-  - [GraphQL Mutations](#graphql-mutations)
-  - [Error handling](#error-handling)
-  - [Using `require` instead of `import`](#using-require-instead-of-import)
-  - [Cookie support for `node`](#cookie-support-for-node)
-  - [Using a custom `fetch` method](#using-a-custom-fetch-method)
-  - [Receiving a raw response](#receiving-a-raw-response)
-  - [Batching](#batching)
-  - [Cancellation](#cancellation)
-  - [Middleware](#middleware)
-  - [ErrorPolicy](#errorpolicy)
-    - [None (default)](#none-default)
-    - [Ignore](#ignore)
-    - [All](#all)
+- [Node Version Support](#node-version-support)
+- [Reference](#reference)
+  - [Configuration](#configuration)
+    - [ErrorPolicy](#errorpolicy)
+      - [None (default)](#none-default)
+      - [Ignore](#ignore)
+      - [All](#all)
 - [Knowledge Base](#knowledge-base)
   - [Why was the file upload feature taken away? Will it return?](#why-was-the-file-upload-feature-taken-away-will-it-return)
   - [Why do I have to install `graphql`?](#why-do-i-have-to-install-graphql)
@@ -46,13 +29,13 @@ Minimal GraphQL client supporting Node and browsers for scripts or simple apps
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-## Features
+## Highlights
 
 - Most **simple & lightweight** GraphQL client
 - Promise-based API (works with `async` / `await`)
 - ESM native package (CJS build is included for now as well, but will eventually be removed)
-- TypeScript support
-- Isomorphic (works with Node / browsers)
+- First class TypeScript support
+- Isomorphic (works in both Nodejs and Browsers)
 
 ## Install
 
@@ -62,48 +45,67 @@ npm add graphql-request graphql
 
 ## Quick Start
 
-Send a GraphQL query with a single line of code. ▶️ [Try it out](https://runkit.com/593130bdfad7120012472003/593130bdfad7120012472004).
+Send a GraphQL document using a static request function:
 
 ```js
 import { request, gql } from 'graphql-request'
 
-const query = gql`
+const document = gql`
   {
     company {
       ceo
     }
-    roadster {
-      apoapsis_au
+  }
+`
+await request('https://api.spacex.land/graphql/', document)
+```
+
+The function can be passed a configuration object for more complex cases:
+
+```ts
+await request({
+  url,
+  document,
+  variables,
+  requestHeaders,
+})
+```
+
+A class is available for constructing your own instances:
+
+```js
+import { GraphQLClient } from 'graphql-request'
+
+const document = gql`
+  {
+    company {
+      ceo
     }
   }
 `
-
-request('https://api.spacex.land/graphql/', query).then((data) => console.log(data))
+const client = new GraphQLClient(endpoint)
+await request('https://api.spacex.land/graphql/', document)
 ```
 
-## Usage
+## Examples
 
-```js
-import { request, GraphQLClient } from 'graphql-request'
-
-// Run GraphQL queries/mutations using a static function
-request(endpoint, query, variables).then((data) => console.log(data))
-
-// ... or create a GraphQL client instance to send requests
-const client = new GraphQLClient(endpoint, { headers: {} })
-client.request(query, variables).then((data) => console.log(data))
-```
-
-You can also use the single argument function variant:
-
-```js
-request({
-  url: endpoint,
-  document: query,
-  variables: variables,
-  requestHeaders: headers,
-}).then((data) => console.log(data))
-```
+- [Incrementally setting headers](./examples//incrementally-set-headers.ts)
+- [Set endpoint](./examples/set-endpoint.ts)
+- [Use Custom JSON Serializer](./examples/request-json-serializer.ts)
+- [Fetch: Passing Options](./examples/fetch-options.ts)
+- [Fetch: Use custom function](./examples/fetch-custom-function.ts)
+- [Request: Authentication via HTTP header](./examples/request-authentication-via-http-header.ts)
+- [Request: Method GET](./examples/request-method-get.ts)
+- [Request: Cancellation](./examples/request-cancellation.ts)
+- [Request: Headers Per Request (static)](./examples/request-headers-static-per-request.ts)
+- [Request: Headers Per Request (dynamic)](./examples/request-headers-dynamic-per-request.ts)
+- [Request: Cookie support for Nodejs](./examples/request-cookie-support-for-node.ts)
+- [Request: Handle Raw Response](./examples/request-handle-raw-response.ts)
+- [GraphQL: Document Variables](./examples/graphql-document-variables.ts)
+- [GraphQL: Mutation](./examples/graphql-mutations.ts)
+- [GraphQL: Batch Request](./examples/batching-requests.ts)
+- [Error Handling](./examples/error-handling.ts)
+- [CommonJS Support](./examples/package-commonjs.ts)
 
 ## Node Version Support
 
@@ -114,574 +116,11 @@ We only officially support [LTS Node versions](https://github.com/nodejs/Release
 
 You are free to try using other versions of Node (e.g. `13.x`) with `graphql-request` but at your own risk.
 
-## Examples
+## Reference
 
-### Authentication via HTTP header
+### Configuration
 
-```js
-import { GraphQLClient, gql } from 'graphql-request'
-
-async function main() {
-  const endpoint = 'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr'
-
-  const graphQLClient = new GraphQLClient(endpoint, {
-    headers: {
-      authorization: 'Bearer MY_TOKEN',
-    },
-  })
-
-  const query = gql`
-    {
-      Movie(title: "Inception") {
-        releaseDate
-        actors {
-          name
-        }
-      }
-    }
-  `
-
-  const data = await graphQLClient.request(query)
-  console.log(JSON.stringify(data, undefined, 2))
-}
-
-main().catch((error) => console.error(error))
-```
-
-[TypeScript Source](examples/authentication-via-http-header.ts)
-
-#### Incrementally setting headers
-
-If you want to set headers after the GraphQLClient has been initialised, you can use the `setHeader()` or `setHeaders()` functions.
-
-```js
-import { GraphQLClient } from 'graphql-request'
-
-const client = new GraphQLClient(endpoint)
-
-// Set a single header
-client.setHeader('authorization', 'Bearer MY_TOKEN')
-
-// Override all existing headers
-client.setHeaders({
-  authorization: 'Bearer MY_TOKEN',
-  anotherheader: 'header_value',
-})
-```
-
-#### Set endpoint
-
-If you want to change the endpoint after the GraphQLClient has been initialised, you can use the `setEndpoint()` function.
-
-```js
-import { GraphQLClient } from 'graphql-request'
-
-const client = new GraphQLClient(endpoint)
-
-client.setEndpoint(newEndpoint)
-```
-
-#### passing-headers-in-each-request
-
-It is possible to pass custom headers for each request. `request()` and `rawRequest()` accept a header object as the third parameter
-
-```js
-import { GraphQLClient } from 'graphql-request'
-
-const client = new GraphQLClient(endpoint)
-
-const query = gql`
-  query getMovie($title: String!) {
-    Movie(title: $title) {
-      releaseDate
-      actors {
-        name
-      }
-    }
-  }
-`
-
-const variables = {
-  title: 'Inception',
-}
-
-const requestHeaders = {
-  authorization: 'Bearer MY_TOKEN',
-}
-
-// Overrides the clients headers with the passed values
-const data = await client.request(query, variables, requestHeaders)
-```
-
-#### Passing dynamic headers to the client
-
-It's possible to recalculate the global client headers dynamically before each request.
-To do that, pass a function that returns the headers to the `headers` property when creating a new `GraphQLClient`.
-
-```js
-import { GraphQLClient } from 'graphql-request'
-
-const client = new GraphQLClient(endpoint, {
-  headers: () => ({ 'X-Sent-At-Time': Date.now().toString() }),
-})
-
-const query = gql`
-  query getCars {
-    cars {
-      name
-    }
-  }
-`
-// Function saved in the client runs and calculates fresh headers before each request
-const data = await client.request(query)
-```
-
-### Passing more options to `fetch`
-
-```js
-import { GraphQLClient, gql } from 'graphql-request'
-
-async function main() {
-  const endpoint = 'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr'
-
-  const graphQLClient = new GraphQLClient(endpoint, {
-    credentials: 'include',
-    mode: 'cors',
-  })
-
-  const query = gql`
-    {
-      Movie(title: "Inception") {
-        releaseDate
-        actors {
-          name
-        }
-      }
-    }
-  `
-
-  const data = await graphQLClient.request(query)
-  console.log(JSON.stringify(data, undefined, 2))
-}
-
-main().catch((error) => console.error(error))
-```
-
-[TypeScript Source](examples/passing-more-options-to-fetch.ts)
-
-### Custom JSON serializer
-
-If you want to use non-standard JSON types, you can use your own JSON serializer to replace `JSON.parse`/`JSON.stringify` used by the `GraphQLClient`.
-
-An original use case for this feature is `BigInt` support:
-
-```js
-import JSONbig from 'json-bigint'
-import { GraphQLClient, gql } from 'graphql-request'
-
-async function main() {
-  const jsonSerializer = JSONbig({ useNativeBigInt: true })
-  const graphQLClient = new GraphQLClient(endpoint, { jsonSerializer })
-  const data = await graphQLClient.request(
-    gql`
-      {
-        someBigInt
-      }
-    `
-  )
-  console.log(typeof data.someBigInt) // if >MAX_SAFE_INTEGER then 'bigint' else 'number'
-}
-```
-
-### Using GraphQL Document variables
-
-```js
-import { request, gql } from 'graphql-request'
-
-async function main() {
-  const endpoint = 'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr'
-
-  const query = gql`
-    query getMovie($title: String!) {
-      Movie(title: $title) {
-        releaseDate
-        actors {
-          name
-        }
-      }
-    }
-  `
-
-  const variables = {
-    title: 'Inception',
-  }
-
-  const data = await request(endpoint, query, variables)
-  console.log(JSON.stringify(data, undefined, 2))
-}
-
-main().catch((error) => console.error(error))
-```
-
-### Making a GET request
-
-Queries can be sent as an HTTP GET request:
-
-```js
-import { GraphQLClient, gql } from 'graphql-request'
-
-async function main() {
-  const endpoint = 'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr'
-
-  const graphQLClient = new GraphQLClient(endpoint, {
-    method: 'GET',
-    jsonSerializer: {
-      parse: JSON.parse,
-      stringify: JSON.stringify,
-    },
-  })
-
-  const query = gql`
-    query getMovie($title: String!) {
-      Movie(title: $title) {
-        releaseDate
-        actors {
-          name
-        }
-      }
-    }
-  `
-
-  const variables = {
-    title: 'Inception',
-  }
-
-  const data = await graphQLClient.request(query, variables)
-  console.log(JSON.stringify(data, undefined, 2))
-}
-
-main().catch((error) => console.error(error))
-```
-
-### GraphQL Mutations
-
-```js
-import { GraphQLClient, gql } from 'graphql-request'
-
-async function main() {
-  const endpoint = 'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr'
-
-  const graphQLClient = new GraphQLClient(endpoint, {
-    headers: {
-      authorization: 'Bearer MY_TOKEN',
-    },
-  })
-
-  const mutation = gql`
-    mutation AddMovie($title: String!, $releaseDate: Int!) {
-      insert_movies_one(object: { title: $title, releaseDate: $releaseDate }) {
-        title
-        releaseDate
-      }
-    }
-  `
-
-  const variables = {
-    title: 'Inception',
-    releaseDate: 2010,
-  }
-  const data = await graphQLClient.request(mutation, variables)
-
-  console.log(JSON.stringify(data, undefined, 2))
-}
-
-main().catch((error) => console.error(error))
-```
-
-[TypeScript Source](examples/using-variables.ts)
-
-### Error handling
-
-```js
-import { request, gql } from 'graphql-request'
-
-async function main() {
-  const endpoint = 'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr'
-
-  const query = gql`
-    {
-      Movie(title: "Inception") {
-        releaseDate
-        actors {
-          fullname # "Cannot query field 'fullname' on type 'Actor'. Did you mean 'name'?"
-        }
-      }
-    }
-  `
-
-  try {
-    const data = await request(endpoint, query)
-    console.log(JSON.stringify(data, undefined, 2))
-  } catch (error) {
-    console.error(JSON.stringify(error, undefined, 2))
-    process.exit(1)
-  }
-}
-
-main().catch((error) => console.error(error))
-```
-
-[TypeScript Source](examples/error-handling.ts)
-
-### Using `require` instead of `import`
-
-```js
-const { request, gql } = require('graphql-request')
-
-async function main() {
-  const endpoint = 'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr'
-
-  const query = gql`
-    {
-      Movie(title: "Inception") {
-        releaseDate
-        actors {
-          name
-        }
-      }
-    }
-  `
-
-  const data = await request(endpoint, query)
-  console.log(JSON.stringify(data, undefined, 2))
-}
-
-main().catch((error) => console.error(error))
-```
-
-### Cookie support for `node`
-
-```sh
-npm install fetch-cookie
-```
-
-```js
-require('fetch-cookie/node-fetch')(require('node-fetch'))
-
-import { GraphQLClient, gql } from 'graphql-request'
-
-async function main() {
-  const endpoint = 'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr'
-
-  const graphQLClient = new GraphQLClient(endpoint, {
-    headers: {
-      authorization: 'Bearer MY_TOKEN',
-    },
-  })
-
-  const query = gql`
-    {
-      Movie(title: "Inception") {
-        releaseDate
-        actors {
-          name
-        }
-      }
-    }
-  `
-
-  const data = await graphQLClient.rawRequest(query)
-  console.log(JSON.stringify(data, undefined, 2))
-}
-
-main().catch((error) => console.error(error))
-```
-
-[TypeScript Source](examples/cookie-support-for-node.ts)
-
-### Using a custom `fetch` method
-
-```sh
-npm install fetch-cookie
-```
-
-```js
-import { GraphQLClient, gql } from 'graphql-request'
-import crossFetch from 'cross-fetch'
-
-async function main() {
-  const endpoint = 'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr'
-
-  // a cookie jar scoped to the client object
-  const fetch = require('fetch-cookie')(crossFetch)
-  const graphQLClient = new GraphQLClient(endpoint, { fetch })
-
-  const query = gql`
-    {
-      Movie(title: "Inception") {
-        releaseDate
-        actors {
-          name
-        }
-      }
-    }
-  `
-
-  const data = await graphQLClient.rawRequest(query)
-  console.log(JSON.stringify(data, undefined, 2))
-}
-
-main().catch((error) => console.error(error))
-```
-
-### Receiving a raw response
-
-The `request` method will return the `data` or `errors` key from the response.
-If you need to access the `extensions` key you can use the `rawRequest` method:
-
-```js
-import { rawRequest, gql } from 'graphql-request'
-
-async function main() {
-  const endpoint = 'https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr'
-
-  const query = gql`
-    {
-      Movie(title: "Inception") {
-        releaseDate
-        actors {
-          name
-        }
-      }
-    }
-  `
-
-  const { data, errors, extensions, headers, status } = await rawRequest(endpoint, query)
-  console.log(JSON.stringify({ data, errors, extensions, headers, status }, undefined, 2))
-}
-
-main().catch((error) => console.error(error))
-```
-
-### Batching
-
-It is possible with `graphql-request` to use [batching](https://github.com/graphql/graphql-over-http/blob/main/rfcs/Batching.md) via the `batchRequests()` function. Example available at [examples/batching-requests.ts](examples/batching-requests.ts)
-
-```ts
-import { batchRequests, gql } from 'graphql-request'
-
-const endpoint = 'https://api.spacex.land/graphql/'
-
-const query1 = gql`
-  query ($id: ID!) {
-    capsule(id: $id) {
-      id
-      landings
-    }
-  }
-`
-
-const query2 = gql`
-  {
-    rockets(limit: 10) {
-      active
-    }
-  }
-`
-
-const data = await batchRequests(endpoint, [
-  { document: query1, variables: { id: 'C105' } },
-  { document: query2 },
-])
-
-console.log(JSON.stringify(data, undefined, 2))
-```
-
-### Cancellation
-
-It is possible to cancel a request using an `AbortController` signal.
-
-You can define the `signal` in the `GraphQLClient` constructor:
-
-```ts
-const abortController = new AbortController()
-
-const client = new GraphQLClient(endpoint, { signal: abortController.signal })
-client.request(query)
-
-abortController.abort()
-```
-
-You can also set the signal per request (this will override an existing GraphQLClient signal):
-
-```ts
-const abortController = new AbortController()
-
-const client = new GraphQLClient(endpoint)
-client.request({ document: query, signal: abortController.signal })
-
-abortController.abort()
-```
-
-In Node environment, `AbortController` is supported since version v14.17.0.
-For Node.js v12 you can use [abort-controller](https://github.com/mysticatea/abort-controller) polyfill.
-
-```
- import 'abort-controller/polyfill'
-
- const abortController = new AbortController()
-```
-
-### Middleware
-
-It's possible to use a middleware to pre-process any request or handle raw response.
-
-Request middleware example (set actual auth token to each request):
-
-```ts
-function middleware(request: RequestInit) {
-  const token = getToken()
-  return {
-    ...request,
-    headers: { ...request.headers, 'x-auth-token': token },
-  }
-}
-
-const client = new GraphQLClient(endpoint, { requestMiddleware: middleware })
-```
-
-It's also possible to use an async function as a request middleware. The resolved data will be passed to the request:
-
-```ts
-async function middleware(request: RequestInit) {
-  const token = await getToken()
-  return {
-    ...request,
-    headers: { ...request.headers, 'x-auth-token': token },
-  }
-}
-
-const client = new GraphQLClient(endpoint, { requestMiddleware: middleware })
-```
-
-Response middleware example (log request trace id if error caused):
-
-```ts
-function middleware(response: Response<unknown>) {
-  if (response.errors) {
-    const traceId = response.headers.get('x-b3-traceid') || 'unknown'
-    console.error(
-      `[${traceId}] Request error:
-        status ${response.status}
-        details: ${response.errors}`
-    )
-  }
-}
-
-const client = new GraphQLClient(endpoint, { responseMiddleware: middleware })
-```
-
-### ErrorPolicy
+#### ErrorPolicy
 
 By default GraphQLClient will throw when an error is received. However, sometimes you still want to resolve the (partial) data you received.
 You can define `errorPolicy` in the `GraphQLClient` constructor.
@@ -690,15 +129,15 @@ You can define `errorPolicy` in the `GraphQLClient` constructor.
 const client = new GraphQLClient(endpoint, { errorPolicy: 'all' })
 ```
 
-#### None (default)
+##### None (default)
 
 Allow no errors at all. If you receive a GraphQL error the client will throw.
 
-#### Ignore
+##### Ignore
 
 Ignore incoming errors and resolve like no errors occurred
 
-#### All
+##### All
 
 Return both the errors and data, only works with `rawRequest`.
 
