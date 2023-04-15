@@ -18,6 +18,8 @@ import { graphql } from './gql/gql'
 
 const endpoint = `https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr`
 
+// todo fixme
+// eslint-disable-next-line
 const document = graphql(gql`
   query getMovie($title: String!) {
     Movie(title: $title) {
