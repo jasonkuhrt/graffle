@@ -1,3 +1,7 @@
+/**
+ * It is possible with `graphql-request` to use batching via the `batchRequests()` function.
+ * @see https://github.com/graphql/graphql-over-http/blob/main/rfcs/Batching.md
+ */
 import { batchRequests, gql } from '../src/index.js'
 
 const endpoint = `https://api.spacex.land/graphql/`
@@ -53,4 +57,4 @@ const data = await batchRequests<[TData1, TData2, TData3]>(endpoint, [
   { document: query2 },
   { document: query3, variables: variables3 },
 ])
-console.log(JSON.stringify(data, undefined, 2))
+console.log(data)

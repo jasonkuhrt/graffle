@@ -24,4 +24,4 @@ interface TData {
 }
 
 const data = await graphQLClient.request<TData>(query)
-console.log(JSON.stringify(data, undefined, 2))
+console.log(data)

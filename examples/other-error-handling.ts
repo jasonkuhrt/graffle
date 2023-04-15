@@ -1,16 +1,13 @@
-import { gql, GraphQLClient } from '../src/index.js'
-import fetch from 'cross-fetch'
+import { gql, request } from '../src/index.js'
 
 const endpoint = `https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr`
-
-const graphQLClient = new GraphQLClient(endpoint, { fetch: fetch })
 
 const query = gql`
   {
     Movie(title: "Inception") {
       releaseDate
       actors {
-        name
+        fullname # "Cannot query field 'fullname' on type 'Actor'. Did you mean 'name'?"
       }
     }
   }
@@ -20,5 +17,10 @@ interface TData {
   Movie: { releaseDate: string; actors: Array<{ name: string }> }
 }
 
-const data = await graphQLClient.rawRequest<TData>(query)
-console.log(JSON.stringify(data, undefined, 2))
+try {
+  const data = await request<TData>(endpoint, query)
+  console.log(data)
+} catch (error) {
+  console.error(error)
+  process.exit(1)
+}

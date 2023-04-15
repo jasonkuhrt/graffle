@@ -22,4 +22,4 @@ interface TData {
 }
 
 const data = await request<TData>(endpoint, query, variables)
-console.log(JSON.stringify(data, undefined, 2))
+console.log(data)
