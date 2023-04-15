@@ -1,4 +1,4 @@
-import { gql, GraphQLClient } from 'graphql-request'
+import { gql, GraphQLClient } from '../src/index.js'
 
 const endpoint = `https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr`
 
@@ -21,8 +21,6 @@ const variables = {
   title: `Inception`,
   releaseDate: 2010,
 }
+
 const data = await graphQLClient.request(mutation, variables)
-
 console.log(data)
-
-main().catch((error) => console.error(error))

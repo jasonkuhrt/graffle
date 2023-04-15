@@ -3,12 +3,12 @@
  * An original use case for this feature is `BigInt` support:
  */
 
-import { gql, GraphQLClient } from 'graphql-request'
+import { gql, GraphQLClient } from '../src/index.js'
 import JSONbig from 'json-bigint'
 
 const jsonSerializer = JSONbig({ useNativeBigInt: true })
 const graphQLClient = new GraphQLClient(`https://some-api`, { jsonSerializer })
-const data = await graphQLClient.request(
+const data = await graphQLClient.request<{ someBigInt: bigint }>(
   gql`
     {
       someBigInt
