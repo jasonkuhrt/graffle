@@ -1,11 +1,9 @@
-/* eslint-disable */
-
 /**
  * It's possible to use a middleware to pre-process any request or handle raw response.
  */
 
 import { GraphQLClient } from '../src/index.js'
-import type { RequestMiddleware } from '../src/types.js'
+import type { RequestMiddleware, ResponseMiddleware } from '../src/types.js'
 
 const endpoint = `https://api.spacex.land/graphql/`
 
@@ -17,10 +15,12 @@ const getAccessToken = () => Promise.resolve(`some special token here`)
    */
 
   const requestMiddleware: RequestMiddleware = async (request) => {
-    const token = await getAccessToken()
     return {
       ...request,
-      headers: { ...request.headers, 'x-auth-token': token },
+      headers: {
+        ...request.headers,
+        'x-auth-token': await getAccessToken(),
+      },
     }
   }
 
@@ -46,14 +46,13 @@ const getAccessToken = () => Promise.resolve(`some special token here`)
    * Response middleware example (log request trace id if error caused):
    */
 
-  // @ts-expect-error TODO export a response middleware type
-  const responseMiddleware = (response: Response<unknown>) => {
-    if (response.errors) {
+  const responseMiddleware: ResponseMiddleware = (response) => {
+    if (!(response instanceof Error) && response.errors) {
       const traceId = response.headers.get(`x-b3-trace-id`) || `unknown`
       console.error(
         `[${traceId}] Request error:
         status ${response.status}
-        details: ${response.errors}`
+        details: ${response.errors.map((_) => _.message).join(`, `)}`
       )
     }
   }

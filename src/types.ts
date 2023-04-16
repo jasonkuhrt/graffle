@@ -96,7 +96,7 @@ export interface RequestConfig extends Omit<RequestInit, 'headers' | 'method'>, 
   method?: HTTPMethodInput
   headers?: MaybeLazy<GraphQLClientRequestHeaders>
   requestMiddleware?: RequestMiddleware
-  responseMiddleware?: (response: GraphQLClientResponse<unknown> | Error) => void
+  responseMiddleware?: ResponseMiddleware
   jsonSerializer?: JsonSerializer
 }
 
@@ -144,9 +144,10 @@ export interface BatchRequestsExtendedOptions<V extends Variables = Variables>
   url: string
 }
 
-export type RequestMiddleware<V extends Variables = Variables> = (
-  request: RequestExtendedInit<V>
-) => RequestExtendedInit | Promise<RequestExtendedInit>
+export type ResponseMiddleware = (response: GraphQLClientResponse<unknown> | Error) => void
+
+// prettier-ignore
+export type RequestMiddleware<V extends Variables = Variables> = (request: RequestExtendedInit<V>) => RequestExtendedInit | Promise<RequestExtendedInit>
 
 type RequestExtendedInit<V extends Variables = Variables> = RequestInit & {
   url: string

@@ -9,6 +9,7 @@ import {
 } from './parseArgs.js'
 import { resolveRequestDocument } from './resolveRequestDocument.js'
 import type {
+  BatchRequestDocument,
   FetchOptions,
   GraphQLClientRequestHeaders,
   GraphQLClientResponse,
@@ -17,10 +18,10 @@ import type {
   MaybeLazy,
   RequestConfig,
   RequestMiddleware,
+  ResponseMiddleware,
   VariablesAndRequestHeadersArgs,
 } from './types.js'
 import {
-  BatchRequestDocument,
   BatchRequestsExtendedOptions,
   BatchRequestsOptions,
   ClientError,
@@ -43,7 +44,9 @@ export {
   RawRequestOptions,
   RequestDocument,
   RequestExtendedOptions,
+  RequestMiddleware,
   RequestOptions,
+  ResponseMiddleware,
   Variables,
 }
 
