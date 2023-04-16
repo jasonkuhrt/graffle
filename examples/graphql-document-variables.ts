@@ -17,9 +17,9 @@ const variables = {
   title: `Inception`,
 }
 
-interface TData {
+interface Data {
   Movie: { releaseDate: string; actors: Array<{ name: string }> }
 }
 
-const data = await request<TData>(endpoint, query, variables)
+const data = await request<Data>(endpoint, query, variables)
 console.log(data)

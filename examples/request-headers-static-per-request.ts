@@ -28,9 +28,9 @@ const requestHeaders = {
   'x-custom': `foo`,
 }
 
-interface TData {
+interface Data {
   Movie: { releaseDate: string; actors: Array<{ name: string }> }
 }
 
-const data = await client.request<TData>(query, {}, requestHeaders)
+const data = await client.request<Data>(query, {}, requestHeaders)
 console.log(data)

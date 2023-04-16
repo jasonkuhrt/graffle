@@ -18,7 +18,7 @@ const variables1 = {
   id: `C105`,
 }
 
-interface TData1 {
+interface Data1 {
   data: { capsule: { id: string; landings: number } }
 }
 
@@ -30,7 +30,7 @@ const query2 = gql`
   }
 `
 
-interface TData2 {
+interface Data2 {
   data: { rockets: { active: boolean }[] }
 }
 
@@ -48,11 +48,11 @@ const variables3 = {
   id: `B1015`,
 }
 
-interface TData3 {
+interface Data3 {
   data: { core: { id: string; block: number; original_launch: string } }
 }
 
-const data = await batchRequests<[TData1, TData2, TData3]>(endpoint, [
+const data = await batchRequests<[Data1, Data2, Data3]>(endpoint, [
   { document: query1, variables: variables1 },
   { document: query2 },
   { document: query3, variables: variables3 },

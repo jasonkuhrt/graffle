@@ -19,9 +19,9 @@ const query = gql`
   }
 `
 
-interface TData {
+interface Data {
   Movie: { releaseDate: string; actors: Array<{ name: string }> }
 }
 
-const data = await client.rawRequest<TData>(query)
+const data = await client.rawRequest<Data>(query)
 console.log(data)

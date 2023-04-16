@@ -22,9 +22,9 @@ const query = gql`
   }
 `
 
-interface TData {
+interface Data {
   Movie: { releaseDate: string; actors: Array<{ name: string }> }
 }
 
-const data = await graphQLClient.rawRequest<TData>(query)
+const data = await graphQLClient.rawRequest<Data>(query)
 console.log(data)

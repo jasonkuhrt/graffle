@@ -13,12 +13,12 @@ const query = gql`
   }
 `
 
-interface TData {
+interface Data {
   Movie: { releaseDate: string; actors: Array<{ name: string }> }
 }
 
 try {
-  const data = await request<TData>(endpoint, query)
+  const data = await request<Data>(endpoint, query)
   console.log(data)
 } catch (error) {
   console.error(error)
