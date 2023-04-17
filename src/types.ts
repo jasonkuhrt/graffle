@@ -81,12 +81,12 @@ export type MaybeLazy<T> = T | (() => T)
 
 export type RequestDocument = string | DocumentNode
 
-export interface GraphQLClientResponse<T> {
-  data: T
-  extensions?: unknown
-  headers: Headers
-  errors?: GraphQLError[]
+export interface GraphQLClientResponse<Data> {
   status: number
+  headers: Headers
+  data: Data
+  extensions?: unknown
+  errors?: GraphQLError[]
 }
 
 export type HTTPMethodInput = 'GET' | 'POST' | 'get' | 'post'

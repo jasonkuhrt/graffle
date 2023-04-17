@@ -19,7 +19,12 @@ const query = gql`
 `
 
 interface Data {
-  Movie: { releaseDate: string; actors: Array<{ name: string }> }
+  Movie: {
+    releaseDate: string
+    actors: {
+      name: string
+    }[]
+  }
 }
 
 const data = await graphQLClient.request<Data>(query)
