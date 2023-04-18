@@ -35,21 +35,6 @@ import {
 import type { TypedDocumentNode } from '@graphql-typed-document-node/core'
 import crossFetch, * as CrossFetch from 'cross-fetch'
 
-export {
-  BatchRequestDocument,
-  BatchRequestsExtendedOptions,
-  BatchRequestsOptions,
-  ClientError,
-  RawRequestExtendedOptions,
-  RawRequestOptions,
-  RequestDocument,
-  RequestExtendedOptions,
-  RequestMiddleware,
-  RequestOptions,
-  ResponseMiddleware,
-  Variables,
-}
-
 /**
  * Convert the given headers configuration into a plain object.
  */
@@ -197,7 +182,7 @@ const createHttpMethodFetcher =
 /**
  * GraphQL Client.
  */
-export class GraphQLClient {
+class GraphQLClient {
   constructor(private url: string, public readonly requestConfig: RequestConfig = {}) {}
 
   /**
@@ -471,7 +456,7 @@ type RawRequestArgs<V extends Variables> =
 /**
  * Send a GraphQL Query to the GraphQL server for execution.
  */
-export const rawRequest: RawRequest = async <T, V extends Variables>(
+const rawRequest: RawRequest = async <T, V extends Variables>(
   ...args: RawRequestArgs<V>
 ): Promise<GraphQLClientResponse<T>> => {
   const [urlOrOptions, query, ...variablesAndRequestHeaders] = args
@@ -517,12 +502,12 @@ export const rawRequest: RawRequest = async <T, V extends Variables>(
  * ```
  */
 // prettier-ignore
-export async function request<T, V extends Variables = Variables>(url: string, document: RequestDocument | TypedDocumentNode<T, V>, ...variablesAndRequestHeaders: VariablesAndRequestHeadersArgs<V>): Promise<T>
+async function request<T, V extends Variables = Variables>(url: string, document: RequestDocument | TypedDocumentNode<T, V>, ...variablesAndRequestHeaders: VariablesAndRequestHeadersArgs<V>): Promise<T>
 // prettier-ignore
-export async function request<T, V extends Variables = Variables>(options: RequestExtendedOptions<V, T>): Promise<T>
+async function request<T, V extends Variables = Variables>(options: RequestExtendedOptions<V, T>): Promise<T>
 // prettier-ignore
 // eslint-disable-next-line
-export async function request<T, V extends Variables = Variables>(urlOrOptions: string | RequestExtendedOptions<V, T>, document?: RequestDocument | TypedDocumentNode<T, V>, ...variablesAndRequestHeaders: VariablesAndRequestHeadersArgs<V>): Promise<T> {
+async function request<T, V extends Variables = Variables>(urlOrOptions: string | RequestExtendedOptions<V, T>, document?: RequestDocument | TypedDocumentNode<T, V>, ...variablesAndRequestHeaders: VariablesAndRequestHeadersArgs<V>): Promise<T> {
   const requestOptions = parseRequestExtendedArgs<V>(urlOrOptions, document, ...variablesAndRequestHeaders)
   const client = new GraphQLClient(requestOptions.url)
   return client.request<T, V>({
@@ -564,7 +549,7 @@ export async function request<T, V extends Variables = Variables>(urlOrOptions: 
  * await batchRequests('https://foo.bar/graphql', [{ query: gql`...` }])
  * ```
  */
-export const batchRequests: BatchRequests = async (...args: BatchRequestsArgs) => {
+const batchRequests: BatchRequests = async (...args: BatchRequestsArgs) => {
   const params = parseBatchRequestsArgsExtended(args)
   const client = new GraphQLClient(params.url)
   return client.batchRequests(params)
@@ -682,4 +667,22 @@ export const gql = (chunks: TemplateStringsArray, ...variables: unknown[]): stri
 
 export { GraphQLWebSocketClient } from './graphql-ws.js'
 export { resolveRequestDocument } from './resolveRequestDocument.js'
+export {
+  BatchRequestDocument,
+  batchRequests,
+  BatchRequestsExtendedOptions,
+  BatchRequestsOptions,
+  ClientError,
+  GraphQLClient,
+  rawRequest,
+  RawRequestExtendedOptions,
+  RawRequestOptions,
+  request,
+  RequestDocument,
+  RequestExtendedOptions,
+  RequestMiddleware,
+  RequestOptions,
+  ResponseMiddleware,
+  Variables,
+}
 export default request
