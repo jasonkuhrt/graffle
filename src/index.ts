@@ -501,10 +501,12 @@ const rawRequest: RawRequest = async <T, V extends Variables>(
  * await request('https://foo.bar/graphql', gql`...`)
  * ```
  */
-// prettier-ignore
-async function request<T, V extends Variables = Variables>(url: string, document: RequestDocument | TypedDocumentNode<T, V>, ...variablesAndRequestHeaders: VariablesAndRequestHeadersArgs<V>): Promise<T>
+// REMARKS: In order to have autocomplete for options work make it the first overload. If not
+// then autocomplete will instead show the various methods for a string, which is not what we want.
 // prettier-ignore
 async function request<T, V extends Variables = Variables>(options: RequestExtendedOptions<V, T>): Promise<T>
+// prettier-ignore
+async function request<T, V extends Variables = Variables>(url: string, document: RequestDocument | TypedDocumentNode<T, V>, ...variablesAndRequestHeaders: VariablesAndRequestHeadersArgs<V>): Promise<T>
 // prettier-ignore
 // eslint-disable-next-line
 async function request<T, V extends Variables = Variables>(urlOrOptions: string | RequestExtendedOptions<V, T>, document?: RequestDocument | TypedDocumentNode<T, V>, ...variablesAndRequestHeaders: VariablesAndRequestHeadersArgs<V>): Promise<T> {
