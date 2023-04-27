@@ -110,7 +110,7 @@ await request('https://api.spacex.land/graphql/', document)
 - Community
   - [GraphQL Code Generator for typed GraphQL Queries](./examples/community-graphql-code-generator.ts)
 - TypeScript
-  - [Use `TypedDocumentNode`](./examples/typescript-typed-document-node.ts.ts)
+  - [Use `TypedDocumentNode`](./examples/typescript-typed-document-node.ts)
 - Other:
   - [Middleware](./examples/other-middleware.ts)
   - [Error Handling](./examples/other-error-handling.ts)
