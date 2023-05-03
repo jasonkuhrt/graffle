@@ -1,3 +1,4 @@
+import type { ApolloServerExpressConfig } from 'apollo-server-express'
 import { ApolloServer } from 'apollo-server-express'
 import body from 'body-parser'
 import type { Application, Request } from 'express'
@@ -45,7 +46,9 @@ type MockResult<Spec extends MockSpec | MockSpecBatch = MockSpec> = {
   }[]
 }
 
-export function setupMockServer<T extends MockSpec | MockSpecBatch = MockSpec>(delay?: number): Context<T> {
+export const setupMockServer = <T extends MockSpec | MockSpecBatch = MockSpec>(
+  delay?: number
+): Context<T> => {
   const ctx = {} as Context<T>
   beforeAll(async () => {
     const port = await getPort()
@@ -60,23 +63,24 @@ export function setupMockServer<T extends MockSpec | MockSpecBatch = MockSpec>(d
     ctx.url = `http://localhost:${port}`
     ctx.res = (spec?: T): MockResult<T> => {
       const requests: CapturedRequest[] = []
-      ctx.server.use(`*`, async function mock(req, res) {
-        if (delay) {
-          await sleep(delay)
-        }
-
-        req.headers.host = `DYNAMIC`
-        requests.push({
-          method: req.method,
-          headers: req.headers,
-          body: req.body,
-        })
-        if (spec?.headers) {
-          Object.entries(spec.headers).forEach(([name, value]) => {
-            res.setHeader(name, value)
+      // eslint-disable-next-line
+      ctx.server.use(`*`, function mock(req, res) {
+        void new Promise((res) => {
+          delay ? setTimeout(res, delay) : res(undefined)
+        }).then(() => {
+          req.headers.host = `DYNAMIC`
+          requests.push({
+            method: req.method,
+            headers: req.headers,
+            body: req.body, // eslint-disable-line
           })
-        }
-        res.send(spec?.body ?? { data: {} })
+          if (spec?.headers) {
+            Object.entries(spec.headers).forEach(([name, value]) => {
+              res.setHeader(name, value)
+            })
+          }
+          res.send(spec?.body ?? { data: {} })
+        })
       })
 
       return { spec, requests: requests } as MockResult<T>
@@ -85,7 +89,9 @@ export function setupMockServer<T extends MockSpec | MockSpecBatch = MockSpec>(d
 
   afterEach(() => {
     // https://stackoverflow.com/questions/10378690/remove-route-mappings-in-nodejs-express/28369539#28369539
+    // eslint-disable-next-line
     ctx.server._router.stack.forEach((item: any, i: number) => {
+      // eslint-disable-next-line
       if (item.name === `mock`) ctx.server._router.stack.splice(i, 1)
     })
   })
@@ -101,15 +107,18 @@ export function setupMockServer<T extends MockSpec | MockSpecBatch = MockSpec>(d
   return ctx
 }
 
-type ApolloServerContextOptions = { typeDefs: string; resolvers: any }
+type ApolloServerContextOptions = {
+  typeDefs: string
+  resolvers: ApolloServerExpressConfig['resolvers']
+}
 
-export async function startApolloServer({ typeDefs, resolvers }: ApolloServerContextOptions) {
+export const startApolloServer = async ({ typeDefs, resolvers }: ApolloServerContextOptions) => {
   const app = express()
 
   const apolloServer = new ApolloServer({ typeDefs, resolvers })
 
   await apolloServer.start()
-  apolloServer.applyMiddleware({ app: app as any })
+  apolloServer.applyMiddleware({ app })
 
   let server: Server
 
@@ -120,8 +129,8 @@ export async function startApolloServer({ typeDefs, resolvers }: ApolloServerCon
   return server!
 }
 
-export function createApolloServerContext({ typeDefs, resolvers }: ApolloServerContextOptions) {
-  const ctx: { url: string; server: Server } = {} as any
+export const createApolloServerContext = ({ typeDefs, resolvers }: ApolloServerContextOptions) => {
+  const ctx: { url: string; server: Server } = {} as any // eslint-disable-line
 
   beforeEach(async () => {
     ctx.server = await startApolloServer({ typeDefs, resolvers })
@@ -140,7 +149,7 @@ export function createApolloServerContext({ typeDefs, resolvers }: ApolloServerC
   return ctx
 }
 
-export function sleep(timeout: number): Promise<void> {
+export const sleep = (timeout: number): Promise<void> => {
   return new Promise((resolve) => {
     setTimeout(resolve, timeout)
   })

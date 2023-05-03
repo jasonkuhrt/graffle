@@ -28,7 +28,7 @@ it(`should abort a request when the signal is defined in GraphQLClient and after
         },
       },
     },
-  }).spec.body!
+  }).spec.body
 
   expect.assertions(1)
 
@@ -144,7 +144,7 @@ it(`should abort a request after the request has been sent`, async () => {
         },
       },
     },
-  }).spec.body!
+  }).spec.body
 
   expect.assertions(1)
 
@@ -187,7 +187,7 @@ it(`should abort a raw request after the request has been sent`, async () => {
         },
       },
     },
-  }).spec.body!
+  }).spec.body
 
   expect.assertions(1)
 
@@ -230,7 +230,7 @@ it(`should abort batch requests after a request has been sent`, async () => {
         },
       },
     },
-  }).spec.body!
+  }).spec.body
 
   expect.assertions(1)
 

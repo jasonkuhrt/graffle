@@ -34,7 +34,7 @@ test(`minimal raw query`, async () => {
       },
     },
   }).spec.body!
-  const { headers, ...result } = await rawRequest(ctx.url, `{ me { id } }`)
+  const { headers: _, ...result } = await rawRequest(ctx.url, `{ me { id } }`)
   expect(result).toEqual({ data, extensions, status: 200 })
 })
 
@@ -63,7 +63,7 @@ test(`minimal raw query with response headers`, async () => {
 })
 
 test(`minimal raw query with response headers and new graphql content type`, async () => {
-  const { headers: reqHeaders, body } = ctx.res({
+  const { headers: _, body } = ctx.res({
     headers: {
       'Content-Type': `application/graphql+json`,
     },
@@ -79,13 +79,13 @@ test(`minimal raw query with response headers and new graphql content type`, asy
     },
   }).spec
 
-  const { headers, ...result } = await rawRequest(ctx.url, `{ me { id } }`)
+  const { headers: __, ...result } = await rawRequest(ctx.url, `{ me { id } }`)
 
   expect(result).toEqual({ ...body, status: 200 })
 })
 
 test(`minimal raw query with response headers and application/graphql-response+json response type`, async () => {
-  const { headers: reqHeaders, body } = ctx.res({
+  const { headers: _, body } = ctx.res({
     headers: {
       'Content-Type': `application/graphql-response+json`,
     },
@@ -101,7 +101,7 @@ test(`minimal raw query with response headers and application/graphql-response+j
     },
   }).spec
 
-  const { headers, ...result } = await rawRequest(ctx.url, `{ me { id } }`)
+  const { headers: __, ...result } = await rawRequest(ctx.url, `{ me { id } }`)
 
   expect(result).toEqual({ ...body, status: 200 })
 })
@@ -157,7 +157,7 @@ test(`basic error with raw request`, async () => {
       },
     },
   })
-  const res = await rawRequest(ctx.url, `x`).catch((x) => x)
+  const res: unknown = await rawRequest(ctx.url, `x`).catch((x) => x)
   expect(res).toMatchInlineSnapshot(
     `[Error: GraphQL Error (Code: 200): {"response":{"errors":{"message":"Syntax Error GraphQL request (1:1) Unexpected Name \\"x\\"\\n\\n1: x\\n   ^\\n","locations":[{"line":1,"column":1}]},"status":200,"headers":{}},"request":{"query":"x"}}]`
   )
@@ -229,8 +229,7 @@ describe(`middleware`, () => {
           },
         },
       })
-
-      requestMiddleware = vitest.fn(async (req) => ({ ...req }))
+      requestMiddleware = vitest.fn((req) => ({ ...req }))
       client = new GraphQLClient(ctx.url, {
         requestMiddleware,
       })
@@ -343,21 +342,17 @@ test(`case-insensitive content-type header for custom fetch`, async () => {
   testResponseHeaders.set(`ConTENT-type`, `apPliCatiON/JSON`)
 
   const options: RequestConfig = {
-    fetch: function (url: string) {
-      return Promise.resolve({
+    // @ts-expect-error testing
+    fetch: (url) =>
+      Promise.resolve({
         headers: testResponseHeaders,
         data: testData,
-        json: function () {
-          return testData
-        },
-        text: function () {
-          return JSON.stringify(testData)
-        },
+        json: () => testData,
+        text: () => JSON.stringify(testData),
         ok: true,
         status: 200,
         url,
-      })
-    },
+      }),
   }
 
   const client = new GraphQLClient(ctx.url, options)
@@ -398,7 +393,7 @@ describe(`operationName parsing`, () => {
   })
 })
 
-test(`should not throw error when errors property is an empty array (occured when using UltraGraphQL)`, async () => {
+test(`should not throw error when errors property is an empty array (occurred when using UltraGraphQL)`, async () => {
   ctx.res({
     body: {
       data: { test: `test` },

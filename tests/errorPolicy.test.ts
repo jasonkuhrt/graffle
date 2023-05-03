@@ -21,7 +21,7 @@ test(`should throw error when error policy not set`, async () => {
     },
   })
 
-  expect(async () => await new GraphQLClient(ctx.url).rawRequest(`x`)).rejects.toThrow(`GraphQL Error`)
+  await expect(() => new GraphQLClient(ctx.url).rawRequest(`x`)).rejects.toThrow(`GraphQL Error`)
 })
 
 test(`should throw error when error policy set to "none"`, async () => {
@@ -32,7 +32,7 @@ test(`should throw error when error policy set to "none"`, async () => {
     },
   })
 
-  expect(async () => await new GraphQLClient(ctx.url).rawRequest(`x`)).rejects.toThrow(`GraphQL Error`)
+  await expect(() => new GraphQLClient(ctx.url).rawRequest(`x`)).rejects.toThrow(`GraphQL Error`)
 })
 
 test(`should not throw error when error policy set to "ignore" and return only data`, async () => {

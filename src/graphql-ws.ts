@@ -1,5 +1,5 @@
+/* eslint-disable */
 import { resolveRequestDocument } from './resolveRequestDocument.js'
-import type * as Dom from './types.dom.js'
 import type { RequestDocument, Variables } from './types.js'
 import { ClientError } from './types.js'
 // import type WebSocket from 'ws'
@@ -93,22 +93,22 @@ export class GraphQLWebSocketClient {
   constructor(socket: WebSocket, { onInit, onAcknowledged, onPing, onPong }: SocketHandler) {
     this.socket = socket
 
-    socket.addEventListener('open', async (e) => {
+    socket.addEventListener(`open`, async (e) => {
       this.socketState.acknowledged = false
       this.socketState.subscriptions = {}
       socket.send(ConnectionInit(onInit ? await onInit() : null).text)
     })
 
-    socket.addEventListener('close', (e) => {
+    socket.addEventListener(`close`, (e) => {
       this.socketState.acknowledged = false
       this.socketState.subscriptions = {}
     })
 
-    socket.addEventListener('error', (e) => {
+    socket.addEventListener(`error`, (e) => {
       console.error(e)
     })
 
-    socket.addEventListener('message', (e) => {
+    socket.addEventListener(`message`, (e) => {
       try {
         const message = parseMessage(e.data)
         switch (message.type) {
@@ -198,20 +198,18 @@ export class GraphQLWebSocketClient {
     query: string,
     variables?: V
   ): Promise<{ data: T; extensions?: E }> {
-    return new Promise<{ data: T; extensions?: E; headers?: Dom.Headers; status?: number }>(
-      (resolve, reject) => {
-        let result: { data: T; extensions?: E }
-        this.rawSubscribe(
-          query,
-          {
-            next: (data: T, extensions: E) => (result = { data, extensions }),
-            error: reject,
-            complete: () => resolve(result),
-          },
-          variables
-        )
-      }
-    )
+    return new Promise<{ data: T; extensions?: E; headers?: Headers; status?: number }>((resolve, reject) => {
+      let result: { data: T; extensions?: E }
+      this.rawSubscribe(
+        query,
+        {
+          next: (data: T, extensions: E) => (result = { data, extensions }),
+          error: reject,
+          complete: () => resolve(result),
+        },
+        variables
+      )
+    })
   }
 
   request<T = any, V extends Variables = Variables>(document: RequestDocument, variables?: V): Promise<T> {

@@ -18,7 +18,7 @@
     }
   },
   "types": "./build/esm/index.d.ts",
-  "packageManager": "pnpm@7.30.5",
+  "packageManager": "pnpm@8.3.1",
   "files": [
     "build"
   ],
@@ -44,14 +44,15 @@
   },
   "homepage": "https://github.com/sonofmagic/weapp-graphql-request",
   "scripts": {
-    "build:docs": "doctoc README.md --notitle",
     "dev": "rimraf dist && tsc --watch",
     "format": "prettier --write .",
     "lint": "eslint . --ext .ts,.tsx --fix",
+    "check": "pnpm check:types && pnpm check:format && pnpm check:lint",
     "check:types": "pnpm tsc --noEmit",
-    "check:format": "prettier --check .",
+    "check:format": "prettier --check . && pnpm build:docs && git diff --exit-code README.md",
     "check:lint": "eslint . --ext .ts,.tsx --max-warnings 0",
     "prepublishOnly": "pnpm build",
+    "build:docs": "doctoc README.md --notitle && prettier --write README.md",
     "build": "pnpm clean && pnpm build:cjs && pnpm build:esm",
     "build:cjs": "pnpm tsc --project tsconfig.cjs.json && echo {\"type\":\"commonjs\"} > build/cjs/package.json",
     "build:esm": "pnpm tsc --project tsconfig.esm.json",
@@ -88,6 +89,7 @@
     "dripip": "^0.10.0",
     "eslint": "^8.38.0",
     "eslint-config-prettier": "^8.8.0",
+    "eslint-config-prisma": "^0.1.0",
     "eslint-plugin-deprecation": "^1.4.1",
     "eslint-plugin-only-warn": "^1.1.0",
     "eslint-plugin-prefer-arrow": "^1.2.3",

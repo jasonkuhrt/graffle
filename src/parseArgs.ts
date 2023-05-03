@@ -1,8 +1,7 @@
-import type * as Dom from './types.dom.js'
 import type {
   BatchRequestDocument,
-  BatchRequestsExtendedOptions,
   BatchRequestsOptions,
+  GraphQLClientRequestHeaders,
   RawRequestExtendedOptions,
   RawRequestOptions,
   RequestDocument,
@@ -15,7 +14,7 @@ import type {
 export const parseRequestArgs = <V extends Variables = Variables>(
   documentOrOptions: RequestDocument | RequestOptions<V>,
   variables?: V,
-  requestHeaders?: Dom.RequestInit['headers']
+  requestHeaders?: GraphQLClientRequestHeaders
 ): RequestOptions<V> => {
   return (documentOrOptions as RequestOptions<V>).document
     ? (documentOrOptions as RequestOptions<V>)
@@ -30,7 +29,7 @@ export const parseRequestArgs = <V extends Variables = Variables>(
 export const parseRawRequestArgs = <V extends Variables = Variables>(
   queryOrOptions: string | RawRequestOptions<V>,
   variables?: V,
-  requestHeaders?: Dom.RequestInit['headers']
+  requestHeaders?: GraphQLClientRequestHeaders
 ): RawRequestOptions<V> => {
   return (queryOrOptions as RawRequestOptions<V>).query
     ? (queryOrOptions as RawRequestOptions<V>)
@@ -44,7 +43,7 @@ export const parseRawRequestArgs = <V extends Variables = Variables>(
 
 export const parseBatchRequestArgs = <V extends Variables = Variables>(
   documentsOrOptions: BatchRequestDocument<V>[] | BatchRequestsOptions<V>,
-  requestHeaders?: Dom.RequestInit['headers']
+  requestHeaders?: GraphQLClientRequestHeaders
 ): BatchRequestsOptions<V> => {
   return (documentsOrOptions as BatchRequestsOptions<V>).documents
     ? (documentsOrOptions as BatchRequestsOptions<V>)

@@ -40,7 +40,6 @@ you should install `weapp-fetch` instead of other `fetch` implement because only
 |---|---|---|
 |√|√|?|
 
-
 ## Usages
 
 Refers to [graphql-request](https://www.npmjs.com/package/graphql-request)

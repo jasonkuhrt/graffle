@@ -1,5 +1,4 @@
 import { GraphQLClient, request } from '../src/index.js'
-import type * as Dom from '../src/types.dom.js'
 import { setupMockServer } from './__helpers.js'
 import * as CrossFetch from 'cross-fetch'
 import { describe, expect, test } from 'vitest'
@@ -46,7 +45,7 @@ describe(`using class`, () => {
       [new H({ 'x-request-foo': `request-bar` })],
       [{ 'x-request-foo': `request-bar` }],
       [[[`x-request-foo`, `request-bar`]]],
-    ])(`request unique header with request`, (headerCase: Dom.RequestInit['headers']) => {
+    ])(`request unique header with request`, (headerCase) => {
       test(`with request method`, async () => {
         const client = new GraphQLClient(ctx.url)
 
@@ -74,7 +73,7 @@ describe(`using class`, () => {
       [new H({ 'x-foo': `request-bar` })],
       [{ 'x-foo': `request-bar` }],
       [[[`x-foo`, `request-bar`]]],
-    ])(`request header overriding the client header`, (headerCase: Dom.RequestInit['headers']) => {
+    ])(`request header overriding the client header`, (headerCase) => {
       test(`with request method`, async () => {
         const client = new GraphQLClient(ctx.url)
         client.setHeader(`x-foo`, `bar`)
@@ -119,7 +118,7 @@ describe(`using request function`, () => {
     [new H({ 'x-request-foo': `request-bar` })],
     [{ 'x-request-foo': `request-bar` }],
     [[[`x-request-foo`, `request-bar`]]],
-  ])(`request unique header with request`, (headerCase: Dom.RequestInit['headers']) => {
+  ])(`request unique header with request`, (headerCase) => {
     test(`sets header`, async () => {
       const mock = ctx.res()
       await request(ctx.url, `{ me { id } }`, {}, headerCase)
