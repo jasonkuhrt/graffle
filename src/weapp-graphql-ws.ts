@@ -1,7 +1,6 @@
 /* eslint-disable prefer-arrow/prefer-arrow-functions */
 /// <reference path="../node_modules/miniprogram-api-typings/index.d.ts" />
 import { resolveRequestDocument } from './resolveRequestDocument.js'
-import type * as Dom from './types.dom.js'
 import type { RequestDocument, Variables } from './types.js'
 import { ClientError } from './types.js'
 // import type WebSocket from 'ws'
@@ -215,7 +214,7 @@ export class GraphQLWebSocketClient {
     query: string,
     variables?: V
   ): Promise<{ data: T; extensions?: E }> {
-    return new Promise<{ data: T; extensions?: E; headers?: Dom.Headers; status?: number }>(
+    return new Promise<{ data: T; extensions?: E; headers?: Headers; status?: number }>(
       (resolve, reject) => {
         let result: { data: T; extensions?: E }
         this.rawSubscribe(

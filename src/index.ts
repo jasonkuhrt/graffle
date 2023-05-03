@@ -10,6 +10,7 @@ import {
 import { resolveRequestDocument } from './resolveRequestDocument.js'
 import type {
   BatchRequestDocument,
+  Fetch,
   FetchOptions,
   GraphQLClientRequestHeaders,
   GraphQLClientResponse,
@@ -19,7 +20,7 @@ import type {
   RequestConfig,
   RequestMiddleware,
   ResponseMiddleware,
-  VariablesAndRequestHeadersArgs,
+  VariablesAndRequestHeadersArgs
 } from './types.js'
 import {
   BatchRequestsExtendedOptions,
@@ -119,7 +120,7 @@ const buildRequestConfig = <V extends Variables>(params: BuildRequestConfigParam
   return `query=${encodeURIComponent(params_.jsonSerializer.stringify(payload))}`
 }
 
-type Fetch = (url: string, config: RequestInit) => Promise<Response>
+// type Fetch = (url: string, config: RequestInit) => Promise<Response>
 
 interface RequestVerbParams<V extends Variables = Variables> {
   url: string
@@ -217,7 +218,7 @@ class GraphQLClient {
         ...resolveHeaders(rawRequestOptions.requestHeaders),
       },
       operationName,
-      fetch,
+      fetch: <Fetch>fetch ,
       method,
       fetchOptions,
       middleware: requestMiddleware,
@@ -275,7 +276,7 @@ class GraphQLClient {
         ...resolveHeaders(requestOptions.requestHeaders),
       },
       operationName,
-      fetch,
+      fetch: <Fetch>fetch ,
       method,
       fetchOptions,
       middleware: requestMiddleware,
@@ -325,7 +326,7 @@ class GraphQLClient {
         ...resolveHeaders(batchRequestOptions.requestHeaders),
       },
       operationName: undefined,
-      fetch: this.requestConfig.fetch,
+      fetch: this.requestConfig.fetch!,
       method: this.requestConfig.method || `POST`,
       fetchOptions,
       middleware: this.requestConfig.requestMiddleware,

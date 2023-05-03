@@ -1,7 +1,7 @@
 {
   "name": "weapp-graphql-request",
-  "description": "(WIP) this is a util fork form graphql-request and only worked in weapp environment",
-  "version": "0.1.4",
+  "description": "This is a util fork form graphql-request and only worked in weapp environment",
+  "version": "0.2.0-alpha.0",
   "type": "module",
   "main": "./build/cjs/index.js",
   "module": "./build/esm/index.js",
@@ -70,7 +70,7 @@
     "graphql": "14 - 16"
   },
   "devDependencies": {
-    "@dcloudio/types": "^3.2.11",
+    "@dcloudio/types": "^3.3.3",
     "@graphql-tools/schema": "^9.0.18",
     "@prisma-labs/prettier-config": "^0.1.0",
     "@tsconfig/node16": "^1.0.3",
