@@ -40,8 +40,8 @@ devDependencies:
     specifier: ^5.58.0
     version: 5.58.0(eslint@8.38.0)(typescript@5.0.4)
   '@vitest/coverage-c8':
-    specifier: ^0.30.1
-    version: 0.30.1(vitest@0.31.0)
+    specifier: ^0.31.0
+    version: 0.31.0(vitest@0.31.0)
   apollo-server-express:
     specifier: ^3.12.0
     version: 3.12.0(express@4.18.2)(graphql@16.6.0)
@@ -119,6 +119,14 @@ devDependencies:
     version: 8.13.0
 
 packages:
+
+  /@ampproject/remapping@2.2.1:
+    resolution: {integrity: sha512-lFMjJTrFL3j7L9yBxwYfCq2k6qqwHyzuUl/XBnif78PWTJYyL/dfowQHWE3sp6U6ZzqWiiIZnpTMO96zhkjwtg==}
+    engines: {node: '>=6.0.0'}
+    dependencies:
+      '@jridgewell/gen-mapping': 0.3.3
+      '@jridgewell/trace-mapping': 0.3.18
+    dev: true
 
   /@apollo/protobufjs@1.2.6:
     resolution: {integrity: sha512-Wqo1oSHNUj/jxmsVp4iR3I480p6qdqHikn38lKrFhfzcDJ7lwd7Ck7cHRl4JE81tWNArl77xhnG/OkZhxKBYOw==}
@@ -602,8 +610,22 @@ packages:
     resolution: {integrity: sha512-CtzORUwWTTOTqfVtHaKRJ0I1kNQd1bpn3sUh8I3nJDVY+5/M/Oe1DnEWzPQvqq/xPIIkzzzIP7mfCoAjFRvDhg==}
     dev: true
 
+  /@jridgewell/gen-mapping@0.3.3:
+    resolution: {integrity: sha512-HLhSWOLRi875zjjMG/r+Nv0oCW8umGb0BgEhyX3dDX3egwZtB8PqLnjz3yedt8R5StBrzcg4aBpnh8UA9D1BoQ==}
+    engines: {node: '>=6.0.0'}
+    dependencies:
+      '@jridgewell/set-array': 1.1.2
+      '@jridgewell/sourcemap-codec': 1.4.15
+      '@jridgewell/trace-mapping': 0.3.18
+    dev: true
+
   /@jridgewell/resolve-uri@3.1.0:
     resolution: {integrity: sha512-F2msla3tad+Mfht5cJq7LSXcdudKTWCVYUgw6pLFOOHSTtZlj6SWNYAp+AhuqLmWdBO2X5hPrLcu8cVP8fy28w==}
+    engines: {node: '>=6.0.0'}
+    dev: true
+
+  /@jridgewell/set-array@1.1.2:
+    resolution: {integrity: sha512-xnkseuNADM0gt2bs+BvhO0p78Mk762YnZdsuzFV018NoG1Sj1SCQvpSqa7XUaTam5vAGasABV9qXASMKnFMwMw==}
     engines: {node: '>=6.0.0'}
     dev: true
 
@@ -1272,12 +1294,14 @@ packages:
       eslint-visitor-keys: 3.4.0
     dev: true
 
-  /@vitest/coverage-c8@0.30.1(vitest@0.31.0):
-    resolution: {integrity: sha512-/Wa3dtSuckpdngAmiCwowaEXXgJkqPrtfvrs9HTB9QoEfNbZWPu4E4cjEn4lJZb4qcGf4fxFtUA2f9DnDNAzBA==}
+  /@vitest/coverage-c8@0.31.0(vitest@0.31.0):
+    resolution: {integrity: sha512-h72qN1D962AO7UefQVulm9JFP5ACS7OfhCdBHioXU8f7ohH/+NTZCgAqmgcfRNHHO/8wLFxx+93YVxhodkEJVA==}
     peerDependencies:
       vitest: '>=0.30.0 <1'
     dependencies:
+      '@ampproject/remapping': 2.2.1
       c8: 7.13.0
+      magic-string: 0.30.0
       picocolors: 1.0.0
       std-env: 3.3.2
       vitest: 0.31.0(happy-dom@9.7.1)
