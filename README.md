@@ -23,8 +23,6 @@ Minimal GraphQL client supporting Node and browsers for scripts or simple apps
   - [Why do I have to install `graphql`?](#why-do-i-have-to-install-graphql)
   - [Do I need to wrap my GraphQL documents inside the `gql` template exported by `graphql-request`?](#do-i-need-to-wrap-my-graphql-documents-inside-the-gql-template-exported-by-graphql-request)
   - [What sets `graphql-request` apart from other clients like Apollo, Relay, etc.?](#what-sets-graphql-request-apart-from-other-clients-like-apollo-relay-etc)
-  - [Why is the package `main` field missing?](#why-is-the-package-main-field-missing)
-  - [How do I work around React Native + Metro's lack of `exports` support?](#how-do-i-work-around-react-native--metros-lack-of-exports-support)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
