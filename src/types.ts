@@ -144,7 +144,7 @@ export interface BatchRequestsExtendedOptions<V extends Variables = Variables>
   url: string
 }
 
-export type ResponseMiddleware = (response: GraphQLClientResponse<unknown> | Error) => void
+export type ResponseMiddleware = (response: GraphQLClientResponse<unknown> | ClientError | Error) => void
 
 // prettier-ignore
 export type RequestMiddleware<V extends Variables = Variables> = (request: RequestExtendedInit<V>) => RequestExtendedInit | Promise<RequestExtendedInit>
