@@ -103,7 +103,7 @@
     "prettier": "^2.8.7",
     "type-fest": "^3.8.0",
     "typescript": "^5.0.4",
-    "vitest": "^0.31.0",
+    "vitest": "^0.32.0",
     "ws": "^8.13.0"
   },
   "prettier": "@prisma-labs/prettier-config"
