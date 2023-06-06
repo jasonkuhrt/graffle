@@ -94,7 +94,7 @@
     "eslint-plugin-tsdoc": "^0.2.17",
     "express": "^4.18.2",
     "fetch-cookie": "^2.1.0",
-    "get-port": "^6.1.2",
+    "get-port": "^7.0.0",
     "graphql": "^16.6.0",
     "graphql-tag": "^2.12.6",
     "graphql-ws": "^5.12.1",
