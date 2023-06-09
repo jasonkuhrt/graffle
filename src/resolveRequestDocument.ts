@@ -1,6 +1,7 @@
 import type { RequestDocument } from './types.js'
-import type { DocumentNode, OperationDefinitionNode } from 'graphql'
-import { parse, print } from 'graphql'
+import type { DocumentNode, OperationDefinitionNode } from 'graphql/language/ast.js'
+import { parse } from 'graphql/language/parser.js'
+import { print } from 'graphql/language/printer.js'
 
 /**
  * helpers
