@@ -1,6 +1,12 @@
 import type { RequestDocument } from './types.js'
-import type { DocumentNode, OperationDefinitionNode } from 'graphql'
-import { parse, print } from 'graphql'
+/**
+ * Refactored imports from `graphql` to be more specific, this helps import only the required files (100KiB) 
+ * instead of the entire package (>500KiB) where tree-shaking is not supported.
+ * @see https://github.com/jasonkuhrt/graphql-request/pull/543
+ */
+import type { DocumentNode, OperationDefinitionNode } from 'graphql/language/ast.js'
+import { parse } from 'graphql/language/parser.js'
+import { print } from 'graphql/language/printer.js'
 
 /**
  * helpers
