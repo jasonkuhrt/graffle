@@ -91,14 +91,17 @@ export class GraphQLWebSocketClient {
   private socket: WechatMiniprogram.SocketTask
   private socketState: SocketState = { acknowledged: false, lastRequestId: 0, subscriptions: {} }
 
-  constructor(socket: WechatMiniprogram.SocketTask, { onInit, onAcknowledged, onPing, onPong }: SocketHandler = {}) {
+  constructor(
+    socket: WechatMiniprogram.SocketTask,
+    { onInit, onAcknowledged, onPing, onPong }: SocketHandler = {}
+  ) {
     this.socket = socket
 
     socket.onOpen(async (e) => {
       this.socketState.acknowledged = false
       this.socketState.subscriptions = {}
       socket.send({
-        data: ConnectionInit(onInit ? await onInit() : null).text
+        data: ConnectionInit(onInit ? await onInit() : null).text,
       })
     })
 
@@ -125,12 +128,16 @@ export class GraphQLWebSocketClient {
             return
           }
           case PING: {
-            if (onPing) onPing(message.payload).then((r) => socket.send({
-              data: Pong(r).text
-            }))
-            else socket.send({
-              data: Pong(null).text
-            })
+            if (onPing)
+              onPing(message.payload).then((r) =>
+                socket.send({
+                  data: Pong(r).text,
+                })
+              )
+            else
+              socket.send({
+                data: Pong(null).text,
+              })
             return
           }
           case PONG: {
@@ -181,12 +188,12 @@ export class GraphQLWebSocketClient {
         // Unexpected errors while handling graphql-ws message
         console.error(e)
         socket.close({
-          code: 1006
+          code: 1006,
         })
       }
       socket.close({
         code: 4400,
-        reason: `Unknown graphql-ws message.`
+        reason: `Unknown graphql-ws message.`,
       })
     })
   }
@@ -200,11 +207,11 @@ export class GraphQLWebSocketClient {
     const subscriptionId = (this.socketState.lastRequestId++).toString()
     this.socketState.subscriptions[subscriptionId] = { query, variables, subscriber }
     this.socket.send({
-      data: Subscribe(subscriptionId, { query, operationName, variables }).text
+      data: Subscribe(subscriptionId, { query, operationName, variables }).text,
     })
     return () => {
       this.socket.send({
-        data: Complete(subscriptionId).text
+        data: Complete(subscriptionId).text,
       })
       delete this.socketState.subscriptions[subscriptionId]
     }
@@ -214,20 +221,18 @@ export class GraphQLWebSocketClient {
     query: string,
     variables?: V
   ): Promise<{ data: T; extensions?: E }> {
-    return new Promise<{ data: T; extensions?: E; headers?: Headers; status?: number }>(
-      (resolve, reject) => {
-        let result: { data: T; extensions?: E }
-        this.rawSubscribe(
-          query,
-          {
-            next: (data: T, extensions: E) => (result = { data, extensions }),
-            error: reject,
-            complete: () => resolve(result),
-          },
-          variables
-        )
-      }
-    )
+    return new Promise<{ data: T; extensions?: E; headers?: Headers; status?: number }>((resolve, reject) => {
+      let result: { data: T; extensions?: E }
+      this.rawSubscribe(
+        query,
+        {
+          next: (data: T, extensions: E) => (result = { data, extensions }),
+          error: reject,
+          complete: () => resolve(result),
+        },
+        variables
+      )
+    })
   }
 
   request<T = any, V extends Variables = Variables>(document: RequestDocument, variables?: V): Promise<T> {
@@ -264,13 +269,13 @@ export class GraphQLWebSocketClient {
 
   ping(payload: Variables) {
     this.socket.send({
-      data: Ping(payload).text
+      data: Ping(payload).text,
     })
   }
 
   close() {
     this.socket.close({
-      code: 1000
+      code: 1000,
     })
   }
 }

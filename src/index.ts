@@ -20,7 +20,7 @@ import type {
   RequestConfig,
   RequestMiddleware,
   ResponseMiddleware,
-  VariablesAndRequestHeadersArgs
+  VariablesAndRequestHeadersArgs,
 } from './types.js'
 import {
   BatchRequestsExtendedOptions,
@@ -35,16 +35,13 @@ import {
 } from './types.js'
 import type { TypedDocumentNode } from '@graphql-typed-document-node/core'
 
-
 /**
  * Convert the given headers configuration into a plain object.
  */
 const resolveHeaders = (headers?: GraphQLClientRequestHeaders): Record<string, string> => {
   let oHeaders: Record<string, string> = {}
   if (headers) {
-    if (
-      typeof Headers !== `undefined` && headers instanceof Headers
-    ) {
+    if (typeof Headers !== `undefined` && headers instanceof Headers) {
       oHeaders = HeadersInstanceToPlainObject(headers)
     } else if (Array.isArray(headers)) {
       headers.forEach(([name, value]) => {
@@ -135,55 +132,55 @@ interface RequestVerbParams<V extends Variables = Variables> {
 
 const createHttpMethodFetcher =
   (method: 'GET' | 'POST') =>
-    async <V extends Variables>(params: RequestVerbParams<V>) => {
-      const { url, query, variables, operationName, fetch, fetchOptions, middleware } = params
+  async <V extends Variables>(params: RequestVerbParams<V>) => {
+    const { url, query, variables, operationName, fetch, fetchOptions, middleware } = params
 
-      const headers = { ...params.headers }
-      let queryParams = ``
-      let body = undefined
+    const headers = { ...params.headers }
+    let queryParams = ``
+    let body = undefined
 
-      if (method === `POST`) {
-        body = createRequestBody(query, variables, operationName, fetchOptions.jsonSerializer)
-        if (typeof body === `string`) {
-          // @ts-expect-error todo
-          headers[`Content-Type`] = `application/json`
-        }
-      } else {
-        // @ts-expect-error todo needs ADT for TS to understand the different states
-        queryParams = buildRequestConfig<V>({
-          query,
-          variables,
-          operationName,
-          jsonSerializer: fetchOptions.jsonSerializer ?? defaultJsonSerializer,
-        })
+    if (method === `POST`) {
+      body = createRequestBody(query, variables, operationName, fetchOptions.jsonSerializer)
+      if (typeof body === `string`) {
+        // @ts-expect-error todo
+        headers[`Content-Type`] = `application/json`
       }
-
-      const init: RequestInit = {
-        method,
-        headers,
-        body,
-        ...fetchOptions,
-      }
-
-      let urlResolved = url
-      let initResolved = init
-      if (middleware) {
-        const result = await Promise.resolve(middleware({ ...init, url, operationName, variables }))
-        const { url: urlNew, ...initNew } = result
-        urlResolved = urlNew
-        initResolved = initNew
-      }
-      if (queryParams) {
-        urlResolved = `${urlResolved}?${queryParams}`
-      }
-      return await fetch(urlResolved, initResolved)
+    } else {
+      // @ts-expect-error todo needs ADT for TS to understand the different states
+      queryParams = buildRequestConfig<V>({
+        query,
+        variables,
+        operationName,
+        jsonSerializer: fetchOptions.jsonSerializer ?? defaultJsonSerializer,
+      })
     }
+
+    const init: RequestInit = {
+      method,
+      headers,
+      body,
+      ...fetchOptions,
+    }
+
+    let urlResolved = url
+    let initResolved = init
+    if (middleware) {
+      const result = await Promise.resolve(middleware({ ...init, url, operationName, variables }))
+      const { url: urlNew, ...initNew } = result
+      urlResolved = urlNew
+      initResolved = initNew
+    }
+    if (queryParams) {
+      urlResolved = `${urlResolved}?${queryParams}`
+    }
+    return await fetch(urlResolved, initResolved)
+  }
 
 /**
  * GraphQL Client.
  */
 class GraphQLClient {
-  constructor(private url: string, public readonly requestConfig: RequestConfig = {}) { }
+  constructor(private url: string, public readonly requestConfig: RequestConfig = {}) {}
 
   /**
    * Send a GraphQL query to the server.
@@ -218,7 +215,7 @@ class GraphQLClient {
         ...resolveHeaders(rawRequestOptions.requestHeaders),
       },
       operationName,
-      fetch: <Fetch>fetch ,
+      fetch: <Fetch>fetch,
       method,
       fetchOptions,
       middleware: requestMiddleware,
@@ -276,7 +273,7 @@ class GraphQLClient {
         ...resolveHeaders(requestOptions.requestHeaders),
       },
       operationName,
-      fetch: <Fetch>fetch ,
+      fetch: <Fetch>fetch,
       method,
       fetchOptions,
       middleware: requestMiddleware,
@@ -420,8 +417,8 @@ const makeRequest = async <T = unknown, V extends Variables = Variables>(params:
     const errorResult =
       typeof result === `string`
         ? {
-          error: result,
-        }
+            error: result,
+          }
         : result
     throw new ClientError(
       // @ts-expect-error TODO

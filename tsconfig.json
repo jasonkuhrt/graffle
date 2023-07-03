@@ -1,10 +1,7 @@
 {
   "extends": "@tsconfig/node16/tsconfig.json",
   "compilerOptions": {
-    "lib": [
-      "DOM",
-      "ES2015"
-    ],
+    "lib": ["DOM", "ES2015"],
     // Use ESM
     "module": "NodeNext",
     "moduleResolution": "nodenext",
@@ -25,12 +22,6 @@
     "skipLibCheck": true,
     "esModuleInterop": true
   },
-  "include": [
-    "src",
-    "tests",
-    "examples"
-  ],
-  "exclude": [
-    "build"
-  ]
+  "include": ["src", "tests", "examples"],
+  "exclude": ["build"]
 }

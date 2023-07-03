@@ -1,7 +1,7 @@
 {
   "name": "weapp-graphql-request",
   "description": "This is a util fork form graphql-request and only worked in weapp environment",
-  "version": "0.2.0-alpha.0",
+  "version": "0.2.0",
   "type": "module",
   "main": "./build/cjs/index.js",
   "exports": {
@@ -60,7 +60,8 @@
     "test:coverage": "pnpm test -- --coverage",
     "release:stable": "dripip stable",
     "release:preview": "dripip preview",
-    "release:pr": "dripip pr"
+    "release:pr": "dripip pr",
+    "sync": "cnpm sync weapp-graphql-request"
   },
   "dependencies": {
     "@graphql-typed-document-node/core": "^3.2.0"
