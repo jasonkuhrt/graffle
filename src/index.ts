@@ -188,7 +188,7 @@ class GraphQLClient {
   /**
    * Send a GraphQL query to the server.
    */
-  rawRequest: RawRequestMethod = async <T, V extends Variables = Variables>(
+  rawRequest: RawRequestMethod = async <T = any, V extends Variables = Variables>(
     ...args: RawRequestMethodArgs<V>
   ): Promise<GraphQLClientResponse<T>> => {
     const [queryOrOptions, variables, requestHeaders] = args
@@ -240,12 +240,12 @@ class GraphQLClient {
   /**
    * Send a GraphQL document to the server.
    */
-  async request<T extends any, V extends Variables = Variables>(
+  async request<T = any, V extends Variables = Variables>(
     document: RequestDocument | TypedDocumentNode<T, V>,
     ...variablesAndRequestHeaders: VariablesAndRequestHeadersArgs<V>
   ): Promise<T>
-  async request<T extends any, V extends Variables = Variables>(options: RequestOptions<V, T>): Promise<T>
-  async request<T extends any, V extends Variables = Variables>(
+  async request<T = any, V extends Variables = Variables>(options: RequestOptions<V, T>): Promise<T>
+  async request<T = any, V extends Variables = Variables>(
     documentOrOptions: RequestDocument | TypedDocumentNode<T, V> | RequestOptions<V>,
     ...variablesAndRequestHeaders: VariablesAndRequestHeadersArgs<V>
   ): Promise<T> {
