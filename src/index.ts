@@ -240,12 +240,12 @@ class GraphQLClient {
   /**
    * Send a GraphQL document to the server.
    */
-  async request<T, V extends Variables = Variables>(
+  async request<T extends any, V extends Variables = Variables>(
     document: RequestDocument | TypedDocumentNode<T, V>,
     ...variablesAndRequestHeaders: VariablesAndRequestHeadersArgs<V>
   ): Promise<T>
-  async request<T, V extends Variables = Variables>(options: RequestOptions<V, T>): Promise<T>
-  async request<T, V extends Variables = Variables>(
+  async request<T extends any, V extends Variables = Variables>(options: RequestOptions<V, T>): Promise<T>
+  async request<T extends any, V extends Variables = Variables>(
     documentOrOptions: RequestDocument | TypedDocumentNode<T, V> | RequestOptions<V>,
     ...variablesAndRequestHeaders: VariablesAndRequestHeadersArgs<V>
   ): Promise<T> {
