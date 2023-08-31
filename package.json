@@ -101,7 +101,7 @@
     "happy-dom": "^9.7.1",
     "json-bigint": "^1.0.0",
     "prettier": "^3.0.0",
-    "type-fest": "^3.8.0",
+    "type-fest": "^4.0.0",
     "typescript": "^5.0.4",
     "vitest": "^0.34.0",
     "ws": "^8.13.0"
