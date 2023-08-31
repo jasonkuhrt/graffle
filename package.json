@@ -100,7 +100,7 @@
     "graphql-ws": "^5.12.1",
     "happy-dom": "^9.7.1",
     "json-bigint": "^1.0.0",
-    "prettier": "^2.8.7",
+    "prettier": "^3.0.0",
     "type-fest": "^3.8.0",
     "typescript": "^5.0.4",
     "vitest": "^0.34.0",
