@@ -101,8 +101,8 @@ devDependencies:
     specifier: ^5.12.1
     version: 5.12.1(graphql@16.6.0)
   happy-dom:
-    specifier: ^9.7.1
-    version: 9.7.1
+    specifier: ^11.0.0
+    version: 11.0.1
   json-bigint:
     specifier: ^1.0.0
     version: 1.0.0
@@ -117,7 +117,7 @@ devDependencies:
     version: 5.0.4
   vitest:
     specifier: ^0.34.0
-    version: 0.34.0(happy-dom@9.7.1)
+    version: 0.34.0(happy-dom@11.0.1)
   ws:
     specifier: ^8.13.0
     version: 8.13.0
@@ -1362,7 +1362,7 @@ packages:
       magic-string: 0.30.0
       picocolors: 1.0.0
       std-env: 3.3.2
-      vitest: 0.34.0(happy-dom@9.7.1)
+      vitest: 0.34.0(happy-dom@11.0.1)
     dev: true
 
   /@vitest/expect@0.34.0:
@@ -2115,6 +2115,11 @@ packages:
     engines: {node: '>=0.12'}
     dev: true
 
+  /entities@4.5.0:
+    resolution: {integrity: sha512-V0hjH4dGPh9Ao5p0MoRY6BVqtwCjhz6vI5LT8AJ55H+4g9/4vbHx1I54fS0XuclLhDHArPQCiMjDxjaL8fPxhw==}
+    engines: {node: '>=0.12'}
+    dev: true
+
   /esbuild@0.18.17:
     resolution: {integrity: sha512-1GJtYnUxsJreHYA0Y+iQz2UEykonY66HNWOb0yXYZi9/kNrORUEHVg87eQsCtqh59PEJ5YVZJO98JHznMJSWjg==}
     engines: {node: '>=12'}
@@ -2667,11 +2672,11 @@ packages:
     resolution: {integrity: sha512-KPIBPDlW7NxrbT/eh4qPXz5FiFdL5UbaA0XUNz2Rp3Z3hqBSkbj0GVjwFDztsWVauZUWsbKHgMg++sk8UX0bkw==}
     engines: {node: ^12.22.0 || ^14.16.0 || ^16.0.0 || >=17.0.0}
 
-  /happy-dom@9.7.1:
-    resolution: {integrity: sha512-C5KQXt5JA3Og1qNf32Zqg65Oj5DKe/IeeGo8269DKE4VFK8NZpOEBY1R6ofJLCqsaPppu1t73okYuh7CPJUB6A==}
+  /happy-dom@11.0.1:
+    resolution: {integrity: sha512-3U3kXpTbHQoCxItf5VhdHSSeX7ZKekcEx6hBZ5Ug12MeEASL89upfz6Nefv7pwTc5jWsXPHlVInjB1gID0HkwQ==}
     dependencies:
       css.escape: 1.5.1
-      he: 1.2.0
+      entities: 4.5.0
       iconv-lite: 0.6.3
       webidl-conversions: 7.0.0
       whatwg-encoding: 2.0.0
@@ -2707,11 +2712,6 @@ packages:
     engines: {node: '>= 0.4.0'}
     dependencies:
       function-bind: 1.1.1
-    dev: true
-
-  /he@1.2.0:
-    resolution: {integrity: sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==}
-    hasBin: true
     dev: true
 
   /html-escaper@2.0.2:
@@ -4313,7 +4313,7 @@ packages:
       fsevents: 2.3.2
     dev: true
 
-  /vitest@0.34.0(happy-dom@9.7.1):
+  /vitest@0.34.0(happy-dom@11.0.1):
     resolution: {integrity: sha512-8Pnc1fVt1P6uBncdUZ++hgiJGgxIRKuz4bmS/PQziaEcUj0D1g9cGiR1MbLrcsvFTC6fgrqDhYoTAdBG356WMA==}
     engines: {node: '>=v14.18.0'}
     hasBin: true
@@ -4357,7 +4357,7 @@ packages:
       cac: 6.7.14
       chai: 4.3.7
       debug: 4.3.4
-      happy-dom: 9.7.1
+      happy-dom: 11.0.1
       local-pkg: 0.4.3
       magic-string: 0.30.3
       pathe: 1.1.1
