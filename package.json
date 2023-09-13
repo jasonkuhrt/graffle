@@ -85,7 +85,7 @@
     "doctoc": "^2.2.1",
     "dripip": "^0.10.0",
     "eslint": "^8.38.0",
-    "eslint-config-prettier": "^8.8.0",
+    "eslint-config-prettier": "^9.0.0",
     "eslint-config-prisma": "^0.1.0",
     "eslint-plugin-deprecation": "^2.0.0",
     "eslint-plugin-only-warn": "^1.1.0",
