@@ -69,7 +69,7 @@
     "graphql": "14 - 16"
   },
   "devDependencies": {
-    "@graphql-tools/schema": "^9.0.18",
+    "@graphql-tools/schema": "^10.0.0",
     "@prisma-labs/prettier-config": "^0.1.0",
     "@tsconfig/node16": "^1.0.3",
     "@types/body-parser": "^1.19.2",
