@@ -2,6 +2,7 @@
 import { resolveRequestDocument } from './resolveRequestDocument.js'
 import type { RequestDocument, Variables } from './types.js'
 import { ClientError } from './types.js'
+import { TypedDocumentNode } from '@graphql-typed-document-node/core'
 // import type WebSocket from 'ws'
 
 const CONNECTION_INIT = `connection_init`
@@ -159,7 +160,7 @@ export class GraphQLWebSocketClient {
           case ERROR: {
             subscriber.error &&
               subscriber.error(
-                new ClientError({ errors: message.payload, status: 200 }, { query, variables })
+                new ClientError({ errors: message.payload, status: 200 }, { query, variables }),
               )
             return
           }
@@ -183,7 +184,7 @@ export class GraphQLWebSocketClient {
     query: string,
     operationName: string | undefined,
     subscriber: GraphQLSubscriber<T, E>,
-    variables?: V
+    variables?: V,
   ): UnsubscribeCallback {
     const subscriptionId = (this.socketState.lastRequestId++).toString()
     this.socketState.subscriptions[subscriptionId] = { query, variables, subscriber }
@@ -196,7 +197,7 @@ export class GraphQLWebSocketClient {
 
   rawRequest<T = any, V extends Variables = Variables, E = any>(
     query: string,
-    variables?: V
+    variables?: V,
   ): Promise<{ data: T; extensions?: E }> {
     return new Promise<{ data: T; extensions?: E; headers?: Headers; status?: number }>((resolve, reject) => {
       let result: { data: T; extensions?: E }
@@ -207,12 +208,15 @@ export class GraphQLWebSocketClient {
           error: reject,
           complete: () => resolve(result),
         },
-        variables
+        variables,
       )
     })
   }
 
-  request<T = any, V extends Variables = Variables>(document: RequestDocument, variables?: V): Promise<T> {
+  request<T = any, V extends Variables = Variables>(
+    document: RequestDocument | TypedDocumentNode<T, V>,
+    variables?: V,
+  ): Promise<T> {
     return new Promise<T>((resolve, reject) => {
       let result: T
       this.subscribe(
@@ -222,15 +226,15 @@ export class GraphQLWebSocketClient {
           error: reject,
           complete: () => resolve(result),
         },
-        variables
+        variables,
       )
     })
   }
 
   subscribe<T = any, V extends Variables = Variables, E = any>(
-    document: RequestDocument,
+    document: RequestDocument | TypedDocumentNode<T, V>,
     subscriber: GraphQLSubscriber<T, E>,
-    variables?: V
+    variables?: V,
   ): UnsubscribeCallback {
     const { query, operationName } = resolveRequestDocument(document)
     return this.makeSubscribe(query, operationName, subscriber, variables)
@@ -239,7 +243,7 @@ export class GraphQLWebSocketClient {
   rawSubscribe<T = any, V extends Variables = Variables, E = any>(
     query: string,
     subscriber: GraphQLSubscriber<T, E>,
-    variables?: V
+    variables?: V,
   ): UnsubscribeCallback {
     return this.makeSubscribe(query, undefined, subscriber, variables)
   }
