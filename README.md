@@ -72,7 +72,7 @@ await request({
 A class is available for constructing your own instances:
 
 ```js
-import { GraphQLClient } from 'graphql-request'
+import { GraphQLClient, gql } from 'graphql-request'
 
 const document = gql`
   {
@@ -81,8 +81,9 @@ const document = gql`
     }
   }
 `
+const endpoint = 'https://api.spacex.land/graphql/';
 const client = new GraphQLClient(endpoint)
-await request('https://api.spacex.land/graphql/', document)
+await client.request(document)
 ```
 
 ## Examples
