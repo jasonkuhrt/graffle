@@ -13,7 +13,7 @@ runs:
   using: composite
   steps:
     - name: Use Node.js ${{inputs.node-version}}
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         node-version: ${{inputs.node-version}}
     - name: Enable Corepack
