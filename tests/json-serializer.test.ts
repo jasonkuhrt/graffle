@@ -1,7 +1,6 @@
 import { GraphQLClient } from '../src/index.js'
 import type { Fetch, Variables } from '../src/types.js'
 import { setupMockServer } from './__helpers.js'
-import { Headers, Response } from 'cross-fetch'
 import { beforeEach, describe, expect, test, vitest } from 'vitest'
 
 const ctx = setupMockServer()

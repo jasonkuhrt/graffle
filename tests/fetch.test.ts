@@ -1,5 +1,4 @@
 import { gql, GraphQLClient } from '../src/index.js'
-import { Headers } from 'cross-fetch'
 import { expect, test, vitest } from 'vitest'
 
 test(`custom fetch configuration is passed through`, async () => {

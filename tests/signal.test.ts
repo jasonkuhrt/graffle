@@ -14,7 +14,7 @@ it(`should abort a request when the signal is defined in the GraphQLClient`, asy
   try {
     await client.request(`{ me { id } }`)
   } catch (error) {
-    expect((error as Error).message).toEqual(`The user aborted a request.`)
+    expect(error).toHaveProperty(`name`, `AbortError`)
   }
 })
 
@@ -34,7 +34,7 @@ it(`should abort a request when the signal is defined in GraphQLClient and after
 
   const client = new GraphQLClient(ctx.url, { signal: abortController.signal })
   client.request(`{ me { id } }`).catch((error) => {
-    expect((error as Error).message).toEqual(`The user aborted a request.`)
+    expect(error).toHaveProperty(`name`, `AbortError`)
   })
 
   await sleep(10)
@@ -52,7 +52,7 @@ it(`should abort a raw request when the signal is defined in the GraphQLClient`,
   try {
     await client.rawRequest(`{ me { id } }`)
   } catch (error) {
-    expect((error as Error).message).toEqual(`The user aborted a request.`)
+    expect(error).toHaveProperty(`name`, `AbortError`)
   }
 })
 
@@ -66,7 +66,7 @@ it(`should abort batch requests when the signal is defined in the GraphQLClient`
   try {
     await client.batchRequests([{ document: `{ me { id } }` }, { document: `{ me { id } }` }])
   } catch (error) {
-    expect((error as Error).message).toEqual(`The user aborted a request.`)
+    expect(error).toHaveProperty(`name`, `AbortError`)
   }
 })
 
@@ -83,7 +83,7 @@ it(`should abort a request when the signal overrides GraphQLClient settings`, as
       signal: abortController.signal,
     })
   } catch (error) {
-    expect((error as Error).message).toEqual(`The user aborted a request.`)
+    expect(error).toHaveProperty(`name`, `AbortError`)
   }
 })
 
@@ -97,7 +97,7 @@ it(`should abort a raw request when the signal overrides GraphQLClient settings`
   try {
     await client.rawRequest({ query: `{ me { id } }`, signal: abortController.signal })
   } catch (error) {
-    expect((error as Error).message).toEqual(`The user aborted a request.`)
+    expect(error).toHaveProperty(`name`, `AbortError`)
   }
 })
 
@@ -114,7 +114,7 @@ it(`should abort batch requests when the signal overrides GraphQLClient settings
       signal: abortController.signal,
     })
   } catch (error) {
-    expect((error as Error).message).toEqual(`The user aborted a request.`)
+    expect(error).toHaveProperty(`name`, `AbortError`)
   }
 })
 
@@ -130,7 +130,7 @@ it(`should abort a request`, async () => {
       signal: abortController.signal,
     })
   } catch (error) {
-    expect((error as Error).message).toEqual(`The user aborted a request.`)
+    expect(error).toHaveProperty(`name`, `AbortError`)
   }
 })
 
@@ -153,7 +153,7 @@ it(`should abort a request after the request has been sent`, async () => {
     document: `{ me { id } }`,
     signal: abortController.signal,
   }).catch((error) => {
-    expect((error as Error).message).toEqual(`The user aborted a request.`)
+    expect(error).toHaveProperty(`name`, `AbortError`)
   })
 
   await sleep(10)
@@ -173,7 +173,7 @@ it(`should abort a raw request`, async () => {
       signal: abortController.signal,
     })
   } catch (error) {
-    expect((error as Error).message).toEqual(`The user aborted a request.`)
+    expect(error).toHaveProperty(`name`, `AbortError`)
   }
 })
 
@@ -196,7 +196,7 @@ it(`should abort a raw request after the request has been sent`, async () => {
     query: `{ me { id } }`,
     signal: abortController.signal,
   }).catch((error) => {
-    expect((error as Error).message).toEqual(`The user aborted a request.`)
+    expect(error).toHaveProperty(`name`, `AbortError`)
   })
 
   await sleep(10)
@@ -216,7 +216,7 @@ it(`should abort batch requests`, async () => {
       signal: abortController.signal,
     })
   } catch (error) {
-    expect((error as Error).message).toEqual(`The user aborted a request.`)
+    expect(error).toHaveProperty(`name`, `AbortError`)
   }
 })
 
@@ -239,7 +239,7 @@ it(`should abort batch requests after a request has been sent`, async () => {
     documents: [{ document: `{ me { id } }` }, { document: `{ me { id } }` }],
     signal: abortController.signal,
   }).catch((error) => {
-    expect((error as Error).message).toEqual(`The user aborted a request.`)
+    expect(error).toHaveProperty(`name`, `AbortError`)
   })
 
   await sleep(10)

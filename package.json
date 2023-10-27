@@ -62,8 +62,7 @@
     "release:pr": "dripip pr"
   },
   "dependencies": {
-    "@graphql-typed-document-node/core": "^3.2.0",
-    "cross-fetch": "^4.0.0"
+    "@graphql-typed-document-node/core": "^3.2.0"
   },
   "peerDependencies": {
     "graphql": "14 - 16"
