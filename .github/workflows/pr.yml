@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: [16, 18]
+        node: [18, 20]
         environment: [happy-dom, node]
     name: Node ${{ matrix.node }} @env ${{matrix.environment}}
     steps:
