@@ -33,7 +33,6 @@ import {
   Variables,
 } from './types.js'
 import type { TypedDocumentNode } from '@graphql-typed-document-node/core'
-import crossFetch, * as CrossFetch from 'cross-fetch'
 
 /**
  * Convert the given headers configuration into a plain object.
@@ -41,10 +40,7 @@ import crossFetch, * as CrossFetch from 'cross-fetch'
 const resolveHeaders = (headers?: GraphQLClientRequestHeaders): Record<string, string> => {
   let oHeaders: Record<string, string> = {}
   if (headers) {
-    if (
-      (typeof Headers !== `undefined` && headers instanceof Headers) ||
-      (CrossFetch && CrossFetch.Headers && headers instanceof CrossFetch.Headers)
-    ) {
+    if (headers instanceof Headers) {
       oHeaders = HeadersInstanceToPlainObject(headers)
     } else if (Array.isArray(headers)) {
       headers.forEach(([name, value]) => {
@@ -53,7 +49,7 @@ const resolveHeaders = (headers?: GraphQLClientRequestHeaders): Record<string, s
         }
       })
     } else {
-      oHeaders = headers as Record<string, string>
+      oHeaders = headers
     }
   }
 
@@ -196,7 +192,7 @@ class GraphQLClient {
 
     const {
       headers,
-      fetch = crossFetch,
+      fetch = globalThis.fetch,
       method = `POST`,
       requestMiddleware,
       responseMiddleware,
@@ -254,7 +250,7 @@ class GraphQLClient {
 
     const {
       headers,
-      fetch = crossFetch,
+      fetch = globalThis.fetch,
       method = `POST`,
       requestMiddleware,
       responseMiddleware,
@@ -326,7 +322,7 @@ class GraphQLClient {
         ...resolveHeaders(batchRequestOptions.requestHeaders),
       },
       operationName: undefined,
-      fetch: this.requestConfig.fetch ?? crossFetch,
+      fetch: this.requestConfig.fetch ?? globalThis.fetch,
       method: this.requestConfig.method || `POST`,
       fetchOptions,
       middleware: this.requestConfig.requestMiddleware,

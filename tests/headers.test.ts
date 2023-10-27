@@ -1,11 +1,8 @@
 import { GraphQLClient, request } from '../src/index.js'
 import { setupMockServer } from './__helpers.js'
-import * as CrossFetch from 'cross-fetch'
 import { describe, expect, test } from 'vitest'
 
 const ctx = setupMockServer()
-// Headers not defined globally in Node
-const H = typeof Headers === `undefined` ? CrossFetch.Headers : Headers
 
 describe(`using class`, () => {
   test(`.setHeader() sets a header that get sent to server`, async () => {
@@ -19,7 +16,7 @@ describe(`using class`, () => {
   describe(`.setHeaders() sets headers that get sent to the server`, () => {
     test(`with headers instance`, async () => {
       const client = new GraphQLClient(ctx.url)
-      client.setHeaders(new H({ 'x-foo': `bar` }))
+      client.setHeaders(new Headers({ 'x-foo': `bar` }))
       const mock = ctx.res()
       await client.request(`{ me { id } }`)
       expect(mock.requests[0]?.headers[`x-foo`]).toEqual(`bar`)
@@ -42,14 +39,14 @@ describe(`using class`, () => {
 
   describe(`custom header in the request`, () => {
     describe.each([
-      [new H({ 'x-request-foo': `request-bar` })],
+      [new Headers({ 'x-request-foo': `request-bar` })],
       [{ 'x-request-foo': `request-bar` }],
       [[[`x-request-foo`, `request-bar`]]],
     ])(`request unique header with request`, (headerCase) => {
       test(`with request method`, async () => {
         const client = new GraphQLClient(ctx.url)
 
-        client.setHeaders(new H({ 'x-foo': `bar` }))
+        client.setHeaders(new Headers({ 'x-foo': `bar` }))
         const mock = ctx.res()
         await client.request(`{ me { id } }`, {}, headerCase)
 
@@ -60,7 +57,7 @@ describe(`using class`, () => {
       test(`with rawRequest method`, async () => {
         const client = new GraphQLClient(ctx.url)
 
-        client.setHeaders(new H({ 'x-foo': `bar` }))
+        client.setHeaders(new Headers({ 'x-foo': `bar` }))
         const mock = ctx.res()
         await client.rawRequest(`{ me { id } }`, {}, headerCase)
 
@@ -70,7 +67,7 @@ describe(`using class`, () => {
     })
 
     describe.each([
-      [new H({ 'x-foo': `request-bar` })],
+      [new Headers({ 'x-foo': `request-bar` })],
       [{ 'x-foo': `request-bar` }],
       [[[`x-foo`, `request-bar`]]],
     ])(`request header overriding the client header`, (headerCase) => {
@@ -115,7 +112,7 @@ describe(`using class`, () => {
 
 describe(`using request function`, () => {
   describe.each([
-    [new H({ 'x-request-foo': `request-bar` })],
+    [new Headers({ 'x-request-foo': `request-bar` })],
     [{ 'x-request-foo': `request-bar` }],
     [[[`x-request-foo`, `request-bar`]]],
   ])(`request unique header with request`, (headerCase) => {

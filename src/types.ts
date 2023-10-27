@@ -1,6 +1,5 @@
 import type { RemoveIndex } from './helpers.js'
 import type { TypedDocumentNode } from '@graphql-typed-document-node/core'
-import type { fetch } from 'cross-fetch'
 import type { GraphQLError } from 'graphql/error/GraphQLError.js'
 import type { DocumentNode } from 'graphql/language/ast.js'
 
