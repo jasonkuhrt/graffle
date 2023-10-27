@@ -123,7 +123,7 @@ We only (officially) support [versions of Nodejs](https://github.com/nodejs/Rele
 - LTS
 - Maintenance _and end of life not yet reached_
 
-So for example on May 1 2023 that would mean these versions: 16, 18, 19.
+So for example on Oct 24 2023 that would mean these versions: 18, 20, 21.
 
 Any issue that exists solely for an unsupported version of Nodejs will be rejected (not worked on).
 
