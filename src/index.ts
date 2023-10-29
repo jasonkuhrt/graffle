@@ -134,15 +134,14 @@ const createHttpMethodFetcher =
   async <V extends Variables>(params: RequestVerbParams<V>) => {
     const { url, query, variables, operationName, fetch, fetchOptions, middleware } = params
 
-    const headers = { ...params.headers }
+    const headers = new Headers(params.headers as HeadersInit)
     let queryParams = ``
     let body = undefined
 
     if (method === `POST`) {
       body = createRequestBody(query, variables, operationName, fetchOptions.jsonSerializer)
-      if (typeof body === `string`) {
-        // @ts-expect-error todo
-        headers[`Content-Type`] = `application/json`
+      if (typeof body === `string` && !headers.has(`Content-Type`)) {
+        headers.set(`Content-Type`, `application/json`)
       }
     } else {
       // @ts-expect-error todo needs ADT for TS to understand the different states

@@ -154,6 +154,8 @@ type RequestExtendedInit<V extends Variables = Variables> = RequestInit & {
   variables?: V
 }
 
+// TODO: Replace this type with the built-in `HeadersInit` type.
+// See: https://github.com/jasonkuhrt/graphql-request/issues/608
 export type GraphQLClientRequestHeaders = Headers | string[][] | Record<string, string>
 
 // prettier-ignore
