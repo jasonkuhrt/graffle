@@ -15,7 +15,7 @@ it(`accepts graphql DocumentNode as alternative to raw string`, async () => {
           users
         }
       }
-    `
+    `,
   )
   expect(mock).toMatchSnapshot()
 })

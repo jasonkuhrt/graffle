@@ -14,7 +14,7 @@ describe(`gql`, () => {
         query allUsers {
           users
         }
-      `
+      `,
     )
     expect(mock).toMatchSnapshot()
   })

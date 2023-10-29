@@ -81,7 +81,7 @@ const document = gql`
     }
   }
 `
-const endpoint = 'https://api.spacex.land/graphql/';
+const endpoint = 'https://api.spacex.land/graphql/'
 const client = new GraphQLClient(endpoint)
 await client.request(document)
 ```

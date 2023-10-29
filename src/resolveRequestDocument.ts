@@ -1,6 +1,6 @@
 import type { RequestDocument } from './types.js'
 /**
- * Refactored imports from `graphql` to be more specific, this helps import only the required files (100KiB) 
+ * Refactored imports from `graphql` to be more specific, this helps import only the required files (100KiB)
  * instead of the entire package (>500KiB) where tree-shaking is not supported.
  * @see https://github.com/jasonkuhrt/graphql-request/pull/543
  */
@@ -16,7 +16,7 @@ const extractOperationName = (document: DocumentNode): string | undefined => {
   let operationName = undefined
 
   const operationDefinitions = document.definitions.filter(
-    (definition) => definition.kind === `OperationDefinition`
+    (definition) => definition.kind === `OperationDefinition`,
   ) as OperationDefinitionNode[]
 
   if (operationDefinitions.length === 1) {
@@ -27,7 +27,7 @@ const extractOperationName = (document: DocumentNode): string | undefined => {
 }
 
 export const resolveRequestDocument = (
-  document: RequestDocument
+  document: RequestDocument,
 ): { query: string; operationName?: string } => {
   if (typeof document === `string`) {
     let operationName = undefined
