@@ -139,7 +139,7 @@ test(`basic error`, async () => {
   const res = await request(ctx.url, `x`).catch((x) => x)
 
   expect(res).toMatchInlineSnapshot(
-    `[Error: GraphQL Error (Code: 200): {"response":{"errors":{"message":"Syntax Error GraphQL request (1:1) Unexpected Name \\"x\\"\\n\\n1: x\\n   ^\\n","locations":[{"line":1,"column":1}]},"status":200,"headers":{}},"request":{"query":"x"}}]`
+    `[Error: GraphQL Error (Code: 200): {"response":{"errors":{"message":"Syntax Error GraphQL request (1:1) Unexpected Name \\"x\\"\\n\\n1: x\\n   ^\\n","locations":[{"line":1,"column":1}]},"status":200,"headers":{}},"request":{"query":"x"}}]`,
   )
 })
 
@@ -159,7 +159,7 @@ test(`basic error with raw request`, async () => {
   })
   const res: unknown = await rawRequest(ctx.url, `x`).catch((x) => x)
   expect(res).toMatchInlineSnapshot(
-    `[Error: GraphQL Error (Code: 200): {"response":{"errors":{"message":"Syntax Error GraphQL request (1:1) Unexpected Name \\"x\\"\\n\\n1: x\\n   ^\\n","locations":[{"line":1,"column":1}]},"status":200,"headers":{}},"request":{"query":"x"}}]`
+    `[Error: GraphQL Error (Code: 200): {"response":{"errors":{"message":"Syntax Error GraphQL request (1:1) Unexpected Name \\"x\\"\\n\\n1: x\\n   ^\\n","locations":[{"line":1,"column":1}]},"status":200,"headers":{}},"request":{"query":"x"}}]`,
   )
 })
 
@@ -370,7 +370,7 @@ describe(`operationName parsing`, () => {
         query myGqlOperation {
           users
         }
-      `
+      `,
     )
 
     const requestBody = mock.requests[0]?.body
@@ -385,7 +385,7 @@ describe(`operationName parsing`, () => {
         query myStringOperation {
           users
         }
-      `
+      `,
     )
 
     const requestBody = mock.requests[0]?.body

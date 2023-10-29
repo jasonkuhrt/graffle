@@ -110,7 +110,7 @@ const buildRequestConfig = <V extends Variables>(params: BuildRequestConfigParam
       })
       return acc
     },
-    []
+    [],
   )
 
   return `query=${encodeURIComponent(params_.jsonSerializer.stringify(payload))}`
@@ -179,7 +179,10 @@ const createHttpMethodFetcher =
  * GraphQL Client.
  */
 class GraphQLClient {
-  constructor(private url: string, public readonly requestConfig: RequestConfig = {}) {}
+  constructor(
+    private url: string,
+    public readonly requestConfig: RequestConfig = {},
+  ) {}
 
   /**
    * Send a GraphQL query to the server.
@@ -422,7 +425,7 @@ const makeRequest = async <T = unknown, V extends Variables = Variables>(params:
     throw new ClientError(
       // @ts-expect-error TODO
       { ...errorResult, status: response.status, headers: response.headers },
-      { query, variables }
+      { query, variables },
     )
   }
 }
@@ -586,7 +589,7 @@ const createRequestBody = (
   query: string | string[],
   variables?: Variables | Variables[],
   operationName?: string,
-  jsonSerializer?: JsonSerializer
+  jsonSerializer?: JsonSerializer,
 ): string => {
   const jsonSerializer_ = jsonSerializer ?? defaultJsonSerializer
   if (!Array.isArray(query)) {
@@ -603,7 +606,7 @@ const createRequestBody = (
       acc.push({ query: currentQuery, variables: variables ? variables[index] : undefined })
       return acc
     },
-    []
+    [],
   )
 
   return jsonSerializer_.stringify(payload)
@@ -611,7 +614,7 @@ const createRequestBody = (
 
 const getResult = async (
   response: Response,
-  jsonSerializer: JsonSerializer
+  jsonSerializer: JsonSerializer,
 ): Promise<
   | { data: object; errors: undefined }[]
   | { data: object; errors: undefined }
@@ -659,7 +662,7 @@ const callOrIdentity = <T>(value: MaybeLazy<T>) => {
 export const gql = (chunks: TemplateStringsArray, ...variables: unknown[]): string => {
   return chunks.reduce(
     (acc, chunk, index) => `${acc}${chunk}${index in variables ? String(variables[index]) : ``}`,
-    ``
+    ``,
   )
 }
 

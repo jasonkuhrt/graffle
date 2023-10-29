@@ -52,7 +52,7 @@ const getAccessToken = () => Promise.resolve(`some special token here`)
       console.error(
         `[${traceId}] Request error:
         status ${response.status}
-        details: ${response.errors.map((_) => _.message).join(`, `)}`
+        details: ${response.errors.map((_) => _.message).join(`, `)}`,
       )
     }
   }

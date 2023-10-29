@@ -57,13 +57,11 @@ afterAll(() => {
 
 test(`graphql-ws request`, async () => {
   const client = await createClient(ctx.url)
-  const data = client.request(
-    gql`
-      query hello {
-        hello
-      }
-    `
-  )
+  const data = client.request(gql`
+    query hello {
+      hello
+    }
+  `)
   expect(await data).toEqual({ hello: `world` })
   client.close()
 })
@@ -84,7 +82,7 @@ test(`graphql-ws subscription`, async () => {
         complete: () => {
           resolve(allGreetings)
         },
-      }
+      },
     )
   })
   expect(await result).toEqual(`Hi,Bonjour,Hola,Ciao,Zdravo`)

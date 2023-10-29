@@ -8,11 +8,9 @@ import JSONbig from 'json-bigint'
 
 const jsonSerializer = JSONbig({ useNativeBigInt: true })
 const graphQLClient = new GraphQLClient(`https://some-api`, { jsonSerializer })
-const data = await graphQLClient.request<{ someBigInt: bigint }>(
-  gql`
-    {
-      someBigInt
-    }
-  `
-)
+const data = await graphQLClient.request<{ someBigInt: bigint }>(gql`
+  {
+    someBigInt
+  }
+`)
 console.log(typeof data.someBigInt) // if >MAX_SAFE_INTEGER then 'bigint' else 'number'

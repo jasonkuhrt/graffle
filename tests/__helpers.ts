@@ -47,7 +47,7 @@ type MockResult<Spec extends MockSpec | MockSpecBatch = MockSpec> = {
 }
 
 export const setupMockServer = <T extends MockSpec | MockSpecBatch = MockSpec>(
-  delay?: number
+  delay?: number,
 ): Context<T> => {
   const ctx = {} as Context<T>
   beforeAll(async () => {
