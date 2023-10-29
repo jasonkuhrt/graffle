@@ -97,7 +97,7 @@
     "graphql": "^16.8.1",
     "graphql-tag": "^2.12.6",
     "graphql-ws": "^5.12.1",
-    "happy-dom": "^11.0.0",
+    "happy-dom": "^12.0.0",
     "json-bigint": "^1.0.0",
     "prettier": "^3.0.0",
     "type-fest": "^4.0.0",
