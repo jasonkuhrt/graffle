@@ -30,7 +30,7 @@ Minimal GraphQL client supporting Node and browsers for scripts or simple apps
 
 - Most **simple & lightweight** GraphQL client
 - Promise-based API (works with `async` / `await`)
-- ESM native package (CJS build is included for now as well, but will eventually be removed)
+- [Pure ESM package](https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c)
 - First class TypeScript support
   - Including `TypedDocumentNode`
 - Isomorphic (works in both Nodejs and Browsers)
@@ -94,7 +94,6 @@ await client.request(document)
   - [Cancellation](./examples/request-cancellation.ts)
   - [Headers Per Request (static)](./examples/request-headers-static-per-request.ts)
   - [Headers Per Request (dynamic)](./examples/request-headers-dynamic-per-request.ts)
-  - [Cookie support for Nodejs](./examples/request-cookie-support-for-node.ts)
   - [Handle Raw Response](./examples/request-handle-raw-response.ts)
 - GraphQL:
   - [Document Variables](./examples/graphql-document-variables.ts)
@@ -102,7 +101,7 @@ await client.request(document)
   - [Batching Requests](./examples/graphql-batching-requests.ts)
 - Configuration:
   - [Fetch: Passing Options](./examples/configuration-fetch-options.ts)
-  - [Fetch: Use custom function](./examples/configuration-fetch-custom-function.ts)
+  - [Fetch: Use custom function (e.g. cookie support)](./examples/configuration-fetch-custom-function.ts)
   - [Custom JSON Serializer](./examples/configuration-request-json-serializer.ts)
   - [Incremental: Set Endpoint](./examples/configuration-incremental-endpoint.ts)
   - [Incremental: Set Request Headers](./examples/configuration-incremental-request-headers.ts)
@@ -113,7 +112,6 @@ await client.request(document)
 - Other:
   - [Middleware](./examples/other-middleware.ts)
   - [Error Handling](./examples/other-error-handling.ts)
-  - [OCommonJS Support](./examples/other-package-commonjs.ts)
 
 ## Node Version Support
 
