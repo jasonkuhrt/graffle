@@ -5,7 +5,7 @@ import { parse } from 'graphql'
 {
   const endpoint = `https://graphql-yoga.com/api/graphql`
 
-  const query: TypedDocumentNode<{ greetings: string }, never | Record<any, never>> = parse(gql`
+  const query: TypedDocumentNode<{ greetings: string }, Record<any, never>> = parse(gql`
     query greetings {
       greetings
     }
@@ -23,7 +23,7 @@ import { parse } from 'graphql'
 
   const client = new GraphQLClient(endpoint)
 
-  const query: TypedDocumentNode<{ greetings: string }, never | Record<any, never>> = parse(gql`
+  const query: TypedDocumentNode<{ greetings: string }, Record<any, never>> = parse(gql`
     query greetings {
       greetings
     }
