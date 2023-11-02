@@ -107,6 +107,24 @@ describe(`using class`, () => {
         expect(mock.requests[0]?.headers[`x-foo`]).toEqual(`new`)
       })
     })
+
+    describe(`allows content-type header to be overwritten`, () => {
+      test(`with request method`, async () => {
+        const headers = new Headers({ 'content-type': `text/plain` })
+        const client = new GraphQLClient(ctx.url, { headers })
+        const mock = ctx.res()
+        await client.request(`{ me { id } }`)
+        expect(mock.requests[0]?.headers[`content-type`]).toEqual(`text/plain`)
+      })
+
+      test(`with rawRequest method`, async () => {
+        const headers = new Headers({ 'content-type': `text/plain` })
+        const client = new GraphQLClient(ctx.url, { headers })
+        const mock = ctx.res()
+        await client.rawRequest(`{ me { id } }`)
+        expect(mock.requests[0]?.headers[`content-type`]).toEqual(`text/plain`)
+      })
+    })
   })
 })
 
