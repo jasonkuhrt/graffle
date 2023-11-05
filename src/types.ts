@@ -93,7 +93,7 @@ export type HTTPMethodInput = 'GET' | 'POST' | 'get' | 'post'
 export interface RequestConfig extends Omit<RequestInit, 'headers' | 'method'>, AdditionalRequestOptions {
   fetch?: Fetch
   method?: HTTPMethodInput
-  headers?: MaybeLazy<GraphQLClientRequestHeaders>
+  headers?: MaybeLazy<HeadersInit>
   requestMiddleware?: RequestMiddleware
   responseMiddleware?: ResponseMiddleware
   jsonSerializer?: JsonSerializer
@@ -106,7 +106,7 @@ export type BatchRequestDocument<V extends Variables = Variables> = {
 
 export type RawRequestOptions<V extends Variables = Variables> = {
   query: string
-  requestHeaders?: GraphQLClientRequestHeaders
+  requestHeaders?: HeadersInit
   signal?: RequestInit['signal']
 } & (V extends Record<any, never>
   ? { variables?: V }
@@ -116,7 +116,7 @@ export type RawRequestOptions<V extends Variables = Variables> = {
 
 export type RequestOptions<V extends Variables = Variables, T = unknown> = {
   document: RequestDocument | TypedDocumentNode<T, V>
-  requestHeaders?: GraphQLClientRequestHeaders
+  requestHeaders?: HeadersInit
   signal?: RequestInit['signal']
 } & (V extends Record<any, never>
   ? { variables?: V }
@@ -126,7 +126,7 @@ export type RequestOptions<V extends Variables = Variables, T = unknown> = {
 
 export interface BatchRequestsOptions<V extends Variables = Variables> {
   documents: BatchRequestDocument<V>[]
-  requestHeaders?: GraphQLClientRequestHeaders
+  requestHeaders?: HeadersInit
   signal?: RequestInit['signal']
 }
 
@@ -154,14 +154,10 @@ type RequestExtendedInit<V extends Variables = Variables> = RequestInit & {
   variables?: V
 }
 
-// TODO: Replace this type with the built-in `HeadersInit` type.
-// See: https://github.com/jasonkuhrt/graphql-request/issues/608
-export type GraphQLClientRequestHeaders = Headers | string[][] | Record<string, string>
-
 // prettier-ignore
 export type VariablesAndRequestHeadersArgs<V extends Variables> =
   V extends Record<any, never> // do we have explicitly no variables allowed?
-    ? [variables?: V, requestHeaders?: GraphQLClientRequestHeaders]
+    ? [variables?: V, requestHeaders?: HeadersInit]
   : keyof RemoveIndex<V> extends never // do we get an empty variables object?
-    ? [variables?: V, requestHeaders?: GraphQLClientRequestHeaders]
-    : [variables: V, requestHeaders?: GraphQLClientRequestHeaders]
+    ? [variables?: V, requestHeaders?: HeadersInit]
+    : [variables: V, requestHeaders?: HeadersInit]

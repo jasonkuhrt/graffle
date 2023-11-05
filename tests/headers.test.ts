@@ -38,7 +38,7 @@ describe(`using class`, () => {
   })
 
   describe(`custom header in the request`, () => {
-    describe.each([
+    describe.each<HeadersInit[]>([
       [new Headers({ 'x-request-foo': `request-bar` })],
       [{ 'x-request-foo': `request-bar` }],
       [[[`x-request-foo`, `request-bar`]]],
@@ -66,7 +66,7 @@ describe(`using class`, () => {
       })
     })
 
-    describe.each([
+    describe.each<HeadersInit[]>([
       [new Headers({ 'x-foo': `request-bar` })],
       [{ 'x-foo': `request-bar` }],
       [[[`x-foo`, `request-bar`]]],
@@ -129,7 +129,7 @@ describe(`using class`, () => {
 })
 
 describe(`using request function`, () => {
-  describe.each([
+  describe.each<HeadersInit[]>([
     [new Headers({ 'x-request-foo': `request-bar` })],
     [{ 'x-request-foo': `request-bar` }],
     [[[`x-request-foo`, `request-bar`]]],

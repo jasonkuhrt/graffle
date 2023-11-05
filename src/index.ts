@@ -11,7 +11,6 @@ import { resolveRequestDocument } from './resolveRequestDocument.js'
 import type {
   BatchRequestDocument,
   FetchOptions,
-  GraphQLClientRequestHeaders,
   GraphQLClientResponse,
   HTTPMethodInput,
   JsonSerializer,
@@ -37,7 +36,7 @@ import type { TypedDocumentNode } from '@graphql-typed-document-node/core'
 /**
  * Convert the given headers configuration into a plain object.
  */
-const resolveHeaders = (headers?: GraphQLClientRequestHeaders): Record<string, string> => {
+const resolveHeaders = (headers?: HeadersInit): Record<string, string> => {
   let oHeaders: Record<string, string> = {}
   if (headers) {
     if (headers instanceof Headers) {
@@ -124,7 +123,7 @@ interface RequestVerbParams<V extends Variables = Variables> {
   fetch: Fetch
   fetchOptions: FetchOptions
   variables?: V
-  headers?: GraphQLClientRequestHeaders
+  headers?: HeadersInit
   operationName?: string
   middleware?: RequestMiddleware<V>
 }
@@ -297,11 +296,11 @@ class GraphQLClient {
    * Send GraphQL documents in batch to the server.
    */
   // prettier-ignore
-  batchRequests<T extends BatchResult, V extends Variables = Variables>(documents: BatchRequestDocument<V>[], requestHeaders?: GraphQLClientRequestHeaders): Promise<T>
+  batchRequests<T extends BatchResult, V extends Variables = Variables>(documents: BatchRequestDocument<V>[], requestHeaders?: HeadersInit): Promise<T>
   // prettier-ignore
   batchRequests<T extends BatchResult, V extends Variables = Variables>(options: BatchRequestsOptions<V>): Promise<T>
   // prettier-ignore
-  batchRequests<T extends BatchResult, V extends Variables = Variables>(documentsOrOptions: BatchRequestDocument<V>[] | BatchRequestsOptions<V>, requestHeaders?: GraphQLClientRequestHeaders): Promise<T> {
+  batchRequests<T extends BatchResult, V extends Variables = Variables>(documentsOrOptions: BatchRequestDocument<V>[] | BatchRequestsOptions<V>, requestHeaders?: HeadersInit): Promise<T> {
     const batchRequestOptions = parseBatchRequestArgs<V>(documentsOrOptions, requestHeaders)
     const { headers, ...fetchOptions } = this.requestConfig
 
@@ -343,7 +342,7 @@ class GraphQLClient {
       })
   }
 
-  setHeaders(headers: GraphQLClientRequestHeaders): GraphQLClient {
+  setHeaders(headers: HeadersInit): GraphQLClient {
     this.requestConfig.headers = headers
     return this
   }
@@ -378,7 +377,7 @@ const makeRequest = async <T = unknown, V extends Variables = Variables>(params:
   url: string
   query: string | string[]
   variables?: V
-  headers?: GraphQLClientRequestHeaders
+  headers?: HeadersInit
   operationName?: string
   fetch: Fetch
   method?: HTTPMethodInput
@@ -431,13 +430,13 @@ const makeRequest = async <T = unknown, V extends Variables = Variables>(params:
 
 // prettier-ignore
 interface RawRequestMethod {
-  <T, V extends Variables = Variables>(query: string, variables?: V, requestHeaders?: GraphQLClientRequestHeaders): Promise<GraphQLClientResponse<T>>
+  <T, V extends Variables = Variables>(query: string, variables?: V, requestHeaders?: HeadersInit): Promise<GraphQLClientResponse<T>>
   <T, V extends Variables = Variables>(options: RawRequestOptions<V>): Promise<GraphQLClientResponse<T>>
 }
 
 // prettier-ignore
 type RawRequestMethodArgs<V extends Variables> =
-  | [query: string, variables?: V, requestHeaders?: GraphQLClientRequestHeaders]
+  | [query: string, variables?: V, requestHeaders?: HeadersInit]
   | [RawRequestOptions<V>]
 
 // prettier-ignore
@@ -563,12 +562,12 @@ type BatchResult = [Result, ...Result[]]
 
 // prettier-ignore
 interface BatchRequests {
-  <T extends BatchResult, V extends Variables = Variables>(url: string, documents: BatchRequestDocument<V>[], requestHeaders?: GraphQLClientRequestHeaders): Promise<T>
+  <T extends BatchResult, V extends Variables = Variables>(url: string, documents: BatchRequestDocument<V>[], requestHeaders?: HeadersInit): Promise<T>
   <T extends BatchResult, V extends Variables = Variables>(options: BatchRequestsExtendedOptions<V>): Promise<T>
 }
 
 type BatchRequestsArgs =
-  | [url: string, documents: BatchRequestDocument[], requestHeaders?: GraphQLClientRequestHeaders]
+  | [url: string, documents: BatchRequestDocument[], requestHeaders?: HeadersInit]
   | [options: BatchRequestsExtendedOptions]
 
 const parseBatchRequestsArgsExtended = (args: BatchRequestsArgs): BatchRequestsExtendedOptions => {
@@ -674,7 +673,6 @@ export {
   BatchRequestsOptions,
   ClientError,
   GraphQLClient,
-  GraphQLClientRequestHeaders,
   rawRequest,
   RawRequestExtendedOptions,
   RawRequestOptions,
