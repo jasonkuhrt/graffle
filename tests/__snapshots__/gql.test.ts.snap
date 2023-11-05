@@ -11,7 +11,7 @@ exports[`gql > passthrough allowing benefits of tooling for gql template tag 1`]
 }",
       },
       "headers": {
-        "accept": "*/*",
+        "accept": "application/graphql-response+json, application/json",
         "accept-encoding": "gzip, deflate",
         "accept-language": "*",
         "connection": "keep-alive",

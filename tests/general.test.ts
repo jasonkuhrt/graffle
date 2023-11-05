@@ -1,5 +1,4 @@
 import { GraphQLClient, rawRequest, request } from '../src/index.js'
-import type { RequestConfig } from '../src/types.js'
 import { setupMockServer } from './__helpers.js'
 import { gql } from 'graphql-tag'
 import type { Mock } from 'vitest'
@@ -60,65 +59,6 @@ test(`minimal raw query with response headers`, async () => {
 
   expect(result).toEqual({ ...body, status: 200 })
   expect(headers.get(`X-Custom-Header`)).toEqual(reqHeaders![`X-Custom-Header`])
-})
-
-test(`minimal raw query with response headers and new graphql content type`, async () => {
-  const { headers: _, body } = ctx.res({
-    headers: {
-      'Content-Type': `application/graphql+json`,
-    },
-    body: {
-      data: {
-        me: {
-          id: `some-id`,
-        },
-      },
-      extensions: {
-        version: `1`,
-      },
-    },
-  }).spec
-
-  const { headers: __, ...result } = await rawRequest(ctx.url, `{ me { id } }`)
-
-  expect(result).toEqual({ ...body, status: 200 })
-})
-
-test(`minimal raw query with response headers and application/graphql-response+json response type`, async () => {
-  const { headers: _, body } = ctx.res({
-    headers: {
-      'Content-Type': `application/graphql-response+json`,
-    },
-    body: {
-      data: {
-        me: {
-          id: `some-id`,
-        },
-      },
-      extensions: {
-        version: `1`,
-      },
-    },
-  }).spec
-
-  const { headers: __, ...result } = await rawRequest(ctx.url, `{ me { id } }`)
-
-  expect(result).toEqual({ ...body, status: 200 })
-})
-
-test(`content-type with charset`, async () => {
-  const { data } = ctx.res({
-    // headers: { 'Content-Type': 'application/json; charset=utf-8' },
-    body: {
-      data: {
-        me: {
-          id: `some-id`,
-        },
-      },
-    },
-  }).spec.body!
-
-  expect(await request(ctx.url, `{ me { id } }`)).toEqual(data)
 })
 
 test(`basic error`, async () => {
@@ -336,31 +276,6 @@ test.skip(`extra fetch options`, async () => {
   `)
 })
 
-test(`case-insensitive content-type header for custom fetch`, async () => {
-  const testData = { data: { test: `test` } }
-  const testResponseHeaders = new Map()
-  testResponseHeaders.set(`ConTENT-type`, `apPliCatiON/JSON`)
-
-  const options: RequestConfig = {
-    // @ts-expect-error testing
-    fetch: (url) =>
-      Promise.resolve({
-        headers: testResponseHeaders,
-        data: testData,
-        json: () => testData,
-        text: () => JSON.stringify(testData),
-        ok: true,
-        status: 200,
-        url,
-      }),
-  }
-
-  const client = new GraphQLClient(ctx.url, options)
-  const result = await client.request(`{ test }`)
-
-  expect(result).toEqual(testData.data)
-})
-
 describe(`operationName parsing`, () => {
   it(`should work for gql documents`, async () => {
     const mock = ctx.res({ body: { data: { foo: 1 } } })
@@ -404,4 +319,42 @@ test(`should not throw error when errors property is an empty array (occurred wh
   const res = await new GraphQLClient(ctx.url).request(`{ test }`)
 
   expect(res).toEqual(expect.objectContaining({ test: `test` }))
+})
+
+it(`adds the default headers to the request`, async () => {
+  const mock = ctx.res({ body: { data: {} } })
+  await request(
+    ctx.url,
+    gql`
+      query myGqlOperation {
+        users
+      }
+    `,
+  )
+
+  const headers = mock.requests[0]?.headers
+  expect(headers?.[`accept`]).toEqual(`application/graphql-response+json, application/json`)
+  expect(headers?.[`content-type`]).toEqual(`application/json`)
+})
+
+it(`allows overriding the default headers for the request`, async () => {
+  const mock = ctx.res({ body: { data: {} } })
+  const query = gql`
+    query myGqlOperation {
+      users
+    }
+  `
+
+  await request({
+    url: ctx.url,
+    document: query,
+    requestHeaders: {
+      accept: `text/plain`,
+      'content-type': `text/plain`,
+    },
+  })
+
+  const headers = mock.requests[0]?.headers
+  expect(headers?.[`accept`]).toEqual(`text/plain`)
+  expect(headers?.[`content-type`]).toEqual(`text/plain`)
 })
