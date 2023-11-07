@@ -1,3 +1,4 @@
+import { ACCEPT_HEADER, CONTENT_TYPE_GQL, CONTENT_TYPE_HEADER, CONTENT_TYPE_JSON } from './constants.js'
 import { defaultJsonSerializer } from './defaultJsonSerializer.js'
 import { HeadersInstanceToPlainObject, uppercase } from './helpers.js'
 import {
@@ -133,14 +134,18 @@ const createHttpMethodFetcher =
   async <V extends Variables>(params: RequestVerbParams<V>) => {
     const { url, query, variables, operationName, fetch, fetchOptions, middleware } = params
 
-    const headers = new Headers(params.headers as HeadersInit)
+    const headers = new Headers(params.headers)
     let queryParams = ``
     let body = undefined
 
+    if (!headers.has(ACCEPT_HEADER)) {
+      headers.set(ACCEPT_HEADER, [CONTENT_TYPE_GQL, CONTENT_TYPE_JSON].join(`, `))
+    }
+
     if (method === `POST`) {
       body = createRequestBody(query, variables, operationName, fetchOptions.jsonSerializer)
-      if (typeof body === `string` && !headers.has(`Content-Type`)) {
-        headers.set(`Content-Type`, `application/json`)
+      if (typeof body === `string` && !headers.has(CONTENT_TYPE_HEADER)) {
+        headers.set(CONTENT_TYPE_HEADER, CONTENT_TYPE_JSON)
       }
     } else {
       // @ts-expect-error todo needs ADT for TS to understand the different states
@@ -619,24 +624,19 @@ const getResult = async (
   | { data: undefined; errors: object }
   | { data: undefined; errors: object[] }
 > => {
-  let contentType: string | undefined
+  const contentType = response.headers.get(CONTENT_TYPE_HEADER)
 
-  response.headers.forEach((value, key) => {
-    if (key.toLowerCase() === `content-type`) {
-      contentType = value
-    }
-  })
-
-  if (
-    contentType &&
-    (contentType.toLowerCase().startsWith(`application/json`) ||
-      contentType.toLowerCase().startsWith(`application/graphql+json`) ||
-      contentType.toLowerCase().startsWith(`application/graphql-response+json`))
-  ) {
+  if (contentType && isJsonContentType(contentType)) {
     return jsonSerializer.parse(await response.text()) as any
   } else {
     return response.text() as any
   }
+}
+
+const isJsonContentType = (contentType: string) => {
+  const contentTypeLower = contentType.toLowerCase()
+
+  return contentTypeLower.includes(CONTENT_TYPE_GQL) || contentTypeLower.includes(CONTENT_TYPE_JSON)
 }
 
 const callOrIdentity = <T>(value: MaybeLazy<T>) => {
