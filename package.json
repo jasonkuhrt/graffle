@@ -4,9 +4,13 @@
   "type": "module",
   "exports": {
     ".": {
+      "require": {
+        "types": "./build/cjs/index.d.ts",
+        "default": "./build/cjs/index.js"
+      },
       "import": {
-        "types": "./build/index.d.ts",
-        "default": "./build/index.js"
+        "types": "./build/esm/index.d.ts",
+        "default": "./build/esm/index.js"
       }
     }
   },
@@ -45,7 +49,9 @@
     "check:lint": "eslint . --ext .ts,.tsx --max-warnings 0",
     "prepublishOnly": "pnpm build",
     "build:docs": "doctoc README.md --notitle && prettier --write README.md",
-    "build": "pnpm clean && pnpm tsc --project tsconfig.build.json",
+    "build": "pnpm clean && pnpm build:cjs && pnpm build:esm",
+    "build:cjs": "pnpm tsc --project tsconfig.cjs.json && echo '{\"type\":\"commonjs\"}' > build/cjs/package.json",
+    "build:esm": "pnpm tsc --project tsconfig.esm.json",
     "clean": "tsc --build --clean && rm -rf build",
     "test": "vitest",
     "test:coverage": "pnpm test -- --coverage",
