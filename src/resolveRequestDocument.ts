@@ -29,8 +29,13 @@ const extractOperationName = (document: DocumentNode): string | undefined => {
 
 export const resolveRequestDocument = (
   document: RequestDocument,
+  ignoreOperationName?: boolean,
 ): { query: string; operationName?: string } => {
   if (typeof document === `string`) {
+    if (ignoreOperationName) {
+      return { query: document }
+    }
+
     let operationName = undefined
 
     try {
@@ -42,7 +47,9 @@ export const resolveRequestDocument = (
 
     return { query: document, operationName }
   }
-
+  if (ignoreOperationName) {
+    return { query: print(document) }
+  }
   const operationName = extractOperationName(document)
 
   return { query: print(document), operationName }

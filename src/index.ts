@@ -203,6 +203,7 @@ class GraphQLClient {
       method = `POST`,
       requestMiddleware,
       responseMiddleware,
+      ignoreOperationName,
       ...fetchOptions
     } = this.requestConfig
     const { url } = this
@@ -210,7 +211,7 @@ class GraphQLClient {
       fetchOptions.signal = rawRequestOptions.signal
     }
 
-    const { operationName } = resolveRequestDocument(rawRequestOptions.query)
+    const { operationName } = resolveRequestDocument(rawRequestOptions.query, ignoreOperationName)
 
     return makeRequest<T, V>({
       url,
@@ -261,6 +262,7 @@ class GraphQLClient {
       method = `POST`,
       requestMiddleware,
       responseMiddleware,
+      ignoreOperationName,
       ...fetchOptions
     } = this.requestConfig
     const { url } = this
@@ -268,7 +270,7 @@ class GraphQLClient {
       fetchOptions.signal = requestOptions.signal
     }
 
-    const { query, operationName } = resolveRequestDocument(requestOptions.document)
+    const { query, operationName } = resolveRequestDocument(requestOptions.document, ignoreOperationName)
 
     return makeRequest<T>({
       url,
@@ -308,14 +310,14 @@ class GraphQLClient {
   // prettier-ignore
   batchRequests<T extends BatchResult, V extends Variables = Variables>(documentsOrOptions: BatchRequestDocument<V>[] | BatchRequestsOptions<V>, requestHeaders?: HeadersInit): Promise<T> {
     const batchRequestOptions = parseBatchRequestArgs<V>(documentsOrOptions, requestHeaders)
-    const { headers, ...fetchOptions } = this.requestConfig
+    const { headers, ignoreOperationName, ...fetchOptions } = this.requestConfig
 
     if (batchRequestOptions.signal !== undefined) {
       fetchOptions.signal = batchRequestOptions.signal
     }
 
     const queries = batchRequestOptions.documents.map(
-      ({ document }) => resolveRequestDocument(document).query
+      ({ document }) => resolveRequestDocument(document, ignoreOperationName).query
     )
     const variables = batchRequestOptions.documents.map(({ variables }) => variables)
 
