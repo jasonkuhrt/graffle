@@ -18,6 +18,7 @@ Minimal GraphQL client supporting Node and browsers for scripts or simple apps
       - [None (default)](#none-default)
       - [Ignore](#ignore)
       - [All](#all)
+    - [IgnoreOperationName](#ignoreoperationname)
 - [Knowledge Base](#knowledge-base)
   - [Why was the file upload feature taken away? Will it return?](#why-was-the-file-upload-feature-taken-away-will-it-return)
   - [Why do I have to install `graphql`?](#why-do-i-have-to-install-graphql)
@@ -151,6 +152,15 @@ Ignore incoming errors and resolve like no errors occurred
 ##### All
 
 Return both the errors and data, only works with `rawRequest`.
+
+### IgnoreOperationName
+
+By default the GraphQLClient tries to extract the operationName from the document.
+You can define `ignoreOperationName` in the constructor of GraphQLClient to avoid the extraction process if it is not needed.
+
+```ts
+const client = new GraphQLClient(endpoint, { ignoreOperationName: true })
+```
 
 ## Knowledge Base
 
