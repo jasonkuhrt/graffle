@@ -23,8 +23,8 @@
 
     // Other
     "skipLibCheck": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
   },
   "include": ["src", "tests", "examples"],
-  "exclude": ["build"]
+  "exclude": ["build"],
 }
