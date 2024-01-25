@@ -1,4 +1,4 @@
-import type { MaybeLazy, RemoveIndex } from './lib/prelude.js'
+import type { MaybeLazy, RemoveIndex } from '../lib/prelude.js'
 import type { TypedDocumentNode } from '@graphql-typed-document-node/core'
 import type { GraphQLError } from 'graphql/error/GraphQLError.js'
 import type { DocumentNode } from 'graphql/language/ast.js'

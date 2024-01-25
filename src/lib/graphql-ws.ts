@@ -1,7 +1,7 @@
 /* eslint-disable */
 import { resolveRequestDocument } from '../helpers/resolveRequestDocument.js'
-import type { RequestDocument, Variables } from '../types.js'
-import { ClientError } from '../types.js'
+import type { RequestDocument, Variables } from '../helpers/types.js'
+import { ClientError } from '../helpers/types.js'
 import { TypedDocumentNode } from '@graphql-typed-document-node/core'
 // import type WebSocket from 'ws'
 

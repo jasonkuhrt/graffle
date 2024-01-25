@@ -3,7 +3,7 @@
  * If you need to access the `extensions` key you can use the `rawRequest` method:
  */
 
-import { gql, rawRequest } from '../src/index.js'
+import { gql, rawRequest } from '../src/entrypoints/main.js'
 
 const endpoint = `https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr`
 

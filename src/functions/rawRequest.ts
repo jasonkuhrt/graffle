@@ -1,10 +1,10 @@
-import { GraphQLClient } from '../index.js'
+import { GraphQLClient } from '../classes/GraphQLClient.js'
 import type {
   GraphQLClientResponse,
   RawRequestOptions,
   Variables,
   VariablesAndRequestHeadersArgs,
-} from '../types.js'
+} from '../helpers/types.js'
 
 /**
  * Send a GraphQL Query to the GraphQL server for execution.

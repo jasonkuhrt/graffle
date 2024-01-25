@@ -1,18 +1,9 @@
-import { defaultJsonSerializer } from '../defaultJsonSerializer.js'
 import type { BatchRequestDocument, BatchRequestsOptions, BatchResult } from '../functions/batchRequests.js'
 import { parseBatchRequestArgs } from '../functions/batchRequests.js'
 import { parseRawRequestArgs } from '../functions/rawRequest.js'
 import { parseRequestArgs } from '../functions/request.js'
-import {
-  ACCEPT_HEADER,
-  CONTENT_TYPE_GQL,
-  CONTENT_TYPE_HEADER,
-  CONTENT_TYPE_JSON,
-} from '../helpers/constants.js'
-import { cleanQuery } from '../helpers/graphql.js'
-import { isGraphQLContentType } from '../helpers/http.js'
+import { defaultJsonSerializer } from '../helpers/defaultJsonSerializer.js'
 import { resolveRequestDocument } from '../helpers/resolveRequestDocument.js'
-import { callOrIdentity, HeadersInstanceToPlainObject, uppercase } from '../lib/prelude.js'
 import type {
   Fetch,
   FetchOptions,
@@ -22,14 +13,17 @@ import type {
   RequestMiddleware,
   RequestOptions,
   VariablesAndRequestHeadersArgs,
-} from '../types.js'
+} from '../helpers/types.js'
 import {
   ClientError,
   type GraphQLClientResponse,
   type RawRequestOptions,
   type RequestConfig,
   type Variables,
-} from '../types.js'
+} from '../helpers/types.js'
+import { cleanQuery, isGraphQLContentType } from '../lib/graphql.js'
+import { ACCEPT_HEADER, CONTENT_TYPE_GQL, CONTENT_TYPE_HEADER, CONTENT_TYPE_JSON } from '../lib/http.js'
+import { callOrIdentity, HeadersInstanceToPlainObject, uppercase } from '../lib/prelude.js'
 import type { TypedDocumentNode } from '@graphql-typed-document-node/core'
 
 /**

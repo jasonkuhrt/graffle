@@ -1,4 +1,4 @@
-import { GraphQLClient, rawRequest, request } from '../src/index.js'
+import { GraphQLClient, rawRequest, request } from '../src/entrypoints/main.js'
 import { setupMockServer } from './__helpers.js'
 import { gql } from 'graphql-tag'
 import type { Mock } from 'vitest'

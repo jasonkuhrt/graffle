@@ -1,5 +1,5 @@
-import { GraphQLClient } from '../index.js'
-import type { RequestDocument, Variables } from '../types.js'
+import { GraphQLClient } from '../classes/GraphQLClient.js'
+import type { RequestDocument, Variables } from '../helpers/types.js'
 
 export type BatchRequestDocument<V extends Variables = Variables> = {
   document: RequestDocument

@@ -1,6 +1,10 @@
-import type { RequestDocument, RequestOptions, Variables } from '../index.js'
-import { GraphQLClient } from '../index.js'
-import type { VariablesAndRequestHeadersArgs } from '../types.js'
+import { GraphQLClient } from '../classes/GraphQLClient.js'
+import type {
+  RequestDocument,
+  RequestOptions,
+  Variables,
+  VariablesAndRequestHeadersArgs,
+} from '../helpers/types.js'
 import type { TypedDocumentNode } from '@graphql-typed-document-node/core'
 
 /**

@@ -12,7 +12,7 @@
  * @see https://www.the-guild.dev/graphql/codegen/docs/guides/react-vue.
  */
 
-import request, { gql } from '../src/index.js'
+import request, { gql } from '../src/entrypoints/main.js'
 // @ts-expect-error todo make this actually work
 import { graphql } from './gql/gql'
 
