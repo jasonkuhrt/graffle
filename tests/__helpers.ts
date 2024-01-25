@@ -118,6 +118,7 @@ export const startApolloServer = async ({ typeDefs, resolvers }: ApolloServerCon
   const apolloServer = new ApolloServer({ typeDefs, resolvers })
 
   await apolloServer.start()
+  // @ts-expect-error todo
   apolloServer.applyMiddleware({ app })
 
   let server: Server

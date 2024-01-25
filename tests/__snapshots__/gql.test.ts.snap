@@ -19,7 +19,7 @@ exports[`gql > passthrough allowing benefits of tooling for gql template tag 1`]
         "content-type": "application/json",
         "host": "DYNAMIC",
         "sec-fetch-mode": "cors",
-        "user-agent": "node",
+        "user-agent": "undici",
       },
       "method": "POST",
     },
