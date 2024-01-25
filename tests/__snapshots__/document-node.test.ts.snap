@@ -20,7 +20,7 @@ exports[`accepts graphql DocumentNode as alternative to raw string 1`] = `
         "content-type": "application/json",
         "host": "DYNAMIC",
         "sec-fetch-mode": "cors",
-        "user-agent": "undici",
+        "user-agent": "node",
       },
       "method": "POST",
     },

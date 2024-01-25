@@ -69,6 +69,7 @@ export const setupMockServer = <T extends MockSpec | MockSpecBatch = MockSpec>(
           delay ? setTimeout(res, delay) : res(undefined)
         }).then(() => {
           req.headers.host = `DYNAMIC`
+          req.headers[`user-agent`] = `DYNAMIC` // todo undici on machine, node in CI
           requests.push({
             method: req.method,
             headers: req.headers,
