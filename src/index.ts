@@ -11,8 +11,8 @@ export { GraphQLClient } from './classes/GraphQLClient.js'
 export { batchRequests } from './functions/batchRequests.js'
 export { gql } from './functions/gql.js'
 export { rawRequest } from './functions/rawRequest.js'
-export { GraphQLWebSocketClient } from './graphql-ws.js'
 export { resolveRequestDocument } from './helpers/resolveRequestDocument.js'
+export { GraphQLWebSocketClient } from './lib/graphql-ws.js'
 export {
   BatchRequestDocument,
   BatchRequestsExtendedOptions,

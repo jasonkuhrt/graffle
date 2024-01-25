@@ -12,7 +12,7 @@ import {
 import { cleanQuery } from '../helpers/graphql.js'
 import { isGraphQLContentType } from '../helpers/http.js'
 import { resolveRequestDocument } from '../helpers/resolveRequestDocument.js'
-import { callOrIdentity, HeadersInstanceToPlainObject, uppercase } from '../prelude.js'
+import { callOrIdentity, HeadersInstanceToPlainObject, uppercase } from '../lib/prelude.js'
 import type {
   Fetch,
   FetchOptions,
