@@ -1,4 +1,4 @@
-import { batchRequests } from '../src/index.js'
+import { batchRequests } from '../src/entrypoints/main.js'
 import type { MockSpecBatch } from './__helpers.js'
 import { setupMockServer } from './__helpers.js'
 import { expect, test } from 'vitest'

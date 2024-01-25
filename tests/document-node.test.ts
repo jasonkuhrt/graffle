@@ -1,4 +1,4 @@
-import { request } from '../src/index.js'
+import { request } from '../src/entrypoints/main.js'
 import { setupMockServer } from './__helpers.js'
 import { gql } from 'graphql-tag'
 import { expect, it } from 'vitest'

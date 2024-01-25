@@ -1,4 +1,4 @@
-import { batchRequests, GraphQLClient, rawRequest, request } from '../src/index.js'
+import { batchRequests, GraphQLClient, rawRequest, request } from '../src/entrypoints/main.js'
 import { setupMockServer, sleep } from './__helpers.js'
 import { expect, it } from 'vitest'
 

@@ -1,2 +1,2 @@
 /* eslint-disable */
-import { RequestMiddleware, ResponseMiddleware } from '../src/index.js'
+import { RequestMiddleware, ResponseMiddleware } from '../src/entrypoints/main.js'

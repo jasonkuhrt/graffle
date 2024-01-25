@@ -5,8 +5,8 @@
   "exports": {
     ".": {
       "import": {
-        "types": "./build/index.d.ts",
-        "default": "./build/index.js"
+        "types": "./build/entrypoints/main.d.ts",
+        "default": "./build/entrypoints/main.js"
       }
     }
   },

@@ -1,4 +1,4 @@
-import { gql, GraphQLClient } from '../src/index.js'
+import { gql, GraphQLClient } from '../src/entrypoints/main.js'
 import { expect, test, vitest } from 'vitest'
 
 test(`custom fetch configuration is passed through`, async () => {
