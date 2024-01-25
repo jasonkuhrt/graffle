@@ -14,3 +14,9 @@ export const HeadersInstanceToPlainObject = (headers: Response['headers']): Reco
   })
   return o
 }
+
+export const callOrIdentity = <T>(value: MaybeLazy<T>) => {
+  return typeof value === `function` ? (value as () => T)() : value
+}
+
+export type MaybeLazy<T> = T | (() => T)

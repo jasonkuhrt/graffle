@@ -1,4 +1,4 @@
-import type { RequestDocument } from './types.js'
+import type { RequestDocument } from '../types.js'
 /**
  * Refactored imports from `graphql` to be more specific, this helps import only the required files (100KiB)
  * instead of the entire package (greater than 500KiB) where tree-shaking is not supported.
