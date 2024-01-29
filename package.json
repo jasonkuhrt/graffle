@@ -10,7 +10,7 @@
       }
     }
   },
-  "packageManager": "pnpm@8.14.3",
+  "packageManager": "pnpm@8.15.0",
   "files": [
     "build",
     "src"
