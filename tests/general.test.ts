@@ -2,7 +2,7 @@ import { GraphQLClient, rawRequest, request } from '../src/index.js'
 import { setupMockServer } from './__helpers.js'
 import { gql } from 'graphql-tag'
 import type { Mock } from 'vitest'
-import { beforeEach, describe, expect, it, test, vitest } from 'vitest'
+import { afterAll, beforeEach, describe, expect, it, test, vitest } from 'vitest'
 
 const ctx = setupMockServer()
 
@@ -305,6 +305,70 @@ describe(`operationName parsing`, () => {
 
     const requestBody = mock.requests[0]?.body
     expect(requestBody?.[`operationName`]).toEqual(`myStringOperation`)
+  })
+})
+describe(`ignoreOperationName`, () => {
+  it(`it should not ignore operation name by default`, async () => {
+    ctx.res({
+      body: {
+        data: {
+          result: `ok`,
+        },
+      },
+    })
+    const requestMiddleware: Mock = vitest.fn((req: { body: string; operationName: string }) => {
+      expect(req.body).toContain(`"operationName":"myStringOperation"`)
+      expect(req.operationName).toBe(`myStringOperation`)
+      return { ...req }
+    })
+    const client: GraphQLClient = new GraphQLClient(ctx.url, {
+      requestMiddleware,
+    })
+    await client.request<{ result: number }>(`query myStringOperation {
+      users
+    }`)
+  })
+  it(`it should not ignore operation name`, async () => {
+    ctx.res({
+      body: {
+        data: {
+          result: `ok`,
+        },
+      },
+    })
+    const requestMiddleware: Mock = vitest.fn((req: { body: string; operationName: string }) => {
+      expect(req.body).toContain(`"operationName":"myStringOperation"`)
+      expect(req.operationName).toBe(`myStringOperation`)
+      return { ...req }
+    })
+    const client: GraphQLClient = new GraphQLClient(ctx.url, {
+      requestMiddleware,
+      ignoreOperationName: false,
+    })
+    await client.request<{ result: number }>(`query myStringOperation {
+      users
+    }`)
+  })
+  it(`it should ignore operation name`, async () => {
+    ctx.res({
+      body: {
+        data: {
+          result: `ok`,
+        },
+      },
+    })
+    const requestMiddleware: Mock = vitest.fn((req: { body: string; operationName: string }) => {
+      expect(req.body).not.toContain(`operationName`)
+      expect(req.operationName).toBe(undefined)
+      return { ...req }
+    })
+    const client: GraphQLClient = new GraphQLClient(ctx.url, {
+      requestMiddleware,
+      ignoreOperationName: true,
+    })
+    await client.request<{ result: number }>(`query myStringOperation {
+      users
+    }`)
   })
 })
 
