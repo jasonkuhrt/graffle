@@ -1,4 +1,4 @@
-import request, { gql } from '../src/index.js'
+import request, { gql } from '../src/entrypoints/main.js'
 import { setupMockServer } from './__helpers.js'
 import type { TypedDocumentNode } from '@graphql-typed-document-node/core'
 import { parse } from 'graphql'

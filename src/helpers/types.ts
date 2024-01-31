@@ -1,4 +1,4 @@
-import type { RemoveIndex } from './helpers.js'
+import type { MaybeLazy, RemoveIndex } from '../lib/prelude.js'
 import type { TypedDocumentNode } from '@graphql-typed-document-node/core'
 import type { GraphQLError } from 'graphql/error/GraphQLError.js'
 import type { DocumentNode } from 'graphql/language/ast.js'
@@ -76,8 +76,6 @@ export class ClientError extends Error {
   }
 }
 
-export type MaybeLazy<T> = T | (() => T)
-
 export type RequestDocument = string | DocumentNode
 
 export interface GraphQLClientResponse<Data> {
@@ -100,11 +98,6 @@ export interface RequestConfig extends Omit<RequestInit, 'headers' | 'method'>, 
   excludeOperationName?: boolean
 }
 
-export type BatchRequestDocument<V extends Variables = Variables> = {
-  document: RequestDocument
-  variables?: V
-}
-
 export type RawRequestOptions<V extends Variables = Variables> = {
   query: string
   requestHeaders?: HeadersInit
@@ -112,8 +105,8 @@ export type RawRequestOptions<V extends Variables = Variables> = {
 } & (V extends Record<any, never>
   ? { variables?: V }
   : keyof RemoveIndex<V> extends never
-  ? { variables?: V }
-  : { variables: V })
+    ? { variables?: V }
+    : { variables: V })
 
 export type RequestOptions<V extends Variables = Variables, T = unknown> = {
   document: RequestDocument | TypedDocumentNode<T, V>
@@ -122,27 +115,8 @@ export type RequestOptions<V extends Variables = Variables, T = unknown> = {
 } & (V extends Record<any, never>
   ? { variables?: V }
   : keyof RemoveIndex<V> extends never
-  ? { variables?: V }
-  : { variables: V })
-
-export interface BatchRequestsOptions<V extends Variables = Variables> {
-  documents: BatchRequestDocument<V>[]
-  requestHeaders?: HeadersInit
-  signal?: RequestInit['signal']
-}
-
-export type RequestExtendedOptions<V extends Variables = Variables, T = unknown> = {
-  url: string
-} & RequestOptions<V, T>
-
-export type RawRequestExtendedOptions<V extends Variables = Variables> = {
-  url: string
-} & RawRequestOptions<V>
-
-export interface BatchRequestsExtendedOptions<V extends Variables = Variables>
-  extends BatchRequestsOptions<V> {
-  url: string
-}
+    ? { variables?: V }
+    : { variables: V })
 
 export type ResponseMiddleware = (response: GraphQLClientResponse<unknown> | ClientError | Error) => void
 

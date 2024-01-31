@@ -1,4 +1,4 @@
-import { GraphQLClient } from '../src/index.js'
+import { GraphQLClient } from '../src/entrypoints/main.js'
 import { setupMockServer } from './__helpers.js'
 import { describe, expect, test } from 'vitest'
 

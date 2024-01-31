@@ -1,7 +1,7 @@
 /**
  * Queries can be sent as an HTTP GET request:
  */
-import { gql, GraphQLClient } from '../src/index.js'
+import { gql, GraphQLClient } from '../src/entrypoints/main.js'
 
 const endpoint = `https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr`
 
