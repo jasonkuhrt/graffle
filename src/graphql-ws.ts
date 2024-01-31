@@ -66,7 +66,7 @@ export type SocketHandler = {
 }
 
 export type SocketClientConfig = {
-  ignoreOperationName?: boolean
+  excludeOperationName?: boolean
 }
 
 export type UnsubscribeCallback = () => void
@@ -93,7 +93,7 @@ export class GraphQLWebSocketClient {
   static PROTOCOL = `graphql-transport-ws`
 
   private socket: WebSocket
-  private ignoreOperationName: boolean | undefined
+  private excludeOperationName: boolean | undefined
   private socketState: SocketState = { acknowledged: false, lastRequestId: 0, subscriptions: {} }
 
   constructor(
@@ -103,7 +103,7 @@ export class GraphQLWebSocketClient {
   ) {
     this.socket = socket
 
-    this.ignoreOperationName = socketClientConfg?.ignoreOperationName
+    this.excludeOperationName = socketClientConfg?.excludeOperationName
 
     socket.addEventListener(`open`, async (e) => {
       this.socketState.acknowledged = false
@@ -247,7 +247,7 @@ export class GraphQLWebSocketClient {
     subscriber: GraphQLSubscriber<T, E>,
     variables?: V,
   ): UnsubscribeCallback {
-    const { query, operationName } = resolveRequestDocument(document, this.ignoreOperationName)
+    const { query, operationName } = resolveRequestDocument(document, this.excludeOperationName)
     return this.makeSubscribe(query, operationName, subscriber, variables)
   }
 

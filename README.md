@@ -159,7 +159,7 @@ OperationName has been introduced to address issues reported here [Support opera
 However, on certain occasions this information may not be needed in requests. In such cases, you might consider ignoring operationName to avoid the extraction steps currently performed by a parsing operation when the document is provided in string format.
 
 By default the GraphQLClient tries to extract the operationName from the document.
-You can define `ignoreOperationName` in the constructor of GraphQLClient to avoid the extraction process if it is not needed. This can be useful if you don't use operationName and want to optimise queries by reducing the amount of computation as much as possible, especially if we are in a context where we are using documents in string format to reduce bundle size.
+You can define `excludeOperationName` in the constructor of GraphQLClient to avoid the extraction process if it is not needed. This can be useful if you don't use operationName and want to optimise queries by reducing the amount of computation as much as possible, especially if we are in a context where we are using documents in string format to reduce bundle size.
 
 ```ts
 // example where the operation name is not ignored
@@ -169,7 +169,7 @@ const client = new GraphQLClient(endpoint, {
 // example in which the operation name is ignored
 const client = new GraphQLClient(endpoint, {
   method: 'POST',
-  ignoreOperationName: true,
+  excludeOperationName: true,
 })
 ```
 

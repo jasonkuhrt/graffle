@@ -97,7 +97,7 @@ export interface RequestConfig extends Omit<RequestInit, 'headers' | 'method'>, 
   requestMiddleware?: RequestMiddleware
   responseMiddleware?: ResponseMiddleware
   jsonSerializer?: JsonSerializer
-  ignoreOperationName?: boolean
+  excludeOperationName?: boolean
 }
 
 export type BatchRequestDocument<V extends Variables = Variables> = {

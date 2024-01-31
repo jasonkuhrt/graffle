@@ -307,7 +307,7 @@ describe(`operationName parsing`, () => {
     expect(requestBody?.[`operationName`]).toEqual(`myStringOperation`)
   })
 })
-describe(`ignoreOperationName`, () => {
+describe(`excludeOperationName`, () => {
   it(`it should not ignore operation name by default`, async () => {
     ctx.res({
       body: {
@@ -343,7 +343,7 @@ describe(`ignoreOperationName`, () => {
     })
     const client: GraphQLClient = new GraphQLClient(ctx.url, {
       requestMiddleware,
-      ignoreOperationName: false,
+      excludeOperationName: false,
     })
     await client.request<{ result: number }>(`query myStringOperation {
       users
@@ -364,7 +364,7 @@ describe(`ignoreOperationName`, () => {
     })
     const client: GraphQLClient = new GraphQLClient(ctx.url, {
       requestMiddleware,
-      ignoreOperationName: true,
+      excludeOperationName: true,
     })
     await client.request<{ result: number }>(`query myStringOperation {
       users
