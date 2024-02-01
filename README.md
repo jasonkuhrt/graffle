@@ -18,7 +18,7 @@ Minimal GraphQL client supporting Node and browsers for scripts or simple apps
       - [None (default)](#none-default)
       - [Ignore](#ignore)
       - [All](#all)
-    - [IgnoreOperationName](#ignoreoperationname)
+  - [IgnoreOperationName](#ignoreoperationname)
 - [Knowledge Base](#knowledge-base)
   - [Why was the file upload feature taken away? Will it return?](#why-was-the-file-upload-feature-taken-away-will-it-return)
   - [Why do I have to install `graphql`?](#why-do-i-have-to-install-graphql)
