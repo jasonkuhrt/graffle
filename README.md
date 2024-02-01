@@ -18,6 +18,7 @@ Minimal GraphQL client supporting Node and browsers for scripts or simple apps
       - [None (default)](#none-default)
       - [Ignore](#ignore)
       - [All](#all)
+  - [IgnoreOperationName](#ignoreoperationname)
 - [Knowledge Base](#knowledge-base)
   - [Why was the file upload feature taken away? Will it return?](#why-was-the-file-upload-feature-taken-away-will-it-return)
   - [Why do I have to install `graphql`?](#why-do-i-have-to-install-graphql)
@@ -151,6 +152,26 @@ Ignore incoming errors and resolve like no errors occurred
 ##### All
 
 Return both the errors and data, only works with `rawRequest`.
+
+### IgnoreOperationName
+
+OperationName has been introduced to address issues reported here [Support operation name](https://github.com/jasonkuhrt/graphql-request/issues/64),
+However, on certain occasions this information may not be needed in requests. In such cases, you might consider ignoring operationName to avoid the extraction steps currently performed by a parsing operation when the document is provided in string format.
+
+By default the GraphQLClient tries to extract the operationName from the document.
+You can define `excludeOperationName` in the constructor of GraphQLClient to avoid the extraction process if it is not needed. This can be useful if you don't use operationName and want to optimise queries by reducing the amount of computation as much as possible, especially if we are in a context where we are using documents in string format to reduce bundle size.
+
+```ts
+// example where the operation name is not ignored
+const client = new GraphQLClient(endpoint, {
+  method: 'POST',
+})
+// example in which the operation name is ignored
+const client = new GraphQLClient(endpoint, {
+  method: 'POST',
+  excludeOperationName: true,
+})
+```
 
 ## Knowledge Base
 

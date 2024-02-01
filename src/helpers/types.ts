@@ -95,6 +95,7 @@ export interface RequestConfig extends Omit<RequestInit, 'headers' | 'method'>, 
   requestMiddleware?: RequestMiddleware
   responseMiddleware?: ResponseMiddleware
   jsonSerializer?: JsonSerializer
+  excludeOperationName?: boolean
 }
 
 export type RawRequestOptions<V extends Variables = Variables> = {
@@ -104,8 +105,8 @@ export type RawRequestOptions<V extends Variables = Variables> = {
 } & (V extends Record<any, never>
   ? { variables?: V }
   : keyof RemoveIndex<V> extends never
-    ? { variables?: V }
-    : { variables: V })
+  ? { variables?: V }
+  : { variables: V })
 
 export type RequestOptions<V extends Variables = Variables, T = unknown> = {
   document: RequestDocument | TypedDocumentNode<T, V>
@@ -114,8 +115,8 @@ export type RequestOptions<V extends Variables = Variables, T = unknown> = {
 } & (V extends Record<any, never>
   ? { variables?: V }
   : keyof RemoveIndex<V> extends never
-    ? { variables?: V }
-    : { variables: V })
+  ? { variables?: V }
+  : { variables: V })
 
 export type ResponseMiddleware = (response: GraphQLClientResponse<unknown> | ClientError | Error) => void
 

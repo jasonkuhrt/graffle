@@ -50,6 +50,7 @@ export class GraphQLClient {
       method = `POST`,
       requestMiddleware,
       responseMiddleware,
+      excludeOperationName,
       ...fetchOptions
     } = this.requestConfig
     const { url } = this
@@ -57,7 +58,7 @@ export class GraphQLClient {
       fetchOptions.signal = rawRequestOptions.signal
     }
 
-    const { operationName } = resolveRequestDocument(rawRequestOptions.query)
+    const { operationName } = resolveRequestDocument(rawRequestOptions.query, excludeOperationName)
 
     return makeRequest<T, V>({
       url,
@@ -108,6 +109,7 @@ export class GraphQLClient {
       method = `POST`,
       requestMiddleware,
       responseMiddleware,
+      excludeOperationName,
       ...fetchOptions
     } = this.requestConfig
     const { url } = this
@@ -115,7 +117,7 @@ export class GraphQLClient {
       fetchOptions.signal = requestOptions.signal
     }
 
-    const { query, operationName } = resolveRequestDocument(requestOptions.document)
+    const { query, operationName } = resolveRequestDocument(requestOptions.document, excludeOperationName)
 
     return makeRequest<T>({
       url,
@@ -155,14 +157,14 @@ export class GraphQLClient {
   // prettier-ignore
   batchRequests<T extends BatchResult, V extends Variables = Variables>(documentsOrOptions: BatchRequestDocument<V>[] | BatchRequestsOptions<V>, requestHeaders?: HeadersInit): Promise<T> {
     const batchRequestOptions = parseBatchRequestArgs<V>(documentsOrOptions, requestHeaders)
-    const { headers, ...fetchOptions } = this.requestConfig
+    const { headers, excludeOperationName, ...fetchOptions } = this.requestConfig
 
     if (batchRequestOptions.signal !== undefined) {
       fetchOptions.signal = batchRequestOptions.signal
     }
 
     const queries = batchRequestOptions.documents.map(
-      ({ document }) => resolveRequestDocument(document).query
+      ({ document }) => resolveRequestDocument(document, excludeOperationName).query
     )
     const variables = batchRequestOptions.documents.map(({ variables }) => variables)
 
