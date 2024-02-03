@@ -20,9 +20,14 @@ import type {
   Variables,
 } from './types.js'
 
-interface Params {
+interface Input {
   url: string
-  method: HTTPMethodInput
+  /**
+   * The HTTP method to use for queries. Note that mutations are ALWAYS sent as POST requests ([per spec](https://github.com/graphql/graphql-over-http/blob/main/spec/GraphQLOverHTTP.md?rgh-link-date=2022-06-02T09%3A30%3A53Z)).
+   *
+   * @defaultValue `'POST'`
+   */
+  method?: HTTPMethodInput
   fetch: Fetch
   fetchOptions: FetchOptions
   headers?: HeadersInit
@@ -30,41 +35,56 @@ interface Params {
   request:
     | {
         _tag: 'Single'
-        query: string
-        operationName?: string
         variables?: Variables
+        document: {
+          expression: string
+          isMutation: boolean
+          operationName?: string
+        }
       }
     | {
         _tag: 'Batch'
         query: string[]
         operationName?: undefined
+        hasMutations: boolean
         variables?: BatchVariables
       }
 }
 
 // @ts-expect-error todo
-export const runRequest = async (params: Params): Promise<ClientError | GraphQLClientResponse<any>> => {
-  const $params = {
-    ...params,
-    method: uppercase(params.method ?? `post`),
+export const runRequest = async (input: Input): Promise<ClientError | GraphQLClientResponse<any>> => {
+  // todo make a Config type
+  const config = {
+    ...input,
+    method:
+      input.request._tag === `Single`
+        ? input.request.document.isMutation
+          ? `POST`
+          : uppercase(input.method ?? `post`)
+        : input.request.hasMutations
+          ? `POST`
+          : uppercase(input.method ?? `post`),
     fetchOptions: {
-      ...params.fetchOptions,
-      errorPolicy: params.fetchOptions.errorPolicy ?? `none`,
+      ...input.fetchOptions,
+      errorPolicy: input.fetchOptions.errorPolicy ?? `none`,
     },
   }
-  const fetcher = createFetcher($params.method)
-  const fetchResponse = await fetcher($params)
+  const fetcher = createFetcher(config.method)
+  const fetchResponse = await fetcher(config)
 
   if (!fetchResponse.ok) {
     return new ClientError(
       { status: fetchResponse.status, headers: fetchResponse.headers },
-      { query: params.request.query, variables: params.request.variables },
+      {
+        query: input.request._tag === `Single` ? input.request.document.expression : input.request.query,
+        variables: input.request.variables,
+      },
     )
   }
 
   const result = await parseResultFromResponse(
     fetchResponse,
-    params.fetchOptions.jsonSerializer ?? defaultJsonSerializer,
+    input.fetchOptions.jsonSerializer ?? defaultJsonSerializer,
   )
 
   if (result instanceof Error) throw result // todo something better
@@ -74,8 +94,8 @@ export const runRequest = async (params: Params): Promise<ClientError | GraphQLC
     headers: fetchResponse.headers,
   }
 
-  if (isRequestResultHaveErrors(result) && $params.fetchOptions.errorPolicy === `none`) {
-    // todo this client response on error is not consisitent with the data type for success
+  if (isRequestResultHaveErrors(result) && config.fetchOptions.errorPolicy === `none`) {
+    // todo this client response on error is not consistent with the data type for success
     const clientResponse =
       result._tag === `Batch`
         ? { ...result.executionResults, ...clientResponseBase }
@@ -85,8 +105,8 @@ export const runRequest = async (params: Params): Promise<ClientError | GraphQLC
           }
     // @ts-expect-error todo
     return new ClientError(clientResponse, {
-      query: params.request.query,
-      variables: params.request.variables,
+      query: input.request._tag === `Single` ? input.request.document.expression : input.request.query,
+      variables: input.request.variables,
     })
   }
 
@@ -94,20 +114,20 @@ export const runRequest = async (params: Params): Promise<ClientError | GraphQLC
     // @ts-expect-error todo
     return {
       ...clientResponseBase,
-      ...executionResultClientResponseFields($params)(result.executionResult),
+      ...executionResultClientResponseFields(config)(result.executionResult),
     }
   }
 
   if (result._tag === `Batch`) {
     return {
       ...clientResponseBase,
-      data: result.executionResults.map(executionResultClientResponseFields($params)),
+      data: result.executionResults.map(executionResultClientResponseFields(config)),
     }
   }
 }
 
 const executionResultClientResponseFields =
-  ($params: Params) => (executionResult: GraphQLExecutionResultSingle) => {
+  ($params: Input) => (executionResult: GraphQLExecutionResultSingle) => {
     return {
       extensions: executionResult.extensions,
       data: executionResult.data,
@@ -126,7 +146,7 @@ const parseResultFromResponse = async (response: Response, jsonSerializer: JsonS
   }
 }
 
-const createFetcher = (method: 'GET' | 'POST') => async (params: Params) => {
+const createFetcher = (method: 'GET' | 'POST') => async (params: Input) => {
   const headers = new Headers(params.headers)
   let queryParams = ``
   let body = undefined
@@ -150,11 +170,14 @@ const createFetcher = (method: 'GET' | 'POST') => async (params: Params) => {
   let urlResolved = params.url
   let initResolved = init
   if (params.middleware) {
-    const {
-      url,
-      request: { variables, operationName },
-    } = params
-    const result = await Promise.resolve(params.middleware({ ...init, url, operationName, variables }))
+    const result = await Promise.resolve(
+      params.middleware({
+        ...init,
+        url: params.url,
+        operationName: params.request._tag === `Single` ? params.request.document.operationName : undefined,
+        variables: params.request.variables,
+      }),
+    )
     const { url: urlNew, ...initNew } = result
     urlResolved = urlNew
     initResolved = initNew
@@ -166,10 +189,13 @@ const createFetcher = (method: 'GET' | 'POST') => async (params: Params) => {
   return await $fetch(urlResolved, initResolved)
 }
 
-const buildBody = (params: Params) => {
+const buildBody = (params: Input) => {
   if (params.request._tag === `Single`) {
-    const { query, variables, operationName } = params.request
-    return { query, variables, operationName }
+    const {
+      variables,
+      document: { expression, operationName },
+    } = params.request
+    return { query: expression, variables, operationName }
   } else if (params.request._tag === `Batch`) {
     return zip(params.request.query, params.request.variables ?? []).map(([query, variables]) => ({
       query,
@@ -180,15 +206,15 @@ const buildBody = (params: Params) => {
   }
 }
 
-const buildQueryParams = (params: Params): string => {
+const buildQueryParams = (params: Input): string => {
   const $jsonSerializer = params.fetchOptions.jsonSerializer ?? defaultJsonSerializer
   if (params.request._tag === `Single`) {
-    const search: string[] = [`query=${encodeURIComponent(cleanQuery(params.request.query))}`]
+    const search: string[] = [`query=${encodeURIComponent(cleanQuery(params.request.document.expression))}`]
     if (params.request.variables) {
       search.push(`variables=${encodeURIComponent($jsonSerializer.stringify(params.request.variables))}`)
     }
-    if (params.request.operationName) {
-      search.push(`operationName=${encodeURIComponent(params.request.operationName)}`)
+    if (params.request.document.operationName) {
+      search.push(`operationName=${encodeURIComponent(params.request.document.operationName)}`)
     }
     return search.join(`&`)
   } else if (params.request._tag === `Batch`) {

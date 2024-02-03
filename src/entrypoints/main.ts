@@ -12,7 +12,7 @@ export { GraphQLClient } from '../classes/GraphQLClient.js'
 export { batchRequests } from '../functions/batchRequests.js'
 export { gql } from '../functions/gql.js'
 export { rawRequest } from '../functions/rawRequest.js'
-export { resolveRequestDocument } from '../helpers/resolveRequestDocument.js'
+export { analyzeDocument } from '../helpers/analyzeDocument.js'
 export { GraphQLWebSocketClient } from '../lib/graphql-ws.js'
 export {
   BatchRequestDocument,

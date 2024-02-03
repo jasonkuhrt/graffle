@@ -2,7 +2,7 @@ import type { BatchRequestDocument, BatchRequestsOptions, BatchResult } from '..
 import { parseBatchRequestArgs } from '../functions/batchRequests.js'
 import { parseRawRequestArgs } from '../functions/rawRequest.js'
 import { parseRequestArgs } from '../functions/request.js'
-import { resolveRequestDocument } from '../helpers/resolveRequestDocument.js'
+import { analyzeDocument } from '../helpers/analyzeDocument.js'
 import { runRequest } from '../helpers/runRequest.js'
 import type { RequestDocument, RequestOptions, VariablesAndRequestHeadersArgs } from '../helpers/types.js'
 import {
@@ -45,14 +45,13 @@ export class GraphQLClient {
       fetchOptions.signal = rawRequestOptions.signal
     }
 
-    const { operationName } = resolveRequestDocument(rawRequestOptions.query, excludeOperationName)
+    const document = analyzeDocument(rawRequestOptions.query, excludeOperationName)
 
     const response = await runRequest({
       url,
       request: {
         _tag: `Single`,
-        operationName,
-        query: rawRequestOptions.query,
+        document,
         variables: rawRequestOptions.variables,
       },
       headers: {
@@ -105,14 +104,13 @@ export class GraphQLClient {
       fetchOptions.signal = requestOptions.signal
     }
 
-    const { query, operationName } = resolveRequestDocument(requestOptions.document, excludeOperationName)
+    const analyzedDocument = analyzeDocument(requestOptions.document, excludeOperationName)
 
     const response = await runRequest({
       url,
       request: {
-        operationName,
         _tag: `Single`,
-        query,
+        document: analyzedDocument,
         variables: requestOptions.variables,
       },
       headers: {
@@ -152,9 +150,11 @@ export class GraphQLClient {
       fetchOptions.signal = batchRequestOptions.signal
     }
 
-    const queries = batchRequestOptions.documents.map(
-      ({ document }) => resolveRequestDocument(document, excludeOperationName).query
+    const analyzedDocuments = batchRequestOptions.documents.map(
+      ({ document }) => analyzeDocument(document, excludeOperationName)
     )
+    const expressions = analyzedDocuments.map(({ expression }) => expression)
+    const hasMutations = analyzedDocuments.some(({ isMutation }) => isMutation)
     const variables = batchRequestOptions.documents.map(({ variables }) => variables)
 
     const response= await runRequest({
@@ -162,7 +162,8 @@ export class GraphQLClient {
       request: {
         _tag:`Batch`,
         operationName: undefined,
-        query: queries,
+        query: expressions,
+        hasMutations,
         variables,
       },
       headers: {
