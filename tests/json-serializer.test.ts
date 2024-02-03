@@ -1,5 +1,6 @@
 import { GraphQLClient } from '../src/entrypoints/main.js'
 import type { Fetch, Variables } from '../src/helpers/types.js'
+import { CONTENT_TYPE_HEADER, statusCodes } from '../src/lib/http.js'
 import { setupMockServer } from './__helpers.js'
 import { beforeEach, describe, expect, test, vitest } from 'vitest'
 
@@ -14,10 +15,8 @@ const testData = { data: { test: { name: `test` } } }
 
 const createMockFetch = (): Fetch => () => {
   const response = new Response(JSON.stringify(testData), {
-    headers: new Headers({
-      'Content-Type': `application/json; charset=utf-8`,
-    }),
-    status: 200,
+    headers: new Headers({ [CONTENT_TYPE_HEADER]: `application/json; charset=utf-8` }),
+    status: statusCodes.success,
   })
   return Promise.resolve(response)
 }

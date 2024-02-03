@@ -1,8 +1,9 @@
 import { ClientError } from '../classes/ClientError.js'
+import type { GraphQLExecutionResultSingle } from '../lib/graphql.js'
 import {
   cleanQuery,
   isGraphQLContentType,
-  isHasAtLeastSomeSuccess,
+  isRequestResultHaveErrors,
   parseGraphQLExecutionResult,
 } from '../lib/graphql.js'
 import { ACCEPT_HEADER, CONTENT_TYPE_GQL, CONTENT_TYPE_HEADER, CONTENT_TYPE_JSON } from '../lib/http.js'
@@ -41,59 +42,87 @@ interface Params {
       }
 }
 
+// @ts-expect-error todo
 export const runRequest = async (params: Params): Promise<ClientError | GraphQLClientResponse<any>> => {
   const $params = {
     ...params,
     method: uppercase(params.method ?? `post`),
+    fetchOptions: {
+      ...params.fetchOptions,
+      errorPolicy: params.fetchOptions.errorPolicy ?? `none`,
+    },
   }
   const fetcher = createFetcher($params.method)
-  const response = await fetcher($params)
+  const fetchResponse = await fetcher($params)
+
+  if (!fetchResponse.ok) {
+    return new ClientError(
+      { status: fetchResponse.status, headers: fetchResponse.headers },
+      { query: params.request.query, variables: params.request.variables },
+    )
+  }
+
   const result = await parseResultFromResponse(
-    response,
+    fetchResponse,
     params.fetchOptions.jsonSerializer ?? defaultJsonSerializer,
   )
 
   if (result instanceof Error) throw result // todo something better
 
-  const successfullyPassedErrorPolicy =
-    result._tag === `Batch` ||
-    result.executionResult._tag === `Data` ||
-    (Array.isArray(result.executionResult.errors) && !result.executionResult.errors.length) ||
-    params.fetchOptions.errorPolicy === `all` ||
-    params.fetchOptions.errorPolicy === `ignore`
+  const clientResponseBase = {
+    status: fetchResponse.status,
+    headers: fetchResponse.headers,
+  }
 
-  if (response.ok && successfullyPassedErrorPolicy && isHasAtLeastSomeSuccess(result)) {
-    const executionResults =
-      params.fetchOptions.errorPolicy === `ignore`
-        ? result._tag === `Batch`
-          ? result.executionResults.map((_) => _.data)
-          : result.executionResult.data
-        : result._tag === `Batch`
-          ? result.executionResults
-          : result.executionResult
-    const returnValue = params.request._tag === `Batch` ? { data: executionResults } : executionResults
-    // @ts-expect-error TODO fixme
+  if (isRequestResultHaveErrors(result) && $params.fetchOptions.errorPolicy === `none`) {
+    // todo this client response on error is not consisitent with the data type for success
+    const clientResponse =
+      result._tag === `Batch`
+        ? { ...result.executionResults, ...clientResponseBase }
+        : {
+            ...result.executionResult,
+            ...clientResponseBase,
+          }
+    // @ts-expect-error todo
+    return new ClientError(clientResponse, {
+      query: params.request.query,
+      variables: params.request.variables,
+    })
+  }
+
+  if (result._tag === `Single`) {
+    // @ts-expect-error todo
     return {
-      ...returnValue,
-      headers: response.headers,
-      status: response.status,
+      ...clientResponseBase,
+      ...executionResultClientResponseFields($params)(result.executionResult),
     }
   }
 
-  return new ClientError(
-    { status: response.status, headers: response.headers, ...result },
-    { query: params.request.query, variables: params.request.variables },
-  )
+  if (result._tag === `Batch`) {
+    return {
+      ...clientResponseBase,
+      data: result.executionResults.map(executionResultClientResponseFields($params)),
+    }
+  }
 }
+
+const executionResultClientResponseFields =
+  ($params: Params) => (executionResult: GraphQLExecutionResultSingle) => {
+    return {
+      extensions: executionResult.extensions,
+      data: executionResult.data,
+      errors: $params.fetchOptions.errorPolicy === `all` ? executionResult.errors : undefined,
+    }
+  }
 
 const parseResultFromResponse = async (response: Response, jsonSerializer: JsonSerializer) => {
   const contentType = response.headers.get(CONTENT_TYPE_HEADER)
+  const text = await response.text()
   if (contentType && isGraphQLContentType(contentType)) {
-    const text = await response.text()
     return parseGraphQLExecutionResult(jsonSerializer.parse(text))
   } else {
     // todo what is this good for...? Seems very random/undefined
-    return parseGraphQLExecutionResult(response.text())
+    return parseGraphQLExecutionResult(text)
   }
 }
 
@@ -133,7 +162,8 @@ const createFetcher = (method: 'GET' | 'POST') => async (params: Params) => {
   if (queryParams) {
     urlResolved = `${urlResolved}?${queryParams}`
   }
-  return await fetch(urlResolved, initResolved)
+  const $fetch = params.fetch ?? fetch
+  return await $fetch(urlResolved, initResolved)
 }
 
 const buildBody = (params: Params) => {

@@ -65,15 +65,12 @@ export class GraphQLClient {
       middleware: requestMiddleware,
     })
 
-    if (response instanceof Error) {
-      if (responseMiddleware) {
-        responseMiddleware(response)
-      }
-      throw response
-    }
-
     if (responseMiddleware) {
       responseMiddleware(response)
+    }
+
+    if (response instanceof Error) {
+      throw response
     }
 
     return response
@@ -128,15 +125,12 @@ export class GraphQLClient {
       middleware: requestMiddleware,
     })
 
-    if (response instanceof Error) {
-      if (responseMiddleware) {
-        responseMiddleware(response)
-      }
-      throw response
-    }
-
     if (responseMiddleware) {
       responseMiddleware(response)
+    }
+
+    if (response instanceof Error) {
+      throw response
     }
 
     return response.data
@@ -181,15 +175,12 @@ export class GraphQLClient {
       middleware: this.requestConfig.requestMiddleware,
     })
     
-    if (response instanceof Error) {
-      if (this.requestConfig.responseMiddleware) {
-        this.requestConfig.responseMiddleware(response)
-      }
-      throw response
-    }
-
     if (this.requestConfig.responseMiddleware) {
       this.requestConfig.responseMiddleware(response)
+    }
+
+    if (response instanceof Error) {
+      throw response
     }
 
     return response.data

@@ -9,6 +9,16 @@ import { createServer } from 'http'
 import type { JsonArray, JsonObject } from 'type-fest'
 import { afterAll, afterEach, beforeAll, beforeEach } from 'vitest'
 
+export const errors = {
+  message: `Syntax Error GraphQL request (1:1) Unexpected Name "x"\n\n1: x\n   ^\n`,
+  locations: [
+    {
+      line: 1,
+      column: 1,
+    },
+  ],
+}
+
 type CapturedRequest = Pick<Request, 'headers' | 'method' | 'body'>
 
 type Context<S extends MockSpec | MockSpecBatch = MockSpec> = {
