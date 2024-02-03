@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { analyzeDocument } from '../helpers/resolveRequestDocument.js'
+import { analyzeDocument } from '../helpers/analyzeDocument.js'
 import type { RequestDocument, Variables } from '../helpers/types.js'
 import { ClientError } from '../classes/ClientError.js'
 import { TypedDocumentNode } from '@graphql-typed-document-node/core'

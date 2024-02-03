@@ -2,7 +2,7 @@ import type { BatchRequestDocument, BatchRequestsOptions, BatchResult } from '..
 import { parseBatchRequestArgs } from '../functions/batchRequests.js'
 import { parseRawRequestArgs } from '../functions/rawRequest.js'
 import { parseRequestArgs } from '../functions/request.js'
-import { analyzeDocument } from '../helpers/resolveRequestDocument.js'
+import { analyzeDocument } from '../helpers/analyzeDocument.js'
 import { runRequest } from '../helpers/runRequest.js'
 import type { RequestDocument, RequestOptions, VariablesAndRequestHeadersArgs } from '../helpers/types.js'
 import {
