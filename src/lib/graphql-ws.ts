@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { resolveRequestDocument } from '../helpers/resolveRequestDocument.js'
+import { analyzeDocument } from '../helpers/resolveRequestDocument.js'
 import type { RequestDocument, Variables } from '../helpers/types.js'
 import { ClientError } from '../classes/ClientError.js'
 import { TypedDocumentNode } from '@graphql-typed-document-node/core'
@@ -247,8 +247,8 @@ export class GraphQLWebSocketClient {
     subscriber: GraphQLSubscriber<T, E>,
     variables?: V,
   ): UnsubscribeCallback {
-    const { query, operationName } = resolveRequestDocument(document, this.excludeOperationName)
-    return this.makeSubscribe(query, operationName, subscriber, variables)
+    const { expression, operationName } = analyzeDocument(document, this.excludeOperationName)
+    return this.makeSubscribe(expression, operationName, subscriber, variables)
   }
 
   rawSubscribe<T = any, V extends Variables = Variables, E = any>(

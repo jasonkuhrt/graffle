@@ -1,5 +1,12 @@
 import { CONTENT_TYPE_GQL, CONTENT_TYPE_JSON } from './http.js'
 import { isPlainObject } from './prelude.js'
+import { Kind } from 'graphql'
+/**
+ * Refactored imports from `graphql` to be more specific, this helps import only the required files (100KiB)
+ * instead of the entire package (greater than 500KiB) where tree-shaking is not supported.
+ * @see https://github.com/jasonkuhrt/graphql-request/pull/543
+ */
+import type { OperationDefinitionNode } from 'graphql/language/ast.js'
 
 /**
  * Clean a GraphQL document to send it via a GET query
@@ -88,3 +95,12 @@ export const isRequestResultHaveErrors = (result: GraphQLRequestResult) =>
 
 export const isExecutionResultHaveErrors = (result: GraphQLExecutionResultSingle) =>
   Array.isArray(result.errors) ? result.errors.length > 0 : Boolean(result.errors)
+
+export const isOperationDefinitionNode = (definition: unknown): definition is OperationDefinitionNode => {
+  return (
+    typeof definition === `object` &&
+    definition !== null &&
+    `kind` in definition &&
+    definition.kind === Kind.OPERATION_DEFINITION
+  )
+}
