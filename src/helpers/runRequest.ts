@@ -48,7 +48,12 @@ export const runRequest = async (params: Params): Promise<ClientError | GraphQLC
   }
   const fetcher = createFetcher($params.method)
   const response = await fetcher($params)
-  const result = await getResult(response, params.fetchOptions.jsonSerializer ?? defaultJsonSerializer)
+  const result = await parseResultFromResponse(
+    response,
+    params.fetchOptions.jsonSerializer ?? defaultJsonSerializer,
+  )
+
+  if (result instanceof Error) throw result // todo something better
 
   const successfullyPassedErrorPolicy =
     result._tag === `Batch` ||
@@ -57,8 +62,7 @@ export const runRequest = async (params: Params): Promise<ClientError | GraphQLC
     params.fetchOptions.errorPolicy === `all` ||
     params.fetchOptions.errorPolicy === `ignore`
 
-  const successfullyReceivedData = isHasAtLeastSomeSuccess(result)
-  if (response.ok && successfullyPassedErrorPolicy && successfullyReceivedData) {
+  if (response.ok && successfullyPassedErrorPolicy && isHasAtLeastSomeSuccess(result)) {
     const executionResults =
       params.fetchOptions.errorPolicy === `ignore`
         ? result._tag === `Batch`
@@ -74,21 +78,21 @@ export const runRequest = async (params: Params): Promise<ClientError | GraphQLC
       headers: response.headers,
       status: response.status,
     }
-  } else {
-    const errorResult = typeof result === `string` ? { error: result } : result
-    return new ClientError(
-      { ...errorResult, status: response.status, headers: response.headers },
-      { query: params.request.query, variables: params.request.variables },
-    )
   }
+
+  return new ClientError(
+    { status: response.status, headers: response.headers, ...result },
+    { query: params.request.query, variables: params.request.variables },
+  )
 }
 
-const getResult = async (response: Response, jsonSerializer: JsonSerializer) => {
+const parseResultFromResponse = async (response: Response, jsonSerializer: JsonSerializer) => {
   const contentType = response.headers.get(CONTENT_TYPE_HEADER)
   if (contentType && isGraphQLContentType(contentType)) {
     const text = await response.text()
     return parseGraphQLExecutionResult(jsonSerializer.parse(text))
   } else {
+    // todo what is this good for...? Seems very random/undefined
     return parseGraphQLExecutionResult(response.text())
   }
 }

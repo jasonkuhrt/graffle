@@ -24,17 +24,23 @@ export type GraphQLExecutionResultStrict = GraphQLExecutionResultError | GraphQL
 export type GraphQLExecutionResultError = { _tag: 'Error'; data: undefined; errors: object }
 export type GraphQLExecutionResultData = { _tag: 'Data'; data: object; errors: undefined }
 
-export const parseGraphQLExecutionResult = (result: unknown): GraphQLRequestResult => {
-  if (Array.isArray(result)) {
-    return {
-      _tag: `Batch` as const,
-      executionResults: result.map(parseExecutionResult),
+export const parseGraphQLExecutionResult = (result: unknown): Error | GraphQLRequestResult => {
+  try {
+    if (Array.isArray(result)) {
+      return {
+        _tag: `Batch` as const,
+        executionResults: result.map(parseExecutionResult),
+      }
+    } else if (isPlainObject(result)) {
+      return {
+        _tag: `Single`,
+        executionResult: parseExecutionResult(result),
+      }
+    } else {
+      throw new Error(`Invalid execution result`)
     }
-  } else {
-    return {
-      _tag: `Single`,
-      executionResult: parseExecutionResult(result),
-    }
+  } catch (e) {
+    return e as Error
   }
 }
 
