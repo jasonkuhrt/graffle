@@ -1,3 +1,4 @@
+import type { ClientError } from '../classes/ClientError.js'
 import type { MaybeLazy, RemoveIndex } from '../lib/prelude.js'
 import type { TypedDocumentNode } from '@graphql-typed-document-node/core'
 import type { GraphQLError } from 'graphql/error/GraphQLError.js'
@@ -31,9 +32,8 @@ export interface FetchOptions extends RequestInit, AdditionalRequestOptions {}
 
 export type { GraphQLError }
 
-export type Variables = Record<string, unknown>
-
-export type BatchVariables = (Record<string, unknown> | undefined)[]
+export type Variables = object
+export type BatchVariables = (Variables | undefined)[]
 
 export interface GraphQLResponse<T = unknown> {
   data?: T
@@ -46,34 +46,6 @@ export interface GraphQLResponse<T = unknown> {
 export interface GraphQLRequestContext<V extends Variables = Variables> {
   query: string | string[]
   variables?: V
-}
-
-export class ClientError extends Error {
-  response: GraphQLResponse
-  request: GraphQLRequestContext
-
-  constructor(response: GraphQLResponse, request: GraphQLRequestContext) {
-    const message = `${ClientError.extractMessage(response)}: ${JSON.stringify({
-      response,
-      request,
-    })}`
-
-    super(message)
-
-    Object.setPrototypeOf(this, ClientError.prototype)
-
-    this.response = response
-    this.request = request
-
-    // this is needed as Safari doesn't support .captureStackTrace
-    if (typeof Error.captureStackTrace === `function`) {
-      Error.captureStackTrace(this, ClientError)
-    }
-  }
-
-  private static extractMessage(response: GraphQLResponse): string {
-    return response.errors?.[0]?.message ?? `GraphQL Error (Code: ${response.status})`
-  }
 }
 
 export type RequestDocument = string | DocumentNode
@@ -105,8 +77,8 @@ export type RawRequestOptions<V extends Variables = Variables> = {
 } & (V extends Record<any, never>
   ? { variables?: V }
   : keyof RemoveIndex<V> extends never
-  ? { variables?: V }
-  : { variables: V })
+    ? { variables?: V }
+    : { variables: V })
 
 export type RequestOptions<V extends Variables = Variables, T = unknown> = {
   document: RequestDocument | TypedDocumentNode<T, V>
@@ -115,8 +87,8 @@ export type RequestOptions<V extends Variables = Variables, T = unknown> = {
 } & (V extends Record<any, never>
   ? { variables?: V }
   : keyof RemoveIndex<V> extends never
-  ? { variables?: V }
-  : { variables: V })
+    ? { variables?: V }
+    : { variables: V })
 
 export type ResponseMiddleware = (response: GraphQLClientResponse<unknown> | ClientError | Error) => void
 
