@@ -1,6 +1,6 @@
 import { batchRequests } from '../src/entrypoints/main.js'
 import type { MockSpecBatch } from './__helpers.js'
-import { setupMockServer } from './__helpers.js'
+import { errors, setupMockServer } from './__helpers.js'
 import { expect, test } from 'vitest'
 
 const mockServer = setupMockServer<MockSpecBatch>()
@@ -21,22 +21,7 @@ test(`minimal double query`, async () => {
 })
 
 test(`basic error`, async () => {
-  mockServer.res({
-    body: [
-      {
-        errors: {
-          message: `Syntax Error GraphQL request (1:1) Unexpected Name "x"\n\n1: x\n   ^\n`,
-          locations: [
-            {
-              line: 1,
-              column: 1,
-            },
-          ],
-        },
-      },
-    ],
-  })
-
+  mockServer.res({ body: [{ errors }] })
   await expect(batchRequests(mockServer.url, [{ document: `x` }])).rejects.toMatchInlineSnapshot(
     `[Error: GraphQL Error (Code: 200): {"response":{"0":{"errors":{"message":"Syntax Error GraphQL request (1:1) Unexpected Name \\"x\\"\\n\\n1: x\\n   ^\\n","locations":[{"line":1,"column":1}]}},"status":200,"headers":{}},"request":{"query":["x"],"variables":[null]}}]`,
   )
@@ -44,22 +29,8 @@ test(`basic error`, async () => {
 
 test(`successful query with another which make an error`, async () => {
   const firstResult = { data: { me: { id: `some-id` } } }
-  const secondResult = {
-    errors: {
-      message: `Syntax Error GraphQL request (1:1) Unexpected Name "x"\n\n1: x\n   ^\n`,
-      locations: [
-        {
-          line: 1,
-          column: 1,
-        },
-      ],
-    },
-  }
-
-  mockServer.res({
-    body: [firstResult, secondResult],
-  })
-
+  const secondResult = { errors }
+  mockServer.res({ body: [firstResult, secondResult] })
   await expect(
     batchRequests(mockServer.url, [{ document: `{ me { id } }` }, { document: `x` }]),
   ).rejects.toMatchInlineSnapshot(

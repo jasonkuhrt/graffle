@@ -1,3 +1,4 @@
+import { ClientError } from '../classes/ClientError.js'
 import {
   type BatchRequestDocument,
   type BatchRequestsExtendedOptions,
@@ -6,13 +7,7 @@ import {
 import { RequestExtendedOptions } from '../functions/request.js'
 import { request } from '../functions/request.js'
 import type { GraphQLResponse, RequestMiddleware, ResponseMiddleware } from '../helpers/types.js'
-import {
-  ClientError,
-  RawRequestOptions,
-  RequestDocument,
-  RequestOptions,
-  Variables,
-} from '../helpers/types.js'
+import { RawRequestOptions, RequestDocument, RequestOptions, Variables } from '../helpers/types.js'
 export { GraphQLClient } from '../classes/GraphQLClient.js'
 export { batchRequests } from '../functions/batchRequests.js'
 export { gql } from '../functions/gql.js'
