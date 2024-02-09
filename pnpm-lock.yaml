@@ -60,7 +60,7 @@ devDependencies:
     version: 9.1.0(eslint@8.56.0)
   eslint-config-prisma:
     specifier: ^0.2.0
-    version: 0.2.0(@typescript-eslint/eslint-plugin@6.19.1)(@typescript-eslint/parser@6.19.1)(eslint-plugin-deprecation@2.0.0)(eslint-plugin-only-warn@1.1.0)(eslint-plugin-prefer-arrow@1.2.3)(eslint-plugin-simple-import-sort@10.0.0)(eslint-plugin-tsdoc@0.2.17)(eslint@8.56.0)
+    version: 0.2.0(@typescript-eslint/eslint-plugin@6.19.1)(@typescript-eslint/parser@6.19.1)(eslint-plugin-deprecation@2.0.0)(eslint-plugin-only-warn@1.1.0)(eslint-plugin-prefer-arrow@1.2.3)(eslint-plugin-simple-import-sort@11.0.0)(eslint-plugin-tsdoc@0.2.17)(eslint@8.56.0)
   eslint-plugin-deprecation:
     specifier: ^2.0.0
     version: 2.0.0(eslint@8.56.0)(typescript@5.3.3)
@@ -71,8 +71,8 @@ devDependencies:
     specifier: ^1.2.3
     version: 1.2.3(eslint@8.56.0)
   eslint-plugin-simple-import-sort:
-    specifier: ^10.0.0
-    version: 10.0.0(eslint@8.56.0)
+    specifier: ^11.0.0
+    version: 11.0.0(eslint@8.56.0)
   eslint-plugin-tsdoc:
     specifier: ^0.2.17
     version: 0.2.17
@@ -2230,7 +2230,7 @@ packages:
       eslint: 8.56.0
     dev: true
 
-  /eslint-config-prisma@0.2.0(@typescript-eslint/eslint-plugin@6.19.1)(@typescript-eslint/parser@6.19.1)(eslint-plugin-deprecation@2.0.0)(eslint-plugin-only-warn@1.1.0)(eslint-plugin-prefer-arrow@1.2.3)(eslint-plugin-simple-import-sort@10.0.0)(eslint-plugin-tsdoc@0.2.17)(eslint@8.56.0):
+  /eslint-config-prisma@0.2.0(@typescript-eslint/eslint-plugin@6.19.1)(@typescript-eslint/parser@6.19.1)(eslint-plugin-deprecation@2.0.0)(eslint-plugin-only-warn@1.1.0)(eslint-plugin-prefer-arrow@1.2.3)(eslint-plugin-simple-import-sort@11.0.0)(eslint-plugin-tsdoc@0.2.17)(eslint@8.56.0):
     resolution: {integrity: sha512-ky6iBCU9jk4o/SqkUmIUwspXjTfDO/d4glQ1VHrkL/SBra+PZjzsrDVX3pdXZgDw81+NFVYEBJIL4+lBL/yMCw==}
     peerDependencies:
       '@typescript-eslint/eslint-plugin': ^6
@@ -2249,7 +2249,7 @@ packages:
       eslint-plugin-deprecation: 2.0.0(eslint@8.56.0)(typescript@5.3.3)
       eslint-plugin-only-warn: 1.1.0
       eslint-plugin-prefer-arrow: 1.2.3(eslint@8.56.0)
-      eslint-plugin-simple-import-sort: 10.0.0(eslint@8.56.0)
+      eslint-plugin-simple-import-sort: 11.0.0(eslint@8.56.0)
       eslint-plugin-tsdoc: 0.2.17
     dev: true
 
@@ -2281,8 +2281,8 @@ packages:
       eslint: 8.56.0
     dev: true
 
-  /eslint-plugin-simple-import-sort@10.0.0(eslint@8.56.0):
-    resolution: {integrity: sha512-AeTvO9UCMSNzIHRkg8S6c3RPy5YEwKWSQPx3DYghLedo2ZQxowPFLGDN1AZ2evfg6r6mjBSZSLxLFsWSu3acsw==}
+  /eslint-plugin-simple-import-sort@11.0.0(eslint@8.56.0):
+    resolution: {integrity: sha512-3zxeF/0piwHA7/JlbpOmMJ1/1tc1dSRiir4DwpEnP747alKwZbj5xX+ZxroShMBU6LNDkpquo7FsXHCBc0HgCA==}
     peerDependencies:
       eslint: '>=5.0.0'
     dependencies:

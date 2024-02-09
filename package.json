@@ -80,7 +80,7 @@
     "eslint-plugin-deprecation": "^2.0.0",
     "eslint-plugin-only-warn": "^1.1.0",
     "eslint-plugin-prefer-arrow": "^1.2.3",
-    "eslint-plugin-simple-import-sort": "^10.0.0",
+    "eslint-plugin-simple-import-sort": "^11.0.0",
     "eslint-plugin-tsdoc": "^0.2.17",
     "express": "^4.18.2",
     "fetch-cookie": "^2.1.0",
