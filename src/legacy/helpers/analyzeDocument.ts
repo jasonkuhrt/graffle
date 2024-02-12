@@ -1,5 +1,5 @@
+import { tryCatch } from '../../lib/prelude.js'
 import { isOperationDefinitionNode } from '../lib/graphql.js'
-import { tryCatch } from '../lib/prelude.js'
 import type { RequestDocument } from './types.js'
 /**
  * Refactored imports from `graphql` to be more specific, this helps import only the required files (100KiB)
