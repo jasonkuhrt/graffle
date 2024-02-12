@@ -1,5 +1,5 @@
 import { gql, GraphQLClient } from '../src/entrypoints/main.js'
-import type { RequestConfig } from '../src/helpers/types.js'
+import type { RequestConfig } from '../src/legacy/helpers/types.js'
 import { CONTENT_TYPE_HEADER, statusCodes } from '../src/lib/http.js'
 import { expect, test, vitest } from 'vitest'
 

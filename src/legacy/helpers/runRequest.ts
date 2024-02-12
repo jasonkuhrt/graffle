@@ -1,3 +1,5 @@
+import { ACCEPT_HEADER, CONTENT_TYPE_GQL, CONTENT_TYPE_HEADER, CONTENT_TYPE_JSON } from '../../lib/http.js'
+import { casesExhausted, uppercase, zip } from '../../lib/prelude.js'
 import { ClientError } from '../classes/ClientError.js'
 import type { GraphQLExecutionResultSingle } from '../lib/graphql.js'
 import {
@@ -6,8 +8,6 @@ import {
   isRequestResultHaveErrors,
   parseGraphQLExecutionResult,
 } from '../lib/graphql.js'
-import { ACCEPT_HEADER, CONTENT_TYPE_GQL, CONTENT_TYPE_HEADER, CONTENT_TYPE_JSON } from '../lib/http.js'
-import { casesExhausted, uppercase, zip } from '../lib/prelude.js'
 import { defaultJsonSerializer } from './defaultJsonSerializer.js'
 import type {
   BatchVariables,

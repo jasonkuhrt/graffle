@@ -1,5 +1,5 @@
-import { CONTENT_TYPE_GQL, CONTENT_TYPE_JSON } from './http.js'
-import { isPlainObject } from './prelude.js'
+import { CONTENT_TYPE_GQL, CONTENT_TYPE_JSON } from '../../lib/http.js'
+import { isPlainObject } from '../../lib/prelude.js'
 import { Kind } from 'graphql'
 /**
  * Refactored imports from `graphql` to be more specific, this helps import only the required files (100KiB)

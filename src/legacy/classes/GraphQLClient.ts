@@ -1,3 +1,4 @@
+import { callOrIdentity, HeadersInitToPlainObject } from '../../lib/prelude.js'
 import type { BatchRequestDocument, BatchRequestsOptions, BatchResult } from '../functions/batchRequests.js'
 import { parseBatchRequestArgs } from '../functions/batchRequests.js'
 import { parseRawRequestArgs } from '../functions/rawRequest.js'
@@ -11,7 +12,6 @@ import {
   type RequestConfig,
   type Variables,
 } from '../helpers/types.js'
-import { callOrIdentity, HeadersInitToPlainObject } from '../lib/prelude.js'
 import type { TypedDocumentNode } from '@graphql-typed-document-node/core'
 
 /**
