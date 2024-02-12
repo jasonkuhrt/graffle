@@ -1,5 +1,5 @@
 import { GraphQLClient } from '../src/entrypoints/main.js'
-import type { Fetch, Variables } from '../src/helpers/types.js'
+import type { Fetch, Variables } from '../src/legacy/helpers/types.js'
 import { CONTENT_TYPE_HEADER, statusCodes } from '../src/lib/http.js'
 import { setupMockServer } from './__helpers.js'
 import { beforeEach, describe, expect, test, vitest } from 'vitest'
