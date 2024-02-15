@@ -148,7 +148,7 @@ const parseResultFromResponse = async (response: Response, jsonSerializer: JsonS
 
 const createFetcher = (method: 'GET' | 'POST') => async (params: Input) => {
   const headers = new Headers(params.headers)
-  let queryParams = ``
+  let searchParams: URLSearchParams | null = null
   let body = undefined
 
   if (!headers.has(ACCEPT_HEADER)) {
@@ -162,13 +162,14 @@ const createFetcher = (method: 'GET' | 'POST') => async (params: Input) => {
       headers.set(CONTENT_TYPE_HEADER, CONTENT_TYPE_JSON)
     }
   } else {
-    queryParams = buildQueryParams(params)
+    searchParams = buildQueryParams(params)
   }
 
   const init: RequestInit = { method, headers, body, ...params.fetchOptions }
 
-  let urlResolved = params.url
+  let url = new URL(params.url)
   let initResolved = init
+
   if (params.middleware) {
     const result = await Promise.resolve(
       params.middleware({
@@ -179,14 +180,18 @@ const createFetcher = (method: 'GET' | 'POST') => async (params: Input) => {
       }),
     )
     const { url: urlNew, ...initNew } = result
-    urlResolved = urlNew
+    url = new URL(urlNew)
     initResolved = initNew
   }
-  if (queryParams) {
-    urlResolved = `${urlResolved}?${queryParams}`
+
+  if (searchParams) {
+    searchParams.forEach((value, name) => {
+      url.searchParams.append(name, value)
+    })
   }
+
   const $fetch = params.fetch ?? fetch
-  return await $fetch(urlResolved, initResolved)
+  return await $fetch(url, initResolved)
 }
 
 const buildBody = (params: Input) => {
@@ -206,17 +211,19 @@ const buildBody = (params: Input) => {
   }
 }
 
-const buildQueryParams = (params: Input): string => {
+const buildQueryParams = (params: Input): URLSearchParams => {
   const $jsonSerializer = params.fetchOptions.jsonSerializer ?? defaultJsonSerializer
+  const searchParams = new URLSearchParams()
+
   if (params.request._tag === `Single`) {
-    const search: string[] = [`query=${encodeURIComponent(cleanQuery(params.request.document.expression))}`]
+    searchParams.append(`query`, cleanQuery(params.request.document.expression))
     if (params.request.variables) {
-      search.push(`variables=${encodeURIComponent($jsonSerializer.stringify(params.request.variables))}`)
+      searchParams.append(`variables`, $jsonSerializer.stringify(params.request.variables))
     }
     if (params.request.document.operationName) {
-      search.push(`operationName=${encodeURIComponent(params.request.document.operationName)}`)
+      searchParams.append(`operationName`, params.request.document.operationName)
     }
-    return search.join(`&`)
+    return searchParams
   } else if (params.request._tag === `Batch`) {
     const variablesSerialized = params.request.variables?.map((v) => $jsonSerializer.stringify(v)) ?? []
     const queriesCleaned = params.request.query.map(cleanQuery)
@@ -224,8 +231,10 @@ const buildQueryParams = (params: Input): string => {
       query,
       variables,
     }))
-    return `query=${encodeURIComponent($jsonSerializer.stringify(payload))}`
+    searchParams.append(`query`, $jsonSerializer.stringify(payload))
   } else {
     throw casesExhausted(params.request)
   }
+
+  return searchParams
 }

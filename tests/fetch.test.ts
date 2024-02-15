@@ -13,5 +13,5 @@ test(`custom fetch configuration is passed through`, async () => {
   await client.request(gql`foo`).catch(() => {
     /* ignore */
   })
-  expect(fetch.mock.calls).toMatchObject([[expect.stringMatching(`.*`), { next: { revalidate: 1 } }]])
+  expect(fetch.mock.calls).toMatchObject([[new URL(`https://foobar`), { next: { revalidate: 1 } }]])
 })
