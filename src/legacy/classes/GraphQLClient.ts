@@ -241,6 +241,7 @@ export class GraphQLClient {
 
     if (headers) {
       // todo what if headers is in nested array form... ?
+      // @ts-expect-error todo
       headers[key] = value
     } else {
       this.requestConfig.headers = { [key]: value }
