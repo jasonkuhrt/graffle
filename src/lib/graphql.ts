@@ -68,17 +68,25 @@ export const NameToClassNamedType = {
 
 export type NameToClassNamedType = typeof NameToClassNamedType
 
-export const NameToClass = {
-  GraphQLNonNull: GraphQLNonNull,
+export const NamedNameToClass = {
   GraphQLScalarType: GraphQLScalarType,
   GraphQLObjectType: GraphQLObjectType,
   GraphQLInterfaceType: GraphQLInterfaceType,
   GraphQLUnionType: GraphQLUnionType,
   GraphQLEnumType: GraphQLEnumType,
   GraphQLInputObjectType: GraphQLInputObjectType,
+} as const
+
+export type NamedNameToClass = typeof NamedNameToClass
+
+export const NameToClass = {
+  GraphQLNonNull: GraphQLNonNull,
   GraphQLList: GraphQLList,
+  ...NamedNameToClass,
 } as const
 
 export type NameToClass = typeof NameToClass
+
+export type AnyNamedClassName = keyof NamedNameToClass
 
 export type AnyClass = InstanceType<NameToClass[keyof NameToClass]>

@@ -1,4 +1,5 @@
 export namespace Code {
+  export const propertyAccess = (object: string, name: string) => `${object}.${name}`
   export const quote = (str: string) => `"${str}"`
   export const nullable = (type: string) => `${type} | null`
   export const union = (name: string, types: string[]) => `type ${name} =\n| ${Code.unionItems(types)}`
@@ -7,6 +8,7 @@ export namespace Code {
   export const fieldType = (name: string, type: string) => `"${name}": ${type}`
   export const fieldTypes = (fieldTypes: string[]) => fieldTypes.join(`\n`)
   export const inter = (name: string, fields: string) => `interface ${name} {\n${fields}\n}`
+  export const export$ = (thing: string) => `export ${thing}`
   export const commentSectionTitle = (title: string) => {
     const lineSize = 60
     const line = `-`.repeat(lineSize)

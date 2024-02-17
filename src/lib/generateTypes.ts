@@ -1,6 +1,3 @@
-import { Code } from './Code.js'
-import type { AnyClass, NameToClassNamedType } from './graphql.js'
-import { getTypeMapByKind, type NameToClass } from './graphql.js'
 import { readFileSync } from 'fs'
 import type {
   GraphQLField,
@@ -9,10 +6,24 @@ import type {
   GraphQLInterfaceType,
   GraphQLNamedType,
   GraphQLObjectType,
+  GraphQLScalarType,
 } from 'graphql'
 import { GraphQLNonNull } from 'graphql'
 import { buildSchema } from 'graphql'
 import fs from 'node:fs'
+import { Code } from './Code.js'
+import type { AnyClass, AnyNamedClassName, NameToClassNamedType } from './graphql.js'
+import { getTypeMapByKind, NamedNameToClass, type NameToClass } from './graphql.js'
+import { entries } from './prelude.js'
+
+const namespaceNames = {
+  GraphQLEnumType: 'Enum',
+  GraphQLInputObjectType: 'InputObject',
+  GraphQLInterfaceType: 'Interface',
+  GraphQLObjectType: 'Object',
+  GraphQLScalarType: 'Scalar',
+  GraphQLUnionType: 'Union',
+} satisfies Record<AnyNamedClassName, string>
 
 type AnyGraphQLField = GraphQLField<any, any, any> | GraphQLInputField
 // type AnyGraphQLFieldMap = GraphQLFieldMap<any, any>
@@ -48,7 +59,7 @@ const defineConcreteRenderers = <
         key,
         (node: any) => {
           if (!node) return ``
-          return renderer(node) //eslint-disable-line
+          return renderer(node) // eslint-disable-line
         },
       ]
     }),
@@ -57,43 +68,47 @@ const defineConcreteRenderers = <
 
 const dispatchToPointerRenderer = (node: AnyClass): string => {
   // @ts-expect-error lookup
-  const renderer = pointerRenderers[node.constructor.name] //eslint-disable-line
+  const renderer = pointerRenderers[node.constructor.name] // eslint-disable-line
   if (!renderer) throw new Error(`No renderer found for class: ${node.constructor.name}`)
-  return renderer(node) //eslint-disable-line
+  return renderer(node) // eslint-disable-line
 }
 
 const dispatchToConcreteRenderer = (node: GraphQLNamedType): string => {
   // @ts-expect-error lookup
-  const renderer = concreteRenderers[node.constructor.name] //eslint-disable-line
+  const renderer = concreteRenderers[node.constructor.name] // eslint-disable-line
   if (!renderer) throw new Error(`No renderer found for class: ${node.constructor.name}`)
-  return renderer(node) //eslint-disable-line
+  return renderer(node) // eslint-disable-line
 }
 
 const pointerRenderers = definePointerRenderers({
   GraphQLNonNull: (node) => dispatchToPointerRenderer(node.ofType),
-  GraphQLEnumType: (node) => node.name,
-  GraphQLInputObjectType: (node) => node.name,
-  GraphQLInterfaceType: (node) => node.name,
+  GraphQLEnumType: (node) => Code.propertyAccess(namespaceNames.GraphQLEnumType, node.name),
+  GraphQLInputObjectType: (node) => Code.propertyAccess(namespaceNames.GraphQLInputObjectType, node.name),
+  GraphQLInterfaceType: (node) => Code.propertyAccess(namespaceNames.GraphQLInterfaceType, node.name),
   GraphQLList: (node) => Code.list(dispatchToPointerRenderer(node.ofType)),
-  GraphQLObjectType: (node) => node.name,
+  GraphQLObjectType: (node) => Code.propertyAccess(namespaceNames.GraphQLObjectType, node.name),
   GraphQLScalarType: (node) => `$.Scalars[${Code.quote(node.name)}]`,
   GraphQLUnionType: (node) => Code.unionItems(node.getTypes().map((_) => dispatchToPointerRenderer(_))),
 })
 
 const concreteRenderers = defineConcreteRenderers({
   GraphQLEnumType: (node) =>
-    Code.union(
-      node.name,
-      node.getValues().map((_) => Code.quote(_.name)),
+    Code.export$(
+      Code.union(
+        node.name,
+        node.getValues().map((_) => Code.quote(_.name)),
+      ),
     ),
-  GraphQLInputObjectType: (node) => Code.inter(node.name, renderFields(node)),
-  GraphQLInterfaceType: (node) => Code.inter(node.name, renderFields(node)),
-  GraphQLObjectType: (node) => Code.inter(node.name, renderFields(node)),
+  GraphQLInputObjectType: (node) => Code.export$(Code.inter(node.name, renderFields(node))),
+  GraphQLInterfaceType: (node) => Code.export$(Code.inter(node.name, renderFields(node))),
+  GraphQLObjectType: (node) => Code.export$(Code.inter(node.name, renderFields(node))),
   GraphQLScalarType: () => ``,
   GraphQLUnionType: (node) =>
-    Code.union(
-      node.name,
-      node.getTypes().map((_) => dispatchToPointerRenderer(_)),
+    Code.export$(
+      Code.union(
+        node.name,
+        node.getTypes().map((_) => dispatchToPointerRenderer(_)),
+      ),
     ),
 })
 
@@ -106,7 +121,7 @@ const renderFields = (node: AnyGraphQLFieldsType): string => {
 const renderField = (field: AnyGraphQLField): string => {
   const [fieldType, nullable] =
     field.type instanceof GraphQLNonNull ? [field.type.ofType, false] : [field.type, true]
-  return nullable ? Code.nullable(dispatchToPointerRenderer(fieldType)) : dispatchToPointerRenderer(fieldType) //eslint-disable-line
+  return nullable ? Code.nullable(dispatchToPointerRenderer(fieldType)) : dispatchToPointerRenderer(fieldType) // eslint-disable-line
 }
 
 const scalarTypeMap: Record<string, 'string' | 'number' | 'boolean'> = {
@@ -141,15 +156,18 @@ const generateSchemaTypes = (input: Input) => {
     }
   `
 
-  for (const [name, types] of Object.entries(typeMapByKind)) {
+  for (const [name, types] of entries(typeMapByKind)) {
     if (name === `GraphQLScalarType`) continue
 
-    code += Code.commentSectionTitle(name.replace(/^GraphQL/, ``).replace(/Type$/, ``))
+    const namespaceName = name === 'GraphQLRootTypes' ? 'Root' : namespaceNames[name]
+    code += Code.commentSectionTitle(namespaceName)
+    code += `export namespace ${namespaceName} {\n`
     if (types.length === 0) {
       code += `// -- no types --\n`
       continue
     }
     code += types.map(dispatchToConcreteRenderer).join(`\n\n`)
+    code += `}`
   }
 
   return code

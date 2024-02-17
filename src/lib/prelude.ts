@@ -83,3 +83,6 @@ export const casesExhausted = (value: never): never => {
 export const isPlainObject = (value: unknown): value is object => {
   return typeof value === `object` && value !== null && !Array.isArray(value)
 }
+
+export const entries = <T extends Record<string, any>>(obj: T) =>
+  Object.entries(obj) as [keyof T, T[keyof T]][]
