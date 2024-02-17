@@ -4,123 +4,101 @@ import { describe, expect, test } from 'vitest'
 
 const ctx = setupMockServer()
 
+const headerFoo = {
+  name: `foo`,
+  value: `bar`,
+}
+const headers = new Headers({ [headerFoo.name]: headerFoo.value })
+
+describe(`request()`, () => {
+  test(`can set headers`, async () => {
+    const mock = ctx.res()
+    await request(ctx.url, `{ me { id } }`, {}, headers)
+    expect(mock.requests[0]?.headers[headerFoo.name]).toEqual(headerFoo.value)
+  })
+})
+
 describe(`using class`, () => {
-  test(`.setHeader() sets a header that get sent to server`, async () => {
+  test(`.setHeader() sets a header`, async () => {
     const client = new GraphQLClient(ctx.url)
-    client.setHeader(`x-foo`, `bar`)
+    client.setHeader(headerFoo.name, headerFoo.value)
     const mock = ctx.res()
     await client.request(`{ me { id } }`)
-    expect(mock.requests[0]?.headers[`x-foo`]).toEqual(`bar`)
+    expect(mock.requests[0]?.headers[headerFoo.name]).toEqual(headerFoo.value)
   })
-
-  describe(`.setHeaders() sets headers that get sent to the server`, () => {
-    test(`with headers instance`, async () => {
-      const client = new GraphQLClient(ctx.url)
-      client.setHeaders(new Headers({ 'x-foo': `bar` }))
-      const mock = ctx.res()
-      await client.request(`{ me { id } }`)
-      expect(mock.requests[0]?.headers[`x-foo`]).toEqual(`bar`)
-    })
-    test(`with headers object`, async () => {
-      const client = new GraphQLClient(ctx.url)
-      client.setHeaders({ 'x-foo': `bar` })
-      const mock = ctx.res()
-      await client.request(`{ me { id } }`)
-      expect(mock.requests[0]?.headers[`x-foo`]).toEqual(`bar`)
-    })
-    test(`with header tuples`, async () => {
-      const client = new GraphQLClient(ctx.url)
-      client.setHeaders([[`x-foo`, `bar`]])
-      const mock = ctx.res()
-      await client.request(`{ me { id } }`)
-      expect(mock.requests[0]?.headers[`x-foo`]).toEqual(`bar`)
-    })
+  test(`.setHeaders() sets headers`, async () => {
+    const client = new GraphQLClient(ctx.url)
+    client.setHeaders(headers)
+    const mock = ctx.res()
+    await client.request(`{ me { id } }`)
+    expect(mock.requests[0]?.headers[headerFoo.name]).toEqual(headerFoo.value)
   })
 
   describe(`custom header in the request`, () => {
-    describe.each<HeadersInit[]>([
-      [new Headers({ 'x-request-foo': `request-bar` })],
-      [{ 'x-request-foo': `request-bar` }],
-      [[[`x-request-foo`, `request-bar`]]],
-    ])(`request unique header with request`, (headerCase) => {
-      test(`with request method`, async () => {
+    describe(`request unique header with request`, () => {
+      test(`.request()`, async () => {
         const client = new GraphQLClient(ctx.url)
 
-        client.setHeaders(new Headers({ 'x-foo': `bar` }))
+        client.setHeaders(headers)
         const mock = ctx.res()
-        await client.request(`{ me { id } }`, {}, headerCase)
+        await client.request(`{ me { id } }`, {}, new Headers({ a: `b` }))
 
-        expect(mock.requests[0]?.headers[`x-foo`]).toEqual(`bar`)
-        expect(mock.requests[0]?.headers[`x-request-foo`]).toEqual(`request-bar`)
+        expect(mock.requests[0]?.headers[headerFoo.name]).toEqual(headerFoo.value)
+        expect(mock.requests[0]?.headers[`a`]).toEqual(`b`)
       })
 
-      test(`with rawRequest method`, async () => {
+      test(`.rawRequest()`, async () => {
         const client = new GraphQLClient(ctx.url)
 
-        client.setHeaders(new Headers({ 'x-foo': `bar` }))
+        client.setHeaders(headers)
         const mock = ctx.res()
-        await client.rawRequest(`{ me { id } }`, {}, headerCase)
+        await client.rawRequest(`{ me { id } }`, {}, new Headers({ a: `b` }))
 
-        expect(mock.requests[0]?.headers[`x-foo`]).toEqual(`bar`)
-        expect(mock.requests[0]?.headers[`x-request-foo`]).toEqual(`request-bar`)
+        expect(mock.requests[0]).toMatchObject({
+          headers: {
+            [headerFoo.name]: headerFoo.value,
+            a: `b`,
+          },
+        })
       })
     })
 
-    describe.each<HeadersInit[]>([
-      [new Headers({ 'x-foo': `request-bar` })],
-      [{ 'x-foo': `request-bar` }],
-      [[[`x-foo`, `request-bar`]]],
-    ])(`request header overriding the client header`, (headerCase) => {
-      test(`with request method`, async () => {
+    describe(`request overriding instance`, () => {
+      test(`.request()`, async () => {
         const client = new GraphQLClient(ctx.url)
-        client.setHeader(`x-foo`, `bar`)
+        client.setHeader(headerFoo.name, headerFoo.value)
         const mock = ctx.res()
-        await client.request(`{ me { id } }`, {}, headerCase)
-        expect(mock.requests[0]?.headers[`x-foo`]).toEqual(`request-bar`)
+        await client.request(`{ me { id } }`, {}, headers)
+        expect(mock.requests[0]?.headers[headerFoo.name]).toEqual(headerFoo.value)
       })
 
-      test(`with rawRequest method`, async () => {
+      test(`.rawRequest()`, async () => {
         const client = new GraphQLClient(ctx.url)
-        client.setHeader(`x-foo`, `bar`)
+        client.setHeader(headerFoo.name, headerFoo.value)
         const mock = ctx.res()
-        await client.rawRequest(`{ me { id } }`, {}, headerCase)
-        expect(mock.requests[0]?.headers[`x-foo`]).toEqual(`request-bar`)
+        await client.rawRequest(`{ me { id } }`, {}, headers)
+        expect(mock.requests[0]?.headers[headerFoo.name]).toEqual(headerFoo.value)
       })
     })
 
     describe(`gets fresh dynamic headers before each request`, () => {
-      test(`with request method`, async () => {
-        const objectChangedThroughReference = { 'x-foo': `old` }
+      test(`.request()`, async () => {
+        const objectChangedThroughReference = { [headerFoo.name]: `old` }
         const client = new GraphQLClient(ctx.url, { headers: () => objectChangedThroughReference })
-        objectChangedThroughReference[`x-foo`] = `new`
+        objectChangedThroughReference[headerFoo.name] = `new`
         const mock = ctx.res()
         await client.request(`{ me { id } }`)
-        expect(mock.requests[0]?.headers[`x-foo`]).toEqual(`new`)
+        expect(mock.requests[0]?.headers[headerFoo.name]).toEqual(`new`)
       })
 
-      test(`with rawRequest method`, async () => {
-        const objectChangedThroughReference = { 'x-foo': `old` }
+      test(`.rawRequest()`, async () => {
+        const objectChangedThroughReference = { [headerFoo.name]: `old` }
         const client = new GraphQLClient(ctx.url, { headers: () => objectChangedThroughReference })
-        objectChangedThroughReference[`x-foo`] = `new`
+        objectChangedThroughReference[headerFoo.name] = `new`
         const mock = ctx.res()
         await client.rawRequest(`{ me { id } }`)
-        expect(mock.requests[0]?.headers[`x-foo`]).toEqual(`new`)
+        expect(mock.requests[0]?.headers[headerFoo.name]).toEqual(`new`)
       })
-    })
-  })
-})
-
-describe(`using request function`, () => {
-  describe.each<HeadersInit[]>([
-    [new Headers({ 'x-request-foo': `request-bar` })],
-    [{ 'x-request-foo': `request-bar` }],
-    [[[`x-request-foo`, `request-bar`]]],
-  ])(`request unique header with request`, (headerCase) => {
-    test(`sets header`, async () => {
-      const mock = ctx.res()
-      await request(ctx.url, `{ me { id } }`, {}, headerCase)
-
-      expect(mock.requests[0]?.headers[`x-request-foo`]).toEqual(`request-bar`)
     })
   })
 })
