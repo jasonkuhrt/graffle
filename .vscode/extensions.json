@@ -1,3 +1,7 @@
 {
-  "recommendations": ["esbenp.prettier-vscode", "dbaeumer.vscode-eslint", "orta.vscode-twoslash-queries"]
+  "recommendations": [
+    "dprint.dprint",
+    "dbaeumer.vscode-eslint",
+    "orta.vscode-twoslash-queries"
+  ]
 }

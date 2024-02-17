@@ -12,8 +12,7 @@ export interface BatchRequestsOptions<V extends Variables = Variables> {
   signal?: RequestInit['signal']
 }
 
-export interface BatchRequestsExtendedOptions<V extends Variables = Variables>
-  extends BatchRequestsOptions<V> {
+export interface BatchRequestsExtendedOptions<V extends Variables = Variables> extends BatchRequestsOptions<V> {
   url: string
 }
 
@@ -51,17 +50,25 @@ export interface BatchRequestsExtendedOptions<V extends Variables = Variables>
  * await batchRequests('https://foo.bar/graphql', [{ query: gql`...` }])
  * ```
  */
-export const batchRequests: BatchRequests = async (...args: BatchRequestsArgs) => {
+export const batchRequests: BatchRequests = async (
+  ...args: BatchRequestsArgs
+) => {
   const params = parseBatchRequestsArgsExtended(args)
   const client = new GraphQLClient(params.url)
   return client.batchRequests(params)
 }
 
 type BatchRequestsArgs =
-  | [url: string, documents: BatchRequestDocument[], requestHeaders?: HeadersInit]
+  | [
+    url: string,
+    documents: BatchRequestDocument[],
+    requestHeaders?: HeadersInit,
+  ]
   | [options: BatchRequestsExtendedOptions]
 
-export const parseBatchRequestsArgsExtended = (args: BatchRequestsArgs): BatchRequestsExtendedOptions => {
+export const parseBatchRequestsArgsExtended = (
+  args: BatchRequestsArgs,
+): BatchRequestsExtendedOptions => {
   if (args.length === 1) {
     return args[0]
   } else {
@@ -74,10 +81,15 @@ export const parseBatchRequestsArgsExtended = (args: BatchRequestsArgs): BatchRe
   }
 }
 
-// prettier-ignore
 interface BatchRequests {
-  <T extends BatchResult, V extends Variables = Variables>(url: string, documents: BatchRequestDocument<V>[], requestHeaders?: HeadersInit): Promise<T>
-  <T extends BatchResult, V extends Variables = Variables>(options: BatchRequestsExtendedOptions<V>): Promise<T>
+  <T extends BatchResult, V extends Variables = Variables>(
+    url: string,
+    documents: BatchRequestDocument<V>[],
+    requestHeaders?: HeadersInit,
+  ): Promise<T>
+  <T extends BatchResult, V extends Variables = Variables>(
+    options: BatchRequestsExtendedOptions<V>,
+  ): Promise<T>
 }
 
 export type BatchResult = [Result, ...Result[]]
@@ -93,8 +105,8 @@ export const parseBatchRequestArgs = <V extends Variables = Variables>(
   return (documentsOrOptions as BatchRequestsOptions<V>).documents
     ? (documentsOrOptions as BatchRequestsOptions<V>)
     : {
-        documents: documentsOrOptions as BatchRequestDocument<V>[],
-        requestHeaders: requestHeaders,
-        signal: undefined,
-      }
+      documents: documentsOrOptions as BatchRequestDocument<V>[],
+      requestHeaders: requestHeaders,
+      signal: undefined,
+    }
 }

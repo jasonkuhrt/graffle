@@ -1,3 +1,4 @@
+import type { TypedDocumentNode } from '@graphql-typed-document-node/core'
 import { callOrIdentity, HeadersInitToPlainObject } from '../../lib/prelude.js'
 import type { BatchRequestDocument, BatchRequestsOptions, BatchResult } from '../functions/batchRequests.js'
 import { parseBatchRequestArgs } from '../functions/batchRequests.js'
@@ -12,7 +13,6 @@ import {
   type RequestConfig,
   type Variables,
 } from '../helpers/types.js'
-import type { TypedDocumentNode } from '@graphql-typed-document-node/core'
 
 /**
  * GraphQL Client.
@@ -26,11 +26,18 @@ export class GraphQLClient {
   /**
    * Send a GraphQL query to the server.
    */
-  rawRequest: RawRequestMethod = async <T, $Variables extends Variables = Variables>(
+  rawRequest: RawRequestMethod = async <
+    T,
+    $Variables extends Variables = Variables,
+  >(
     ...args: RawRequestMethodArgs<$Variables>
   ): Promise<GraphQLClientResponse<T>> => {
     const [queryOrOptions, variables, requestHeaders] = args
-    const rawRequestOptions = parseRawRequestArgs<$Variables>(queryOrOptions, variables, requestHeaders)
+    const rawRequestOptions = parseRawRequestArgs<$Variables>(
+      queryOrOptions,
+      variables,
+      requestHeaders,
+    )
     const {
       headers,
       fetch = globalThis.fetch,
@@ -45,7 +52,10 @@ export class GraphQLClient {
       fetchOptions.signal = rawRequestOptions.signal
     }
 
-    const document = analyzeDocument(rawRequestOptions.query, excludeOperationName)
+    const document = analyzeDocument(
+      rawRequestOptions.query,
+      excludeOperationName,
+    )
 
     const response = await runRequest({
       url,
@@ -82,13 +92,22 @@ export class GraphQLClient {
     document: RequestDocument | TypedDocumentNode<T, V>,
     ...variablesAndRequestHeaders: VariablesAndRequestHeadersArgs<V>
   ): Promise<T>
-  async request<T, V extends Variables = Variables>(options: RequestOptions<V, T>): Promise<T>
   async request<T, V extends Variables = Variables>(
-    documentOrOptions: RequestDocument | TypedDocumentNode<T, V> | RequestOptions<V>,
+    options: RequestOptions<V, T>,
+  ): Promise<T>
+  async request<T, V extends Variables = Variables>(
+    documentOrOptions:
+      | RequestDocument
+      | TypedDocumentNode<T, V>
+      | RequestOptions<V>,
     ...variablesAndRequestHeaders: VariablesAndRequestHeadersArgs<V>
   ): Promise<T> {
     const [variables, requestHeaders] = variablesAndRequestHeaders
-    const requestOptions = parseRequestArgs(documentOrOptions, variables, requestHeaders)
+    const requestOptions = parseRequestArgs(
+      documentOrOptions,
+      variables,
+      requestHeaders,
+    )
 
     const {
       headers,
@@ -104,7 +123,10 @@ export class GraphQLClient {
       fetchOptions.signal = requestOptions.signal
     }
 
-    const analyzedDocument = analyzeDocument(requestOptions.document, excludeOperationName)
+    const analyzedDocument = analyzeDocument(
+      requestOptions.document,
+      excludeOperationName,
+    )
 
     const response = await runRequest({
       url,
@@ -137,13 +159,30 @@ export class GraphQLClient {
   /**
    * Send GraphQL documents in batch to the server.
    */
-  // prettier-ignore
-  async batchRequests<$BatchResult extends BatchResult, $Variables extends Variables = Variables>(documents: BatchRequestDocument<$Variables>[], requestHeaders?: HeadersInit): Promise<$BatchResult>
-  // prettier-ignore
-  async batchRequests<$BatchResult extends BatchResult, $Variables extends Variables = Variables>(options: BatchRequestsOptions<$Variables>): Promise<$BatchResult>
-  // prettier-ignore
-  async batchRequests<$BatchResult extends BatchResult, $Variables extends Variables = Variables>(documentsOrOptions: BatchRequestDocument<$Variables>[] | BatchRequestsOptions<$Variables>, requestHeaders?: HeadersInit): Promise<$BatchResult> {
-    const batchRequestOptions = parseBatchRequestArgs<$Variables>(documentsOrOptions, requestHeaders)
+  async batchRequests<
+    $BatchResult extends BatchResult,
+    $Variables extends Variables = Variables,
+  >(
+    documents: BatchRequestDocument<$Variables>[],
+    requestHeaders?: HeadersInit,
+  ): Promise<$BatchResult>
+  async batchRequests<
+    $BatchResult extends BatchResult,
+    $Variables extends Variables = Variables,
+  >(options: BatchRequestsOptions<$Variables>): Promise<$BatchResult>
+  async batchRequests<
+    $BatchResult extends BatchResult,
+    $Variables extends Variables = Variables,
+  >(
+    documentsOrOptions:
+      | BatchRequestDocument<$Variables>[]
+      | BatchRequestsOptions<$Variables>,
+    requestHeaders?: HeadersInit,
+  ): Promise<$BatchResult> {
+    const batchRequestOptions = parseBatchRequestArgs<$Variables>(
+      documentsOrOptions,
+      requestHeaders,
+    )
     const { headers, excludeOperationName, ...fetchOptions } = this.requestConfig
 
     if (batchRequestOptions.signal !== undefined) {
@@ -151,16 +190,18 @@ export class GraphQLClient {
     }
 
     const analyzedDocuments = batchRequestOptions.documents.map(
-      ({ document }) => analyzeDocument(document, excludeOperationName)
+      ({ document }) => analyzeDocument(document, excludeOperationName),
     )
     const expressions = analyzedDocuments.map(({ expression }) => expression)
     const hasMutations = analyzedDocuments.some(({ isMutation }) => isMutation)
-    const variables = batchRequestOptions.documents.map(({ variables }) => variables)
+    const variables = batchRequestOptions.documents.map(
+      ({ variables }) => variables,
+    )
 
-    const response= await runRequest({
+    const response = await runRequest({
       url: this.url,
       request: {
-        _tag:`Batch`,
+        _tag: `Batch`,
         operationName: undefined,
         query: expressions,
         hasMutations,
@@ -175,7 +216,7 @@ export class GraphQLClient {
       fetchOptions,
       middleware: this.requestConfig.requestMiddleware,
     })
-    
+
     if (this.requestConfig.responseMiddleware) {
       this.requestConfig.responseMiddleware(response)
     }
@@ -200,7 +241,6 @@ export class GraphQLClient {
 
     if (headers) {
       // todo what if headers is in nested array form... ?
-      //@ts-expect-error todo
       headers[key] = value
     } else {
       this.requestConfig.headers = { [key]: value }
@@ -218,13 +258,17 @@ export class GraphQLClient {
   }
 }
 
-// prettier-ignore
 interface RawRequestMethod {
-  <T, V extends Variables = Variables>(query: string, variables?: V, requestHeaders?: HeadersInit): Promise<GraphQLClientResponse<T>>
-  <T, V extends Variables = Variables>(options: RawRequestOptions<V>): Promise<GraphQLClientResponse<T>>
+  <T, V extends Variables = Variables>(
+    query: string,
+    variables?: V,
+    requestHeaders?: HeadersInit,
+  ): Promise<GraphQLClientResponse<T>>
+  <T, V extends Variables = Variables>(options: RawRequestOptions<V>): Promise<
+    GraphQLClientResponse<T>
+  >
 }
 
-// prettier-ignore
 type RawRequestMethodArgs<V extends Variables> =
   | [query: string, variables?: V, requestHeaders?: HeadersInit]
   | [RawRequestOptions<V>]
