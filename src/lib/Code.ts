@@ -5,7 +5,7 @@ export namespace Code {
   export const union = (name: string, types: string[]) => `type ${name} =\n| ${Code.unionItems(types)}`
   export const unionItems = (types: string[]) => types.join(`\n| `)
   export const list = (type: string) => `Array<${type}>`
-  export const fieldType = (name: string, type: string) => `"${name}": ${type}`
+  export const fieldType = (name: string, type: string) => `${name}: ${type}`
   export const fieldTypes = (fieldTypes: string[]) => fieldTypes.join(`\n`)
   export const inter = (name: string, fields: string) => `interface ${name} {\n${fields}\n}`
   export const export$ = (thing: string) => `export ${thing}`

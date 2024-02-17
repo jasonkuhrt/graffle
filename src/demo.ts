@@ -1,11 +1,11 @@
 namespace $ {
   export interface Scalars {
-    'Boolean': boolean
-    'Int': number
-    'String': string
-    'ID': string
-    'Date': any
-    'Float': number
+    Boolean: boolean
+    Int: number
+    String: string
+    ID: string
+    Date: any
+    Float: number
   }
 }
 
@@ -15,133 +15,133 @@ namespace $ {
 
 export namespace Root {
   export interface Mutation {
-    'accelerateCachePurge':
+    accelerateCachePurge:
       | Object.ErrorInternal
       | Object.SideEffectConfirmation
-    'accelerateDisable':
+    accelerateDisable:
       | Object.ErrorInternal
       | Object.SideEffectConfirmation
-    'accelerateEnable':
+    accelerateEnable:
       | Object.ErrorInternal
       | Object.SideEffectConfirmation
-    'databaseLinkCreate':
+    databaseLinkCreate:
       | Object.DatabaseLink
       | Object.ErrorInternal
       | Object.ErrorUserBusinessResourceNotFound
-    'databaseLinkDelete':
+    databaseLinkDelete:
       | Object.DatabaseLinkNode
       | Object.ErrorInternal
       | Object.ErrorUserBusinessResourceNotFound
-    'databaseLinkUpdate':
+    databaseLinkUpdate:
       | Object.DatabaseLink
       | Object.ErrorInternal
       | Object.ErrorUserBusinessResourceNotFound
-    'environmentCreate':
+    environmentCreate:
       | Object.Environment
       | Object.ErrorInternal
       | Object.ErrorUserBusinessPlanLimitHit
       | Object.ErrorUserBusinessResourceNotFound
-    'environmentDelete':
+    environmentDelete:
       | Object.Environment
       | Object.ErrorInternal
       | Object.ErrorUserBusinessResourceNotFound
-    'environmentUpdate':
+    environmentUpdate:
       | Object.Environment
       | Object.ErrorInternal
       | Object.ErrorUserBusinessResourceNotFound
-    'projectCreate':
+    projectCreate:
       | Object.ErrorInternal
       | Object.ErrorUserBusinessPlanLimitHit
       | Object.ErrorUserBusinessResourceNotFound
       | Object.Project
-    'projectDelete':
+    projectDelete:
       | Object.ErrorInternal
       | Object.ErrorUserBusinessResourceNotFound
       | Object.ProjectNode
-    'projectUpdate':
+    projectUpdate:
       | Object.ErrorInternal
       | Object.ErrorUserBusinessResourceNotFound
       | Object.Project
-    'pulseDisable':
+    pulseDisable:
       | Object.ErrorInternal
       | Object.ErrorUserBusinessResourceNotFound
       | Object.SideEffectConfirmation
-    'pulseEnable':
+    pulseEnable:
       | Object.ErrorInternal
       | Object.ErrorUser
       | Object.SideEffectConfirmation
-    'serviceKeyCreate':
+    serviceKeyCreate:
       | Object.ErrorInternal
       | Object.ErrorUserBusinessResourceNotFound
       | Object.ServiceKeyWithValue
-    'serviceKeyDelete':
+    serviceKeyDelete:
       | Object.ErrorInternal
       | Object.ErrorUserBusinessResourceNotFound
       | Object.ServiceKeyNode
-    'userUpdate':
+    userUpdate:
       | Object.ErrorInternal
       | Object.ErrorUserBusinessResourceNotFound
       | Object.User
-    'userUpdateDefaultWorkspace':
+    userUpdateDefaultWorkspace:
       | Object.ErrorInternal
       | Object.ErrorUserBusinessResourceNotFound
       | Object.User
-    'workspaceCreate':
+    workspaceCreate:
       | Object.ErrorInternal
       | Object.Workspace
-    'workspaceDelete':
+    workspaceDelete:
       | Object.ErrorInternal
       | Object.ErrorUserBusinessDeleteWorkspaceOnPaidPlan
       | Object.ErrorUserBusinessResourceNotFound
       | Object.WorkspaceNode
-    'workspaceMembershipCreate':
+    workspaceMembershipCreate:
       | Object.ErrorInternal
       | Object.ErrorUserBusinessResourceNotFound
       | Object.ErrorUserBusinessUserAlreadyMemberOfOrganization
       | Object.WorkspaceMembership
-    'workspaceMembershipDelete':
+    workspaceMembershipDelete:
       | Object.ErrorInternal
       | Object.ErrorUserBusinessResourceNotFound
       | Object.WorkspaceMembershipNode
-    'workspacePlanSubscriptionChange':
+    workspacePlanSubscriptionChange:
       | Object.ErrorInternal
       | Object.ErrorUserBusinessResourceNotFound
       | Object.PlanSubscription
-    'workspaceUpdate':
+    workspaceUpdate:
       | Object.ErrorInternal
       | Object.ErrorUserBusinessResourceNotFound
       | Object.Workspace
-    'workspaceUpdateBillingAddress':
+    workspaceUpdateBillingAddress:
       | Object.ErrorInternal
       | Object.ErrorUserBusinessResourceNotFound
       | Object.Workspace
-    'workspaceUpdateBillingEmail':
+    workspaceUpdateBillingEmail:
       | Object.ErrorInternal
       | Object.ErrorUserBusinessResourceNotFound
       | Object.Workspace
   }
 
   export interface Query {
-    'environment':
+    environment:
       | Object.Environment
       | Object.ErrorInternal
       | Object.ErrorUserBusinessNotAuthorized
       | Object.ErrorUserBusinessResourceNotFound
-    'me': Object.Me
-    'plan':
+    me: Object.Me
+    plan:
       | Object.ErrorInternal
       | Object.ErrorUserBusinessResourceNotFound
       | Object.ErrorUserInput
       | Object.Plan
-    'project':
+    project:
       | Object.ErrorInternal
       | Object.ErrorUserBusinessNotAuthorized
       | Object.ErrorUserBusinessResourceNotFound
       | Object.Project
-    'serviceKeys': Array<Object.ServiceKey>
-    'system': Object.System
-    'user': Object.User
-    'workspace':
+    serviceKeys: Array<Object.ServiceKey>
+    system: Object.System
+    user: Object.User
+    workspace:
       | Object.ErrorInternal
       | Object.ErrorUserBusinessNotAuthorized
       | Object.ErrorUserBusinessResourceNotFound
@@ -476,145 +476,145 @@ export namespace Enum {
 
 export namespace InputObject {
   export interface MutationAccelerateCachePurgeInput {
-    'environmentId': $.Scalars['ID']
+    environmentId: $.Scalars['ID']
   }
 
   export interface MutationAccelerateDisableInput {
-    'environmentId': $.Scalars['ID']
+    environmentId: $.Scalars['ID']
   }
 
   export interface MutationAccelerateEnableInput {
-    'databaseLinkId': $.Scalars['ID']
+    databaseLinkId: $.Scalars['ID']
   }
 
   export interface MutationDatabaseLinkCreateInput {
-    'connectionString': $.Scalars['String']
-    'displayName': $.Scalars['String'] | null
-    'environmentId': $.Scalars['ID']
-    'regionId': $.Scalars['String'] | null
+    connectionString: $.Scalars['String']
+    displayName: $.Scalars['String'] | null
+    environmentId: $.Scalars['ID']
+    regionId: $.Scalars['String'] | null
   }
 
   export interface MutationDatabaseLinkDeleteInput {
-    'id': $.Scalars['ID']
+    id: $.Scalars['ID']
   }
 
   export interface MutationDatabaseLinkUpdateInput {
-    'connectionString': $.Scalars['String']
-    'id': $.Scalars['ID']
-    'regionId': $.Scalars['String']
+    connectionString: $.Scalars['String']
+    id: $.Scalars['ID']
+    regionId: $.Scalars['String']
   }
 
   export interface MutationEnvironmentCreateInput {
-    'displayName': $.Scalars['String'] | null
-    'isDefault': $.Scalars['Boolean'] | null
-    'projectId': $.Scalars['ID']
+    displayName: $.Scalars['String'] | null
+    isDefault: $.Scalars['Boolean'] | null
+    projectId: $.Scalars['ID']
   }
 
   export interface MutationEnvironmentDeleteInput {
-    'id': $.Scalars['ID']
+    id: $.Scalars['ID']
   }
 
   export interface MutationEnvironmentUpdateInput {
-    'displayName': $.Scalars['String'] | null
-    'id': $.Scalars['ID']
-    'isDefault': $.Scalars['Boolean'] | null
+    displayName: $.Scalars['String'] | null
+    id: $.Scalars['ID']
+    isDefault: $.Scalars['Boolean'] | null
   }
 
   export interface MutationProjectCreateInput {
-    'displayName': $.Scalars['String'] | null
-    'workspaceId': $.Scalars['ID']
+    displayName: $.Scalars['String'] | null
+    workspaceId: $.Scalars['ID']
   }
 
   export interface MutationProjectDeleteInput {
-    'id': $.Scalars['ID']
+    id: $.Scalars['ID']
   }
 
   export interface MutationProjectUpdateInput {
-    'displayName': $.Scalars['String'] | null
-    'id': $.Scalars['ID']
+    displayName: $.Scalars['String'] | null
+    id: $.Scalars['ID']
   }
 
   export interface MutationPulseDisableInput {
-    'environmentId': $.Scalars['String']
+    environmentId: $.Scalars['String']
   }
 
   export interface MutationPulseEnableInput {
-    'databaseLinkId': $.Scalars['String']
+    databaseLinkId: $.Scalars['String']
   }
 
   export interface MutationServiceKeyCreateInput {
-    'displayName': $.Scalars['String'] | null
-    'environmentId': $.Scalars['ID']
+    displayName: $.Scalars['String'] | null
+    environmentId: $.Scalars['ID']
   }
 
   export interface MutationServiceKeyDeleteInput {
-    'id': $.Scalars['String']
+    id: $.Scalars['String']
   }
 
   export interface MutationUserUpdateDefaultWorkspaceInput {
-    'workspaceId': $.Scalars['ID']
+    workspaceId: $.Scalars['ID']
   }
 
   export interface MutationUserUpdateInput {
-    'displayName': $.Scalars['String'] | null
-    'id': $.Scalars['ID']
+    displayName: $.Scalars['String'] | null
+    id: $.Scalars['ID']
   }
 
   export interface MutationWorkspaceCreateInput {
-    'displayName': $.Scalars['String'] | null
+    displayName: $.Scalars['String'] | null
   }
 
   export interface MutationWorkspaceDeleteInput {
-    'id': $.Scalars['ID']
+    id: $.Scalars['ID']
   }
 
   export interface MutationWorkspaceMembershipCreateInput {
-    'email': $.Scalars['String']
-    'role': Enum.WorkspaceRole
-    'workspaceId': $.Scalars['ID']
+    email: $.Scalars['String']
+    role: Enum.WorkspaceRole
+    workspaceId: $.Scalars['ID']
   }
 
   export interface MutationWorkspaceMembershipDeleteInput {
-    'id': $.Scalars['ID']
+    id: $.Scalars['ID']
   }
 
   export interface MutationWorkspacePlanSubscriptionChangeInput {
-    'targetPlanId': $.Scalars['ID']
-    'workspaceId': $.Scalars['ID']
+    targetPlanId: $.Scalars['ID']
+    workspaceId: $.Scalars['ID']
   }
 
   export interface MutationWorkspaceUpdateBillingAddressInput {
-    'address': InputObject.PhysicalAddressInput
-    'id': $.Scalars['ID']
+    address: InputObject.PhysicalAddressInput
+    id: $.Scalars['ID']
   }
 
   export interface MutationWorkspaceUpdateBillingEmailInput {
-    'email': $.Scalars['String']
-    'id': $.Scalars['ID']
+    email: $.Scalars['String']
+    id: $.Scalars['ID']
   }
 
   export interface MutationWorkspaceUpdateInput {
-    'displayName': $.Scalars['String'] | null
-    'id': $.Scalars['ID']
+    displayName: $.Scalars['String'] | null
+    id: $.Scalars['ID']
   }
 
   export interface PhysicalAddressInput {
-    'addressLine1': $.Scalars['String'] | null
-    'addressLine2': $.Scalars['String'] | null
-    'city': $.Scalars['String'] | null
-    'country': Enum.CountryCode | null
-    'postalCodeOrZIP': $.Scalars['String'] | null
-    'region': $.Scalars['String'] | null
+    addressLine1: $.Scalars['String'] | null
+    addressLine2: $.Scalars['String'] | null
+    city: $.Scalars['String'] | null
+    country: Enum.CountryCode | null
+    postalCodeOrZIP: $.Scalars['String'] | null
+    region: $.Scalars['String'] | null
   }
 
   export interface TimeIntervalInput {
-    'fromDate': $.Scalars['Date'] | null
-    'fromDateHandle': Enum.PreviousDateHandle | null
-    'toDate': $.Scalars['Date'] | null
+    fromDate: $.Scalars['Date'] | null
+    fromDateHandle: Enum.PreviousDateHandle | null
+    toDate: $.Scalars['Date'] | null
   }
 
   export interface WorkspaceOrderBy {
-    'displayName': Enum.Order | null
+    displayName: Enum.Order | null
   }
 }
 
@@ -624,38 +624,38 @@ export namespace InputObject {
 
 export namespace Interface {
   export interface Error {
-    'message': $.Scalars['String']
+    message: $.Scalars['String']
   }
 
   export interface Feature {
-    'displayName': $.Scalars['String'] | null
-    'handle': Enum.FeatureHandle
-    'id': $.Scalars['ID']
-    'stripeProductId': $.Scalars['String']
+    displayName: $.Scalars['String'] | null
+    handle: Enum.FeatureHandle
+    id: $.Scalars['ID']
+    stripeProductId: $.Scalars['String']
   }
 
   export interface Node {
-    'id': $.Scalars['String']
+    id: $.Scalars['String']
   }
 
   export interface Offer {
-    'context':
+    context:
       | Object.Plan
       | Object.PlanSubscription
-    'id': $.Scalars['ID']
-    'price':
+    id: $.Scalars['ID']
+    price:
       | Object.PriceConstant
       | Object.PriceTiered
       | null
   }
 
   export interface PriceI {
-    'id': $.Scalars['String']
-    'stripePriceId': $.Scalars['ID']
+    id: $.Scalars['String']
+    stripePriceId: $.Scalars['ID']
   }
 
   export interface ProductStatus {
-    'enabled': $.Scalars['Boolean']
+    enabled: $.Scalars['Boolean']
   }
 }
 
@@ -665,210 +665,210 @@ export namespace Interface {
 
 export namespace Object {
   export interface AccelerateStatusDisabled {
-    'enabled': $.Scalars['Boolean']
+    enabled: $.Scalars['Boolean']
   }
 
   export interface AccelerateStatusEnabled {
-    'enabled': $.Scalars['Boolean']
+    enabled: $.Scalars['Boolean']
   }
 
   export interface Count {
-    'number': $.Scalars['Int']
+    number: $.Scalars['Int']
   }
 
   export interface DatabaseLink {
-    'connectionStringHint': $.Scalars['String']
-    'id': $.Scalars['ID']
-    'protocol': $.Scalars['String']
-    'region': $.Scalars['String'] | null
+    connectionStringHint: $.Scalars['String']
+    id: $.Scalars['ID']
+    protocol: $.Scalars['String']
+    region: $.Scalars['String'] | null
   }
 
   export interface DatabaseLinkNode {
-    'connectionStringHint': $.Scalars['ID']
-    'displayName': $.Scalars['String']
-    'id': $.Scalars['String']
+    connectionStringHint: $.Scalars['ID']
+    displayName: $.Scalars['String']
+    id: $.Scalars['String']
   }
 
   export interface Environment {
-    'accelerate': Object.EnvironmentAccelerate
-    'createdAt': $.Scalars['Date']
-    'displayName': $.Scalars['String']
-    'id': $.Scalars['ID']
-    'isDefault': $.Scalars['Boolean']
-    'project': Object.Project
-    'pulse': Object.EnvironmentPulse
-    'serviceKeys': Array<Object.ServiceKey>
-    'tenantId': $.Scalars['ID']
+    accelerate: Object.EnvironmentAccelerate
+    createdAt: $.Scalars['Date']
+    displayName: $.Scalars['String']
+    id: $.Scalars['ID']
+    isDefault: $.Scalars['Boolean']
+    project: Object.Project
+    pulse: Object.EnvironmentPulse
+    serviceKeys: Array<Object.ServiceKey>
+    tenantId: $.Scalars['ID']
   }
 
   export interface EnvironmentAccelerate {
-    'databaseLink': Object.DatabaseLink | null
-    'holds': Array<Object.ProductHold>
-    'status':
+    databaseLink: Object.DatabaseLink | null
+    holds: Array<Object.ProductHold>
+    status:
       | Object.AccelerateStatusDisabled
       | Object.AccelerateStatusEnabled
-    'usage': Object.EnvironmentAccelerateUsage
+    usage: Object.EnvironmentAccelerateUsage
   }
 
   export interface EnvironmentAccelerateTimeSeriesPoints {
-    'queries': Object.EnvironmentAccelerateUsageTimeSeriesPointsQueries
-    'timestamps': Array<$.Scalars['Date']>
+    queries: Object.EnvironmentAccelerateUsageTimeSeriesPointsQueries
+    timestamps: Array<$.Scalars['Date']>
   }
 
   export interface EnvironmentAccelerateUsage {
-    'latency': Object.EnvironmentAccelerateUsageLatency
-    'overview': Object.EnvironmentAccelerateUsageOverview
-    'timeInterval': Object.TimeInterval
-    'timeSeries': Object.EnvironmentAccelerateUsageTimeSeries
+    latency: Object.EnvironmentAccelerateUsageLatency
+    overview: Object.EnvironmentAccelerateUsageOverview
+    timeInterval: Object.TimeInterval
+    timeSeries: Object.EnvironmentAccelerateUsageTimeSeries
   }
 
   export interface EnvironmentAccelerateUsageLatency {
-    'queries': Object.EnvironmentAccelerateUsageLatencyQueries
+    queries: Object.EnvironmentAccelerateUsageLatencyQueries
   }
 
   export interface EnvironmentAccelerateUsageLatencyQueries {
-    'cached': Object.EnvironmentAccelerateUsageLatencyQuery
-    'origin': Object.EnvironmentAccelerateUsageLatencyQuery
+    cached: Object.EnvironmentAccelerateUsageLatencyQuery
+    origin: Object.EnvironmentAccelerateUsageLatencyQuery
   }
 
   export interface EnvironmentAccelerateUsageLatencyQuery {
-    'count': Object.Count
-    'durationAverage': Object.MetricValue
-    'durationPercentiles': Array<Object.Percentile>
+    count: Object.Count
+    durationAverage: Object.MetricValue
+    durationPercentiles: Array<Object.Percentile>
   }
 
   export interface EnvironmentAccelerateUsageOverview {
-    'egress': Object.EnvironmentAccelerateUsageOverviewEgress
-    'queries': Object.EnvironmentAccelerateUsageOverviewQueries
+    egress: Object.EnvironmentAccelerateUsageOverviewEgress
+    queries: Object.EnvironmentAccelerateUsageOverviewQueries
   }
 
   export interface EnvironmentAccelerateUsageOverviewCacheHit {
-    'ratioToMiss': Object.MetricValue
+    ratioToMiss: Object.MetricValue
   }
 
   export interface EnvironmentAccelerateUsageOverviewEgress {
-    'averageResponseSize': Object.StorageValue
-    'requestsServedFromOrigin': Object.Count
-    'total': Object.StorageValue
+    averageResponseSize: Object.StorageValue
+    requestsServedFromOrigin: Object.Count
+    total: Object.StorageValue
   }
 
   export interface EnvironmentAccelerateUsageOverviewQueries {
-    'cacheHit': Object.EnvironmentAccelerateUsageOverviewCacheHit
-    'cacheableCount': Object.Count
-    'totalCount': Object.Count
+    cacheHit: Object.EnvironmentAccelerateUsageOverviewCacheHit
+    cacheableCount: Object.Count
+    totalCount: Object.Count
   }
 
   export interface EnvironmentAccelerateUsageTimeSeries {
-    'points': Object.EnvironmentAccelerateTimeSeriesPoints
+    points: Object.EnvironmentAccelerateTimeSeriesPoints
   }
 
   export interface EnvironmentAccelerateUsageTimeSeriesPointsQueries {
-    'miss': Array<Object.EnvironmentAccelerateUsageTimeSeriesPointsQuery> | null
-    'none': Array<Object.EnvironmentAccelerateUsageTimeSeriesPointsQuery> | null
-    'swr': Array<Object.EnvironmentAccelerateUsageTimeSeriesPointsQuery> | null
-    'ttl': Array<Object.EnvironmentAccelerateUsageTimeSeriesPointsQuery> | null
+    miss: Array<Object.EnvironmentAccelerateUsageTimeSeriesPointsQuery> | null
+    none: Array<Object.EnvironmentAccelerateUsageTimeSeriesPointsQuery> | null
+    swr: Array<Object.EnvironmentAccelerateUsageTimeSeriesPointsQuery> | null
+    ttl: Array<Object.EnvironmentAccelerateUsageTimeSeriesPointsQuery> | null
   }
 
   export interface EnvironmentAccelerateUsageTimeSeriesPointsQuery {
-    'count': Object.Count
-    'timestamp': $.Scalars['Date']
+    count: Object.Count
+    timestamp: $.Scalars['Date']
   }
 
   export interface EnvironmentPulse {
-    'databaseLink': Object.DatabaseLink | null
-    'status':
+    databaseLink: Object.DatabaseLink | null
+    status:
       | Object.PulseStatusDisabled
       | Object.PulseStatusEnabled
   }
 
   export interface ErrorInternal {
-    'message': $.Scalars['String']
+    message: $.Scalars['String']
   }
 
   export interface ErrorUser {
-    'message': $.Scalars['String']
+    message: $.Scalars['String']
   }
 
   export interface ErrorUserBusinessDeleteWorkspaceOnPaidPlan {
-    'context': Object.ErrorUserBusinessDeleteWorkspaceOnPaidPlanContext
-    'message': $.Scalars['String']
+    context: Object.ErrorUserBusinessDeleteWorkspaceOnPaidPlanContext
+    message: $.Scalars['String']
   }
 
   export interface ErrorUserBusinessDeleteWorkspaceOnPaidPlanContext {
-    'plan': Object.Plan
+    plan: Object.Plan
   }
 
   export interface ErrorUserBusinessNotAuthorized {
-    'message': $.Scalars['String']
+    message: $.Scalars['String']
   }
 
   export interface ErrorUserBusinessPlanLimitHit {
-    'context': Object.ErrorUserBusinessPlanLimitHitContext
-    'message': $.Scalars['String']
+    context: Object.ErrorUserBusinessPlanLimitHitContext
+    message: $.Scalars['String']
   }
 
   export interface ErrorUserBusinessPlanLimitHitContext {
-    'featureHandle': $.Scalars['String'] | null
+    featureHandle: $.Scalars['String'] | null
   }
 
   export interface ErrorUserBusinessResourceNotFound {
-    'context': Object.ErrorUserBusinessResourceNotFoundContext
-    'message': $.Scalars['String']
+    context: Object.ErrorUserBusinessResourceNotFoundContext
+    message: $.Scalars['String']
   }
 
   export interface ErrorUserBusinessResourceNotFoundContext {
-    'id': $.Scalars['ID'] | null
-    'typeName': Enum.ResourceType
+    id: $.Scalars['ID'] | null
+    typeName: Enum.ResourceType
   }
 
   export interface ErrorUserBusinessUserAlreadyMemberOfOrganization {
-    'context': Object.ErrorUserBusinessUserAlreadyMemberOfOrganizationContext
-    'message': $.Scalars['String']
+    context: Object.ErrorUserBusinessUserAlreadyMemberOfOrganizationContext
+    message: $.Scalars['String']
   }
 
   export interface ErrorUserBusinessUserAlreadyMemberOfOrganizationContext {
-    'user': Object.User
-    'workspace': Object.Workspace
+    user: Object.User
+    workspace: Object.Workspace
   }
 
   export interface ErrorUserInput {
-    'message': $.Scalars['String']
+    message: $.Scalars['String']
   }
 
   export interface FeatureAbstract {
-    'displayName': $.Scalars['String'] | null
-    'handle': Enum.FeatureHandle
-    'id': $.Scalars['ID']
-    'stripeProductId': $.Scalars['String']
+    displayName: $.Scalars['String'] | null
+    handle: Enum.FeatureHandle
+    id: $.Scalars['ID']
+    stripeProductId: $.Scalars['String']
   }
 
   export interface FeatureResourceAggregation {
-    'displayName': $.Scalars['String'] | null
-    'handle': Enum.FeatureHandle
-    'id': $.Scalars['ID']
-    'resource': $.Scalars['String']
-    'scope': $.Scalars['String']
-    'stripeProductId': $.Scalars['String']
-    'valueResolver': Object.FeatureResourceAggregationValueResolver
+    displayName: $.Scalars['String'] | null
+    handle: Enum.FeatureHandle
+    id: $.Scalars['ID']
+    resource: $.Scalars['String']
+    scope: $.Scalars['String']
+    stripeProductId: $.Scalars['String']
+    valueResolver: Object.FeatureResourceAggregationValueResolver
   }
 
   export interface FeatureResourceAggregationValueResolver {
-    'type': Enum.FeatureResourceAggregationValueResolverType
+    type: Enum.FeatureResourceAggregationValueResolverType
   }
 
   export interface FeatureResourceProperty {
-    'displayName': $.Scalars['String'] | null
-    'handle': Enum.FeatureHandle
-    'id': $.Scalars['ID']
-    'resource': $.Scalars['String']
-    'scope': $.Scalars['String']
-    'stripeProductId': $.Scalars['String']
-    'valueResolver': Object.FeatureResourcePropertyValueResolver
+    displayName: $.Scalars['String'] | null
+    handle: Enum.FeatureHandle
+    id: $.Scalars['ID']
+    resource: $.Scalars['String']
+    scope: $.Scalars['String']
+    stripeProductId: $.Scalars['String']
+    valueResolver: Object.FeatureResourcePropertyValueResolver
   }
 
   export interface FeatureResourcePropertyValueResolver {
-    'field': $.Scalars['String']
-    'type':
+    field: $.Scalars['String']
+    type:
       | Object.FeatureValueTypeBoolean
       | Object.FeatureValueTypeEnum
       | Object.FeatureValueTypeNumber
@@ -876,11 +876,11 @@ export namespace Object {
   }
 
   export interface FeatureValue {
-    'displayName': $.Scalars['String'] | null
-    'handle': Enum.FeatureHandle
-    'id': $.Scalars['ID']
-    'stripeProductId': $.Scalars['String']
-    'valueType':
+    displayName: $.Scalars['String'] | null
+    handle: Enum.FeatureHandle
+    id: $.Scalars['ID']
+    stripeProductId: $.Scalars['String']
+    valueType:
       | Object.FeatureValueTypeBoolean
       | Object.FeatureValueTypeEnum
       | Object.FeatureValueTypeNumber
@@ -888,389 +888,389 @@ export namespace Object {
   }
 
   export interface FeatureValueTypeBoolean {
-    'displayName': $.Scalars['String']
+    displayName: $.Scalars['String']
   }
 
   export interface FeatureValueTypeEnum {
-    'displayName': $.Scalars['String']
-    'members': Array<Object.FeatureValueTypeEnumMember>
+    displayName: $.Scalars['String']
+    members: Array<Object.FeatureValueTypeEnumMember>
   }
 
   export interface FeatureValueTypeEnumMember {
-    'description': $.Scalars['String'] | null
-    'value': $.Scalars['String']
+    description: $.Scalars['String'] | null
+    value: $.Scalars['String']
   }
 
   export interface FeatureValueTypeNumber {
-    'displayName': $.Scalars['String']
+    displayName: $.Scalars['String']
   }
 
   export interface FeatureValueTypeString {
-    'displayName': $.Scalars['String']
+    displayName: $.Scalars['String']
   }
 
   export interface LimitEnum {
-    'allowed': Array<$.Scalars['String']>
+    allowed: Array<$.Scalars['String']>
   }
 
   export interface LimitNumber {
-    'amount': $.Scalars['Int']
-    'type': Enum.NumberPredicateFnType
+    amount: $.Scalars['Int']
+    type: Enum.NumberPredicateFnType
   }
 
   export interface Me {
-    'user': Object.User
-    'workspaces': Array<Object.Workspace>
+    user: Object.User
+    workspaces: Array<Object.Workspace>
   }
 
   export interface MetricValue {
-    'number': $.Scalars['Float']
-    'unit': Enum.MetricUnit | null
+    number: $.Scalars['Float']
+    unit: Enum.MetricUnit | null
   }
 
   export interface OfferAbstract {
-    'context':
+    context:
       | Object.Plan
       | Object.PlanSubscription
-    'feature': Object.FeatureAbstract
-    'id': $.Scalars['ID']
-    'price':
+    feature: Object.FeatureAbstract
+    id: $.Scalars['ID']
+    price:
       | Object.PriceConstant
       | Object.PriceTiered
       | null
   }
 
   export interface OfferResourceAggregation {
-    'context':
+    context:
       | Object.Plan
       | Object.PlanSubscription
-    'feature': Object.FeatureResourceAggregation
-    'id': $.Scalars['ID']
-    'limit':
+    feature: Object.FeatureResourceAggregation
+    id: $.Scalars['ID']
+    limit:
       | Object.LimitEnum
       | Object.LimitNumber
       | null
-    'price':
+    price:
       | Object.PriceConstant
       | Object.PriceTiered
       | null
-    'timeInterval':
+    timeInterval:
       | Object.OfferTimeIntervalCycle
       | Object.OfferTimeIntervalPrevious
       | null
   }
 
   export interface OfferResourceProperty {
-    'context':
+    context:
       | Object.Plan
       | Object.PlanSubscription
-    'feature': Object.FeatureResourceProperty
-    'id': $.Scalars['ID']
-    'limit':
+    feature: Object.FeatureResourceProperty
+    id: $.Scalars['ID']
+    limit:
       | Object.LimitEnum
       | Object.LimitNumber
       | null
-    'price':
+    price:
       | Object.PriceConstant
       | Object.PriceTiered
       | null
-    'timeInterval':
+    timeInterval:
       | Object.OfferTimeIntervalCycle
       | Object.OfferTimeIntervalPrevious
       | null
   }
 
   export interface OfferTimeIntervalCycle {
-    'ok': $.Scalars['Boolean']
+    ok: $.Scalars['Boolean']
   }
 
   export interface OfferTimeIntervalPrevious {
-    'milliseconds': $.Scalars['Int']
+    milliseconds: $.Scalars['Int']
   }
 
   export interface OfferValue {
-    'context':
+    context:
       | Object.Plan
       | Object.PlanSubscription
-    'feature': Object.FeatureValue
-    'id': $.Scalars['ID']
-    'limit':
+    feature: Object.FeatureValue
+    id: $.Scalars['ID']
+    limit:
       | Object.LimitEnum
       | Object.LimitNumber
       | null
-    'price':
+    price:
       | Object.PriceConstant
       | Object.PriceTiered
       | null
-    'value': $.Scalars['String']
+    value: $.Scalars['String']
   }
 
   export interface PaymentMethod {
-    'card': Object.PaymentMethodCard
-    'id': $.Scalars['ID']
-    'isDefault': $.Scalars['Boolean']
+    card: Object.PaymentMethodCard
+    id: $.Scalars['ID']
+    isDefault: $.Scalars['Boolean']
   }
 
   export interface PaymentMethodCard {
-    'brand': Enum.PaymentMethodCardBrand
-    'expiryMonth': $.Scalars['Int']
-    'expiryYear': $.Scalars['Int']
-    'id': $.Scalars['ID']
-    'last4': $.Scalars['String']
+    brand: Enum.PaymentMethodCardBrand
+    expiryMonth: $.Scalars['Int']
+    expiryYear: $.Scalars['Int']
+    id: $.Scalars['ID']
+    last4: $.Scalars['String']
   }
 
   export interface Percentile {
-    'percentile': $.Scalars['Int']
-    'value': Object.MetricValue
+    percentile: $.Scalars['Int']
+    value: Object.MetricValue
   }
 
   export interface PhysicalAddress {
-    'addressLine1': $.Scalars['String'] | null
-    'addressLine2': $.Scalars['String'] | null
-    'city': $.Scalars['String'] | null
-    'country': $.Scalars['String'] | null
-    'postalCodeOrZIP': $.Scalars['String'] | null
-    'region': $.Scalars['String'] | null
+    addressLine1: $.Scalars['String'] | null
+    addressLine2: $.Scalars['String'] | null
+    city: $.Scalars['String'] | null
+    country: $.Scalars['String'] | null
+    postalCodeOrZIP: $.Scalars['String'] | null
+    region: $.Scalars['String'] | null
   }
 
   export interface Plan {
-    'displayName': $.Scalars['String']
-    'handle': $.Scalars['String']
-    'id': $.Scalars['ID']
-    'isDefault': $.Scalars['Boolean']
-    'isFree': $.Scalars['Boolean']
-    'offers': Object.PlanOffers
-    'power': $.Scalars['Int']
-    'selectable': $.Scalars['Boolean']
-    'version': $.Scalars['Int']
-    'versionIsLatest': $.Scalars['Boolean']
-    'versions': Object.PlanVersions
+    displayName: $.Scalars['String']
+    handle: $.Scalars['String']
+    id: $.Scalars['ID']
+    isDefault: $.Scalars['Boolean']
+    isFree: $.Scalars['Boolean']
+    offers: Object.PlanOffers
+    power: $.Scalars['Int']
+    selectable: $.Scalars['Boolean']
+    version: $.Scalars['Int']
+    versionIsLatest: $.Scalars['Boolean']
+    versions: Object.PlanVersions
   }
 
   export interface PlanOffers {
-    'accelerate': Object.PlanOffersAccelerate
-    'conductor': Object.PlanOffersConductor
-    'platform': Object.PlanOffersPlatform
+    accelerate: Object.PlanOffersAccelerate
+    conductor: Object.PlanOffersConductor
+    platform: Object.PlanOffersPlatform
   }
 
   export interface PlanOffersAccelerate {
-    'egress': Object.OfferResourceProperty
-    'purgeCache': Object.OfferResourceAggregation
-    'query': Object.OfferResourceAggregation
+    egress: Object.OfferResourceProperty
+    purgeCache: Object.OfferResourceAggregation
+    query: Object.OfferResourceAggregation
   }
 
   export interface PlanOffersConductor {
-    'createProject': Object.OfferResourceAggregation
-    'organizationRole': Object.OfferResourceProperty
+    createProject: Object.OfferResourceAggregation
+    organizationRole: Object.OfferResourceProperty
   }
 
   export interface PlanOffersPlatform {
-    'access': Object.OfferAbstract
-    'support': Object.OfferValue
+    access: Object.OfferAbstract
+    support: Object.OfferValue
   }
 
   export interface PlanSubscription {
-    'createdAt': $.Scalars['Date']
-    'id': $.Scalars['ID']
-    'plan': Object.Plan
-    'stripeSubscriptionId': $.Scalars['String'] | null
-    'stripeSubscriptionLineItems': Array<Object.StripeSubscriptionLineItem>
-    'workspace': Object.Workspace
+    createdAt: $.Scalars['Date']
+    id: $.Scalars['ID']
+    plan: Object.Plan
+    stripeSubscriptionId: $.Scalars['String'] | null
+    stripeSubscriptionLineItems: Array<Object.StripeSubscriptionLineItem>
+    workspace: Object.Workspace
   }
 
   export interface PlanVersions {
-    'isLatest': $.Scalars['Boolean']
-    'next': Array<Object.Plan>
-    'previous': Array<Object.Plan>
+    isLatest: $.Scalars['Boolean']
+    next: Array<Object.Plan>
+    previous: Array<Object.Plan>
   }
 
   export interface PriceConstant {
-    'cents': $.Scalars['Int']
-    'id': $.Scalars['String']
-    'stripePriceId': $.Scalars['ID']
+    cents: $.Scalars['Int']
+    id: $.Scalars['String']
+    stripePriceId: $.Scalars['ID']
   }
 
   export interface PriceTiered {
-    'id': $.Scalars['String']
-    'stripePriceId': $.Scalars['ID']
-    'tiers': Array<Object.PriceTieredTier>
+    id: $.Scalars['String']
+    stripePriceId: $.Scalars['ID']
+    tiers: Array<Object.PriceTieredTier>
   }
 
   export interface PriceTieredTier {
-    'cents': $.Scalars['Float']
-    'from': $.Scalars['Int']
-    'to': $.Scalars['Int'] | null
+    cents: $.Scalars['Float']
+    from: $.Scalars['Int']
+    to: $.Scalars['Int'] | null
   }
 
   export interface ProductHold {
-    'createdAt': $.Scalars['Int']
-    'expiresAt': $.Scalars['Int']
-    'reason': $.Scalars['String']
+    createdAt: $.Scalars['Int']
+    expiresAt: $.Scalars['Int']
+    reason: $.Scalars['String']
   }
 
   export interface Project {
-    'accelerate': Object.EnvironmentAccelerate
-    'createdAt': $.Scalars['Date']
-    'displayName': $.Scalars['String']
-    'environments': Array<Object.Environment>
-    'id': $.Scalars['ID']
-    'pulse': Object.EnvironmentPulse
-    'workspace': Object.Workspace
+    accelerate: Object.EnvironmentAccelerate
+    createdAt: $.Scalars['Date']
+    displayName: $.Scalars['String']
+    environments: Array<Object.Environment>
+    id: $.Scalars['ID']
+    pulse: Object.EnvironmentPulse
+    workspace: Object.Workspace
   }
 
   export interface ProjectNode {
-    'createdAt': $.Scalars['Date']
-    'displayName': $.Scalars['String']
-    'id': $.Scalars['String']
-    'workspaceId': $.Scalars['ID']
+    createdAt: $.Scalars['Date']
+    displayName: $.Scalars['String']
+    id: $.Scalars['String']
+    workspaceId: $.Scalars['ID']
   }
 
   export interface PulseStatusDisabled {
-    'enabled': $.Scalars['Boolean']
+    enabled: $.Scalars['Boolean']
   }
 
   export interface PulseStatusEnabled {
-    'enabled': $.Scalars['Boolean']
-    'error': $.Scalars['String'] | null
+    enabled: $.Scalars['Boolean']
+    error: $.Scalars['String'] | null
   }
 
   export interface ServiceKey {
-    'createdAt': $.Scalars['Date']
-    'displayName': $.Scalars['String']
-    'id': $.Scalars['ID']
-    'valueHint': $.Scalars['String']
+    createdAt: $.Scalars['Date']
+    displayName: $.Scalars['String']
+    id: $.Scalars['ID']
+    valueHint: $.Scalars['String']
   }
 
   export interface ServiceKeyNode {
-    'displayName': $.Scalars['String']
-    'id': $.Scalars['String']
-    'valueHint': $.Scalars['String']
+    displayName: $.Scalars['String']
+    id: $.Scalars['String']
+    valueHint: $.Scalars['String']
   }
 
   export interface ServiceKeyWithValue {
-    'serviceKey': Object.ServiceKey
-    'value': $.Scalars['ID']
+    serviceKey: Object.ServiceKey
+    value: $.Scalars['ID']
   }
 
   export interface SideEffectConfirmation {
-    'ok': $.Scalars['Boolean']
+    ok: $.Scalars['Boolean']
   }
 
   export interface StorageValue {
-    'number': $.Scalars['Float']
-    'unit': Enum.StorageUnit | null
+    number: $.Scalars['Float']
+    unit: Enum.StorageUnit | null
   }
 
   export interface StripeSubscriptionLineItem {
-    'feature': Enum.FeatureHandle
-    'id': $.Scalars['ID']
+    feature: Enum.FeatureHandle
+    id: $.Scalars['ID']
   }
 
   export interface System {
-    'accelerate': Object.SystemAccelerate
-    'plans': Array<Object.Plan>
-    'pulse': Object.SystemPulse
+    accelerate: Object.SystemAccelerate
+    plans: Array<Object.Plan>
+    pulse: Object.SystemPulse
   }
 
   export interface SystemAccelerate {
-    'defaultRegion': Object.SystemAccelerateRegion
-    'regions': Array<Object.SystemAccelerateRegion>
+    defaultRegion: Object.SystemAccelerateRegion
+    regions: Array<Object.SystemAccelerateRegion>
   }
 
   export interface SystemAccelerateRegion {
-    'displayName': $.Scalars['String']
-    'id': $.Scalars['ID']
+    displayName: $.Scalars['String']
+    id: $.Scalars['ID']
   }
 
   export interface SystemPulse {
-    'defaultRegion': Object.SystemAccelerateRegion
-    'regions': Array<Object.SystemAccelerateRegion>
+    defaultRegion: Object.SystemAccelerateRegion
+    regions: Array<Object.SystemAccelerateRegion>
   }
 
   export interface TimeInterval {
-    'from': $.Scalars['Date']
-    'to': $.Scalars['Date']
+    from: $.Scalars['Date']
+    to: $.Scalars['Date']
   }
 
   export interface UsageProductAccelerate {
-    'egress': Object.UsageProductAccelerateFeatureEgress
-    'request': Object.UsageProductAccelerateFeatureRequest
+    egress: Object.UsageProductAccelerateFeatureEgress
+    request: Object.UsageProductAccelerateFeatureRequest
   }
 
   export interface UsageProductAccelerateFeatureEgress {
-    'averageResponseSize': $.Scalars['Float']
-    'total': $.Scalars['Float']
+    averageResponseSize: $.Scalars['Float']
+    total: $.Scalars['Float']
   }
 
   export interface UsageProductAccelerateFeatureRequest {
-    'all': Object.UsageProductAccelerateFeatureRequestFilterAll
-    'cacheHit': Object.UsageProductAccelerateFeatureRequestFilterCacheHit
+    all: Object.UsageProductAccelerateFeatureRequestFilterAll
+    cacheHit: Object.UsageProductAccelerateFeatureRequestFilterCacheHit
   }
 
   export interface UsageProductAccelerateFeatureRequestFilterAll {
-    'count': $.Scalars['Int']
+    count: $.Scalars['Int']
   }
 
   export interface UsageProductAccelerateFeatureRequestFilterCacheHit {
-    'ratioToMiss': $.Scalars['Int']
+    ratioToMiss: $.Scalars['Int']
   }
 
   export interface User {
-    'displayName': $.Scalars['String'] | null
-    'email': $.Scalars['String']
-    'featureFlags': Object.UserFeatureFlags
-    'handle': $.Scalars['String'] | null
-    'id': $.Scalars['ID']
-    'image': $.Scalars['String'] | null
-    'preferences': Object.UserPreferences
+    displayName: $.Scalars['String'] | null
+    email: $.Scalars['String']
+    featureFlags: Object.UserFeatureFlags
+    handle: $.Scalars['String'] | null
+    id: $.Scalars['ID']
+    image: $.Scalars['String'] | null
+    preferences: Object.UserPreferences
   }
 
   export interface UserFeatureFlags {
-    'adminDashboard': $.Scalars['Boolean']
-    'mars': $.Scalars['Boolean']
-    'mercury': $.Scalars['Boolean']
-    'venus': $.Scalars['Boolean']
+    adminDashboard: $.Scalars['Boolean']
+    mars: $.Scalars['Boolean']
+    mercury: $.Scalars['Boolean']
+    venus: $.Scalars['Boolean']
   }
 
   export interface UserPreferences {
-    'defaultWorkspace': Object.Workspace | null
+    defaultWorkspace: Object.Workspace | null
   }
 
   export interface Workspace {
-    'billingAddress': Object.PhysicalAddress | null
-    'billingEmail': $.Scalars['String']
-    'createdAt': $.Scalars['Date']
-    'displayName': $.Scalars['String']
-    'id': $.Scalars['ID']
-    'isUsersLastMembership': $.Scalars['Boolean']
-    'memberships': Array<Object.WorkspaceMembership>
-    'paymentMethods': Array<Object.PaymentMethod>
-    'planSubscription': Object.PlanSubscription
-    'projects': Array<Object.Project>
-    'stripeCustomerId': $.Scalars['String']
-    'usage': Object.WorkspaceUsage
+    billingAddress: Object.PhysicalAddress | null
+    billingEmail: $.Scalars['String']
+    createdAt: $.Scalars['Date']
+    displayName: $.Scalars['String']
+    id: $.Scalars['ID']
+    isUsersLastMembership: $.Scalars['Boolean']
+    memberships: Array<Object.WorkspaceMembership>
+    paymentMethods: Array<Object.PaymentMethod>
+    planSubscription: Object.PlanSubscription
+    projects: Array<Object.Project>
+    stripeCustomerId: $.Scalars['String']
+    usage: Object.WorkspaceUsage
   }
 
   export interface WorkspaceMembership {
-    'id': $.Scalars['ID']
-    'role': Enum.WorkspaceRole
-    'user': Object.User
+    id: $.Scalars['ID']
+    role: Enum.WorkspaceRole
+    user: Object.User
   }
 
   export interface WorkspaceMembershipNode {
-    'id': $.Scalars['String']
-    'workspaceId': $.Scalars['ID']
+    id: $.Scalars['String']
+    workspaceId: $.Scalars['ID']
   }
 
   export interface WorkspaceNode {
-    'billingEmail': $.Scalars['String']
-    'displayName': $.Scalars['String']
-    'id': $.Scalars['String']
+    billingEmail: $.Scalars['String']
+    displayName: $.Scalars['String']
+    id: $.Scalars['String']
   }
 
   export interface WorkspaceUsage {
-    'accelerate': Object.UsageProductAccelerate
-    'timeInterval': Object.TimeInterval
+    accelerate: Object.UsageProductAccelerate
+    timeInterval: Object.TimeInterval
   }
 }
 
