@@ -1,7 +1,7 @@
+import { expect, test, vitest } from 'vitest'
 import { gql, GraphQLClient } from '../src/entrypoints/main.js'
 import type { RequestConfig } from '../src/legacy/helpers/types.js'
 import { CONTENT_TYPE_HEADER, statusCodes } from '../src/lib/http.js'
-import { expect, test, vitest } from 'vitest'
 
 test(`mutation forces a POST method even if input wants GET for query`, async () => {
   const fetch = vitest.fn().mockImplementation((_: string, requestConfig: RequestConfig) => {

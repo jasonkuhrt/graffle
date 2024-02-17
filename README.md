@@ -47,7 +47,7 @@ npm add graphql-request graphql
 Send a GraphQL document using a static request function:
 
 ```js
-import { request, gql } from 'graphql-request'
+import { gql, request } from 'graphql-request'
 
 const document = gql`
   {
@@ -73,7 +73,7 @@ await request({
 A class is available for constructing your own instances:
 
 ```js
-import { GraphQLClient, gql } from 'graphql-request'
+import { gql, GraphQLClient } from 'graphql-request'
 
 const document = gql`
   {
@@ -185,7 +185,7 @@ In [this issue](https://github.com/jasonkuhrt/graphql-request/issues/500) we dec
 
 #### Do I need to wrap my GraphQL documents inside the `gql` template exported by `graphql-request`?
 
-No. It is there for convenience so that you can get the tooling support like prettier formatting and IDE syntax highlighting. You can use `gql` from `graphql-tag` if you need it for some reason too.
+No. It is there for convenience so that you can get the tooling support like automatic formatting and syntax highlighting. You can use `gql` from `graphql-tag` if you need it for some reason too.
 
 #### What sets `graphql-request` apart from other clients like Apollo, Relay, etc.?
 

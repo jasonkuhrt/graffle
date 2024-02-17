@@ -20,13 +20,13 @@ export const rawRequest: RawRequest = async <T, V extends Variables>(
   })
 }
 
-// prettier-ignore
+// dprint-ignore
 interface RawRequest {
   <T, V extends Variables = Variables>(url: string, query: string, ...variablesAndRequestHeaders: VariablesAndRequestHeadersArgs<V>): Promise<GraphQLClientResponse<T>>
   <T, V extends Variables = Variables>(options: RawRequestExtendedOptions<V>): Promise<GraphQLClientResponse<T>>
 }
 
-// prettier-ignore
+// dprint-ignore
 type RawRequestArgs<V extends Variables> = 
   | [options: RawRequestExtendedOptions<V>, query?: string, ...variablesAndRequestHeaders: VariablesAndRequestHeadersArgs<V>]
   | [url: string,                           query?: string, ...variablesAndRequestHeaders: VariablesAndRequestHeadersArgs<V>]
@@ -39,12 +39,12 @@ export const parseRawRequestExtendedArgs = <V extends Variables = Variables>(
   const [variables, requestHeaders] = variablesAndRequestHeaders
   return typeof urlOrOptions === `string`
     ? ({
-        url: urlOrOptions,
-        query: query as string,
-        variables,
-        requestHeaders,
-        signal: undefined,
-      } as unknown as RawRequestExtendedOptions<V>)
+      url: urlOrOptions,
+      query: query as string,
+      variables,
+      requestHeaders,
+      signal: undefined,
+    } as unknown as RawRequestExtendedOptions<V>)
     : urlOrOptions
 }
 
@@ -60,9 +60,9 @@ export const parseRawRequestArgs = <V extends Variables = Variables>(
   return (queryOrOptions as RawRequestOptions<V>).query
     ? (queryOrOptions as RawRequestOptions<V>)
     : ({
-        query: queryOrOptions as string,
-        variables: variables,
-        requestHeaders: requestHeaders,
-        signal: undefined,
-      } as unknown as RawRequestOptions<V>)
+      query: queryOrOptions as string,
+      variables: variables,
+      requestHeaders: requestHeaders,
+      signal: undefined,
+    } as unknown as RawRequestOptions<V>)
 }
