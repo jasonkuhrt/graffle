@@ -1,5 +1,5 @@
-import { expect, test, vitest } from 'vitest'
 import { gql, GraphQLClient } from '../src/entrypoints/main.js'
+import { expect, test, vitest } from 'vitest'
 
 test(`custom fetch configuration is passed through`, async () => {
   const fetch = vitest.fn().mockResolvedValue({ ok: true, headers: new Headers(), text: () => ``, data: {} })

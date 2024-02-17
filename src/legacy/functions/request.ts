@@ -1,6 +1,6 @@
-import type { TypedDocumentNode } from '@graphql-typed-document-node/core'
 import { GraphQLClient } from '../classes/GraphQLClient.js'
 import type { RequestDocument, RequestOptions, Variables, VariablesAndRequestHeadersArgs } from '../helpers/types.js'
+import type { TypedDocumentNode } from '@graphql-typed-document-node/core'
 
 /**
  * Send a GraphQL Document to the GraphQL server for execution.

@@ -1,5 +1,5 @@
-import fetchCookie from 'fetch-cookie'
 import { gql, GraphQLClient } from '../src/entrypoints/main.js'
+import fetchCookie from 'fetch-cookie'
 
 const endpoint = `https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr`
 
