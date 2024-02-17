@@ -1,17 +1,17 @@
+import type { AnyClass, NameToClassNamedType } from './graphql.js'
+import { getTypeMapByKind, type NameToClass } from './graphql.js'
 import { readFileSync } from 'fs'
-import type { GraphQLField, GraphQLInputField, GraphQLNamedType } from 'graphql'
-import {
-  GraphQLEnumType,
+import type {
+  GraphQLField,
+  GraphQLInputField,
   GraphQLInputObjectType,
   GraphQLInterfaceType,
-  GraphQLList,
-  GraphQLNonNull,
+  GraphQLNamedType,
   GraphQLObjectType,
-  GraphQLScalarType,
-  GraphQLUnionType,
-  OperationTypeNode,
 } from 'graphql'
+import { GraphQLNonNull } from 'graphql'
 import { buildSchema } from 'graphql'
+import fs from 'node:fs'
 
 type AnyGraphQLField = GraphQLField<any, any, any> | GraphQLInputField
 // type AnyGraphQLFieldMap = GraphQLFieldMap<any, any>
@@ -19,32 +19,6 @@ type AnyGraphQLField = GraphQLField<any, any, any> | GraphQLInputField
 // type AnyGraphQLList = GraphQLList<GraphQLOutputType>
 
 type AnyGraphQLFieldsType = GraphQLObjectType | GraphQLInterfaceType | GraphQLInputObjectType
-
-const NameToClassNamedType = {
-  GraphQLScalarType: GraphQLScalarType,
-  GraphQLObjectType: GraphQLObjectType,
-  GraphQLInterfaceType: GraphQLInterfaceType,
-  GraphQLUnionType: GraphQLUnionType,
-  GraphQLEnumType: GraphQLEnumType,
-  GraphQLInputObjectType: GraphQLInputObjectType,
-}
-
-type NameToClassNamedType = typeof NameToClassNamedType
-
-const NameToClass = {
-  GraphQLNonNull: GraphQLNonNull,
-  GraphQLScalarType: GraphQLScalarType,
-  GraphQLObjectType: GraphQLObjectType,
-  GraphQLInterfaceType: GraphQLInterfaceType,
-  GraphQLUnionType: GraphQLUnionType,
-  GraphQLEnumType: GraphQLEnumType,
-  GraphQLInputObjectType: GraphQLInputObjectType,
-  GraphQLList: GraphQLList,
-} as const
-
-type NameToClass = typeof NameToClass
-
-type AnyClass = InstanceType<NameToClass[keyof NameToClass]>
 
 const definePointerRenderers = <$Renderers extends { [ClassName in keyof NameToClass]: any }>(renderers: {
   [ClassName in keyof $Renderers]: (
@@ -168,49 +142,7 @@ interface Input {
 
 const generateSchemaTypes = (input: Input) => {
   const schema = buildSchema(input.schemaSource)
-  const typeMap = schema.getTypeMap()
-  const typeMapValues = Object.values(typeMap)
-  const typeMapByKind: {
-    [Name in keyof NameToClassNamedType]: InstanceType<NameToClassNamedType[Name]>[]
-  } & { GraphQLRootTypes: GraphQLObjectType<any, any>[] } = {
-    GraphQLRootTypes: [],
-    GraphQLScalarType: [],
-    GraphQLEnumType: [],
-    GraphQLInputObjectType: [],
-    GraphQLInterfaceType: [],
-    GraphQLObjectType: [],
-    GraphQLUnionType: [],
-  }
-  for (const type of typeMapValues) {
-    if (type.name.startsWith(`__`)) continue
-    switch (true) {
-      case type instanceof GraphQLScalarType:
-        typeMapByKind.GraphQLScalarType.push(type)
-        break
-      case type instanceof GraphQLEnumType:
-        typeMapByKind.GraphQLEnumType.push(type)
-        break
-      case type instanceof GraphQLInputObjectType:
-        typeMapByKind.GraphQLInputObjectType.push(type)
-        break
-      case type instanceof GraphQLInterfaceType:
-        typeMapByKind.GraphQLInterfaceType.push(type)
-        break
-      case type instanceof GraphQLObjectType:
-        if (type.name === `Query` || type.name === `Mutation` || type.name === `Subscription`) {
-          typeMapByKind.GraphQLRootTypes.push(type)
-        } else {
-          typeMapByKind.GraphQLObjectType.push(type)
-        }
-        break
-      case type instanceof GraphQLUnionType:
-        typeMapByKind.GraphQLUnionType.push(type)
-        break
-      default:
-        // skip
-        break
-    }
-  }
+  const typeMapByKind = getTypeMapByKind(schema)
 
   let code = ``
 
@@ -241,8 +173,6 @@ const generateSchemaTypes = (input: Input) => {
 }
 
 // demo
-
-import fs from 'node:fs'
 
 const schemaSource = readFileSync(`./examples/schema.graphql`, `utf8`)
 const code = generateSchemaTypes({ schemaSource })
