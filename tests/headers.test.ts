@@ -16,6 +16,11 @@ describe(`request()`, () => {
     await request(ctx.url, `{ me { id } }`, {}, headers)
     expect(mock.requests[0]?.headers[headerFoo.name]).toEqual(headerFoo.value)
   })
+  test(`can override built in headers`, async () => {
+    const mock = ctx.res()
+    await request(ctx.url, `{ me { id } }`, {}, { 'content-type': `application/json2` })
+    expect(mock.requests[0]?.headers[`content-type`]).toEqual(`application/json2`)
+  })
 })
 
 describe(`using class`, () => {
