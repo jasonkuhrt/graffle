@@ -13,7 +13,6 @@ export { batchRequests } from '../legacy/functions/batchRequests.js'
 export { gql } from '../legacy/functions/gql.js'
 export { rawRequest } from '../legacy/functions/rawRequest.js'
 export { analyzeDocument } from '../legacy/helpers/analyzeDocument.js'
-export { GraphQLWebSocketClient } from '../legacy/lib/graphql-ws.js'
 export {
   BatchRequestDocument,
   BatchRequestsExtendedOptions,
