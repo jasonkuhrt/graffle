@@ -34,21 +34,21 @@ interface Input {
   middleware?: RequestMiddleware<Variables>
   request:
     | {
-        _tag: 'Single'
-        variables?: Variables
-        document: {
-          expression: string
-          isMutation: boolean
-          operationName?: string
-        }
+      _tag: 'Single'
+      variables?: Variables
+      document: {
+        expression: string
+        isMutation: boolean
+        operationName?: string
       }
+    }
     | {
-        _tag: 'Batch'
-        query: string[]
-        operationName?: undefined
-        hasMutations: boolean
-        variables?: BatchVariables
-      }
+      _tag: 'Batch'
+      query: string[]
+      operationName?: undefined
+      hasMutations: boolean
+      variables?: BatchVariables
+    }
 }
 
 // @ts-expect-error todo
@@ -56,14 +56,13 @@ export const runRequest = async (input: Input): Promise<ClientError | GraphQLCli
   // todo make a Config type
   const config = {
     ...input,
-    method:
-      input.request._tag === `Single`
-        ? input.request.document.isMutation
-          ? `POST`
-          : uppercase(input.method ?? `post`)
-        : input.request.hasMutations
-          ? `POST`
-          : uppercase(input.method ?? `post`),
+    method: input.request._tag === `Single`
+      ? input.request.document.isMutation
+        ? `POST`
+        : uppercase(input.method ?? `post`)
+      : input.request.hasMutations
+      ? `POST`
+      : uppercase(input.method ?? `post`),
     fetchOptions: {
       ...input.fetchOptions,
       errorPolicy: input.fetchOptions.errorPolicy ?? `none`,
@@ -96,13 +95,12 @@ export const runRequest = async (input: Input): Promise<ClientError | GraphQLCli
 
   if (isRequestResultHaveErrors(result) && config.fetchOptions.errorPolicy === `none`) {
     // todo this client response on error is not consistent with the data type for success
-    const clientResponse =
-      result._tag === `Batch`
-        ? { ...result.executionResults, ...clientResponseBase }
-        : {
-            ...result.executionResult,
-            ...clientResponseBase,
-          }
+    const clientResponse = result._tag === `Batch`
+      ? { ...result.executionResults, ...clientResponseBase }
+      : {
+        ...result.executionResult,
+        ...clientResponseBase,
+      }
     // @ts-expect-error todo
     return new ClientError(clientResponse, {
       query: input.request._tag === `Single` ? input.request.document.expression : input.request.query,
@@ -126,14 +124,13 @@ export const runRequest = async (input: Input): Promise<ClientError | GraphQLCli
   }
 }
 
-const executionResultClientResponseFields =
-  ($params: Input) => (executionResult: GraphQLExecutionResultSingle) => {
-    return {
-      extensions: executionResult.extensions,
-      data: executionResult.data,
-      errors: $params.fetchOptions.errorPolicy === `all` ? executionResult.errors : undefined,
-    }
+const executionResultClientResponseFields = ($params: Input) => (executionResult: GraphQLExecutionResultSingle) => {
+  return {
+    extensions: executionResult.extensions,
+    data: executionResult.data,
+    errors: $params.fetchOptions.errorPolicy === `all` ? executionResult.errors : undefined,
   }
+}
 
 const parseResultFromResponse = async (response: Response, jsonSerializer: JsonSerializer) => {
   const contentType = response.headers.get(CONTENT_TYPE_HEADER)

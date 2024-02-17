@@ -3,8 +3,8 @@
  * An original use case for this feature is `BigInt` support:
  */
 
-import { gql, GraphQLClient } from '../src/entrypoints/main.js'
 import JSONbig from 'json-bigint'
+import { gql, GraphQLClient } from '../src/entrypoints/main.js'
 
 const jsonSerializer = JSONbig({ useNativeBigInt: true })
 const graphQLClient = new GraphQLClient(`https://some-api`, { jsonSerializer })

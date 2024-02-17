@@ -1,8 +1,8 @@
-import { GraphQLClient, rawRequest, request } from '../src/entrypoints/main.js'
-import { errors, setupMockServer } from './__helpers.js'
 import { gql } from 'graphql-tag'
 import type { Mock } from 'vitest'
 import { beforeEach, describe, expect, it, test, vitest } from 'vitest'
+import { GraphQLClient, rawRequest, request } from '../src/entrypoints/main.js'
+import { errors, setupMockServer } from './__helpers.js'
 
 const ctx = setupMockServer()
 

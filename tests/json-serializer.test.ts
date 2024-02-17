@@ -1,8 +1,8 @@
+import { beforeEach, describe, expect, test, vitest } from 'vitest'
 import { GraphQLClient } from '../src/entrypoints/main.js'
 import type { Fetch, Variables } from '../src/legacy/helpers/types.js'
 import { CONTENT_TYPE_HEADER, statusCodes } from '../src/lib/http.js'
 import { setupMockServer } from './__helpers.js'
-import { beforeEach, describe, expect, test, vitest } from 'vitest'
 
 const ctx = setupMockServer()
 
@@ -36,19 +36,15 @@ describe(`is used for serializing variables`, () => {
   const simpleVariable = { name: `test` }
   let client: GraphQLClient
 
-  const testSingleQuery =
-    (expectedNumStringifyCalls?: number, variables: Variables = simpleVariable) =>
-    async () => {
-      await client.request(document, variables)
-      expect(client.requestConfig.jsonSerializer?.stringify).toBeCalledTimes(expectedNumStringifyCalls ?? 1)
-    }
+  const testSingleQuery = (expectedNumStringifyCalls?: number, variables: Variables = simpleVariable) => async () => {
+    await client.request(document, variables)
+    expect(client.requestConfig.jsonSerializer?.stringify).toBeCalledTimes(expectedNumStringifyCalls ?? 1)
+  }
 
-  const testBatchQuery =
-    (expectedNumStringifyCalls?: number, variables: Variables = simpleVariable) =>
-    async () => {
-      await client.batchRequests([{ document, variables }])
-      expect(client.requestConfig.jsonSerializer?.stringify).toBeCalledTimes(expectedNumStringifyCalls ?? 1)
-    }
+  const testBatchQuery = (expectedNumStringifyCalls?: number, variables: Variables = simpleVariable) => async () => {
+    await client.batchRequests([{ document, variables }])
+    expect(client.requestConfig.jsonSerializer?.stringify).toBeCalledTimes(expectedNumStringifyCalls ?? 1)
+  }
 
   describe(`request body`, () => {
     beforeEach(() => {

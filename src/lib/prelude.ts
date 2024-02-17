@@ -65,14 +65,14 @@ export const errorFromMaybeError = (maybeError: unknown): Error => {
 
 export const isPromiseLikeValue = (value: unknown): value is Promise<unknown> => {
   return (
-    typeof value === `object` &&
-    value !== null &&
-    `then` in value &&
-    typeof value.then === `function` &&
-    `catch` in value &&
-    typeof value.catch === `function` &&
-    `finally` in value &&
-    typeof value.finally === `function`
+    typeof value === `object`
+    && value !== null
+    && `then` in value
+    && typeof value.then === `function`
+    && `catch` in value
+    && typeof value.catch === `function`
+    && `finally` in value
+    && typeof value.finally === `function`
   )
 }
 

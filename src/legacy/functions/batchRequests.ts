@@ -12,8 +12,7 @@ export interface BatchRequestsOptions<V extends Variables = Variables> {
   signal?: RequestInit['signal']
 }
 
-export interface BatchRequestsExtendedOptions<V extends Variables = Variables>
-  extends BatchRequestsOptions<V> {
+export interface BatchRequestsExtendedOptions<V extends Variables = Variables> extends BatchRequestsOptions<V> {
   url: string
 }
 
@@ -74,7 +73,7 @@ export const parseBatchRequestsArgsExtended = (args: BatchRequestsArgs): BatchRe
   }
 }
 
-// prettier-ignore
+// dprint-ignore
 interface BatchRequests {
   <T extends BatchResult, V extends Variables = Variables>(url: string, documents: BatchRequestDocument<V>[], requestHeaders?: HeadersInit): Promise<T>
   <T extends BatchResult, V extends Variables = Variables>(options: BatchRequestsExtendedOptions<V>): Promise<T>
@@ -93,8 +92,8 @@ export const parseBatchRequestArgs = <V extends Variables = Variables>(
   return (documentsOrOptions as BatchRequestsOptions<V>).documents
     ? (documentsOrOptions as BatchRequestsOptions<V>)
     : {
-        documents: documentsOrOptions as BatchRequestDocument<V>[],
-        requestHeaders: requestHeaders,
-        signal: undefined,
-      }
+      documents: documentsOrOptions as BatchRequestDocument<V>[],
+      requestHeaders: requestHeaders,
+      signal: undefined,
+    }
 }

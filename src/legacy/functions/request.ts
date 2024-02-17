@@ -1,11 +1,6 @@
-import { GraphQLClient } from '../classes/GraphQLClient.js'
-import type {
-  RequestDocument,
-  RequestOptions,
-  Variables,
-  VariablesAndRequestHeadersArgs,
-} from '../helpers/types.js'
 import type { TypedDocumentNode } from '@graphql-typed-document-node/core'
+import { GraphQLClient } from '../classes/GraphQLClient.js'
+import type { RequestDocument, RequestOptions, Variables, VariablesAndRequestHeadersArgs } from '../helpers/types.js'
 
 /**
  * Send a GraphQL Document to the GraphQL server for execution.
@@ -44,11 +39,11 @@ import type { TypedDocumentNode } from '@graphql-typed-document-node/core'
 // REMARKS: In order to have autocomplete for options work make it the first overload. If not
 // then autocomplete will instead show the various methods for a string, which is not what we want.
 
-// prettier-ignore
+// dprint-ignore
 export async function request<T, V extends Variables = Variables>(options: RequestExtendedOptions<V, T>): Promise<T>
-// prettier-ignore
+// dprint-ignore
 export async function request<T, V extends Variables = Variables>(url: string, document: RequestDocument | TypedDocumentNode<T, V>, ...variablesAndRequestHeaders: VariablesAndRequestHeadersArgs<V>): Promise<T>
-// prettier-ignore
+// dprint-ignore
 // eslint-disable-next-line
 export async function request<T, V extends Variables = Variables>(urlOrOptions: string | RequestExtendedOptions<V, T>, document?: RequestDocument | TypedDocumentNode<T, V>, ...variablesAndRequestHeaders: VariablesAndRequestHeadersArgs<V>): Promise<T> {
   const requestOptions = parseRequestExtendedArgs<V>(urlOrOptions, document, ...variablesAndRequestHeaders)
@@ -66,11 +61,11 @@ export const parseRequestArgs = <V extends Variables = Variables>(
   return (documentOrOptions as RequestOptions<V>).document
     ? (documentOrOptions as RequestOptions<V>)
     : ({
-        document: documentOrOptions as RequestDocument,
-        variables: variables,
-        requestHeaders: requestHeaders,
-        signal: undefined,
-      } as unknown as RequestOptions<V>)
+      document: documentOrOptions as RequestDocument,
+      variables: variables,
+      requestHeaders: requestHeaders,
+      signal: undefined,
+    } as unknown as RequestOptions<V>)
 }
 
 export type RequestExtendedOptions<V extends Variables = Variables, T = unknown> = {
@@ -85,11 +80,11 @@ export const parseRequestExtendedArgs = <V extends Variables = Variables>(
   const [variables, requestHeaders] = variablesAndRequestHeaders
   return typeof urlOrOptions === `string`
     ? ({
-        url: urlOrOptions,
-        document: document as RequestDocument,
-        variables,
-        requestHeaders,
-        signal: undefined,
-      } as unknown as RequestExtendedOptions<V>)
+      url: urlOrOptions,
+      document: document as RequestDocument,
+      variables,
+      requestHeaders,
+      signal: undefined,
+    } as unknown as RequestExtendedOptions<V>)
     : urlOrOptions
 }
