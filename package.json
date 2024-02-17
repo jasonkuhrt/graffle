@@ -36,7 +36,7 @@
   },
   "homepage": "https://github.com/jasonkuhrt/graphql-request",
   "scripts": {
-    "demo": "tsx src/lib/generateTypes.ts && dprint fmt src/demo.ts",
+    "demo": "tsx src/cli/generate.ts && dprint fmt src/demo.ts",
     "dev": "rm -rf dist && tsc --watch",
     "format": "pnpm build:docs && dprint fmt",
     "lint": "eslint . --ext .ts,.tsx --fix",

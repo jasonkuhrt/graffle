@@ -1,4 +1,3 @@
-import { readFileSync } from 'fs'
 import type {
   GraphQLField,
   GraphQLInputField,
@@ -6,23 +5,21 @@ import type {
   GraphQLInterfaceType,
   GraphQLNamedType,
   GraphQLObjectType,
-  GraphQLScalarType,
 } from 'graphql'
 import { GraphQLNonNull } from 'graphql'
 import { buildSchema } from 'graphql'
-import fs from 'node:fs'
 import { Code } from './Code.js'
 import type { AnyClass, AnyNamedClassName, NameToClassNamedType } from './graphql.js'
-import { getTypeMapByKind, NamedNameToClass, type NameToClass } from './graphql.js'
+import { getTypeMapByKind, type NameToClass } from './graphql.js'
 import { entries } from './prelude.js'
 
 const namespaceNames = {
-  GraphQLEnumType: 'Enum',
-  GraphQLInputObjectType: 'InputObject',
-  GraphQLInterfaceType: 'Interface',
-  GraphQLObjectType: 'Object',
-  GraphQLScalarType: 'Scalar',
-  GraphQLUnionType: 'Union',
+  GraphQLEnumType: `Enum`,
+  GraphQLInputObjectType: `InputObject`,
+  GraphQLInterfaceType: `Interface`,
+  GraphQLObjectType: `Object`,
+  GraphQLScalarType: `Scalar`,
+  GraphQLUnionType: `Union`,
 } satisfies Record<AnyNamedClassName, string>
 
 type AnyGraphQLField = GraphQLField<any, any, any> | GraphQLInputField
@@ -138,7 +135,7 @@ interface Input {
   schemaSource: string
 }
 
-const generateSchemaTypes = (input: Input) => {
+export const generateSchemaTypes = (input: Input) => {
   const schema = buildSchema(input.schemaSource)
   const typeMapByKind = getTypeMapByKind(schema)
 
@@ -159,7 +156,7 @@ const generateSchemaTypes = (input: Input) => {
   for (const [name, types] of entries(typeMapByKind)) {
     if (name === `GraphQLScalarType`) continue
 
-    const namespaceName = name === 'GraphQLRootTypes' ? 'Root' : namespaceNames[name]
+    const namespaceName = name === `GraphQLRootTypes` ? `Root` : namespaceNames[name]
     code += Code.commentSectionTitle(namespaceName)
     code += `export namespace ${namespaceName} {\n`
     if (types.length === 0) {
@@ -172,9 +169,3 @@ const generateSchemaTypes = (input: Input) => {
 
   return code
 }
-
-// demo
-
-const schemaSource = readFileSync(`./examples/schema.graphql`, `utf8`)
-const code = generateSchemaTypes({ schemaSource })
-fs.writeFileSync(`./src/demo.ts`, code, { encoding: `utf8` })
