@@ -39,25 +39,14 @@ import type { RequestDocument, RequestOptions, Variables, VariablesAndRequestHea
 // REMARKS: In order to have autocomplete for options work make it the first overload. If not
 // then autocomplete will instead show the various methods for a string, which is not what we want.
 
-export async function request<T, V extends Variables = Variables>(
-  options: RequestExtendedOptions<V, T>,
-): Promise<T>
-export async function request<T, V extends Variables = Variables>(
-  url: string,
-  document: RequestDocument | TypedDocumentNode<T, V>,
-  ...variablesAndRequestHeaders: VariablesAndRequestHeadersArgs<V>
-): Promise<T>
+// dprint-ignore
+export async function request<T, V extends Variables = Variables>(options: RequestExtendedOptions<V, T>): Promise<T>
+// dprint-ignore
+export async function request<T, V extends Variables = Variables>(url: string, document: RequestDocument | TypedDocumentNode<T, V>, ...variablesAndRequestHeaders: VariablesAndRequestHeadersArgs<V>): Promise<T>
+// dprint-ignore
 // eslint-disable-next-line
-export async function request<T, V extends Variables = Variables>(
-  urlOrOptions: string | RequestExtendedOptions<V, T>,
-  document?: RequestDocument | TypedDocumentNode<T, V>,
-  ...variablesAndRequestHeaders: VariablesAndRequestHeadersArgs<V>
-): Promise<T> {
-  const requestOptions = parseRequestExtendedArgs<V>(
-    urlOrOptions,
-    document,
-    ...variablesAndRequestHeaders,
-  )
+export async function request<T, V extends Variables = Variables>(urlOrOptions: string | RequestExtendedOptions<V, T>, document?: RequestDocument | TypedDocumentNode<T, V>, ...variablesAndRequestHeaders: VariablesAndRequestHeadersArgs<V>): Promise<T> {
+  const requestOptions = parseRequestExtendedArgs<V>(urlOrOptions, document, ...variablesAndRequestHeaders)
   const client = new GraphQLClient(requestOptions.url)
   return client.request<T, V>({
     ...requestOptions,
@@ -79,10 +68,7 @@ export const parseRequestArgs = <V extends Variables = Variables>(
     } as unknown as RequestOptions<V>)
 }
 
-export type RequestExtendedOptions<
-  V extends Variables = Variables,
-  T = unknown,
-> = {
+export type RequestExtendedOptions<V extends Variables = Variables, T = unknown> = {
   url: string
 } & RequestOptions<V, T>
 

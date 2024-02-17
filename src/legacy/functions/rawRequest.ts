@@ -13,39 +13,23 @@ export const rawRequest: RawRequest = async <T, V extends Variables>(
   ...args: RawRequestArgs<V>
 ): Promise<GraphQLClientResponse<T>> => {
   const [urlOrOptions, query, ...variablesAndRequestHeaders] = args
-  const requestOptions = parseRawRequestExtendedArgs<V>(
-    urlOrOptions,
-    query,
-    ...variablesAndRequestHeaders,
-  )
+  const requestOptions = parseRawRequestExtendedArgs<V>(urlOrOptions, query, ...variablesAndRequestHeaders)
   const client = new GraphQLClient(requestOptions.url)
   return client.rawRequest<T, V>({
     ...requestOptions,
   })
 }
 
+// dprint-ignore
 interface RawRequest {
-  <T, V extends Variables = Variables>(
-    url: string,
-    query: string,
-    ...variablesAndRequestHeaders: VariablesAndRequestHeadersArgs<V>
-  ): Promise<GraphQLClientResponse<T>>
-  <T, V extends Variables = Variables>(
-    options: RawRequestExtendedOptions<V>,
-  ): Promise<GraphQLClientResponse<T>>
+  <T, V extends Variables = Variables>(url: string, query: string, ...variablesAndRequestHeaders: VariablesAndRequestHeadersArgs<V>): Promise<GraphQLClientResponse<T>>
+  <T, V extends Variables = Variables>(options: RawRequestExtendedOptions<V>): Promise<GraphQLClientResponse<T>>
 }
 
-type RawRequestArgs<V extends Variables> =
-  | [
-    options: RawRequestExtendedOptions<V>,
-    query?: string,
-    ...variablesAndRequestHeaders: VariablesAndRequestHeadersArgs<V>,
-  ]
-  | [
-    url: string,
-    query?: string,
-    ...variablesAndRequestHeaders: VariablesAndRequestHeadersArgs<V>,
-  ]
+// dprint-ignore
+type RawRequestArgs<V extends Variables> = 
+  | [options: RawRequestExtendedOptions<V>, query?: string, ...variablesAndRequestHeaders: VariablesAndRequestHeadersArgs<V>]
+  | [url: string,                           query?: string, ...variablesAndRequestHeaders: VariablesAndRequestHeadersArgs<V>]
 
 export const parseRawRequestExtendedArgs = <V extends Variables = Variables>(
   urlOrOptions: string | RawRequestExtendedOptions<V>,
