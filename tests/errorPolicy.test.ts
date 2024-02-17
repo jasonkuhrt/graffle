@@ -1,6 +1,6 @@
+import { describe, expect, test } from 'vitest'
 import { GraphQLClient } from '../src/entrypoints/main.js'
 import { errors, setupMockServer } from './__helpers.js'
-import { describe, expect, test } from 'vitest'
 
 const ctx = setupMockServer()
 

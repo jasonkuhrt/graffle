@@ -1,3 +1,4 @@
+import type { TypedDocumentNode } from '@graphql-typed-document-node/core'
 import { callOrIdentity, HeadersInitToPlainObject } from '../../lib/prelude.js'
 import type { BatchRequestDocument, BatchRequestsOptions, BatchResult } from '../functions/batchRequests.js'
 import { parseBatchRequestArgs } from '../functions/batchRequests.js'
@@ -12,7 +13,6 @@ import {
   type RequestConfig,
   type Variables,
 } from '../helpers/types.js'
-import type { TypedDocumentNode } from '@graphql-typed-document-node/core'
 
 /**
  * GraphQL Client.

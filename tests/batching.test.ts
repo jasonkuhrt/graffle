@@ -1,7 +1,7 @@
+import { expect, test } from 'vitest'
 import { batchRequests } from '../src/entrypoints/main.js'
 import type { MockSpecBatch } from './__helpers.js'
 import { errors, setupMockServer } from './__helpers.js'
-import { expect, test } from 'vitest'
 
 const mockServer = setupMockServer<MockSpecBatch>()
 

@@ -1,6 +1,6 @@
+import { Kind } from 'graphql'
 import { CONTENT_TYPE_GQL, CONTENT_TYPE_JSON } from '../../lib/http.js'
 import { isPlainObject } from '../../lib/prelude.js'
-import { Kind } from 'graphql'
 /**
  * Refactored imports from `graphql` to be more specific, this helps import only the required files (100KiB)
  * instead of the entire package (greater than 500KiB) where tree-shaking is not supported.
