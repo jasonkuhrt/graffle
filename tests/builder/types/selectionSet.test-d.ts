@@ -1,3 +1,4 @@
+import { skip } from 'node:test'
 import { assertType, test } from 'vitest'
 import type { SelectionSet } from '../../../src/lib/SelectionSet.js'
 import type * as Schema from '../_/schema.js'
@@ -13,6 +14,10 @@ test(`general`, () => {
   assertType<S>({ string: undefined })
 
   // object type
+  // @ts-expect-error excess property check
+  assertType<S>({ string2: true })
+  // @ts-expect-error excess property check
+  assertType<S>({ scalars: { a2: true } })
   assertType<S>({ __typename: true })
   assertType<S>({ scalars: { a: true } })
 
@@ -29,4 +34,19 @@ test(`general`, () => {
 
   // enum type
   assertType<S>({ abcEnum: true })
+
+  // todo alias
+  // alias: enum
+  assertType<S>({ abcEnum_as_enum: true })
+  // alias: object
+  assertType<S>({ scalars_as_s: { a: true } })
+
+  // todo directive @skip
+  assertType<S>({ string: skip({ if: true }) })
+
+  // todo arguments
+  assertType<S>({ foo: args({ x: 1 }) })
+
+  // todo arguments + directive
+  assertType<S>({ foo: args({ x: 1 }).skip({ if: true }) })
 })
