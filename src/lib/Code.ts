@@ -10,6 +10,7 @@ export namespace Code {
   export const interface$ = (name: string, fields: string) => `interface ${name} {\n${fields}\n}`
   export const export$ = (thing: string) => `export ${thing}`
   export const namespace = (name: string, content: string) => `namespace ${name} {\n${content}\n}`
+  export const group = (...content: string[]) => content.join(`\n`)
   export const commentSectionTitle = (title: string) => {
     const lineSize = 60
     const line = `-`.repeat(lineSize)

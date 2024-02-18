@@ -1,16 +1,14 @@
-/**
- * Emit JSDoc from GraphQL descriptions
- */
+// todo Emit JSDoc from GraphQL descriptions
 import type {
   GraphQLField,
   GraphQLInputField,
   GraphQLInputObjectType,
   GraphQLInterfaceType,
   GraphQLNamedType,
-  GraphQLObjectType,
 } from 'graphql'
-import { GraphQLNonNull } from 'graphql'
+import { GraphQLNonNull, GraphQLObjectType } from 'graphql'
 import { buildSchema } from 'graphql'
+import fs from 'node:fs/promises'
 import { Code } from './Code.js'
 import type { AnyClass, AnyNamedClassName, NameToClassNamedType } from './graphql.js'
 import { getTypeMapByKind, type NameToClass } from './graphql.js'
@@ -90,7 +88,7 @@ const pointerRenderers = definePointerRenderers({
   GraphQLList: (node) => Code.list(dispatchToPointerRenderer(node.ofType)),
   GraphQLObjectType: (node) => Code.propertyAccess(namespaceNames.GraphQLObjectType, node.name),
   GraphQLScalarType: (node) => `$.Scalars[${Code.quote(node.name)}]`,
-  GraphQLUnionType: (node) => Code.unionItems(node.getTypes().map((_) => dispatchToPointerRenderer(_))),
+  GraphQLUnionType: (node) => Code.propertyAccess(namespaceNames.GraphQLUnionType, node.name),
 })
 
 const concreteRenderers = defineConcreteRenderers({
@@ -101,7 +99,11 @@ const concreteRenderers = defineConcreteRenderers({
         node.getValues().map((_) => Code.quote(_.name)),
       ),
     ),
-  GraphQLInputObjectType: (node) => Code.export$(Code.interface$(node.name, renderFields(node))),
+  GraphQLInputObjectType: (node) =>
+    Code.export$(Code.interface$(
+      node.name,
+      renderFields(node),
+    )),
   GraphQLInterfaceType: (node) => Code.export$(Code.interface$(node.name, renderFields(node))),
   GraphQLObjectType: (node) => Code.export$(Code.interface$(node.name, renderFields(node))),
   GraphQLScalarType: () => ``,
@@ -109,14 +111,17 @@ const concreteRenderers = defineConcreteRenderers({
     Code.export$(
       Code.union(
         node.name,
-        node.getTypes().map((_) => dispatchToPointerRenderer(_)),
+        node.getTypes().map((_) => dispatchToPointerRenderer(_) + `& { $$union:true}`),
       ),
     ),
 })
 
 const renderFields = (node: AnyGraphQLFieldsType): string => {
   return Code.fieldTypes(
-    Object.values(node.getFields()).map((field) => Code.fieldType(field.name, renderField(field))),
+    [
+      ...(node instanceof GraphQLObjectType ? [Code.fieldType(`__typename`, `"${node.name}"`)] : []),
+      ...Object.values(node.getFields()).map((field) => Code.fieldType(field.name, renderField(field))),
+    ],
   )
 }
 
@@ -147,18 +152,34 @@ export const generateSchemaTypes = (input: Input) => {
 
   code += Code.export$(Code.namespace(
     `$`,
-    Code.export$(Code.interface$(
-      `Scalars`,
-      `
+    Code.group(
+      Code.export$(
+        Code.interface$(
+          `Metadata`,
+          Code.fieldTypes([
+            Code.fieldType(
+              `unions`,
+              typeMapByKind.GraphQLUnionType.length > 0
+                ? Code.unionItems(typeMapByKind.GraphQLUnionType.map(_ => `Union.${_.name}`))
+                : `null`,
+            ),
+            Code.fieldType(`scalars`, `Scalars`),
+          ]),
+        ),
+      ),
+      Code.export$(Code.interface$(
+        `Scalars`,
+        `
     ${
-        typeMapByKind.GraphQLScalarType.map((_) => {
-          // todo strict mode where instead of falling back to "any" we throw an error
-          const type = scalarTypeMap[_.name] || `string`
-          return Code.fieldType(_.name, type)
-        }).join(`\n`)
-      }
+          typeMapByKind.GraphQLScalarType.map((_) => {
+            // todo strict mode where instead of falling back to "any" we throw an error
+            const type = scalarTypeMap[_.name] || `string`
+            return Code.fieldType(_.name, type)
+          }).join(`\n`)
+        }
   `,
-    )),
+      )),
+    ),
   ))
 
   for (const [name, types] of entries(typeMapByKind)) {
@@ -175,4 +196,10 @@ export const generateSchemaTypes = (input: Input) => {
   }
 
   return code
+}
+
+export const generateFile = async (params: { schemaPath: string; typeScriptPath: string }) => {
+  const schemaSource = await fs.readFile(params.schemaPath, `utf8`)
+  const code = generateSchemaTypes({ schemaSource })
+  await fs.writeFile(params.typeScriptPath, code, { encoding: `utf8` })
 }

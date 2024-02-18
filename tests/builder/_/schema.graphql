@@ -1,0 +1,23 @@
+type Query {
+	string: String
+	scalars: Scalars
+	fooBarUnion: FooBarUnion
+}
+
+union FooBarUnion = Foo | Bar
+
+type Foo {
+	a: String
+}
+
+type Bar {
+	b: Int
+}
+
+type Scalars {
+	a: String
+	b: Int
+	c: Float
+	d: Boolean
+	e: ID
+}
