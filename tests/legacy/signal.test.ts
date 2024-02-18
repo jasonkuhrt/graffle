@@ -1,5 +1,5 @@
 import { expect, it } from 'vitest'
-import { batchRequests, GraphQLClient, rawRequest, request } from '../src/entrypoints/main.js'
+import { batchRequests, GraphQLClient, rawRequest, request } from '../../src/entrypoints/main.js'
 import { setupMockServer, sleep } from './__helpers.js'
 
 const ctx = setupMockServer(20)
