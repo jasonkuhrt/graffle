@@ -2,6 +2,9 @@ type Query {
 	string: String
 	scalars: Scalars
 	fooBarUnion: FooBarUnion
+	"""
+	Query enum field documentation.
+	"""
 	abcEnum: ABCEnum
 }
 

@@ -130,7 +130,6 @@ const getDocumentation = (config: Config, node: Describable) => {
   const enumMemberDescriptions: string[] = isEnumType(node)
     ? node.getValues()
       .map(_ => {
-        // if (_.deprecationReason)
         const deprecationDescription = _.deprecationReason ? `(DEPRECATED: ${_.deprecationReason})` : null
         const generalDescription = _.description
           ? _.description
@@ -211,11 +210,11 @@ export const generateCode = (input: Input) => {
   const typeMapByKind = getTypeMapByKind(schema)
   const config = resolveOptions(input.options)
 
-  let code = ``
-
   const hasQuery = typeMapByKind.GraphQLRootTypes.find((_) => _.name === `Query`)
   const hasMutation = typeMapByKind.GraphQLRootTypes.find((_) => _.name === `Mutation`)
   const hasSubscription = typeMapByKind.GraphQLRootTypes.find((_) => _.name === `Subscription`)
+
+  let code = ``
 
   code += Code.export$(Code.namespace(
     `$`,

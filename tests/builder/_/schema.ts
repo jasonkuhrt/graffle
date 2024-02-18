@@ -31,6 +31,9 @@ __typename: "Query"
 string: $.Scalars["String"] | null
 scalars: Object.Scalars | null
 fooBarUnion: Union.FooBarUnion | null
+/**
+* Query enum field documentation.
+*/
 abcEnum: Enum.ABCEnum | null
 }
 }
