@@ -1,6 +1,6 @@
 import { gql } from 'graphql-tag'
 import { expect, it } from 'vitest'
-import { request } from '../src/entrypoints/main.js'
+import { request } from '../../src/entrypoints/main.js'
 import { setupMockServer } from './__helpers.js'
 
 const ctx = setupMockServer()

@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, test, vitest } from 'vitest'
-import { GraphQLClient } from '../src/entrypoints/main.js'
-import type { Fetch, Variables } from '../src/legacy/helpers/types.js'
-import { CONTENT_TYPE_HEADER, statusCodes } from '../src/lib/http.js'
+import { GraphQLClient } from '../../src/entrypoints/main.js'
+import type { Fetch, Variables } from '../../src/legacy/helpers/types.js'
+import { CONTENT_TYPE_HEADER, statusCodes } from '../../src/lib/http.js'
 import { setupMockServer } from './__helpers.js'
 
 const ctx = setupMockServer()
