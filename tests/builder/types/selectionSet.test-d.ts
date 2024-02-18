@@ -2,7 +2,7 @@ import { assertType, test } from 'vitest'
 import type { SelectionSet } from '../../../src/lib/SelectionSet.js'
 import type * as Schema from '../_/schema.js'
 
-type S = SelectionSet<Schema.Root.Query, Schema.$.Metadata>
+type S = SelectionSet<Schema.Root.Query, Schema.$.Index>
 
 test(`general`, () => {
   assertType<S>({ string: true })

@@ -12,7 +12,7 @@ import fs from 'node:fs/promises'
 import { Code } from './Code.js'
 import type { AnyClass, AnyNamedClassName, NameToClassNamedType } from './graphql.js'
 import { getTypeMapByKind, type NameToClass } from './graphql.js'
-import { entries } from './prelude.js'
+import { entries, values } from './prelude.js'
 
 const namespaceNames = {
   GraphQLEnumType: `Enum`,
@@ -117,10 +117,10 @@ const concreteRenderers = defineConcreteRenderers({
 })
 
 const renderFields = (node: AnyGraphQLFieldsType): string => {
-  return Code.fieldTypes(
+  return Code.fields(
     [
-      ...(node instanceof GraphQLObjectType ? [Code.fieldType(`__typename`, `"${node.name}"`)] : []),
-      ...Object.values(node.getFields()).map((field) => Code.fieldType(field.name, renderField(field))),
+      ...(node instanceof GraphQLObjectType ? [Code.field(`__typename`, `"${node.name}"`)] : []),
+      ...values(node.getFields()).map((field) => Code.field(field.name, renderField(field))),
     ],
   )
 }
@@ -150,20 +150,41 @@ export const generateSchemaTypes = (input: Input) => {
 
   let code = ``
 
+  const hasQuery = typeMapByKind.GraphQLRootTypes.find((_) => _.name === `Query`)
+  const hasMutation = typeMapByKind.GraphQLRootTypes.find((_) => _.name === `Mutation`)
+  const hasSubscription = typeMapByKind.GraphQLRootTypes.find((_) => _.name === `Subscription`)
+
   code += Code.export$(Code.namespace(
     `$`,
     Code.group(
       Code.export$(
         Code.interface$(
-          `Metadata`,
-          Code.fieldTypes([
-            Code.fieldType(
-              `unions`,
-              typeMapByKind.GraphQLUnionType.length > 0
-                ? Code.unionItems(typeMapByKind.GraphQLUnionType.map(_ => `Union.${_.name}`))
-                : `null`,
+          `Index`,
+          Code.fields([
+            Code.field(
+              `Root`,
+              Code.object(
+                Code.fields([
+                  Code.field(`Query`, hasQuery ? `Root.Query` : `null`),
+                  Code.field(`Mutation`, hasMutation ? `Root.Mutation` : `null`),
+                  Code.field(`Subscription`, hasSubscription ? `Root.Subscription` : `null`),
+                ]),
+              ),
             ),
-            Code.fieldType(`scalars`, `Scalars`),
+            Code.field(
+              `unions`,
+              Code.object(
+                Code.fields([
+                  Code.field(
+                    `Union`,
+                    typeMapByKind.GraphQLUnionType.length > 0
+                      ? Code.unionItems(typeMapByKind.GraphQLUnionType.map(_ => `Union.${_.name}`))
+                      : `null`,
+                  ),
+                ]),
+              ),
+            ),
+            Code.field(`scalars`, `Scalars`),
           ]),
         ),
       ),
@@ -174,7 +195,7 @@ export const generateSchemaTypes = (input: Input) => {
           typeMapByKind.GraphQLScalarType.map((_) => {
             // todo strict mode where instead of falling back to "any" we throw an error
             const type = scalarTypeMap[_.name] || `string`
-            return Code.fieldType(_.name, type)
+            return Code.field(_.name, type)
           }).join(`\n`)
         }
   `,

@@ -1,6 +1,13 @@
 export namespace $ {
-export interface Metadata {
-unions: Union.FooBarUnion
+export interface Index {
+Root: {
+Query: Root.Query
+Mutation: null
+Subscription: null
+}
+unions: {
+Union: Union.FooBarUnion
+}
 scalars: Scalars
 }
 export interface Scalars {

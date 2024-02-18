@@ -5,11 +5,12 @@ export namespace Code {
   export const union = (name: string, types: string[]) => `type ${name} =\n| ${Code.unionItems(types)}`
   export const unionItems = (types: string[]) => types.join(`\n| `)
   export const list = (type: string) => `Array<${type}>`
-  export const fieldType = (name: string, type: string) => `${name}: ${type}`
-  export const fieldTypes = (fieldTypes: string[]) => fieldTypes.join(`\n`)
-  export const interface$ = (name: string, fields: string) => `interface ${name} {\n${fields}\n}`
+  export const field = (name: string, type: string) => `${name}: ${type}`
+  export const fields = (fieldTypes: string[]) => fieldTypes.join(`\n`)
+  export const object = (fields: string) => `{\n${fields}\n}`
+  export const interface$ = (name: string, fields: string) => `interface ${name} ${Code.object(fields)}`
   export const export$ = (thing: string) => `export ${thing}`
-  export const namespace = (name: string, content: string) => `namespace ${name} {\n${content}\n}`
+  export const namespace = (name: string, content: string) => `namespace ${name} ${Code.object(content)}`
   export const group = (...content: string[]) => content.join(`\n`)
   export const commentSectionTitle = (title: string) => {
     const lineSize = 60

@@ -1,5 +1,13 @@
-export interface Metadata {
-  unions: null | ObjectType
+export interface SchemaIndex {
+  unions: {
+    Union: null | ObjectType
+    // root: null | ObjectType
+  }
+  Root: {
+    Query: null | ObjectType
+    Mutation: null | ObjectType
+    Subscription: null | ObjectType
+  }
   scalars: object
 }
 

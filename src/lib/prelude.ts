@@ -85,3 +85,5 @@ export const isPlainObject = (value: unknown): value is object => {
 }
 
 export const entries = <T extends Record<string, any>>(obj: T) => Object.entries(obj) as [keyof T, T[keyof T]][]
+
+export const values = <T extends Record<string, unknown>>(obj: T): T[keyof T][] => Object.values(obj) as T[keyof T][]
