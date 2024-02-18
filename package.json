@@ -55,6 +55,7 @@
     "release:pr": "dripip pr"
   },
   "dependencies": {
+    "@dprint/formatter": "^0.2.1",
     "@graphql-typed-document-node/core": "^3.2.0",
     "dprint": "^0.45.0"
   },

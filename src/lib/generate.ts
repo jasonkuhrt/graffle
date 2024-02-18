@@ -282,6 +282,7 @@ export const generateCode = (input: Input) => {
 }
 
 export const generateFile = async (params: { schemaPath: string; typeScriptPath: string }) => {
+  // todo use @dprint/formatter
   const schemaSource = await fs.readFile(params.schemaPath, `utf8`)
   const code = generateCode({ schemaSource })
   await fs.writeFile(params.typeScriptPath, code, { encoding: `utf8` })
