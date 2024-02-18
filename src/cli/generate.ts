@@ -1,4 +1,4 @@
-import { generateFile } from '../lib/generateTypes.js'
+import { generateFile } from '../lib/generate.js'
 
 await generateFile({
   schemaPath: `./examples/schema.graphql`,

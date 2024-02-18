@@ -10,6 +10,8 @@ export namespace Code {
   export const object = (fields: string) => `{\n${fields}\n}`
   export const interface$ = (name: string, fields: string) => `interface ${name} ${Code.object(fields)}`
   export const export$ = (thing: string) => `export ${thing}`
+  export const TSDoc = (content: string | null, block: string) =>
+    content === null ? block : `/**\n${prependLines(`* `, content) || `*`}\n*/\n${block}`
   export const namespace = (name: string, content: string) => `namespace ${name} ${Code.object(content)}`
   export const group = (...content: string[]) => content.join(`\n`)
   export const commentSectionTitle = (title: string) => {
@@ -20,3 +22,5 @@ export namespace Code {
     return `\n\n// ${line} //\n// ${titlePrefixSpace + title + titleSuffixSpace} //\n// ${line} //\n\n`
   }
 }
+
+const prependLines = (prepend: string, str: string) => str.split(`\n`).map((line) => `${prepend}${line}`).join(`\n`)

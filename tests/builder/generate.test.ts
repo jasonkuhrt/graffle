@@ -1,6 +1,6 @@
 import { readFile } from 'fs/promises'
 import { expect, test } from 'vitest'
-import { generateFile } from '../../src/lib/generateTypes.js'
+import { generateFile } from '../../src/lib/generate.js'
 
 test(`generates types from GraphQL SDL file`, async () => {
   await generateFile({

@@ -31,6 +31,7 @@ __typename: "Query"
 string: $.Scalars["String"] | null
 scalars: Object.Scalars | null
 fooBarUnion: Union.FooBarUnion | null
+abcEnum: Enum.ABCEnum | null
 }
 }
 
@@ -39,8 +40,18 @@ fooBarUnion: Union.FooBarUnion | null
 // ------------------------------------------------------------ //
 
 export namespace Enum {
-// -- no types --
-
+/**
+* Enum documentation.
+* 
+* Members
+* "A" - (DEPRECATED: Enum value A is deprecated.)
+* "B" - Enum B member documentation.
+* "C" - Enum C member documentation. (DEPRECATED: Enum value C is deprecated.)
+*/
+export type ABCEnum =
+| "A"
+| "B"
+| "C"
 }
 
 // ------------------------------------------------------------ //
@@ -66,8 +77,16 @@ export namespace Interface {
 // ------------------------------------------------------------ //
 
 export namespace Object {
+/**
+* Object documentation.
+*/
 export interface Foo {
 __typename: "Foo"
+/**
+* Field documentation.
+* 
+* @deprecated Field a is deprecated.
+*/
 a: $.Scalars["String"] | null
 }
 
@@ -91,6 +110,9 @@ e: $.Scalars["ID"] | null
 // ------------------------------------------------------------ //
 
 export namespace Union {
+/**
+* Union documentation.
+*/
 export type FooBarUnion =
 | Object.Foo& { $$union:true}
 | Object.Bar& { $$union:true}
