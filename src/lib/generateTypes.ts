@@ -1,3 +1,6 @@
+/**
+ * Emit JSDoc from GraphQL descriptions
+ */
 import type {
   GraphQLField,
   GraphQLInputField,
@@ -29,24 +32,26 @@ type AnyGraphQLField = GraphQLField<any, any, any> | GraphQLInputField
 
 type AnyGraphQLFieldsType = GraphQLObjectType | GraphQLInterfaceType | GraphQLInputObjectType
 
-const definePointerRenderers = <$Renderers extends { [ClassName in keyof NameToClass]: any }>(renderers: {
-  [ClassName in keyof $Renderers]: (
-    node: ClassName extends keyof NameToClass ? InstanceType<NameToClass[ClassName]> : never,
-  ) => string
-}) => renderers
+const definePointerRenderers = <$Renderers extends { [ClassName in keyof NameToClass]: any }>(
+  renderers: {
+    [ClassName in keyof $Renderers]: (
+      node: ClassName extends keyof NameToClass ? InstanceType<NameToClass[ClassName]> : never,
+    ) => string
+  },
+) => renderers
 
 const defineConcreteRenderers = <
   $Renderers extends { [ClassName in keyof NameToClassNamedType]: any },
->(renderers: {
+>(
+  renderers: {
+    [ClassName in keyof $Renderers]: (
+      node: ClassName extends keyof NameToClassNamedType ? InstanceType<NameToClassNamedType[ClassName]>
+        : never,
+    ) => string
+  },
+): {
   [ClassName in keyof $Renderers]: (
-    node: ClassName extends keyof NameToClassNamedType
-      ? InstanceType<NameToClassNamedType[ClassName]>
-      : never,
-  ) => string
-}): {
-  [ClassName in keyof $Renderers]: (
-    node: ClassName extends keyof NameToClass
-      ? InstanceType<NameToClass[ClassName]> | null | undefined
+    node: ClassName extends keyof NameToClass ? InstanceType<NameToClass[ClassName]> | null | undefined
       : never,
   ) => string
 } => {
@@ -96,9 +101,9 @@ const concreteRenderers = defineConcreteRenderers({
         node.getValues().map((_) => Code.quote(_.name)),
       ),
     ),
-  GraphQLInputObjectType: (node) => Code.export$(Code.inter(node.name, renderFields(node))),
-  GraphQLInterfaceType: (node) => Code.export$(Code.inter(node.name, renderFields(node))),
-  GraphQLObjectType: (node) => Code.export$(Code.inter(node.name, renderFields(node))),
+  GraphQLInputObjectType: (node) => Code.export$(Code.interface$(node.name, renderFields(node))),
+  GraphQLInterfaceType: (node) => Code.export$(Code.interface$(node.name, renderFields(node))),
+  GraphQLObjectType: (node) => Code.export$(Code.interface$(node.name, renderFields(node))),
   GraphQLScalarType: () => ``,
   GraphQLUnionType: (node) =>
     Code.export$(
@@ -116,8 +121,7 @@ const renderFields = (node: AnyGraphQLFieldsType): string => {
 }
 
 const renderField = (field: AnyGraphQLField): string => {
-  const [fieldType, nullable] =
-    field.type instanceof GraphQLNonNull ? [field.type.ofType, false] : [field.type, true]
+  const [fieldType, nullable] = field.type instanceof GraphQLNonNull ? [field.type.ofType, false] : [field.type, true]
   return nullable ? Code.nullable(dispatchToPointerRenderer(fieldType)) : dispatchToPointerRenderer(fieldType) // eslint-disable-line
 }
 
@@ -141,30 +145,33 @@ export const generateSchemaTypes = (input: Input) => {
 
   let code = ``
 
-  code += `
-    namespace $ {
-      export interface Scalars {
-        ${typeMapByKind.GraphQLScalarType.map((_) => {
+  code += Code.export$(Code.namespace(
+    `$`,
+    Code.export$(Code.interface$(
+      `Scalars`,
+      `
+    ${
+        typeMapByKind.GraphQLScalarType.map((_) => {
           // todo strict mode where instead of falling back to "any" we throw an error
-          const type = scalarTypeMap[_.name] || `any`
+          const type = scalarTypeMap[_.name] || `string`
           return Code.fieldType(_.name, type)
-        }).join(`\n`)}
-      } 
-    }
-  `
+        }).join(`\n`)
+      }
+  `,
+    )),
+  ))
 
   for (const [name, types] of entries(typeMapByKind)) {
     if (name === `GraphQLScalarType`) continue
 
     const namespaceName = name === `GraphQLRootTypes` ? `Root` : namespaceNames[name]
     code += Code.commentSectionTitle(namespaceName)
-    code += `export namespace ${namespaceName} {\n`
-    if (types.length === 0) {
-      code += `// -- no types --\n`
-      continue
-    }
-    code += types.map(dispatchToConcreteRenderer).join(`\n\n`)
-    code += `}`
+    code += Code.export$(Code.namespace(
+      namespaceName,
+      types.length === 0
+        ? `// -- no types --\n`
+        : types.map(dispatchToConcreteRenderer).join(`\n\n`),
+    ))
   }
 
   return code

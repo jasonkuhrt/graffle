@@ -7,8 +7,9 @@ export namespace Code {
   export const list = (type: string) => `Array<${type}>`
   export const fieldType = (name: string, type: string) => `${name}: ${type}`
   export const fieldTypes = (fieldTypes: string[]) => fieldTypes.join(`\n`)
-  export const inter = (name: string, fields: string) => `interface ${name} {\n${fields}\n}`
+  export const interface$ = (name: string, fields: string) => `interface ${name} {\n${fields}\n}`
   export const export$ = (thing: string) => `export ${thing}`
+  export const namespace = (name: string, content: string) => `namespace ${name} {\n${content}\n}`
   export const commentSectionTitle = (title: string) => {
     const lineSize = 60
     const line = `-`.repeat(lineSize)

@@ -1,10 +1,10 @@
-namespace $ {
+export namespace $ {
   export interface Scalars {
     Boolean: boolean
     Int: number
     String: string
     ID: string
-    Date: any
+    Date: string
     Float: number
   }
 }
@@ -122,6 +122,9 @@ export namespace Root {
   }
 
   export interface Query {
+    /**
+     * testing
+     */
     environment:
       | Object.Environment
       | Object.ErrorInternal
@@ -702,6 +705,9 @@ export namespace Object {
   }
 
   export interface EnvironmentAccelerate {
+    /**
+     * Nullable.
+     */
     databaseLink: Object.DatabaseLink | null
     holds: Array<Object.ProductHold>
     status:
