@@ -1,3 +1,4 @@
+import type { NonEmptyString } from './prelude.js'
 import type {
   ExcludeNull,
   Indicator,
@@ -18,10 +19,20 @@ export type SelectionSet<T, $Index extends SchemaIndex> =
 													                TSError<'SelectionSet', 'T is not a SelectableFieldsType',{ T:T }>
 
 // todo an empty selection set should be a static type error
-// dprint-ignore
-type SelectionSetObject<$ObjectType extends ObjectType, $Index extends SchemaIndex> = {
-  [Key in keyof $ObjectType]?: SelectionSet<ExcludeNull<$ObjectType[Key]>, $Index>
-}
+type SelectionSetObject<$Object extends ObjectType, $Index extends SchemaIndex> =
+  & {
+    [Key in keyof $Object]?: SelectionSet<ExcludeNull<$Object[Key]>, $Index>
+  }
+  /**
+   * Alias support.
+   * Allow every field to also be given as a key with this pattern `<field>_as_<alias>: ...`
+   */
+  & {
+    [Key in keyof $Object as `${keyof $Object & string}_as_${NonEmptyString}`]?: SelectionSet<
+      ExcludeNull<$Object[Key]>,
+      $Index
+    >
+  }
 
 // TODO why does $object no get passed to this in a distributed way?
 type SelectionSetUnion<$Object extends ObjectType, $Index extends SchemaIndex> =

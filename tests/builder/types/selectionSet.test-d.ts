@@ -35,11 +35,16 @@ test(`general`, () => {
   // enum type
   assertType<S>({ abcEnum: true })
 
-  // todo alias
   // alias: enum
   assertType<S>({ abcEnum_as_enum: true })
   // alias: object
   assertType<S>({ scalars_as_s: { a: true } })
+  // @ts-expect-error invalid alias key format
+  assertType<S>({ scalars_as_: { a: true } })
+  // @ts-expect-error invalid alias key format
+  assertType<S>({ scalars_as: { a: true } })
+  // @ts-expect-error invalid alias key format
+  assertType<S>({ scalars2_as_s: { a: true } })
 
   // todo directive @skip
   assertType<S>({ string: skip({ if: true }) })
