@@ -1,6 +1,9 @@
 type Query {
 	string: String
-	scalars: Scalars
+	stringWithRequiredArg(string:String!): String
+	stringWithArgs(string:String, int:Int, float:Float, boolean:Boolean, id:ID): String
+	object: Object
+	objectWithArgs(string:String, int:Int, float:Float, boolean:Boolean, id:ID): Object
 	fooBarUnion: FooBarUnion
 	"""
 	Query enum field documentation.
@@ -27,7 +30,7 @@ type Bar {
 	b: Int
 }
 
-type Scalars {
+type Object {
 	a: String
 	b: Int
 	c: Float

@@ -5,8 +5,13 @@ export namespace Code {
   export const union = (name: string, types: string[]) => `type ${name} =\n| ${Code.unionItems(types)}`
   export const unionItems = (types: string[]) => types.join(`\n| `)
   export const list = (type: string) => `Array<${type}>`
-  export const field = (name: string, type: string) => `${name}: ${type}`
+  export const field = (name: string, type: string, options?: { optional?: boolean }) => {
+    if (options?.optional) return `${name}?: ${type}`
+    return `${name}: ${type}`
+  }
+  export const optionalField = (name: string, type: string) => Code.field(name, type, { optional: true })
   export const fields = (fieldTypes: string[]) => fieldTypes.join(`\n`)
+  export const intersection = (a: string, b: string) => `${a} & ${b}`
   export const object = (fields: string) => `{\n${fields}\n}`
   export const interface$ = (name: string, fields: string) => `interface ${name} ${Code.object(fields)}`
   export const export$ = (thing: string) => `export ${thing}`

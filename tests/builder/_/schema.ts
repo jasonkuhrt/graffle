@@ -29,7 +29,30 @@ export namespace Root {
 export interface Query {
 __typename: "Query"
 string: $.Scalars["String"] | null
-scalars: Object.Scalars | null
+stringWithRequiredArg: $.Scalars["String"] & {
+$: {
+string: $.Scalars["String"]
+}
+} | null
+stringWithArgs: $.Scalars["String"] & {
+$?: {
+string?: $.Scalars["String"] | null
+int?: $.Scalars["Int"] | null
+float?: $.Scalars["Float"] | null
+boolean?: $.Scalars["Boolean"] | null
+id?: $.Scalars["ID"] | null
+}
+} | null
+object: Object.Object | null
+objectWithArgs: Object.Object & {
+$?: {
+string?: $.Scalars["String"] | null
+int?: $.Scalars["Int"] | null
+float?: $.Scalars["Float"] | null
+boolean?: $.Scalars["Boolean"] | null
+id?: $.Scalars["ID"] | null
+}
+} | null
 fooBarUnion: Union.FooBarUnion | null
 /**
 * Query enum field documentation.
@@ -98,8 +121,8 @@ __typename: "Bar"
 b: $.Scalars["Int"] | null
 }
 
-export interface Scalars {
-__typename: "Scalars"
+export interface Object {
+__typename: "Object"
 a: $.Scalars["String"] | null
 b: $.Scalars["Int"] | null
 c: $.Scalars["Float"] | null

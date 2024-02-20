@@ -149,3 +149,7 @@ export type Character =
   | 'Z'
 
 export type NonEmptyString = `${Character}${string}`
+
+export type MaybeList<T> = T | T[]
+
+export type NotEmptyObject<T> = keyof T extends never ? never : T

@@ -1,12 +1,24 @@
 // todo Emit JSDoc from GraphQL descriptions
-import type { GraphQLEnumValue, GraphQLInputObjectType, GraphQLInterfaceType, GraphQLNamedType } from 'graphql'
+import type {
+  GraphQLArgument,
+  GraphQLEnumValue,
+  GraphQLInputObjectType,
+  GraphQLInterfaceType,
+  GraphQLNamedType,
+} from 'graphql'
 import { GraphQLNonNull, GraphQLObjectType, isEnumType } from 'graphql'
 import { buildSchema } from 'graphql'
 import _ from 'json-bigint'
 import fs from 'node:fs/promises'
 import { Code } from './Code.js'
 import type { AnyClass, AnyField, AnyNamedClassName, Describable, NameToClassNamedType } from './graphql.js'
-import { getNodeDisplayName, getTypeMapByKind, isDeprecatableNode, type NameToClass } from './graphql.js'
+import {
+  getNodeDisplayName,
+  getTypeMapByKind,
+  isDeprecatableNode,
+  isGraphQLOutputField,
+  type NameToClass,
+} from './graphql.js'
 import { entries, values } from './prelude.js'
 
 const namespaceNames = {
@@ -74,13 +86,13 @@ const dispatchToConcreteRenderer = (config: Config, node: GraphQLNamedType): str
 
 const pointerRenderers = definePointerRenderers({
   GraphQLNonNull: (config, node) => dispatchToPointerRenderer(config, node.ofType),
-  GraphQLEnumType: (config, node) => Code.propertyAccess(namespaceNames.GraphQLEnumType, node.name),
-  GraphQLInputObjectType: (config, node) => Code.propertyAccess(namespaceNames.GraphQLInputObjectType, node.name),
-  GraphQLInterfaceType: (config, node) => Code.propertyAccess(namespaceNames.GraphQLInterfaceType, node.name),
+  GraphQLEnumType: (_, node) => Code.propertyAccess(namespaceNames.GraphQLEnumType, node.name),
+  GraphQLInputObjectType: (_, node) => Code.propertyAccess(namespaceNames.GraphQLInputObjectType, node.name),
+  GraphQLInterfaceType: (_, node) => Code.propertyAccess(namespaceNames.GraphQLInterfaceType, node.name),
   GraphQLList: (config, node) => Code.list(dispatchToPointerRenderer(config, node.ofType)),
-  GraphQLObjectType: (config, node) => Code.propertyAccess(namespaceNames.GraphQLObjectType, node.name),
-  GraphQLScalarType: (config, node) => `$.Scalars[${Code.quote(node.name)}]`,
-  GraphQLUnionType: (config, node) => Code.propertyAccess(namespaceNames.GraphQLUnionType, node.name),
+  GraphQLObjectType: (_, node) => Code.propertyAccess(namespaceNames.GraphQLObjectType, node.name),
+  GraphQLScalarType: (_, node) => `$.Scalars[${Code.quote(node.name)}]`,
+  GraphQLUnionType: (_, node) => Code.propertyAccess(namespaceNames.GraphQLUnionType, node.name),
 })
 
 const concreteRenderers = defineConcreteRenderers({
@@ -168,8 +180,36 @@ const renderFields = (config: Config, node: AnyGraphQLFieldsType): string => {
 }
 
 const renderField = (config: Config, field: AnyField): string => {
-  const [node, nullable] = field.type instanceof GraphQLNonNull ? [field.type.ofType, false] : [field.type, true]
-  return nullable ? Code.nullable(dispatchToPointerRenderer(config, node)) : dispatchToPointerRenderer(config, node) // eslint-disable-line
+  const { node, nullable } = unwrapNonNull(field.type)
+
+  const fieldBase = dispatchToPointerRenderer(config, node)
+
+  const args = isGraphQLOutputField(field) && field.args.length > 0 ? renderArgs(config, field.args) : null
+  const fieldWithArgs = args ? Code.intersection(fieldBase, args) : fieldBase
+
+  const fieldWithArgsWithNullable = nullable ? Code.nullable(fieldWithArgs) : fieldWithArgs
+
+  return fieldWithArgsWithNullable
+}
+
+const renderArgs = (config: Config, args: readonly GraphQLArgument[]) => {
+  let hasRequiredArgs = false
+  const argsRendered = Code.object(Code.fields(args.map(arg => {
+    const { node, nullable } = unwrapNonNull(arg.type)
+    hasRequiredArgs = hasRequiredArgs || !nullable
+    return Code.field(
+      arg.name,
+      nullable ? Code.nullable(dispatchToPointerRenderer(config, node)) : dispatchToPointerRenderer(config, node),
+      { optional: nullable },
+    )
+  })))
+  const allArgsOptional = !hasRequiredArgs
+  return Code.object(Code.field(`$`, argsRendered, { optional: allArgsOptional }))
+}
+
+const unwrapNonNull = (node: AnyClass): { node: AnyClass; nullable: boolean } => {
+  const [nodeUnwrapped, nullable] = node instanceof GraphQLNonNull ? [node.ofType, false] : [node, true]
+  return { node: nodeUnwrapped, nullable }
 }
 
 const scalarTypeMap: Record<string, 'string' | 'number' | 'boolean'> = {

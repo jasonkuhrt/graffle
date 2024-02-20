@@ -101,6 +101,10 @@ export type AnyNamedClassName = keyof NamedNameToClass
 
 export type AnyClass = InstanceType<NameToClass[keyof NameToClass]>
 
+export const isGraphQLOutputField = (object: object): object is AnyGraphQLOutputField => {
+  return `args` in object
+}
+
 /**
  * Groups
  */
