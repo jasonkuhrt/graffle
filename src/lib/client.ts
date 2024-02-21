@@ -1,6 +1,7 @@
-import type { Query } from './ResultSet/ResultSet.js'
-import type { Index } from './schema/Schema.js'
-import type { SelectionSet } from './SelectionSet/_SelectionSet.js'
+import { ResultSet } from '../ResultSet/_ResultSet.js'
+import type { Query } from '../ResultSet/ResultSet.js'
+import type { Index } from '../schema/Schema.js'
+import type { SelectionSet } from '../SelectionSet/_SelectionSet.js'
 
 export type Client<$SchemaIndex extends Index> =
   & (

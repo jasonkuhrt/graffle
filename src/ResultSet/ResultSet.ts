@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
+import type { TSError } from '../lib/TSError.js'
 import type { Schema } from '../schema/_Schema.js'
 import type * as SelectionSet from '../SelectionSet/SelectionSet.js'
-import type { TSError } from '../TSError.js'
 
 export type Query<$SelectionSetQuery extends object, $Index extends Schema.Index> = Object<
   $SelectionSetQuery,

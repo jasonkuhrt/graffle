@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
-import type { MaybeList, NonEmptyString } from '../prelude.js'
+import type { MaybeList, NonEmptyString } from '../lib/prelude.js'
+import type { TSError } from '../lib/TSError.js'
 import type { Schema } from '../schema/_Schema.js'
-import type { TSError } from '../TSError.js'
 
 export type OmitArgs<T> = Omit<T, '$'>
 
