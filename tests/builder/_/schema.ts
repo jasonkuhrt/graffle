@@ -1,24 +1,22 @@
 export namespace $ {
-export interface Index {
-Root: {
-Query: Root.Query
-Mutation: null
-Subscription: null
-}
-unions: {
-Union: Union.FooBarUnion
-}
-scalars: Scalars
-}
-export interface Scalars {
-
+  export interface Index {
+    Root: {
+      Query: Root.Query
+      Mutation: null
+      Subscription: null
+    }
+    unions: {
+      Union: Union.FooBarUnion
+    }
+    scalars: Scalars
+  }
+  export interface Scalars {
     String: string
-Int: number
-Float: number
-Boolean: boolean
-ID: string
-  
-}
+    Int: number
+    Float: number
+    Boolean: boolean
+    ID: string
+  }
 }
 
 // ------------------------------------------------------------ //
@@ -26,39 +24,74 @@ ID: string
 // ------------------------------------------------------------ //
 
 export namespace Root {
-export interface Query {
-__typename: "Query"
-string: $.Scalars["String"] | null
-stringWithRequiredArg: $.Scalars["String"] & {
-$: {
-string: $.Scalars["String"]
-}
-} | null
-stringWithArgs: $.Scalars["String"] & {
-$?: {
-string?: $.Scalars["String"] | null
-int?: $.Scalars["Int"] | null
-float?: $.Scalars["Float"] | null
-boolean?: $.Scalars["Boolean"] | null
-id?: $.Scalars["ID"] | null
-}
-} | null
-object: Object.Object | null
-objectWithArgs: Object.Object & {
-$?: {
-string?: $.Scalars["String"] | null
-int?: $.Scalars["Int"] | null
-float?: $.Scalars["Float"] | null
-boolean?: $.Scalars["Boolean"] | null
-id?: $.Scalars["ID"] | null
-}
-} | null
-fooBarUnion: Union.FooBarUnion | null
-/**
-* Query enum field documentation.
-*/
-abcEnum: Enum.ABCEnum | null
-}
+  export interface Query {
+    __typename: {
+      type: 'Query'
+      nullable: false
+      args: null
+    }
+    string: {
+      type: $.Scalars['String']
+      nullable: true
+      args: null
+    }
+    stringWithRequiredArg: {
+      type: $.Scalars['String']
+      nullable: true
+      args: {
+        type: {
+          string: $.Scalars['String']
+        }
+        allOptional: false
+      }
+    }
+    stringWithArgs: {
+      type: $.Scalars['String']
+      nullable: true
+      args: {
+        type: {
+          string?: $.Scalars['String'] | null
+          int?: $.Scalars['Int'] | null
+          float?: $.Scalars['Float'] | null
+          boolean?: $.Scalars['Boolean'] | null
+          id?: $.Scalars['ID'] | null
+        }
+        allOptional: true
+      }
+    }
+    object: {
+      type: Object.Object
+      nullable: true
+      args: null
+    }
+    objectWithArgs: {
+      type: Object.Object
+      nullable: true
+      args: {
+        type: {
+          string?: $.Scalars['String'] | null
+          int?: $.Scalars['Int'] | null
+          float?: $.Scalars['Float'] | null
+          boolean?: $.Scalars['Boolean'] | null
+          id?: $.Scalars['ID'] | null
+        }
+        allOptional: true
+      }
+    }
+    fooBarUnion: {
+      type: Union.FooBarUnion
+      nullable: true
+      args: null
+    }
+    /**
+     * Query enum field documentation.
+     */
+    abcEnum: {
+      type: Enum.ABCEnum
+      nullable: true
+      args: null
+    }
+  }
 }
 
 // ------------------------------------------------------------ //
@@ -66,18 +99,18 @@ abcEnum: Enum.ABCEnum | null
 // ------------------------------------------------------------ //
 
 export namespace Enum {
-/**
-* Enum documentation.
-* 
-* Members
-* "A" - (DEPRECATED: Enum value A is deprecated.)
-* "B" - Enum B member documentation.
-* "C" - Enum C member documentation. (DEPRECATED: Enum value C is deprecated.)
-*/
-export type ABCEnum =
-| "A"
-| "B"
-| "C"
+  /**
+   * Enum documentation.
+   *
+   * Members
+   * "A" - (DEPRECATED: Enum value A is deprecated.)
+   * "B" - Enum B member documentation.
+   * "C" - Enum C member documentation. (DEPRECATED: Enum value C is deprecated.)
+   */
+  export type ABCEnum =
+    | 'A'
+    | 'B'
+    | 'C'
 }
 
 // ------------------------------------------------------------ //
@@ -85,8 +118,7 @@ export type ABCEnum =
 // ------------------------------------------------------------ //
 
 export namespace InputObject {
-// -- no types --
-
+  // -- no types --
 }
 
 // ------------------------------------------------------------ //
@@ -94,8 +126,7 @@ export namespace InputObject {
 // ------------------------------------------------------------ //
 
 export namespace Interface {
-// -- no types --
-
+  // -- no types --
 }
 
 // ------------------------------------------------------------ //
@@ -103,32 +134,72 @@ export namespace Interface {
 // ------------------------------------------------------------ //
 
 export namespace Object {
-/**
-* Object documentation.
-*/
-export interface Foo {
-__typename: "Foo"
-/**
-* Field documentation.
-* 
-* @deprecated Field a is deprecated.
-*/
-a: $.Scalars["String"] | null
-}
+  /**
+   * Object documentation.
+   */
+  export interface Foo {
+    __typename: {
+      type: 'Foo'
+      nullable: false
+      args: null
+    }
+    /**
+     * Field documentation.
+     *
+     * @deprecated Field a is deprecated.
+     */
+    a: {
+      type: $.Scalars['String']
+      nullable: true
+      args: null
+    }
+  }
 
-export interface Bar {
-__typename: "Bar"
-b: $.Scalars["Int"] | null
-}
+  export interface Bar {
+    __typename: {
+      type: 'Bar'
+      nullable: false
+      args: null
+    }
+    b: {
+      type: $.Scalars['Int']
+      nullable: true
+      args: null
+    }
+  }
 
-export interface Object {
-__typename: "Object"
-a: $.Scalars["String"] | null
-b: $.Scalars["Int"] | null
-c: $.Scalars["Float"] | null
-d: $.Scalars["Boolean"] | null
-e: $.Scalars["ID"] | null
-}
+  export interface Object {
+    __typename: {
+      type: 'Object'
+      nullable: false
+      args: null
+    }
+    a: {
+      type: $.Scalars['String']
+      nullable: true
+      args: null
+    }
+    b: {
+      type: $.Scalars['Int']
+      nullable: true
+      args: null
+    }
+    c: {
+      type: $.Scalars['Float']
+      nullable: true
+      args: null
+    }
+    d: {
+      type: $.Scalars['Boolean']
+      nullable: true
+      args: null
+    }
+    e: {
+      type: $.Scalars['ID']
+      nullable: true
+      args: null
+    }
+  }
 }
 
 // ------------------------------------------------------------ //
@@ -136,10 +207,10 @@ e: $.Scalars["ID"] | null
 // ------------------------------------------------------------ //
 
 export namespace Union {
-/**
-* Union documentation.
-*/
-export type FooBarUnion =
-| Object.Foo& { $$union:true}
-| Object.Bar& { $$union:true}
+  /**
+   * Union documentation.
+   */
+  export type FooBarUnion =
+    | Object.Foo & { $$union: true }
+    | Object.Bar & { $$union: true }
 }

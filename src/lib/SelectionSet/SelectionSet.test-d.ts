@@ -1,8 +1,8 @@
 import { assertType, test } from 'vitest'
-import type { SelectionSet } from '../../../src/lib/SelectionSet.js'
-import type * as Schema from '../_/schema.js'
+import type * as Schema from '../../../tests/builder/_/schema.js'
+import type { Query } from './SelectionSet.js'
 
-type S = SelectionSet<Schema.Root.Query, Schema.$.Index>
+type S = Query<Schema.$.Index>
 
 test(`general`, () => {
   // scalar
