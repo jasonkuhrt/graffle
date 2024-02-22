@@ -82,7 +82,7 @@
     "eslint-plugin-simple-import-sort": "^12.0.0",
     "eslint-plugin-tsdoc": "^0.2.17",
     "express": "^4.18.2",
-    "fetch-cookie": "^2.2.0",
+    "fetch-cookie": "^3.0.0",
     "get-port": "^7.0.0",
     "graphql": "^16.8.1",
     "graphql-tag": "^2.12.6",

@@ -77,8 +77,8 @@ devDependencies:
     specifier: ^4.18.2
     version: 4.18.2
   fetch-cookie:
-    specifier: ^2.2.0
-    version: 2.2.0
+    specifier: ^3.0.0
+    version: 3.0.0
   get-port:
     specifier: ^7.0.0
     version: 7.0.0
@@ -2629,8 +2629,8 @@ packages:
       format: 0.2.2
     dev: true
 
-  /fetch-cookie@2.2.0:
-    resolution: {integrity: sha512-h9AgfjURuCgA2+2ISl8GbavpUdR+WGAM2McW/ovn4tVccegp8ZqCKWSBR8uRdM8dDNlx5WdKRWxBYUwteLDCNQ==}
+  /fetch-cookie@3.0.0:
+    resolution: {integrity: sha512-Pfh55Pm/f8pWRTtAHwh+072HhE6mao8+6SNzyf2711DOIwUIKc8EVvynYQKBSHCh8syXlM2tnPXpYuWLNfN2xw==}
     dependencies:
       set-cookie-parser: 2.6.0
       tough-cookie: 4.1.3
