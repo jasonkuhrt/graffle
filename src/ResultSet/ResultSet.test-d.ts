@@ -1,20 +1,26 @@
 import { expectTypeOf, test } from 'vitest'
 import type * as Schema from '../../tests/builder/_/schema.js'
-import type { ResultSet } from './_ResultSet.js'
+import type { ResultSet } from './__.js'
 
 type I = Schema.$.Index
 
 // dprint-ignore
 test(`general`, () => {
   // scalar
-  expectTypeOf<ResultSet.Query<{ string: true }, I>>().toEqualTypeOf<{ string: string | null }>()
-  
+  expectTypeOf<ResultSet.Query<{ string: true }, I>>().toEqualTypeOf<{
+    string: string | null
+  }>()
+
   // Arguments
   // scalar
-  expectTypeOf<ResultSet.Query<{ stringWithArgs: true }, I>>().toEqualTypeOf<{ stringWithArgs: null | string }>()
+  expectTypeOf<ResultSet.Query<{ stringWithArgs: true }, I>>().toEqualTypeOf<{
+    stringWithArgs: null | string
+  }>()
 
   // error: unknown field
-  expectTypeOf<ResultSet.Query<{ string2: true }, I>>().toEqualTypeOf<{ string2: ResultSet.Errors.UnknownFieldName<'string2', Schema.Root.Query> }>()
+  expectTypeOf<ResultSet.Query<{ string2: true }, I>>().toEqualTypeOf<{
+    string2: ResultSet.Errors.UnknownFieldName<'string2', Schema.Root.Query>
+  }>()
 
   // assertType<ResultSetQuery<{ string: true }, Schema.$.Index>>({string:''})
 })

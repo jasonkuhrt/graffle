@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
 import type { TSError } from '../lib/TSError.js'
-import type { Schema } from '../schema/_Schema.js'
+import type { Schema } from '../schema/__.js'
 import type * as SelectionSet from '../SelectionSet/SelectionSet.js'
 
-export type Query<$SelectionSetQuery extends object, $Index extends Schema.Index> = Object<
-  $SelectionSetQuery,
-  Exclude<$Index['Root']['Query'], null>
->
+export type Query<
+  $SelectionSetQuery extends object,
+  $Index extends Schema.Index,
+> = Object<$SelectionSetQuery, Exclude<$Index['Root']['Query'], null>>
 
 // // dprint-ignore
 // export type ResultSet<$SelectionSet extends object, $Node extends Schema.Node> =
@@ -15,17 +15,25 @@ export type Query<$SelectionSetQuery extends object, $Index extends Schema.Index
 // 		? null | ResultSet<$SelectionSet, Exclude<$Node, Schema.Nullable>>
 // 		: ResultSetObject<$SelectionSet, $Node>
 
-export type Object<$SelectionSet extends object, $Object extends Schema.Object> = {
-  [
-    $Key in keyof SelectionSet.OmitArgs<$SelectionSet> & string
-  ]: $Key extends keyof $Object ? Field<Schema.AsField<$Object[$Key]>>
-    : Errors.UnknownFieldName<$Key,$Object>
+export type Object<
+  $SelectionSet extends object,
+  $Object extends Schema.Object,
+> = {
+  [$Key in keyof SelectionSet.OmitArgs<$SelectionSet> &
+    string]: $Key extends keyof $Object
+    ? Field<Schema.AsField<$Object[$Key]>>
+    : Errors.UnknownFieldName<$Key, $Object>
 }
 
-type Field<$Field extends Schema.Field> = $Field['type'] | ($Field['nullable'] extends true ? null : never)
+type Field<$Field extends Schema.Field> =
+  | $Field['type']
+  | ($Field['nullable'] extends true ? null : never)
 
 export namespace Errors {
-  export type UnknownFieldName<$FieldName extends string, $Node extends Schema.Object> = TSError<
+  export type UnknownFieldName<
+    $FieldName extends string,
+    $Node extends Schema.Object,
+  > = TSError<
     'ResultSetObject',
     `field "${$FieldName}" does not exist on schema object "${$Node['__typename']['type']}"`
   >
