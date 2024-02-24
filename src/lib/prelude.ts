@@ -148,7 +148,7 @@ export type Character =
   | 'Y'
   | 'Z'
 
-export type NonEmptyString = `${Character}${string}`
+export type StringNonEmpty = `${Character}${string}`
 
 export type MaybeList<T> = T | T[]
 
@@ -157,3 +157,7 @@ export type NotEmptyObject<T> = keyof T extends never ? never : T
 export type Values<T> = T[keyof T]
 
 export type GetKeyOr<T, Key, Or> = Key extends keyof T ? T[Key] : Or
+
+import type { ConditionalSimplifyDeep } from 'type-fest/source/conditional-simplify.js'
+
+export type SimplifyDeep<T> = ConditionalSimplifyDeep<T, Function | Iterable<unknown> | Date, object> // eslint-disable-line

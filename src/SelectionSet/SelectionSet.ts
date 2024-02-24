@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
-import type { MaybeList, NonEmptyString, Values } from '../lib/prelude.js'
+import { O } from 'vitest/dist/reporters-QGe8gs4b.js'
+import type { MaybeList, StringNonEmpty, Values } from '../lib/prelude.js'
 import type { TSError } from '../lib/TSError.js'
 import type { Schema } from '../schema/__.js'
 
@@ -31,7 +32,7 @@ type SelectionSetObject<
    * Allow every field to also be given as a key with this pattern `<field>_as_<alias>: ...`
    */ {
     [
-      Key in keyof $Object as `${keyof $Object & string}_as_${NonEmptyString}`
+      Key in keyof $Object as `${keyof $Object & string}_as_${StringNonEmpty}`
     ]?: SelectionSetField<
       Schema.AsField<$Object[Key]>,
       $Index
@@ -103,7 +104,19 @@ export type UnionExtractFragmentNames<T> = Values<
   }
 >
 export type UnionOmitFragments<T> = {
-  [$K in keyof T as $K extends `on${NonEmptyString}` ? never : $K]: T[$K]
+  [$K in keyof T as $K extends `on${StringNonEmpty}` ? never : $K]: T[$K]
+}
+
+export type OmitNegativeIndicators<$SelectionSet> = {
+  [K in keyof $SelectionSet as $SelectionSet[K] extends ClientIndicatorNegative ? never : K]: $SelectionSet[K]
+}
+
+export type AliasNameOrigin<N> = N extends `${infer O}_as_${StringNonEmpty}` ? O : N
+
+export type AliasNameTarget<N> = N extends `${StringNonEmpty}_as_${infer T}` ? T : N
+
+export type ResolveAliasTargets<T> = {
+  [K in keyof T as AliasNameTarget<K>]: T[K]
 }
 
 /**
