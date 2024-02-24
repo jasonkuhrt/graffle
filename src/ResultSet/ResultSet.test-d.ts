@@ -41,6 +41,9 @@ test(`general`, () => {
   // Interface
   // todo
 
+  // List
+  // todo
+
   // Alias
   // scalar
   expectTypeOf<RS<{ id_as_id2: true }>>().toEqualTypeOf<{ id2: null | string }>()
@@ -50,31 +53,37 @@ test(`general`, () => {
   // union fragment
   expectTypeOf<RS<{ fooBarUnion: { onFoo: { id_as_id2: true } } }>>().toEqualTypeOf<{ fooBarUnion: null | {} | { id2: null|string } }>()
 
-  // Directive on scalar non-nullable
-  // include
+  // Directive @include
+  // On scalar non-nullable
   expectTypeOf<RS<{ idNonNull: { $include: boolean } }>>().toEqualTypeOf<{ idNonNull: null|string }>()
   expectTypeOf<RS<{ idNonNull: { $include: {if:boolean} } }>>().toEqualTypeOf<{ idNonNull: null|string }>()
   expectTypeOf<RS<{ idNonNull: { $include: true } }>>().toEqualTypeOf<{ idNonNull: string }>()
   expectTypeOf<RS<{ idNonNull: { $include: {if:true} } }>>().toEqualTypeOf<{ idNonNull: string }>()
   expectTypeOf<RS<{ idNonNull: { $include: false } }>>().toEqualTypeOf<{ idNonNull: null }>()
   expectTypeOf<RS<{ idNonNull: { $include: {if:false} } }>>().toEqualTypeOf<{ idNonNull: null }>()
-  // skip
+  // On scalar nullable
+  expectTypeOf<RS<{ id: { $include: boolean } }>>().toEqualTypeOf<{ id: null|string }>()
+  expectTypeOf<RS<{ id: { $include: false } }>>().toEqualTypeOf<{ id: null }>()
+  expectTypeOf<RS<{ id: { $include: true } }>>().toEqualTypeOf<{ id: null|string }>()
+
+  // Directive @skip
+  // On scalar non-nullable
   expectTypeOf<RS<{ idNonNull: { $skip: boolean } }>>().toEqualTypeOf<{ idNonNull: null|string }>()
   expectTypeOf<RS<{ idNonNull: { $skip: {if:boolean} } }>>().toEqualTypeOf<{ idNonNull: null|string }>()
   expectTypeOf<RS<{ idNonNull: { $skip: true } }>>().toEqualTypeOf<{ idNonNull: null }>()
   expectTypeOf<RS<{ idNonNull: { $skip: {if:true} } }>>().toEqualTypeOf<{ idNonNull: null }>()
   expectTypeOf<RS<{ idNonNull: { $skip: false } }>>().toEqualTypeOf<{ idNonNull: string }>()
   expectTypeOf<RS<{ idNonNull: { $skip: {if:false} } }>>().toEqualTypeOf<{ idNonNull: string }>()
-  // Directive on scalar nullable
-  // include
-  expectTypeOf<RS<{ id: { $include: boolean } }>>().toEqualTypeOf<{ id: null|string }>()
-  expectTypeOf<RS<{ id: { $include: false } }>>().toEqualTypeOf<{ id: null }>()
-  expectTypeOf<RS<{ id: { $include: true } }>>().toEqualTypeOf<{ id: null|string }>()
-  // skip
+  // On scalar nullable
   expectTypeOf<RS<{ id: { $skip: boolean } }>>().toEqualTypeOf<{ id: null|string }>()
   expectTypeOf<RS<{ id: { $skip: false } }>>().toEqualTypeOf<{ id: null|string }>()
   expectTypeOf<RS<{ id: { $skip: true } }>>().toEqualTypeOf<{ id: null }>()
 
+  // Directive @defer
+  // todo
+
+  // Directive @stream
+  // todo
 
   // Field Group
   // todo
