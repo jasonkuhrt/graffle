@@ -6,16 +6,7 @@ import type {
   GraphQLInterfaceType,
   GraphQLNamedType,
 } from 'graphql'
-import {
-  GraphQLNonNull,
-  GraphQLObjectType,
-  isEnumType,
-  isInterfaceType,
-  isNamedType,
-  isObjectType,
-  isScalarType,
-  isUnionType,
-} from 'graphql'
+import { GraphQLNonNull, GraphQLObjectType, isEnumType, isNamedType } from 'graphql'
 import { buildSchema } from 'graphql'
 import _ from 'json-bigint'
 import fs from 'node:fs/promises'
@@ -44,7 +35,7 @@ type AnyGraphQLFieldsType =
   | GraphQLInterfaceType
   | GraphQLInputObjectType
 
-const definePointerRenderers = <
+const defineReferenceRenderers = <
   $Renderers extends { [ClassName in keyof NameToClass]: any },
 >(
   renderers: {
@@ -85,7 +76,7 @@ const defineConcreteRenderers = <
   ) as any
 }
 
-const dispatchToPointerRenderer = (config: Config, node: AnyClass): string => {
+const dispatchToReferenceRenderer = (config: Config, node: AnyClass): string => {
   // @ts-expect-error lookup
   const renderer = pointerRenderers[node.constructor.name] // eslint-disable-line
   if (!renderer) {
@@ -106,12 +97,12 @@ const dispatchToConcreteRenderer = (
   return renderer(config, node) // eslint-disable-line
 }
 
-const pointerRenderers = definePointerRenderers({
-  GraphQLNonNull: (config, node) => dispatchToPointerRenderer(config, node.ofType),
+const pointerRenderers = defineReferenceRenderers({
+  GraphQLNonNull: (config, node) => dispatchToReferenceRenderer(config, node.ofType),
   GraphQLEnumType: (_, node) => Code.propertyAccess(namespaceNames.GraphQLEnumType, node.name),
   GraphQLInputObjectType: (_, node) => Code.propertyAccess(namespaceNames.GraphQLInputObjectType, node.name),
   GraphQLInterfaceType: (_, node) => Code.propertyAccess(namespaceNames.GraphQLInterfaceType, node.name),
-  GraphQLList: (config, node) => Code.list(dispatchToPointerRenderer(config, node.ofType)),
+  GraphQLList: (config, node) => Code.list(dispatchToReferenceRenderer(config, node.ofType)),
   GraphQLObjectType: (_, node) => Code.propertyAccess(namespaceNames.GraphQLObjectType, node.name),
   GraphQLScalarType: (_, node) => `$.Scalars[${Code.quote(node.name)}]`,
   GraphQLUnionType: (_, node) => Code.propertyAccess(namespaceNames.GraphQLUnionType, node.name),
@@ -150,19 +141,18 @@ const concreteRenderers = defineConcreteRenderers({
       Code.export$(
         Code.interface$(
           node.name,
-          Code.fields([
-            Code.field(`__unionname`, Code.quote(node.name)),
-            Code.field(
-              `type`,
-              Code.unionItems(
+          Code.objectFrom({
+            __unionname: { type: Code.quote(node.name) },
+            type: {
+              type: Code.unionItems(
                 node
                   .getTypes()
                   .map(
-                    (_) => dispatchToPointerRenderer(config, _),
+                    (_) => dispatchToReferenceRenderer(config, _),
                   ),
               ),
-            ),
-          ]),
+            },
+          }),
         ),
       ),
     ),
@@ -223,15 +213,15 @@ const renderFields = (config: Config, node: AnyGraphQLFieldsType): string => {
     ? [
       Code.field(
         `__typename`,
-        Code.object(Code.fields([
-          Code.field(`type`, `"${node.name}"`),
-          Code.field(`nullable`, `false`),
-          Code.field(`args`, `null`),
-        ])),
+        Code.objectFrom({
+          type: { type: Code.quote(node.name) },
+          nullable: { type: false },
+          args: { type: null },
+        }),
       ),
     ]
     : []
-  return Code.fields([
+  return Code.object(Code.fields([
     ...__typenameField,
     ...values(node.getFields()).map((field) =>
       Code.TSDoc(
@@ -239,13 +229,13 @@ const renderFields = (config: Config, node: AnyGraphQLFieldsType): string => {
         Code.field(field.name, renderField(config, field)),
       )
     ),
-  ])
+  ]))
 }
 
 const renderField = (config: Config, field: AnyField): string => {
   const { node, nullable } = unwrapNonNull(field.type)
 
-  const type = dispatchToPointerRenderer(config, node)
+  const type = dispatchToReferenceRenderer(config, node)
 
   const args = isGraphQLOutputField(field) && field.args.length > 0
     ? renderArgs(config, field.args)
@@ -253,13 +243,12 @@ const renderField = (config: Config, field: AnyField): string => {
   // const fieldWithArgs = args ? Code.intersection(fieldBase, args) : fieldBase
   const name = isNamedType(node) ? node.name : null
 
-  return Code.object(Code.fields([
-    Code.field(`type`, type),
-    // todo keep type name on type node instead
-    Code.field(`typeName`, name ? Code.quote(name) : `null`),
-    Code.field(`nullable`, nullable ? `true` : `false`),
-    Code.field(`args`, args ?? `null`),
-  ]))
+  return Code.objectFrom({
+    type: { type },
+    typeName: { type: name ? Code.quote(name) : `null` },
+    nullable: { type: nullable ? `true` : `false` },
+    args: { type: args ?? `null` },
+  })
 }
 
 const renderArgs = (config: Config, args: readonly GraphQLArgument[]) => {
@@ -272,19 +261,17 @@ const renderArgs = (config: Config, args: readonly GraphQLArgument[]) => {
         return Code.field(
           arg.name,
           nullable
-            ? Code.nullable(dispatchToPointerRenderer(config, node))
-            : dispatchToPointerRenderer(config, node),
+            ? Code.nullable(dispatchToReferenceRenderer(config, node))
+            : dispatchToReferenceRenderer(config, node),
           { optional: nullable },
         )
       }),
     ),
   )
-  return Code.object(
-    Code.fields([
-      Code.field(`type`, argsRendered),
-      Code.field(`allOptional`, hasRequiredArgs ? `false` : `true`),
-    ]),
-  )
+  return Code.objectFrom({
+    type: { type: argsRendered },
+    allOptional: { type: hasRequiredArgs ? `false` : `true` },
+  })
 }
 
 const unwrapNonNull = (
@@ -351,72 +338,55 @@ export const generateCode = (input: Input) => {
         Code.export$(
           Code.interface$(
             `Index`,
-            Code.fields([
-              Code.field(
-                `Root`,
-                Code.object(
-                  Code.fields([
-                    Code.field(`Query`, hasQuery ? `Root.Query` : `null`),
-                    Code.field(
-                      `Mutation`,
-                      hasMutation ? `Root.Mutation` : `null`,
-                    ),
-                    Code.field(
-                      `Subscription`,
-                      hasSubscription ? `Root.Subscription` : `null`,
-                    ),
-                  ]),
+            Code.objectFrom({
+              Root: {
+                type: Code.objectFrom({
+                  Query: { type: hasQuery ? `Root.Query` : null },
+                  Mutation: { type: hasMutation ? `Root.Mutation` : null },
+                  Subscription: { type: hasSubscription ? `Root.Subscription` : null },
+                }),
+              },
+              objects: {
+                type: Code.objectFromEntries(
+                  typeMapByKind.GraphQLObjectType.map(_ => [_.name, Code.propertyAccess(`Object`, _.name)]),
                 ),
-              ),
-              Code.field(
-                `objects`,
-                Code.object(
-                  Code.fields(
-                    typeMapByKind.GraphQLObjectType.map(_ => Code.field(_.name, Code.propertyAccess(`Object`, _.name))),
+              },
+              unionMemberNames: {
+                type: Code.objectFromEntries(
+                  typeMapByKind.GraphQLUnionType.map(
+                    (_) => [_.name, Code.unionItems(_.getTypes().map(_ => Code.quote(_.name)))],
                   ),
                 ),
-              ),
-              Code.field(
-                `unionMemberNames`,
-                Code.object(
-                  Code.fields(typeMapByKind.GraphQLUnionType.map(
-                    (_) => Code.field(_.name, Code.unionItems(_.getTypes().map(_ => Code.quote(_.name)))),
-                  )),
-                ),
-              ),
-              Code.field(
-                `unions`,
-                Code.object(
-                  Code.fields([
-                    Code.field(
-                      `Union`,
-                      typeMapByKind.GraphQLUnionType.length > 0
+              },
+              unions: {
+                type: Code.objectFrom(
+                  {
+                    Union: {
+                      type: typeMapByKind.GraphQLUnionType.length > 0
                         ? Code.unionItems(
                           typeMapByKind.GraphQLUnionType.map(
-                            (_) => `Union.${_.name}`,
+                            (_) => Code.propertyAccess(`Union`, _.name),
                           ),
                         )
-                        : `null`,
-                    ),
-                  ]),
+                        : null,
+                    },
+                  },
                 ),
-              ),
-              Code.field(`scalars`, `Scalars`),
-            ]),
+              },
+              scalars: {
+                type: `Scalars`,
+              },
+            }),
           ),
         ),
         Code.export$(
           Code.interface$(
             `Scalars`,
-            `
-    ${
-              typeMapByKind.GraphQLScalarType.map((_) => {
-                // todo strict mode where instead of falling back to "any" we throw an error
-                const type = scalarTypeMap[_.name] || `string`
-                return Code.field(_.name, type)
-              }).join(`\n`)
-            }
-  `,
+            Code.objectFromEntries(typeMapByKind.GraphQLScalarType.map((_) => {
+              // todo strict mode where instead of falling back to "any" we throw an error
+              const type = scalarTypeMap[_.name] || `string`
+              return [_.name, type]
+            })),
           ),
         ),
       ),

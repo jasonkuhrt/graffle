@@ -21,13 +21,11 @@ Union: Union.FooBarUnion
 scalars: Scalars
 }
 export interface Scalars {
-
-    ID: string
+ID: string
 String: string
 Int: number
 Float: number
 Boolean: boolean
-  
 }
 }
 
@@ -90,6 +88,24 @@ object: {
 type: Object.Object
 typeName: "Object"
 nullable: true
+args: null
+}
+listListInt: {
+type: Array<Array<$.Scalars["Int"]>>
+typeName: null
+nullable: false
+args: null
+}
+listInt: {
+type: Array<$.Scalars["Int"]>
+typeName: null
+nullable: false
+args: null
+}
+listIntNonNull: {
+type: Array<$.Scalars["Int"]>
+typeName: null
+nullable: false
 args: null
 }
 objectNested: {

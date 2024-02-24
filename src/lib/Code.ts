@@ -13,7 +13,17 @@ export namespace Code {
   export const fields = (fieldTypes: string[]) => fieldTypes.join(`\n`)
   export const intersection = (a: string, b: string) => `${a} & ${b}`
   export const object = (fields: string) => `{\n${fields}\n}`
-  export const interface$ = (name: string, fields: string) => `interface ${name} ${Code.object(fields)}`
+  export const objectFromEntries = (entries: [string, string][]) =>
+    Code.objectFrom(Object.fromEntries(entries.map(([name, type]) => [name, { type }])))
+  export const objectFrom = (
+    object: Record<string, { type: null | string | boolean | number; optional?: boolean; tsdoc?: string }>,
+  ) =>
+    Code.object(
+      Code.fields(
+        Object.entries(object).map(([name, spec]) => Code.field(name, String(spec.type), { optional: spec.optional })),
+      ),
+    )
+  export const interface$ = (name: string, object: string) => `interface ${name} ${object}`
   export const export$ = (thing: string) => `export ${thing}`
   export const TSDoc = (content: string | null, block: string) =>
     content === null ? block : `/**\n${prependLines(`* `, content) || `*`}\n*/\n${block}`
