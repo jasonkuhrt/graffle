@@ -1,26 +1,28 @@
 import { expectTypeOf, test } from 'vitest'
 import type * as Schema from '../../tests/builder/_/schema.js'
+import type { SelectionSet } from '../SelectionSet/__.js'
 import type { ResultSet } from './__.js'
 
 type I = Schema.$.Index
 
+type RS<$S extends SelectionSet.Query<I>> = ResultSet.Query<$S, I>
+
 // dprint-ignore
 test(`general`, () => {
-  // scalar
-  expectTypeOf<ResultSet.Query<{ string: true }, I>>().toEqualTypeOf<{
-    string: string | null
-  }>()
+  // Scalar
+  expectTypeOf<RS<{ id: true }>>().toEqualTypeOf<{ id: null | string }>()
+  
+  // Object
+  expectTypeOf<RS<{ object: { id: true } }>>().toEqualTypeOf<{ object: null | { id: string | null } }>()
 
   // Arguments
   // scalar
-  expectTypeOf<ResultSet.Query<{ stringWithArgs: true }, I>>().toEqualTypeOf<{
-    stringWithArgs: null | string
-  }>()
+  expectTypeOf<RS<{ stringWithArgs: true }>>().toEqualTypeOf<{ stringWithArgs: null | string }>()
+  expectTypeOf<RS<{ stringWithArgs: { $: { string: '' } } }>>().toEqualTypeOf<{ stringWithArgs: null | string }>()
 
-  // error: unknown field
-  expectTypeOf<ResultSet.Query<{ string2: true }, I>>().toEqualTypeOf<{
-    string2: ResultSet.Errors.UnknownFieldName<'string2', Schema.Root.Query>
-  }>()
+  // Errors
+  // unknown field
+  expectTypeOf<RS<{ id2: true }>>().toEqualTypeOf<{ id2: ResultSet.Errors.UnknownFieldName<'id2', Schema.Root.Query> }>()
 
   // assertType<ResultSetQuery<{ string: true }, Schema.$.Index>>({string:''})
 })

@@ -2,12 +2,22 @@
 
 import type { TSError } from '../lib/TSError.js'
 import type { Schema } from '../schema/__.js'
-import type * as SelectionSet from '../SelectionSet/SelectionSet.js'
 
-export type Query<
-  $SelectionSetQuery extends object,
-  $Index extends Schema.Index,
-> = Object<$SelectionSetQuery, Exclude<$Index['Root']['Query'], null>>
+import type { ConditionalSimplifyDeep } from 'type-fest/source/conditional-simplify.js'
+
+type SimplifyDeep<T> = ConditionalSimplifyDeep<T, Function | Iterable<unknown> | Date, object> // eslint-disable-line
+
+// dprint-ignore
+export type Query<$SelectionSetQuery extends object, $Index extends Schema.Index> =
+  SimplifyDeep<Object<$SelectionSetQuery, Exclude<$Index['Root']['Query'], null>>>
+
+// dprint-ignore
+export type Mutation<$SelectionSetMutation extends object, $Index extends Schema.Index> =
+  SimplifyDeep<Object<$SelectionSetMutation, Exclude<$Index['Root']['Mutation'], null>>>
+
+// dprint-ignore
+export type Subscription<$SelectionSetSubscription extends object, $Index extends Schema.Index> =
+  SimplifyDeep<Object<$SelectionSetSubscription, Exclude<$Index['Root']['Subscription'], null>>>
 
 // // dprint-ignore
 // export type ResultSet<$SelectionSet extends object, $Node extends Schema.Node> =
@@ -15,28 +25,33 @@ export type Query<
 // 		? null | ResultSet<$SelectionSet, Exclude<$Node, Schema.Nullable>>
 // 		: ResultSetObject<$SelectionSet, $Node>
 
-export type Object<
-  $SelectionSet extends object,
-  $Object extends Schema.Object,
-> = {
-  [$Key in keyof SelectionSet.OmitArgs<$SelectionSet> &
-    string]: $Key extends keyof $Object
-    ? Field<Schema.AsField<$Object[$Key]>>
-    : Errors.UnknownFieldName<$Key, $Object>
+export type Object<$SelectionSet, $Object extends Schema.Object> = {
+  [$SSKey in keyof $SelectionSet & string]:
+    $SSKey extends keyof $Object
+      ? SimplifyDeep<Field<$SelectionSet[$SSKey], Schema.AsField<$Object[$SSKey]>>>
+      : Errors.UnknownFieldName<$SSKey, $Object>
 }
 
-type Field<$Field extends Schema.Field> =
-  | $Field['type']
-  | ($Field['nullable'] extends true ? null : never)
+// dprint-ignore
+type Field<$SelectionSet, $Field extends Schema.Field> =
+  | FieldNullable<$Field>
+  | Node<$SelectionSet, $Field['type']>
 
+type FieldNullable<$Field extends Schema.Field> = $Field['nullable'] extends true ? null : never
+
+// dprint-ignore
+type Node<$SelectionSet, $Node extends Schema.Node> =
+  $Node extends Schema.Object ? Object<$SelectionSet, $Node> :
+  $Node extends Schema.Scalar ? $Node
+                              : Errors.UnknownNode<$Node>
+
+// dprint-ignore
 export namespace Errors {
-  export type UnknownFieldName<
-    $FieldName extends string,
-    $Node extends Schema.Object,
-  > = TSError<
-    'ResultSetObject',
-    `field "${$FieldName}" does not exist on schema object "${$Node['__typename']['type']}"`
-  >
+  export type UnknownNode<$Node extends Schema.Node> =
+    TSError<'Node', `Unknown case`, { $Node: $Node }>
+
+  export type UnknownFieldName<$FieldName extends string, $Node extends Schema.Object> =
+    TSError<'ResultSetObject', `field "${$FieldName}" does not exist on schema object "${$Node['__typename']['type']}"`>
 }
 
 // type SelectField<$Objekt extends Schema.Object, $SelectionObjekt extends SelectionObjekt, $FieldName extends keyof $SelectionObjekt & string> =

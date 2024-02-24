@@ -6,21 +6,27 @@ type S = Query<Schema.$.Index>
 
 test(`general`, () => {
   // scalar
-  assertType<S>({ string: true })
-  assertType<S>({ string: false })
-  assertType<S>({ string: 1 })
-  assertType<S>({ string: 0 })
-  assertType<S>({ string: undefined })
+  assertType<S>({ id: true })
+  assertType<S>({ id: false })
+  assertType<S>({ id: 1 })
+  assertType<S>({ id: 0 })
+  assertType<S>({ id: undefined })
 
-  // object type
+  // scalar non-null
+  assertType<S>({ idNonNull: true })
+
+  // Object
   // @ts-expect-error excess property check
-  assertType<S>({ string2: true })
+  assertType<S>({ id2: true })
   // @ts-expect-error excess property check
   assertType<S>({ object: { a2: true } })
   assertType<S>({ __typename: true })
-  assertType<S>({ object: { a: true } })
+  assertType<S>({ object: { id: true } })
 
-  // union type
+  // Object Non-Null
+  assertType<S>({ objectNonNull: { id: true } })
+
+  // Union
   assertType<S>({ fooBarUnion: { __typename: true } })
   assertType<S>({ fooBarUnion: { onFoo: { __typename: true } } })
   assertType<S>({ fooBarUnion: { onFoo: { a: true } } })
@@ -37,13 +43,13 @@ test(`general`, () => {
   // alias: enum
   assertType<S>({ abcEnum_as_enum: true })
   // alias: object
-  assertType<S>({ object_as_o: { a: true } })
+  assertType<S>({ object_as_o: { id: true } })
   // @ts-expect-error invalid alias key format
-  assertType<S>({ object_as_: { a: true } })
+  assertType<S>({ object_as_: { id: true } })
   // @ts-expect-error invalid alias key format
-  assertType<S>({ object_as: { a: true } })
+  assertType<S>({ object_as: { id: true } })
   // @ts-expect-error invalid alias key format
-  assertType<S>({ object2_as_o: { a: true } })
+  assertType<S>({ object2_as_o: { id: true } })
 
   // directives
   // @skip
@@ -56,7 +62,7 @@ test(`general`, () => {
   assertType<S>({ string: { $skip: {} } })
   // assertType<S>({ string: skip() })
   // on object
-  assertType<S>({ object: { $skip: true, a: true } })
+  assertType<S>({ object: { $skip: true, string: true } })
   // assertType<S>({ scalars: skip().select({ a: true }) })
   // on fragment
   assertType<S>({ fooBarUnion: { onBar: { $skip: true, b: true } } })
@@ -84,13 +90,13 @@ test(`general`, () => {
   assertType<S>({ string: { $stream: {} } })
 
   // group of fields
-  assertType<S>({ object: { ___: { $skip: true, a: true, b: true } } })
-  assertType<S>({ object: { ___: [{ $skip: true, a: true, b: true }] } })
+  assertType<S>({ object: { ___: { $skip: true, int: true, id: true } } })
+  assertType<S>({ object: { ___: [{ $skip: true, int: true, id: true }] } })
 
   // Arguments
   // all-optional on object
-  assertType<S>({ objectWithArgs: { $: {}, a: true } })
-  assertType<S>({ objectWithArgs: { a: true } })
+  assertType<S>({ objectWithArgs: { $: {}, id: true } })
+  assertType<S>({ objectWithArgs: { id: true } })
   assertType<S>({
     objectWithArgs: {
       $: {
@@ -100,7 +106,7 @@ test(`general`, () => {
         int: 3,
         string: `abc`,
       },
-      a: true,
+      id: true,
     },
   })
   // builder interface

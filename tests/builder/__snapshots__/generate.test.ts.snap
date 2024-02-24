@@ -15,11 +15,11 @@ scalars: Scalars
 }
 export interface Scalars {
 
-    String: string
+    ID: string
+String: string
 Int: number
 Float: number
 Boolean: boolean
-ID: string
   
 }
 }
@@ -32,6 +32,16 @@ export namespace Root {
 export interface Query {
 __typename: {
 type: "Query"
+nullable: false
+args: null
+}
+id: {
+type: $.Scalars["ID"]
+nullable: true
+args: null
+}
+idNonNull: {
+type: $.Scalars["ID"]
 nullable: false
 args: null
 }
@@ -67,6 +77,11 @@ allOptional: true
 object: {
 type: Object.Object
 nullable: true
+args: null
+}
+objectNonNull: {
+type: Object.Object
+nullable: false
 args: null
 }
 objectWithArgs: {
@@ -181,27 +196,27 @@ type: "Object"
 nullable: false
 args: null
 }
-a: {
+string: {
 type: $.Scalars["String"]
 nullable: true
 args: null
 }
-b: {
+int: {
 type: $.Scalars["Int"]
 nullable: true
 args: null
 }
-c: {
+float: {
 type: $.Scalars["Float"]
 nullable: true
 args: null
 }
-d: {
+boolean: {
 type: $.Scalars["Boolean"]
 nullable: true
 args: null
 }
-e: {
+id: {
 type: $.Scalars["ID"]
 nullable: true
 args: null

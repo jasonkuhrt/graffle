@@ -1,3 +1,4 @@
 build
 pnpm-lock.yaml
 coverage
+tsconfig.vitest-temp.json

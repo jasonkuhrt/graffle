@@ -1,8 +1,11 @@
 type Query {
+	id: ID
+	idNonNull: ID!
 	string: String
 	stringWithRequiredArg(string:String!): String
 	stringWithArgs(string:String, int:Int, float:Float, boolean:Boolean, id:ID): String
 	object: Object
+	objectNonNull: Object!
 	objectWithArgs(string:String, int:Int, float:Float, boolean:Boolean, id:ID): Object
 	fooBarUnion: FooBarUnion
 	"""
@@ -31,11 +34,11 @@ type Bar {
 }
 
 type Object {
-	a: String
-	b: Int
-	c: Float
-	d: Boolean
-	e: ID
+	string: String
+	int: Int
+	float: Float
+	boolean: Boolean
+	id: ID
 }
 
 """
