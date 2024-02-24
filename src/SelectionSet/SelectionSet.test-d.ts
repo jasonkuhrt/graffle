@@ -4,7 +4,7 @@ import type { SelectionSet } from './__.js'
 
 type S = SelectionSet.Query<Schema.$.Index>
 
-test(`Alias`, () => {
+test(`ParseAliasExpression`, () => {
   expectTypeOf<SelectionSet.ParseAliasExpression<'a_as_b'>>().toEqualTypeOf<SelectionSet.Alias<'a', 'b'>>()
   expectTypeOf<SelectionSet.ParseAliasExpression<'a'>>().toEqualTypeOf<'a'>()
   expectTypeOf<SelectionSet.ParseAliasExpression<'$'>>().toEqualTypeOf<'$'>()
@@ -13,7 +13,7 @@ test(`Alias`, () => {
   expectTypeOf<SelectionSet.ParseAliasExpression<'__as__'>>().toEqualTypeOf<'__as__'>()
 })
 
-test(`general`, () => {
+test(`Query`, () => {
   // Scalar
   assertType<S>({ id: true })
   assertType<S>({ id: false })

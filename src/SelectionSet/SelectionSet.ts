@@ -90,11 +90,8 @@ type SelectionSetUnion<
  */
 
 /**
- * Should this field be selected?
+ * Unions
  */
-export type ClientIndicator = ClientIndicatorPositive | ClientIndicatorNegative
-export type ClientIndicatorPositive = true | 1
-export type ClientIndicatorNegative = false | 0 | undefined
 
 export type UnionFragmentExtractName<T> = T extends `on${infer $Name}` ? $Name : never
 export type UnionExtractFragmentNames<T> = Values<
@@ -106,9 +103,9 @@ export type UnionOmitFragments<T> = {
   [$K in keyof T as $K extends `on${StringNonEmpty}` ? never : $K]: T[$K]
 }
 
-export type OmitNegativeIndicators<$SelectionSet> = {
-  [K in keyof $SelectionSet as $SelectionSet[K] extends ClientIndicatorNegative ? never : K]: $SelectionSet[K]
-}
+/**
+ * Aliases
+ */
 
 export interface Alias<O extends string = string, T extends string = string> {
   origin: O
@@ -128,6 +125,21 @@ export type AliasNameTarget<N> = ParseAliasExpression<N> extends Alias<any, infe
 
 export type ResolveAliasTargets<SelectionSet> = {
   [Field in keyof SelectionSet as AliasNameTarget<Field>]: SelectionSet[Field]
+}
+
+/**
+ * Indicators
+ */
+
+/**
+ * Should this field be selected?
+ */
+export type ClientIndicator = ClientIndicatorPositive | ClientIndicatorNegative
+export type ClientIndicatorPositive = true | 1
+export type ClientIndicatorNegative = false | 0 | undefined
+
+export type OmitNegativeIndicators<$SelectionSet> = {
+  [K in keyof $SelectionSet as $SelectionSet[K] extends ClientIndicatorNegative ? never : K]: $SelectionSet[K]
 }
 
 /**
