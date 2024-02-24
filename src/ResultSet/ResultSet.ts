@@ -2,6 +2,7 @@
 
 import type { TSError } from '../lib/TSError.js'
 import type { Schema } from '../schema/__.js'
+import type { SelectionSet } from '../SelectionSet/__.js'
 
 import type { ConditionalSimplifyDeep } from 'type-fest/source/conditional-simplify.js'
 
@@ -25,12 +26,24 @@ export type Subscription<$SelectionSetSubscription extends object, $Index extend
 // 		? null | ResultSet<$SelectionSet, Exclude<$Node, Schema.Nullable>>
 // 		: ResultSetObject<$SelectionSet, $Node>
 
-export type Object<$SelectionSet, $Object extends Schema.Object> = {
-  [$SSKey in keyof $SelectionSet & string]:
-    $SSKey extends keyof $Object
-      ? SimplifyDeep<Field<$SelectionSet[$SSKey], Schema.AsField<$Object[$SSKey]>>>
-      : Errors.UnknownFieldName<$SSKey, $Object>
-}
+// dprint-ignore
+type Node<$SelectionSet, $Node extends Schema.Node> =
+  $Node extends Schema.Object ? Object<$SelectionSet, $Node> :
+  $Node extends Schema.Scalar ? $Node
+                              : Errors.UnknownNode<$Node>
+
+// dprint-ignore
+export type Object<$SelectionSet, $Object extends Schema.Object> =
+  SelectionSet.IsSelectScalarsWildcard<$SelectionSet> extends true
+    ? {
+        [$Key in keyof $Object as $Object[$Key] extends Schema.ScalarField ? $Key : never]: Field<$SelectionSet, Schema.AsField<$Object[$Key]>>
+      }
+    : {
+        [$SSKey in keyof $SelectionSet & string]:
+          $SSKey extends keyof $Object
+            ? SimplifyDeep<Field<$SelectionSet[$SSKey], Schema.AsField<$Object[$SSKey]>>>
+            : Errors.UnknownFieldName<$SSKey, $Object>
+      }
 
 // dprint-ignore
 type Field<$SelectionSet, $Field extends Schema.Field> =
@@ -38,12 +51,6 @@ type Field<$SelectionSet, $Field extends Schema.Field> =
   | Node<$SelectionSet, $Field['type']>
 
 type FieldNullable<$Field extends Schema.Field> = $Field['nullable'] extends true ? null : never
-
-// dprint-ignore
-type Node<$SelectionSet, $Node extends Schema.Node> =
-  $Node extends Schema.Object ? Object<$SelectionSet, $Node> :
-  $Node extends Schema.Scalar ? $Node
-                              : Errors.UnknownNode<$Node>
 
 // dprint-ignore
 export namespace Errors {

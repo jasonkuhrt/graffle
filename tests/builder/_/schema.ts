@@ -76,6 +76,11 @@ type: Object.Object
 nullable: true
 args: null
 }
+objectNested: {
+type: Object.ObjectNested
+nullable: true
+args: null
+}
 objectNonNull: {
 type: Object.Object
 nullable: false
@@ -182,6 +187,24 @@ args: null
 }
 b: {
 type: $.Scalars["Int"]
+nullable: true
+args: null
+}
+}
+
+export interface ObjectNested {
+__typename: {
+type: "ObjectNested"
+nullable: false
+args: null
+}
+id: {
+type: $.Scalars["ID"]
+nullable: true
+args: null
+}
+object: {
+type: Object.Object
 nullable: true
 args: null
 }

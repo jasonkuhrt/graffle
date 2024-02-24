@@ -48,6 +48,8 @@ type SelectionSetObject<
    * Special property to select all scalars.
    */ { $scalars?: ClientIndicator }
 
+export type IsSelectScalarsWildcard<SS> = SS extends { $scalars: ClientIndicatorPositive } ? true : false
+
 // dprint-ignore
 export type SelectionSetField<
   $Field extends Schema.Field,
@@ -90,7 +92,9 @@ type SelectionSetUnion<
 /**
  * Should this field be selected?
  */
-export type ClientIndicator = boolean | 1 | 0
+export type ClientIndicator = ClientIndicatorPositive | ClientIndicatorNegative
+export type ClientIndicatorPositive = true | 1
+export type ClientIndicatorNegative = false | 0
 
 /**
  * Field selection in general, with directives support too.

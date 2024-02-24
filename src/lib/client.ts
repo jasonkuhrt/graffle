@@ -21,8 +21,6 @@ interface Input {
   url: URL | string
 }
 
-export const create = <$SchemaIndex extends Index>(
-  input: Input,
-): Client<$SchemaIndex> => {
+export const create = <$SchemaIndex extends Index>(input: Input): Client<$SchemaIndex> => {
   return 1 as any
 }
