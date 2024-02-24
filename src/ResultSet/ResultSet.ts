@@ -36,7 +36,8 @@ type Node<$SelectionSet, $Node extends Schema.Node> =
 export type Object<$SelectionSet, $Object extends Schema.Object> =
   SelectionSet.IsSelectScalarsWildcard<$SelectionSet> extends true
     ? {
-        [$Key in keyof $Object as $Object[$Key] extends Schema.ScalarField ? $Key : never]: Field<$SelectionSet, Schema.AsField<$Object[$Key]>>
+        [$Key in keyof $Object as $Object[$Key] extends Schema.ScalarField ? $Key : never]:
+          Field<$SelectionSet, Schema.AsField<$Object[$Key]>>
       }
     : {
         [$SSKey in keyof $SelectionSet & string as $SelectionSet[$SSKey] extends SelectionSet.ClientIndicatorNegative ? never : $SSKey]:

@@ -94,7 +94,7 @@ type SelectionSetUnion<
  */
 export type ClientIndicator = ClientIndicatorPositive | ClientIndicatorNegative
 export type ClientIndicatorPositive = true | 1
-export type ClientIndicatorNegative = false | 0
+export type ClientIndicatorNegative = false | 0 | undefined
 
 /**
  * Field selection in general, with directives support too.
