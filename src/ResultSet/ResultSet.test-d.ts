@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-types */
+
 import { expectTypeOf, test } from 'vitest'
 import type * as Schema from '../../tests/builder/_/schema.js'
 import type { SelectionSet } from '../SelectionSet/__.js'
@@ -43,12 +44,40 @@ test(`general`, () => {
   // Alias
   // scalar
   expectTypeOf<RS<{ id_as_id2: true }>>().toEqualTypeOf<{ id2: null | string }>()
+  expectTypeOf<RS<{ idNonNull_as_id2: true }>>().toEqualTypeOf<{ id2: string }>()
   expectTypeOf<RS<{ id_as: true }>>().toEqualTypeOf<{ id_as: ResultSet.Errors.UnknownFieldName<'id_as', Schema.Root.Query> }>()
   expectTypeOf<RS<{ id_as_$: true }>>().toEqualTypeOf<{ id_as_$: ResultSet.Errors.UnknownFieldName<'id_as_$', Schema.Root.Query> }>()
   // union fragment
   expectTypeOf<RS<{ fooBarUnion: { onFoo: { id_as_id2: true } } }>>().toEqualTypeOf<{ fooBarUnion: null | {} | { id2: null|string } }>()
 
-  // Directive
+  // Directive on scalar non-nullable
+  // include
+  expectTypeOf<RS<{ idNonNull: { $include: boolean } }>>().toEqualTypeOf<{ idNonNull: null|string }>()
+  expectTypeOf<RS<{ idNonNull: { $include: {if:boolean} } }>>().toEqualTypeOf<{ idNonNull: null|string }>()
+  expectTypeOf<RS<{ idNonNull: { $include: true } }>>().toEqualTypeOf<{ idNonNull: string }>()
+  expectTypeOf<RS<{ idNonNull: { $include: {if:true} } }>>().toEqualTypeOf<{ idNonNull: string }>()
+  expectTypeOf<RS<{ idNonNull: { $include: false } }>>().toEqualTypeOf<{ idNonNull: null }>()
+  expectTypeOf<RS<{ idNonNull: { $include: {if:false} } }>>().toEqualTypeOf<{ idNonNull: null }>()
+  // skip
+  expectTypeOf<RS<{ idNonNull: { $skip: boolean } }>>().toEqualTypeOf<{ idNonNull: null|string }>()
+  expectTypeOf<RS<{ idNonNull: { $skip: {if:boolean} } }>>().toEqualTypeOf<{ idNonNull: null|string }>()
+  expectTypeOf<RS<{ idNonNull: { $skip: true } }>>().toEqualTypeOf<{ idNonNull: null }>()
+  expectTypeOf<RS<{ idNonNull: { $skip: {if:true} } }>>().toEqualTypeOf<{ idNonNull: null }>()
+  expectTypeOf<RS<{ idNonNull: { $skip: false } }>>().toEqualTypeOf<{ idNonNull: string }>()
+  expectTypeOf<RS<{ idNonNull: { $skip: {if:false} } }>>().toEqualTypeOf<{ idNonNull: string }>()
+  // Directive on scalar nullable
+  // include
+  expectTypeOf<RS<{ id: { $include: boolean } }>>().toEqualTypeOf<{ id: null|string }>()
+  expectTypeOf<RS<{ id: { $include: false } }>>().toEqualTypeOf<{ id: null }>()
+  expectTypeOf<RS<{ id: { $include: true } }>>().toEqualTypeOf<{ id: null|string }>()
+  // skip
+  expectTypeOf<RS<{ id: { $skip: boolean } }>>().toEqualTypeOf<{ id: null|string }>()
+  expectTypeOf<RS<{ id: { $skip: false } }>>().toEqualTypeOf<{ id: null|string }>()
+  expectTypeOf<RS<{ id: { $skip: true } }>>().toEqualTypeOf<{ id: null }>()
+
+
+  // Field Group
+  // todo
 
   // Arguments
   // scalar
@@ -58,75 +87,4 @@ test(`general`, () => {
   // Errors
   // unknown field
   expectTypeOf<RS<{ id2: true }>>().toEqualTypeOf<{ id2: ResultSet.Errors.UnknownFieldName<'id2', Schema.Root.Query> }>()
-
-  // assertType<ResultSetQuery<{ string: true }, Schema.$.Index>>({string:''})
 })
-// import { describe, expectTypeOf, test } from 'vitest'
-// import type { TSError } from '../../../src/lib/TSError.js'
-// // import type { TSError } from '~/lib/prelude/index.js'
-// // import type * as GenqlTypes from '../genql/schema.js'
-// // import type { SelectQuery } from './inferSelectionResult.js'
-
-// test(`utilities`, () => {
-//   // expectTypeOf<GetInterfaceImplementorSelections<GenqlTypes.Interfaces.Error, { on_ErrorInternal: { message: true }; on_ErrorUserInput: { __typename: true } }>>().toEqualTypeOf<{__typename:true}|{message:true}>() // prettier-ignore
-// })
-
-// // dprint-ignore
-// describe(`direct`, () => {
-//   test(`interface`, () => {
-//     expectTypeOf<GenqlTypes.Select.Offer<{ __typename: true }>>().toEqualTypeOf<{__typename: 'OfferAbstract' | 'OfferValue' | 'OfferResourceProperty' | 'OfferResourceAggregation'}>() // prettier-ignore
-//     expectTypeOf<GenqlTypes.Select.Offer<{ id: true }>>().toEqualTypeOf<{ id: string }>()
-//     expectTypeOf<GenqlTypes.Select.Offer<{on_OfferAbstract: { id: true } }>>().toEqualTypeOf<{} | { id: string }>() // prettier-ignore
-//     expectTypeOf<GenqlTypes.Select.Offer<{on_OfferAbstract:{id:true}}>>().toEqualTypeOf<{}|{id:string}>() // prettier-ignore
-//     expectTypeOf<GenqlTypes.Select.Offer<{on_OfferAbstract:{feature:{id:true}}}>>().toEqualTypeOf<{}|{feature:{id:string}}>() // prettier-ignore
-//     expectTypeOf<GenqlTypes.Select.Offer<{on_OfferAbstract:{__typename:true}}>>().toEqualTypeOf<{}|{__typename:'OfferAbstract'}>() // prettier-ignore
-//     expectTypeOf<GenqlTypes.Select.Offer<{on_OfferAbstract:{__typename:true},on_OfferValue:{__typename:true}}>>().toEqualTypeOf<{}|{__typename:'OfferAbstract'}|{__typename:'OfferValue'}>() // prettier-ignore
-//     // expectTypeOf<>().toEqualTypeOf<>() // prettier-ignore
-//   })
-// })
-
-// // dprint-ignore
-// describe(`Query`, () => {
-//   test(`object`, () => {
-//     expectTypeOf<SelectQuery<{}>>().toEqualTypeOf<{}>() // prettier-ignore
-//     expectTypeOf<SelectQuery<{ me: { __typename: true } }>>().toEqualTypeOf<{ me: { __typename: 'Me' } }>() // prettier-ignore
-//     expectTypeOf<SelectQuery<{ me: { user: { id: true } } }>>().toEqualTypeOf<{ me: { user: { id: string } } }>() // prettier-ignore
-//     expectTypeOf<SelectQuery<{ me: { user: { __scalar: true } } }>>().toEqualTypeOf<{ me: { user: { __typename: 'User'; id: string; displayName: string | null; email: string; handle: string | null; image: string | null } } }>() // prettier-ignore
-//     expectTypeOf<SelectQuery<{ me: { user: { __scalar: false } } }>>().toEqualTypeOf<{ me: { user: {} } }>() // prettier-ignore
-//     expectTypeOf<SelectQuery<{ me: {} }>>().toEqualTypeOf<{ me: {} }>() // prettier-ignore
-//     expectTypeOf<SelectQuery<{ me: { __typename: false } }>>().toEqualTypeOf<{ me: {} }>() // prettier-ignore
-//   })
-//   test(`object list`, () => {
-//     expectTypeOf<SelectQuery<{ me: { workspaces: { id: true } } }>>().toEqualTypeOf<{ me: { workspaces: { id: string }[] } }>() // prettier-ignore
-//   })
-//   test(`scalar list`, () => {
-//     expectTypeOf<SelectQuery<{ plan: {on_Plan:{offers:{platform:{support:{limit:{on_LimitEnum:{allowed:true}}}}}}}}>>().toEqualTypeOf<{ plan: {}|{offers:{platform:{support:{limit:{allowed:string[]}|{}|null}}}}}>() // prettier-ignore
-//   })
-
-//   test(`union`, () => {
-//     expectTypeOf<SelectQuery<{ project: { __typename: true } }>>().toEqualTypeOf<{ project: | { __typename: 'Project' } | { __typename: 'ErrorInternal' } | { __typename: 'ErrorUserBusinessNotAuthorized' } | { __typename: 'ErrorUserBusinessResourceNotFound' } }>() // prettier-ignore
-//     expectTypeOf<SelectQuery<{ project: { __typename: true; on_Project: { id: true } } }>>().toEqualTypeOf<{ project: | { __typename: 'Project'; id: string } | { __typename: 'ErrorInternal' } | { __typename: 'ErrorUserBusinessNotAuthorized' } | { __typename: 'ErrorUserBusinessResourceNotFound' } }>() // prettier-ignore
-//     expectTypeOf<SelectQuery<{ project: { on_ErrorInternal: {}; on_Project: { id: true } } }>>().toEqualTypeOf<{ project: {} | { id: string } }>() // prettier-ignore
-//     expectTypeOf<SelectQuery<{ project: { on_ErrorInternal: { message: true }; on_Project: { id: true } } }>>().toEqualTypeOf<{ project: {} | { message: string } | { id: string } }>() // prettier-ignore
-//     expectTypeOf<SelectQuery<{ project: { on_Project: { id: true } } }>>().toEqualTypeOf<{ project: {} | { id: string } }>() // prettier-ignore
-//     expectTypeOf<SelectQuery<{ project: { __args: { id: string } } }>>().toMatchTypeOf<{ project: {} }>() // prettier-ignore
-//     expectTypeOf<SelectQuery<{ project: { __args: { id: string }; on_Project: { id: true } } }>>().toEqualTypeOf<{ project: {} | { id: string } }>() // prettier-ignore
-//     // expectTypeOf<>().toEqualTypeOf<>() // prettier-ignore
-//   })
-//   test(`custom scalar`, () => {
-//     expectTypeOf<SelectQuery<{ project: { on_Project: { createdAt: true } } }>>().toEqualTypeOf<{ project: {} | { createdAt: string } }>() // prettier-ignore
-//   })
-//   test(`interface`, () => {
-//     // expectTypeOf<>().toEqualTypeOf<>() // prettier-ignore
-//     expectTypeOf<SelectQuery<{ project: { on_Error: { message: true } }}>>().toEqualTypeOf<{ project: {} | { message: string }}>() // prettier-ignore
-//     expectTypeOf<SelectQuery<{ project: { on_Error: { message: true }, on_Project: { id: true } }}>>().toEqualTypeOf<{ project: { message: string } | { id: string }}>() // prettier-ignore
-//   })
-//   test(`nullable`, () => {
-//     expectTypeOf<SelectQuery<{ project: { on_Project: { pulse: { databaseLink: {} } } } }>>().toEqualTypeOf<{ project: {} | { pulse: { databaseLink: {} | null } } }>() // prettier-ignore
-//   })
-//   test(`errors`, () => {
-//     // expectTypeOf<>().toEqualTypeOf<>() // prettier-ignore
-//     expectTypeOf<SelectQuery<{ foo: { bar: true } }>>().toEqualTypeOf<{ foo: TSError<'SelectObjektField', 'object selection field "foo" does not exist on schema object "Query"'> }>() // prettier-ignore
-//     expectTypeOf<SelectQuery<{ me: { bar: true } }>>().toEqualTypeOf<{ me: { bar: TSError<'SelectObjektField', 'object selection field "bar" does not exist on schema object "Me"'> } }>() // prettier-ignore
-//   })
-// })

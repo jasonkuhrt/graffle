@@ -30,19 +30,22 @@ export type Object<$SelectionSet, $Object extends Schema.Object, $Index extends 
     /**
      * Handle Scalars Wildcard
      */
-  ? {
-      [$Key in keyof $Object as $Object[$Key] extends Schema.ScalarField ? $Key : never]:
-        Field<$SelectionSet, Schema.AsField<$Object[$Key]>, $Index>
+  ?
+    {
+       [$Key in keyof $Object as $Object[$Key] extends Schema.ScalarField ? $Key : never]:
+         Field<$SelectionSet, Schema.AsField<$Object[$Key]>, $Index>
     }
-    /**
-     * Handle fields in regular way.
-     */
-  : SelectionSet.ResolveAliasTargets<{
-      [K in keyof SelectionSet.OmitNegativeIndicators<$SelectionSet> & string as K extends `${K}_as_${infer s}` ? s : K]:
-      SimplifyDeep<SelectionSet.AliasNameOrigin<K> extends keyof $Object
-          ? Field<$SelectionSet[K], Schema.AsField<$Object[SelectionSet.AliasNameOrigin<K>]>, $Index>
-          : Errors.UnknownFieldName<K, $Object>>
-    }>
+    : (
+      /**
+       * Handle fields in regular way.
+       */
+      | SelectionSet.ResolveAliasTargets<{
+          [K in keyof SelectionSet.OmitNegativeIndicators<$SelectionSet> & string as K extends `${K}_as_${infer s}` ? s : K]:
+          SimplifyDeep<SelectionSet.AliasNameOrigin<K> extends keyof $Object
+              ? Field<$SelectionSet[K], Schema.AsField<$Object[SelectionSet.AliasNameOrigin<K>]>, $Index>
+              : Errors.UnknownFieldName<K, $Object>>
+        }>
+    )
 
 // dprint-ignore
 type Union<$SelectionSet, $Node extends Schema.Union, $Index extends Schema.Index> =
@@ -53,8 +56,27 @@ type Union<$SelectionSet, $Node extends Schema.Union, $Index extends Schema.Inde
 
 // dprint-ignore
 type Field<$SelectionSet, $Field extends Schema.Field, $Index extends Schema.Index> =
-  | FieldNullable<$Field>
-  | Node<$SelectionSet, $Field['type'], $Index>
+  $SelectionSet extends SelectionSet.Directive.Include.Negative | SelectionSet.Directive.Skip.Positive  ? null :
+  (
+    | FieldNullable<$Field>
+    | FieldDirectiveInclude<$SelectionSet>
+    | FieldDirectiveSkip<$SelectionSet>
+    | Node<$SelectionSet, $Field['type'], $Index>
+  )
+
+// dprint-ignore
+type FieldDirectiveInclude<$SelectionSet> =
+  $SelectionSet extends SelectionSet.Directive.Include  ? $SelectionSet extends SelectionSet.Directive.Include.Positive ?
+                                                          never :
+                                                          null
+                                                        : never
+
+// dprint-ignore
+type FieldDirectiveSkip<$SelectionSet> =
+  $SelectionSet extends SelectionSet.Directive.Skip     ? $SelectionSet extends SelectionSet.Directive.Skip.Negative ?
+                                                          never :
+                                                          null
+                                                        : never
 
 type FieldNullable<$Field extends Schema.Field> = $Field['nullable'] extends true ? null : never
 

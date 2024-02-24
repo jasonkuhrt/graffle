@@ -97,7 +97,7 @@ test(`Query`, () => {
   assertType<S>({ string: { $stream: { if: true } } })
   assertType<S>({ string: { $stream: {} } })
 
-  // group of fields
+  // Field Group
   assertType<S>({ object: { ___: { $skip: true, int: true, id: true } } })
   assertType<S>({ object: { ___: [{ $skip: true, int: true, id: true }] } })
 
@@ -144,7 +144,7 @@ test(`Query`, () => {
   // @ts-expect-error missing args ("$")
   assertType<S>({ stringWithRequiredArg: {} })
 
-  // all-scalars "client directive"
+  // Scalars Wildcard ("client directive")
   // object
   assertType<S>({ object: { $scalars: true } })
   // @ts-expect-error no directives on scalars field

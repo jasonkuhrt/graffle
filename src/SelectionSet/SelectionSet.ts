@@ -128,6 +128,23 @@ export type ResolveAliasTargets<SelectionSet> = {
 }
 
 /**
+ * Directives
+ */
+
+export namespace Directive {
+  export type Include = { $include: boolean | { if: boolean } }
+  export namespace Include {
+    export type Positive = { $include: true | { if: true } }
+    export type Negative = { $include: false | { if: false } }
+  }
+  export type Skip = { $skip: boolean | { if: boolean } }
+  export namespace Skip {
+    export type Positive = { $skip: true | { if: true } }
+    export type Negative = { $skip: false | { if: false } }
+  }
+}
+
+/**
  * Indicators
  */
 
