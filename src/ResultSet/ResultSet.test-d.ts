@@ -20,7 +20,7 @@ test(`general`, () => {
   expectTypeOf<RS<{ id: true; string: false }>>().toEqualTypeOf<{ id: null | string }>()
   expectTypeOf<RS<{ id: true; string: 0 }>>().toEqualTypeOf<{ id: null | string }>()
   expectTypeOf<RS<{ id: true; string: undefined }>>().toEqualTypeOf<{ id: null | string }>()
-  
+
   // Object
   expectTypeOf<RS<{ object: { id: true } }>>().toEqualTypeOf<{ object: null | { id: string | null } }>()
   // non-nullable
@@ -31,7 +31,7 @@ test(`general`, () => {
   expectTypeOf<RS<{ objectNested: { $scalars: true } }>>().toEqualTypeOf<{ objectNested: null | { __typename: "ObjectNested"; id: null|string } }>()
   // __typename
   expectTypeOf<RS<{ objectNonNull: { __typename: true } }>>().toEqualTypeOf<{ objectNonNull: { __typename: "Object" } }>()
-  
+
   // Union
   expectTypeOf<RS<{ fooBarUnion: { __typename: true } }>>().toEqualTypeOf<{ fooBarUnion: null | { __typename: "Foo" } | { __typename: "Bar" } }>()
   expectTypeOf<RS<{ fooBarUnion: { onFoo: { __typename: true } } }>>().toEqualTypeOf<{ fooBarUnion: null | {} | { __typename: "Foo" } }>()
