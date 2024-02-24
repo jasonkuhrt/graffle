@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
+import type { Letter } from '../lib/prelude.js'
+
 export interface Index {
   unions: {
     Union: null | Union
@@ -32,3 +34,20 @@ export type Field = FieldBase<Node>
 export type Args = { type: object; allOptional: boolean }
 
 export type AsField<T> = T extends Field ? T : never
+
+// dprint-ignore
+export type NameParse<T extends string> =
+  T extends NameHead ? T :
+  T extends `${NameHead}${infer Rest}` ? Rest  extends NameBodyParse<Rest> ? T
+  : never
+  : never
+
+// dprint-ignore
+export type NameBodyParse<S extends string> =
+  S extends NameBody                    ? S :
+  S extends `${NameBody}${infer Rest}`  ? NameBodyParse<Rest> extends string ? S
+  : never
+  : never
+
+export type NameHead = Letter
+export type NameBody = Letter | '_'

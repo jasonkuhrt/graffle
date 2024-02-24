@@ -1,8 +1,17 @@
-import { assertType, test } from 'vitest'
+import { assertType, expectTypeOf, test } from 'vitest'
 import type * as Schema from '../../tests/builder/_/schema.js'
-import type { Query } from './SelectionSet.js'
+import type { SelectionSet } from './__.js'
 
-type S = Query<Schema.$.Index>
+type S = SelectionSet.Query<Schema.$.Index>
+
+test(`Alias`, () => {
+  expectTypeOf<SelectionSet.ParseAliasExpression<'a_as_b'>>().toEqualTypeOf<SelectionSet.Alias<'a', 'b'>>()
+  expectTypeOf<SelectionSet.ParseAliasExpression<'a'>>().toEqualTypeOf<'a'>()
+  expectTypeOf<SelectionSet.ParseAliasExpression<'$'>>().toEqualTypeOf<'$'>()
+  expectTypeOf<SelectionSet.ParseAliasExpression<'a_as_$'>>().toEqualTypeOf<'a_as_$'>()
+  expectTypeOf<SelectionSet.ParseAliasExpression<'$_as_b'>>().toEqualTypeOf<'$_as_b'>()
+  expectTypeOf<SelectionSet.ParseAliasExpression<'__as__'>>().toEqualTypeOf<'__as__'>()
+})
 
 test(`general`, () => {
   // Scalar

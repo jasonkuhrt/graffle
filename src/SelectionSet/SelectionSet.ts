@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
-import { O } from 'vitest/dist/reporters-QGe8gs4b.js'
 import type { MaybeList, StringNonEmpty, Values } from '../lib/prelude.js'
 import type { TSError } from '../lib/TSError.js'
 import type { Schema } from '../schema/__.js'
@@ -111,12 +110,24 @@ export type OmitNegativeIndicators<$SelectionSet> = {
   [K in keyof $SelectionSet as $SelectionSet[K] extends ClientIndicatorNegative ? never : K]: $SelectionSet[K]
 }
 
-export type AliasNameOrigin<N> = N extends `${infer O}_as_${StringNonEmpty}` ? O : N
+export interface Alias<O extends string = string, T extends string = string> {
+  origin: O
+  target: T
+}
 
-export type AliasNameTarget<N> = N extends `${StringNonEmpty}_as_${infer T}` ? T : N
+// dprint-ignore
+export type ParseAliasExpression<E> =
+  E extends `${infer O}_as_${infer T}`  ? Schema.NameParse<O> extends never  ? E :
+                                          Schema.NameParse<T> extends never  ? E :
+                                          Alias<O, T>
+                                        : E
 
-export type ResolveAliasTargets<T> = {
-  [K in keyof T as AliasNameTarget<K>]: T[K]
+export type AliasNameOrigin<N> = ParseAliasExpression<N> extends Alias<infer O, any> ? O : N
+
+export type AliasNameTarget<N> = ParseAliasExpression<N> extends Alias<any, infer T> ? T : N
+
+export type ResolveAliasTargets<SelectionSet> = {
+  [Field in keyof SelectionSet as AliasNameTarget<Field>]: SelectionSet[Field]
 }
 
 /**

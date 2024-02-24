@@ -37,9 +37,17 @@ test(`general`, () => {
   expectTypeOf<RS<{ fooBarUnion: { onFoo: { id: true } } }>>().toEqualTypeOf<{ fooBarUnion: null | {} | { id: null|string } }>()
   expectTypeOf<RS<{ fooBarUnion: { __typename: true; onFoo: { id: true } } }>>().toEqualTypeOf<{ fooBarUnion: null | { __typename: "Bar" } | { __typename: "Foo"; id: null|string } }>()
 
-  // Alias
-  expectTypeOf<RS<{ id_as_id2: true }>>().toEqualTypeOf<{ id2: null | string }>()
   // Interface
+  // todo
+
+  // Alias
+  // scalar
+  expectTypeOf<RS<{ id_as_id2: true }>>().toEqualTypeOf<{ id2: null | string }>()
+  expectTypeOf<RS<{ id_as: true }>>().toEqualTypeOf<{ id_as: ResultSet.Errors.UnknownFieldName<'id_as', Schema.Root.Query> }>()
+  expectTypeOf<RS<{ id_as_$: true }>>().toEqualTypeOf<{ id_as_$: ResultSet.Errors.UnknownFieldName<'id_as_$', Schema.Root.Query> }>()
+  // union fragment
+  expectTypeOf<RS<{ fooBarUnion: { onFoo: { id_as_id2: true } } }>>().toEqualTypeOf<{ fooBarUnion: null | {} | { id2: null|string } }>()
+
   // Directive
 
   // Arguments

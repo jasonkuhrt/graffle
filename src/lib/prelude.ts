@@ -94,7 +94,9 @@ export type Exact<A, W> =
 
 export type Narrowable = string | number | bigint | boolean | []
 
-export type Character =
+export type Letter = LetterLower | LetterUpper
+
+export type LetterLower =
   | 'a'
   | 'b'
   | 'c'
@@ -121,6 +123,7 @@ export type Character =
   | 'x'
   | 'y'
   | 'z'
+export type LetterUpper =
   | 'A'
   | 'B'
   | 'C'
@@ -148,7 +151,7 @@ export type Character =
   | 'Y'
   | 'Z'
 
-export type StringNonEmpty = `${Character}${string}`
+export type StringNonEmpty = `${Letter}${string}`
 
 export type MaybeList<T> = T | T[]
 
