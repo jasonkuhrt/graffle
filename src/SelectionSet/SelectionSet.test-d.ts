@@ -5,15 +5,17 @@ import type { Query } from './SelectionSet.js'
 type S = Query<Schema.$.Index>
 
 test(`general`, () => {
-  // scalar
+  // Scalar
   assertType<S>({ id: true })
   assertType<S>({ id: false })
   assertType<S>({ id: 1 })
   assertType<S>({ id: 0 })
   assertType<S>({ id: undefined })
-
-  // scalar non-null
+  // non-null
   assertType<S>({ idNonNull: true })
+
+  // Enum
+  assertType<S>({ abcEnum: true })
 
   // Object
   // @ts-expect-error excess property check
@@ -22,8 +24,7 @@ test(`general`, () => {
   assertType<S>({ object: { a2: true } })
   assertType<S>({ __typename: true })
   assertType<S>({ object: { id: true } })
-
-  // Object Non-Null
+  // Non-Null
   assertType<S>({ objectNonNull: { id: true } })
 
   // Union
@@ -37,9 +38,7 @@ test(`general`, () => {
   // @ts-expect-error no a
   assertType<S>({ fooBarUnion: { onBar: { a: true } } })
 
-  // enum type
-  assertType<S>({ abcEnum: true })
-
+  // Alias
   // alias: enum
   assertType<S>({ abcEnum_as_enum: true })
   // alias: object

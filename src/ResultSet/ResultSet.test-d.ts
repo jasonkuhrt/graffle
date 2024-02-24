@@ -7,7 +7,7 @@ type I = Schema.$.Index
 
 type RS<$S extends SelectionSet.Query<I>> = ResultSet.Query<$S, I>
 
-type x = RS<{ objectNonNull: { $scalars: true } }>
+type x = RS<{ objectNonNull: { __typename: true } }>
 
 // dprint-ignore
 test(`general`, () => {
@@ -29,6 +29,8 @@ test(`general`, () => {
   expectTypeOf<RS<{ objectNonNull: { $scalars: true } }>>().toEqualTypeOf<{ objectNonNull: { __typename: "Object"; string: null|string; int: null|number; float: null|number; boolean: null|boolean; id: null|string; } }>()
   // scalars-wildcard with nested object
   expectTypeOf<RS<{ objectNested: { $scalars: true } }>>().toEqualTypeOf<{ objectNested: null | { __typename: "ObjectNested"; id: null|string } }>()
+  // __typename
+  expectTypeOf<RS<{ objectNonNull: { __typename: true } }>>().toEqualTypeOf<{ objectNonNull: { __typename: "Object" } }>()
 
   // Arguments
   // scalar
