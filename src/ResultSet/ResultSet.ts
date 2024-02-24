@@ -39,7 +39,7 @@ export type Object<$SelectionSet, $Object extends Schema.Object> =
         [$Key in keyof $Object as $Object[$Key] extends Schema.ScalarField ? $Key : never]: Field<$SelectionSet, Schema.AsField<$Object[$Key]>>
       }
     : {
-        [$SSKey in keyof $SelectionSet & string]:
+        [$SSKey in keyof $SelectionSet & string as $SelectionSet[$SSKey] extends SelectionSet.ClientIndicatorNegative ? never : $SSKey]:
           $SSKey extends keyof $Object
             ? SimplifyDeep<Field<$SelectionSet[$SSKey], Schema.AsField<$Object[$SSKey]>>>
             : Errors.UnknownFieldName<$SSKey, $Object>

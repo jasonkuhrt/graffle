@@ -13,8 +13,12 @@ type x = RS<{ objectNonNull: { $scalars: true } }>
 test(`general`, () => {
   // Scalar
   expectTypeOf<RS<{ id: true }>>().toEqualTypeOf<{ id: null | string }>()
+  expectTypeOf<RS<{ id: 1 }>>().toEqualTypeOf<{ id: null | string }>()
   // non-nullable
   expectTypeOf<RS<{ idNonNull: true }>>().toEqualTypeOf<{ idNonNull: string }>()
+  // indicator negative
+  expectTypeOf<RS<{ id: true; string: false }>>().toEqualTypeOf<{ id: null | string }>()
+  expectTypeOf<RS<{ id: true; string: 0 }>>().toEqualTypeOf<{ id: null | string }>()
   
   // Object
   expectTypeOf<RS<{ object: { id: true } }>>().toEqualTypeOf<{ object: null | { id: string | null } }>()

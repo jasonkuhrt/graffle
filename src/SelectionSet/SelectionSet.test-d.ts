@@ -150,4 +150,5 @@ test(`general`, () => {
   // todo empty selection set not allowed
   // // @ts-expect-error empty selection set not allowed
   // assertType<S>({ scalars: {} })
+  // todo selection set of _only_ negative indicators should not be allowed
 })
