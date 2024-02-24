@@ -6,7 +6,16 @@ import type {
   GraphQLInterfaceType,
   GraphQLNamedType,
 } from 'graphql'
-import { GraphQLNonNull, GraphQLObjectType, isEnumType } from 'graphql'
+import {
+  GraphQLNonNull,
+  GraphQLObjectType,
+  isEnumType,
+  isInterfaceType,
+  isNamedType,
+  isObjectType,
+  isScalarType,
+  isUnionType,
+} from 'graphql'
 import { buildSchema } from 'graphql'
 import _ from 'json-bigint'
 import fs from 'node:fs/promises'
@@ -139,13 +148,21 @@ const concreteRenderers = defineConcreteRenderers({
     Code.TSDoc(
       getDocumentation(config, node),
       Code.export$(
-        Code.union(
+        Code.interface$(
           node.name,
-          node
-            .getTypes()
-            .map(
-              (_) => dispatchToPointerRenderer(config, _) + `& { $$union:true}`,
+          Code.fields([
+            Code.field(`__unionname`, Code.quote(node.name)),
+            Code.field(
+              `type`,
+              Code.unionItems(
+                node
+                  .getTypes()
+                  .map(
+                    (_) => dispatchToPointerRenderer(config, _),
+                  ),
+              ),
             ),
+          ]),
         ),
       ),
     ),
@@ -234,9 +251,12 @@ const renderField = (config: Config, field: AnyField): string => {
     ? renderArgs(config, field.args)
     : null
   // const fieldWithArgs = args ? Code.intersection(fieldBase, args) : fieldBase
+  const name = isNamedType(node) ? node.name : null
 
   return Code.object(Code.fields([
     Code.field(`type`, type),
+    // todo keep type name on type node instead
+    Code.field(`typeName`, name ? Code.quote(name) : `null`),
     Code.field(`nullable`, nullable ? `true` : `false`),
     Code.field(`args`, args ?? `null`),
   ]))
@@ -346,6 +366,22 @@ export const generateCode = (input: Input) => {
                       hasSubscription ? `Root.Subscription` : `null`,
                     ),
                   ]),
+                ),
+              ),
+              Code.field(
+                `objects`,
+                Code.object(
+                  Code.fields(
+                    typeMapByKind.GraphQLObjectType.map(_ => Code.field(_.name, Code.propertyAccess(`Object`, _.name))),
+                  ),
+                ),
+              ),
+              Code.field(
+                `unionMemberNames`,
+                Code.object(
+                  Code.fields(typeMapByKind.GraphQLUnionType.map(
+                    (_) => Code.field(_.name, Code.unionItems(_.getTypes().map(_ => Code.quote(_.name)))),
+                  )),
                 ),
               ),
               Code.field(

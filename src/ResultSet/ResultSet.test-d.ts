@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import { expectTypeOf, test } from 'vitest'
 import type * as Schema from '../../tests/builder/_/schema.js'
 import type { SelectionSet } from '../SelectionSet/__.js'
@@ -6,8 +7,6 @@ import type { ResultSet } from './__.js'
 type I = Schema.$.Index
 
 type RS<$S extends SelectionSet.Query<I>> = ResultSet.Query<$S, I>
-
-type x = RS<{ objectNonNull: { __typename: true } }>
 
 // dprint-ignore
 test(`general`, () => {
@@ -31,6 +30,12 @@ test(`general`, () => {
   expectTypeOf<RS<{ objectNested: { $scalars: true } }>>().toEqualTypeOf<{ objectNested: null | { __typename: "ObjectNested"; id: null|string } }>()
   // __typename
   expectTypeOf<RS<{ objectNonNull: { __typename: true } }>>().toEqualTypeOf<{ objectNonNull: { __typename: "Object" } }>()
+  
+  // Union
+  expectTypeOf<RS<{ fooBarUnion: { __typename: true } }>>().toEqualTypeOf<{ fooBarUnion: null | { __typename: "Foo" } | { __typename: "Bar" } }>()
+  expectTypeOf<RS<{ fooBarUnion: { onFoo: { __typename: true } } }>>().toEqualTypeOf<{ fooBarUnion: null | {} | { __typename: "Foo" } }>()
+  expectTypeOf<RS<{ fooBarUnion: { onFoo: { id: true } } }>>().toEqualTypeOf<{ fooBarUnion: null | {} | { id: null|string } }>()
+  expectTypeOf<RS<{ fooBarUnion: { __typename: true; onFoo: { id: true } } }>>().toEqualTypeOf<{ fooBarUnion: null | { __typename: "Bar" } | { __typename: "Foo"; id: null|string } }>()
 
   // Arguments
   // scalar

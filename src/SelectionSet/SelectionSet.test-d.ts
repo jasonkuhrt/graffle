@@ -30,13 +30,13 @@ test(`general`, () => {
   // Union
   assertType<S>({ fooBarUnion: { __typename: true } })
   assertType<S>({ fooBarUnion: { onFoo: { __typename: true } } })
-  assertType<S>({ fooBarUnion: { onFoo: { a: true } } })
+  assertType<S>({ fooBarUnion: { onFoo: { id: true } } })
   // @ts-expect-error no b
-  assertType<S>({ fooBarUnion: { onFoo: { b: true } } })
+  assertType<S>({ fooBarUnion: { onFoo: { id2: true } } })
   assertType<S>({ fooBarUnion: { onBar: { __typename: true } } })
-  assertType<S>({ fooBarUnion: { onBar: { b: true } } })
+  assertType<S>({ fooBarUnion: { onBar: { int: true } } })
   // @ts-expect-error no a
-  assertType<S>({ fooBarUnion: { onBar: { a: true } } })
+  assertType<S>({ fooBarUnion: { onBar: { int2: true } } })
 
   // Alias
   // alias: enum
@@ -64,7 +64,7 @@ test(`general`, () => {
   assertType<S>({ object: { $skip: true, string: true } })
   // assertType<S>({ scalars: skip().select({ a: true }) })
   // on fragment
-  assertType<S>({ fooBarUnion: { onBar: { $skip: true, b: true } } })
+  assertType<S>({ fooBarUnion: { onBar: { $skip: true, int: true } } })
   // @include
   assertType<S>({ string: { $include: true } })
   assertType<S>({ string: { $include: false } })

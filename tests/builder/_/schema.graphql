@@ -27,11 +27,11 @@ type Foo {
 	"""
 	Field documentation.
 	"""
-	a: String @deprecated(reason: "Field a is deprecated.")
+	id: ID @deprecated(reason: "Field a is deprecated.")
 }
 
 type Bar {
-	b: Int
+	int: Int
 }
 
 type ObjectNested {

@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
+import type { GetKeyOr, Values } from '../lib/prelude.js'
 import type { TSError } from '../lib/TSError.js'
 import type { Schema } from '../schema/__.js'
 import type { SelectionSet } from '../SelectionSet/__.js'
@@ -10,15 +11,15 @@ type SimplifyDeep<T> = ConditionalSimplifyDeep<T, Function | Iterable<unknown> |
 
 // dprint-ignore
 export type Query<$SelectionSetQuery extends object, $Index extends Schema.Index> =
-  SimplifyDeep<Object<$SelectionSetQuery, Exclude<$Index['Root']['Query'], null>>>
+  SimplifyDeep<Object<$SelectionSetQuery, Exclude<$Index['Root']['Query'], null>, $Index>>
 
 // dprint-ignore
 export type Mutation<$SelectionSetMutation extends object, $Index extends Schema.Index> =
-  SimplifyDeep<Object<$SelectionSetMutation, Exclude<$Index['Root']['Mutation'], null>>>
+  SimplifyDeep<Object<$SelectionSetMutation, Exclude<$Index['Root']['Mutation'], null>, $Index>>
 
 // dprint-ignore
 export type Subscription<$SelectionSetSubscription extends object, $Index extends Schema.Index> =
-  SimplifyDeep<Object<$SelectionSetSubscription, Exclude<$Index['Root']['Subscription'], null>>>
+  SimplifyDeep<Object<$SelectionSetSubscription, Exclude<$Index['Root']['Subscription'], null>, $Index>>
 
 // // dprint-ignore
 // export type ResultSet<$SelectionSet extends object, $Node extends Schema.Node> =
@@ -27,29 +28,37 @@ export type Subscription<$SelectionSetSubscription extends object, $Index extend
 // 		: ResultSetObject<$SelectionSet, $Node>
 
 // dprint-ignore
-type Node<$SelectionSet, $Node extends Schema.Node> =
-  $Node extends Schema.Object ? Object<$SelectionSet, $Node> :
+type Node<$SelectionSet, $Node extends Schema.Node, $Index extends Schema.Index> =
+  $Node extends Schema.Union  ? SimplifyDeep<Union<$SelectionSet, $Node, $Index>> :
+  $Node extends Schema.Object ? Object<$SelectionSet, $Node, $Index> :
   $Node extends Schema.Scalar ? $Node
                               : Errors.UnknownNode<$Node>
 
 // dprint-ignore
-export type Object<$SelectionSet, $Object extends Schema.Object> =
+export type Object<$SelectionSet, $Object extends Schema.Object, $Index extends Schema.Index> =
   SelectionSet.IsSelectScalarsWildcard<$SelectionSet> extends true
     ? {
         [$Key in keyof $Object as $Object[$Key] extends Schema.ScalarField ? $Key : never]:
-          Field<$SelectionSet, Schema.AsField<$Object[$Key]>>
+          Field<$SelectionSet, Schema.AsField<$Object[$Key]>, $Index>
       }
     : {
         [$SSKey in keyof $SelectionSet & string as $SelectionSet[$SSKey] extends SelectionSet.ClientIndicatorNegative ? never : $SSKey]:
           $SSKey extends keyof $Object
-            ? SimplifyDeep<Field<$SelectionSet[$SSKey], Schema.AsField<$Object[$SSKey]>>>
+            ? SimplifyDeep<Field<$SelectionSet[$SSKey], Schema.AsField<$Object[$SSKey]>, $Index>>
             : Errors.UnknownFieldName<$SSKey, $Object>
       }
 
 // dprint-ignore
-type Field<$SelectionSet, $Field extends Schema.Field> =
+type Union<$SelectionSet, $Node extends Schema.Union, $Index extends Schema.Index> =
+ Values<{
+    [$ObjectName in $Node['type']['__typename']['type']]:
+      Object<GetKeyOr<$SelectionSet,`on${$ObjectName}`,{}> & SelectionSet.UnionOmitFragments<$SelectionSet>, $Index['objects'][$ObjectName], $Index>
+  }>
+
+// dprint-ignore
+type Field<$SelectionSet, $Field extends Schema.Field, $Index extends Schema.Index> =
   | FieldNullable<$Field>
-  | Node<$SelectionSet, $Field['type']>
+  | Node<$SelectionSet, $Field['type'], $Index>
 
 type FieldNullable<$Field extends Schema.Field> = $Field['nullable'] extends true ? null : never
 

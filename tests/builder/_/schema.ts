@@ -5,6 +5,16 @@ Query: Root.Query
 Mutation: null
 Subscription: null
 }
+objects: {
+Foo: Object.Foo
+Bar: Object.Bar
+ObjectNested: Object.ObjectNested
+Object: Object.Object
+}
+unionMemberNames: {
+FooBarUnion: "Foo"
+| "Bar"
+}
 unions: {
 Union: Union.FooBarUnion
 }
@@ -34,21 +44,25 @@ args: null
 }
 id: {
 type: $.Scalars["ID"]
+typeName: "ID"
 nullable: true
 args: null
 }
 idNonNull: {
 type: $.Scalars["ID"]
+typeName: "ID"
 nullable: false
 args: null
 }
 string: {
 type: $.Scalars["String"]
+typeName: "String"
 nullable: true
 args: null
 }
 stringWithRequiredArg: {
 type: $.Scalars["String"]
+typeName: "String"
 nullable: true
 args: {
 type: {
@@ -59,6 +73,7 @@ allOptional: false
 }
 stringWithArgs: {
 type: $.Scalars["String"]
+typeName: "String"
 nullable: true
 args: {
 type: {
@@ -73,21 +88,25 @@ allOptional: true
 }
 object: {
 type: Object.Object
+typeName: "Object"
 nullable: true
 args: null
 }
 objectNested: {
 type: Object.ObjectNested
+typeName: "ObjectNested"
 nullable: true
 args: null
 }
 objectNonNull: {
 type: Object.Object
+typeName: "Object"
 nullable: false
 args: null
 }
 objectWithArgs: {
 type: Object.Object
+typeName: "Object"
 nullable: true
 args: {
 type: {
@@ -102,6 +121,7 @@ allOptional: true
 }
 fooBarUnion: {
 type: Union.FooBarUnion
+typeName: "FooBarUnion"
 nullable: true
 args: null
 }
@@ -110,6 +130,7 @@ args: null
 */
 abcEnum: {
 type: Enum.ABCEnum
+typeName: "ABCEnum"
 nullable: true
 args: null
 }
@@ -172,8 +193,9 @@ args: null
 * 
 * @deprecated Field a is deprecated.
 */
-a: {
-type: $.Scalars["String"]
+id: {
+type: $.Scalars["ID"]
+typeName: "ID"
 nullable: true
 args: null
 }
@@ -185,8 +207,9 @@ type: "Bar"
 nullable: false
 args: null
 }
-b: {
+int: {
 type: $.Scalars["Int"]
+typeName: "Int"
 nullable: true
 args: null
 }
@@ -200,11 +223,13 @@ args: null
 }
 id: {
 type: $.Scalars["ID"]
+typeName: "ID"
 nullable: true
 args: null
 }
 object: {
 type: Object.Object
+typeName: "Object"
 nullable: true
 args: null
 }
@@ -218,26 +243,31 @@ args: null
 }
 string: {
 type: $.Scalars["String"]
+typeName: "String"
 nullable: true
 args: null
 }
 int: {
 type: $.Scalars["Int"]
+typeName: "Int"
 nullable: true
 args: null
 }
 float: {
 type: $.Scalars["Float"]
+typeName: "Float"
 nullable: true
 args: null
 }
 boolean: {
 type: $.Scalars["Boolean"]
+typeName: "Boolean"
 nullable: true
 args: null
 }
 id: {
 type: $.Scalars["ID"]
+typeName: "ID"
 nullable: true
 args: null
 }
@@ -252,7 +282,9 @@ export namespace Union {
 /**
 * Union documentation.
 */
-export type FooBarUnion =
-| Object.Foo& { $$union:true}
-| Object.Bar& { $$union:true}
+export interface FooBarUnion {
+__unionname: "FooBarUnion"
+type: Object.Foo
+| Object.Bar
+}
 }

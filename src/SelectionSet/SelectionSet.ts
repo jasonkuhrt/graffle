@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
-import type { MaybeList, NonEmptyString } from '../lib/prelude.js'
+import type { MaybeList, NonEmptyString, Values } from '../lib/prelude.js'
 import type { TSError } from '../lib/TSError.js'
 import type { Schema } from '../schema/__.js'
 
@@ -73,12 +73,12 @@ type Arguments<$Field extends Schema.Field> = $Field['args'] extends Schema.Args
 
 // TODO why does $object not get passed to this in a distributed way?
 type SelectionSetUnion<
-  $Object extends Schema.Union,
+  $Union extends Schema.Union,
   $Index extends Schema.Index,
 > =
   & {
-    [Key in $Object['__typename']['type'] as `on${Capitalize<Key>}`]?: SelectionSetObject<
-      Schema.OmitUnionBrand<Extract<$Object, { __typename: { type: Key } }>>,
+    [Key in $Union['type']['__typename']['type'] as `on${Capitalize<Key>}`]?: SelectionSetObject<
+      Extract<$Union['type'], { __typename: { type: Key } }>,
       $Index
     >
   }
@@ -95,6 +95,16 @@ type SelectionSetUnion<
 export type ClientIndicator = ClientIndicatorPositive | ClientIndicatorNegative
 export type ClientIndicatorPositive = true | 1
 export type ClientIndicatorNegative = false | 0 | undefined
+
+export type UnionFragmentExtractName<T> = T extends `on${infer $Name}` ? $Name : never
+export type UnionExtractFragmentNames<T> = Values<
+  {
+    [Key in keyof T]: UnionFragmentExtractName<Key>
+  }
+>
+export type UnionOmitFragments<T> = {
+  [$K in keyof T as $K extends `on${NonEmptyString}` ? never : $K]: T[$K]
+}
 
 /**
  * Field selection in general, with directives support too.
