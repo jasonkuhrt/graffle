@@ -42,25 +42,21 @@ args: null
 }
 id: {
 type: $.Scalars["ID"]
-typeName: "ID"
 nullable: true
 args: null
 }
 idNonNull: {
 type: $.Scalars["ID"]
-typeName: "ID"
 nullable: false
 args: null
 }
 string: {
 type: $.Scalars["String"]
-typeName: "String"
 nullable: true
 args: null
 }
 stringWithRequiredArg: {
 type: $.Scalars["String"]
-typeName: "String"
 nullable: true
 args: {
 type: {
@@ -71,7 +67,6 @@ allOptional: false
 }
 stringWithArgs: {
 type: $.Scalars["String"]
-typeName: "String"
 nullable: true
 args: {
 type: {
@@ -86,43 +81,36 @@ allOptional: true
 }
 object: {
 type: Object.Object
-typeName: "Object"
 nullable: true
 args: null
 }
 listListInt: {
 type: Array<Array<$.Scalars["Int"]>>
-typeName: null
 nullable: false
 args: null
 }
 listInt: {
 type: Array<$.Scalars["Int"]>
-typeName: null
 nullable: false
 args: null
 }
 listIntNonNull: {
 type: Array<$.Scalars["Int"]>
-typeName: null
 nullable: false
 args: null
 }
 objectNested: {
 type: Object.ObjectNested
-typeName: "ObjectNested"
 nullable: true
 args: null
 }
 objectNonNull: {
 type: Object.Object
-typeName: "Object"
 nullable: false
 args: null
 }
 objectWithArgs: {
 type: Object.Object
-typeName: "Object"
 nullable: true
 args: {
 type: {
@@ -137,7 +125,6 @@ allOptional: true
 }
 fooBarUnion: {
 type: Union.FooBarUnion
-typeName: "FooBarUnion"
 nullable: true
 args: null
 }
@@ -146,7 +133,6 @@ args: null
 */
 abcEnum: {
 type: Enum.ABCEnum
-typeName: "ABCEnum"
 nullable: true
 args: null
 }
@@ -211,7 +197,6 @@ args: null
 */
 id: {
 type: $.Scalars["ID"]
-typeName: "ID"
 nullable: true
 args: null
 }
@@ -225,7 +210,6 @@ args: null
 }
 int: {
 type: $.Scalars["Int"]
-typeName: "Int"
 nullable: true
 args: null
 }
@@ -239,13 +223,11 @@ args: null
 }
 id: {
 type: $.Scalars["ID"]
-typeName: "ID"
 nullable: true
 args: null
 }
 object: {
 type: Object.Object
-typeName: "Object"
 nullable: true
 args: null
 }
@@ -259,31 +241,26 @@ args: null
 }
 string: {
 type: $.Scalars["String"]
-typeName: "String"
 nullable: true
 args: null
 }
 int: {
 type: $.Scalars["Int"]
-typeName: "Int"
 nullable: true
 args: null
 }
 float: {
 type: $.Scalars["Float"]
-typeName: "Float"
 nullable: true
 args: null
 }
 boolean: {
 type: $.Scalars["Boolean"]
-typeName: "Boolean"
 nullable: true
 args: null
 }
 id: {
 type: $.Scalars["ID"]
-typeName: "ID"
 nullable: true
 args: null
 }

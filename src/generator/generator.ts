@@ -241,11 +241,9 @@ const renderField = (config: Config, field: AnyField): string => {
     ? renderArgs(config, field.args)
     : null
   // const fieldWithArgs = args ? Code.intersection(fieldBase, args) : fieldBase
-  const name = isNamedType(node) ? node.name : null
 
   return Code.objectFrom({
     type: { type },
-    typeName: { type: name ? Code.quote(name) : null },
     nullable: { type: nullable ? true : false },
     args: { type: args ?? null },
   })
