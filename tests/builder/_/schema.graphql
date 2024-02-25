@@ -6,7 +6,7 @@ type Query {
 	stringWithArgs(string:String, int:Int, float:Float, boolean:Boolean, id:ID): String
 	object: Object
 	listListInt: [[Int!]!]!
-	listInt: [Int!]!
+	listInt: [Int]
 	listIntNonNull: [Int!]!
 	objectNested: ObjectNested
 	objectNonNull: Object!

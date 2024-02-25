@@ -16,53 +16,68 @@ export type Subscription<$Index extends Schema.Index> = $Index['Root']['Subscrip
   ? SelectionSetObject<$Index['Root']['Subscription'], $Index>
   : never
 
+// dprint-ignore
 type SelectionSetObject<
   $Object extends Schema.Object,
   $Index extends Schema.Index,
 > =
-  & {
-    [Key in keyof $Object]?: SelectionSetField<
-      Schema.AsField<$Object[Key]>,
-      $Index
-    >
+  &
+  {
+    [Key in keyof $Object]?:
+      SelectionSetField<UnwrapListAndNullableFieldType<Schema.AsField<$Object[Key]>>, $Index>
   }
-  & /**
+  &
+  /**
    * Alias support.
    * Allow every field to also be given as a key with this pattern `<field>_as_<alias>: ...`
-   */ {
+   */
+  {
     [
       Key in keyof $Object as `${keyof $Object & string}_as_${StringNonEmpty}`
-    ]?: SelectionSetField<
-      Schema.AsField<$Object[Key]>,
-      $Index
-    >
+    ]?:
+     SelectionSetField<UnwrapListAndNullableFieldType<Schema.AsField<$Object[Key]>>, $Index>
   }
   & FieldDirectives
-  & /**
+  &
+  /**
    * Inline fragments for field groups.
    * @see https://spec.graphql.org/draft/#sec-Inline-Fragments
-   */ {
+   */
+  {
     ___?: MaybeList<SelectionSetObject<$Object, $Index>>
   }
-  & /**
+  &
+  /**
    * Special property to select all scalars.
-   */ { $scalars?: ClientIndicator }
+   */
+  {
+    $scalars?: ClientIndicator
+  }
 
 export type IsSelectScalarsWildcard<SS> = SS extends { $scalars: ClientIndicatorPositive } ? true : false
 
 // dprint-ignore
 export type SelectionSetField<
-  $Field extends Schema.Field,
+  $Field extends Schema.ScalarField|Schema.UnionField|Schema.ObjectField|Schema.LiteralField,
   $Index extends Schema.Index,
-> = $Field extends Schema.ScalarField
-  ? Indicator<$Field>
-  : $Field extends Schema.unionField
-  ? SelectionSetUnion<$Field['type'], $Index>
-  : $Field extends Schema.ObjectField
-  ? SelectionSetObject<$Field['type'], $Index> & Arguments<$Field>
-  : TSError<'SelectionSetField', '$Field case not handled', { $Field: $Field }>
+> =
+  $Field extends Schema.ScalarField   ? Indicator<$Field> :
+  $Field extends Schema.LiteralField  ? Indicator<$Field> :
+  $Field extends Schema.UnionField    ? SelectionSetUnion<$Field['type']['reference'], $Index> :
+  $Field extends Schema.ObjectField   ? SelectionSetObject<$Field['type']['reference'], $Index> & Arguments<$Field> :
+  TSError<'SelectionSetField', '$Field case not handled', { $Field: $Field }>
 
-type Arguments<$Field extends Schema.Field> = $Field['args'] extends Schema.Args
+type UnwrapListAndNullableFieldType<$Field extends Schema.Field> = UnwrapListAndNullableFieldType_<$Field['type']>
+
+// dprint-ignore
+type UnwrapListAndNullableFieldType_<FT extends Schema.FieldType> =
+  FT extends Schema.FieldTypeList       ? UnwrapListAndNullableFieldType_<FT['type']> :
+  FT extends Schema.FieldTypeNullable   ? UnwrapListAndNullableFieldType_<FT['type']> :
+  FT extends Schema.FieldTypeLiteral    ? FT :
+  FT extends Schema.FieldTypeReference  ? FT 
+                                        : TSError<'UnwrapFieldType_', 'FT case not handled', { FT: FT }>
+
+type Arguments<$Field extends Schema.Field> = $Field['args'] extends Schema.FieldArgs
   ? $Field['args']['allOptional'] extends true ? {
       $?: $Field['args']['type']
     }
@@ -77,7 +92,7 @@ type SelectionSetUnion<
   $Index extends Schema.Index,
 > =
   & {
-    [Key in $Union['type']['__typename']['type'] as `on${Capitalize<Key>}`]?: SelectionSetObject<
+    [Key in $Union['type']['__typename']['type']['value'] as `on${Capitalize<Key>}`]?: SelectionSetObject<
       Extract<$Union['type'], { __typename: { type: Key } }>,
       $Index
     >
@@ -167,12 +182,11 @@ export type OmitNegativeIndicators<$SelectionSet> = {
 export type NoArgsIndicator = ClientIndicator | FieldDirectives
 
 // dprint-ignore
-export type Indicator<$FieldType extends Schema.Field> =
-  $FieldType['args'] extends Schema.Args
-    ? $FieldType['args']['allOptional'] extends true
-      ? ({ $?: $FieldType['args']['type'] } & FieldDirectives) | ClientIndicator
-      : { $: $FieldType['args']['type'] } & FieldDirectives
-    : NoArgsIndicator
+export type Indicator<$FieldType extends Schema.LiteralField | Schema.ScalarField> =
+  $FieldType['args'] extends Schema.FieldArgs ? $FieldType['args']['allOptional'] extends true
+                                                ? ({ $?: $FieldType['args']['type'] } & FieldDirectives) | ClientIndicator
+                                                : { $: $FieldType['args']['type'] } & FieldDirectives
+                                              : NoArgsIndicator
 
 /**
  * @see https://spec.graphql.org/draft/#sec-Type-System.Directives.Built-in-Directives

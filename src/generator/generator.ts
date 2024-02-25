@@ -1,4 +1,3 @@
-// todo Emit JSDoc from GraphQL descriptions
 import type {
   GraphQLArgument,
   GraphQLEnumValue,
@@ -6,7 +5,7 @@ import type {
   GraphQLInterfaceType,
   GraphQLNamedType,
 } from 'graphql'
-import { GraphQLNonNull, GraphQLObjectType, isEnumType, isNamedType } from 'graphql'
+import { GraphQLNonNull, GraphQLObjectType, isEnumType, isListType, isNamedType } from 'graphql'
 import { buildSchema } from 'graphql'
 import _ from 'json-bigint'
 import fs from 'node:fs/promises'
@@ -214,9 +213,11 @@ const renderFields = (config: Config, node: AnyGraphQLFieldsType): string => {
       Code.field(
         `__typename`,
         Code.objectFrom({
-          type: { type: Code.quote(node.name) },
-          nullable: { type: false },
-          args: { type: null },
+          type: Code.objectFrom({
+            kind: Code.quote(`literal`),
+            value: Code.quote(node.name),
+          }),
+          args: null,
         }),
       ),
     ]
@@ -232,20 +233,49 @@ const renderFields = (config: Config, node: AnyGraphQLFieldsType): string => {
   ]))
 }
 
-const renderField = (config: Config, field: AnyField): string => {
-  const { node, nullable } = unwrapNonNull(field.type)
+const buildType = (config: Config, node: AnyClass) => {
+  const { node: nodeInner, nullable } = unwrapNonNull(node)
 
-  const type = dispatchToReferenceRenderer(config, node)
+  if (isNamedType(nodeInner)) {
+    const nodeCode = dispatchToReferenceRenderer(config, nodeInner)
+    const nodeType = Code.objectFrom({
+      kind: Code.quote(`reference`),
+      reference: nodeCode,
+    })
+    return nullable
+      ? Code.objectFrom({
+        kind: Code.quote(`nullable`),
+        type: nodeType,
+      })
+      : nodeType
+  }
+
+  if (isListType(nodeInner)) {
+    const nodeType = Code.objectFrom({
+      kind: Code.quote(`list`),
+      type: buildType(config, nodeInner.ofType),
+    })
+    return nullable
+      ? Code.objectFrom({
+        kind: Code.quote(`nullable`),
+        type: nodeType,
+      })
+      : nodeType
+  }
+
+  throw new Error(`Unhandled type: ${String(node)}`)
+}
+
+const renderField = (config: Config, field: AnyField): string => {
+  const type = buildType(config, field.type)
 
   const args = isGraphQLOutputField(field) && field.args.length > 0
     ? renderArgs(config, field.args)
     : null
-  // const fieldWithArgs = args ? Code.intersection(fieldBase, args) : fieldBase
 
   return Code.objectFrom({
-    type: { type },
-    nullable: { type: nullable ? true : false },
-    args: { type: args ?? null },
+    type,
+    args,
   })
 }
 
@@ -339,23 +369,19 @@ export const generateCode = (input: Input) => {
             Code.objectFrom({
               Root: {
                 type: Code.objectFrom({
-                  Query: { type: hasQuery ? `Root.Query` : null },
-                  Mutation: { type: hasMutation ? `Root.Mutation` : null },
-                  Subscription: { type: hasSubscription ? `Root.Subscription` : null },
+                  Query: hasQuery ? `Root.Query` : null,
+                  Mutation: hasMutation ? `Root.Mutation` : null,
+                  Subscription: hasSubscription ? `Root.Subscription` : null,
                 }),
               },
-              objects: {
-                type: Code.objectFromEntries(
-                  typeMapByKind.GraphQLObjectType.map(_ => [_.name, Code.propertyAccess(`Object`, _.name)]),
+              objects: Code.objectFromEntries(
+                typeMapByKind.GraphQLObjectType.map(_ => [_.name, Code.propertyAccess(`Object`, _.name)]),
+              ),
+              unionMemberNames: Code.objectFromEntries(
+                typeMapByKind.GraphQLUnionType.map(
+                  (_) => [_.name, Code.unionItems(_.getTypes().map(_ => Code.quote(_.name)))],
                 ),
-              },
-              unionMemberNames: {
-                type: Code.objectFromEntries(
-                  typeMapByKind.GraphQLUnionType.map(
-                    (_) => [_.name, Code.unionItems(_.getTypes().map(_ => Code.quote(_.name)))],
-                  ),
-                ),
-              },
+              ),
               unions: {
                 type: Code.objectFrom(
                   {
@@ -371,9 +397,7 @@ export const generateCode = (input: Input) => {
                   },
                 ),
               },
-              scalars: {
-                type: `Scalars`,
-              },
+              scalars: `Scalars`,
             }),
           ),
         ),

@@ -16,11 +16,19 @@ export namespace Code {
   export const objectFromEntries = (entries: [string, string][]) =>
     Code.objectFrom(Object.fromEntries(entries.map(([name, type]) => [name, { type }])))
   export const objectFrom = (
-    object: Record<string, { type: null | string | boolean | number; optional?: boolean; tsdoc?: string }>,
+    object: Record<
+      string,
+      null | string | boolean | number | { type: null | string | boolean | number; optional?: boolean; tsdoc?: string }
+    >,
   ) =>
     Code.object(
       Code.fields(
-        Object.entries(object).map(([name, spec]) => Code.field(name, String(spec.type), { optional: spec.optional })),
+        Object.entries(object).map(([name, spec]) =>
+          [name, spec && typeof spec === `object` ? spec : { type: spec }] as const
+        )
+          .map((
+            [name, spec],
+          ) => Code.field(name, String(spec.type), { optional: spec.optional })),
       ),
     )
   export const interface$ = (name: string, object: string) => `interface ${name} ${object}`

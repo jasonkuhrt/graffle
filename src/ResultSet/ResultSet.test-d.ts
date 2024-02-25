@@ -8,6 +8,7 @@ import type { ResultSet } from './__.js'
 type I = Schema.$.Index
 
 type RS<$S extends SelectionSet.Query<I>> = ResultSet.Query<$S, I>
+type x = RS<{ object: { id: true } }>
 
 // dprint-ignore
 test(`general`, () => {
@@ -42,7 +43,7 @@ test(`general`, () => {
   // todo
 
   // List
-  // todo
+  expectTypeOf<RS<{ listInt: true }>>().toEqualTypeOf<{ listInt: null|number[] }>()
 
   // Alias
   // scalar

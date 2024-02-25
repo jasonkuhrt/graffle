@@ -5,7 +5,6 @@ import type { Letter } from '../lib/prelude.js'
 export interface Index {
   unions: {
     Union: null | Union
-    // root: null | Object
   }
   Root: {
     Query: null | Object
@@ -20,18 +19,26 @@ export interface Index {
 export type Nullable = null
 // todo needs to be extensible for custom scalars...
 export type Scalar = string | boolean | number // Schema.$.Scalars[keyof Schema.$.Scalars]
-export type Object = { __typename: { args: null; type: string } }
+export type Object = { __typename: fieldTypename }
 export type Union = { __unionname: string; type: Object }
 export type Node = Object | Union | Scalar | Nullable
 
-export type FieldBase<$Type extends Node> = { args: null | Args; type: $Type; nullable: boolean }
-export type NullableField = FieldBase<Nullable>
-export type ScalarField = FieldBase<Scalar>
-export type ObjectField = FieldBase<Object>
-export type unionField = FieldBase<Union>
-export type Field = FieldBase<Node>
+export type fieldTypename = { args: null; type: FieldTypeLiteral }
+export type FieldTypeReference = { kind: 'reference'; reference: any }
+export type FieldTypeLiteral = { kind: 'literal'; value: string }
+export type FieldTypeList = { kind: 'list'; type: any }
+export type FieldTypeNullable = { kind: 'nullable'; type: any }
+export type FieldType = FieldTypeReference | FieldTypeList | FieldTypeNullable | FieldTypeLiteral
+export type Field<$FieldType extends FieldType = FieldType> = {
+  args: null | FieldArgs
+  type: $FieldType
+}
+export type ScalarField = Field<FieldTypeReference>
+export type ObjectField = Field<FieldTypeReference>
+export type LiteralField = Field<FieldTypeLiteral>
+export type UnionField = Field<FieldTypeReference>
 
-export type Args = { type: object; allOptional: boolean }
+export type FieldArgs = { type: object; allOptional: boolean }
 
 export type AsField<T> = T extends Field ? T : never
 

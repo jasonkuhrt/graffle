@@ -27,14 +27,15 @@ test(`Query`, () => {
   assertType<S>({ abcEnum: true })
 
   // Object
+  assertType<S>({ object: { id: true } })
+  // typename
+  assertType<S>({ __typename: true })
+  // Non-Null
+  assertType<S>({ objectNonNull: { id: true } })
   // @ts-expect-error excess property check
   assertType<S>({ id2: true })
   // @ts-expect-error excess property check
   assertType<S>({ object: { a2: true } })
-  assertType<S>({ __typename: true })
-  assertType<S>({ object: { id: true } })
-  // Non-Null
-  assertType<S>({ objectNonNull: { id: true } })
 
   // Union
   assertType<S>({ fooBarUnion: { __typename: true } })

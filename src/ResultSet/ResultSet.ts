@@ -58,11 +58,22 @@ type Union<$SelectionSet, $Node extends Schema.Union, $Index extends Schema.Inde
 type Field<$SelectionSet, $Field extends Schema.Field, $Index extends Schema.Index> =
   $SelectionSet extends SelectionSet.Directive.Include.Negative | SelectionSet.Directive.Skip.Positive  ? null :
   (
-    | FieldNullable<$Field>
     | FieldDirectiveInclude<$SelectionSet>
     | FieldDirectiveSkip<$SelectionSet>
-    | Node<$SelectionSet, $Field['type'], $Index>
+    | FieldUnwrap<$SelectionSet, $Field['type'], $Index>
+    // | Node<$SelectionSet, $Field['type'], $Index>
   )
+
+// dprint-ignore
+type FieldUnwrap<
+$SelectionSet,
+  T extends { kind: 'reference'; reference: any } | { kind: 'list'; type: any } | { kind: 'nullable'; type: any },
+  $Index extends Schema.Index
+> =
+  T extends { kind: 'nullable' }    ? null | FieldUnwrap<$SelectionSet,T['type'],$Index> :
+  T extends { kind: 'list' }        ? FieldUnwrap<$SelectionSet,T['type'],$Index>[] :
+  T extends { kind: 'reference' }   ? Node<$SelectionSet, T['reference'], $Index>
+                                    : never
 
 // dprint-ignore
 type FieldDirectiveInclude<$SelectionSet> =
@@ -77,8 +88,6 @@ type FieldDirectiveSkip<$SelectionSet> =
                                                           never :
                                                           null
                                                         : never
-
-type FieldNullable<$Field extends Schema.Field> = $Field['nullable'] extends true ? null : never
 
 // dprint-ignore
 export namespace Errors {
