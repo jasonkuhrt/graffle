@@ -245,9 +245,9 @@ const renderField = (config: Config, field: AnyField): string => {
 
   return Code.objectFrom({
     type: { type },
-    typeName: { type: name ? Code.quote(name) : `null` },
-    nullable: { type: nullable ? `true` : `false` },
-    args: { type: args ?? `null` },
+    typeName: { type: name ? Code.quote(name) : null },
+    nullable: { type: nullable ? true : false },
+    args: { type: args ?? null },
   })
 }
 
@@ -270,7 +270,7 @@ const renderArgs = (config: Config, args: readonly GraphQLArgument[]) => {
   )
   return Code.objectFrom({
     type: { type: argsRendered },
-    allOptional: { type: hasRequiredArgs ? `false` : `true` },
+    allOptional: { type: !hasRequiredArgs },
   })
 }
 
