@@ -44,42 +44,47 @@ kind: "literal"
 value: "Query"
 }
 args: null
+namedType: "Query"
 }
 id: {
 type: {
 kind: "nullable"
 type: {
-kind: "reference"
-reference: $.Scalars["ID"]
+kind: "named"
+named: $.Scalars["ID"]
 }
 }
+namedType: $.Scalars["ID"]
 args: null
 }
 idNonNull: {
 type: {
-kind: "reference"
-reference: $.Scalars["ID"]
+kind: "named"
+named: $.Scalars["ID"]
 }
+namedType: $.Scalars["ID"]
 args: null
 }
 string: {
 type: {
 kind: "nullable"
 type: {
-kind: "reference"
-reference: $.Scalars["String"]
+kind: "named"
+named: $.Scalars["String"]
 }
 }
+namedType: $.Scalars["String"]
 args: null
 }
 stringWithRequiredArg: {
 type: {
 kind: "nullable"
 type: {
-kind: "reference"
-reference: $.Scalars["String"]
+kind: "named"
+named: $.Scalars["String"]
 }
 }
+namedType: $.Scalars["String"]
 args: {
 type: {
 string: $.Scalars["String"]
@@ -91,10 +96,11 @@ stringWithArgs: {
 type: {
 kind: "nullable"
 type: {
-kind: "reference"
-reference: $.Scalars["String"]
+kind: "named"
+named: $.Scalars["String"]
 }
 }
+namedType: $.Scalars["String"]
 args: {
 type: {
 string?: $.Scalars["String"] | null
@@ -110,10 +116,11 @@ object: {
 type: {
 kind: "nullable"
 type: {
-kind: "reference"
-reference: Object.Object
+kind: "named"
+named: Object.Object
 }
 }
+namedType: Object.Object
 args: null
 }
 listListInt: {
@@ -122,11 +129,12 @@ kind: "list"
 type: {
 kind: "list"
 type: {
-kind: "reference"
-reference: $.Scalars["Int"]
+kind: "named"
+named: $.Scalars["Int"]
 }
 }
 }
+namedType: $.Scalars["Int"]
 args: null
 }
 listInt: {
@@ -137,49 +145,54 @@ kind: "list"
 type: {
 kind: "nullable"
 type: {
-kind: "reference"
-reference: $.Scalars["Int"]
+kind: "named"
+named: $.Scalars["Int"]
 }
 }
 }
 }
+namedType: $.Scalars["Int"]
 args: null
 }
 listIntNonNull: {
 type: {
 kind: "list"
 type: {
-kind: "reference"
-reference: $.Scalars["Int"]
+kind: "named"
+named: $.Scalars["Int"]
 }
 }
+namedType: $.Scalars["Int"]
 args: null
 }
 objectNested: {
 type: {
 kind: "nullable"
 type: {
-kind: "reference"
-reference: Object.ObjectNested
+kind: "named"
+named: Object.ObjectNested
 }
 }
+namedType: Object.ObjectNested
 args: null
 }
 objectNonNull: {
 type: {
-kind: "reference"
-reference: Object.Object
+kind: "named"
+named: Object.Object
 }
+namedType: Object.Object
 args: null
 }
 objectWithArgs: {
 type: {
 kind: "nullable"
 type: {
-kind: "reference"
-reference: Object.Object
+kind: "named"
+named: Object.Object
 }
 }
+namedType: Object.Object
 args: {
 type: {
 string?: $.Scalars["String"] | null
@@ -195,10 +208,11 @@ fooBarUnion: {
 type: {
 kind: "nullable"
 type: {
-kind: "reference"
-reference: Union.FooBarUnion
+kind: "named"
+named: Union.FooBarUnion
 }
 }
+namedType: Union.FooBarUnion
 args: null
 }
 /**
@@ -208,10 +222,11 @@ abcEnum: {
 type: {
 kind: "nullable"
 type: {
-kind: "reference"
-reference: Enum.ABCEnum
+kind: "named"
+named: Enum.ABCEnum
 }
 }
+namedType: Enum.ABCEnum
 args: null
 }
 }
@@ -269,6 +284,7 @@ kind: "literal"
 value: "Foo"
 }
 args: null
+namedType: "Foo"
 }
 /**
 * Field documentation.
@@ -279,10 +295,11 @@ id: {
 type: {
 kind: "nullable"
 type: {
-kind: "reference"
-reference: $.Scalars["ID"]
+kind: "named"
+named: $.Scalars["ID"]
 }
 }
+namedType: $.Scalars["ID"]
 args: null
 }
 }
@@ -294,15 +311,17 @@ kind: "literal"
 value: "Bar"
 }
 args: null
+namedType: "Bar"
 }
 int: {
 type: {
 kind: "nullable"
 type: {
-kind: "reference"
-reference: $.Scalars["Int"]
+kind: "named"
+named: $.Scalars["Int"]
 }
 }
+namedType: $.Scalars["Int"]
 args: null
 }
 }
@@ -314,25 +333,28 @@ kind: "literal"
 value: "ObjectNested"
 }
 args: null
+namedType: "ObjectNested"
 }
 id: {
 type: {
 kind: "nullable"
 type: {
-kind: "reference"
-reference: $.Scalars["ID"]
+kind: "named"
+named: $.Scalars["ID"]
 }
 }
+namedType: $.Scalars["ID"]
 args: null
 }
 object: {
 type: {
 kind: "nullable"
 type: {
-kind: "reference"
-reference: Object.Object
+kind: "named"
+named: Object.Object
 }
 }
+namedType: Object.Object
 args: null
 }
 }
@@ -344,55 +366,61 @@ kind: "literal"
 value: "Object"
 }
 args: null
+namedType: "Object"
 }
 string: {
 type: {
 kind: "nullable"
 type: {
-kind: "reference"
-reference: $.Scalars["String"]
+kind: "named"
+named: $.Scalars["String"]
 }
 }
+namedType: $.Scalars["String"]
 args: null
 }
 int: {
 type: {
 kind: "nullable"
 type: {
-kind: "reference"
-reference: $.Scalars["Int"]
+kind: "named"
+named: $.Scalars["Int"]
 }
 }
+namedType: $.Scalars["Int"]
 args: null
 }
 float: {
 type: {
 kind: "nullable"
 type: {
-kind: "reference"
-reference: $.Scalars["Float"]
+kind: "named"
+named: $.Scalars["Float"]
 }
 }
+namedType: $.Scalars["Float"]
 args: null
 }
 boolean: {
 type: {
 kind: "nullable"
 type: {
-kind: "reference"
-reference: $.Scalars["Boolean"]
+kind: "named"
+named: $.Scalars["Boolean"]
 }
 }
+namedType: $.Scalars["Boolean"]
 args: null
 }
 id: {
 type: {
 kind: "nullable"
 type: {
-kind: "reference"
-reference: $.Scalars["ID"]
+kind: "named"
+named: $.Scalars["ID"]
 }
 }
+namedType: $.Scalars["ID"]
 args: null
 }
 }

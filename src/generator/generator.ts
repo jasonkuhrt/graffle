@@ -5,7 +5,7 @@ import type {
   GraphQLInterfaceType,
   GraphQLNamedType,
 } from 'graphql'
-import { GraphQLNonNull, GraphQLObjectType, isEnumType, isListType, isNamedType } from 'graphql'
+import { GraphQLNonNull, GraphQLObjectType, isEnumType, isListType, isNamedType, isNonNullType } from 'graphql'
 import { buildSchema } from 'graphql'
 import _ from 'json-bigint'
 import fs from 'node:fs/promises'
@@ -218,6 +218,7 @@ const renderFields = (config: Config, node: AnyGraphQLFieldsType): string => {
             value: Code.quote(node.name),
           }),
           args: null,
+          namedType: Code.quote(node.name),
         }),
       ),
     ]
@@ -237,17 +238,17 @@ const buildType = (config: Config, node: AnyClass) => {
   const { node: nodeInner, nullable } = unwrapNonNull(node)
 
   if (isNamedType(nodeInner)) {
-    const nodeCode = dispatchToReferenceRenderer(config, nodeInner)
-    const nodeType = Code.objectFrom({
-      kind: Code.quote(`reference`),
-      reference: nodeCode,
+    const namedType = dispatchToReferenceRenderer(config, nodeInner)
+    const type = Code.objectFrom({
+      kind: Code.quote(`named`),
+      named: namedType,
     })
     return nullable
       ? Code.objectFrom({
         kind: Code.quote(`nullable`),
-        type: nodeType,
+        type: type,
       })
-      : nodeType
+      : type
   }
 
   if (isListType(nodeInner)) {
@@ -266,8 +267,16 @@ const buildType = (config: Config, node: AnyClass) => {
   throw new Error(`Unhandled type: ${String(node)}`)
 }
 
+const getNamedType = (config: Config, node: AnyClass): GraphQLNamedType => {
+  if (isNamedType(node)) return node
+  if (isNonNullType(node)) return getNamedType(config, node.ofType)
+  if (isListType(node)) return getNamedType(config, node.ofType)
+  throw new Error(`Unhandled type: ${String(node)}`)
+}
+
 const renderField = (config: Config, field: AnyField): string => {
   const type = buildType(config, field.type)
+  const namedType = dispatchToReferenceRenderer(config, getNamedType(config, field.type))
 
   const args = isGraphQLOutputField(field) && field.args.length > 0
     ? renderArgs(config, field.args)
@@ -275,6 +284,7 @@ const renderField = (config: Config, field: AnyField): string => {
 
   return Code.objectFrom({
     type,
+    namedType,
     args,
   })
 }

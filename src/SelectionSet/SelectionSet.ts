@@ -4,27 +4,27 @@ import type { MaybeList, StringNonEmpty, Values } from '../lib/prelude.js'
 import type { TSError } from '../lib/TSError.js'
 import type { Schema } from '../schema/__.js'
 
-export type Query<$Index extends Schema.Index> = $Index['Root']['Query'] extends Object
-  ? SelectionSetObject<$Index['Root']['Query'], $Index>
+export type Query<$Index extends Schema.Index> = $Index['Root']['Query'] extends Schema.Object
+  ? Object<$Index['Root']['Query'], $Index>
   : never
 
-export type Mutation<$Index extends Schema.Index> = $Index['Root']['Mutation'] extends Object
-  ? SelectionSetObject<$Index['Root']['Mutation'], $Index>
+export type Mutation<$Index extends Schema.Index> = $Index['Root']['Mutation'] extends Schema.Object
+  ? Object<$Index['Root']['Mutation'], $Index>
   : never
 
-export type Subscription<$Index extends Schema.Index> = $Index['Root']['Subscription'] extends Object
-  ? SelectionSetObject<$Index['Root']['Subscription'], $Index>
+export type Subscription<$Index extends Schema.Index> = $Index['Root']['Subscription'] extends Schema.Object
+  ? Object<$Index['Root']['Subscription'], $Index>
   : never
 
 // dprint-ignore
-type SelectionSetObject<
+type Object<
   $Object extends Schema.Object,
   $Index extends Schema.Index,
 > =
   &
   {
     [Key in keyof $Object]?:
-      SelectionSetField<UnwrapListAndNullableFieldType<Schema.AsField<$Object[Key]>>, $Index>
+      Field<Schema.AsField<$Object[Key]>, $Index>
   }
   &
   /**
@@ -35,7 +35,7 @@ type SelectionSetObject<
     [
       Key in keyof $Object as `${keyof $Object & string}_as_${StringNonEmpty}`
     ]?:
-     SelectionSetField<UnwrapListAndNullableFieldType<Schema.AsField<$Object[Key]>>, $Index>
+     Field<Schema.AsField<$Object[Key]>, $Index>
   }
   & FieldDirectives
   &
@@ -44,7 +44,7 @@ type SelectionSetObject<
    * @see https://spec.graphql.org/draft/#sec-Inline-Fragments
    */
   {
-    ___?: MaybeList<SelectionSetObject<$Object, $Index>>
+    ___?: MaybeList<Object<$Object, $Index>>
   }
   &
   /**
@@ -57,25 +57,25 @@ type SelectionSetObject<
 export type IsSelectScalarsWildcard<SS> = SS extends { $scalars: ClientIndicatorPositive } ? true : false
 
 // dprint-ignore
-export type SelectionSetField<
-  $Field extends Schema.ScalarField|Schema.UnionField|Schema.ObjectField|Schema.LiteralField,
+export type Field<
+  $Field extends Schema.Field,
   $Index extends Schema.Index,
 > =
-  $Field extends Schema.ScalarField   ? Indicator<$Field> :
-  $Field extends Schema.LiteralField  ? Indicator<$Field> :
-  $Field extends Schema.UnionField    ? SelectionSetUnion<$Field['type']['reference'], $Index> :
-  $Field extends Schema.ObjectField   ? SelectionSetObject<$Field['type']['reference'], $Index> & Arguments<$Field> :
+  $Field extends Schema.FieldTypename   ? NoArgsIndicator :
+  $Field extends Schema.FieldScalar     ? Indicator<$Field> :
+  $Field extends Schema.FieldUnion      ? Union<$Field['namedType'], $Index> :
+  $Field extends Schema.FieldObject     ? Object<$Field['namedType'], $Index> & Arguments<$Field> :
   TSError<'SelectionSetField', '$Field case not handled', { $Field: $Field }>
 
-type UnwrapListAndNullableFieldType<$Field extends Schema.Field> = UnwrapListAndNullableFieldType_<$Field['type']>
+// type UnwrapListAndNullableFieldType<$Field extends Schema.Field> = UnwrapListAndNullableFieldType_<$Field['type']>
 
-// dprint-ignore
-type UnwrapListAndNullableFieldType_<FT extends Schema.FieldType> =
-  FT extends Schema.FieldTypeList       ? UnwrapListAndNullableFieldType_<FT['type']> :
-  FT extends Schema.FieldTypeNullable   ? UnwrapListAndNullableFieldType_<FT['type']> :
-  FT extends Schema.FieldTypeLiteral    ? FT :
-  FT extends Schema.FieldTypeReference  ? FT 
-                                        : TSError<'UnwrapFieldType_', 'FT case not handled', { FT: FT }>
+// // dprint-ignore
+// type UnwrapListAndNullableFieldType_<FT extends Schema.FieldType> =
+//   FT extends Schema.FieldTypeList       ? UnwrapListAndNullableFieldType_<FT['type']> :
+//   FT extends Schema.FieldTypeNullable   ? UnwrapListAndNullableFieldType_<FT['type']> :
+//   FT extends Schema.FieldTypeLiteral    ? FT :
+//   FT extends Schema.FieldTypeNamed  ? FT
+// : TSError<'UnwrapFieldType_', 'FT case not handled', { FT: FT }>
 
 type Arguments<$Field extends Schema.Field> = $Field['args'] extends Schema.FieldArgs
   ? $Field['args']['allOptional'] extends true ? {
@@ -87,17 +87,18 @@ type Arguments<$Field extends Schema.Field> = $Field['args'] extends Schema.Fiel
   : {}
 
 // TODO why does $object not get passed to this in a distributed way?
-type SelectionSetUnion<
+// dprint-ignore
+type Union<
   $Union extends Schema.Union,
   $Index extends Schema.Index,
 > =
   & {
-    [Key in $Union['type']['__typename']['type']['value'] as `on${Capitalize<Key>}`]?: SelectionSetObject<
-      Extract<$Union['type'], { __typename: { type: Key } }>,
-      $Index
-    >
-  }
-  & { __typename?: NoArgsIndicator }
+      [Key in $Union['type']['__typename']['namedType'] as `on${Capitalize<Key>}`]?:
+        Object<Extract<$Union['type'], { __typename: { namedType: Key } }>, $Index>
+    }
+  & {
+      __typename?: NoArgsIndicator
+    }
 
 /**
  * Helpers
@@ -182,11 +183,11 @@ export type OmitNegativeIndicators<$SelectionSet> = {
 export type NoArgsIndicator = ClientIndicator | FieldDirectives
 
 // dprint-ignore
-export type Indicator<$FieldType extends Schema.LiteralField | Schema.ScalarField> =
-  $FieldType['args'] extends Schema.FieldArgs ? $FieldType['args']['allOptional'] extends true
-                                                ? ({ $?: $FieldType['args']['type'] } & FieldDirectives) | ClientIndicator
-                                                : { $: $FieldType['args']['type'] } & FieldDirectives
-                                              : NoArgsIndicator
+export type Indicator<$Field extends Schema.FieldScalar> =
+  $Field['args'] extends Schema.FieldArgs ? $Field['args']['allOptional'] extends true
+                                              ? ({ $?: $Field['args']['type'] } & FieldDirectives) | ClientIndicator
+                                              : { $: $Field['args']['type'] } & FieldDirectives
+                                          : NoArgsIndicator
 
 /**
  * @see https://spec.graphql.org/draft/#sec-Type-System.Directives.Built-in-Directives

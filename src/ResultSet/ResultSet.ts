@@ -32,7 +32,7 @@ export type Object<$SelectionSet, $Object extends Schema.Object, $Index extends 
      */
   ?
     {
-       [$Key in keyof $Object as $Object[$Key] extends Schema.ScalarField ? $Key : never]:
+       [$Key in keyof $Object as $Object[$Key] extends Schema.FieldScalar ? $Key : never]:
          Field<$SelectionSet, Schema.AsField<$Object[$Key]>, $Index>
     }
     : (
