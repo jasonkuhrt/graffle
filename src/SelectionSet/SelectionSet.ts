@@ -78,19 +78,19 @@ type Arguments<$Field extends Schema.Field> = $Field['args'] extends Schema.Fiel
 
 // dprint-ignore
 type Interface$<
-  $Interface extends Schema.Interface$,
+  $Node extends Schema.Interface$,
   $Index extends Schema.Index,
 > = 
 & Object<
-    & $Interface['type']
+    & $Node['type']
     & {
-        __typename: $Interface['implementors']['__typename']
+        __typename: $Node['implementors']['__typename']
       },
     $Index
   >
 & {
-    [Key in $Interface['implementors']['__typename']['namedType'] as `on${Capitalize<Key>}`]?:
-      Object<Extract<$Interface['implementors'], { __typename: { namedType: Key } }>, $Index> & FieldDirectives
+    [Key in $Node['implementors']['__typename']['namedType'] as `on${Capitalize<Key>}`]?:
+      Object<Extract<$Node['implementors'], { __typename: { namedType: Key } }>, $Index> & FieldDirectives
   }
 
 // TODO why does $object not get passed to this in a distributed way?

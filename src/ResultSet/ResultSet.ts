@@ -20,6 +20,8 @@ export type Subscription<$SelectionSetSubscription extends object, $Index extend
 // dprint-ignore
 type Node<$SelectionSet, $Node extends Schema.Node, $Index extends Schema.Index> =
   $Node extends Schema.Union  ? Union<$SelectionSet, $Node, $Index> :
+  $Node extends Schema.Interface$  ? Interface$<$SelectionSet, $Node, $Index> :
+  // todo handle types where each union member implements the same interface -- this should yield support for both interface and union features
   $Node extends Schema.Object ? Object<$SelectionSet, $Node, $Index> :
   $Node extends Schema.Scalar ? $Node
                               : Errors.UnknownNode<$Node>
@@ -53,6 +55,16 @@ type Union<$SelectionSet, $Node extends Schema.Union, $Index extends Schema.Inde
     [$ObjectName in $Node['type']['__typename']['namedType']]:
       Object<GetKeyOr<$SelectionSet,`on${$ObjectName}`,{}> & SelectionSet.UnionOmitFragments<$SelectionSet>, $Index['objects'][$ObjectName], $Index>
   }>
+
+type Interface$<$SelectionSet, $Node extends Schema.Interface$, $Index extends Schema.Index> = Values<
+  {
+    [$ObjectName in $Node['implementors']['__typename']['namedType']]: Object<
+      GetKeyOr<$SelectionSet, `on${$ObjectName}`, {}> & SelectionSet.UnionOmitFragments<$SelectionSet>,
+      $Index['objects'][$ObjectName],
+      $Index
+    >
+  }
+>
 
 // dprint-ignore
 type Field<$SelectionSet, $Field extends Schema.Field, $Index extends Schema.Index> =

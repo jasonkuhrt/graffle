@@ -39,7 +39,13 @@ test(`general`, () => {
   expectTypeOf<RS<{ fooBarUnion: { __typename: true; onFoo: { id: true } } }>>().toEqualTypeOf<{ fooBarUnion: null | { __typename: "Bar" } | { __typename: "Foo"; id: null|string } }>()
 
   // Interface
-  expectTypeOf<RS<{ interface: { id: true }}>>().toEqualTypeOf<{ interface: { id: null|string } }>()
+  expectTypeOf<RS<{ interface: { onObject1ImplementingInterface: { id: true }}}>>().toEqualTypeOf<{ interface: null | { id: null | string} | {} }>()
+  expectTypeOf<RS<{ interface: { onObject1ImplementingInterface: { int: true }}}>>().toEqualTypeOf<{ interface: null | { int: null | number} | {} }>()
+  expectTypeOf<RS<{ interface: { id: true }}>>().toEqualTypeOf<{ interface: null | { id: null | string} }>()
+  expectTypeOf<RS<{ interface: { id: true, onObject1ImplementingInterface: { id: true } }}>>().toEqualTypeOf<{ interface: null | { id: null | string} }>()
+  expectTypeOf<RS<{ interface: { id: true, onObject1ImplementingInterface: { int: true } }}>>().toEqualTypeOf<{ interface: null | { id: null | string} | { id: null | string; int: null | number }}>()
+  expectTypeOf<RS<{ interface: { __typename:true }}>>().toEqualTypeOf<{ interface: null | { __typename: 'Object1ImplementingInterface' } | { __typename: 'Object2ImplementingInterface' } }>()
+  expectTypeOf<RS<{ interface: { onObject1ImplementingInterface: { __typename: true } }}>>().toEqualTypeOf<{ interface: null | { __typename: 'Object1ImplementingInterface' } | {}}>()
 
   // List
   expectTypeOf<RS<{ listIntNonNull: true }>>().toEqualTypeOf<{ listIntNonNull: number[] }>()
