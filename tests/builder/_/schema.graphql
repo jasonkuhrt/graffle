@@ -1,4 +1,5 @@
 type Query {
+	interface: Interface
 	id: ID
 	idNonNull: ID!
 	string: String
@@ -49,6 +50,20 @@ type Object {
 	float: Float
 	boolean: Boolean
 	id: ID
+}
+
+interface Interface {
+	id: ID
+}
+
+type Object1ImplementingInterface implements Interface {
+	id: ID
+	int: Int
+}
+
+type Object2ImplementingInterface implements Interface {
+	id: ID
+	boolean: Boolean
 }
 
 """

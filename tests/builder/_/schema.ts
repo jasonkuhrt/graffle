@@ -10,6 +10,8 @@ Foo: Object.Foo
 Bar: Object.Bar
 ObjectNested: Object.ObjectNested
 Object: Object.Object
+Object1ImplementingInterface: Object.Object1ImplementingInterface
+Object2ImplementingInterface: Object.Object2ImplementingInterface
 }
 unionMemberNames: {
 FooBarUnion: "Foo"
@@ -42,6 +44,17 @@ value: "Query"
 }
 args: null
 namedType: "Query"
+}
+interface: {
+type: {
+kind: "nullable"
+type: {
+kind: "named"
+named: Interface.Interface
+}
+}
+namedType: Interface.Interface
+args: null
 }
 id: {
 type: {
@@ -285,8 +298,24 @@ export namespace InputObject {
 // ------------------------------------------------------------ //
 
 export namespace Interface {
-// -- no types --
-
+export interface Interface {
+__interfacename: "Interface"
+type: {
+id: {
+type: {
+kind: "nullable"
+type: {
+kind: "named"
+named: $.Scalars["ID"]
+}
+}
+namedType: $.Scalars["ID"]
+args: null
+}
+}
+implementors: Object.Object1ImplementingInterface
+| Object.Object2ImplementingInterface
+}
 }
 
 // ------------------------------------------------------------ //
@@ -441,6 +470,72 @@ named: $.Scalars["ID"]
 }
 }
 namedType: $.Scalars["ID"]
+args: null
+}
+}
+
+export interface Object1ImplementingInterface {
+__typename: {
+type: {
+kind: "literal"
+value: "Object1ImplementingInterface"
+}
+args: null
+namedType: "Object1ImplementingInterface"
+}
+id: {
+type: {
+kind: "nullable"
+type: {
+kind: "named"
+named: $.Scalars["ID"]
+}
+}
+namedType: $.Scalars["ID"]
+args: null
+}
+int: {
+type: {
+kind: "nullable"
+type: {
+kind: "named"
+named: $.Scalars["Int"]
+}
+}
+namedType: $.Scalars["Int"]
+args: null
+}
+}
+
+export interface Object2ImplementingInterface {
+__typename: {
+type: {
+kind: "literal"
+value: "Object2ImplementingInterface"
+}
+args: null
+namedType: "Object2ImplementingInterface"
+}
+id: {
+type: {
+kind: "nullable"
+type: {
+kind: "named"
+named: $.Scalars["ID"]
+}
+}
+namedType: $.Scalars["ID"]
+args: null
+}
+boolean: {
+type: {
+kind: "nullable"
+type: {
+kind: "named"
+named: $.Scalars["Boolean"]
+}
+}
+namedType: $.Scalars["Boolean"]
 args: null
 }
 }

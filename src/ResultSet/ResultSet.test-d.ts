@@ -39,7 +39,7 @@ test(`general`, () => {
   expectTypeOf<RS<{ fooBarUnion: { __typename: true; onFoo: { id: true } } }>>().toEqualTypeOf<{ fooBarUnion: null | { __typename: "Bar" } | { __typename: "Foo"; id: null|string } }>()
 
   // Interface
-  // todo
+  expectTypeOf<RS<{ interface: { id: true }}>>().toEqualTypeOf<{ interface: { id: null|string } }>()
 
   // List
   expectTypeOf<RS<{ listIntNonNull: true }>>().toEqualTypeOf<{ listIntNonNull: number[] }>()

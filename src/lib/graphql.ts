@@ -1,4 +1,4 @@
-import type { EnumValueNode, GraphQLEnumValue, GraphQLField, GraphQLInputField, GraphQLSchema } from 'graphql'
+import type { GraphQLEnumValue, GraphQLField, GraphQLInputField, GraphQLSchema } from 'graphql'
 import {
   GraphQLEnumType,
   GraphQLInputObjectType,
@@ -10,22 +10,24 @@ import {
   GraphQLUnionType,
 } from 'graphql'
 
+export type TypeMapByKind =
+  & {
+    [Name in keyof NameToClassNamedType]: InstanceType<NameToClassNamedType[Name]>[]
+  }
+  & { GraphQLRootTypes: GraphQLObjectType<any, any>[] }
+
 export const getTypeMapByKind = (schema: GraphQLSchema) => {
   const typeMap = schema.getTypeMap()
   const typeMapValues = Object.values(typeMap)
-  const typeMapByKind:
-    & {
-      [Name in keyof NameToClassNamedType]: InstanceType<NameToClassNamedType[Name]>[]
-    }
-    & { GraphQLRootTypes: GraphQLObjectType<any, any>[] } = {
-      GraphQLRootTypes: [],
-      GraphQLScalarType: [],
-      GraphQLEnumType: [],
-      GraphQLInputObjectType: [],
-      GraphQLInterfaceType: [],
-      GraphQLObjectType: [],
-      GraphQLUnionType: [],
-    }
+  const typeMapByKind: TypeMapByKind = {
+    GraphQLRootTypes: [],
+    GraphQLScalarType: [],
+    GraphQLEnumType: [],
+    GraphQLInputObjectType: [],
+    GraphQLInterfaceType: [],
+    GraphQLObjectType: [],
+    GraphQLUnionType: [],
+  }
   for (const type of typeMapValues) {
     if (type.name.startsWith(`__`)) continue
     switch (true) {

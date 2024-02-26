@@ -4,13 +4,21 @@ import type {
   GraphQLInputObjectType,
   GraphQLInterfaceType,
   GraphQLNamedType,
+  GraphQLSchema,
 } from 'graphql'
 import { GraphQLNonNull, GraphQLObjectType, isEnumType, isListType, isNamedType, isNonNullType } from 'graphql'
 import { buildSchema } from 'graphql'
 import _ from 'json-bigint'
 import fs from 'node:fs/promises'
 import { Code } from '../lib/Code.js'
-import type { AnyClass, AnyField, AnyNamedClassName, Describable, NameToClassNamedType } from '../lib/graphql.js'
+import type {
+  AnyClass,
+  AnyField,
+  AnyNamedClassName,
+  Describable,
+  NameToClassNamedType,
+  TypeMapByKind,
+} from '../lib/graphql.js'
 import {
   getNodeDisplayName,
   getTypeMapByKind,
@@ -123,11 +131,22 @@ const concreteRenderers = defineConcreteRenderers({
       getDocumentation(config, node),
       Code.export$(Code.interface$(node.name, renderFields(config, node))),
     ),
-  GraphQLInterfaceType: (config, node) =>
-    Code.TSDoc(
+  GraphQLInterfaceType: (config, node) => {
+    const implementors = config.typeMapByKind.GraphQLObjectType.filter(_ =>
+      _.getInterfaces().filter(_ => _.name === node.name).length > 0
+    )
+    return Code.TSDoc(
       getDocumentation(config, node),
-      Code.export$(Code.interface$(node.name, renderFields(config, node))),
-    ),
+      Code.export$(Code.interface$(
+        node.name,
+        Code.objectFrom({
+          __interfacename: Code.quote(node.name),
+          type: renderFields(config, node),
+          implementors: Code.unionItems(implementors.map(_ => dispatchToReferenceRenderer(config, _))),
+        }),
+      )),
+    )
+  },
   GraphQLObjectType: (config, node) =>
     Code.TSDoc(
       getDocumentation(config, node),
@@ -141,7 +160,7 @@ const concreteRenderers = defineConcreteRenderers({
         Code.interface$(
           node.name,
           Code.objectFrom({
-            __unionname: { type: Code.quote(node.name) },
+            __unionname: Code.quote(node.name),
             type: {
               type: Code.unionItems(
                 node
@@ -339,23 +358,27 @@ interface Input {
 }
 
 interface Config {
+  schema: GraphQLSchema
+  typeMapByKind: TypeMapByKind
   TSDoc: {
     noDocPolicy: 'message' | 'ignore'
   }
 }
 
-const resolveOptions = (options: Input['options']): Config => {
+const resolveOptions = (input: Input): Config => {
+  const schema = buildSchema(input.schemaSource)
   return {
+    schema,
+    typeMapByKind: getTypeMapByKind(schema),
     TSDoc: {
-      noDocPolicy: options?.TSDoc?.noDocPolicy ?? `ignore`,
+      noDocPolicy: input.options?.TSDoc?.noDocPolicy ?? `ignore`,
     },
   }
 }
 
 export const generateCode = (input: Input) => {
-  const schema = buildSchema(input.schemaSource)
-  const typeMapByKind = getTypeMapByKind(schema)
-  const config = resolveOptions(input.options)
+  const config = resolveOptions(input)
+  const { typeMapByKind } = config
 
   const hasQuery = typeMapByKind.GraphQLRootTypes.find(
     (_) => _.name === `Query`,

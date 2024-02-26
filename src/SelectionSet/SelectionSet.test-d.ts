@@ -2,7 +2,7 @@ import { assertType, expectTypeOf, test } from 'vitest'
 import type * as Schema from '../../tests/builder/_/schema.js'
 import type { SelectionSet } from './__.js'
 
-type S = SelectionSet.Query<Schema.$.Index>
+type Q = SelectionSet.Query<Schema.$.Index>
 
 test(`ParseAliasExpression`, () => {
   expectTypeOf<SelectionSet.ParseAliasExpression<'a_as_b'>>().toEqualTypeOf<SelectionSet.Alias<'a', 'b'>>()
@@ -14,99 +14,127 @@ test(`ParseAliasExpression`, () => {
 })
 
 test(`Query`, () => {
+  // @ts-expect-error directive on root type Query
+  assertType<Q>({ $defer: true })
+
   // Scalar
-  assertType<S>({ id: true })
-  assertType<S>({ id: false })
-  assertType<S>({ id: 1 })
-  assertType<S>({ id: 0 })
-  assertType<S>({ id: undefined })
+  assertType<Q>({ id: true })
+  assertType<Q>({ id: false })
+  assertType<Q>({ id: 1 })
+  assertType<Q>({ id: 0 })
+  assertType<Q>({ id: undefined })
   // non-null
-  assertType<S>({ idNonNull: true })
+  assertType<Q>({ idNonNull: true })
 
   // Enum
-  assertType<S>({ abcEnum: true })
+  assertType<Q>({ abcEnum: true })
 
   // Object
-  assertType<S>({ object: { id: true } })
+  assertType<Q>({ object: { id: true } })
   // typename
-  assertType<S>({ __typename: true })
+  assertType<Q>({ __typename: true })
   // Non-Null
-  assertType<S>({ objectNonNull: { id: true } })
+  assertType<Q>({ objectNonNull: { id: true } })
   // @ts-expect-error excess property check
-  assertType<S>({ id2: true })
+  assertType<Q>({ id2: true })
   // @ts-expect-error excess property check
-  assertType<S>({ object: { a2: true } })
+  assertType<Q>({ object: { a2: true } })
 
   // Union
-  assertType<S>({ fooBarUnion: { __typename: true } })
-  assertType<S>({ fooBarUnion: { onFoo: { __typename: true } } })
-  assertType<S>({ fooBarUnion: { onFoo: { id: true } } })
+  assertType<Q>({ fooBarUnion: { __typename: true } })
+  assertType<Q>({ fooBarUnion: { onFoo: { __typename: true } } })
+  assertType<Q>({ fooBarUnion: { onFoo: { id: true } } })
   // @ts-expect-error no b
-  assertType<S>({ fooBarUnion: { onFoo: { id2: true } } })
-  assertType<S>({ fooBarUnion: { onBar: { __typename: true } } })
-  assertType<S>({ fooBarUnion: { onBar: { int: true } } })
+  assertType<Q>({ fooBarUnion: { onFoo: { id2: true } } })
+  assertType<Q>({ fooBarUnion: { onBar: { __typename: true } } })
+  assertType<Q>({ fooBarUnion: { onBar: { int: true } } })
   // @ts-expect-error no a
-  assertType<S>({ fooBarUnion: { onBar: { int2: true } } })
+  assertType<Q>({ fooBarUnion: { onBar: { int2: true } } })
+
+  // Interface
+  assertType<Q>({ interface: { id: true } })
+  assertType<Q>({ interface: { id: { $defer: true } } })
+  assertType<Q>({ interface: { id: { $include: true } } })
+  assertType<Q>({ interface: { id: { $skip: true } } })
+  assertType<Q>({ interface: { id: { $stream: true } } })
+  assertType<Q>({ interface: { __typename: true } })
+  assertType<Q>({ interface: { __typename: { $defer: true } } })
+  assertType<Q>({ interface: { $scalars: true } })
+  // @ts-expect-error needs fragment
+  assertType<Q>({ interface: { id: true, int: true } })
+  // @ts-expect-error needs fragment
+  assertType<Q>({ interface: { id: true, boolean: true } })
+  assertType<Q>({ interface: { id: true, onObject1ImplementingInterface: { int: true } } })
+  assertType<Q>({ interface: { id: true, onObject2ImplementingInterface: { boolean: true } } })
+  // @ts-expect-error incorrect implementor name
+  assertType<Q>({ interface: { id: true, onObject1ImplementingInterface2: { int: true } } })
+  // directives work on fragments
+  assertType<Q>({ interface: { id: true, onObject1ImplementingInterface: { $include: true } } }) // todo should REQUIRE field selection
 
   // Alias
   // alias: enum
-  assertType<S>({ abcEnum_as_enum: true })
+  assertType<Q>({ abcEnum_as_enum: true })
   // alias: object
-  assertType<S>({ object_as_o: { id: true } })
+  assertType<Q>({ object_as_o: { id: true } })
   // @ts-expect-error invalid alias key format
-  assertType<S>({ object_as_: { id: true } })
+  assertType<Q>({ object_as_: { id: true } })
   // @ts-expect-error invalid alias key format
-  assertType<S>({ object_as: { id: true } })
+  assertType<Q>({ object_as: { id: true } })
   // @ts-expect-error invalid alias key format
-  assertType<S>({ object2_as_o: { id: true } })
+  assertType<Q>({ object2_as_o: { id: true } })
 
   // directives
   // @skip
   // on scalar
-  assertType<S>({ string: { $skip: true } })
-  assertType<S>({ string: { $skip: false } })
-  assertType<S>({ string: { $skip: { if: true } } })
-  assertType<S>({ string: { $skip: { if: false } } })
-  assertType<S>({ string: { $skip: {} } })
-  assertType<S>({ string: { $skip: {} } })
+  assertType<Q>({ string: { $skip: true } })
+  assertType<Q>({ string: { $skip: false } })
+  assertType<Q>({ string: { $skip: { if: true } } })
+  assertType<Q>({ string: { $skip: { if: false } } })
+  assertType<Q>({ string: { $skip: {} } })
+  assertType<Q>({ string: { $skip: {} } })
   // assertType<S>({ string: skip() })
   // on object
-  assertType<S>({ object: { $skip: true, string: true } })
+  assertType<Q>({ object: { $skip: true, string: true } })
   // assertType<S>({ scalars: skip().select({ a: true }) })
   // on fragment
-  assertType<S>({ fooBarUnion: { onBar: { $skip: true, int: true } } })
+  assertType<Q>({ fooBarUnion: { onBar: { $skip: true, int: true } } })
   // @include
-  assertType<S>({ string: { $include: true } })
-  assertType<S>({ string: { $include: false } })
-  assertType<S>({ string: { $include: { if: true } } })
-  assertType<S>({ string: { $include: { if: false } } })
-  assertType<S>({ string: { $include: {} } })
-  assertType<S>({ string: { $include: {} } })
+  assertType<Q>({ string: { $include: true } })
+  assertType<Q>({ string: { $include: false } })
+  assertType<Q>({ string: { $include: { if: true } } })
+  assertType<Q>({ string: { $include: { if: false } } })
+  assertType<Q>({ string: { $include: {} } })
+  assertType<Q>({ string: { $include: {} } })
   // assertType<S>({ string: include() })
 
   // @defer
-  assertType<S>({ string: { $defer: true } })
-  assertType<S>({ string: { $defer: { if: true, label: `foo` } } })
-  assertType<S>({ string: { $defer: { if: true } } })
-  assertType<S>({ string: { $defer: {} } })
+  assertType<Q>({ string: { $defer: true } })
+  assertType<Q>({ string: { $defer: { if: true, label: `foo` } } })
+  assertType<Q>({ string: { $defer: { if: true } } })
+  assertType<Q>({ string: { $defer: {} } })
 
   // (todo limit to lists?)
   // @stream
-  assertType<S>({ string: { $stream: true } })
-  assertType<S>({ string: { $stream: { if: true, label: `foo`, initialCount: 0 } } })
-  assertType<S>({ string: { $stream: { if: true, label: `foo` } } })
-  assertType<S>({ string: { $stream: { if: true } } })
-  assertType<S>({ string: { $stream: {} } })
+  assertType<Q>({ string: { $stream: true } })
+  assertType<Q>({ string: { $stream: { if: true, label: `foo`, initialCount: 0 } } })
+  assertType<Q>({ string: { $stream: { if: true, label: `foo` } } })
+  assertType<Q>({ string: { $stream: { if: true } } })
+  assertType<Q>({ string: { $stream: {} } })
 
   // Field Group
-  assertType<S>({ object: { ___: { $skip: true, int: true, id: true } } })
-  assertType<S>({ object: { ___: [{ $skip: true, int: true, id: true }] } })
+  // On Object
+  assertType<Q>({ object: { ___: { int: true, id: true } } })
+  assertType<Q>({ object: { ___: { $skip: true, int: true, id: true } } })
+  assertType<Q>({ object: { ___: [{ $skip: true, int: true, id: true }] } })
+  // On Root (Query)
+  assertType<Q>({ ___: { id: true } })
+  assertType<Q>({ ___: { $skip: true, id: true } })
 
   // Arguments
   // all-optional on object
-  assertType<S>({ objectWithArgs: { $: {}, id: true } })
-  assertType<S>({ objectWithArgs: { id: true } })
-  assertType<S>({
+  assertType<Q>({ objectWithArgs: { $: {}, id: true } })
+  assertType<Q>({ objectWithArgs: { id: true } })
+  assertType<Q>({
     objectWithArgs: {
       $: {
         boolean: true,
@@ -121,9 +149,9 @@ test(`Query`, () => {
   // builder interface
   // assertType<S>({ foo: args({ ... }) })
   // all-optional on scalar
-  assertType<S>({ stringWithArgs: true })
-  assertType<S>({ stringWithArgs: {} })
-  assertType<S>({
+  assertType<Q>({ stringWithArgs: true })
+  assertType<Q>({ stringWithArgs: {} })
+  assertType<Q>({
     stringWithArgs: {
       $: {
         boolean: true,
@@ -135,23 +163,23 @@ test(`Query`, () => {
     },
   })
   // all-optional + scalar + directive
-  assertType<S>({ stringWithArgs: { $: { boolean: true }, $skip: true } })
+  assertType<Q>({ stringWithArgs: { $: { boolean: true }, $skip: true } })
   // builder interface
   // assertType<S>({ foo: args({ boolean: true }).skip().select({ x: 1 }) })
   // 1+ required + scalar
-  assertType<S>({ stringWithRequiredArg: { $: { string: `` } } })
+  assertType<Q>({ stringWithRequiredArg: { $: { string: `` } } })
   // @ts-expect-error missing "string" arg
-  assertType<S>({ stringWithRequiredArg: { $: {} } })
+  assertType<Q>({ stringWithRequiredArg: { $: {} } })
   // @ts-expect-error missing args ("$")
-  assertType<S>({ stringWithRequiredArg: {} })
+  assertType<Q>({ stringWithRequiredArg: {} })
 
   // Scalars Wildcard ("client directive")
   // object
-  assertType<S>({ object: { $scalars: true } })
+  assertType<Q>({ object: { $scalars: true } })
   // @ts-expect-error no directives on scalars field
-  assertType<S>({ scalars: { $scalars: { $skip: true } } })
+  assertType<Q>({ scalars: { $scalars: { $skip: true } } })
   // union fragment
-  assertType<S>({ fooBarUnion: { onBar: { $scalars: true } } })
+  assertType<Q>({ fooBarUnion: { onBar: { $scalars: true } } })
   // assertType<S>({ scalars: select() })
 
   // todo empty selection set not allowed, with arguments given

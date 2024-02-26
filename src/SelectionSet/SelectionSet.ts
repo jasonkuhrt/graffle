@@ -37,14 +37,13 @@ type Object<
     ]?:
      Field<Schema.AsField<$Object[Key]>, $Index>
   }
-  & FieldDirectives
   &
   /**
    * Inline fragments for field groups.
    * @see https://spec.graphql.org/draft/#sec-Inline-Fragments
    */
   {
-    ___?: MaybeList<Object<$Object, $Index>>
+    ___?: MaybeList<Object<$Object, $Index> & FieldDirectives>
   }
   &
   /**
@@ -64,18 +63,9 @@ export type Field<
   $Field extends Schema.FieldTypename   ? NoArgsIndicator :
   $Field extends Schema.FieldScalar     ? Indicator<$Field> :
   $Field extends Schema.FieldUnion      ? Union<$Field['namedType'], $Index> :
-  $Field extends Schema.FieldObject     ? Object<$Field['namedType'], $Index> & Arguments<$Field> :
-  TSError<'SelectionSetField', '$Field case not handled', { $Field: $Field }>
-
-// type UnwrapListAndNullableFieldType<$Field extends Schema.Field> = UnwrapListAndNullableFieldType_<$Field['type']>
-
-// // dprint-ignore
-// type UnwrapListAndNullableFieldType_<FT extends Schema.FieldType> =
-//   FT extends Schema.FieldTypeList       ? UnwrapListAndNullableFieldType_<FT['type']> :
-//   FT extends Schema.FieldTypeNullable   ? UnwrapListAndNullableFieldType_<FT['type']> :
-//   FT extends Schema.FieldTypeLiteral    ? FT :
-//   FT extends Schema.FieldTypeNamed  ? FT
-// : TSError<'UnwrapFieldType_', 'FT case not handled', { FT: FT }>
+  $Field extends Schema.FieldInterface  ? Interface$<$Field['namedType'], $Index> :
+  $Field extends Schema.FieldObject     ? Object<$Field['namedType'], $Index> & Arguments<$Field> & FieldDirectives
+                                        : TSError<'SelectionSetField', '$Field case not handled', { $Field: $Field }>
 
 type Arguments<$Field extends Schema.Field> = $Field['args'] extends Schema.FieldArgs
   ? $Field['args']['allOptional'] extends true ? {
@@ -86,6 +76,23 @@ type Arguments<$Field extends Schema.Field> = $Field['args'] extends Schema.Fiel
   }
   : {}
 
+// dprint-ignore
+type Interface$<
+  $Interface extends Schema.Interface$,
+  $Index extends Schema.Index,
+> = 
+& Object<
+    & $Interface['type']
+    & {
+        __typename: $Interface['implementors']['__typename']
+      },
+    $Index
+  >
+& {
+    [Key in $Interface['implementors']['__typename']['namedType'] as `on${Capitalize<Key>}`]?:
+      Object<Extract<$Interface['implementors'], { __typename: { namedType: Key } }>, $Index> & FieldDirectives
+  }
+
 // TODO why does $object not get passed to this in a distributed way?
 // dprint-ignore
 type Union<
@@ -94,7 +101,7 @@ type Union<
 > =
   & {
       [Key in $Union['type']['__typename']['namedType'] as `on${Capitalize<Key>}`]?:
-        Object<Extract<$Union['type'], { __typename: { namedType: Key } }>, $Index>
+        Object<Extract<$Union['type'], { __typename: { namedType: Key } }>, $Index> & FieldDirectives
     }
   & {
       __typename?: NoArgsIndicator
@@ -210,3 +217,13 @@ export interface FieldDirectives {
    */
   $stream?: boolean | { if?: boolean; label?: string; initialCount?: number }
 }
+
+// type UnwrapListAndNullableFieldType<$Field extends Schema.Field> = UnwrapListAndNullableFieldType_<$Field['type']>
+
+// // dprint-ignore
+// type UnwrapListAndNullableFieldType_<FT extends Schema.FieldType> =
+//   FT extends Schema.FieldTypeList       ? UnwrapListAndNullableFieldType_<FT['type']> :
+//   FT extends Schema.FieldTypeNullable   ? UnwrapListAndNullableFieldType_<FT['type']> :
+//   FT extends Schema.FieldTypeLiteral    ? FT :
+//   FT extends Schema.FieldTypeNamed  ? FT
+// : TSError<'UnwrapFieldType_', 'FT case not handled', { FT: FT }>

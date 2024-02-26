@@ -21,8 +21,9 @@ export interface Index {
 export type Scalar = string | boolean | number // Schema.$.Scalars[keyof Schema.$.Scalars]
 export type Object = { __typename: FieldTypename }
 export type Union = { __unionname: string; type: Object }
+export type Interface$ = { __interfacename: string; type: object; implementors: Object }
 export type Literal = string
-export type Named = Scalar | Object | Union | Literal
+export type Named = Scalar | Object | Union | Literal | Interface$
 export type Node = Object | Union | Scalar // | Nullable
 
 export type FieldTypeNamed = { kind: 'named'; named: any }
@@ -39,6 +40,7 @@ export type Field<$Named extends Named = Named> = {
 export type FieldScalar = Field<Scalar>
 export type FieldObject = Field<Object>
 export type FieldUnion = Field<Union>
+export type FieldInterface = Field<Interface$>
 export type FieldTypename = { args: null; type: FieldTypeLiteral; namedType: string }
 
 export type FieldArgs = { type: object; allOptional: boolean }
