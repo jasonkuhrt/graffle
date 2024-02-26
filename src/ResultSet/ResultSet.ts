@@ -50,7 +50,7 @@ export type Object<$SelectionSet, $Object extends Schema.Object, $Index extends 
 // dprint-ignore
 type Union<$SelectionSet, $Node extends Schema.Union, $Index extends Schema.Index> =
  Values<{
-    [$ObjectName in $Node['type']['__typename']['type']]:
+    [$ObjectName in $Node['type']['__typename']['namedType']]:
       Object<GetKeyOr<$SelectionSet,`on${$ObjectName}`,{}> & SelectionSet.UnionOmitFragments<$SelectionSet>, $Index['objects'][$ObjectName], $Index>
   }>
 
@@ -60,20 +60,20 @@ type Field<$SelectionSet, $Field extends Schema.Field, $Index extends Schema.Ind
   (
     | FieldDirectiveInclude<$SelectionSet>
     | FieldDirectiveSkip<$SelectionSet>
-    | FieldUnwrap<$SelectionSet, $Field['type'], $Index>
-    // | Node<$SelectionSet, $Field['type'], $Index>
+    | FieldType<$SelectionSet, $Field['type'], $Index>
   )
 
 // dprint-ignore
-type FieldUnwrap<
+type FieldType<
 $SelectionSet,
-  T extends { kind: 'reference'; reference: any } | { kind: 'list'; type: any } | { kind: 'nullable'; type: any },
+  $FieldType extends Schema.FieldTypeNamed | Schema.FieldTypeList | Schema.FieldTypeNullable | Schema.FieldTypeLiteral,
   $Index extends Schema.Index
 > =
-  T extends { kind: 'nullable' }    ? null | FieldUnwrap<$SelectionSet,T['type'],$Index> :
-  T extends { kind: 'list' }        ? FieldUnwrap<$SelectionSet,T['type'],$Index>[] :
-  T extends { kind: 'reference' }   ? Node<$SelectionSet, T['reference'], $Index>
-                                    : never
+  $FieldType extends Schema.FieldTypeLiteral      ? $FieldType['value'] :
+  $FieldType extends Schema.FieldTypeNullable     ? null | FieldType<$SelectionSet, $FieldType['type'], $Index> :
+  $FieldType extends Schema.FieldTypeList         ? FieldType<$SelectionSet, $FieldType['type'], $Index>[] :
+  $FieldType extends Schema.FieldTypeNamed        ? Node<$SelectionSet, $FieldType['named'], $Index>
+                                                  : never
 
 // dprint-ignore
 type FieldDirectiveInclude<$SelectionSet> =
@@ -95,7 +95,7 @@ export namespace Errors {
     TSError<'Node', `Unknown case`, { $Node: $Node }>
 
   export type UnknownFieldName<$FieldName extends string, $Node extends Schema.Object> =
-    TSError<'Object', `field "${$FieldName}" does not exist on schema object "${$Node['__typename']['type']}"`>
+    TSError<'Object', `field "${$FieldName}" does not exist on schema object "${$Node['__typename']['namedType']}"`>
 }
 
 // type SelectField<$Objekt extends Schema.Object, $SelectionObjekt extends SelectionObjekt, $FieldName extends keyof $SelectionObjekt & string> =

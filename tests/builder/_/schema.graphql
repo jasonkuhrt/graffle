@@ -5,7 +5,8 @@ type Query {
 	stringWithRequiredArg(string:String!): String
 	stringWithArgs(string:String, int:Int, float:Float, boolean:Boolean, id:ID): String
 	object: Object
-	listListInt: [[Int!]!]!
+	listListIntNonNull: [[Int!]!]!
+	listListInt: [[Int]]
 	listInt: [Int]
 	listIntNonNull: [Int!]!
 	objectNested: ObjectNested

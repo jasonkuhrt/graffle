@@ -120,7 +120,7 @@ named: Object.Object
 namedType: Object.Object
 args: null
 }
-listListInt: {
+listListIntNonNull: {
 type: {
 kind: "list"
 type: {
@@ -128,6 +128,29 @@ kind: "list"
 type: {
 kind: "named"
 named: $.Scalars["Int"]
+}
+}
+}
+namedType: $.Scalars["Int"]
+args: null
+}
+listListInt: {
+type: {
+kind: "nullable"
+type: {
+kind: "list"
+type: {
+kind: "nullable"
+type: {
+kind: "list"
+type: {
+kind: "nullable"
+type: {
+kind: "named"
+named: $.Scalars["Int"]
+}
+}
+}
 }
 }
 }
