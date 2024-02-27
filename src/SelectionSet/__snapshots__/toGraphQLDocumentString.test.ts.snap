@@ -1,0 +1,346 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Query 1`] = `
+"
+{
+  "string": true
+}
+--------------
+{
+  string
+}
+"
+`;
+
+exports[`Query 2`] = `
+"
+{
+  "string": 1
+}
+--------------
+{
+  string
+}
+"
+`;
+
+exports[`Query 3`] = `
+"
+{
+  "id": true,
+  "string": false
+}
+--------------
+{
+  id
+}
+"
+`;
+
+exports[`Query 4`] = `
+"
+{
+  "id": true,
+  "string": 0
+}
+--------------
+{
+  id
+}
+"
+`;
+
+exports[`Query 5`] = `
+"
+{
+  "id": true
+}
+--------------
+{
+  id
+}
+"
+`;
+
+exports[`Query 6`] = `
+"
+{
+  "object": {
+    "id": true
+  }
+}
+--------------
+{
+  object {
+    id
+  }
+}
+"
+`;
+
+exports[`Query 7`] = `
+"
+{
+  "objectNested": {
+    "object": {
+      "string": true,
+      "id": true,
+      "int": false
+    }
+  }
+}
+--------------
+{
+  objectNested {
+    object {
+      string
+      id
+    }
+  }
+}
+"
+`;
+
+exports[`Query 8`] = `
+"
+{
+  "object": {
+    "$include": true,
+    "id": true
+  }
+}
+--------------
+{
+  object @include(if: true) {
+    id
+  }
+}
+"
+`;
+
+exports[`Query 9`] = `
+"
+{
+  "object": {
+    "$include": false,
+    "id": true
+  }
+}
+--------------
+{
+  object @include(if: false) {
+    id
+  }
+}
+"
+`;
+
+exports[`Query 10`] = `
+"
+{
+  "object": {
+    "id": true
+  }
+}
+--------------
+{
+  object {
+    id
+  }
+}
+"
+`;
+
+exports[`Query 11`] = `
+"
+{
+  "object": {
+    "$include": {
+      "if": true
+    },
+    "id": true
+  }
+}
+--------------
+{
+  object @include(if: true) {
+    id
+  }
+}
+"
+`;
+
+exports[`Query 12`] = `
+"
+{
+  "object": {
+    "$include": {
+      "if": false
+    },
+    "id": true
+  }
+}
+--------------
+{
+  object @include(if: false) {
+    id
+  }
+}
+"
+`;
+
+exports[`Query 13`] = `
+"
+{
+  "object": {
+    "$include": {},
+    "id": true
+  }
+}
+--------------
+{
+  object @include(if: true) {
+    id
+  }
+}
+"
+`;
+
+exports[`Query 14`] = `
+"
+{
+  "object": {
+    "$include": {},
+    "id": true
+  }
+}
+--------------
+{
+  object @include(if: true) {
+    id
+  }
+}
+"
+`;
+
+exports[`Query 15`] = `
+"
+{
+  "object": {
+    "$skip": true,
+    "id": true
+  }
+}
+--------------
+{
+  object @skip(if: true) {
+    id
+  }
+}
+"
+`;
+
+exports[`Query 16`] = `
+"
+{
+  "object": {
+    "$skip": false,
+    "id": true
+  }
+}
+--------------
+{
+  object @skip(if: false) {
+    id
+  }
+}
+"
+`;
+
+exports[`Query 17`] = `
+"
+{
+  "object": {
+    "id": true
+  }
+}
+--------------
+{
+  object {
+    id
+  }
+}
+"
+`;
+
+exports[`Query 18`] = `
+"
+{
+  "object": {
+    "$skip": {
+      "if": true
+    },
+    "id": true
+  }
+}
+--------------
+{
+  object @skip(if: true) {
+    id
+  }
+}
+"
+`;
+
+exports[`Query 19`] = `
+"
+{
+  "object": {
+    "$skip": {
+      "if": false
+    },
+    "id": true
+  }
+}
+--------------
+{
+  object @skip(if: false) {
+    id
+  }
+}
+"
+`;
+
+exports[`Query 20`] = `
+"
+{
+  "object": {
+    "$skip": {},
+    "id": true
+  }
+}
+--------------
+{
+  object @skip(if: true) {
+    id
+  }
+}
+"
+`;
+
+exports[`Query 21`] = `
+"
+{
+  "object": {
+    "$skip": {},
+    "id": true
+  }
+}
+--------------
+{
+  object @skip(if: true) {
+    id
+  }
+}
+"
+`;

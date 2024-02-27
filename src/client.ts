@@ -1,6 +1,6 @@
-import type { ResultSet } from '../ResultSet/__.js'
-import type { Index } from '../Schema/Schema.js'
-import type { SelectionSet } from '../SelectionSet/__.js'
+import type { ResultSet } from './ResultSet/__.js'
+import type { Index } from './Schema/Schema.js'
+import type { SelectionSet } from './SelectionSet/__.js'
 
 // dprint-ignore
 export type Client<$SchemaIndex extends Index> =
@@ -22,5 +22,4 @@ interface Input {
 }
 
 export const create = <$SchemaIndex extends Index>(input: Input): Client<$SchemaIndex> => {
-  return 1 as any
 }

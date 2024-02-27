@@ -190,7 +190,7 @@ export type OmitNegativeIndicators<$SelectionSet> = {
 export type NoArgsIndicator = ClientIndicator | FieldDirectives
 
 // dprint-ignore
-export type Indicator<$Field extends Schema.FieldScalar> =
+export type Indicator<$Field extends Schema.FieldScalar = Schema.FieldScalar> =
   $Field['args'] extends Schema.FieldArgs ? $Field['args']['allOptional'] extends true
                                               ? ({ $?: $Field['args']['type'] } & FieldDirectives) | ClientIndicator
                                               : { $: $Field['args']['type'] } & FieldDirectives
