@@ -2,7 +2,7 @@
 
 import type { GetKeyOr, SimplifyDeep, Values } from '../lib/prelude.js'
 import type { TSError } from '../lib/TSError.js'
-import type { Schema } from '../Schema2/__.js'
+import type { Schema } from '../Schema/__.js'
 import type { SelectionSet } from '../SelectionSet/__.js'
 
 // dprint-ignore
