@@ -1,5 +1,5 @@
 import type { ResultSet } from '../ResultSet/__.js'
-import type { Index } from '../schema/Schema.js'
+import type { Index } from '../Schema2/Schema.js'
 import type { SelectionSet } from '../SelectionSet/__.js'
 
 // dprint-ignore
