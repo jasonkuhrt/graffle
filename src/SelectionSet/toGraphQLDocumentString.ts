@@ -6,7 +6,12 @@ type SpecialFields = {
   // $?: Record<string, any>
   $include?: SelectionSet.Directive.Include['$include']
   $skip?: SelectionSet.Directive.Skip['$skip']
+  $?: Args
 }
+
+type Args = { [k: string]: Args_ }
+
+type Args_ = string | boolean | null | number | Args
 
 // const specialFields = {
 //   $include: `$include`,
@@ -34,8 +39,9 @@ export const toGraphQLDocumentString = (ss: {}) => {
 const indicatorOrSelectionSet = (ss: SelectionSet.Indicator | SS): string => {
   if (isIndicator(ss)) return ``
 
-  const { $include, $skip, ...rest } = ss
+  const { $include, $skip, $, ...rest } = ss
 
+  let args = ``
   let directives = ``
 
   if ($include !== undefined) {
@@ -48,7 +54,19 @@ const indicatorOrSelectionSet = (ss: SelectionSet.Indicator | SS): string => {
     directives += `@skip(if: ${typeof $skip === `boolean` ? $skip : $skip.if === undefined ? true : $skip.if})`
   }
 
-  return `${directives} {
+  if ($ !== undefined) {
+    args = `(${
+      Object.entries($).map(([k, v]) => {
+        return `${k}: ${JSON.stringify(v)}`
+      }).join(`, `)
+    })`
+  }
+
+  if (Object.keys(rest).length === 0) {
+    return `${args} ${directives}`
+  }
+
+  return `${args} ${directives} {
 		${selectionSet(rest)}
 	}`
 }
