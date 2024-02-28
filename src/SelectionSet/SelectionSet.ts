@@ -165,6 +165,16 @@ export namespace Directive {
     export type Positive = { $skip: true | { if: true } }
     export type Negative = { $skip: false | { if: false } }
   }
+  export type Defer = { $defer: boolean | { if?: boolean; label?: string } }
+  export namespace Defer {
+    export type Positive = { $defer: true | { if: true } }
+    export type Negative = { $defer: false | { if: false } }
+  }
+  export type Stream = { $stream: boolean | { if?: boolean; label?: string; initialCount?: number } }
+  export namespace Stream {
+    export type Positive = { $stream: true | { if: true } }
+    export type Negative = { $stream: false | { if: false } }
+  }
 }
 
 /**
@@ -183,6 +193,7 @@ export type ClientIndicatorNegative = false | 0 | undefined
  * @see http://spec.graphql.org/draft/#sec-Names
  */
 export const aliasPattern = /^(?<actual>[A-z][A-z_0-9]*)_as_(?<alias>[A-z][A-z_0-9]*)$/
+export const fragmentPattern = /^on(?<name>[A-Z][A-z_0-9]*)$/
 
 export type OmitNegativeIndicators<$SelectionSet> = {
   [K in keyof $SelectionSet as $SelectionSet[K] extends ClientIndicatorNegative ? never : K]: $SelectionSet[K]

@@ -1,5 +1,146 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`$defer > Query 1`] = `
+"
+{
+  "object": {
+    "$defer": true,
+    "id": true
+  }
+}
+--------------
+{
+  object @defer(if: true) {
+    id
+  }
+}
+"
+`;
+
+exports[`$defer > Query 2`] = `
+"
+{
+  "object": {
+    "$defer": false,
+    "id": true
+  }
+}
+--------------
+{
+  object @defer(if: false) {
+    id
+  }
+}
+"
+`;
+
+exports[`$defer > Query 3`] = `
+"
+{
+  "object": {
+    "id": true
+  }
+}
+--------------
+{
+  object {
+    id
+  }
+}
+"
+`;
+
+exports[`$defer > Query 4`] = `
+"
+{
+  "object": {
+    "$defer": {
+      "if": true
+    },
+    "id": true
+  }
+}
+--------------
+{
+  object @defer(if: true) {
+    id
+  }
+}
+"
+`;
+
+exports[`$defer > Query 5`] = `
+"
+{
+  "object": {
+    "$defer": {
+      "if": false
+    },
+    "id": true
+  }
+}
+--------------
+{
+  object @defer(if: false) {
+    id
+  }
+}
+"
+`;
+
+exports[`$defer > Query 6`] = `
+"
+{
+  "object": {
+    "$defer": {},
+    "id": true
+  }
+}
+--------------
+{
+  object @defer(if: true) {
+    id
+  }
+}
+"
+`;
+
+exports[`$defer > Query 7`] = `
+"
+{
+  "object": {
+    "$defer": {},
+    "id": true
+  }
+}
+--------------
+{
+  object @defer(if: true) {
+    id
+  }
+}
+"
+`;
+
+exports[`$defer > Query 8`] = `
+"
+{
+  "object": {
+    "$defer": {
+      "label": "foobar"
+    },
+    "id": true
+  }
+}
+--------------
+{
+  object @defer(if: true, label: "foobar") {
+    id
+  }
+}
+"
+`;
+
 exports[`$include > Query 1`] = `
 "
 {
@@ -244,6 +385,166 @@ exports[`$skip > Query 7`] = `
 "
 `;
 
+exports[`$stream > Query 1`] = `
+"
+{
+  "object": {
+    "$stream": true,
+    "id": true
+  }
+}
+--------------
+{
+  object @defer(if: true) {
+    id
+  }
+}
+"
+`;
+
+exports[`$stream > Query 2`] = `
+"
+{
+  "object": {
+    "$stream": false,
+    "id": true
+  }
+}
+--------------
+{
+  object @defer(if: false) {
+    id
+  }
+}
+"
+`;
+
+exports[`$stream > Query 3`] = `
+"
+{
+  "object": {
+    "id": true
+  }
+}
+--------------
+{
+  object {
+    id
+  }
+}
+"
+`;
+
+exports[`$stream > Query 4`] = `
+"
+{
+  "object": {
+    "$stream": {
+      "if": true
+    },
+    "id": true
+  }
+}
+--------------
+{
+  object @defer(if: true) {
+    id
+  }
+}
+"
+`;
+
+exports[`$stream > Query 5`] = `
+"
+{
+  "object": {
+    "$stream": {
+      "if": false
+    },
+    "id": true
+  }
+}
+--------------
+{
+  object @defer(if: false) {
+    id
+  }
+}
+"
+`;
+
+exports[`$stream > Query 6`] = `
+"
+{
+  "object": {
+    "$stream": {},
+    "id": true
+  }
+}
+--------------
+{
+  object @defer(if: true) {
+    id
+  }
+}
+"
+`;
+
+exports[`$stream > Query 7`] = `
+"
+{
+  "object": {
+    "$stream": {},
+    "id": true
+  }
+}
+--------------
+{
+  object @defer(if: true) {
+    id
+  }
+}
+"
+`;
+
+exports[`$stream > Query 8`] = `
+"
+{
+  "object": {
+    "$stream": {
+      "label": "foobar"
+    },
+    "id": true
+  }
+}
+--------------
+{
+  object @defer(if: true, label: "foobar") {
+    id
+  }
+}
+"
+`;
+
+exports[`$stream > Query 9`] = `
+"
+{
+  "object": {
+    "$stream": {
+      "initialCount": 5
+    },
+    "id": true
+  }
+}
+--------------
+{
+  object @defer(if: true, initialCount: 5) {
+    id
+  }
+}
+"
+`;
+
 exports[`alias > Query 1`] = `
 "
 {
@@ -475,6 +776,32 @@ exports[`other > Query 8`] = `
     object {
       string
       id
+    }
+  }
+}
+"
+`;
+
+exports[`other > Query 9`] = `
+"
+{
+  "objectNested": {
+    "object": {
+      "string": true,
+      "id": true,
+      "int": {
+        "$skip": true
+      }
+    }
+  }
+}
+--------------
+{
+  objectNested {
+    object {
+      string
+      id
+      int @skip(if: true)
     }
   }
 }

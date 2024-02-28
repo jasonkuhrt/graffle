@@ -10,7 +10,7 @@ test(`ParseAliasExpression`, () => {
   expectTypeOf<SelectionSet.ParseAliasExpression<'$'>>().toEqualTypeOf<'$'>()
   expectTypeOf<SelectionSet.ParseAliasExpression<'a_as_$'>>().toEqualTypeOf<'a_as_$'>()
   expectTypeOf<SelectionSet.ParseAliasExpression<'$_as_b'>>().toEqualTypeOf<'$_as_b'>()
-  expectTypeOf<SelectionSet.ParseAliasExpression<'__as__'>>().toEqualTypeOf<'__as__'>()
+  expectTypeOf<SelectionSet.ParseAliasExpression<'1_as_2'>>().toEqualTypeOf<'1_as_2'>()
 })
 
 test(`Query`, () => {

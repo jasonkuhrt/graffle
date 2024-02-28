@@ -83,6 +83,37 @@ describe(`$skip`, () => {
   })
 })
 
+describe(`$defer`, () => {
+  test.each([
+    s({ object: { $defer: true, id: true } }),
+    s({ object: { $defer: false, id: true } }),
+    s({ object: { $defer: undefined, id: true } }),
+    s({ object: { $defer: { if: true }, id: true } }),
+    s({ object: { $defer: { if: false }, id: true } }),
+    s({ object: { $defer: { if: undefined }, id: true } }),
+    s({ object: { $defer: {}, id: true } }),
+    s({ object: { $defer: { label: `foobar` }, id: true } }),
+  ])(`Query`, (ss) => {
+    expect(prepareResult(ss)).toMatchSnapshot()
+  })
+})
+
+describe(`$stream`, () => {
+  test.each([
+    s({ object: { $stream: true, id: true } }),
+    s({ object: { $stream: false, id: true } }),
+    s({ object: { $stream: undefined, id: true } }),
+    s({ object: { $stream: { if: true }, id: true } }),
+    s({ object: { $stream: { if: false }, id: true } }),
+    s({ object: { $stream: { if: undefined }, id: true } }),
+    s({ object: { $stream: {}, id: true } }),
+    s({ object: { $stream: { label: `foobar` }, id: true } }),
+    s({ object: { $stream: { initialCount: 5 }, id: true } }),
+  ])(`Query`, (ss) => {
+    expect(prepareResult(ss)).toMatchSnapshot()
+  })
+})
+
 describe(`other`, () => {
   test.each([
     s({ __typename: true }),
@@ -94,6 +125,7 @@ describe(`other`, () => {
     s({ id: true, string: undefined }),
     s({ object: { id: true } }),
     s({ objectNested: { object: { string: true, id: true, int: false } } }),
+    s({ objectNested: { object: { string: true, id: true, int: { $skip: true } } } }),
   ])(`Query`, (ss) => {
     expect(prepareResult(ss)).toMatchSnapshot()
   })

@@ -1,5 +1,5 @@
 import type { SelectionSet } from './__.js'
-import { aliasPattern } from './SelectionSet.js'
+import { aliasPattern, fragmentPattern } from './SelectionSet.js'
 
 type SpecialFields = {
   // todo
@@ -7,6 +7,8 @@ type SpecialFields = {
   // $?: Record<string, any>
   $include?: SelectionSet.Directive.Include['$include']
   $skip?: SelectionSet.Directive.Skip['$skip']
+  $defer?: SelectionSet.Directive.Defer['$defer']
+  $stream?: SelectionSet.Directive.Stream['$stream']
   $?: Args
 }
 
@@ -38,13 +40,36 @@ export const toGraphQLDocumentString = (ss: SSRoot) => {
   return docString
 }
 
+const directiveArgs = (config: object) => {
+  return Object.entries(config).filter(([_, v]) => v !== undefined).map(([k, v]) => {
+    return `${k}: ${JSON.stringify(v)}`
+  }).join(`, `)
+}
+
 const indicatorOrSelectionSet = (ss: Indicator | SS): string => {
   if (isIndicator(ss)) return ``
 
-  const { $include, $skip, $, ...rest } = ss
+  const { $include, $skip, $defer, $stream, $, ...rest } = ss
 
   let args = ``
   let directives = ``
+
+  if ($stream !== undefined) {
+    const config = {
+      if: typeof $stream === `boolean` ? $stream : $stream.if === undefined ? true : $stream.if,
+      label: typeof $stream === `boolean` ? undefined : $stream.label,
+      initialCount: typeof $stream === `boolean` ? undefined : $stream.initialCount,
+    }
+    directives += `@defer(${directiveArgs(config)})`
+  }
+
+  if ($defer !== undefined) {
+    const config = {
+      if: typeof $defer === `boolean` ? $defer : $defer.if === undefined ? true : $defer.if,
+      label: typeof $defer === `boolean` ? undefined : $defer.label,
+    }
+    directives += `@defer(${directiveArgs(config)})`
+  }
 
   if ($include !== undefined) {
     directives += `@include(if: ${
@@ -82,8 +107,7 @@ const selectionSet = (ss: SSRoot) => {
   }).join(`\n`) + `\n`
 }
 
-const fragmentPattern = /^on(?<name>[A-Z][A-z_0-9]*)$/
-
+// todo use a given schema to ensure that field is actually a fragment and not just happened to be using pattern onX
 const resolveFragment = (field: string) => {
   const match = field.match(fragmentPattern)
   if (match?.groups) {
@@ -91,6 +115,8 @@ const resolveFragment = (field: string) => {
   }
   return field
 }
+
+// todo use a given schema to ensure that field is actually a fragment and not just happened to be using pattern onX
 const resolveAlias = (field: string) => {
   const match = field.match(aliasPattern)
   if (match?.groups) {
@@ -99,7 +125,7 @@ const resolveAlias = (field: string) => {
   return field
 }
 
-const isIndicator = (v: any): v is SelectionSet.Indicator => {
+const isIndicator = (v: any): v is Indicator => {
   return String(v) in indicator
 }
 
