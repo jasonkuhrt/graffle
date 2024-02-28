@@ -23,7 +23,11 @@ const prepareResult = (ss: Q) => {
 describe(`args`, () => {
   test.each([
     s({ stringWithArgs: { $: { boolean: true, float: 1 } } }),
-    // s({ stringWithArgs: { $: {} } }),
+    s({ stringWithArgs: { $: {} } }),
+    // s({ objectWithArgs: { $: { id: `` } } }), // todo should be static error
+    // s({ objectWithArgs: { $: {} } }), // todo should be static error
+    s({ objectWithArgs: { $: { id: `` }, id: true } }),
+    s({ objectWithArgs: { $: {}, id: true } }),
   ])(`Query`, (ss) => {
     expect(prepareResult(ss)).toMatchSnapshot()
   })

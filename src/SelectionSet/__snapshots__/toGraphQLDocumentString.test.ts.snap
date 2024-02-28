@@ -261,6 +261,56 @@ exports[`args > Query 1`] = `
 "
 `;
 
+exports[`args > Query 2`] = `
+"
+{
+  "stringWithArgs": {
+    "$": {}
+  }
+}
+--------------
+{
+  stringWithArgs
+}
+"
+`;
+
+exports[`args > Query 3`] = `
+"
+{
+  "objectWithArgs": {
+    "$": {
+      "id": ""
+    },
+    "id": true
+  }
+}
+--------------
+{
+  objectWithArgs(id: "") {
+    id
+  }
+}
+"
+`;
+
+exports[`args > Query 4`] = `
+"
+{
+  "objectWithArgs": {
+    "$": {},
+    "id": true
+  }
+}
+--------------
+{
+  objectWithArgs {
+    id
+  }
+}
+"
+`;
+
 exports[`other > Query 1`] = `
 "
 {

@@ -55,8 +55,9 @@ const indicatorOrSelectionSet = (ss: SelectionSet.Indicator | SS): string => {
   }
 
   if ($ !== undefined) {
-    args = `(${
-      Object.entries($).map(([k, v]) => {
+    const entries = Object.entries($)
+    args = entries.length === 0 ? `` : `(${
+      entries.map(([k, v]) => {
         return `${k}: ${JSON.stringify(v)}`
       }).join(`, `)
     })`
