@@ -2,9 +2,8 @@ import type { SelectionSet } from './__.js'
 import { aliasPattern, fragmentPattern } from './SelectionSet.js'
 
 type SpecialFields = {
-  // todo
+  // todo - this requires having the schema at runtime to know which fields to select.
   // $scalars?: SelectionSet.Indicator
-  // $?: Record<string, any>
   $include?: SelectionSet.Directive.Include['$include']
   $skip?: SelectionSet.Directive.Skip['$skip']
   $defer?: SelectionSet.Directive.Defer['$defer']
@@ -16,12 +15,6 @@ type Args = { [k: string]: Args_ }
 
 type Args_ = string | boolean | null | number | Args
 
-// const specialFields = {
-//   $include: `$include`,
-//   $skip: `$skip`,
-//   $scalars: `$scalars`,
-//   $: `$`,
-// }
 type Indicator = 0 | 1 | boolean
 
 type SSRoot = {
