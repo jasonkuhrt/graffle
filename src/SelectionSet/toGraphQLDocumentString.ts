@@ -22,7 +22,7 @@ type Args_ = string | boolean | null | number | Args
 // }
 type Indicator = 0 | 1 | boolean
 
-type RootSS = {
+type SSRoot = {
   [k: string]: Indicator | SS
 }
 
@@ -30,7 +30,7 @@ type SS = {
   [k: string]: Indicator | SS
 } & SpecialFields
 
-export const toGraphQLDocumentString = (ss: RootSS) => {
+export const toGraphQLDocumentString = (ss: SSRoot) => {
   let docString = ``
   docString += `query {
 		${selectionSet(ss)}
@@ -74,14 +74,23 @@ const indicatorOrSelectionSet = (ss: Indicator | SS): string => {
 	}`
 }
 
-const selectionSet = (ss: RootSS) => {
+const selectionSet = (ss: SSRoot) => {
   return Object.entries(ss).filter(([_, v]) => {
     return isPositiveIndicator(v)
   }).map(([field, ss]) => {
-    return `${resolveAlias(field)} ${indicatorOrSelectionSet(ss)}`
+    return `${resolveFragment(resolveAlias(field))} ${indicatorOrSelectionSet(ss)}`
   }).join(`\n`) + `\n`
 }
 
+const fragmentPattern = /^on(?<name>[A-Z][A-z_0-9]*)$/
+
+const resolveFragment = (field: string) => {
+  const match = field.match(fragmentPattern)
+  if (match?.groups) {
+    return `...on ${match.groups[`name`]}`
+  }
+  return field
+}
 const resolveAlias = (field: string) => {
   const match = field.match(aliasPattern)
   if (match?.groups) {

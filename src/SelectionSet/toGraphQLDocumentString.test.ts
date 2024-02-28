@@ -20,6 +20,17 @@ const prepareResult = (ss: Q) => {
   return beforeAfter
 }
 
+describe(`union`, () => {
+  test.each([
+    s({ fooBarUnion: { __typename: true } }),
+    s({ fooBarUnion: { onBar: { int: true } } }),
+    s({ fooBarUnion: { onBar: { $skip: true, int: true } } }),
+    // s({ fooBarUnion: { onBar: {} } }), // todo should be static type error
+  ])(`Query`, (ss) => {
+    expect(prepareResult(ss)).toMatchSnapshot()
+  })
+})
+
 describe(`alias`, () => {
   test.each([
     s({ id_as_x: true }),
@@ -39,21 +50,6 @@ describe(`args`, () => {
     // s({ objectWithArgs: { $: {} } }), // todo should be static error
     s({ objectWithArgs: { $: { id: `` }, id: true } }),
     s({ objectWithArgs: { $: {}, id: true } }),
-  ])(`Query`, (ss) => {
-    expect(prepareResult(ss)).toMatchSnapshot()
-  })
-})
-
-describe(`other`, () => {
-  test.each([
-    s({ string: true }),
-    s({ string: 1 }),
-    // s({ string: false }), // todo should be static error
-    s({ id: true, string: false }),
-    s({ id: true, string: 0 }),
-    s({ id: true, string: undefined }),
-    s({ object: { id: true } }),
-    s({ objectNested: { object: { string: true, id: true, int: false } } }),
   ])(`Query`, (ss) => {
     expect(prepareResult(ss)).toMatchSnapshot()
   })
@@ -82,6 +78,22 @@ describe(`$skip`, () => {
     s({ object: { $skip: { if: false }, id: true } }),
     s({ object: { $skip: { if: undefined }, id: true } }),
     s({ object: { $skip: {}, id: true } }),
+  ])(`Query`, (ss) => {
+    expect(prepareResult(ss)).toMatchSnapshot()
+  })
+})
+
+describe(`other`, () => {
+  test.each([
+    s({ __typename: true }),
+    s({ string: true }),
+    s({ string: 1 }),
+    // s({ string: false }), // todo should be static error
+    s({ id: true, string: false }),
+    s({ id: true, string: 0 }),
+    s({ id: true, string: undefined }),
+    s({ object: { id: true } }),
+    s({ objectNested: { object: { string: true, id: true, int: false } } }),
   ])(`Query`, (ss) => {
     expect(prepareResult(ss)).toMatchSnapshot()
   })

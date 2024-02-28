@@ -371,6 +371,18 @@ exports[`args > Query 4`] = `
 exports[`other > Query 1`] = `
 "
 {
+  "__typename": true
+}
+--------------
+{
+  __typename
+}
+"
+`;
+
+exports[`other > Query 2`] = `
+"
+{
   "string": true
 }
 --------------
@@ -380,7 +392,7 @@ exports[`other > Query 1`] = `
 "
 `;
 
-exports[`other > Query 2`] = `
+exports[`other > Query 3`] = `
 "
 {
   "string": 1
@@ -392,7 +404,7 @@ exports[`other > Query 2`] = `
 "
 `;
 
-exports[`other > Query 3`] = `
+exports[`other > Query 4`] = `
 "
 {
   "id": true,
@@ -405,7 +417,7 @@ exports[`other > Query 3`] = `
 "
 `;
 
-exports[`other > Query 4`] = `
+exports[`other > Query 5`] = `
 "
 {
   "id": true,
@@ -418,7 +430,7 @@ exports[`other > Query 4`] = `
 "
 `;
 
-exports[`other > Query 5`] = `
+exports[`other > Query 6`] = `
 "
 {
   "id": true
@@ -430,7 +442,7 @@ exports[`other > Query 5`] = `
 "
 `;
 
-exports[`other > Query 6`] = `
+exports[`other > Query 7`] = `
 "
 {
   "object": {
@@ -446,7 +458,7 @@ exports[`other > Query 6`] = `
 "
 `;
 
-exports[`other > Query 7`] = `
+exports[`other > Query 8`] = `
 "
 {
   "objectNested": {
@@ -463,6 +475,63 @@ exports[`other > Query 7`] = `
     object {
       string
       id
+    }
+  }
+}
+"
+`;
+
+exports[`union > Query 1`] = `
+"
+{
+  "fooBarUnion": {
+    "__typename": true
+  }
+}
+--------------
+{
+  fooBarUnion {
+    __typename
+  }
+}
+"
+`;
+
+exports[`union > Query 2`] = `
+"
+{
+  "fooBarUnion": {
+    "onBar": {
+      "int": true
+    }
+  }
+}
+--------------
+{
+  fooBarUnion {
+    ... on Bar {
+      int
+    }
+  }
+}
+"
+`;
+
+exports[`union > Query 3`] = `
+"
+{
+  "fooBarUnion": {
+    "onBar": {
+      "$skip": true,
+      "int": true
+    }
+  }
+}
+--------------
+{
+  fooBarUnion {
+    ... on Bar @skip(if: true) {
+      int
     }
   }
 }
