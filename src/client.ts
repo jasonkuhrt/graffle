@@ -22,4 +22,5 @@ interface Input {
 }
 
 export const create = <$SchemaIndex extends Index>(input: Input): Client<$SchemaIndex> => {
+  return input as any
 }
