@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
-import type { Letter } from '../lib/prelude.js'
+import type { Digit, Letter } from '../lib/prelude.js'
 
 export interface Index {
   Root: {
@@ -47,6 +47,9 @@ export type FieldArgs = { type: object; allOptional: boolean }
 
 export type AsField<T> = T extends Field ? T : never
 
+/**
+ * @see http://spec.graphql.org/draft/#sec-Names
+ */
 // dprint-ignore
 export type NameParse<T extends string> =
   T extends NameHead ? T :
@@ -61,5 +64,5 @@ export type NameBodyParse<S extends string> =
   : never
   : never
 
-export type NameHead = Letter
-export type NameBody = Letter | '_'
+export type NameHead = Letter | '_'
+export type NameBody = Letter | '_' | Digit

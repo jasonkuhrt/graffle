@@ -1,4 +1,5 @@
 import type { SelectionSet } from './__.js'
+import { aliasPattern } from './SelectionSet.js'
 
 type SpecialFields = {
   // todo
@@ -76,8 +77,16 @@ const selectionSet = (ss: SS) => {
   return Object.entries(ss).filter(([k, v]) => {
     return isPositiveIndicator(v)
   }).map(([field, ss]) => {
-    return `${field} ${indicatorOrSelectionSet(ss)}`
+    return `${resolveAlias(field)} ${indicatorOrSelectionSet(ss)}`
   }).join(`\n`) + `\n`
+}
+
+const resolveAlias = (field: string) => {
+  const match = field.match(aliasPattern)
+  if (match?.groups) {
+    return `${match.groups[`actual`]}: ${match.groups[`alias`]}`
+  }
+  return field
 }
 
 const isIndicator = (v: any): v is SelectionSet.Indicator => {

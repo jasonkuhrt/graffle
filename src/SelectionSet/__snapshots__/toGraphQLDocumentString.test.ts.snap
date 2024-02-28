@@ -244,6 +244,63 @@ exports[`$skip > Query 7`] = `
 "
 `;
 
+exports[`alias > Query 1`] = `
+"
+{
+  "id_as_x": true
+}
+--------------
+{
+  id: x
+}
+"
+`;
+
+exports[`alias > Query 2`] = `
+"
+{
+  "id_as_x": true,
+  "id_as_id2": true
+}
+--------------
+{
+  id: x
+  id: id2
+}
+"
+`;
+
+exports[`alias > Query 3`] = `
+"
+{
+  "id_as_x": {
+    "$skip": true
+  }
+}
+--------------
+{
+  id: x @skip(if: true)
+}
+"
+`;
+
+exports[`alias > Query 4`] = `
+"
+{
+  "object_as_x": {
+    "$skip": true,
+    "id": true
+  }
+}
+--------------
+{
+  object: x @skip(if: true) {
+    id
+  }
+}
+"
+`;
+
 exports[`args > Query 1`] = `
 "
 {

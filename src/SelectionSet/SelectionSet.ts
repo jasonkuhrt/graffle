@@ -178,6 +178,12 @@ export type ClientIndicator = ClientIndicatorPositive | ClientIndicatorNegative
 export type ClientIndicatorPositive = true | 1
 export type ClientIndicatorNegative = false | 0 | undefined
 
+/**
+ * @see https://regex101.com/r/XfOTMX/1
+ * @see http://spec.graphql.org/draft/#sec-Names
+ */
+export const aliasPattern = /^(?<actual>[A-z][A-z_0-9]*)_as_(?<alias>[A-z][A-z_0-9]*)$/
+
 export type OmitNegativeIndicators<$SelectionSet> = {
   [K in keyof $SelectionSet as $SelectionSet[K] extends ClientIndicatorNegative ? never : K]: $SelectionSet[K]
 }

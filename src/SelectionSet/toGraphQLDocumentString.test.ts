@@ -20,6 +20,17 @@ const prepareResult = (ss: Q) => {
   return beforeAfter
 }
 
+describe(`alias`, () => {
+  test.each([
+    s({ id_as_x: true }),
+    s({ id_as_x: true, id_as_id2: true }),
+    s({ id_as_x: { $skip: true } }),
+    s({ object_as_x: { $skip: true, id: true } }),
+  ])(`Query`, (ss) => {
+    expect(prepareResult(ss)).toMatchSnapshot()
+  })
+})
+
 describe(`args`, () => {
   test.each([
     s({ stringWithArgs: { $: { boolean: true, float: 1 } } }),
