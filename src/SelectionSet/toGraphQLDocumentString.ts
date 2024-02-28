@@ -20,16 +20,17 @@ type Args_ = string | boolean | null | number | Args
 //   $scalars: `$scalars`,
 //   $: `$`,
 // }
+type Indicator = 0 | 1 | boolean
+
+type RootSS = {
+  [k: string]: Indicator | SS
+}
 
 type SS = {
-  [k: string]: SS_
+  [k: string]: Indicator | SS
 } & SpecialFields
 
-type SS_ = {
-  [k: string]: SelectionSet.Indicator | SS_
-} & SpecialFields
-
-export const toGraphQLDocumentString = (ss: {}) => {
+export const toGraphQLDocumentString = (ss: RootSS) => {
   let docString = ``
   docString += `query {
 		${selectionSet(ss)}
@@ -37,7 +38,7 @@ export const toGraphQLDocumentString = (ss: {}) => {
   return docString
 }
 
-const indicatorOrSelectionSet = (ss: SelectionSet.Indicator | SS): string => {
+const indicatorOrSelectionSet = (ss: Indicator | SS): string => {
   if (isIndicator(ss)) return ``
 
   const { $include, $skip, $, ...rest } = ss
@@ -73,8 +74,8 @@ const indicatorOrSelectionSet = (ss: SelectionSet.Indicator | SS): string => {
 	}`
 }
 
-const selectionSet = (ss: SS) => {
-  return Object.entries(ss).filter(([k, v]) => {
+const selectionSet = (ss: RootSS) => {
+  return Object.entries(ss).filter(([_, v]) => {
     return isPositiveIndicator(v)
   }).map(([field, ss]) => {
     return `${resolveAlias(field)} ${indicatorOrSelectionSet(ss)}`

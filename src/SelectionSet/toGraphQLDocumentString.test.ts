@@ -7,7 +7,7 @@ import { toGraphQLDocumentString } from './toGraphQLDocumentString.js'
 type Q = SelectionSet.Query<Schema.$.Index>
 const s = (selectionSet: Q) => selectionSet
 const prepareResult = (ss: Q) => {
-  const graphqlDocumentString = toGraphQLDocumentString(ss)
+  const graphqlDocumentString = toGraphQLDocumentString(ss as any)
   // console.log(graphqlDocumentString)
   // Should parse, ensures is syntactically valid graphql document.
   const document = parse(graphqlDocumentString)
