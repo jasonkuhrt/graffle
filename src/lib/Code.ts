@@ -4,6 +4,7 @@ export namespace Code {
   export const nullable = (type: string) => `${type} | null`
   export const union = (name: string, types: string[]) => `type ${name} =\n| ${Code.unionItems(types)}`
   export const unionItems = (types: string[]) => types.join(`\n| `)
+  export const tuple = (types: string[]) => `[${types.join(`, `)}]`
   export const list = (type: string) => `Array<${type}>`
   export const field = (name: string, type: string, options?: { optional?: boolean }) => {
     if (options?.optional) return `${name}?: ${type}`
@@ -31,6 +32,7 @@ export namespace Code {
           ) => Code.field(name, String(spec.type), { optional: spec.optional })),
       ),
     )
+  export const type = (name: string, type: string) => `type ${name} = ${type}`
   export const interface$ = (name: string, object: string) => `interface ${name} ${object}`
   export const export$ = (thing: string) => `export ${thing}`
   export const TSDoc = (content: string | null, block: string) =>

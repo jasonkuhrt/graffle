@@ -1,7 +1,8 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`generates types from GraphQL SDL file 1`] = `
-"export namespace $ {
+"import { __typename, Nullable } from '../../../src/Schema/schema2.js'
+export namespace $ {
 export interface Index {
 Root: {
 Query: Root.Query
@@ -40,33 +41,20 @@ Boolean: boolean
 
 export namespace Root {
 export interface Query {
-__typename: {
-type: {
-kind: "literal"
-value: "Query"
-}
-args: null
-namedType: "Query"
-}
+__typename: __typename<"Query">
 interface: {
-type: {
-kind: "nullable"
-type: {
+type: Nullable<{
 kind: "named"
 named: Interface.Interface
-}
-}
+}>
 namedType: Interface.Interface
 args: null
 }
 id: {
-type: {
-kind: "nullable"
-type: {
+type: Nullable<{
 kind: "named"
 named: $.Scalars["ID"]
-}
-}
+}>
 namedType: $.Scalars["ID"]
 args: null
 }
@@ -79,24 +67,18 @@ namedType: $.Scalars["ID"]
 args: null
 }
 string: {
-type: {
-kind: "nullable"
-type: {
+type: Nullable<{
 kind: "named"
 named: $.Scalars["String"]
-}
-}
+}>
 namedType: $.Scalars["String"]
 args: null
 }
 stringWithRequiredArg: {
-type: {
-kind: "nullable"
-type: {
+type: Nullable<{
 kind: "named"
 named: $.Scalars["String"]
-}
-}
+}>
 namedType: $.Scalars["String"]
 args: {
 type: {
@@ -106,13 +88,10 @@ allOptional: false
 }
 }
 stringWithArgs: {
-type: {
-kind: "nullable"
-type: {
+type: Nullable<{
 kind: "named"
 named: $.Scalars["String"]
-}
-}
+}>
 namedType: $.Scalars["String"]
 args: {
 type: {
@@ -126,13 +105,10 @@ allOptional: true
 }
 }
 object: {
-type: {
-kind: "nullable"
-type: {
+type: Nullable<{
 kind: "named"
 named: Object.Object
-}
-}
+}>
 namedType: Object.Object
 args: null
 }
@@ -159,13 +135,10 @@ type: {
 kind: "nullable"
 type: {
 kind: "list"
-type: {
-kind: "nullable"
-type: {
+type: Nullable<{
 kind: "named"
 named: $.Scalars["Int"]
-}
-}
+}>
 }
 }
 }
@@ -178,13 +151,10 @@ type: {
 kind: "nullable"
 type: {
 kind: "list"
-type: {
-kind: "nullable"
-type: {
+type: Nullable<{
 kind: "named"
 named: $.Scalars["Int"]
-}
-}
+}>
 }
 }
 namedType: $.Scalars["Int"]
@@ -202,13 +172,10 @@ namedType: $.Scalars["Int"]
 args: null
 }
 objectNested: {
-type: {
-kind: "nullable"
-type: {
+type: Nullable<{
 kind: "named"
 named: Object.ObjectNested
-}
-}
+}>
 namedType: Object.ObjectNested
 args: null
 }
@@ -221,13 +188,10 @@ namedType: Object.Object
 args: null
 }
 objectWithArgs: {
-type: {
-kind: "nullable"
-type: {
+type: Nullable<{
 kind: "named"
 named: Object.Object
-}
-}
+}>
 namedType: Object.Object
 args: {
 type: {
@@ -241,13 +205,10 @@ allOptional: true
 }
 }
 fooBarUnion: {
-type: {
-kind: "nullable"
-type: {
+type: Nullable<{
 kind: "named"
 named: Union.FooBarUnion
-}
-}
+}>
 namedType: Union.FooBarUnion
 args: null
 }
@@ -255,13 +216,10 @@ args: null
 * Query enum field documentation.
 */
 abcEnum: {
-type: {
-kind: "nullable"
-type: {
+type: Nullable<{
 kind: "named"
 named: Enum.ABCEnum
-}
-}
+}>
 namedType: Enum.ABCEnum
 args: null
 }
@@ -305,13 +263,10 @@ export interface Interface {
 __interfacename: "Interface"
 type: {
 id: {
-type: {
-kind: "nullable"
-type: {
+type: Nullable<{
 kind: "named"
 named: $.Scalars["ID"]
-}
-}
+}>
 namedType: $.Scalars["ID"]
 args: null
 }
@@ -330,214 +285,133 @@ export namespace Object {
 * Object documentation.
 */
 export interface Foo {
-__typename: {
-type: {
-kind: "literal"
-value: "Foo"
-}
-args: null
-namedType: "Foo"
-}
+__typename: __typename<"Foo">
 /**
 * Field documentation.
 * 
 * @deprecated Field a is deprecated.
 */
 id: {
-type: {
-kind: "nullable"
-type: {
+type: Nullable<{
 kind: "named"
 named: $.Scalars["ID"]
-}
-}
+}>
 namedType: $.Scalars["ID"]
 args: null
 }
 }
 
 export interface Bar {
-__typename: {
-type: {
-kind: "literal"
-value: "Bar"
-}
-args: null
-namedType: "Bar"
-}
+__typename: __typename<"Bar">
 int: {
-type: {
-kind: "nullable"
-type: {
+type: Nullable<{
 kind: "named"
 named: $.Scalars["Int"]
-}
-}
+}>
 namedType: $.Scalars["Int"]
 args: null
 }
 }
 
 export interface ObjectNested {
-__typename: {
-type: {
-kind: "literal"
-value: "ObjectNested"
-}
-args: null
-namedType: "ObjectNested"
-}
+__typename: __typename<"ObjectNested">
 id: {
-type: {
-kind: "nullable"
-type: {
+type: Nullable<{
 kind: "named"
 named: $.Scalars["ID"]
-}
-}
+}>
 namedType: $.Scalars["ID"]
 args: null
 }
 object: {
-type: {
-kind: "nullable"
-type: {
+type: Nullable<{
 kind: "named"
 named: Object.Object
-}
-}
+}>
 namedType: Object.Object
 args: null
 }
 }
 
 export interface Object {
-__typename: {
-type: {
-kind: "literal"
-value: "Object"
-}
-args: null
-namedType: "Object"
-}
+__typename: __typename<"Object">
 string: {
-type: {
-kind: "nullable"
-type: {
+type: Nullable<{
 kind: "named"
 named: $.Scalars["String"]
-}
-}
+}>
 namedType: $.Scalars["String"]
 args: null
 }
 int: {
-type: {
-kind: "nullable"
-type: {
+type: Nullable<{
 kind: "named"
 named: $.Scalars["Int"]
-}
-}
+}>
 namedType: $.Scalars["Int"]
 args: null
 }
 float: {
-type: {
-kind: "nullable"
-type: {
+type: Nullable<{
 kind: "named"
 named: $.Scalars["Float"]
-}
-}
+}>
 namedType: $.Scalars["Float"]
 args: null
 }
 boolean: {
-type: {
-kind: "nullable"
-type: {
+type: Nullable<{
 kind: "named"
 named: $.Scalars["Boolean"]
-}
-}
+}>
 namedType: $.Scalars["Boolean"]
 args: null
 }
 id: {
-type: {
-kind: "nullable"
-type: {
+type: Nullable<{
 kind: "named"
 named: $.Scalars["ID"]
-}
-}
+}>
 namedType: $.Scalars["ID"]
 args: null
 }
 }
 
 export interface Object1ImplementingInterface {
-__typename: {
-type: {
-kind: "literal"
-value: "Object1ImplementingInterface"
-}
-args: null
-namedType: "Object1ImplementingInterface"
-}
+__typename: __typename<"Object1ImplementingInterface">
 id: {
-type: {
-kind: "nullable"
-type: {
+type: Nullable<{
 kind: "named"
 named: $.Scalars["ID"]
-}
-}
+}>
 namedType: $.Scalars["ID"]
 args: null
 }
 int: {
-type: {
-kind: "nullable"
-type: {
+type: Nullable<{
 kind: "named"
 named: $.Scalars["Int"]
-}
-}
+}>
 namedType: $.Scalars["Int"]
 args: null
 }
 }
 
 export interface Object2ImplementingInterface {
-__typename: {
-type: {
-kind: "literal"
-value: "Object2ImplementingInterface"
-}
-args: null
-namedType: "Object2ImplementingInterface"
-}
+__typename: __typename<"Object2ImplementingInterface">
 id: {
-type: {
-kind: "nullable"
-type: {
+type: Nullable<{
 kind: "named"
 named: $.Scalars["ID"]
-}
-}
+}>
 namedType: $.Scalars["ID"]
 args: null
 }
 boolean: {
-type: {
-kind: "nullable"
-type: {
+type: Nullable<{
 kind: "named"
 named: $.Scalars["Boolean"]
-}
-}
+}>
 namedType: $.Scalars["Boolean"]
 args: null
 }

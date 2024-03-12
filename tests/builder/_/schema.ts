@@ -1,3 +1,5 @@
+import type * as _ from '../../../src/Schema/schema/__.js'
+
 export namespace $ {
   export interface Index {
     Root: {
@@ -37,233 +39,51 @@ export namespace $ {
 // ------------------------------------------------------------ //
 
 export namespace Root {
-  export interface Query {
-    __typename: {
-      type: {
-        kind: 'literal'
-        value: 'Query'
-      }
-      args: null
-      namedType: 'Query'
-    }
-    interface: {
-      type: {
-        kind: 'nullable'
-        type: {
-          kind: 'named'
-          named: Interface.Interface
-        }
-      }
-      namedType: Interface.Interface
-      args: null
-    }
-    id: {
-      type: {
-        kind: 'nullable'
-        type: {
-          kind: 'named'
-          named: $.Scalars['ID']
-        }
-      }
-      namedType: $.Scalars['ID']
-      args: null
-    }
-    idNonNull: {
-      type: {
-        kind: 'named'
-        named: $.Scalars['ID']
-      }
-      namedType: $.Scalars['ID']
-      args: null
-    }
-    string: {
-      type: {
-        kind: 'nullable'
-        type: {
-          kind: 'named'
-          named: $.Scalars['String']
-        }
-      }
-      namedType: $.Scalars['String']
-      args: null
-    }
-    stringWithRequiredArg: {
-      type: {
-        kind: 'nullable'
-        type: {
-          kind: 'named'
-          named: $.Scalars['String']
-        }
-      }
-      namedType: $.Scalars['String']
-      args: {
-        type: {
-          string: $.Scalars['String']
-        }
-        allOptional: false
-      }
-    }
-    stringWithArgs: {
-      type: {
-        kind: 'nullable'
-        type: {
-          kind: 'named'
-          named: $.Scalars['String']
-        }
-      }
-      namedType: $.Scalars['String']
-      args: {
-        type: {
-          string?: $.Scalars['String'] | null
-          int?: $.Scalars['Int'] | null
-          float?: $.Scalars['Float'] | null
-          boolean?: $.Scalars['Boolean'] | null
-          id?: $.Scalars['ID'] | null
-        }
-        allOptional: true
-      }
-    }
-    object: {
-      type: {
-        kind: 'nullable'
-        type: {
-          kind: 'named'
-          named: Object.Object
-        }
-      }
-      namedType: Object.Object
-      args: null
-    }
-    listListIntNonNull: {
-      type: {
-        kind: 'list'
-        type: {
-          kind: 'list'
-          type: {
-            kind: 'named'
-            named: $.Scalars['Int']
-          }
-        }
-      }
-      namedType: $.Scalars['Int']
-      args: null
-    }
-    listListInt: {
-      type: {
-        kind: 'nullable'
-        type: {
-          kind: 'list'
-          type: {
-            kind: 'nullable'
-            type: {
-              kind: 'list'
-              type: {
-                kind: 'nullable'
-                type: {
-                  kind: 'named'
-                  named: $.Scalars['Int']
-                }
-              }
-            }
-          }
-        }
-      }
-      namedType: $.Scalars['Int']
-      args: null
-    }
-    listInt: {
-      type: {
-        kind: 'nullable'
-        type: {
-          kind: 'list'
-          type: {
-            kind: 'nullable'
-            type: {
-              kind: 'named'
-              named: $.Scalars['Int']
-            }
-          }
-        }
-      }
-      namedType: $.Scalars['Int']
-      args: null
-    }
-    listIntNonNull: {
-      type: {
-        kind: 'list'
-        type: {
-          kind: 'named'
-          named: $.Scalars['Int']
-        }
-      }
-      namedType: $.Scalars['Int']
-      args: null
-    }
-    objectNested: {
-      type: {
-        kind: 'nullable'
-        type: {
-          kind: 'named'
-          named: Object.ObjectNested
-        }
-      }
-      namedType: Object.ObjectNested
-      args: null
-    }
-    objectNonNull: {
-      type: {
-        kind: 'named'
-        named: Object.Object
-      }
-      namedType: Object.Object
-      args: null
-    }
-    objectWithArgs: {
-      type: {
-        kind: 'nullable'
-        type: {
-          kind: 'named'
-          named: Object.Object
-        }
-      }
-      namedType: Object.Object
-      args: {
-        type: {
-          string?: $.Scalars['String'] | null
-          int?: $.Scalars['Int'] | null
-          float?: $.Scalars['Float'] | null
-          boolean?: $.Scalars['Boolean'] | null
-          id?: $.Scalars['ID'] | null
-        }
-        allOptional: true
-      }
-    }
-    fooBarUnion: {
-      type: {
-        kind: 'nullable'
-        type: {
-          kind: 'named'
-          named: Union.FooBarUnion
-        }
-      }
-      namedType: Union.FooBarUnion
-      args: null
-    }
+  export type Query = _.Object<'Query', {
+    interface: _.Field<_.Nullable<_.Named<Interface.Interface>>>
+    id: _.Field<_.Nullable<_.Named<_.Scalar.ID>>>
+    idNonNull: _.Field<_.Named<_.Scalar.ID>>
+    string: _.Field<_.Nullable<_.Named<_.Scalar.String>>>
+    stringWithRequiredArg: _.Field<
+      _.Nullable<_.Named<_.Scalar.String>>,
+      _.Args<{
+        string: _.Scalar.String
+      }>
+    >
+    stringWithArgs: _.Field<
+      _.Nullable<_.Named<_.Scalar.String>>,
+      _.Args<{
+        string: _.Nullable<_.Scalar.String>
+        int: _.Nullable<_.Scalar.Int>
+        float: _.Nullable<_.Scalar.Float>
+        boolean: _.Nullable<_.Scalar.Boolean>
+        id: _.Nullable<_.Scalar.ID>
+      }>
+    >
+    object: _.Field<_.Nullable<_.Named<Object.Object>>>
+    listListIntNonNull: _.Field<_.List<_.List<_.Named<_.Scalar.Int>>>>
+    listListInt: _.Field<_.Nullable<_.List<_.Nullable<_.List<_.Nullable<_.Named<_.Scalar.Int>>>>>>>
+    listInt: _.Field<_.Nullable<_.List<_.Nullable<_.Named<_.Scalar.Int>>>>>
+    listIntNonNull: _.Field<_.List<_.Named<_.Scalar.Int>>>
+    objectNested: _.Field<_.Nullable<_.Named<Object.ObjectNested>>>
+    objectNonNull: _.Field<_.Named<Object.Object>>
+    objectWithArgs: _.Field<
+      _.Nullable<_.Named<Object.Object>>,
+      _.Args<{
+        string: _.Nullable<_.Scalar.String>
+        int: _.Nullable<_.Scalar.Int>
+        float: _.Nullable<_.Scalar.Float>
+        boolean: _.Nullable<_.Scalar.Boolean>
+        id: _.Nullable<_.Scalar.ID>
+      }>
+    >
+    fooBarUnion: _.Field<_.Nullable<_.Named<Union.FooBarUnion>>>
     /**
      * Query enum field documentation.
      */
-    abcEnum: {
-      type: {
-        kind: 'nullable'
-        type: {
-          kind: 'named'
-          named: Enum.ABCEnum
-        }
-      }
-      namedType: Enum.ABCEnum
-      args: null
-    }
-  }
+    abcEnum: _.Field<_.Nullable<_.Named<Enum.ABCEnum>>>
+  }>
+  type x = Query['fields']['fooBarUnion']['typeUnwrapped']['members'][number]['fields']['__typename']['typeUnwrapped']
 }
 
 // ------------------------------------------------------------ //
@@ -279,10 +99,7 @@ export namespace Enum {
    * "B" - Enum B member documentation.
    * "C" - Enum C member documentation. (DEPRECATED: Enum value C is deprecated.)
    */
-  export type ABCEnum =
-    | 'A'
-    | 'B'
-    | 'C'
+  export type ABCEnum = _.Enum<'ABCEnum', ['A', 'B', 'C']>
 }
 
 // ------------------------------------------------------------ //
@@ -298,25 +115,9 @@ export namespace InputObject {
 // ------------------------------------------------------------ //
 
 export namespace Interface {
-  export interface Interface {
-    __interfacename: 'Interface'
-    type: {
-      id: {
-        type: {
-          kind: 'nullable'
-          type: {
-            kind: 'named'
-            named: $.Scalars['ID']
-          }
-        }
-        namedType: $.Scalars['ID']
-        args: null
-      }
-    }
-    implementors:
-      | Object.Object1ImplementingInterface
-      | Object.Object2ImplementingInterface
-  }
+  export type Interface = _.Interface<'Interface', {
+    id: _.Field<_.Nullable<_.Named<_.Scalar.ID>>>
+  }, [Object.Object1ImplementingInterface, Object.Object2ImplementingInterface]>
 }
 
 // ------------------------------------------------------------ //
@@ -327,219 +128,41 @@ export namespace Object {
   /**
    * Object documentation.
    */
-  export interface Foo {
-    __typename: {
-      type: {
-        kind: 'literal'
-        value: 'Foo'
-      }
-      args: null
-      namedType: 'Foo'
-    }
+  export type Foo = _.Object<'Foo', {
     /**
      * Field documentation.
      *
      * @deprecated Field a is deprecated.
      */
-    id: {
-      type: {
-        kind: 'nullable'
-        type: {
-          kind: 'named'
-          named: $.Scalars['ID']
-        }
-      }
-      namedType: $.Scalars['ID']
-      args: null
-    }
-  }
+    id: _.Field<_.Nullable<_.Named<_.Scalar.ID>>>
+  }>
 
-  export interface Bar {
-    __typename: {
-      type: {
-        kind: 'literal'
-        value: 'Bar'
-      }
-      args: null
-      namedType: 'Bar'
-    }
-    int: {
-      type: {
-        kind: 'nullable'
-        type: {
-          kind: 'named'
-          named: $.Scalars['Int']
-        }
-      }
-      namedType: $.Scalars['Int']
-      args: null
-    }
-  }
+  export type Bar = _.Object<'Bar', {
+    int: _.Field<_.Nullable<_.Named<_.Scalar.Int>>>
+  }>
 
-  export interface ObjectNested {
-    __typename: {
-      type: {
-        kind: 'literal'
-        value: 'ObjectNested'
-      }
-      args: null
-      namedType: 'ObjectNested'
-    }
-    id: {
-      type: {
-        kind: 'nullable'
-        type: {
-          kind: 'named'
-          named: $.Scalars['ID']
-        }
-      }
-      namedType: $.Scalars['ID']
-      args: null
-    }
-    object: {
-      type: {
-        kind: 'nullable'
-        type: {
-          kind: 'named'
-          named: Object.Object
-        }
-      }
-      namedType: Object.Object
-      args: null
-    }
-  }
+  export type ObjectNested = _.Object<'ObjectNested', {
+    id: _.Field<_.Nullable<_.Named<_.Scalar.ID>>>
+    object: _.Field<_.Nullable<_.Named<Object.Object>>>
+  }>
 
-  export interface Object {
-    __typename: {
-      type: {
-        kind: 'literal'
-        value: 'Object'
-      }
-      args: null
-      namedType: 'Object'
-    }
-    string: {
-      type: {
-        kind: 'nullable'
-        type: {
-          kind: 'named'
-          named: $.Scalars['String']
-        }
-      }
-      namedType: $.Scalars['String']
-      args: null
-    }
-    int: {
-      type: {
-        kind: 'nullable'
-        type: {
-          kind: 'named'
-          named: $.Scalars['Int']
-        }
-      }
-      namedType: $.Scalars['Int']
-      args: null
-    }
-    float: {
-      type: {
-        kind: 'nullable'
-        type: {
-          kind: 'named'
-          named: $.Scalars['Float']
-        }
-      }
-      namedType: $.Scalars['Float']
-      args: null
-    }
-    boolean: {
-      type: {
-        kind: 'nullable'
-        type: {
-          kind: 'named'
-          named: $.Scalars['Boolean']
-        }
-      }
-      namedType: $.Scalars['Boolean']
-      args: null
-    }
-    id: {
-      type: {
-        kind: 'nullable'
-        type: {
-          kind: 'named'
-          named: $.Scalars['ID']
-        }
-      }
-      namedType: $.Scalars['ID']
-      args: null
-    }
-  }
+  export type Object = _.Object<'Object', {
+    string: _.Field<_.Nullable<_.Named<_.Scalar.String>>>
+    int: _.Field<_.Nullable<_.Named<_.Scalar.Int>>>
+    float: _.Field<_.Nullable<_.Named<_.Scalar.Float>>>
+    boolean: _.Field<_.Nullable<_.Named<_.Scalar.Boolean>>>
+    id: _.Field<_.Nullable<_.Named<_.Scalar.ID>>>
+  }>
 
-  export interface Object1ImplementingInterface {
-    __typename: {
-      type: {
-        kind: 'literal'
-        value: 'Object1ImplementingInterface'
-      }
-      args: null
-      namedType: 'Object1ImplementingInterface'
-    }
-    id: {
-      type: {
-        kind: 'nullable'
-        type: {
-          kind: 'named'
-          named: $.Scalars['ID']
-        }
-      }
-      namedType: $.Scalars['ID']
-      args: null
-    }
-    int: {
-      type: {
-        kind: 'nullable'
-        type: {
-          kind: 'named'
-          named: $.Scalars['Int']
-        }
-      }
-      namedType: $.Scalars['Int']
-      args: null
-    }
-  }
+  export type Object1ImplementingInterface = _.Object<'Object1ImplementingInterface', {
+    id: _.Field<_.Nullable<_.Named<_.Scalar.ID>>>
+    int: _.Field<_.Nullable<_.Named<_.Scalar.Int>>>
+  }>
 
-  export interface Object2ImplementingInterface {
-    __typename: {
-      type: {
-        kind: 'literal'
-        value: 'Object2ImplementingInterface'
-      }
-      args: null
-      namedType: 'Object2ImplementingInterface'
-    }
-    id: {
-      type: {
-        kind: 'nullable'
-        type: {
-          kind: 'named'
-          named: $.Scalars['ID']
-        }
-      }
-      namedType: $.Scalars['ID']
-      args: null
-    }
-    boolean: {
-      type: {
-        kind: 'nullable'
-        type: {
-          kind: 'named'
-          named: $.Scalars['Boolean']
-        }
-      }
-      namedType: $.Scalars['Boolean']
-      args: null
-    }
-  }
+  export type Object2ImplementingInterface = _.Object<'Object2ImplementingInterface', {
+    id: _.Field<_.Nullable<_.Named<_.Scalar.ID>>>
+    boolean: _.Field<_.Nullable<_.Named<_.Scalar.Boolean>>>
+  }>
 }
 
 // ------------------------------------------------------------ //
@@ -550,10 +173,5 @@ export namespace Union {
   /**
    * Union documentation.
    */
-  export interface FooBarUnion {
-    __unionname: 'FooBarUnion'
-    type:
-      | Object.Foo
-      | Object.Bar
-  }
+  export type FooBarUnion = _.Union<'FooBarUnion', [Object.Foo, Object.Bar]>
 }

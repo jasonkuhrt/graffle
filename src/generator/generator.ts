@@ -4,9 +4,10 @@ import type {
   GraphQLInputObjectType,
   GraphQLInterfaceType,
   GraphQLNamedType,
+  GraphQLObjectType,
   GraphQLSchema,
 } from 'graphql'
-import { GraphQLNonNull, GraphQLObjectType, isEnumType, isListType, isNamedType, isNonNullType } from 'graphql'
+import { GraphQLNonNull, isEnumType, isListType, isNamedType } from 'graphql'
 import { buildSchema } from 'graphql'
 import _ from 'json-bigint'
 import fs from 'node:fs/promises'
@@ -111,7 +112,7 @@ const pointerRenderers = defineReferenceRenderers({
   GraphQLInterfaceType: (_, node) => Code.propertyAccess(namespaceNames.GraphQLInterfaceType, node.name),
   GraphQLList: (config, node) => Code.list(dispatchToReferenceRenderer(config, node.ofType)),
   GraphQLObjectType: (_, node) => Code.propertyAccess(namespaceNames.GraphQLObjectType, node.name),
-  GraphQLScalarType: (_, node) => `$.Scalars[${Code.quote(node.name)}]`,
+  GraphQLScalarType: (_, node) => `_.Scalar.${node.name}`,
   GraphQLUnionType: (_, node) => Code.propertyAccess(namespaceNames.GraphQLUnionType, node.name),
 })
 
@@ -120,9 +121,9 @@ const concreteRenderers = defineConcreteRenderers({
     Code.TSDoc(
       getDocumentation(config, node),
       Code.export$(
-        Code.union(
+        Code.type(
           node.name,
-          node.getValues().map((_) => Code.quote(_.name)),
+          `_.Enum<${Code.quote(node.name)}, ${Code.tuple(node.getValues().map((_) => Code.quote(_.name)))} >`,
         ),
       ),
     ),
@@ -137,40 +138,35 @@ const concreteRenderers = defineConcreteRenderers({
     )
     return Code.TSDoc(
       getDocumentation(config, node),
-      Code.export$(Code.interface$(
+      Code.export$(Code.type(
         node.name,
-        Code.objectFrom({
-          __interfacename: Code.quote(node.name),
-          type: renderFields(config, node),
-          implementors: Code.unionItems(implementors.map(_ => dispatchToReferenceRenderer(config, _))),
-        }),
+        `_.Interface<${Code.quote(node.name)}, ${renderFields(config, node)}, ${
+          Code.tuple(implementors.map(_ => `Object.${_.name}`))
+        }>`,
       )),
     )
   },
   GraphQLObjectType: (config, node) =>
     Code.TSDoc(
       getDocumentation(config, node),
-      Code.export$(Code.interface$(node.name, renderFields(config, node))),
+      Code.export$(Code.type(node.name, `_.Object<${Code.quote(node.name)}, ${renderFields(config, node)}>`)),
     ),
   GraphQLScalarType: () => ``,
   GraphQLUnionType: (config, node) =>
     Code.TSDoc(
       getDocumentation(config, node),
       Code.export$(
-        Code.interface$(
+        Code.type(
           node.name,
-          Code.objectFrom({
-            __unionname: Code.quote(node.name),
-            type: {
-              type: Code.unionItems(
-                node
-                  .getTypes()
-                  .map(
-                    (_) => dispatchToReferenceRenderer(config, _),
-                  ),
-              ),
-            },
-          }),
+          `_.Union<${Code.quote(node.name)},${
+            Code.tuple(
+              node
+                .getTypes()
+                .map(
+                  (_) => dispatchToReferenceRenderer(config, _),
+                ),
+            )
+          }>`,
         ),
       ),
     ),
@@ -227,23 +223,7 @@ const getDocumentation = (config: Config, node: Describable) => {
 const defaultDescription = (node: Describable) => `There is no documentation for this ${getNodeDisplayName(node)}.`
 
 const renderFields = (config: Config, node: AnyGraphQLFieldsType): string => {
-  const __typenameField = node instanceof GraphQLObjectType
-    ? [
-      Code.field(
-        `__typename`,
-        Code.objectFrom({
-          type: Code.objectFrom({
-            kind: Code.quote(`literal`),
-            value: Code.quote(node.name),
-          }),
-          args: null,
-          namedType: Code.quote(node.name),
-        }),
-      ),
-    ]
-    : []
   return Code.object(Code.fields([
-    ...__typenameField,
     ...values(node.getFields()).map((field) =>
       Code.TSDoc(
         getDocumentation(config, field),
@@ -257,77 +237,62 @@ const buildType = (config: Config, node: AnyClass) => {
   const { node: nodeInner, nullable } = unwrapNonNull(node)
 
   if (isNamedType(nodeInner)) {
-    const namedType = dispatchToReferenceRenderer(config, nodeInner)
-    const type = Code.objectFrom({
-      kind: Code.quote(`named`),
-      named: namedType,
-    })
+    const namedTypeReference = dispatchToReferenceRenderer(config, nodeInner)
+    const namedTypeCode = `_.Named<${namedTypeReference}>`
     return nullable
-      ? Code.objectFrom({
-        kind: Code.quote(`nullable`),
-        type: type,
-      })
-      : type
+      ? `_.Nullable<${namedTypeCode}>`
+      : namedTypeCode
   }
 
   if (isListType(nodeInner)) {
-    const nodeType = Code.objectFrom({
-      kind: Code.quote(`list`),
-      type: buildType(config, nodeInner.ofType),
-    })
+    const fieldType = `_.List<${buildType(config, nodeInner.ofType)}>` as any as string
     return nullable
-      ? Code.objectFrom({
-        kind: Code.quote(`nullable`),
-        type: nodeType,
-      })
-      : nodeType
+      ? `_.Nullable<${fieldType}>`
+      : fieldType
   }
 
   throw new Error(`Unhandled type: ${String(node)}`)
 }
 
-const getNamedType = (config: Config, node: AnyClass): GraphQLNamedType => {
-  if (isNamedType(node)) return node
-  if (isNonNullType(node)) return getNamedType(config, node.ofType)
-  if (isListType(node)) return getNamedType(config, node.ofType)
-  throw new Error(`Unhandled type: ${String(node)}`)
-}
+// const getNamedType = (config: Config, node: AnyClass): GraphQLNamedType => {
+//   if (isNamedType(node)) return node
+//   if (isNonNullType(node)) return getNamedType(config, node.ofType)
+//   if (isListType(node)) return getNamedType(config, node.ofType)
+//   throw new Error(`Unhandled type: ${String(node)}`)
+// }
 
 const renderField = (config: Config, field: AnyField): string => {
   const type = buildType(config, field.type)
-  const namedType = dispatchToReferenceRenderer(config, getNamedType(config, field.type))
 
   const args = isGraphQLOutputField(field) && field.args.length > 0
     ? renderArgs(config, field.args)
     : null
 
-  return Code.objectFrom({
-    type,
-    namedType,
-    args,
-  })
+  return `_.Field<${type}${args ? `, ${args}` : ``}>`
 }
 
 const renderArgs = (config: Config, args: readonly GraphQLArgument[]) => {
   let hasRequiredArgs = false
-  const argsRendered = Code.object(
-    Code.fields(
-      args.map((arg) => {
-        const { node, nullable } = unwrapNonNull(arg.type)
-        hasRequiredArgs = hasRequiredArgs || !nullable
-        return Code.field(
-          arg.name,
-          nullable
-            ? Code.nullable(dispatchToReferenceRenderer(config, node))
-            : dispatchToReferenceRenderer(config, node),
-          { optional: nullable },
-        )
-      }),
-    ),
-  )
+  const argsRendered = `_.Args<${
+    Code.object(
+      Code.fields(
+        args.map((arg) => {
+          const { node, nullable } = unwrapNonNull(arg.type)
+          hasRequiredArgs = hasRequiredArgs || !nullable
+          return Code.field(
+            arg.name,
+            nullable
+              ? `_.Nullable<${dispatchToReferenceRenderer(config, node)}>`
+              : dispatchToReferenceRenderer(config, node),
+          )
+        }),
+      ),
+    )
+  }>`
+  return argsRendered
   return Code.objectFrom({
     type: { type: argsRendered },
-    allOptional: { type: !hasRequiredArgs },
+    // allOptional: { type: !hasRequiredArgs },
   })
 }
 
@@ -391,6 +356,8 @@ export const generateCode = (input: Input) => {
   )
 
   let code = ``
+
+  code += `import type * as _ from '../../../src/Schema/schema2/__.js'\n\n`
 
   code += Code.export$(
     Code.namespace(

@@ -14,10 +14,13 @@ test(`ParseAliasExpression`, () => {
 })
 
 test(`Query`, () => {
+  assertType<Q>({ __typename: true })
+
   // @ts-expect-error directive on root type Query
   assertType<Q>({ $defer: true })
 
   // Scalar
+  assertType<Q>({ id: true })
   assertType<Q>({ id: true })
   assertType<Q>({ id: false })
   assertType<Q>({ id: 1 })

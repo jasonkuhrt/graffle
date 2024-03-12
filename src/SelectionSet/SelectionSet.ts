@@ -2,29 +2,35 @@
 
 import type { MaybeList, StringNonEmpty, Values } from '../lib/prelude.js'
 import type { TSError } from '../lib/TSError.js'
-import type { Schema } from '../Schema/__.js'
+import type { Schema } from '../Schema/schema/__.js'
 
-export type Query<$Index extends Schema.Index> = $Index['Root']['Query'] extends Schema.Object
+export type Query<$Index extends Schema.Index> = $Index['Root']['Query'] extends Schema.Named.Object
   ? Object<$Index['Root']['Query'], $Index>
   : never
 
-export type Mutation<$Index extends Schema.Index> = $Index['Root']['Mutation'] extends Schema.Object
+export type Mutation<$Index extends Schema.Index> = $Index['Root']['Mutation'] extends Schema.Named.Object
   ? Object<$Index['Root']['Mutation'], $Index>
   : never
 
-export type Subscription<$Index extends Schema.Index> = $Index['Root']['Subscription'] extends Schema.Object
+export type Subscription<$Index extends Schema.Index> = $Index['Root']['Subscription'] extends Schema.Named.Object
   ? Object<$Index['Root']['Subscription'], $Index>
   : never
 
 // dprint-ignore
 type Object<
-  $Object extends Schema.Object,
+  $Fields extends Schema.Named.Object,
+  $Index extends Schema.Index,
+> = Fields<$Fields['fields'], $Index>
+
+// dprint-ignore
+type Fields<
+  $Fields extends Schema.Named.Fields,
   $Index extends Schema.Index,
 > =
   &
   {
-    [Key in keyof $Object]?:
-      Field<Schema.AsField<$Object[Key]>, $Index>
+    [Key in keyof $Fields]?:
+      Field<Schema.Field.As<$Fields[Key]>, $Index>
   }
   &
   /**
@@ -33,9 +39,9 @@ type Object<
    */
   {
     [
-      Key in keyof $Object as `${keyof $Object & string}_as_${StringNonEmpty}`
+      Key in keyof $Fields as `${keyof $Fields & string}_as_${StringNonEmpty}`
     ]?:
-     Field<Schema.AsField<$Object[Key]>, $Index>
+     Field<Schema.Field.As<$Fields[Key]>, $Index>
   }
   &
   /**
@@ -43,7 +49,7 @@ type Object<
    * @see https://spec.graphql.org/draft/#sec-Inline-Fragments
    */
   {
-    ___?: MaybeList<Object<$Object, $Index> & FieldDirectives>
+    ___?: MaybeList<Fields<$Fields, $Index> & FieldDirectives>
   }
   &
   /**
@@ -57,51 +63,49 @@ export type IsSelectScalarsWildcard<SS> = SS extends { $scalars: ClientIndicator
 
 // dprint-ignore
 export type Field<
-  $Field extends Schema.Field,
+  $Field extends Schema.Field.Field,
   $Index extends Schema.Index,
 > =
-  $Field extends Schema.FieldTypename   ? NoArgsIndicator :
-  $Field extends Schema.FieldScalar     ? Indicator<$Field> :
-  $Field extends Schema.FieldUnion      ? Union<$Field['namedType'], $Index> :
-  $Field extends Schema.FieldInterface  ? Interface$<$Field['namedType'], $Index> :
-  $Field extends Schema.FieldObject     ? Object<$Field['namedType'], $Index> & Arguments<$Field> & FieldDirectives
-                                        : TSError<'SelectionSetField', '$Field case not handled', { $Field: $Field }>
-
-type Arguments<$Field extends Schema.Field> = $Field['args'] extends Schema.FieldArgs
-  ? $Field['args']['allOptional'] extends true ? {
-      $?: $Field['args']['type']
-    }
-  : {
-    $: $Field['args']['type']
-  }
-  : {}
+  $Field['type']['kind'] extends 'typename'                     ? NoArgsIndicator :
+  // @ts-expect-error fixme?
+  $Field['typeUnwrapped']['kind'] extends 'Scalar'              ? Indicator<$Field['typeUnwrapped']> :
+  $Field['typeUnwrapped']['kind'] extends 'Enum'                ? Indicator<$Field['typeUnwrapped']> :
+  $Field['typeUnwrapped']['kind'] extends 'Object'              ? Object<$Field['typeUnwrapped'], $Index> & FieldDirectives & Arguments<$Field> :
+  $Field['typeUnwrapped']['kind'] extends 'Union'               ? Union<$Field['typeUnwrapped'], $Index> :
+  $Field['typeUnwrapped']['kind'] extends 'Interface'           ? Interface<$Field['typeUnwrapped'], $Index> :
+                                                                TSError<'SelectionSetField', '$Field case not handled', { $Field: $Field }>
+// dprint-ignore
+type Arguments<$Field extends Schema.Field.Field> =
+$Field['args'] extends Schema.Field.Args  ? $Field['args']['allOptional'] extends true  ? { $?: $Field['args']['fields'] } :
+                                                                                          { $: $Field['args']['fields'] } :
+                                            {}
 
 // dprint-ignore
-type Interface$<
-  $Node extends Schema.Interface$,
+type Interface<
+  $Node extends Schema.Named.Interface,
   $Index extends Schema.Index,
 > = 
-& Object<
-    & $Node['type']
-    & {
-        __typename: $Node['implementors']['__typename']
-      },
-    $Index
-  >
-& {
-    [Key in $Node['implementors']['__typename']['namedType'] as `on${Capitalize<Key>}`]?:
-      Object<Extract<$Node['implementors'], { __typename: { namedType: Key } }>, $Index> & FieldDirectives
-  }
+  & Fields<
+      & $Node['fields']
+      & {
+          __typename: $Node['implementors'][number]['fields']['__typename']
+        },
+      $Index
+    >
+  & {
+      [Key in $Node['implementors'][number]['fields']['__typename']['typeUnwrapped'] as `on${Capitalize<Key>}`]?:
+        Object<Extract<$Node['implementors'][number], { fields: { __typename: { typeUnwrapped: Key } } }>, $Index> & FieldDirectives
+    }
 
 // TODO why does $object not get passed to this in a distributed way?
 // dprint-ignore
 type Union<
-  $Union extends Schema.Union,
+  $Union extends Schema.Named.Union,
   $Index extends Schema.Index,
 > =
   & {
-      [Key in $Union['type']['__typename']['namedType'] as `on${Capitalize<Key>}`]?:
-        Object<Extract<$Union['type'], { __typename: { namedType: Key } }>, $Index> & FieldDirectives
+      [Key in $Union['members'][number]['fields']['__typename']['typeUnwrapped'] as `on${Capitalize<Key>}`]?:
+        Object<Extract<$Union['members'][number], { fields: { __typename: { typeUnwrapped: Key } } }>, $Index> & FieldDirectives
     }
   & {
       __typename?: NoArgsIndicator
@@ -137,8 +141,8 @@ export interface Alias<O extends string = string, T extends string = string> {
 
 // dprint-ignore
 export type ParseAliasExpression<E> =
-  E extends `${infer O}_as_${infer T}`  ? Schema.NameParse<O> extends never  ? E :
-                                          Schema.NameParse<T> extends never  ? E :
+  E extends `${infer O}_as_${infer T}`  ? Schema.Named.NameParse<O> extends never  ? E :
+                                          Schema.Named.NameParse<T> extends never  ? E :
                                           Alias<O, T>
                                         : E
 
@@ -207,11 +211,11 @@ export type OmitNegativeIndicators<$SelectionSet> = {
 export type NoArgsIndicator = ClientIndicator | FieldDirectives
 
 // dprint-ignore
-export type Indicator<$Field extends Schema.FieldScalar = Schema.FieldScalar> =
-  $Field['args'] extends Schema.FieldArgs ? $Field['args']['allOptional'] extends true
-                                              ? ({ $?: $Field['args']['type'] } & FieldDirectives) | ClientIndicator
-                                              : { $: $Field['args']['type'] } & FieldDirectives
-                                          : NoArgsIndicator
+export type Indicator<$Field extends Schema.Field.Scalar = Schema.Field.Scalar> =
+  $Field['args'] extends Schema.Field.Args  ? $Field['args']['allOptional'] extends true
+                                              ? ({ $?: $Field['args']['fields'] } & FieldDirectives) | ClientIndicator
+                                              : { $: $Field['args']['fields'] } & FieldDirectives
+                                            : NoArgsIndicator
 
 /**
  * @see https://spec.graphql.org/draft/#sec-Type-System.Directives.Built-in-Directives
