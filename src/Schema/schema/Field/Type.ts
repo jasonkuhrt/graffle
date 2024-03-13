@@ -30,7 +30,7 @@ export const named = <$Type extends NamedType.Any>(type: $Type): Named<$Type> =>
 export type Unwrap<$Type extends Any> =
       $Type extends Named         ? $Type['type'] : 
       $Type extends __typename    ? $Type['type'] :
-                                  Unwrap<$Type['type']>
+                                    Unwrap<$Type['type']>
 
 export const unwrap = <$Type extends Any>(type: $Type): Unwrap<$Type> => {
   // @ts-expect-error fixme

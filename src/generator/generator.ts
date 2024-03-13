@@ -357,7 +357,7 @@ export const generateCode = (input: Input) => {
 
   let code = ``
 
-  code += `import type * as _ from '../../../src/Schema/schema2/__.js'\n\n`
+  code += `import type * as _ from '../../../src/Schema/schema/__.js'\n\n`
 
   code += Code.export$(
     Code.namespace(
@@ -377,11 +377,11 @@ export const generateCode = (input: Input) => {
               objects: Code.objectFromEntries(
                 typeMapByKind.GraphQLObjectType.map(_ => [_.name, Code.propertyAccess(`Object`, _.name)]),
               ),
-              unionMemberNames: Code.objectFromEntries(
-                typeMapByKind.GraphQLUnionType.map(
-                  (_) => [_.name, Code.unionItems(_.getTypes().map(_ => Code.quote(_.name)))],
-                ),
-              ),
+              // unionMemberNames: Code.objectFromEntries(
+              //   typeMapByKind.GraphQLUnionType.map(
+              //     (_) => [_.name, Code.unionItems(_.getTypes().map(_ => Code.quote(_.name)))],
+              //   ),
+              // ),
               unions: {
                 type: Code.objectFrom(
                   {

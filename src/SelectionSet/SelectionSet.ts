@@ -3,6 +3,7 @@
 import type { MaybeList, StringNonEmpty, Values } from '../lib/prelude.js'
 import type { TSError } from '../lib/TSError.js'
 import type { Schema } from '../Schema/schema/__.js'
+import { Unwrap } from '../Schema/schema/Field/Type.js'
 
 export type Query<$Index extends Schema.Index> = $Index['Root']['Query'] extends Schema.Named.Object
   ? Object<$Index['Root']['Query'], $Index>
@@ -68,16 +69,16 @@ export type Field<
 > =
   $Field['type']['kind'] extends 'typename'                     ? NoArgsIndicator :
   // @ts-expect-error fixme?
-  $Field['typeUnwrapped']['kind'] extends 'Scalar'              ? Indicator<$Field['typeUnwrapped']> :
-  $Field['typeUnwrapped']['kind'] extends 'Enum'                ? Indicator<$Field['typeUnwrapped']> :
+  $Field['typeUnwrapped']['kind'] extends 'Scalar'              ? Indicator<$Field> :
+  $Field['typeUnwrapped']['kind'] extends 'Enum'                ? Indicator<$Field> :
   $Field['typeUnwrapped']['kind'] extends 'Object'              ? Object<$Field['typeUnwrapped'], $Index> & FieldDirectives & Arguments<$Field> :
   $Field['typeUnwrapped']['kind'] extends 'Union'               ? Union<$Field['typeUnwrapped'], $Index> :
   $Field['typeUnwrapped']['kind'] extends 'Interface'           ? Interface<$Field['typeUnwrapped'], $Index> :
                                                                 TSError<'SelectionSetField', '$Field case not handled', { $Field: $Field }>
 // dprint-ignore
 type Arguments<$Field extends Schema.Field.Field> =
-$Field['args'] extends Schema.Field.Args  ? $Field['args']['allOptional'] extends true  ? { $?: $Field['args']['fields'] } :
-                                                                                          { $: $Field['args']['fields'] } :
+$Field['args'] extends Schema.Field.Args  ? $Field['args']['allOptional'] extends true  ? { $?: Args<$Field['args']> } :
+                                                                                          { $: Args<$Field['args']> } :
                                             {}
 
 // dprint-ignore
@@ -211,11 +212,25 @@ export type OmitNegativeIndicators<$SelectionSet> = {
 export type NoArgsIndicator = ClientIndicator | FieldDirectives
 
 // dprint-ignore
-export type Indicator<$Field extends Schema.Field.Scalar = Schema.Field.Scalar> =
-  $Field['args'] extends Schema.Field.Args  ? $Field['args']['allOptional'] extends true
-                                              ? ({ $?: $Field['args']['fields'] } & FieldDirectives) | ClientIndicator
-                                              : { $: $Field['args']['fields'] } & FieldDirectives
-                                            : NoArgsIndicator
+export type Indicator<$Field extends Schema.Field.Field = Schema.Field.Field> =
+// $Field['args']['allOptional']
+$Field['args'] extends Schema.Field.Args  ? $Field['args']['allOptional'] extends true
+                                            ? ({ $?: Args<$Field['args']> } & FieldDirectives) | ClientIndicator :
+                                              { $: Args<$Field['args']> } & FieldDirectives :
+                                            NoArgsIndicator
+
+// dprint-ignore
+export type Args<$Args extends Schema.Field.Args> =
+& {
+  [
+    Key in keyof $Args['fields'] as $Args['fields'][Key] extends Schema.Field.Nullable<any> ? never : Key
+  ]: ReturnType<$Args['fields'][Key]['constructor']>
+}
+& {
+  [
+    Key in keyof $Args['fields'] as $Args['fields'][Key] extends Schema.Field.Nullable<any> ? Key : never
+  ]?: null | ReturnType<$Args['fields'][Key]['constructor']>
+}
 
 /**
  * @see https://spec.graphql.org/draft/#sec-Type-System.Directives.Built-in-Directives

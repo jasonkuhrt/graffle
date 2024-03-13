@@ -15,11 +15,6 @@ export namespace $ {
       Object1ImplementingInterface: Object.Object1ImplementingInterface
       Object2ImplementingInterface: Object.Object2ImplementingInterface
     }
-    unionMemberNames: {
-      FooBarUnion:
-        | 'Foo'
-        | 'Bar'
-    }
     unions: {
       Union: Union.FooBarUnion
     }
@@ -83,7 +78,6 @@ export namespace Root {
      */
     abcEnum: _.Field<_.Nullable<_.Named<Enum.ABCEnum>>>
   }>
-  type x = Query['fields']['fooBarUnion']['typeUnwrapped']['members'][number]['fields']['__typename']['typeUnwrapped']
 }
 
 // ------------------------------------------------------------ //

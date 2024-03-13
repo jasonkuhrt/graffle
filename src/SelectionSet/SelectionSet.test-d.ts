@@ -165,6 +165,20 @@ test(`Query`, () => {
       },
     },
   })
+  assertType<Q>({
+    stringWithArgs: {
+      $: {
+        boolean: null,
+        float: null,
+        id: null,
+        int: null,
+        string: null,
+        // todo test list arg
+        // todo test nullable list arg
+        // todo test nullable list nullable arg
+      },
+    },
+  })
   // all-optional + scalar + directive
   assertType<Q>({ stringWithArgs: { $: { boolean: true }, $skip: true } })
   // builder interface
