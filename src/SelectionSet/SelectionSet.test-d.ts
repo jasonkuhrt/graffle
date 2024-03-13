@@ -154,31 +154,20 @@ test(`Query`, () => {
   // all-optional on scalar
   assertType<Q>({ stringWithArgs: true })
   assertType<Q>({ stringWithArgs: {} })
-  assertType<Q>({
-    stringWithArgs: {
-      $: {
-        boolean: true,
-        float: 1,
-        id: `id`,
-        int: 3,
-        string: `abc`,
-      },
-    },
-  })
-  assertType<Q>({
-    stringWithArgs: {
-      $: {
-        boolean: null,
-        float: null,
-        id: null,
-        int: null,
-        string: null,
-        // todo test list arg
-        // todo test nullable list arg
-        // todo test nullable list nullable arg
-      },
-    },
-  })
+  assertType<Q>({ stringWithArgs: { $: { boolean: true, float: 1, id: `id`, int: 3, string: `abc` } } })
+  assertType<Q>({ stringWithArgs: { $: { boolean: null, float: null, id: null, int: null, string: null } } })
+
+  // input list
+  assertType<Q>({ stringWithListArg: { $: { ints: [1, 2, 3] } } })
+  assertType<Q>({ stringWithListArg: { $: { ints: [] } } })
+  assertType<Q>({ stringWithListArg: { $: { ints: [null] } } })
+  assertType<Q>({ stringWithListArg: { $: { ints: null } } })
+  assertType<Q>({ stringWithListArg: { $: {} } })
+  // @ts-expect-error missing "ints" arg
+  assertType<Q>({ stringWithListArgRequired: { $: {} } })
+  // @ts-expect-error missing non-null "ints" arg
+  assertType<Q>({ stringWithListArgRequired: { $: { ints: null } } })
+
   // all-optional + scalar + directive
   assertType<Q>({ stringWithArgs: { $: { boolean: true }, $skip: true } })
   // builder interface

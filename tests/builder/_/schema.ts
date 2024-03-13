@@ -55,6 +55,12 @@ export namespace Root {
         id: _.Nullable<_.Scalar.ID>
       }>
     >
+    stringWithListArg: _.Field<
+      _.Nullable<_.Named<_.Scalar.String>>,
+      _.Args<{
+        ints: _.Nullable<_.List<_.Scalar.Int>>
+      }>
+    >
     object: _.Field<_.Nullable<_.Named<Object.Object>>>
     listListIntNonNull: _.Field<_.List<_.List<_.Named<_.Scalar.Int>>>>
     listListInt: _.Field<_.Nullable<_.List<_.Nullable<_.List<_.Nullable<_.Named<_.Scalar.Int>>>>>>>

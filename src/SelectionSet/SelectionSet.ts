@@ -3,7 +3,6 @@
 import type { MaybeList, StringNonEmpty, Values } from '../lib/prelude.js'
 import type { TSError } from '../lib/TSError.js'
 import type { Schema } from '../Schema/schema/__.js'
-import { Unwrap } from '../Schema/schema/Field/Type.js'
 
 export type Query<$Index extends Schema.Index> = $Index['Root']['Query'] extends Schema.Named.Object
   ? Object<$Index['Root']['Query'], $Index>
@@ -68,7 +67,8 @@ export type Field<
   $Index extends Schema.Index,
 > =
   $Field['type']['kind'] extends 'typename'                     ? NoArgsIndicator :
-  // @ts-expect-error fixme?
+  // eslint-disable-next-line
+  // @ts-ignore infinite depth issue, can this be fixed?
   $Field['typeUnwrapped']['kind'] extends 'Scalar'              ? Indicator<$Field> :
   $Field['typeUnwrapped']['kind'] extends 'Enum'                ? Indicator<$Field> :
   $Field['typeUnwrapped']['kind'] extends 'Object'              ? Object<$Field['typeUnwrapped'], $Index> & FieldDirectives & Arguments<$Field> :
@@ -224,13 +224,22 @@ export type Args<$Args extends Schema.Field.Args> =
 & {
   [
     Key in keyof $Args['fields'] as $Args['fields'][Key] extends Schema.Field.Nullable<any> ? never : Key
-  ]: ReturnType<$Args['fields'][Key]['constructor']>
+  ]: InferTypeInput<$Args['fields'][Key]>
 }
 & {
   [
     Key in keyof $Args['fields'] as $Args['fields'][Key] extends Schema.Field.Nullable<any> ? Key : never
-  ]?: null | ReturnType<$Args['fields'][Key]['constructor']>
+  ]?: null | InferTypeInput<$Args['fields'][Key]>
 }
+
+// todo input objects
+// todo enums
+// dprint-ignore
+type InferTypeInput<$InputType extends Schema.Field.Input.Any> =
+$InputType extends Schema.Field.Input.Nullable  ? InferTypeInput<$InputType['type']> | null :
+$InputType extends Schema.Field.Input.List      ? InferTypeInput<$InputType['type']>[] :
+$InputType extends Schema.Named.Scalar.Any      ? ReturnType<$InputType['constructor']> :
+                                                  TSError<'U', 'Unknown $InputType', { $InputType: $InputType }> // never
 
 /**
  * @see https://spec.graphql.org/draft/#sec-Type-System.Directives.Built-in-Directives
