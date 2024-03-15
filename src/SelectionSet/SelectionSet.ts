@@ -30,6 +30,8 @@ type Fields<
   &
   {
     [Key in keyof $Fields]?:
+      // eslint-disable-next-line
+      // @ts-ignore excessive deep error, fixme?
       Field<Schema.Field.As<$Fields[Key]>, $Index>
   }
   &
@@ -233,13 +235,13 @@ export type Args<$Args extends Schema.Field.Args> =
 }
 
 // todo input objects
-// todo enums
 // dprint-ignore
 type InferTypeInput<$InputType extends Schema.Field.Input.Any> =
-$InputType extends Schema.Field.Input.Nullable  ? InferTypeInput<$InputType['type']> | null :
-$InputType extends Schema.Field.Input.List      ? InferTypeInput<$InputType['type']>[] :
-$InputType extends Schema.Named.Scalar.Any      ? ReturnType<$InputType['constructor']> :
-                                                  TSError<'U', 'Unknown $InputType', { $InputType: $InputType }> // never
+  $InputType extends Schema.Field.Input.Nullable                    ? InferTypeInput<$InputType['type']> | null :
+  $InputType extends Schema.Field.Input.List                        ? InferTypeInput<$InputType['type']>[] :
+  $InputType extends Schema.Named.Enum<infer _, infer $Members>     ? $Members[number] :
+  $InputType extends Schema.Named.Scalar.Any                        ? ReturnType<$InputType['constructor']> :
+                                                                      TSError<'InferTypeInput', 'Unknown $InputType', { $InputType: $InputType }> // never
 
 /**
  * @see https://spec.graphql.org/draft/#sec-Type-System.Directives.Built-in-Directives

@@ -5,6 +5,7 @@ type Query {
 	string: String
 	stringWithRequiredArg(string:String!): String
 	stringWithArgs(string:String, int:Int, float:Float, boolean:Boolean, id:ID): String
+	stringWithArgEnum(ABCEnum:ABCEnum): String
 	stringWithListArg(ints:[Int]): String
 	stringWithListArgRequired(ints:[Int]!): String
 	object: Object

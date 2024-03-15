@@ -157,6 +157,19 @@ test(`Query`, () => {
   assertType<Q>({ stringWithArgs: { $: { boolean: true, float: 1, id: `id`, int: 3, string: `abc` } } })
   assertType<Q>({ stringWithArgs: { $: { boolean: null, float: null, id: null, int: null, string: null } } })
 
+  // enum arg
+  assertType<Q>({ stringWithArgEnum: { $: { ABCEnum: `A` } } })
+  assertType<Q>({ stringWithArgEnum: { $: { ABCEnum: `B` } } })
+  assertType<Q>({ stringWithArgEnum: { $: { ABCEnum: `C` } } })
+  assertType<Q>({ stringWithArgEnum: { $: { ABCEnum: null } } })
+  assertType<Q>({ stringWithArgEnum: { $: {} } })
+  // @ts-expect-error invalid enum value
+  assertType<Q>({ stringWithArgEnum: { $: { ABCEnum: `D` } } })
+  // @ts-expect-error invalid enum value
+  assertType<Q>({ stringWithArgEnum: { $: { ABCEnum: `` } } })
+  // @ts-expect-error invalid enum value
+  assertType<Q>({ stringWithArgEnum: { $: { ABCEnum: 1 } } })
+
   // input list
   assertType<Q>({ stringWithListArg: { $: { ints: [1, 2, 3] } } })
   assertType<Q>({ stringWithListArg: { $: { ints: [] } } })

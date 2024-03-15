@@ -16,6 +16,7 @@ import type {
   AnyClass,
   AnyField,
   AnyNamedClassName,
+  ClassToName,
   Describable,
   NameToClassNamedType,
   TypeMapByKind,
@@ -84,14 +85,28 @@ const defineConcreteRenderers = <
   ) as any
 }
 
-const dispatchToReferenceRenderer = (config: Config, node: AnyClass): string => {
+const dispatchToReferenceRenderer = (config: Config, node: AnyClass): string =>
+  getReferenceRenderer(node)(config, node as any)
+
+const getReferenceRenderer = <N extends AnyClass>(node: N): (typeof referenceRenderers)[ClassToName<N>] => {
   // @ts-expect-error lookup
-  const renderer = pointerRenderers[node.constructor.name] // eslint-disable-line
+  const renderer = referenceRenderers[node.constructor.name] // eslint-disable-line
   if (!renderer) {
     throw new Error(`No renderer found for class: ${node.constructor.name}`)
   }
-  return renderer(config, node) // eslint-disable-line
+  return renderer
 }
+
+const referenceRenderers = defineReferenceRenderers({
+  GraphQLNonNull: (config, node) => dispatchToReferenceRenderer(config, node.ofType),
+  GraphQLEnumType: (_, node) => Code.propertyAccess(namespaceNames.GraphQLEnumType, node.name),
+  GraphQLInputObjectType: (_, node) => Code.propertyAccess(namespaceNames.GraphQLInputObjectType, node.name),
+  GraphQLInterfaceType: (_, node) => Code.propertyAccess(namespaceNames.GraphQLInterfaceType, node.name),
+  GraphQLObjectType: (_, node) => Code.propertyAccess(namespaceNames.GraphQLObjectType, node.name),
+  GraphQLUnionType: (_, node) => Code.propertyAccess(namespaceNames.GraphQLUnionType, node.name),
+  GraphQLList: (config, node) => `_.List<${(buildType(config, node.ofType))}>`,
+  GraphQLScalarType: (_, node) => `_.Scalar.${node.name}`,
+})
 
 const dispatchToConcreteRenderer = (
   config: Config,
@@ -104,17 +119,6 @@ const dispatchToConcreteRenderer = (
   }
   return renderer(config, node) // eslint-disable-line
 }
-
-const pointerRenderers = defineReferenceRenderers({
-  GraphQLNonNull: (config, node) => dispatchToReferenceRenderer(config, node.ofType),
-  GraphQLEnumType: (_, node) => Code.propertyAccess(namespaceNames.GraphQLEnumType, node.name),
-  GraphQLInputObjectType: (_, node) => Code.propertyAccess(namespaceNames.GraphQLInputObjectType, node.name),
-  GraphQLInterfaceType: (_, node) => Code.propertyAccess(namespaceNames.GraphQLInterfaceType, node.name),
-  GraphQLList: (config, node) => `_.List<${(dispatchToReferenceRenderer(config, node.ofType))}>`,
-  GraphQLObjectType: (_, node) => Code.propertyAccess(namespaceNames.GraphQLObjectType, node.name),
-  GraphQLScalarType: (_, node) => `_.Scalar.${node.name}`,
-  GraphQLUnionType: (_, node) => Code.propertyAccess(namespaceNames.GraphQLUnionType, node.name),
-})
 
 const concreteRenderers = defineConcreteRenderers({
   GraphQLEnumType: (config, node) =>
@@ -238,7 +242,8 @@ const buildType = (config: Config, node: AnyClass) => {
 
   if (isNamedType(nodeInner)) {
     const namedTypeReference = dispatchToReferenceRenderer(config, nodeInner)
-    const namedTypeCode = `_.Named<${namedTypeReference}>`
+    // const namedTypeCode = `_.Named<${namedTypeReference}>`
+    const namedTypeCode = namedTypeReference
     return nullable
       ? `_.Nullable<${namedTypeCode}>`
       : namedTypeCode

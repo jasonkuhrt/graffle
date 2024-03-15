@@ -61,6 +61,17 @@ export const getTypeMapByKind = (schema: GraphQLSchema) => {
   return typeMapByKind
 }
 
+export type ClassToName<C> = 
+  C extends GraphQLScalarType ? `GraphQLScalarType`
+  : C extends GraphQLObjectType ? `GraphQLObjectType`
+  : C extends GraphQLInterfaceType ? `GraphQLInterfaceType`
+  : C extends GraphQLUnionType ? `GraphQLUnionType`
+  : C extends GraphQLEnumType ? `GraphQLEnumType`
+  : C extends GraphQLInputObjectType ? `GraphQLInputObjectType`
+  : C extends GraphQLList<any> ? `GraphQLList`
+  : C extends GraphQLNonNull<any> ? `GraphQLNonNull`
+  : never
+
 export const NameToClassNamedType = {
   GraphQLScalarType: GraphQLScalarType,
   GraphQLObjectType: GraphQLObjectType,
