@@ -13,5 +13,4 @@ export interface Index {
     Union: null | Union
   }
   scalars: object
-  // unionMemberNames: Record<string, string>
 }

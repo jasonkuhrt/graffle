@@ -2,7 +2,7 @@
 
 import type { MaybeList, StringNonEmpty, Values } from '../lib/prelude.js'
 import type { TSError } from '../lib/TSError.js'
-import type { Schema } from '../Schema/schema/__.js'
+import type { Schema } from '../Schema/__.js'
 
 export type Query<$Index extends Schema.Index> = $Index['Root']['Query'] extends Schema.Named.Object
   ? Object<$Index['Root']['Query'], $Index>

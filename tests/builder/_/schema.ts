@@ -1,4 +1,4 @@
-import type * as _ from '../../../src/Schema/schema/__.js'
+import type * as _ from '../../../src/Schema/__.js'
 
 export namespace $ {
   export interface Index {

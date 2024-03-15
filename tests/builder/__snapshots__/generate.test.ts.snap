@@ -1,7 +1,8 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`generates types from GraphQL SDL file 1`] = `
-"import { __typename, Nullable } from '../../../src/Schema/schema2.js'
+"import type * as _ from '../../../src/Schema/__.js'
+
 export namespace $ {
 export interface Index {
 Root: {
@@ -16,10 +17,6 @@ ObjectNested: Object.ObjectNested
 Object: Object.Object
 Object1ImplementingInterface: Object.Object1ImplementingInterface
 Object2ImplementingInterface: Object.Object2ImplementingInterface
-}
-unionMemberNames: {
-FooBarUnion: "Foo"
-| "Bar"
 }
 unions: {
 Union: Union.FooBarUnion
@@ -40,190 +37,50 @@ Boolean: boolean
 // ------------------------------------------------------------ //
 
 export namespace Root {
-export interface Query {
-__typename: __typename<"Query">
-interface: {
-type: Nullable<{
-kind: "named"
-named: Interface.Interface
-}>
-namedType: Interface.Interface
-args: null
-}
-id: {
-type: Nullable<{
-kind: "named"
-named: $.Scalars["ID"]
-}>
-namedType: $.Scalars["ID"]
-args: null
-}
-idNonNull: {
-type: {
-kind: "named"
-named: $.Scalars["ID"]
-}
-namedType: $.Scalars["ID"]
-args: null
-}
-string: {
-type: Nullable<{
-kind: "named"
-named: $.Scalars["String"]
-}>
-namedType: $.Scalars["String"]
-args: null
-}
-stringWithRequiredArg: {
-type: Nullable<{
-kind: "named"
-named: $.Scalars["String"]
-}>
-namedType: $.Scalars["String"]
-args: {
-type: {
-string: $.Scalars["String"]
-}
-allOptional: false
-}
-}
-stringWithArgs: {
-type: Nullable<{
-kind: "named"
-named: $.Scalars["String"]
-}>
-namedType: $.Scalars["String"]
-args: {
-type: {
-string?: $.Scalars["String"] | null
-int?: $.Scalars["Int"] | null
-float?: $.Scalars["Float"] | null
-boolean?: $.Scalars["Boolean"] | null
-id?: $.Scalars["ID"] | null
-}
-allOptional: true
-}
-}
-object: {
-type: Nullable<{
-kind: "named"
-named: Object.Object
-}>
-namedType: Object.Object
-args: null
-}
-listListIntNonNull: {
-type: {
-kind: "list"
-type: {
-kind: "list"
-type: {
-kind: "named"
-named: $.Scalars["Int"]
-}
-}
-}
-namedType: $.Scalars["Int"]
-args: null
-}
-listListInt: {
-type: {
-kind: "nullable"
-type: {
-kind: "list"
-type: {
-kind: "nullable"
-type: {
-kind: "list"
-type: Nullable<{
-kind: "named"
-named: $.Scalars["Int"]
-}>
-}
-}
-}
-}
-namedType: $.Scalars["Int"]
-args: null
-}
-listInt: {
-type: {
-kind: "nullable"
-type: {
-kind: "list"
-type: Nullable<{
-kind: "named"
-named: $.Scalars["Int"]
-}>
-}
-}
-namedType: $.Scalars["Int"]
-args: null
-}
-listIntNonNull: {
-type: {
-kind: "list"
-type: {
-kind: "named"
-named: $.Scalars["Int"]
-}
-}
-namedType: $.Scalars["Int"]
-args: null
-}
-objectNested: {
-type: Nullable<{
-kind: "named"
-named: Object.ObjectNested
-}>
-namedType: Object.ObjectNested
-args: null
-}
-objectNonNull: {
-type: {
-kind: "named"
-named: Object.Object
-}
-namedType: Object.Object
-args: null
-}
-objectWithArgs: {
-type: Nullable<{
-kind: "named"
-named: Object.Object
-}>
-namedType: Object.Object
-args: {
-type: {
-string?: $.Scalars["String"] | null
-int?: $.Scalars["Int"] | null
-float?: $.Scalars["Float"] | null
-boolean?: $.Scalars["Boolean"] | null
-id?: $.Scalars["ID"] | null
-}
-allOptional: true
-}
-}
-fooBarUnion: {
-type: Nullable<{
-kind: "named"
-named: Union.FooBarUnion
-}>
-namedType: Union.FooBarUnion
-args: null
-}
+export type Query = _.Object<"Query", {
+interface: _.Field<_.Nullable<Interface.Interface>>
+id: _.Field<_.Nullable<_.Scalar.ID>>
+idNonNull: _.Field<_.Scalar.ID>
+string: _.Field<_.Nullable<_.Scalar.String>>
+stringWithRequiredArg: _.Field<_.Nullable<_.Scalar.String>, _.Args<{
+string: _.Scalar.String
+}>>
+stringWithArgs: _.Field<_.Nullable<_.Scalar.String>, _.Args<{
+string: _.Nullable<_.Scalar.String>
+int: _.Nullable<_.Scalar.Int>
+float: _.Nullable<_.Scalar.Float>
+boolean: _.Nullable<_.Scalar.Boolean>
+id: _.Nullable<_.Scalar.ID>
+}>>
+stringWithArgEnum: _.Field<_.Nullable<_.Scalar.String>, _.Args<{
+ABCEnum: _.Nullable<Enum.ABCEnum>
+}>>
+stringWithListArg: _.Field<_.Nullable<_.Scalar.String>, _.Args<{
+ints: _.Nullable<_.List<_.Nullable<_.Scalar.Int>>>
+}>>
+stringWithListArgRequired: _.Field<_.Nullable<_.Scalar.String>, _.Args<{
+ints: _.List<_.Nullable<_.Scalar.Int>>
+}>>
+object: _.Field<_.Nullable<Object.Object>>
+listListIntNonNull: _.Field<_.List<_.List<_.Scalar.Int>>>
+listListInt: _.Field<_.Nullable<_.List<_.Nullable<_.List<_.Nullable<_.Scalar.Int>>>>>>
+listInt: _.Field<_.Nullable<_.List<_.Nullable<_.Scalar.Int>>>>
+listIntNonNull: _.Field<_.List<_.Scalar.Int>>
+objectNested: _.Field<_.Nullable<Object.ObjectNested>>
+objectNonNull: _.Field<Object.Object>
+objectWithArgs: _.Field<_.Nullable<Object.Object>, _.Args<{
+string: _.Nullable<_.Scalar.String>
+int: _.Nullable<_.Scalar.Int>
+float: _.Nullable<_.Scalar.Float>
+boolean: _.Nullable<_.Scalar.Boolean>
+id: _.Nullable<_.Scalar.ID>
+}>>
+fooBarUnion: _.Field<_.Nullable<Union.FooBarUnion>>
 /**
 * Query enum field documentation.
 */
-abcEnum: {
-type: Nullable<{
-kind: "named"
-named: Enum.ABCEnum
+abcEnum: _.Field<_.Nullable<Enum.ABCEnum>>
 }>
-namedType: Enum.ABCEnum
-args: null
-}
-}
 }
 
 // ------------------------------------------------------------ //
@@ -239,10 +96,7 @@ export namespace Enum {
 * "B" - Enum B member documentation.
 * "C" - Enum C member documentation. (DEPRECATED: Enum value C is deprecated.)
 */
-export type ABCEnum =
-| "A"
-| "B"
-| "C"
+export type ABCEnum = _.Enum<"ABCEnum", ["A", "B", "C"] >
 }
 
 // ------------------------------------------------------------ //
@@ -259,21 +113,9 @@ export namespace InputObject {
 // ------------------------------------------------------------ //
 
 export namespace Interface {
-export interface Interface {
-__interfacename: "Interface"
-type: {
-id: {
-type: Nullable<{
-kind: "named"
-named: $.Scalars["ID"]
-}>
-namedType: $.Scalars["ID"]
-args: null
-}
-}
-implementors: Object.Object1ImplementingInterface
-| Object.Object2ImplementingInterface
-}
+export type Interface = _.Interface<"Interface", {
+id: _.Field<_.Nullable<_.Scalar.ID>>
+}, [Object.Object1ImplementingInterface, Object.Object2ImplementingInterface]>
 }
 
 // ------------------------------------------------------------ //
@@ -284,138 +126,41 @@ export namespace Object {
 /**
 * Object documentation.
 */
-export interface Foo {
-__typename: __typename<"Foo">
+export type Foo = _.Object<"Foo", {
 /**
 * Field documentation.
 * 
 * @deprecated Field a is deprecated.
 */
-id: {
-type: Nullable<{
-kind: "named"
-named: $.Scalars["ID"]
+id: _.Field<_.Nullable<_.Scalar.ID>>
 }>
-namedType: $.Scalars["ID"]
-args: null
-}
-}
 
-export interface Bar {
-__typename: __typename<"Bar">
-int: {
-type: Nullable<{
-kind: "named"
-named: $.Scalars["Int"]
+export type Bar = _.Object<"Bar", {
+int: _.Field<_.Nullable<_.Scalar.Int>>
 }>
-namedType: $.Scalars["Int"]
-args: null
-}
-}
 
-export interface ObjectNested {
-__typename: __typename<"ObjectNested">
-id: {
-type: Nullable<{
-kind: "named"
-named: $.Scalars["ID"]
+export type ObjectNested = _.Object<"ObjectNested", {
+id: _.Field<_.Nullable<_.Scalar.ID>>
+object: _.Field<_.Nullable<Object.Object>>
 }>
-namedType: $.Scalars["ID"]
-args: null
-}
-object: {
-type: Nullable<{
-kind: "named"
-named: Object.Object
-}>
-namedType: Object.Object
-args: null
-}
-}
 
-export interface Object {
-__typename: __typename<"Object">
-string: {
-type: Nullable<{
-kind: "named"
-named: $.Scalars["String"]
+export type Object = _.Object<"Object", {
+string: _.Field<_.Nullable<_.Scalar.String>>
+int: _.Field<_.Nullable<_.Scalar.Int>>
+float: _.Field<_.Nullable<_.Scalar.Float>>
+boolean: _.Field<_.Nullable<_.Scalar.Boolean>>
+id: _.Field<_.Nullable<_.Scalar.ID>>
 }>
-namedType: $.Scalars["String"]
-args: null
-}
-int: {
-type: Nullable<{
-kind: "named"
-named: $.Scalars["Int"]
-}>
-namedType: $.Scalars["Int"]
-args: null
-}
-float: {
-type: Nullable<{
-kind: "named"
-named: $.Scalars["Float"]
-}>
-namedType: $.Scalars["Float"]
-args: null
-}
-boolean: {
-type: Nullable<{
-kind: "named"
-named: $.Scalars["Boolean"]
-}>
-namedType: $.Scalars["Boolean"]
-args: null
-}
-id: {
-type: Nullable<{
-kind: "named"
-named: $.Scalars["ID"]
-}>
-namedType: $.Scalars["ID"]
-args: null
-}
-}
 
-export interface Object1ImplementingInterface {
-__typename: __typename<"Object1ImplementingInterface">
-id: {
-type: Nullable<{
-kind: "named"
-named: $.Scalars["ID"]
+export type Object1ImplementingInterface = _.Object<"Object1ImplementingInterface", {
+id: _.Field<_.Nullable<_.Scalar.ID>>
+int: _.Field<_.Nullable<_.Scalar.Int>>
 }>
-namedType: $.Scalars["ID"]
-args: null
-}
-int: {
-type: Nullable<{
-kind: "named"
-named: $.Scalars["Int"]
-}>
-namedType: $.Scalars["Int"]
-args: null
-}
-}
 
-export interface Object2ImplementingInterface {
-__typename: __typename<"Object2ImplementingInterface">
-id: {
-type: Nullable<{
-kind: "named"
-named: $.Scalars["ID"]
+export type Object2ImplementingInterface = _.Object<"Object2ImplementingInterface", {
+id: _.Field<_.Nullable<_.Scalar.ID>>
+boolean: _.Field<_.Nullable<_.Scalar.Boolean>>
 }>
-namedType: $.Scalars["ID"]
-args: null
-}
-boolean: {
-type: Nullable<{
-kind: "named"
-named: $.Scalars["Boolean"]
-}>
-namedType: $.Scalars["Boolean"]
-args: null
-}
-}
 }
 
 // ------------------------------------------------------------ //
@@ -426,10 +171,6 @@ export namespace Union {
 /**
 * Union documentation.
 */
-export interface FooBarUnion {
-__unionname: "FooBarUnion"
-type: Object.Foo
-| Object.Bar
-}
+export type FooBarUnion = _.Union<"FooBarUnion",[Object.Foo, Object.Bar]>
 }"
 `;

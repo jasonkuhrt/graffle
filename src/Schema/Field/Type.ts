@@ -1,4 +1,4 @@
-import type { TSError } from '../../../lib/TSError.js'
+import type { TSError } from '../../lib/TSError.js'
 import type { NamedType } from '../NamedType/__.js'
 
 export interface __typename<$Type extends string = string> {

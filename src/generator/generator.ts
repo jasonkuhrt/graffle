@@ -362,7 +362,7 @@ export const generateCode = (input: Input) => {
 
   let code = ``
 
-  code += `import type * as _ from '../../../src/Schema/schema/__.js'\n\n`
+  code += `import type * as _ from '../../../src/Schema/__.js'\n\n`
 
   code += Code.export$(
     Code.namespace(
