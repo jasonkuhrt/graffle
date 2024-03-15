@@ -6,7 +6,7 @@ import type { SelectionSet } from '../SelectionSet/__.js'
 import type { ResultSet } from './__.js'
 
 type I = Schema.$.Index
-type RS<$S extends SelectionSet.Query<I>> = ResultSet.Query<$S, I>
+type RS<$selectionSet extends SelectionSet.Query<I>> = ResultSet.Query<$selectionSet, I>
 
 // dprint-ignore
 test(`general`, () => {
