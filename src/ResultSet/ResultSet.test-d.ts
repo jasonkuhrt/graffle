@@ -10,6 +10,9 @@ type RS<$selectionSet extends SelectionSet.Query<I>> = ResultSet.Query<$selectio
 
 // dprint-ignore
 test(`general`, () => {
+  // __typename
+  expectTypeOf<RS<{ __typename: true }>>().toEqualTypeOf<{ __typename: 'Query' }>()
+
   // Scalar
   expectTypeOf<RS<{ id: true }>>().toEqualTypeOf<{ id: null | string }>()
   expectTypeOf<RS<{ id: 1 }>>().toEqualTypeOf<{ id: null | string }>()
@@ -20,10 +23,20 @@ test(`general`, () => {
   expectTypeOf<RS<{ id: true; string: 0 }>>().toEqualTypeOf<{ id: null | string }>()
   expectTypeOf<RS<{ id: true; string: undefined }>>().toEqualTypeOf<{ id: null | string }>()
 
+  // List
+  expectTypeOf<RS<{ listIntNonNull: true }>>().toEqualTypeOf<{ listIntNonNull: number[] }>()
+  expectTypeOf<RS<{ listInt: true }>>().toEqualTypeOf<{ listInt: null|(null|number)[] }>()
+  expectTypeOf<RS<{ listListIntNonNull: true }>>().toEqualTypeOf<{ listListIntNonNull: number[][] }>()
+  expectTypeOf<RS<{ listListInt: true }>>().toEqualTypeOf<{ listListInt: null|((null|(null|number)[])[]) }>()
+
+  // Enum
+  expectTypeOf<RS<{ abcEnum: true }>>().toEqualTypeOf<{ abcEnum: null|'A'|'B'|'C' }>()
+
   // Object
   expectTypeOf<RS<{ object: { id: true } }>>().toEqualTypeOf<{ object: null | { id: string | null } }>()
   // non-nullable
   expectTypeOf<RS<{ objectNonNull: { id: true } }>>().toEqualTypeOf<{ objectNonNull: { id: string | null } }>()
+
   // scalars-wildcard
   expectTypeOf<RS<{ objectNonNull: { $scalars: true } }>>().toEqualTypeOf<{ objectNonNull: { __typename: "Object"; string: null|string; int: null|number; float: null|number; boolean: null|boolean; id: null|string; } }>()
   // scalars-wildcard with nested object
@@ -46,12 +59,6 @@ test(`general`, () => {
   expectTypeOf<RS<{ interface: { __typename:true }}>>().toEqualTypeOf<{ interface: null | { __typename: 'Object1ImplementingInterface' } | { __typename: 'Object2ImplementingInterface' } }>()
   expectTypeOf<RS<{ interface: { onObject1ImplementingInterface: { __typename: true } }}>>().toEqualTypeOf<{ interface: null | { __typename: 'Object1ImplementingInterface' } | {}}>()
   expectTypeOf<RS<{ interface: { $scalars: true }}>>().toEqualTypeOf<{ interface: null | { __typename: 'Object1ImplementingInterface', id: null | string, int: null|number} | { __typename: 'Object2ImplementingInterface', id: null | string; boolean:null|boolean} }>()
-
-  // List
-  expectTypeOf<RS<{ listIntNonNull: true }>>().toEqualTypeOf<{ listIntNonNull: number[] }>()
-  expectTypeOf<RS<{ listInt: true }>>().toEqualTypeOf<{ listInt: null|(null|number)[] }>()
-  expectTypeOf<RS<{ listListIntNonNull: true }>>().toEqualTypeOf<{ listListIntNonNull: number[][] }>()
-  expectTypeOf<RS<{ listListInt: true }>>().toEqualTypeOf<{ listListInt: null|((null|(null|number)[])[]) }>()
 
   // Alias
   // scalar

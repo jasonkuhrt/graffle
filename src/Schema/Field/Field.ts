@@ -9,7 +9,7 @@ export type As<T> = T extends Field ? T : never
 
 export type Enum<$Args extends Args | null = null> = Field<NamedType.Enum, $Args>
 
-export type Scalar<$Args extends Args | null = null> = Field<Scalar.Any, $Args>
+export type Scalar<$Args extends Args | null = Args | null> = Field<Scalar.Any, $Args>
 
 export type String<$Args extends Args | null = null> = Field<Scalar.String, $Args>
 

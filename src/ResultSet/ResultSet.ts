@@ -35,8 +35,9 @@ export type Object<$SelectionSet, $Object extends Schema.Named.Object, $Index ex
      */
     ?
       {
-         [$Key in keyof $Object as $Object[$Key] extends Schema.FieldScalar ? $Key : never]:
-           Field<$SelectionSet, Schema.Field.As<$Object[$Key]>, $Index>
+      [$Key in keyof $Object['fields'] as $Object['fields'][$Key] extends Schema.Field.Field<Schema.Field.Type.__typename>  | {'typeUnwrapped':{kind:'Scalar'}} ? $Key : never]:
+      // $Object['fields'][$Key]
+           Field<$SelectionSet, Schema.Field.As<$Object['fields'][$Key]>, $Index>
       }
     /**
      * Handle fields in regular way.
@@ -82,12 +83,13 @@ type FieldType<
   $Type extends Schema.Field.Type.Any,
   $Index extends Schema.Index
 > =
-  $Type extends Schema.Field.Type.Nullable<infer $InnerType>      ?  null | FieldType<$SelectionSet, $InnerType, $Index> :
-  $Type extends Schema.Named.Scalar.Any                           ?  ReturnType<$Type['constructor']> :
-  // $Type extends Schema.FieldTypeNullable     ? null | FieldType<$SelectionSet, $Type['type'], $Index> :
-  // $Type extends Schema.FieldTypeList         ? FieldType<$SelectionSet, $Type['type'], $Index>[] :
-  // $Type extends Schema.FieldTypeNamed        ? Node<$SelectionSet, $Type['named'], $Index> :
-                                                   $Type
+  $Type extends Schema.Field.Type.__typename<infer $Value>        ? $Value :
+  $Type extends Schema.Field.Type.Nullable<infer $InnerType>      ? null | FieldType<$SelectionSet, $InnerType, $Index> :
+  $Type extends Schema.Field.Type.List<infer $InnerType>          ? Array<FieldType<$SelectionSet, $InnerType, $Index>> :
+  $Type extends Schema.Named.Enum<infer _, infer $Members>        ? $Members[number] :
+  $Type extends Schema.Named.Scalar.Any                           ? ReturnType<$Type['constructor']> :
+  $Type extends Schema.Named.Object                               ? Object<$SelectionSet,$Type,$Index> :
+                                                                    $Type
 
 // dprint-ignore
 type FieldDirectiveInclude<$SelectionSet> =
