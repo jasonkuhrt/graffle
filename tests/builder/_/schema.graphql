@@ -1,0 +1,94 @@
+type Query {
+	interface: Interface
+	id: ID
+	idNonNull: ID!
+	string: String
+	stringWithRequiredArg(string:String!): String
+	stringWithArgs(string:String, int:Int, float:Float, boolean:Boolean, id:ID): String
+	stringWithArgEnum(ABCEnum:ABCEnum): String
+	stringWithListArg(ints:[Int]): String
+	stringWithListArgRequired(ints:[Int]!): String
+	object: Object
+	listListIntNonNull: [[Int!]!]!
+	listListInt: [[Int]]
+	listInt: [Int]
+	listIntNonNull: [Int!]!
+	objectNested: ObjectNested
+	objectNonNull: Object!
+	objectWithArgs(string:String, int:Int, float:Float, boolean:Boolean, id:ID): Object
+	fooBarUnion: FooBarUnion
+	"""
+	Query enum field documentation.
+	"""
+	abcEnum: ABCEnum
+	lowerCaseUnion: lowerCaseUnion
+}
+
+"""
+Union documentation.
+"""
+union FooBarUnion = Foo | Bar
+
+"""
+Object documentation.
+"""
+type Foo {
+	"""
+	Field documentation.
+	"""
+	id: ID @deprecated(reason: "Field a is deprecated.")
+}
+
+type Bar {
+	int: Int
+}
+
+type ObjectNested {
+	id: ID
+	object: Object
+}
+
+type lowerCaseObject {
+	id: ID
+}
+type lowerCaseObject2 {
+	int: Int
+}
+union lowerCaseUnion = lowerCaseObject | lowerCaseObject2
+
+type Object {
+	string: String
+	int: Int
+	float: Float
+	boolean: Boolean
+	id: ID
+}
+
+interface Interface {
+	id: ID
+}
+
+type Object1ImplementingInterface implements Interface {
+	id: ID
+	int: Int
+}
+
+type Object2ImplementingInterface implements Interface {
+	id: ID
+	boolean: Boolean
+}
+
+"""
+Enum documentation.
+"""
+enum ABCEnum {
+	A @deprecated(reason: "Enum value A is deprecated.")
+	"""
+	Enum B member documentation.
+	"""
+	B
+	"""
+	Enum C member documentation.
+	"""
+	C @deprecated(reason: "Enum value C is deprecated.")
+}
