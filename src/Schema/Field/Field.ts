@@ -42,7 +42,7 @@ export const field = <$Type extends Type.Any, $Args extends null | Args = null>(
   }
 }
 
-export type Field<$Type extends Type.Any = Type.Any, $Args extends Args | null = Args | null> = {
+export type Field<$Type extends any = any, $Args extends Args | null = Args | null> = {
   typeUnwrapped: Type.Unwrap<$Type>
   type: $Type
   args: $Args
