@@ -8,6 +8,12 @@
         "types": "./build/entrypoints/main.d.ts",
         "default": "./build/entrypoints/main.js"
       }
+    },
+    "./alpha": {
+      "import": {
+        "types": "./build/entrypoints/alpha.d.ts",
+        "default": "./build/entrypoints/alpha.js"
+      }
     }
   },
   "packageManager": "pnpm@8.15.4",

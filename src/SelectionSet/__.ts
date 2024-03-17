@@ -1,1 +1,1 @@
-export * as SelectionSet from './SelectionSet.js'
+export * as SelectionSet from './_.js'
