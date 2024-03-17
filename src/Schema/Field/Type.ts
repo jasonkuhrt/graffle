@@ -23,8 +23,9 @@ export const nullable = <$Type extends __typename<any> | List<any>>(type: $Type)
 })
 export const list = <$Type extends Any>(type: $Type): List<$Type> => ({ kind: `list`, type })
 
+// todo extends any because of infinite depth issue in generated schema types
 // dprint-ignore
-export type Unwrap<$Type extends Any> =
+export type Unwrap<$Type extends any> =
       $Type extends List<infer $innerType>      ? Unwrap<$innerType> :
       $Type extends Nullable<infer $innerType>  ? Unwrap<$innerType> :
       $Type extends __typename                  ? $Type['type'] :

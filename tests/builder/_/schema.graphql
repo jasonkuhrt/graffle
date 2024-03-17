@@ -21,6 +21,7 @@ type Query {
 	Query enum field documentation.
 	"""
 	abcEnum: ABCEnum
+	lowerCaseUnion: lowerCaseUnion
 }
 
 """
@@ -46,6 +47,14 @@ type ObjectNested {
 	id: ID
 	object: Object
 }
+
+type lowerCaseObject {
+	id: ID
+}
+type lowerCaseObject2 {
+	int: Int
+}
+union lowerCaseUnion = lowerCaseObject | lowerCaseObject2
 
 type Object {
 	string: String

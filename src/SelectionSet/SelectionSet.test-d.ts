@@ -54,6 +54,9 @@ test(`Query`, () => {
   // @ts-expect-error no a
   assertType<Q>({ fooBarUnion: { onBar: { int2: true } } })
 
+  // Union fragments Case
+  assertType<Q>({ lowerCaseUnion: { onLowerCaseObject: { id: true }, onLowerCaseObject2: { int: true } } })
+
   // Interface
   assertType<Q>({ interface: { id: true } })
   assertType<Q>({ interface: { id: { $defer: true } } })

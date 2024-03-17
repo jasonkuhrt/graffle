@@ -84,10 +84,8 @@ $Field['args'] extends Schema.Field.Args  ? $Field['args']['allOptional'] extend
                                             {}
 
 // dprint-ignore
-type Interface<
-  $Node extends Schema.Named.Interface,
-  $Index extends Schema.Index,
-> = 
+type Interface<$Node extends Schema.Named.Interface, $Index extends Schema.Index> = 
+  & InterfaceDistributed<$Node['implementors'][number], $Index>
   & Fields<
       & $Node['fields']
       & {
@@ -95,24 +93,29 @@ type Interface<
         },
       $Index
     >
-  & {
-      [Key in $Node['implementors'][number]['fields']['__typename']['typeUnwrapped'] as `on${Capitalize<Key>}`]?:
-        Object<Extract<$Node['implementors'][number], { fields: { __typename: { typeUnwrapped: Key } } }>, $Index> & FieldDirectives
-    }
 
-// TODO why does $object not get passed to this in a distributed way?
 // dprint-ignore
-type Union<
-  $Union extends Schema.Named.Union,
-  $Index extends Schema.Index,
-> =
-  & {
-      [Key in $Union['members'][number]['fields']['__typename']['typeUnwrapped'] as `on${Capitalize<Key>}`]?:
-        Object<Extract<$Union['members'][number], { fields: { __typename: { typeUnwrapped: Key } } }>, $Index> & FieldDirectives
+type InterfaceDistributed<$Node extends Schema.Named.Object, $Index extends Schema.Index> = 
+  $Node extends any
+    ? {
+      [$typename in $Node['fields']['__typename']['type']['type'] as `on${Capitalize<$typename>}`]?:
+        Object<$Node, $Index> & FieldDirectives
     }
-  & {
-      __typename?: NoArgsIndicator
+    : never
+
+// dprint-ignore
+type Union<$Node extends Schema.Named.Union, $Index extends Schema.Index> =
+  & UnionDistributed<$Node['members'][number], $Index>
+  & { __typename?: NoArgsIndicator }
+
+// dprint-ignore
+type UnionDistributed<$Object extends Schema.Named.Object,$Index extends Schema.Index> = 
+  $Object extends any
+  ? {
+     [$typename in $Object['fields']['__typename']['type']['type'] as `on${Capitalize<$typename>}`]?:
+        Object<$Object, $Index> & FieldDirectives
     }
+  : never
 
 /**
  * Helpers
@@ -129,7 +132,7 @@ export type UnionExtractFragmentNames<T> = Values<
     [Key in keyof T]: UnionFragmentExtractName<Key>
   }
 >
-export type UnionOmitFragments<T> = {
+export type OmitOnTypeFragments<T> = {
   [$K in keyof T as $K extends `on${StringNonEmpty}` ? never : $K]: T[$K]
 }
 

@@ -50,6 +50,10 @@ test(`general`, () => {
   expectTypeOf<RS<{ fooBarUnion: { onFoo: { id: true } } }>>().toEqualTypeOf<{ fooBarUnion: null | {} | { id: null|string } }>()
   expectTypeOf<RS<{ fooBarUnion: { __typename: true; onFoo: { id: true } } }>>().toEqualTypeOf<{ fooBarUnion: null | { __typename: "Bar" } | { __typename: "Foo"; id: null|string } }>()
 
+  // Union fragments Case
+  expectTypeOf<RS<{ lowerCaseUnion: { __typename:true, onLowerCaseObject: { id: true }, onLowerCaseObject2: { int: true } } }>>().toEqualTypeOf<{ lowerCaseUnion: null | { __typename: 'lowerCaseObject'; id: null|string } | { __typename: 'lowerCaseObject2'; int: null|number } }>()
+
+
   // Interface
   expectTypeOf<RS<{ interface: { onObject1ImplementingInterface: { id: true }}}>>().toEqualTypeOf<{ interface: null | { id: null | string} | {} }>()
   expectTypeOf<RS<{ interface: { onObject1ImplementingInterface: { int: true }}}>>().toEqualTypeOf<{ interface: null | { int: null | number} | {} }>()

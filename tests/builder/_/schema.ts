@@ -11,12 +11,16 @@ export namespace $ {
       Foo: Object.Foo
       Bar: Object.Bar
       ObjectNested: Object.ObjectNested
+      lowerCaseObject: Object.lowerCaseObject
+      lowerCaseObject2: Object.lowerCaseObject2
       Object: Object.Object
       Object1ImplementingInterface: Object.Object1ImplementingInterface
       Object2ImplementingInterface: Object.Object2ImplementingInterface
     }
     unions: {
-      Union: Union.FooBarUnion
+      Union:
+        | Union.FooBarUnion
+        | Union.lowerCaseUnion
     }
     scalars: Scalars
   }
@@ -95,6 +99,7 @@ export namespace Root {
      * Query enum field documentation.
      */
     abcEnum: _.Field<_.Nullable<Enum.ABCEnum>>
+    lowerCaseUnion: _.Field<_.Nullable<Union.lowerCaseUnion>>
   }>
 }
 
@@ -158,6 +163,14 @@ export namespace Object {
     object: _.Field<_.Nullable<Object.Object>>
   }>
 
+  export type lowerCaseObject = _.Object<'lowerCaseObject', {
+    id: _.Field<_.Nullable<_.Scalar.ID>>
+  }>
+
+  export type lowerCaseObject2 = _.Object<'lowerCaseObject2', {
+    int: _.Field<_.Nullable<_.Scalar.Int>>
+  }>
+
   export type Object = _.Object<'Object', {
     string: _.Field<_.Nullable<_.Scalar.String>>
     int: _.Field<_.Nullable<_.Scalar.Int>>
@@ -186,4 +199,6 @@ export namespace Union {
    * Union documentation.
    */
   export type FooBarUnion = _.Union<'FooBarUnion', [Object.Foo, Object.Bar]>
+
+  export type lowerCaseUnion = _.Union<'lowerCaseUnion', [Object.lowerCaseObject, Object.lowerCaseObject2]>
 }
