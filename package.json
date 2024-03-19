@@ -92,7 +92,7 @@
     "get-port": "^7.0.0",
     "graphql": "^16.8.1",
     "graphql-tag": "^2.12.6",
-    "happy-dom": "^13.8.6",
+    "happy-dom": "^14.0.0",
     "json-bigint": "^1.0.0",
     "tsx": "^4.7.1",
     "type-fest": "^4.12.0",
