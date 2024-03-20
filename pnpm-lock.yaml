@@ -39,7 +39,7 @@ devDependencies:
     version: 7.3.1(eslint@8.57.0)(typescript@5.4.2)
   apollo-server-express:
     specifier: ^3.13.0
-    version: 3.13.0(express@4.18.3)(graphql@16.8.1)
+    version: 3.13.0(express@4.19.0)(graphql@16.8.1)
   body-parser:
     specifier: ^1.20.2
     version: 1.20.2
@@ -72,7 +72,7 @@ devDependencies:
     version: 0.2.17
   express:
     specifier: ^4.18.3
-    version: 4.18.3
+    version: 4.19.0
   get-port:
     specifier: ^7.0.0
     version: 7.0.0
@@ -1715,7 +1715,7 @@ packages:
       graphql: 16.8.1
     dev: true
 
-  /apollo-server-express@3.13.0(express@4.18.3)(graphql@16.8.1):
+  /apollo-server-express@3.13.0(express@4.19.0)(graphql@16.8.1):
     resolution: {integrity: sha512-iSxICNbDUyebOuM8EKb3xOrpIwOQgKxGbR2diSr4HP3IW8T3njKFOoMce50vr+moOCe1ev8BnLcw9SNbuUtf7g==}
     engines: {node: '>=12.0'}
     peerDependencies:
@@ -1732,7 +1732,7 @@ packages:
       apollo-server-types: 3.8.0(graphql@16.8.1)
       body-parser: 1.20.2
       cors: 2.8.5
-      express: 4.18.3
+      express: 4.19.0
       graphql: 16.8.1
       parseurl: 1.3.3
     transitivePeerDependencies:
@@ -2012,8 +2012,8 @@ packages:
     resolution: {integrity: sha512-QADzlaHc8icV8I7vbaJXJwod9HWYp8uCqf1xa4OfNu1T7JVxQIrUgOWtHdNDtPiywmFbiS12VjotIXLrKM3orQ==}
     dev: true
 
-  /cookie@0.5.0:
-    resolution: {integrity: sha512-YZ3GUyn/o8gfKJlnlX7g7xq4gyO6OSuhGPKaaGssGB2qgDUS0gPgtTvoyZLTt9Ab6dC4hfc9dV5arkvc/OCmrw==}
+  /cookie@0.6.0:
+    resolution: {integrity: sha512-U71cyTamuh1CRNCfpGY6to28lxvNwPG4Guz/EVjgf3Jmzv0vlDp1atT9eS5dDjMYHucpHbWns6Lwf3BKz6svdw==}
     engines: {node: '>= 0.6'}
     dev: true
 
@@ -2512,8 +2512,8 @@ packages:
       strip-final-newline: 3.0.0
     dev: true
 
-  /express@4.18.3:
-    resolution: {integrity: sha512-6VyCijWQ+9O7WuVMTRBTl+cjNNIzD5cY5mQ1WM8r/LEkI2u8EYpOotESNwzNlyCn3g+dmjKYI6BmNneSr/FSRw==}
+  /express@4.19.0:
+    resolution: {integrity: sha512-/ERliX0l7UuHEgAy7HU2FRsiz3ScIKNl/iwnoYzHTJC0Sqj3ctWDD3MQ9CbUEfjshvxXImWaeukD0Xo7a2lWLA==}
     engines: {node: '>= 0.10.0'}
     dependencies:
       accepts: 1.3.8
@@ -2521,7 +2521,7 @@ packages:
       body-parser: 1.20.2
       content-disposition: 0.5.4
       content-type: 1.0.5
-      cookie: 0.5.0
+      cookie: 0.6.0
       cookie-signature: 1.0.6
       debug: 2.6.9
       depd: 2.0.0
