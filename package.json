@@ -19,10 +19,10 @@
         "default": "./build/entrypoints/alpha/client.js"
       }
     },
-    "./alpha/types": {
+    "./alpha/schema": {
       "import": {
-        "types": "./build/entrypoints/alpha/types.d.ts",
-        "default": "./build/entrypoints/alpha/types.js"
+        "types": "./build/entrypoints/alpha/schema.d.ts",
+        "default": "./build/entrypoints/alpha/schema.js"
       }
     }
   },
