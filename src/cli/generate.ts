@@ -9,7 +9,9 @@ const args = Command.create().description(`Generate a type safe GraphQL client.`
   .parameter(`schemaPath`, z.string().min(1).describe(`File path to where your GraphQL schema is.`))
   .parameter(
     `output`,
-    z.string().min(1).optional().describe(`File path for where to output the generated TypeScript types.`),
+    z.string().min(1).optional().describe(
+      `File path for where to output the generated TypeScript types. If not given, outputs to stdout.`,
+    ),
   )
   .parse()
 
@@ -18,4 +20,6 @@ const code = generateCode({ schemaSource })
 
 if (args.output) {
   await fs.writeFile(args.output, code, { encoding: `utf8` })
+} else {
+  console.log(code)
 }
