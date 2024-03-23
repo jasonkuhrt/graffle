@@ -2,7 +2,7 @@
 
 import { nativeScalarConstructors } from './nativeConstructors.js'
 
-export const ScalarKind = `Scalar` as const
+export const ScalarKind = `Scalar`
 
 export type ScalarKind = typeof ScalarKind
 
