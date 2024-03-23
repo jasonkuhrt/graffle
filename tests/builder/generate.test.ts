@@ -4,6 +4,7 @@ import { generateFile } from '../../src/generator/generator.js'
 
 test(`generates types from GraphQL SDL file`, async () => {
   await generateFile({
+    schemaModulePath: `../../../src/Schema/__.js`,
     schemaPath: `./tests/builder/_/schema.graphql`,
     typeScriptPath: `./tests/builder/_/schema.ts`,
   })
