@@ -17,9 +17,7 @@ const endpoint = `https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr`
     signal: abortController.signal,
   })
 
-  // todo
-  // eslint-disable-next-line
-  client.request(gql`
+  void client.request(gql`
     {
       Movie(title: "Inception") {
         releaseDate
@@ -51,9 +49,10 @@ const endpoint = `https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr`
       }
     }
   `
-  const _requesting = client.request({
+  void client.request({
     document,
     signal: abortController.signal,
   })
+
   abortController.abort()
 }

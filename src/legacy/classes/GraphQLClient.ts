@@ -88,13 +88,9 @@ export class GraphQLClient {
   /**
    * Send a GraphQL document to the server.
    */
-  async request<T, V extends Variables = Variables>(
-    document: RequestDocument | TypedDocumentNode<T, V>,
-    ...variablesAndRequestHeaders: VariablesAndRequestHeadersArgs<V>
-  ): Promise<T>
-  async request<T, V extends Variables = Variables>(
-    options: RequestOptions<V, T>,
-  ): Promise<T>
+  // dprint-ignore
+  async request<T, V extends Variables = Variables>(document: RequestDocument | TypedDocumentNode<T, V>, ...variablesAndRequestHeaders: VariablesAndRequestHeadersArgs<V>): Promise<T>
+  async request<T, V extends Variables = Variables>(options: RequestOptions<V, T>): Promise<T>
   async request<T, V extends Variables = Variables>(
     documentOrOptions:
       | RequestDocument
