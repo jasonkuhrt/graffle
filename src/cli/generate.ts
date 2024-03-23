@@ -13,6 +13,7 @@ const args = Command.create().description(`Generate a type safe GraphQL client.`
       `File path for where to output the generated TypeScript types. If not given, outputs to stdout.`,
     ),
   )
+  .settings({ parameters: { environment: false } })
   .parse()
 
 const schemaSource = await fs.readFile(args.schema, `utf8`)
