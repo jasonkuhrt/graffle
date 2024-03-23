@@ -319,6 +319,7 @@ const scalarTypeMap: Record<string, 'string' | 'number' | 'boolean'> = {
 // high level
 
 interface Input {
+  schemaModulePath?: string
   schemaSource: string
   options?: {
     TSDoc?: {
@@ -362,7 +363,9 @@ export const generateCode = (input: Input) => {
 
   let code = ``
 
-  code += `import type * as _ from '../../../src/Schema/__.js'\n\n`
+  const schemaModulePath = input.schemaModulePath ?? `graphql-client/alpha/schema`
+
+  code += `import type * as _ from ${Code.quote(schemaModulePath)}\n\n`
 
   code += Code.export$(
     Code.namespace(
@@ -443,9 +446,10 @@ export const generateCode = (input: Input) => {
 export const generateFile = async (params: {
   schemaPath: string
   typeScriptPath: string
+  schemaModulePath?: string
 }) => {
   // todo use @dprint/formatter
   const schemaSource = await fs.readFile(params.schemaPath, `utf8`)
-  const code = generateCode({ schemaSource })
+  const code = generateCode({ schemaSource, ...params })
   await fs.writeFile(params.typeScriptPath, code, { encoding: `utf8` })
 }

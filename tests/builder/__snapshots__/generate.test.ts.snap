@@ -1,7 +1,7 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`generates types from GraphQL SDL file 1`] = `
-"import type * as _ from '../../../src/Schema/__.js'
+"import type * as _ from "../../../src/Schema/__.js"
 
 export namespace $ {
 export interface Index {

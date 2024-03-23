@@ -13,10 +13,16 @@
         "default": "./build/entrypoints/main.js"
       }
     },
-    "./alpha": {
+    "./alpha/client": {
       "import": {
-        "types": "./build/entrypoints/alpha.d.ts",
-        "default": "./build/entrypoints/alpha.js"
+        "types": "./build/entrypoints/alpha/client.d.ts",
+        "default": "./build/entrypoints/alpha/client.js"
+      }
+    },
+    "./alpha/types": {
+      "import": {
+        "types": "./build/entrypoints/alpha/types.d.ts",
+        "default": "./build/entrypoints/alpha/types.js"
       }
     }
   },
