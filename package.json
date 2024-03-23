@@ -2,6 +2,10 @@
   "name": "graphql-request",
   "version": "0.0.0-dripip",
   "type": "module",
+  "bin": {
+    "graphql-request": "./build/cli/generate.js",
+    "gr": "./build/cli/generate.js"
+  },
   "exports": {
     ".": {
       "import": {
@@ -52,7 +56,7 @@
     "check:lint": "eslint . --ext .ts,.tsx --max-warnings 0",
     "prepublishOnly": "pnpm build",
     "build:docs": "doctoc README.md --notitle && dprint fmt README.md",
-    "build": "pnpm clean && pnpm tsc --project tsconfig.build.json",
+    "build": "pnpm clean && pnpm tsc --project tsconfig.build.json && chmod +x ./build/cli/generate.js",
     "clean": "tsc --build --clean && rm -rf build",
     "test": "vitest",
     "test:types": "vitest --typecheck",
@@ -64,7 +68,9 @@
   "dependencies": {
     "@dprint/formatter": "^0.2.1",
     "@graphql-typed-document-node/core": "^3.2.0",
-    "dprint": "^0.45.0"
+    "@molt/command": "^0.9.0",
+    "dprint": "^0.45.0",
+    "zod": "^3.22.4"
   },
   "peerDependencies": {
     "graphql": "14 - 16"
