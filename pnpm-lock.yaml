@@ -99,7 +99,7 @@ devDependencies:
     version: 4.7.1
   type-fest:
     specifier: ^4.13.1
-    version: 4.13.1
+    version: 4.14.0
   typescript:
     specifier: ^5.4.3
     version: 5.4.3
@@ -911,7 +911,7 @@ packages:
       string-length: 6.0.0
       strip-ansi: 7.1.0
       ts-toolbelt: 9.6.0
-      type-fest: 4.13.1
+      type-fest: 4.14.0
       zod: 3.22.4
     dev: false
 
@@ -4522,8 +4522,8 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /type-fest@4.13.1:
-    resolution: {integrity: sha512-ASMgM+Vf2cLwDMt1KXSkMUDSYCxtckDJs8zsaVF/mYteIsiARKCVtyXtcK38mIKbLTctZP8v6GMqdNaeI3fo7g==}
+  /type-fest@4.14.0:
+    resolution: {integrity: sha512-on5/Cw89wwqGZQu+yWO0gGMGu8VNxsaW9SB2HE8yJjllEk7IDTwnSN1dUVldYILhYPN5HzD7WAaw2cc/jBfn0Q==}
     engines: {node: '>=16'}
 
   /type-is@1.6.18:
