@@ -173,7 +173,7 @@ test(`Query`, () => {
   // @ts-expect-error invalid enum value
   assertType<Q>({ stringWithArgEnum: { $: { ABCEnum: 1 } } })
 
-  // input list
+  // list arg
   assertType<Q>({ stringWithListArg: { $: { ints: [1, 2, 3] } } })
   assertType<Q>({ stringWithListArg: { $: { ints: [] } } })
   assertType<Q>({ stringWithListArg: { $: { ints: [null] } } })
@@ -183,6 +183,13 @@ test(`Query`, () => {
   assertType<Q>({ stringWithListArgRequired: { $: {} } })
   // @ts-expect-error missing non-null "ints" arg
   assertType<Q>({ stringWithListArgRequired: { $: { ints: null } } })
+
+  // input object arg
+  assertType<Q>({ stringWithArgInputObjectRequired: { $: { input: { id: ``, idRequired: `` } } } })
+  assertType<Q>({ stringWithArgInputObjectRequired: { $: { input: { id: null, idRequired: `` } } } })
+  assertType<Q>({ stringWithArgInputObjectRequired: { $: { input: { idRequired: `` } } } })
+  // @ts-expect-error missing "idRequired" field
+  assertType<Q>({ stringWithArgInputObjectRequired: { $: { input: {} } } })
 
   // all-optional + scalar + directive
   assertType<Q>({ stringWithArgs: { $: { boolean: true }, $skip: true } })

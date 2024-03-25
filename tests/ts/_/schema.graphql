@@ -8,6 +8,8 @@ type Query {
 	stringWithArgEnum(ABCEnum:ABCEnum): String
 	stringWithListArg(ints:[Int]): String
 	stringWithListArgRequired(ints:[Int]!): String
+	stringWithArgInputObject(input:InputObject): String
+	stringWithArgInputObjectRequired(input:InputObject!): String
 	object: Object
 	listListIntNonNull: [[Int!]!]!
 	listListInt: [[Int]]
@@ -22,6 +24,11 @@ type Query {
 	"""
 	abcEnum: ABCEnum
 	lowerCaseUnion: lowerCaseUnion
+}
+
+input InputObject {
+	id: ID
+	idRequired: ID!
 }
 
 """

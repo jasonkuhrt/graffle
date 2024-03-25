@@ -225,26 +225,28 @@ $Field['args'] extends Schema.Field.Args  ? $Field['args']['allOptional'] extend
                                             NoArgsIndicator
 
 // dprint-ignore
-export type Args<$Args extends Schema.Field.Args> =
-& {
-  [
-    Key in keyof $Args['fields'] as $Args['fields'][Key] extends Schema.Field.Nullable<any> ? never : Key
-  ]: InferTypeInput<$Args['fields'][Key]>
-}
-& {
-  [
-    Key in keyof $Args['fields'] as $Args['fields'][Key] extends Schema.Field.Nullable<any> ? Key : never
-  ]?: null | InferTypeInput<$Args['fields'][Key]>
-}
+export type Args<$Args extends Schema.Field.Args> = ArgFields<$Args['fields']>
 
-// todo input objects
+export type ArgFields<$ArgFields extends Schema.Named.InputObject['fields']> =
+  & {
+    [
+      Key in keyof $ArgFields as $ArgFields[Key] extends Schema.Field.Input.Nullable<any> ? never : Key
+    ]: InferTypeInput<$ArgFields[Key]>
+  }
+  & {
+    [
+      Key in keyof $ArgFields as $ArgFields[Key] extends Schema.Field.Input.Nullable<any> ? Key : never
+    ]?: null | InferTypeInput<$ArgFields[Key]>
+  }
+
 // dprint-ignore
 type InferTypeInput<$InputType extends Schema.Field.Input.Any> =
-  $InputType extends Schema.Field.Input.Nullable                    ? InferTypeInput<$InputType['type']> | null :
-  $InputType extends Schema.Field.Input.List                        ? InferTypeInput<$InputType['type']>[] :
-  $InputType extends Schema.Named.Enum<infer _, infer $Members>     ? $Members[number] :
-  $InputType extends Schema.Named.Scalar.Any                        ? ReturnType<$InputType['constructor']> :
-                                                                      TSError<'InferTypeInput', 'Unknown $InputType', { $InputType: $InputType }> // never
+  $InputType extends Schema.Field.Input.Nullable<infer $InnerType>    ? InferTypeInput<$InnerType> | null :
+  $InputType extends Schema.Field.Input.List<infer $InnerType>        ? InferTypeInput<$InnerType>[] :
+  $InputType extends Schema.Named.InputObject<infer _, infer $Fields> ? ArgFields<$Fields> :
+  $InputType extends Schema.Named.Enum<infer _, infer $Members>       ? $Members[number] :
+  $InputType extends Schema.Named.Scalar.Any                          ? ReturnType<$InputType['constructor']> :
+                                                                        TSError<'InferTypeInput', 'Unknown $InputType', { $InputType: $InputType }> // never
 
 /**
  * @see https://spec.graphql.org/draft/#sec-Type-System.Directives.Built-in-Directives
@@ -267,13 +269,3 @@ export interface FieldDirectives {
    */
   $stream?: boolean | { if?: boolean; label?: string; initialCount?: number }
 }
-
-// type UnwrapListAndNullableFieldType<$Field extends Schema.Field> = UnwrapListAndNullableFieldType_<$Field['type']>
-
-// // dprint-ignore
-// type UnwrapListAndNullableFieldType_<FT extends Schema.FieldType> =
-//   FT extends Schema.FieldTypeList       ? UnwrapListAndNullableFieldType_<FT['type']> :
-//   FT extends Schema.FieldTypeNullable   ? UnwrapListAndNullableFieldType_<FT['type']> :
-//   FT extends Schema.FieldTypeLiteral    ? FT :
-//   FT extends Schema.FieldTypeNamed  ? FT
-// : TSError<'UnwrapFieldType_', 'FT case not handled', { FT: FT }>
