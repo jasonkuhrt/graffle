@@ -46,47 +46,47 @@ export namespace Root {
     stringWithRequiredArg: _.Field<
       _.Output.Nullable<_.Scalar.String>,
       _.Args<{
-        string: _.Input.Nullable<_.Scalar.String>
+        string: _.Scalar.String
       }>
     >
     stringWithArgs: _.Field<
       _.Output.Nullable<_.Scalar.String>,
       _.Args<{
-        string: _.Input.Nullable<_.Input.Nullable<_.Scalar.String>>
-        int: _.Input.Nullable<_.Input.Nullable<_.Scalar.Int>>
-        float: _.Input.Nullable<_.Input.Nullable<_.Scalar.Float>>
-        boolean: _.Input.Nullable<_.Input.Nullable<_.Scalar.Boolean>>
-        id: _.Input.Nullable<_.Input.Nullable<_.Scalar.ID>>
+        string: _.Input.Nullable<_.Scalar.String>
+        int: _.Input.Nullable<_.Scalar.Int>
+        float: _.Input.Nullable<_.Scalar.Float>
+        boolean: _.Input.Nullable<_.Scalar.Boolean>
+        id: _.Input.Nullable<_.Scalar.ID>
       }>
     >
     stringWithArgEnum: _.Field<
       _.Output.Nullable<_.Scalar.String>,
       _.Args<{
-        ABCEnum: _.Input.Nullable<_.Input.Nullable<Enum.ABCEnum>>
+        ABCEnum: _.Input.Nullable<Enum.ABCEnum>
       }>
     >
     stringWithListArg: _.Field<
       _.Output.Nullable<_.Scalar.String>,
       _.Args<{
-        ints: _.Input.Nullable<_.Input.Nullable<_.Input.List<_.Input.Nullable<_.Scalar.Int>>>>
+        ints: _.Input.Nullable<_.Input.List<_.Input.Nullable<_.Scalar.Int>>>
       }>
     >
     stringWithListArgRequired: _.Field<
       _.Output.Nullable<_.Scalar.String>,
       _.Args<{
-        ints: _.Input.Nullable<_.Input.List<_.Input.Nullable<_.Scalar.Int>>>
+        ints: _.Input.List<_.Input.Nullable<_.Scalar.Int>>
       }>
     >
     stringWithArgInputObject: _.Field<
       _.Output.Nullable<_.Scalar.String>,
       _.Args<{
-        input: _.Input.Nullable<_.Input.Nullable<InputObject.InputObject>>
+        input: _.Input.Nullable<InputObject.InputObject>
       }>
     >
     stringWithArgInputObjectRequired: _.Field<
       _.Output.Nullable<_.Scalar.String>,
       _.Args<{
-        input: _.Input.Nullable<InputObject.InputObject>
+        input: InputObject.InputObject
       }>
     >
     object: _.Field<_.Output.Nullable<Object.Object>>
@@ -101,11 +101,11 @@ export namespace Root {
     objectWithArgs: _.Field<
       _.Output.Nullable<Object.Object>,
       _.Args<{
-        string: _.Input.Nullable<_.Input.Nullable<_.Scalar.String>>
-        int: _.Input.Nullable<_.Input.Nullable<_.Scalar.Int>>
-        float: _.Input.Nullable<_.Input.Nullable<_.Scalar.Float>>
-        boolean: _.Input.Nullable<_.Input.Nullable<_.Scalar.Boolean>>
-        id: _.Input.Nullable<_.Input.Nullable<_.Scalar.ID>>
+        string: _.Input.Nullable<_.Scalar.String>
+        int: _.Input.Nullable<_.Scalar.Int>
+        float: _.Input.Nullable<_.Scalar.Float>
+        boolean: _.Input.Nullable<_.Scalar.Boolean>
+        id: _.Input.Nullable<_.Scalar.ID>
       }>
     >
     fooBarUnion: _.Field<_.Output.Nullable<Union.FooBarUnion>>

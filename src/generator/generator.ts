@@ -18,6 +18,7 @@ import type {
   AnyNamedClassName,
   ClassToName,
   Describable,
+  NamedNameToClass,
   NameToClassNamedType,
   TypeMapByKind,
 } from '../lib/graphql.js'
@@ -45,12 +46,12 @@ type AnyGraphQLFieldsType =
   | GraphQLInputObjectType
 
 const defineReferenceRenderers = <
-  $Renderers extends { [ClassName in keyof NameToClass]: any },
+  $Renderers extends { [ClassName in keyof NamedNameToClass]: any },
 >(
   renderers: {
     [ClassName in keyof $Renderers]: (
       config: Config,
-      node: ClassName extends keyof NameToClass ? InstanceType<NameToClass[ClassName]>
+      node: ClassName extends keyof NamedNameToClass ? InstanceType<NamedNameToClass[ClassName]>
         : never,
     ) => string
   },
@@ -86,8 +87,10 @@ const defineConcreteRenderers = <
 }
 
 const dispatchToReferenceRenderer = (config: Config, node: AnyClass): string =>
+  // @ts-expect-error fixme
   getReferenceRenderer(node)(config, node as any)
 
+// @ts-expect-error fixme
 const getReferenceRenderer = <N extends AnyClass>(node: N): (typeof referenceRenderers)[ClassToName<N>] => {
   // @ts-expect-error lookup
   const renderer = referenceRenderers[node.constructor.name] // eslint-disable-line
@@ -98,13 +101,11 @@ const getReferenceRenderer = <N extends AnyClass>(node: N): (typeof referenceRen
 }
 
 const referenceRenderers = defineReferenceRenderers({
-  GraphQLNonNull: (config, node) => dispatchToReferenceRenderer(config, node.ofType),
   GraphQLEnumType: (_, node) => Code.propertyAccess(namespaceNames.GraphQLEnumType, node.name),
   GraphQLInputObjectType: (_, node) => Code.propertyAccess(namespaceNames.GraphQLInputObjectType, node.name),
   GraphQLInterfaceType: (_, node) => Code.propertyAccess(namespaceNames.GraphQLInterfaceType, node.name),
   GraphQLObjectType: (_, node) => Code.propertyAccess(namespaceNames.GraphQLObjectType, node.name),
   GraphQLUnionType: (_, node) => Code.propertyAccess(namespaceNames.GraphQLUnionType, node.name),
-  GraphQLList: (config, node) => `_.List<${(buildType(`output`, config, node.ofType))}>`,
   GraphQLScalarType: (_, node) => `_.Scalar.${node.name}`,
 })
 
@@ -291,23 +292,17 @@ const renderArgs = (config: Config, args: readonly GraphQLArgument[]) => {
     Code.object(
       Code.fields(
         args.map((arg) => {
-          const { node, nullable } = unwrapNonNull(arg.type)
+          const { nullable } = unwrapNonNull(arg.type)
           hasRequiredArgs = hasRequiredArgs || !nullable
           return Code.field(
             arg.name,
-            nullable
-              ? `_.Input.Nullable<${buildType(`input`, config, node)}>`
-              : buildType(`input`, config, node),
+            buildType(`input`, config, arg.type),
           )
         }),
       ),
     )
   }>`
   return argsRendered
-  return Code.objectFrom({
-    type: { type: argsRendered },
-    // allOptional: { type: !hasRequiredArgs },
-  })
 }
 
 const unwrapNonNull = (
