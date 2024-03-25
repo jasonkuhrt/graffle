@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
 import { expectTypeOf, test } from 'vitest'
-import type * as Schema from '../../tests/builder/_/schema.js'
+import type * as Schema from '../../tests/ts/_/schema.js'
 import type { SelectionSet } from '../SelectionSet/__.js'
 import type { ResultSet } from './__.js'
 

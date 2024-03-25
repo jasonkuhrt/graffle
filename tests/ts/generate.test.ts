@@ -5,10 +5,10 @@ import { generateFile } from '../../src/generator/generator.js'
 test(`generates types from GraphQL SDL file`, async () => {
   await generateFile({
     schemaModulePath: `../../../src/Schema/__.js`,
-    schemaPath: `./tests/builder/_/schema.graphql`,
-    typeScriptPath: `./tests/builder/_/schema.ts`,
+    schemaPath: `./tests/ts/_/schema.graphql`,
+    typeScriptPath: `./tests/ts/_/schema.ts`,
   })
   expect(
-    await readFile(`./tests/builder/_/schema.ts`, `utf8`),
+    await readFile(`./tests/ts/_/schema.ts`, `utf8`),
   ).toMatchSnapshot()
 })

@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest'
-import type { $ } from '../tests/builder/_/schema.js'
-import { setupMockServer } from '../tests/legacy/__helpers.js'
+import { setupMockServer } from '../tests/raw/__helpers.js'
+import type { $ } from '../tests/ts/_/schema.js'
 import { create } from './client.js'
 
 const ctx = setupMockServer()
