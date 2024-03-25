@@ -27,7 +27,7 @@ export type Object<$SelectionSet, $Node extends Schema.Named.Object, $Index exte
      */
     ?
       {
-      [$Key in keyof $Node['fields'] as $Node['fields'][$Key] extends Schema.Field.Field<Schema.Field.Type.__typename>  | {'typeUnwrapped':{kind:'Scalar'}} ? $Key : never]:
+      [$Key in keyof $Node['fields'] as $Node['fields'][$Key] extends Schema.Field.Field<Schema.Field.Type.Output.__typename>  | {'typeUnwrapped':{kind:'Scalar'}} ? $Key : never]:
         // eslint-disable-next-line
         // @ts-ignore infinite depth issue, can this be fixed?
          Field<$SelectionSet, Schema.Field.As<$Node['fields'][$Key]>, $Index>
@@ -74,18 +74,18 @@ type Field<$SelectionSet, $Field extends Schema.Field.Field, $Index extends Sche
 // dprint-ignore
 type FieldType<
   $SelectionSet,
-  $Type extends Schema.Field.Type.AnyOutput,
+  $Type extends Schema.Field.Type.Output.Any,
   $Index extends Schema.Index
 > =Simplify<
-  $Type extends Schema.Field.Type.__typename<infer $Value>        ? $Value :
-  $Type extends Schema.Field.Type.Nullable<infer $InnerType>      ? null | FieldType<$SelectionSet, $InnerType, $Index> :
-  $Type extends Schema.Field.Type.List<infer $InnerType>          ? Array<FieldType<$SelectionSet, $InnerType, $Index>> :
-  $Type extends Schema.Named.Enum<infer _, infer $Members>        ? $Members[number] :
-  $Type extends Schema.Named.Scalar.Any                           ? ReturnType<$Type['constructor']> :
-  $Type extends Schema.Named.Object                               ? Object<$SelectionSet,$Type,$Index> :
-  $Type extends Schema.Named.Interface                            ? Interface<$SelectionSet,$Type,$Index> :
-  $Type extends Schema.Named.Union                                ? Union<$SelectionSet,$Type,$Index> :
-                                                                    TSError<'FieldType', `Unknown type`, { $Type: $Type }>
+  $Type extends Schema.Field.Type.Output.__typename<infer $Value>   ? $Value :
+  $Type extends Schema.Field.Type.Output.Nullable<infer $InnerType> ? null | FieldType<$SelectionSet, $InnerType, $Index> :
+  $Type extends Schema.Field.Type.Output.List<infer $InnerType>     ? Array<FieldType<$SelectionSet, $InnerType, $Index>> :
+  $Type extends Schema.Named.Enum<infer _, infer $Members>          ? $Members[number] :
+  $Type extends Schema.Named.Scalar.Any                             ? ReturnType<$Type['constructor']> :
+  $Type extends Schema.Named.Object                                 ? Object<$SelectionSet,$Type,$Index> :
+  $Type extends Schema.Named.Interface                              ? Interface<$SelectionSet,$Type,$Index> :
+  $Type extends Schema.Named.Union                                  ? Union<$SelectionSet,$Type,$Index> :
+                                                                      TSError<'FieldType', `Unknown type`, { $Type: $Type }>
   >
 
 // dprint-ignore

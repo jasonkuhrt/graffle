@@ -230,17 +230,17 @@ export type Args<$Args extends Schema.Field.Args> = ArgFields<$Args['fields']>
 export type ArgFields<$ArgFields extends Schema.Named.InputObject['fields']> =
   & {
     [
-      Key in keyof $ArgFields as $ArgFields[Key] extends Schema.Field.Nullable<any> ? never : Key
+      Key in keyof $ArgFields as $ArgFields[Key] extends Schema.Field.Input.Nullable<any> ? never : Key
     ]: InferTypeInput<$ArgFields[Key]>
   }
   & {
     [
-      Key in keyof $ArgFields as $ArgFields[Key] extends Schema.Field.Nullable<any> ? Key : never
+      Key in keyof $ArgFields as $ArgFields[Key] extends Schema.Field.Input.Nullable<any> ? Key : never
     ]?: null | InferTypeInput<$ArgFields[Key]>
   }
 
 // dprint-ignore
-type InferTypeInput<$InputType extends Schema.Field.AnyInput> =
+type InferTypeInput<$InputType extends Schema.Field.Input.Any> =
   $InputType extends Schema.Field.Input.Nullable<infer $InnerType>    ? InferTypeInput<$InnerType> | null :
   $InputType extends Schema.Field.Input.List<infer $InnerType>        ? InferTypeInput<$InnerType>[] :
   $InputType extends Schema.Named.InputObject<infer _, infer $Fields> ? ArgFields<$Fields> :
@@ -269,13 +269,3 @@ export interface FieldDirectives {
    */
   $stream?: boolean | { if?: boolean; label?: string; initialCount?: number }
 }
-
-// type UnwrapListAndNullableFieldType<$Field extends Schema.Field> = UnwrapListAndNullableFieldType_<$Field['type']>
-
-// // dprint-ignore
-// type UnwrapListAndNullableFieldType_<FT extends Schema.FieldType> =
-//   FT extends Schema.FieldTypeList       ? UnwrapListAndNullableFieldType_<FT['type']> :
-//   FT extends Schema.FieldTypeNullable   ? UnwrapListAndNullableFieldType_<FT['type']> :
-//   FT extends Schema.FieldTypeLiteral    ? FT :
-//   FT extends Schema.FieldTypeNamed  ? FT
-// : TSError<'UnwrapFieldType_', 'FT case not handled', { FT: FT }>

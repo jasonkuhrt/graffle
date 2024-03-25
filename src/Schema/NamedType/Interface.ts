@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
-import type { __typename } from '../__.js'
 import type { Field } from '../Field/Field.js'
 import type { Object } from './Object.js'
 

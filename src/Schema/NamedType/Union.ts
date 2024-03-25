@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
-import type { __typename } from '../__.js'
 import type { Object } from './Object.js'
 
 export type Union<

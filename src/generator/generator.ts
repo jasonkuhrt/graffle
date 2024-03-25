@@ -104,7 +104,7 @@ const referenceRenderers = defineReferenceRenderers({
   GraphQLInterfaceType: (_, node) => Code.propertyAccess(namespaceNames.GraphQLInterfaceType, node.name),
   GraphQLObjectType: (_, node) => Code.propertyAccess(namespaceNames.GraphQLObjectType, node.name),
   GraphQLUnionType: (_, node) => Code.propertyAccess(namespaceNames.GraphQLUnionType, node.name),
-  GraphQLList: (config, node) => `_.List<${(buildType(config, node.ofType))}>`,
+  GraphQLList: (config, node) => `_.List<${(buildType(`output`, config, node.ofType))}>`,
   GraphQLScalarType: (_, node) => `_.Scalar.${node.name}`,
 })
 
@@ -248,37 +248,8 @@ const renderInputFields = (config: Config, node: AnyGraphQLFieldsType): string =
   ]))
 }
 
-const buildType = (config: Config, node: AnyClass) => {
-  const { node: nodeInner, nullable } = unwrapNonNull(node)
-
-  if (isNamedType(nodeInner)) {
-    const namedTypeReference = dispatchToReferenceRenderer(config, nodeInner)
-    // const namedTypeCode = `_.Named<${namedTypeReference}>`
-    const namedTypeCode = namedTypeReference
-    return nullable
-      ? `_.Nullable<${namedTypeCode}>`
-      : namedTypeCode
-  }
-
-  if (isListType(nodeInner)) {
-    const fieldType = `_.List<${buildType(config, nodeInner.ofType)}>` as any as string
-    return nullable
-      ? `_.Nullable<${fieldType}>`
-      : fieldType
-  }
-
-  throw new Error(`Unhandled type: ${String(node)}`)
-}
-
-// const getNamedType = (config: Config, node: AnyClass): GraphQLNamedType => {
-//   if (isNamedType(node)) return node
-//   if (isNonNullType(node)) return getNamedType(config, node.ofType)
-//   if (isListType(node)) return getNamedType(config, node.ofType)
-//   throw new Error(`Unhandled type: ${String(node)}`)
-// }
-
 const renderOutputField = (config: Config, field: AnyField): string => {
-  const type = buildType(config, field.type)
+  const type = buildType(`output`, config, field.type)
 
   const args = isGraphQLOutputField(field) && field.args.length > 0
     ? renderArgs(config, field.args)
@@ -288,7 +259,30 @@ const renderOutputField = (config: Config, field: AnyField): string => {
 }
 
 const renderInputField = (config: Config, field: AnyField): string => {
-  return buildType(config, field.type)
+  return buildType(`input`, config, field.type)
+}
+
+const buildType = (direction: 'input' | 'output', config: Config, node: AnyClass) => {
+  const ns = direction === `input` ? `Input` : `Output`
+  const { node: nodeInner, nullable } = unwrapNonNull(node)
+
+  if (isNamedType(nodeInner)) {
+    const namedTypeReference = dispatchToReferenceRenderer(config, nodeInner)
+    // const namedTypeCode = `_.Named<${namedTypeReference}>`
+    const namedTypeCode = namedTypeReference
+    return nullable
+      ? `_.${ns}.Nullable<${namedTypeCode}>`
+      : namedTypeCode
+  }
+
+  if (isListType(nodeInner)) {
+    const fieldType = `_.${ns}.List<${buildType(direction, config, nodeInner.ofType)}>` as any as string
+    return nullable
+      ? `_.${ns}.Nullable<${fieldType}>`
+      : fieldType
+  }
+
+  throw new Error(`Unhandled type: ${String(node)}`)
 }
 
 const renderArgs = (config: Config, args: readonly GraphQLArgument[]) => {
@@ -302,8 +296,8 @@ const renderArgs = (config: Config, args: readonly GraphQLArgument[]) => {
           return Code.field(
             arg.name,
             nullable
-              ? `_.Nullable<${dispatchToReferenceRenderer(config, node)}>`
-              : dispatchToReferenceRenderer(config, node),
+              ? `_.Input.Nullable<${buildType(`input`, config, node)}>`
+              : buildType(`input`, config, node),
           )
         }),
       ),

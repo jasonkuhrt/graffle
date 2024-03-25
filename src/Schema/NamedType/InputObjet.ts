@@ -1,7 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
-import { __typename } from '../Field/Type.js'
-
 type Fields = Record<string, any>
 
 export interface InputObject<

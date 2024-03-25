@@ -2,12 +2,12 @@
 
 import type { Field } from '../Field/Field.js'
 import { field } from '../Field/Field.js'
-import { __typename } from '../Field/Type.js'
+import { Output } from '../Field/Type.js'
 
 export type Fields = Record<string, Field<any>>
 
 export type ObjectFields = {
-  __typename: Field<__typename>
+  __typename: Field<Output.__typename>
 } & Fields
 
 export interface Object<
@@ -16,7 +16,7 @@ export interface Object<
 > {
   kind: 'Object'
   fields: {
-    __typename: Field<__typename<$Name>>
+    __typename: Field<Output.__typename<$Name>>
   } & $Fields
 }
 
@@ -26,7 +26,7 @@ export const Object = <$Name extends string, $Fields extends Record<keyof $Field
 ): Object<$Name, $Fields> => ({
   kind: `Object`,
   fields: {
-    __typename: field(__typename(name)),
+    __typename: field(Output.__typename(name)),
     ...fields,
   },
 })
