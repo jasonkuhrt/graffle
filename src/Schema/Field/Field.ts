@@ -18,8 +18,8 @@ export type Number<$Args extends Args | null = null> = Field<Scalar.Int, $Args>
 export type Boolean<$Args extends Args | null = null> = Field<Scalar.Boolean, $Args>
 
 export namespace Input {
-  export type Nullable = Type.Nullable<any>
-  export type List = Type.List<any>
+  export type Nullable<$InnerType extends Type.AnyInput = Type.AnyInput> = Type.Nullable<$InnerType>
+  export type List<$InnerType extends Type.AnyInput = Type.AnyInput> = Type.List<$InnerType>
   export type Any = Scalar.Any | List | Nullable
 }
 
@@ -29,7 +29,7 @@ export interface Args<$Fields extends any = any> {
   fields: $Fields
 }
 
-export const field = <$Type extends Type.Any, $Args extends null | Args = null>(
+export const field = <$Type extends Type.AnyOutput, $Args extends null | Args = null>(
   type: $Type,
   args: $Args = null as $Args,
 ): Field<$Type, $Args> => {

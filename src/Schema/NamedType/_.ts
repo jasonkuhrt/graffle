@@ -1,4 +1,5 @@
 export * from './Enum.js'
+export * from './InputObjet.js'
 export * from './Interface.js'
 export * from './NamedType.js'
 export * from './Object.js'

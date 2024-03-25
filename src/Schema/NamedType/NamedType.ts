@@ -2,12 +2,15 @@
 
 import type { Digit, Letter } from '../../lib/prelude.js'
 import type { Enum } from './Enum.js'
+import type { InputObject } from './InputObjet.js'
 import type { Interface } from './Interface.js'
 import type { Object } from './Object.js'
 import type { Scalar } from './Scalar/_.js'
 import type { Union } from './Union.js'
 
-export type Any = Interface | Enum | Object | Scalar.Any | Union
+export type AnyOutput = Interface | Enum | Object | Scalar.Any | Union
+export type AnyInput = Enum | Scalar.Any | InputObject
+export type Any = AnyOutput | AnyInput
 
 /**
  * @see http://spec.graphql.org/draft/#sec-Names

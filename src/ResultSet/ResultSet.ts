@@ -74,7 +74,7 @@ type Field<$SelectionSet, $Field extends Schema.Field.Field, $Index extends Sche
 // dprint-ignore
 type FieldType<
   $SelectionSet,
-  $Type extends Schema.Field.Type.Any,
+  $Type extends Schema.Field.Type.AnyOutput,
   $Index extends Schema.Index
 > =Simplify<
   $Type extends Schema.Field.Type.__typename<infer $Value>        ? $Value :

@@ -64,6 +64,12 @@ ints: _.Nullable<_.List<_.Nullable<_.Scalar.Int>>>
 stringWithListArgRequired: _.Field<_.Nullable<_.Scalar.String>, _.Args<{
 ints: _.List<_.Nullable<_.Scalar.Int>>
 }>>
+stringWithArgInputObject: _.Field<_.Nullable<_.Scalar.String>, _.Args<{
+input: _.Nullable<InputObject.InputObject>
+}>>
+stringWithArgInputObjectRequired: _.Field<_.Nullable<_.Scalar.String>, _.Args<{
+input: InputObject.InputObject
+}>>
 object: _.Field<_.Nullable<Object.Object>>
 listListIntNonNull: _.Field<_.List<_.List<_.Scalar.Int>>>
 listListInt: _.Field<_.Nullable<_.List<_.Nullable<_.List<_.Nullable<_.Scalar.Int>>>>>>
@@ -108,8 +114,10 @@ export type ABCEnum = _.Enum<"ABCEnum", ["A", "B", "C"] >
 // ------------------------------------------------------------ //
 
 export namespace InputObject {
-// -- no types --
-
+export type InputObject = _.InputObject<"InputObject", {
+id: _.Nullable<_.Scalar.ID>
+idRequired: _.Scalar.ID
+}>
 }
 
 // ------------------------------------------------------------ //

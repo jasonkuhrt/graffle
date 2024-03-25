@@ -134,7 +134,7 @@ const concreteRenderers = defineConcreteRenderers({
   GraphQLInputObjectType: (config, node) =>
     Code.TSDoc(
       getDocumentation(config, node),
-      Code.export$(Code.interface$(node.name, renderFields(config, node))),
+      Code.export$(Code.type(node.name, `_.InputObject<${Code.quote(node.name)}, ${renderInputFields(config, node)}>`)),
     ),
   GraphQLInterfaceType: (config, node) => {
     const implementors = config.typeMapByKind.GraphQLObjectType.filter(_ =>
@@ -144,7 +144,7 @@ const concreteRenderers = defineConcreteRenderers({
       getDocumentation(config, node),
       Code.export$(Code.type(
         node.name,
-        `_.Interface<${Code.quote(node.name)}, ${renderFields(config, node)}, ${
+        `_.Interface<${Code.quote(node.name)}, ${renderOutputFields(config, node)}, ${
           Code.tuple(implementors.map(_ => `Object.${_.name}`))
         }>`,
       )),
@@ -153,7 +153,7 @@ const concreteRenderers = defineConcreteRenderers({
   GraphQLObjectType: (config, node) =>
     Code.TSDoc(
       getDocumentation(config, node),
-      Code.export$(Code.type(node.name, `_.Object<${Code.quote(node.name)}, ${renderFields(config, node)}>`)),
+      Code.export$(Code.type(node.name, `_.Object<${Code.quote(node.name)}, ${renderOutputFields(config, node)}>`)),
     ),
   GraphQLScalarType: () => ``,
   GraphQLUnionType: (config, node) =>
@@ -226,12 +226,23 @@ const getDocumentation = (config: Config, node: Describable) => {
 
 const defaultDescription = (node: Describable) => `There is no documentation for this ${getNodeDisplayName(node)}.`
 
-const renderFields = (config: Config, node: AnyGraphQLFieldsType): string => {
+const renderOutputFields = (config: Config, node: AnyGraphQLFieldsType): string => {
   return Code.object(Code.fields([
     ...values(node.getFields()).map((field) =>
       Code.TSDoc(
         getDocumentation(config, field),
-        Code.field(field.name, renderField(config, field)),
+        Code.field(field.name, renderOutputField(config, field)),
+      )
+    ),
+  ]))
+}
+
+const renderInputFields = (config: Config, node: AnyGraphQLFieldsType): string => {
+  return Code.object(Code.fields([
+    ...values(node.getFields()).map((field) =>
+      Code.TSDoc(
+        getDocumentation(config, field),
+        Code.field(field.name, renderInputField(config, field)),
       )
     ),
   ]))
@@ -266,7 +277,7 @@ const buildType = (config: Config, node: AnyClass) => {
 //   throw new Error(`Unhandled type: ${String(node)}`)
 // }
 
-const renderField = (config: Config, field: AnyField): string => {
+const renderOutputField = (config: Config, field: AnyField): string => {
   const type = buildType(config, field.type)
 
   const args = isGraphQLOutputField(field) && field.args.length > 0
@@ -274,6 +285,10 @@ const renderField = (config: Config, field: AnyField): string => {
     : null
 
   return `_.Field<${type}${args ? `, ${args}` : ``}>`
+}
+
+const renderInputField = (config: Config, field: AnyField): string => {
+  return buildType(config, field.type)
 }
 
 const renderArgs = (config: Config, args: readonly GraphQLArgument[]) => {
