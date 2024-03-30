@@ -35,7 +35,7 @@ export const parseGraphQLExecutionResult = (result: unknown): Error | GraphQLReq
   try {
     if (Array.isArray(result)) {
       return {
-        _tag: `Batch` as const,
+        _tag: `Batch`,
         executionResults: result.map(parseExecutionResult),
       }
     } else if (isPlainObject(result)) {
