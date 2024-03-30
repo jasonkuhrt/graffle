@@ -26,7 +26,7 @@ export type GraphQLRequestResultSingle = { _tag: 'Single'; executionResult: Grap
 export type GraphQLExecutionResult = GraphQLExecutionResultSingle | GraphQLExecutionResultBatch
 export type GraphQLExecutionResultBatch = GraphQLExecutionResultSingle[]
 export type GraphQLExecutionResultSingle = {
-  data: object | undefined
+  data: object | null | undefined
   errors: undefined | object | object[]
   extensions?: object
 }
@@ -51,6 +51,20 @@ export const parseGraphQLExecutionResult = (result: unknown): Error | GraphQLReq
   }
 }
 
+/**
+ * Example result:
+ * 
+ * ```
+ * {
+ *  "data": null,
+ *  "errors": [{
+ *    "message": "custom error",
+ *    "locations": [{ "line": 2, "column": 3 }],
+ *    "path": ["playerNew"]
+ *  }]
+ *}
+ * ```
+ */
 export const parseExecutionResult = (result: unknown): GraphQLExecutionResultSingle => {
   if (typeof result !== `object` || result === null) {
     throw new Error(`Invalid execution result: result is not object`)
@@ -61,23 +75,18 @@ export const parseExecutionResult = (result: unknown): GraphQLExecutionResultSin
   let extensions = undefined
 
   if (`errors` in result) {
-    if (!isPlainObject(result.errors) && !Array.isArray(result.errors)) {
-      throw new Error(`Invalid execution result: errors is not plain object OR array`)
-    }
+    if (!isPlainObject(result.errors) && !Array.isArray(result.errors)) throw new Error(`Invalid execution result: errors is not plain object OR array`) // prettier-ignore
     errors = result.errors
   }
 
+  // todo add test coverage for case of null. @see https://github.com/jasonkuhrt/graphql-request/issues/739
   if (`data` in result) {
-    if (!isPlainObject(result.data)) {
-      throw new Error(`Invalid execution result: data is not plain object`)
-    }
+    if (!isPlainObject(result.data) && result.data !== null) throw new Error(`Invalid execution result: data is not plain object`) // prettier-ignore
     data = result.data
   }
 
   if (`extensions` in result) {
-    if (!isPlainObject(result.extensions)) {
-      throw new Error(`Invalid execution result: extensions is not plain object`)
-    }
+    if (!isPlainObject(result.extensions)) throw new Error(`Invalid execution result: extensions is not plain object`) // prettier-ignore
     extensions = result.extensions
   }
 
