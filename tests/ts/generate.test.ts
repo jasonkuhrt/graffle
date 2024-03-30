@@ -1,9 +1,9 @@
 import { readFile } from 'fs/promises'
 import { expect, test } from 'vitest'
-import { generateFile } from '../../src/generator/generator.js'
+import { generateFiles } from '../../src/generator/generator.js'
 
 test(`generates types from GraphQL SDL file`, async () => {
-  await generateFile({
+  await generateFiles({
     schemaModulePath: `../../../../src/Schema/__.js`,
     scalarsModulePath: `../../../../src/Schema/NamedType/Scalar/Scalar.js`,
     schemaPath: `./tests/ts/_/schema.graphql`,

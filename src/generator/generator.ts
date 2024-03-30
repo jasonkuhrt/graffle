@@ -368,8 +368,8 @@ export const generateCode = (input: Input) => {
 
   let schemaCode = ``
 
-  const schemaModulePath = input.schemaModulePath ?? `graphql-client/alpha/schema`
-  const scalarsModulePath = input.scalarsModulePath ?? `graphql-client/alpha/schema/scalars`
+  const schemaModulePath = input.schemaModulePath ?? `graphql-request/alpha/schema`
+  const scalarsModulePath = input.scalarsModulePath ?? `graphql-request/alpha/schema/scalars`
 
   schemaCode += `import type * as _ from ${Code.quote(schemaModulePath)}\n`
   schemaCode += `import type * as $Scalar from './Scalar.ts'\n`
@@ -471,7 +471,7 @@ export * from ${Code.quote(scalarsModulePath)}
   }
 }
 
-export const generateFile = async (params: {
+export const generateFiles = async (params: {
   schemaPath: string
   outputDirPath: string
   schemaModulePath?: string
