@@ -1,5 +1,5 @@
 import { assertType, expectTypeOf, test } from 'vitest'
-import type * as Schema from '../../tests/ts/_/schema.js'
+import type * as Schema from '../../tests/ts/_/schema/Schema.js'
 import type { SelectionSet } from './__.js'
 
 type Q = SelectionSet.Query<Schema.$.Index>
@@ -28,6 +28,13 @@ test(`Query`, () => {
   assertType<Q>({ id: undefined })
   // non-null
   assertType<Q>({ idNonNull: true })
+
+  // Custom Scalar
+  assertType<Q>({ date: true })
+  assertType<Q>({ date: false })
+  assertType<Q>({ date: 0 })
+  assertType<Q>({ date: 1 })
+  assertType<Q>({ date: undefined })
 
   // Enum
   assertType<Q>({ abcEnum: true })

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
 import { expectTypeOf, test } from 'vitest'
-import type * as Schema from '../../tests/ts/_/schema.js'
+import type * as Schema from '../../tests/ts/_/schema/Schema.js'
 import type { SelectionSet } from '../SelectionSet/__.js'
 import type { ResultSet } from './__.js'
 
@@ -22,6 +22,9 @@ test(`general`, () => {
   expectTypeOf<RS<{ id: true; string: false }>>().toEqualTypeOf<{ id: null | string }>()
   expectTypeOf<RS<{ id: true; string: 0 }>>().toEqualTypeOf<{ id: null | string }>()
   expectTypeOf<RS<{ id: true; string: undefined }>>().toEqualTypeOf<{ id: null | string }>()
+  
+  // Custom Scalar
+  expectTypeOf<RS<{ date: true }>>().toEqualTypeOf<{ date: null | string }>()
 
   // List
   expectTypeOf<RS<{ listIntNonNull: true }>>().toEqualTypeOf<{ listIntNonNull: number[] }>()
