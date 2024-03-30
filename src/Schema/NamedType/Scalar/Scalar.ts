@@ -2,6 +2,8 @@
 
 import { nativeScalarConstructors } from './nativeConstructors.js'
 
+export { nativeScalarConstructors } from './nativeConstructors.js'
+
 export const ScalarKind = `Scalar`
 
 export type ScalarKind = typeof ScalarKind
@@ -44,4 +46,17 @@ export type Boolean = typeof Boolean
 
 export type Float = typeof Float
 
-export type Any = String | Int | Boolean | ID | Float
+export const Scalars = {
+  String,
+  ID,
+  Int,
+  Float,
+  Boolean,
+}
+
+// eslint-disable-next-line
+export type Any = String | Int | Boolean | ID | Float | SchemaCustomScalars[keyof SchemaCustomScalars]
+
+declare global {
+  interface SchemaCustomScalars {}
+}

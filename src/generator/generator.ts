@@ -106,7 +106,7 @@ const referenceRenderers = defineReferenceRenderers({
   GraphQLInterfaceType: (_, node) => Code.propertyAccess(namespaceNames.GraphQLInterfaceType, node.name),
   GraphQLObjectType: (_, node) => Code.propertyAccess(namespaceNames.GraphQLObjectType, node.name),
   GraphQLUnionType: (_, node) => Code.propertyAccess(namespaceNames.GraphQLUnionType, node.name),
-  GraphQLScalarType: (_, node) => `_.Scalar.${node.name}`,
+  GraphQLScalarType: (_, node) => `$Scalar.${node.name}`,
 })
 
 const dispatchToConcreteRenderer = (
@@ -312,18 +312,19 @@ const unwrapNonNull = (
   return { node: nodeUnwrapped, nullable }
 }
 
-const scalarTypeMap: Record<string, 'string' | 'number' | 'boolean'> = {
-  ID: `string`,
-  Int: `number`,
-  String: `string`,
-  Float: `number`,
-  Boolean: `boolean`,
-}
+// const scalarTypeMap: Record<string, 'string' | 'number' | 'boolean'> = {
+//   ID: `string`,
+//   Int: `number`,
+//   String: `string`,
+//   Float: `number`,
+//   Boolean: `boolean`,
+// }
 
 // high level
 
 interface Input {
   schemaModulePath?: string
+  scalarsModulePath?: string
   schemaSource: string
   options?: {
     TSDoc?: {
@@ -365,13 +366,16 @@ export const generateCode = (input: Input) => {
     (_) => _.name === `Subscription`,
   )
 
-  let code = ``
+  let schemaCode = ``
 
   const schemaModulePath = input.schemaModulePath ?? `graphql-client/alpha/schema`
+  const scalarsModulePath = input.scalarsModulePath ?? `graphql-client/alpha/schema/scalars`
 
-  code += `import type * as _ from ${Code.quote(schemaModulePath)}\n\n`
+  schemaCode += `import type * as _ from ${Code.quote(schemaModulePath)}\n`
+  schemaCode += `import type * as $Scalar from './Scalar.ts'\n`
+  schemaCode += `\n\n`
 
-  code += Code.export$(
+  schemaCode += Code.export$(
     Code.namespace(
       `$`,
       Code.group(
@@ -409,30 +413,21 @@ export const generateCode = (input: Input) => {
                   },
                 ),
               },
-              scalars: `Scalars`,
             }),
-          ),
-        ),
-        Code.export$(
-          Code.interface$(
-            `Scalars`,
-            Code.objectFromEntries(typeMapByKind.GraphQLScalarType.map((_) => {
-              // todo strict mode where instead of falling back to "any" we throw an error
-              const type = scalarTypeMap[_.name] || `string`
-              return [_.name, type]
-            })),
           ),
         ),
       ),
     ),
   )
+  // console.log(typeMapByKind.GraphQLScalarType)
 
   for (const [name, types] of entries(typeMapByKind)) {
     if (name === `GraphQLScalarType`) continue
+    if (name === `GraphQLCustomScalarType`) continue
 
     const namespaceName = name === `GraphQLRootTypes` ? `Root` : namespaceNames[name]
-    code += Code.commentSectionTitle(namespaceName)
-    code += Code.export$(
+    schemaCode += Code.commentSectionTitle(namespaceName)
+    schemaCode += Code.export$(
       Code.namespace(
         namespaceName,
         types.length === 0
@@ -444,16 +439,48 @@ export const generateCode = (input: Input) => {
     )
   }
 
-  return code
+  let scalarsCode = ``
+
+  scalarsCode += `import type * as Scalar from ${Code.quote(scalarsModulePath)}
+
+declare global {
+  interface SchemaCustomScalars {
+    Date: Date
+  }
+}
+
+${
+    typeMapByKind.GraphQLCustomScalarType
+      .map((_) => {
+        return `
+  export const ${_.name} = Scalar.scalar('${_.name}', Scalar.nativeScalarConstructors.String)
+  export type ${_.name} = typeof ${_.name}
+        `
+      }).join(`\n`)
+  }
+
+
+
+
+export * from ${Code.quote(scalarsModulePath)}
+`
+
+  return {
+    scalars: scalarsCode,
+    schema: schemaCode,
+  }
 }
 
 export const generateFile = async (params: {
   schemaPath: string
-  typeScriptPath: string
+  outputDirPath: string
   schemaModulePath?: string
+  scalarsModulePath?: string
 }) => {
   // todo use @dprint/formatter
   const schemaSource = await fs.readFile(params.schemaPath, `utf8`)
   const code = generateCode({ schemaSource, ...params })
-  await fs.writeFile(params.typeScriptPath, code, { encoding: `utf8` })
+  await fs.mkdir(params.outputDirPath, { recursive: true })
+  await fs.writeFile(`${params.outputDirPath}/Schema.ts`, code.schema, { encoding: `utf8` })
+  await fs.writeFile(`${params.outputDirPath}/Scalar.ts`, code.scalars, { encoding: `utf8` })
 }

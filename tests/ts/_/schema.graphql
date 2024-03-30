@@ -1,4 +1,7 @@
+scalar Date
+
 type Query {
+	date: Date
 	interface: Interface
 	id: ID
 	idNonNull: ID!

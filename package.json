@@ -24,6 +24,12 @@
         "types": "./build/entrypoints/alpha/schema.d.ts",
         "default": "./build/entrypoints/alpha/schema.js"
       }
+    },
+    "./alpha/schema/scalars": {
+      "import": {
+        "types": "./build/entrypoints/alpha/scalars.d.ts",
+        "default": "./build/entrypoints/alpha/scalars.js"
+      }
     }
   },
   "packageManager": "pnpm@8.15.5",

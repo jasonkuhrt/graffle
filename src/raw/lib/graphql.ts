@@ -35,7 +35,7 @@ export const parseGraphQLExecutionResult = (result: unknown): Error | GraphQLReq
   try {
     if (Array.isArray(result)) {
       return {
-        _tag: `Batch` as const,
+        _tag: `Batch`,
         executionResults: result.map(parseExecutionResult),
       }
     } else if (isPlainObject(result)) {
@@ -53,7 +53,7 @@ export const parseGraphQLExecutionResult = (result: unknown): Error | GraphQLReq
 
 /**
  * Example result:
- * 
+ *
  * ```
  * {
  *  "data": null,
@@ -62,7 +62,7 @@ export const parseGraphQLExecutionResult = (result: unknown): Error | GraphQLReq
  *    "locations": [{ "line": 2, "column": 3 }],
  *    "path": ["playerNew"]
  *  }]
- *}
+ * }
  * ```
  */
 export const parseExecutionResult = (result: unknown): GraphQLExecutionResultSingle => {
@@ -75,13 +75,17 @@ export const parseExecutionResult = (result: unknown): GraphQLExecutionResultSin
   let extensions = undefined
 
   if (`errors` in result) {
-    if (!isPlainObject(result.errors) && !Array.isArray(result.errors)) throw new Error(`Invalid execution result: errors is not plain object OR array`) // prettier-ignore
+    if (!isPlainObject(result.errors) && !Array.isArray(result.errors)) {
+      throw new Error(`Invalid execution result: errors is not plain object OR array`) // prettier-ignore
+    }
     errors = result.errors
   }
 
   // todo add test coverage for case of null. @see https://github.com/jasonkuhrt/graphql-request/issues/739
   if (`data` in result) {
-    if (!isPlainObject(result.data) && result.data !== null) throw new Error(`Invalid execution result: data is not plain object`) // prettier-ignore
+    if (!isPlainObject(result.data) && result.data !== null) {
+      throw new Error(`Invalid execution result: data is not plain object`) // prettier-ignore
+    }
     data = result.data
   }
 

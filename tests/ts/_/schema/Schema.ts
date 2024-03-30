@@ -1,4 +1,5 @@
-import type * as _ from '../../../src/Schema/__.js'
+import type * as _ from '../../../../src/Schema/__.js'
+import type * as $Scalar from './Scalar.ts'
 
 export namespace $ {
   export interface Index {
@@ -22,14 +23,6 @@ export namespace $ {
         | Union.FooBarUnion
         | Union.lowerCaseUnion
     }
-    scalars: Scalars
-  }
-  export interface Scalars {
-    ID: string
-    String: string
-    Int: number
-    Float: number
-    Boolean: boolean
   }
 }
 
@@ -39,73 +32,74 @@ export namespace $ {
 
 export namespace Root {
   export type Query = _.Object<'Query', {
+    date: _.Field<_.Output.Nullable<$Scalar.Date>>
     interface: _.Field<_.Output.Nullable<Interface.Interface>>
-    id: _.Field<_.Output.Nullable<_.Scalar.ID>>
-    idNonNull: _.Field<_.Scalar.ID>
-    string: _.Field<_.Output.Nullable<_.Scalar.String>>
+    id: _.Field<_.Output.Nullable<$Scalar.ID>>
+    idNonNull: _.Field<$Scalar.ID>
+    string: _.Field<_.Output.Nullable<$Scalar.String>>
     stringWithRequiredArg: _.Field<
-      _.Output.Nullable<_.Scalar.String>,
+      _.Output.Nullable<$Scalar.String>,
       _.Args<{
-        string: _.Scalar.String
+        string: $Scalar.String
       }>
     >
     stringWithArgs: _.Field<
-      _.Output.Nullable<_.Scalar.String>,
+      _.Output.Nullable<$Scalar.String>,
       _.Args<{
-        string: _.Input.Nullable<_.Scalar.String>
-        int: _.Input.Nullable<_.Scalar.Int>
-        float: _.Input.Nullable<_.Scalar.Float>
-        boolean: _.Input.Nullable<_.Scalar.Boolean>
-        id: _.Input.Nullable<_.Scalar.ID>
+        string: _.Input.Nullable<$Scalar.String>
+        int: _.Input.Nullable<$Scalar.Int>
+        float: _.Input.Nullable<$Scalar.Float>
+        boolean: _.Input.Nullable<$Scalar.Boolean>
+        id: _.Input.Nullable<$Scalar.ID>
       }>
     >
     stringWithArgEnum: _.Field<
-      _.Output.Nullable<_.Scalar.String>,
+      _.Output.Nullable<$Scalar.String>,
       _.Args<{
         ABCEnum: _.Input.Nullable<Enum.ABCEnum>
       }>
     >
     stringWithListArg: _.Field<
-      _.Output.Nullable<_.Scalar.String>,
+      _.Output.Nullable<$Scalar.String>,
       _.Args<{
-        ints: _.Input.Nullable<_.Input.List<_.Input.Nullable<_.Scalar.Int>>>
+        ints: _.Input.Nullable<_.Input.List<_.Input.Nullable<$Scalar.Int>>>
       }>
     >
     stringWithListArgRequired: _.Field<
-      _.Output.Nullable<_.Scalar.String>,
+      _.Output.Nullable<$Scalar.String>,
       _.Args<{
-        ints: _.Input.List<_.Input.Nullable<_.Scalar.Int>>
+        ints: _.Input.List<_.Input.Nullable<$Scalar.Int>>
       }>
     >
     stringWithArgInputObject: _.Field<
-      _.Output.Nullable<_.Scalar.String>,
+      _.Output.Nullable<$Scalar.String>,
       _.Args<{
         input: _.Input.Nullable<InputObject.InputObject>
       }>
     >
     stringWithArgInputObjectRequired: _.Field<
-      _.Output.Nullable<_.Scalar.String>,
+      _.Output.Nullable<$Scalar.String>,
       _.Args<{
         input: InputObject.InputObject
       }>
     >
     object: _.Field<_.Output.Nullable<Object.Object>>
-    listListIntNonNull: _.Field<_.Output.List<_.Output.List<_.Scalar.Int>>>
+    listListIntNonNull: _.Field<_.Output.List<_.Output.List<$Scalar.Int>>>
     listListInt: _.Field<
-      _.Output.Nullable<_.Output.List<_.Output.Nullable<_.Output.List<_.Output.Nullable<_.Scalar.Int>>>>>
+      _.Output.Nullable<_.Output.List<_.Output.Nullable<_.Output.List<_.Output.Nullable<$Scalar.Int>>>>>
     >
-    listInt: _.Field<_.Output.Nullable<_.Output.List<_.Output.Nullable<_.Scalar.Int>>>>
-    listIntNonNull: _.Field<_.Output.List<_.Scalar.Int>>
+    listInt: _.Field<_.Output.Nullable<_.Output.List<_.Output.Nullable<$Scalar.Int>>>>
+    listIntNonNull: _.Field<_.Output.List<$Scalar.Int>>
     objectNested: _.Field<_.Output.Nullable<Object.ObjectNested>>
     objectNonNull: _.Field<Object.Object>
     objectWithArgs: _.Field<
       _.Output.Nullable<Object.Object>,
       _.Args<{
-        string: _.Input.Nullable<_.Scalar.String>
-        int: _.Input.Nullable<_.Scalar.Int>
-        float: _.Input.Nullable<_.Scalar.Float>
-        boolean: _.Input.Nullable<_.Scalar.Boolean>
-        id: _.Input.Nullable<_.Scalar.ID>
+        string: _.Input.Nullable<$Scalar.String>
+        int: _.Input.Nullable<$Scalar.Int>
+        float: _.Input.Nullable<$Scalar.Float>
+        boolean: _.Input.Nullable<$Scalar.Boolean>
+        id: _.Input.Nullable<$Scalar.ID>
       }>
     >
     fooBarUnion: _.Field<_.Output.Nullable<Union.FooBarUnion>>
@@ -139,8 +133,8 @@ export namespace Enum {
 
 export namespace InputObject {
   export type InputObject = _.InputObject<'InputObject', {
-    id: _.Input.Nullable<_.Scalar.ID>
-    idRequired: _.Scalar.ID
+    id: _.Input.Nullable<$Scalar.ID>
+    idRequired: $Scalar.ID
   }>
 }
 
@@ -150,7 +144,7 @@ export namespace InputObject {
 
 export namespace Interface {
   export type Interface = _.Interface<'Interface', {
-    id: _.Field<_.Output.Nullable<_.Scalar.ID>>
+    id: _.Field<_.Output.Nullable<$Scalar.ID>>
   }, [Object.Object1ImplementingInterface, Object.Object2ImplementingInterface]>
 }
 
@@ -168,42 +162,42 @@ export namespace Object {
      *
      * @deprecated Field a is deprecated.
      */
-    id: _.Field<_.Output.Nullable<_.Scalar.ID>>
+    id: _.Field<_.Output.Nullable<$Scalar.ID>>
   }>
 
   export type Bar = _.Object<'Bar', {
-    int: _.Field<_.Output.Nullable<_.Scalar.Int>>
+    int: _.Field<_.Output.Nullable<$Scalar.Int>>
   }>
 
   export type ObjectNested = _.Object<'ObjectNested', {
-    id: _.Field<_.Output.Nullable<_.Scalar.ID>>
+    id: _.Field<_.Output.Nullable<$Scalar.ID>>
     object: _.Field<_.Output.Nullable<Object.Object>>
   }>
 
   export type lowerCaseObject = _.Object<'lowerCaseObject', {
-    id: _.Field<_.Output.Nullable<_.Scalar.ID>>
+    id: _.Field<_.Output.Nullable<$Scalar.ID>>
   }>
 
   export type lowerCaseObject2 = _.Object<'lowerCaseObject2', {
-    int: _.Field<_.Output.Nullable<_.Scalar.Int>>
+    int: _.Field<_.Output.Nullable<$Scalar.Int>>
   }>
 
   export type Object = _.Object<'Object', {
-    string: _.Field<_.Output.Nullable<_.Scalar.String>>
-    int: _.Field<_.Output.Nullable<_.Scalar.Int>>
-    float: _.Field<_.Output.Nullable<_.Scalar.Float>>
-    boolean: _.Field<_.Output.Nullable<_.Scalar.Boolean>>
-    id: _.Field<_.Output.Nullable<_.Scalar.ID>>
+    string: _.Field<_.Output.Nullable<$Scalar.String>>
+    int: _.Field<_.Output.Nullable<$Scalar.Int>>
+    float: _.Field<_.Output.Nullable<$Scalar.Float>>
+    boolean: _.Field<_.Output.Nullable<$Scalar.Boolean>>
+    id: _.Field<_.Output.Nullable<$Scalar.ID>>
   }>
 
   export type Object1ImplementingInterface = _.Object<'Object1ImplementingInterface', {
-    id: _.Field<_.Output.Nullable<_.Scalar.ID>>
-    int: _.Field<_.Output.Nullable<_.Scalar.Int>>
+    id: _.Field<_.Output.Nullable<$Scalar.ID>>
+    int: _.Field<_.Output.Nullable<$Scalar.Int>>
   }>
 
   export type Object2ImplementingInterface = _.Object<'Object2ImplementingInterface', {
-    id: _.Field<_.Output.Nullable<_.Scalar.ID>>
-    boolean: _.Field<_.Output.Nullable<_.Scalar.Boolean>>
+    id: _.Field<_.Output.Nullable<$Scalar.ID>>
+    boolean: _.Field<_.Output.Nullable<$Scalar.Boolean>>
   }>
 }
 

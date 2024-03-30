@@ -1,6 +1,6 @@
 import { parse, print } from 'graphql'
 import { describe, expect, test } from 'vitest'
-import type * as Schema from '../../tests/ts/_/schema.js'
+import type * as Schema from '../../tests/ts/_/schema/Schema.js'
 import type { SelectionSet } from './__.js'
 import { toGraphQLDocumentString } from './toGraphQLDocumentString.js'
 
