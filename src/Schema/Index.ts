@@ -12,5 +12,4 @@ export interface Index {
   unions: {
     Union: null | Union
   }
-  scalars: object
 }
