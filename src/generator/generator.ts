@@ -327,6 +327,7 @@ interface Input {
   scalarsModulePath?: string
   schemaSource: string
   options?: {
+    formatter?: Formatter
     TSDoc?: {
       noDocPolicy?: 'message' | 'ignore'
     }
@@ -393,11 +394,6 @@ export const generateCode = (input: Input) => {
               objects: Code.objectFromEntries(
                 typeMapByKind.GraphQLObjectType.map(_ => [_.name, Code.propertyAccess(`Object`, _.name)]),
               ),
-              // unionMemberNames: Code.objectFromEntries(
-              //   typeMapByKind.GraphQLUnionType.map(
-              //     (_) => [_.name, Code.unionItems(_.getTypes().map(_ => Code.quote(_.name)))],
-              //   ),
-              // ),
               unions: {
                 type: Code.objectFrom(
                   {
@@ -419,7 +415,6 @@ export const generateCode = (input: Input) => {
       ),
     ),
   )
-  // console.log(typeMapByKind.GraphQLScalarType)
 
   for (const [name, types] of entries(typeMapByKind)) {
     if (name === `GraphQLScalarType`) continue
@@ -441,45 +436,64 @@ export const generateCode = (input: Input) => {
 
   let scalarsCode = ``
 
-  scalarsCode += `import type * as Scalar from ${Code.quote(scalarsModulePath)}
+  scalarsCode += `
+    import * as Scalar from ${Code.quote(scalarsModulePath)}
 
-declare global {
-  interface SchemaCustomScalars {
-    Date: Date
-  }
-}
+    declare global {
+      interface SchemaCustomScalars {
+        Date: Date
+      }
+    }
 
-${
+    ${
     typeMapByKind.GraphQLCustomScalarType
       .map((_) => {
         return `
-  export const ${_.name} = Scalar.scalar('${_.name}', Scalar.nativeScalarConstructors.String)
-  export type ${_.name} = typeof ${_.name}
+          export const ${_.name} = Scalar.scalar('${_.name}', Scalar.nativeScalarConstructors.String)
+          export type ${_.name} = typeof ${_.name}
         `
       }).join(`\n`)
   }
 
+    export * from ${Code.quote(scalarsModulePath)}
+  `
 
-
-
-export * from ${Code.quote(scalarsModulePath)}
-`
+  const defaultDprintConfig = {
+    quoteStyle: `preferSingle`,
+    semiColons: `asi`,
+  }
 
   return {
-    scalars: scalarsCode,
-    schema: schemaCode,
+    scalars: input.options?.formatter?.formatText(`memory.ts`, scalarsCode, defaultDprintConfig)
+      ?? scalarsCode,
+    schema: input.options?.formatter?.formatText(`memory.ts`, schemaCode, defaultDprintConfig) ?? schemaCode,
   }
 }
 
+import type { Formatter } from '@dprint/formatter'
+import { createFromBuffer } from '@dprint/formatter'
+import { getPath } from '@dprint/typescript'
 export const generateFiles = async (params: {
   schemaPath: string
   outputDirPath: string
   schemaModulePath?: string
   scalarsModulePath?: string
+  /**
+   * @defaultValue `true`
+   */
+  format?: boolean
 }) => {
-  // todo use @dprint/formatter
   const schemaSource = await fs.readFile(params.schemaPath, `utf8`)
-  const code = generateCode({ schemaSource, ...params })
+  const options = (params.format ?? true)
+    ? {
+      formatter: createFromBuffer(await fs.readFile(getPath())),
+    }
+    : undefined
+  const code = generateCode({
+    schemaSource,
+    ...params,
+    options,
+  })
   await fs.mkdir(params.outputDirPath, { recursive: true })
   await fs.writeFile(`${params.outputDirPath}/Schema.ts`, code.schema, { encoding: `utf8` })
   await fs.writeFile(`${params.outputDirPath}/Scalar.ts`, code.scalars, { encoding: `utf8` })

@@ -12,6 +12,7 @@ const args = Command.create().description(`Generate a type safe GraphQL client.`
       `Directory path for where to output the generated TypeScript files.`,
     ),
   )
+  .parameter(`format`, z.boolean().describe(`Format the generated files using dprint.`).default(true))
   .settings({
     parameters: {
       environment: false,
@@ -22,4 +23,5 @@ const args = Command.create().description(`Generate a type safe GraphQL client.`
 await generateFiles({
   outputDirPath: args.output,
   schemaPath: args.schema,
+  format: args.format,
 })

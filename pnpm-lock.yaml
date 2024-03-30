@@ -8,6 +8,9 @@ dependencies:
   '@dprint/formatter':
     specifier: ^0.2.1
     version: 0.2.1
+  '@dprint/typescript':
+    specifier: ^0.89.3
+    version: 0.89.3
   '@graphql-typed-document-node/core':
     specifier: ^3.2.0
     version: 3.2.0(graphql@16.8.1)
@@ -297,6 +300,10 @@ packages:
     requiresBuild: true
     dev: false
     optional: true
+
+  /@dprint/typescript@0.89.3:
+    resolution: {integrity: sha512-/m6Ila0+5dKJfy2tF/ADmHrtUscYffpI/zfSUyj5DIpil8JEg6cfBERe5NUd73GrIYHuDnuC3Plg0dj52Z5sRw==}
+    dev: false
 
   /@dprint/win32-x64@0.45.0:
     resolution: {integrity: sha512-aZHIWG2jIlEp4BER1QG6YYqPd6TxT9S77AeUkWJixNiMEo+33mPRVCBcugRWI/WJWveX8yWFVXkToORtnSFeEA==}
