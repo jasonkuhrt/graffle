@@ -22,9 +22,8 @@ export namespace $ {
       Object2ImplementingInterface: Object.Object2ImplementingInterface
     }
     unions: {
-      Union:
-        | Union.FooBarUnion
-        | Union.lowerCaseUnion
+      FooBarUnion: Union.FooBarUnion
+      lowerCaseUnion: Union.lowerCaseUnion
     }
   }
 }
@@ -316,5 +315,27 @@ export const Interface = _.Interface(\`Interface\`, { id: _.Output.field(_.Outpu
   Object1ImplementingInterface,
   Object2ImplementingInterface,
 ])
+
+export const $Index = {
+  Root: {
+    Query,
+    Mutation: null,
+    Subscription: null,
+  },
+  objects: {
+    Foo,
+    Bar,
+    ObjectNested,
+    lowerCaseObject,
+    lowerCaseObject2,
+    Object,
+    Object1ImplementingInterface,
+    Object2ImplementingInterface,
+  },
+  unions: {
+    FooBarUnion,
+    lowerCaseUnion,
+  },
+}
 "
 `;

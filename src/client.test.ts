@@ -1,6 +1,7 @@
 import { expect, test } from 'vitest'
 import { setupMockServer } from '../tests/raw/__helpers.js'
-import type { $ } from '../tests/ts/_/schema/Schema.js'
+import type { $ } from '../tests/ts/_/schema/SchemaBuildtime.js'
+import { $Index as schemaIndex } from '../tests/ts/_/schema/SchemaRuntime.js'
 import { create } from './client.js'
 
 const ctx = setupMockServer()
@@ -10,6 +11,9 @@ test(`query`, async () => {
   const mockRes = ctx.res({ body: { data } }).spec.body!
   // eslint-disable-next-line
   // @ts-ignore infinite depth
-  const client = create<$.Index>({ url: ctx.url })
+  const client = create<$.Index>({
+    url: ctx.url,
+    schemaIndex,
+  })
   expect(await client.query({ fooBarUnion: { onBar: { int: true } } })).toEqual(mockRes.data)
 })

@@ -28,26 +28,34 @@ export type Client<$SchemaIndex extends Schema.Index> =
 interface Input {
   url: URL | string
   headers?: HeadersInit
+  // If there are no custom scalars then this property is useless. Improve types.
+  schemaIndex: Schema.Index
 }
 
 export const create = <$SchemaIndex extends Schema.Index>(input: Input): Client<$SchemaIndex> => {
   // @ts-expect-error ignoreme
   const client: Client<$SchemaIndex> = {
     query: async (documentQueryObject: any) => {
+      // todo custom scalars encode
       const documentQueryString = SelectionSet.toGraphQLDocumentString(documentQueryObject)
-      return await request({
+      const result = await request({
         url: new URL(input.url).href,
         requestHeaders: input.headers,
         document: documentQueryString,
       })
+      // todo custom scalars decode
+      return result
     },
     mutation: async (documentMutationObject: any) => {
       const documentMutationString = SelectionSet.toGraphQLDocumentString(documentMutationObject)
-      return await request({
+      // todo custom scalars encode
+      const result = await request({
         url: new URL(input.url).href,
         requestHeaders: input.headers,
         document: documentMutationString,
       })
+      // todo custom scalars decode
+      return result
     },
     // todo
     // subscription: async () => {

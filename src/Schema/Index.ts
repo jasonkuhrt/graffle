@@ -9,7 +9,5 @@ export interface Index {
     Subscription: null | Object
   }
   objects: Record<string, Object>
-  unions: {
-    Union: null | Union
-  }
+  unions: Record<string, Union>
 }

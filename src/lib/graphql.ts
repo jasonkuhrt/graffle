@@ -8,6 +8,8 @@ import {
   GraphQLObjectType,
   GraphQLScalarType,
   GraphQLUnionType,
+  isListType,
+  isNonNullType,
 } from 'graphql'
 
 export type TypeMapByKind =
@@ -17,12 +19,35 @@ export type TypeMapByKind =
   & { GraphQLRootTypes: GraphQLObjectType<any, any>[] }
   & { GraphQLCustomScalarType: GraphQLScalarType<any, any>[] }
 
-const scalarTypeNames = {
+const standardScalarTypeNames = {
   String: `String`,
   ID: `ID`,
   Int: `Int`,
   Float: `Float`,
   Boolean: `Boolean`,
+}
+
+export const isStandardScalarType = (type: GraphQLScalarType) => {
+  return type.name in standardScalarTypeNames
+}
+
+export const isCustomScalarType = (type: GraphQLScalarType) => {
+  return !isStandardScalarType(type)
+}
+
+export const unwrapToNamed = (
+  type: AnyClass,
+): AnyClass => {
+  if (isNonNullType(type)) return unwrapToNamed(unwrapToNonNull(type).ofType)
+  if (isListType(type)) return unwrapToNamed(type.ofType)
+  return type
+}
+
+export const unwrapToNonNull = (
+  type: AnyClass,
+): { ofType: AnyClass; nullable: boolean } => {
+  const [nodeUnwrapped, nullable] = type instanceof GraphQLNonNull ? [type.ofType, false] : [type, true]
+  return { ofType: nodeUnwrapped, nullable }
 }
 
 export const getTypeMapByKind = (schema: GraphQLSchema) => {
@@ -43,7 +68,7 @@ export const getTypeMapByKind = (schema: GraphQLSchema) => {
     switch (true) {
       case type instanceof GraphQLScalarType:
         typeMapByKind.GraphQLScalarType.push(type)
-        if (!(type.name in scalarTypeNames)) {
+        if (isCustomScalarType(type)) {
           typeMapByKind.GraphQLCustomScalarType.push(type)
         }
         break
@@ -184,3 +209,11 @@ const toDisplayName = (nodeName: NodeNamePlus) => {
 export const isDeprecatableNode = (node: object): node is GraphQLEnumValue | AnyField => {
   return `deprecationReason` in node
 }
+
+export const hasQuery = (typeMapByKind: TypeMapByKind) => typeMapByKind.GraphQLRootTypes.find((_) => _.name === `Query`)
+
+export const hasMutation = (typeMapByKind: TypeMapByKind) =>
+  typeMapByKind.GraphQLRootTypes.find((_) => _.name === `Mutation`)
+
+export const hasSubscription = (typeMapByKind: TypeMapByKind) =>
+  typeMapByKind.GraphQLRootTypes.find((_) => _.name === `Subscription`)

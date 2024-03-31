@@ -7,7 +7,7 @@ import type {
   GraphQLObjectType,
   GraphQLSchema,
 } from 'graphql'
-import { GraphQLNonNull, isEnumType, isListType, isNamedType } from 'graphql'
+import { isEnumType, isListType, isNamedType } from 'graphql'
 import { buildSchema } from 'graphql'
 import _ from 'json-bigint'
 import fs from 'node:fs/promises'
@@ -25,9 +25,13 @@ import type {
 import {
   getNodeDisplayName,
   getTypeMapByKind,
+  hasMutation,
+  hasQuery,
+  hasSubscription,
   isDeprecatableNode,
   isGraphQLOutputField,
   type NameToClass,
+  unwrapToNonNull,
 } from '../lib/graphql.js'
 import { entries, values } from '../lib/prelude.js'
 
@@ -265,7 +269,7 @@ const renderInputField = (config: Config, field: AnyField): string => {
 
 const buildType = (direction: 'input' | 'output', config: Config, node: AnyClass) => {
   const ns = direction === `input` ? `Input` : `Output`
-  const { node: nodeInner, nullable } = unwrapNonNull(node)
+  const { ofType: nodeInner, nullable } = unwrapToNonNull(node)
 
   if (isNamedType(nodeInner)) {
     const namedTypeReference = dispatchToReferenceRenderer(config, nodeInner)
@@ -292,7 +296,7 @@ const renderArgs = (config: Config, args: readonly GraphQLArgument[]) => {
     Code.object(
       Code.fields(
         args.map((arg) => {
-          const { nullable } = unwrapNonNull(arg.type)
+          const { nullable } = unwrapToNonNull(arg.type)
           hasRequiredArgs = hasRequiredArgs || !nullable
           return Code.field(
             arg.name,
@@ -304,21 +308,6 @@ const renderArgs = (config: Config, args: readonly GraphQLArgument[]) => {
   }>`
   return argsRendered
 }
-
-const unwrapNonNull = (
-  node: AnyClass,
-): { node: AnyClass; nullable: boolean } => {
-  const [nodeUnwrapped, nullable] = node instanceof GraphQLNonNull ? [node.ofType, false] : [node, true]
-  return { node: nodeUnwrapped, nullable }
-}
-
-// const scalarTypeMap: Record<string, 'string' | 'number' | 'boolean'> = {
-//   ID: `string`,
-//   Int: `number`,
-//   String: `string`,
-//   Float: `number`,
-//   Boolean: `boolean`,
-// }
 
 // high level
 
@@ -334,8 +323,10 @@ interface Input {
   }
 }
 
-interface Config {
+export interface Config {
   schema: GraphQLSchema
+  schemaModulePath: string
+  scalarsModulePath: string
   typeMapByKind: TypeMapByKind
   TSDoc: {
     noDocPolicy: 'message' | 'ignore'
@@ -346,6 +337,8 @@ const resolveOptions = (input: Input): Config => {
   const schema = buildSchema(input.schemaSource)
   return {
     schema,
+    scalarsModulePath: input.scalarsModulePath ?? `graphql-request/alpha/schema/scalars`,
+    schemaModulePath: input.schemaModulePath ?? `graphql-request/alpha/schema`,
     typeMapByKind: getTypeMapByKind(schema),
     TSDoc: {
       noDocPolicy: input.options?.TSDoc?.noDocPolicy ?? `ignore`,
@@ -357,22 +350,9 @@ export const generateCode = (input: Input) => {
   const config = resolveOptions(input)
   const { typeMapByKind } = config
 
-  const hasQuery = typeMapByKind.GraphQLRootTypes.find(
-    (_) => _.name === `Query`,
-  )
-  const hasMutation = typeMapByKind.GraphQLRootTypes.find(
-    (_) => _.name === `Mutation`,
-  )
-  const hasSubscription = typeMapByKind.GraphQLRootTypes.find(
-    (_) => _.name === `Subscription`,
-  )
-
   let schemaCode = ``
 
-  const schemaModulePath = input.schemaModulePath ?? `graphql-request/alpha/schema`
-  const scalarsModulePath = input.scalarsModulePath ?? `graphql-request/alpha/schema/scalars`
-
-  schemaCode += `import type * as _ from ${Code.quote(schemaModulePath)}\n`
+  schemaCode += `import type * as _ from '${config.schemaModulePath}'\n`
   schemaCode += `import type * as $Scalar from './Scalar.ts'\n`
   schemaCode += `\n\n`
 
@@ -386,29 +366,17 @@ export const generateCode = (input: Input) => {
             Code.objectFrom({
               Root: {
                 type: Code.objectFrom({
-                  Query: hasQuery ? `Root.Query` : null,
-                  Mutation: hasMutation ? `Root.Mutation` : null,
-                  Subscription: hasSubscription ? `Root.Subscription` : null,
+                  Query: hasQuery(typeMapByKind) ? `Root.Query` : null,
+                  Mutation: hasMutation(typeMapByKind) ? `Root.Mutation` : null,
+                  Subscription: hasSubscription(typeMapByKind) ? `Root.Subscription` : null,
                 }),
               },
               objects: Code.objectFromEntries(
                 typeMapByKind.GraphQLObjectType.map(_ => [_.name, Code.propertyAccess(`Object`, _.name)]),
               ),
-              unions: {
-                type: Code.objectFrom(
-                  {
-                    Union: {
-                      type: typeMapByKind.GraphQLUnionType.length > 0
-                        ? Code.unionItems(
-                          typeMapByKind.GraphQLUnionType.map(
-                            (_) => Code.propertyAccess(`Union`, _.name),
-                          ),
-                        )
-                        : null,
-                    },
-                  },
-                ),
-              },
+              unions: Code.objectFromEntries(
+                typeMapByKind.GraphQLUnionType.map(_ => [_.name, Code.propertyAccess(`Union`, _.name)]),
+              ),
             }),
           ),
         ),
@@ -437,7 +405,7 @@ export const generateCode = (input: Input) => {
   let scalarsCode = ``
 
   scalarsCode += `
-    import * as Scalar from ${Code.quote(scalarsModulePath)}
+    import * as Scalar from '${config.scalarsModulePath}'
 
     declare global {
       interface SchemaCustomScalars {
@@ -455,7 +423,7 @@ export const generateCode = (input: Input) => {
       }).join(`\n`)
   }
 
-    export * from ${Code.quote(scalarsModulePath)}
+    export * from '${config.scalarsModulePath}'
   `
 
   const defaultDprintConfig = {
@@ -463,16 +431,20 @@ export const generateCode = (input: Input) => {
     semiColons: `asi`,
   }
 
+  const runtimeSchema = generateRuntimeSchema({ typeMapByKind, config })
   return {
     scalars: input.options?.formatter?.formatText(`memory.ts`, scalarsCode, defaultDprintConfig)
       ?? scalarsCode,
-    schema: input.options?.formatter?.formatText(`memory.ts`, schemaCode, defaultDprintConfig) ?? schemaCode,
+    schemaBuildtime: input.options?.formatter?.formatText(`memory.ts`, schemaCode, defaultDprintConfig) ?? schemaCode,
+    schemaRuntime: input.options?.formatter?.formatText(`memory.ts`, runtimeSchema, defaultDprintConfig)
+      ?? runtimeSchema,
   }
 }
 
 import type { Formatter } from '@dprint/formatter'
 import { createFromBuffer } from '@dprint/formatter'
 import { getPath } from '@dprint/typescript'
+import { generateRuntimeSchema } from './schemaRuntime.js'
 export const generateFiles = async (params: {
   schemaPath: string
   outputDirPath: string
@@ -495,6 +467,7 @@ export const generateFiles = async (params: {
     options,
   })
   await fs.mkdir(params.outputDirPath, { recursive: true })
-  await fs.writeFile(`${params.outputDirPath}/Schema.ts`, code.schema, { encoding: `utf8` })
+  await fs.writeFile(`${params.outputDirPath}/SchemaBuildtime.ts`, code.schemaBuildtime, { encoding: `utf8` })
   await fs.writeFile(`${params.outputDirPath}/Scalar.ts`, code.scalars, { encoding: `utf8` })
+  await fs.writeFile(`${params.outputDirPath}/SchemaRuntime.ts`, code.schemaRuntime, { encoding: `utf8` })
 }

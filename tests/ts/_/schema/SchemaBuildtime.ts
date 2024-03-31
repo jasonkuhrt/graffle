@@ -19,9 +19,8 @@ export namespace $ {
       Object2ImplementingInterface: Object.Object2ImplementingInterface
     }
     unions: {
-      Union:
-        | Union.FooBarUnion
-        | Union.lowerCaseUnion
+      FooBarUnion: Union.FooBarUnion
+      lowerCaseUnion: Union.lowerCaseUnion
     }
   }
 }

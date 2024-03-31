@@ -1,5 +1,6 @@
 import type { TSError } from '../../lib/TSError.js'
 import type { NamedType } from '../NamedType/__.js'
+import type { Args } from './Field.js'
 
 export namespace Base {
   export interface Nullable<$Type> {
@@ -23,11 +24,15 @@ export namespace Output {
   export type Any = Output.List<any> | __typename<any> | Base.Nullable<any> | NamedType.AnyOutput
 
   export const __typename = <$Type extends string>(type: $Type): __typename<$Type> => ({ kind: `typename`, type })
-  export const nullable = <$Type extends __typename<any> | List<any>>(type: $Type): Nullable<$Type> => ({
+
+  export const Nullable = <$Type extends __typename<any> | List<any> | NamedType.AnyOutput>(
+    type: MaybeThunk<$Type>,
+  ): Nullable<$Type> => ({
     kind: `nullable`,
     type,
   })
-  export const list = <$Type extends Any>(type: $Type): List<$Type> => ({ kind: `list`, type })
+
+  export const List = <$Type extends Any>(type: $Type): List<$Type> => ({ kind: `list`, type })
 
   // todo extends any because of infinite depth issue in generated schema types
   // dprint-ignore
@@ -42,6 +47,25 @@ export namespace Output {
     // @ts-expect-error fixme
     return type.kind === `named` ? type.type : unwrap(type.type)
   }
+
+  export const field = <$Type extends Any, $Args extends null | Args = null>(
+    type: MaybeThunk<$Type>,
+    args: $Args = null as $Args,
+  ): Field<$Type, $Args> => {
+    return {
+      // eslint-disable-next-line
+      // @ts-ignore infinite depth issue, can this be fixed?
+      typeUnwrapped: Type.Output.unwrap(type),
+      type,
+      args,
+    }
+  }
+
+  export type Field<$Type extends any = any, $Args extends Args | null = Args | null> = {
+    typeUnwrapped: Unwrap<$Type>
+    type: $Type
+    args: $Args
+  }
 }
 
 export namespace Input {
@@ -49,3 +73,7 @@ export namespace Input {
   export type List<$InnerType extends Any = Any> = Base.List<$InnerType>
   export type Any = List<any> | Nullable<any> | NamedType.AnyInput
 }
+
+type MaybeThunk<$Type> = $Type | Thunk<$Type>
+
+type Thunk<$Type> = () => $Type
