@@ -6,7 +6,7 @@ declare global {
   }
 }
 
-export const Date = Scalar.scalar('Date', Scalar.nativeScalarConstructors.String)
+export const Date = Scalar.scalar(`Date`, Scalar.nativeScalarCodecs.String)
 export type Date = typeof Date
 
 export * from '../../../../src/Schema/NamedType/Scalar/Scalar.js'

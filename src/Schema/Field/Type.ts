@@ -18,7 +18,11 @@ export namespace Output {
     kind: 'typename'
     type: $Type
   }
-  export type Nullable<$Type extends Any> = Base.Nullable<$Type>
+
+  export type Named = NamedType.AnyOutput
+
+  export type Nullable<$Type extends Output.List<any> | __typename<any> | NamedType.AnyOutput> = Base.Nullable<$Type>
+
   export type List<$Type extends Any> = Base.List<$Type>
 
   export type Any = Output.List<any> | __typename<any> | Base.Nullable<any> | NamedType.AnyOutput
@@ -32,7 +36,10 @@ export namespace Output {
     type,
   })
 
-  export const List = <$Type extends Any>(type: $Type): List<$Type> => ({ kind: `list`, type })
+  export const List = <$Type extends Any>(type: $Type): List<$Type> => ({
+    kind: `list`,
+    type,
+  })
 
   // todo extends any because of infinite depth issue in generated schema types
   // dprint-ignore
@@ -42,6 +49,15 @@ export namespace Output {
       $Type extends __typename                  ? $Type['type'] :
       $Type extends NamedType.AnyOutput         ? $Type : 
                                                   TSError<'Unwrap', 'Unknown $Type', { $Type: $Type }>
+  // dprint-ignore
+  export type UnwrapNonNull<$Type> =
+  $Type extends Nullable<infer $innerType>  ? UnwrapNonNull<$innerType>
+                                            : $Type
+
+  export const unwrapNonNull = <$Type extends Any>(type: $Type): UnwrapNonNull<$Type> => {
+    if (type.kind === `nullable`) return type.type
+    return type as UnwrapNonNull<$Type>
+  }
 
   export const unwrap = <$Type extends Any>(type: $Type): Unwrap<$Type> => {
     // @ts-expect-error fixme
@@ -55,7 +71,7 @@ export namespace Output {
     return {
       // eslint-disable-next-line
       // @ts-ignore infinite depth issue, can this be fixed?
-      typeUnwrapped: Type.Output.unwrap(type),
+      typeUnwrapped: unwrap(type),
       type,
       args,
     }

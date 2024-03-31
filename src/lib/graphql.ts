@@ -19,13 +19,21 @@ export type TypeMapByKind =
   & { GraphQLRootTypes: GraphQLObjectType<any, any>[] }
   & { GraphQLCustomScalarType: GraphQLScalarType<any, any>[] }
 
-const standardScalarTypeNames = {
+export const standardScalarTypeNames = {
   String: `String`,
   ID: `ID`,
   Int: `Int`,
   Float: `Float`,
   Boolean: `Boolean`,
 }
+
+export const RootTypeName = {
+  Query: `Query`,
+  Mutation: `Mutation`,
+  Subscription: `Subscription`,
+} as const
+
+export type RootTypeName = keyof typeof RootTypeName
 
 export const isStandardScalarType = (type: GraphQLScalarType) => {
   return type.name in standardScalarTypeNames
