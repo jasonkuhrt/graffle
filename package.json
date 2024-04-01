@@ -32,7 +32,7 @@
       }
     }
   },
-  "packageManager": "pnpm@8.15.5",
+  "packageManager": "pnpm@8.15.6",
   "files": [
     "build",
     "src"
