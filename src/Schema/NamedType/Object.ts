@@ -20,7 +20,8 @@ export interface Object<
   } & $Fields
 }
 
-export const Object = <$Name extends string, $Fields extends Record<keyof $Fields, Output.Field>>(
+// Naming this "Object" breaks Vitest: https://github.com/vitest-dev/vitest/issues/5463
+const Object$ = <$Name extends string, $Fields extends Record<keyof $Fields, Output.Field>>(
   name: $Name,
   fields: $Fields,
 ): Object<$Name, $Fields> => ({
@@ -30,3 +31,5 @@ export const Object = <$Name extends string, $Fields extends Record<keyof $Field
     ...fields,
   },
 })
+
+export { Object$ as Object }

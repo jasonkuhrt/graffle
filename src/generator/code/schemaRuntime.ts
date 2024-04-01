@@ -9,53 +9,50 @@ import {
   isScalarType,
   isUnionType,
 } from 'graphql'
-import type { AnyClass, AnyField } from '../lib/graphql.js'
-import { hasMutation, hasQuery, hasSubscription, type TypeMapByKind, unwrapToNonNull } from '../lib/graphql.js'
-import type { Config } from './schemaBuildtime.js'
+import type { AnyClass, AnyField } from '../../lib/graphql.js'
+import { hasMutation, hasQuery, hasSubscription, unwrapToNonNull } from '../../lib/graphql.js'
+import type { Config } from './code.js'
 
 export const generateRuntimeSchema = (
-  { typeMapByKind, config }: {
-    typeMapByKind: TypeMapByKind
-    config: Config
-  },
+  config: Config,
 ) => {
   const code: string[] = []
   code.push(
     `
-    import * as _ from '${config.schemaModulePath}'
+    import * as _ from '${config.libraryPaths.schema}'
     import * as $Scalar from './Scalar.js'
     `,
   )
 
   code.push(
-    typeMapByKind.GraphQLEnumType.map(type => enum$(config, type)).join(`\n`),
-    typeMapByKind.GraphQLRootTypes.map(type => object(config, type)).join(`\n`),
-    typeMapByKind.GraphQLObjectType.map(type => object(config, type)).join(`\n`),
-    typeMapByKind.GraphQLUnionType.map(type => union(config, type)).join(`\n`),
-    typeMapByKind.GraphQLInterfaceType.map(type => interface$(config, type)).join(`\n`),
+    config.typeMapByKind.GraphQLEnumType.map(type => enum$(config, type)).join(`\n`),
+    config.typeMapByKind.GraphQLRootTypes.map(type => object(config, type)).join(`\n`),
+    config.typeMapByKind.GraphQLObjectType.map(type => object(config, type)).join(`\n`),
+    config.typeMapByKind.GraphQLUnionType.map(type => union(config, type)).join(`\n`),
+    config.typeMapByKind.GraphQLInterfaceType.map(type => interface$(config, type)).join(`\n`),
   )
 
   code.push(
-    index(config, typeMapByKind),
+    index(config),
   )
 
   return code.join(`\n`)
 }
 
-const index = (config: Config, typeMapByKind: TypeMapByKind) => {
+const index = (config: Config) => {
   // todo input objects for decode/encode input object fields
   return `
     export const $Index = {
       Root: {
-        Query ${hasQuery(typeMapByKind) ? `` : `:null`} ,
-        Mutation ${hasMutation(typeMapByKind) ? `` : `:null`},
-        Subscription ${hasSubscription(typeMapByKind) ? `` : `:null`}
+        Query ${hasQuery(config.typeMapByKind) ? `` : `:null`} ,
+        Mutation ${hasMutation(config.typeMapByKind) ? `` : `:null`},
+        Subscription ${hasSubscription(config.typeMapByKind) ? `` : `:null`}
       },
       objects: {
-        ${typeMapByKind.GraphQLObjectType.map(_ => `${_.name}`).join(`,\n`)},
+        ${config.typeMapByKind.GraphQLObjectType.map(_ => `${_.name}`).join(`,\n`)},
       },
       unions: {
-        ${typeMapByKind.GraphQLUnionType.map(_ => `${_.name}`).join(`,\n`)},
+        ${config.typeMapByKind.GraphQLUnionType.map(_ => `${_.name}`).join(`,\n`)},
       }
     }
   `

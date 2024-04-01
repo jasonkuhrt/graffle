@@ -13,14 +13,14 @@ type Query {
 	stringWithListArgRequired(ints:[Int]!): String
 	stringWithArgInputObject(input:InputObject): String
 	stringWithArgInputObjectRequired(input:InputObject!): String
-	object: Object
 	listListIntNonNull: [[Int!]!]!
 	listListInt: [[Int]]
 	listInt: [Int]
 	listIntNonNull: [Int!]!
+	object: Object1
+	objectNonNull: Object1!
 	objectNested: ObjectNested
-	objectNonNull: Object!
-	objectWithArgs(string:String, int:Int, float:Float, boolean:Boolean, id:ID): Object
+	objectWithArgs(string:String, int:Int, float:Float, boolean:Boolean, id:ID): Object1
 	fooBarUnion: FooBarUnion
 	"""
 	Query enum field documentation.
@@ -55,7 +55,7 @@ type Bar {
 
 type ObjectNested {
 	id: ID
-	object: Object
+	object: Object1
 }
 
 type lowerCaseObject {
@@ -66,7 +66,7 @@ type lowerCaseObject2 {
 }
 union lowerCaseUnion = lowerCaseObject | lowerCaseObject2
 
-type Object {
+type Object1 {
 	string: String
 	int: Int
 	float: Float

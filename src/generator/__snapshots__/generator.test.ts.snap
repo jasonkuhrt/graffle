@@ -17,14 +17,13 @@ export namespace $ {
       ObjectNested: Object.ObjectNested
       lowerCaseObject: Object.lowerCaseObject
       lowerCaseObject2: Object.lowerCaseObject2
-      Object: Object.Object
+      Object1: Object.Object1
       Object1ImplementingInterface: Object.Object1ImplementingInterface
       Object2ImplementingInterface: Object.Object2ImplementingInterface
     }
     unions: {
-      Union:
-        | Union.FooBarUnion
-        | Union.lowerCaseUnion
+      FooBarUnion: Union.FooBarUnion
+      lowerCaseUnion: Union.lowerCaseUnion
     }
   }
 }
@@ -86,17 +85,17 @@ export namespace Root {
         input: InputObject.InputObject
       }>
     >
-    object: _.Field<_.Output.Nullable<Object.Object>>
     listListIntNonNull: _.Field<_.Output.List<_.Output.List<$Scalar.Int>>>
     listListInt: _.Field<
       _.Output.Nullable<_.Output.List<_.Output.Nullable<_.Output.List<_.Output.Nullable<$Scalar.Int>>>>>
     >
     listInt: _.Field<_.Output.Nullable<_.Output.List<_.Output.Nullable<$Scalar.Int>>>>
     listIntNonNull: _.Field<_.Output.List<$Scalar.Int>>
+    object: _.Field<_.Output.Nullable<Object.Object1>>
+    objectNonNull: _.Field<Object.Object1>
     objectNested: _.Field<_.Output.Nullable<Object.ObjectNested>>
-    objectNonNull: _.Field<Object.Object>
     objectWithArgs: _.Field<
-      _.Output.Nullable<Object.Object>,
+      _.Output.Nullable<Object.Object1>,
       _.Args<{
         string: _.Input.Nullable<$Scalar.String>
         int: _.Input.Nullable<$Scalar.Int>
@@ -174,7 +173,7 @@ export namespace Object {
 
   export type ObjectNested = _.Object<'ObjectNested', {
     id: _.Field<_.Output.Nullable<$Scalar.ID>>
-    object: _.Field<_.Output.Nullable<Object.Object>>
+    object: _.Field<_.Output.Nullable<Object.Object1>>
   }>
 
   export type lowerCaseObject = _.Object<'lowerCaseObject', {
@@ -185,7 +184,7 @@ export namespace Object {
     int: _.Field<_.Output.Nullable<$Scalar.Int>>
   }>
 
-  export type Object = _.Object<'Object', {
+  export type Object1 = _.Object<'Object1', {
     string: _.Field<_.Output.Nullable<$Scalar.String>>
     int: _.Field<_.Output.Nullable<$Scalar.Int>>
     float: _.Field<_.Output.Nullable<$Scalar.Float>>
@@ -228,7 +227,7 @@ declare global {
   }
 }
 
-export const Date = Scalar.scalar('Date', Scalar.nativeScalarConstructors.String)
+export const Date = Scalar.scalar(\`Date\`, Scalar.nativeScalarCodecs.String)
 export type Date = typeof Date
 
 export * from '../../../../src/Schema/NamedType/Scalar/Scalar.js'
@@ -254,16 +253,16 @@ export const Query = _.Object(\`Query\`, {
   stringWithListArgRequired: _.Output.field(_.Output.Nullable($Scalar.String)),
   stringWithArgInputObject: _.Output.field(_.Output.Nullable($Scalar.String)),
   stringWithArgInputObjectRequired: _.Output.field(_.Output.Nullable($Scalar.String)),
-  object: _.Output.field(_.Output.Nullable(() => Object)),
   listListIntNonNull: _.Output.field(_.Output.List(_.Output.List($Scalar.Int))),
   listListInt: _.Output.field(
     _.Output.Nullable(_.Output.List(_.Output.Nullable(_.Output.List(_.Output.Nullable($Scalar.Int))))),
   ),
   listInt: _.Output.field(_.Output.Nullable(_.Output.List(_.Output.Nullable($Scalar.Int)))),
   listIntNonNull: _.Output.field(_.Output.List($Scalar.Int)),
+  object: _.Output.field(_.Output.Nullable(() => Object1)),
+  objectNonNull: _.Output.field(() => Object1),
   objectNested: _.Output.field(_.Output.Nullable(() => ObjectNested)),
-  objectNonNull: _.Output.field(() => Object),
-  objectWithArgs: _.Output.field(_.Output.Nullable(() => Object)),
+  objectWithArgs: _.Output.field(_.Output.Nullable(() => Object1)),
   fooBarUnion: _.Output.field(_.Output.Nullable(() => FooBarUnion)),
   abcEnum: _.Output.field(_.Output.Nullable(ABCEnum)),
   lowerCaseUnion: _.Output.field(_.Output.Nullable(() => lowerCaseUnion)),
@@ -279,7 +278,7 @@ export const Bar = _.Object(\`Bar\`, {
 
 export const ObjectNested = _.Object(\`ObjectNested\`, {
   id: _.Output.field(_.Output.Nullable($Scalar.ID)),
-  object: _.Output.field(_.Output.Nullable(() => Object)),
+  object: _.Output.field(_.Output.Nullable(() => Object1)),
 })
 
 export const lowerCaseObject = _.Object(\`lowerCaseObject\`, {
@@ -290,7 +289,7 @@ export const lowerCaseObject2 = _.Object(\`lowerCaseObject2\`, {
   int: _.Output.field(_.Output.Nullable($Scalar.Int)),
 })
 
-export const Object = _.Object(\`Object\`, {
+export const Object1 = _.Object(\`Object1\`, {
   string: _.Output.field(_.Output.Nullable($Scalar.String)),
   int: _.Output.field(_.Output.Nullable($Scalar.Int)),
   float: _.Output.field(_.Output.Nullable($Scalar.Float)),
@@ -316,5 +315,27 @@ export const Interface = _.Interface(\`Interface\`, { id: _.Output.field(_.Outpu
   Object1ImplementingInterface,
   Object2ImplementingInterface,
 ])
+
+export const $Index = {
+  Root: {
+    Query,
+    Mutation: null,
+    Subscription: null,
+  },
+  objects: {
+    Foo,
+    Bar,
+    ObjectNested,
+    lowerCaseObject,
+    lowerCaseObject2,
+    Object1,
+    Object1ImplementingInterface,
+    Object2ImplementingInterface,
+  },
+  unions: {
+    FooBarUnion,
+    lowerCaseUnion,
+  },
+}
 "
 `;

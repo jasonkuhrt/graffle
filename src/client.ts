@@ -3,6 +3,7 @@ import { type RootTypeName, standardScalarTypeNames } from './lib/graphql.js'
 import type { ResultSet } from './ResultSet/__.js'
 import type { Object as ObjectType, Schema } from './Schema/__.js'
 import { Output } from './Schema/__.js'
+import { readMaybeThunk } from './Schema/Field/Type.js'
 import { SelectionSet } from './SelectionSet/__.js'
 import type { GraphQLDocumentObject } from './SelectionSet/toGraphQLDocumentString.js'
 
@@ -74,7 +75,8 @@ const decodeCustomScalars = (index: ObjectType, documentQueryObject: object): ob
       const indexField = index.fields[fieldName]
       if (!indexField) throw new Error(`Field not found: ${fieldName}`)
 
-      const typeWithoutNonNull = Output.unwrapNonNull(indexField.type) as Output.Named | Output.List<any>
+      const type = readMaybeThunk(indexField.type)
+      const typeWithoutNonNull = Output.unwrapNonNull(type) as Output.Named | Output.List<any>
 
       if (typeWithoutNonNull.kind === `list`) {
         return [fieldName, v.map((v: any) => decodeCustomScalars(typeWithoutNonNull.type, v))]

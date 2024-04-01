@@ -2,6 +2,8 @@ import type { TSError } from '../../lib/TSError.js'
 import type { NamedType } from '../NamedType/__.js'
 import type { Args } from './Field.js'
 
+const buildTimeOnly: any = undefined
+
 export namespace Base {
   export interface Nullable<$Type> {
     kind: 'nullable'
@@ -60,6 +62,7 @@ export namespace Output {
   }
 
   export const unwrap = <$Type extends Any>(type: $Type): Unwrap<$Type> => {
+    console.log({ type })
     // @ts-expect-error fixme
     return type.kind === `named` ? type.type : unwrap(type.type)
   }
@@ -69,9 +72,7 @@ export namespace Output {
     args: $Args = null as $Args,
   ): Field<$Type, $Args> => {
     return {
-      // eslint-disable-next-line
-      // @ts-ignore infinite depth issue, can this be fixed?
-      typeUnwrapped: unwrap(type),
+      typeUnwrapped: buildTimeOnly,
       type,
       args,
     }
@@ -93,3 +94,6 @@ export namespace Input {
 type MaybeThunk<$Type> = $Type | Thunk<$Type>
 
 type Thunk<$Type> = () => $Type
+
+export const readMaybeThunk = <T>(maybeThunk: MaybeThunk<T>): T =>
+  typeof maybeThunk === `function` ? maybeThunk() : maybeThunk

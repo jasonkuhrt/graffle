@@ -1,4 +1,4 @@
-import type * as _ from '../../../../src/Schema/__.js'
+import type * as _ from '../../../../../src/Schema/NamedType/Scalar/Scalar.js'
 import type * as $Scalar from './Scalar.ts'
 
 export namespace $ {
@@ -14,7 +14,7 @@ export namespace $ {
       ObjectNested: Object.ObjectNested
       lowerCaseObject: Object.lowerCaseObject
       lowerCaseObject2: Object.lowerCaseObject2
-      Object: Object.Object
+      Object1: Object.Object1
       Object1ImplementingInterface: Object.Object1ImplementingInterface
       Object2ImplementingInterface: Object.Object2ImplementingInterface
     }
@@ -82,17 +82,17 @@ export namespace Root {
         input: InputObject.InputObject
       }>
     >
-    object: _.Field<_.Output.Nullable<Object.Object>>
     listListIntNonNull: _.Field<_.Output.List<_.Output.List<$Scalar.Int>>>
     listListInt: _.Field<
       _.Output.Nullable<_.Output.List<_.Output.Nullable<_.Output.List<_.Output.Nullable<$Scalar.Int>>>>>
     >
     listInt: _.Field<_.Output.Nullable<_.Output.List<_.Output.Nullable<$Scalar.Int>>>>
     listIntNonNull: _.Field<_.Output.List<$Scalar.Int>>
+    object: _.Field<_.Output.Nullable<Object.Object1>>
+    objectNonNull: _.Field<Object.Object1>
     objectNested: _.Field<_.Output.Nullable<Object.ObjectNested>>
-    objectNonNull: _.Field<Object.Object>
     objectWithArgs: _.Field<
-      _.Output.Nullable<Object.Object>,
+      _.Output.Nullable<Object.Object1>,
       _.Args<{
         string: _.Input.Nullable<$Scalar.String>
         int: _.Input.Nullable<$Scalar.Int>
@@ -170,7 +170,7 @@ export namespace Object {
 
   export type ObjectNested = _.Object<'ObjectNested', {
     id: _.Field<_.Output.Nullable<$Scalar.ID>>
-    object: _.Field<_.Output.Nullable<Object.Object>>
+    object: _.Field<_.Output.Nullable<Object.Object1>>
   }>
 
   export type lowerCaseObject = _.Object<'lowerCaseObject', {
@@ -181,7 +181,7 @@ export namespace Object {
     int: _.Field<_.Output.Nullable<$Scalar.Int>>
   }>
 
-  export type Object = _.Object<'Object', {
+  export type Object1 = _.Object<'Object1', {
     string: _.Field<_.Output.Nullable<$Scalar.String>>
     int: _.Field<_.Output.Nullable<$Scalar.Int>>
     float: _.Field<_.Output.Nullable<$Scalar.Float>>

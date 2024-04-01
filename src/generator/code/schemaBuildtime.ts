@@ -5,13 +5,10 @@ import type {
   GraphQLInterfaceType,
   GraphQLNamedType,
   GraphQLObjectType,
-  GraphQLSchema,
 } from 'graphql'
 import { isEnumType, isListType, isNamedType } from 'graphql'
-import { buildSchema } from 'graphql'
 import _ from 'json-bigint'
-import fs from 'node:fs/promises'
-import { Code } from '../lib/Code.js'
+import { Code } from '../../lib/Code.js'
 import type {
   AnyClass,
   AnyField,
@@ -20,11 +17,9 @@ import type {
   Describable,
   NamedNameToClass,
   NameToClassNamedType,
-  TypeMapByKind,
-} from '../lib/graphql.js'
+} from '../../lib/graphql.js'
 import {
   getNodeDisplayName,
-  getTypeMapByKind,
   hasMutation,
   hasQuery,
   hasSubscription,
@@ -32,8 +27,9 @@ import {
   isGraphQLOutputField,
   type NameToClass,
   unwrapToNonNull,
-} from '../lib/graphql.js'
-import { entries, values } from '../lib/prelude.js'
+} from '../../lib/graphql.js'
+import { entries, values } from '../../lib/prelude.js'
+import type { Config } from './code.js'
 
 const namespaceNames = {
   GraphQLEnumType: `Enum`,
@@ -311,52 +307,14 @@ const renderArgs = (config: Config, args: readonly GraphQLArgument[]) => {
 
 // high level
 
-interface Input {
-  schemaModulePath?: string
-  scalarsModulePath?: string
-  schemaSource: string
-  options?: {
-    formatter?: Formatter
-    TSDoc?: {
-      noDocPolicy?: 'message' | 'ignore'
-    }
-  }
-}
+export const generateSchemaBuildtime = (config: Config) => {
+  let code = ``
 
-export interface Config {
-  schema: GraphQLSchema
-  schemaModulePath: string
-  scalarsModulePath: string
-  typeMapByKind: TypeMapByKind
-  TSDoc: {
-    noDocPolicy: 'message' | 'ignore'
-  }
-}
+  code += `import type * as _ from '${config.libraryPaths.schema}'\n`
+  code += `import type * as $Scalar from './Scalar.ts'\n`
+  code += `\n\n`
 
-const resolveOptions = (input: Input): Config => {
-  const schema = buildSchema(input.schemaSource)
-  return {
-    schema,
-    scalarsModulePath: input.scalarsModulePath ?? `graphql-request/alpha/schema/scalars`,
-    schemaModulePath: input.schemaModulePath ?? `graphql-request/alpha/schema`,
-    typeMapByKind: getTypeMapByKind(schema),
-    TSDoc: {
-      noDocPolicy: input.options?.TSDoc?.noDocPolicy ?? `ignore`,
-    },
-  }
-}
-
-export const generateCode = (input: Input) => {
-  const config = resolveOptions(input)
-  const { typeMapByKind } = config
-
-  let schemaCode = ``
-
-  schemaCode += `import type * as _ from '${config.schemaModulePath}'\n`
-  schemaCode += `import type * as $Scalar from './Scalar.ts'\n`
-  schemaCode += `\n\n`
-
-  schemaCode += Code.export$(
+  code += Code.export$(
     Code.namespace(
       `$`,
       Code.group(
@@ -366,16 +324,16 @@ export const generateCode = (input: Input) => {
             Code.objectFrom({
               Root: {
                 type: Code.objectFrom({
-                  Query: hasQuery(typeMapByKind) ? `Root.Query` : null,
-                  Mutation: hasMutation(typeMapByKind) ? `Root.Mutation` : null,
-                  Subscription: hasSubscription(typeMapByKind) ? `Root.Subscription` : null,
+                  Query: hasQuery(config.typeMapByKind) ? `Root.Query` : null,
+                  Mutation: hasMutation(config.typeMapByKind) ? `Root.Mutation` : null,
+                  Subscription: hasSubscription(config.typeMapByKind) ? `Root.Subscription` : null,
                 }),
               },
               objects: Code.objectFromEntries(
-                typeMapByKind.GraphQLObjectType.map(_ => [_.name, Code.propertyAccess(`Object`, _.name)]),
+                config.typeMapByKind.GraphQLObjectType.map(_ => [_.name, Code.propertyAccess(`Object`, _.name)]),
               ),
               unions: Code.objectFromEntries(
-                typeMapByKind.GraphQLUnionType.map(_ => [_.name, Code.propertyAccess(`Union`, _.name)]),
+                config.typeMapByKind.GraphQLUnionType.map(_ => [_.name, Code.propertyAccess(`Union`, _.name)]),
               ),
             }),
           ),
@@ -384,13 +342,13 @@ export const generateCode = (input: Input) => {
     ),
   )
 
-  for (const [name, types] of entries(typeMapByKind)) {
+  for (const [name, types] of entries(config.typeMapByKind)) {
     if (name === `GraphQLScalarType`) continue
     if (name === `GraphQLCustomScalarType`) continue
 
     const namespaceName = name === `GraphQLRootTypes` ? `Root` : namespaceNames[name]
-    schemaCode += Code.commentSectionTitle(namespaceName)
-    schemaCode += Code.export$(
+    code += Code.commentSectionTitle(namespaceName)
+    code += Code.export$(
       Code.namespace(
         namespaceName,
         types.length === 0
@@ -402,72 +360,5 @@ export const generateCode = (input: Input) => {
     )
   }
 
-  let scalarsCode = ``
-
-  scalarsCode += `
-    import * as Scalar from '${config.scalarsModulePath}'
-
-    declare global {
-      interface SchemaCustomScalars {
-        Date: Date
-      }
-    }
-
-    ${
-    typeMapByKind.GraphQLCustomScalarType
-      .map((_) => {
-        return `
-          export const ${_.name} = Scalar.scalar('${_.name}', Scalar.nativeScalarConstructors.String)
-          export type ${_.name} = typeof ${_.name}
-        `
-      }).join(`\n`)
-  }
-
-    export * from '${config.scalarsModulePath}'
-  `
-
-  const defaultDprintConfig = {
-    quoteStyle: `preferSingle`,
-    semiColons: `asi`,
-  }
-
-  const runtimeSchema = generateRuntimeSchema({ typeMapByKind, config })
-  return {
-    scalars: input.options?.formatter?.formatText(`memory.ts`, scalarsCode, defaultDprintConfig)
-      ?? scalarsCode,
-    schemaBuildtime: input.options?.formatter?.formatText(`memory.ts`, schemaCode, defaultDprintConfig) ?? schemaCode,
-    schemaRuntime: input.options?.formatter?.formatText(`memory.ts`, runtimeSchema, defaultDprintConfig)
-      ?? runtimeSchema,
-  }
-}
-
-import type { Formatter } from '@dprint/formatter'
-import { createFromBuffer } from '@dprint/formatter'
-import { getPath } from '@dprint/typescript'
-import { generateRuntimeSchema } from './schemaRuntime.js'
-export const generateFiles = async (params: {
-  schemaPath: string
-  outputDirPath: string
-  schemaModulePath?: string
-  scalarsModulePath?: string
-  /**
-   * @defaultValue `true`
-   */
-  format?: boolean
-}) => {
-  const schemaSource = await fs.readFile(params.schemaPath, `utf8`)
-  const options = (params.format ?? true)
-    ? {
-      formatter: createFromBuffer(await fs.readFile(getPath())),
-    }
-    : undefined
-  const code = generateCode({
-    schemaSource,
-    ...params,
-    options,
-  })
-  await fs.mkdir(params.outputDirPath, { recursive: true })
-  await fs.writeFile(`${params.outputDirPath}/SchemaBuildtime.ts`, code.schemaBuildtime, { encoding: `utf8` })
-  await fs.writeFile(`${params.outputDirPath}/Scalar.ts`, code.scalars, { encoding: `utf8` })
-  await fs.writeFile(`${params.outputDirPath}/SchemaRuntime.ts`, code.schemaRuntime, { encoding: `utf8` })
+  return code
 }

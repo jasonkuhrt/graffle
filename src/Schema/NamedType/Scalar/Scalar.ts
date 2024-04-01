@@ -8,12 +8,18 @@ export const ScalarKind = `Scalar`
 
 export type ScalarKind = typeof ScalarKind
 
-export type Codec<T = any> = {
-  encode: (value: T) => string
-  decode: (value: string) => T
+export type StandardScalarRuntimeTypes = boolean | number | string
+
+export const codec = <Decoded = any, Encoded extends StandardScalarRuntimeTypes = StandardScalarRuntimeTypes>(
+  codec: Codec<Decoded, Encoded>,
+) => codec
+
+export type Codec<Decoded = any, Encoded extends StandardScalarRuntimeTypes = StandardScalarRuntimeTypes> = {
+  encode: (value: Decoded) => Encoded
+  decode: (value: Encoded) => Decoded
 }
 
-export const scalar = <$Name extends string, $Codec extends Codec>(
+export const scalar = <$Name extends string, $Codec extends Codec<any, any>>(
   name: $Name,
   codec: $Codec,
 ): Scalar<$Name, $Codec> => ({
