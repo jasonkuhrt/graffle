@@ -32,6 +32,8 @@ export namespace $ {
 export namespace Root {
   export type Query = _.Object<'Query', {
     date: _.Field<_.Output.Nullable<$Scalar.Date>>
+    dateNonNull: _.Field<$Scalar.Date>
+    dateList: _.Field<_.Output.Nullable<_.Output.List<_.Output.Nullable<$Scalar.Date>>>>
     interface: _.Field<_.Output.Nullable<Interface.Interface>>
     id: _.Field<_.Output.Nullable<$Scalar.ID>>
     idNonNull: _.Field<$Scalar.ID>

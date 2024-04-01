@@ -2,6 +2,8 @@ scalar Date
 
 type Query {
 	date: Date
+	dateNonNull: Date!
+	dateList: [Date]
 	interface: Interface
 	id: ID
 	idNonNull: ID!

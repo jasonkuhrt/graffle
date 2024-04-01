@@ -77,36 +77,45 @@ const decodeCustomScalars = (index: ObjectType, documentQueryObject: object): ob
 
       const type = readMaybeThunk(indexField.type)
       const typeWithoutNonNull = Output.unwrapNonNull(type) as Output.Named | Output.List<any>
-
-      if (typeWithoutNonNull.kind === `list`) {
-        return [fieldName, v.map((v: any) => decodeCustomScalars(typeWithoutNonNull.type, v))]
-      }
-
-      if (typeWithoutNonNull.kind === `Scalar` && !(typeWithoutNonNull.name in standardScalarTypeNames)) {
-        return [fieldName, typeWithoutNonNull.codec.decode(v)]
-      }
-
-      if (typeWithoutNonNull.kind === `Object`) {
-        return [fieldName, decodeCustomScalars(typeWithoutNonNull, v)]
-      }
-
-      if (typeWithoutNonNull.kind === `Interface` || typeWithoutNonNull.kind === `Union`) {
-        const possibleObjects = typeWithoutNonNull.kind === `Interface`
-          ? typeWithoutNonNull.implementors
-          : typeWithoutNonNull.members
-        // todo handle aliases -- will require having the selection set available for reference too :/
-        // @ts-expect-error fixme
-        // eslint-disable-next-line
-        const ObjectType = possibleObjects.implementors.find((ObjectType) => {
-          if (v.__typename === ObjectType.fields.__typename.typeUnwrapped) return true
-          if (Object.keys(v).every(fieldName => ObjectType.fields[fieldName] !== undefined)) return true
-          return false
-        }) as undefined | ObjectType
-        if (!ObjectType) throw new Error(`Could not pick object for ${typeWithoutNonNull.kind} selection`)
-        return [fieldName, decodeCustomScalars(ObjectType, v)]
-      }
-
-      return [fieldName, v]
+      const v2 = decodeCustomScalarValue(typeWithoutNonNull, v)
+      return [fieldName, v2]
     }),
   )
+}
+
+const decodeCustomScalarValue = (indexType, v) => {
+  const type = readMaybeThunk(indexType)
+  const typeWithoutNonNull = Output.unwrapNonNull(type) as Output.Named | Output.List<any>
+
+  if (typeWithoutNonNull.kind === `list`) {
+    return v.map((v2: any) => {
+      return decodeCustomScalarValue(typeWithoutNonNull.type, v2)
+    })
+  }
+
+  if (typeWithoutNonNull.kind === `Scalar` && !(typeWithoutNonNull.name in standardScalarTypeNames)) {
+    return typeWithoutNonNull.codec.decode(v)
+  }
+
+  if (typeWithoutNonNull.kind === `Object`) {
+    return decodeCustomScalars(typeWithoutNonNull, v)
+  }
+
+  if (typeWithoutNonNull.kind === `Interface` || typeWithoutNonNull.kind === `Union`) {
+    const possibleObjects = typeWithoutNonNull.kind === `Interface`
+      ? typeWithoutNonNull.implementors
+      : typeWithoutNonNull.members
+    // todo handle aliases -- will require having the selection set available for reference too :/
+    // @ts-expect-error fixme
+    // eslint-disable-next-line
+    const ObjectType = possibleObjects.implementors.find((ObjectType) => {
+      if (v.__typename === ObjectType.fields.__typename.typeUnwrapped) return true
+      if (Object.keys(v).every(fieldName => ObjectType.fields[fieldName] !== undefined)) return true
+      return false
+    }) as undefined | ObjectType
+    if (!ObjectType) throw new Error(`Could not pick object for ${typeWithoutNonNull.kind} selection`)
+    return decodeCustomScalars(ObjectType, v)
+  }
+
+  return v
 }

@@ -5,6 +5,8 @@ export const ABCEnum = _.Enum(`ABCEnum`, [`A`, `B`, `C`])
 
 export const Query = _.Object(`Query`, {
   date: _.Output.field(_.Output.Nullable($Scalar.Date)),
+  dateNonNull: _.Output.field($Scalar.Date),
+  dateList: _.Output.field(_.Output.Nullable(_.Output.List(_.Output.Nullable($Scalar.Date)))),
   interface: _.Output.field(_.Output.Nullable(() => Interface)),
   id: _.Output.field(_.Output.Nullable($Scalar.ID)),
   idNonNull: _.Output.field($Scalar.ID),
