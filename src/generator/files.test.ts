@@ -8,8 +8,8 @@ test(`generates types from GraphQL SDL file`, async () => {
     outputDirPath: `./tests/ts/_/schema/generated`,
     code: {
       libraryPaths: {
-        scalars: `../../../../../src/Schema/__.js`,
-        schema: `../../../../../src/Schema/NamedType/Scalar/Scalar.js`,
+        schema: `../../../../../src/Schema/__.js`,
+        scalars: `../../../../../src/Schema/NamedType/Scalar/Scalar.js`,
       },
     },
   })

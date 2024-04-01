@@ -1,4 +1,4 @@
-import type * as _ from '../../../../../src/Schema/NamedType/Scalar/Scalar.js'
+import type * as _ from '../../../../../src/Schema/__.js'
 import type * as $Scalar from './Scalar.ts'
 
 export namespace $ {

@@ -1,4 +1,4 @@
-import { codec } from './Scalar.js'
+import { codec } from './codec.js'
 
 export const nativeScalarCodecs = {
   String: codec<string, string>({

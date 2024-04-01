@@ -1,4 +1,4 @@
-import * as _ from '../../../../../src/Schema/NamedType/Scalar/Scalar.js'
+import * as _ from '../../../../../src/Schema/__.js'
 import * as $Scalar from './Scalar.js'
 
 export const ABCEnum = _.Enum(`ABCEnum`, [`A`, `B`, `C`])
