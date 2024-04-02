@@ -9,8 +9,8 @@ dependencies:
     specifier: ^0.2.1
     version: 0.2.1
   '@dprint/typescript':
-    specifier: ^0.89.3
-    version: 0.89.3
+    specifier: ^0.90.0
+    version: 0.90.0
   '@graphql-typed-document-node/core':
     specifier: ^3.2.0
     version: 3.2.0(graphql@16.8.1)
@@ -301,8 +301,8 @@ packages:
     dev: false
     optional: true
 
-  /@dprint/typescript@0.89.3:
-    resolution: {integrity: sha512-/m6Ila0+5dKJfy2tF/ADmHrtUscYffpI/zfSUyj5DIpil8JEg6cfBERe5NUd73GrIYHuDnuC3Plg0dj52Z5sRw==}
+  /@dprint/typescript@0.90.0:
+    resolution: {integrity: sha512-8+iMqWEk0qKwSEj8qQCLoJHt29WY9q+EOG4rmemnVZtJmiqJyKliryegiIJ4xspThG05WZRLWwckVNorLWjEJA==}
     dev: false
 
   /@dprint/win32-x64@0.45.0:
