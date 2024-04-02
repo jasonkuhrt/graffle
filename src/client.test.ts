@@ -29,11 +29,46 @@ describe(`custom scalar`, () => {
       ctx.res({ body: { data: { dateList: [0, 1] } } })
       expect(await client().query({ dateList: true })).toEqual({ dateList: [new Date(0), new Date(1)] })
     })
-    test.todo(`query field in list non-null`)
-    test.todo(`object field`)
-    test.todo(`object field in union`)
-    test.todo(`object field in interface`)
+    test(`query field in list non-null`, async () => {
+      ctx.res({ body: { data: { dateList: [0, 1] } } })
+      expect(await client().query({ dateList: true })).toEqual({ dateList: [new Date(0), new Date(1)] })
+    })
+    test(`object field`, async () => {
+      ctx.res({ body: { data: { dateObject1: { date1: 0 } } } })
+      expect(await client().query({ dateObject1: { date1: true } })).toEqual({ dateObject1: { date1: new Date(0) } })
+    })
+    test(`object field in interface`, async () => {
+      ctx.res({ body: { data: { dateInterface1: { date1: 0 } } } })
+      expect(await client().query({ dateInterface1: { date1: true } })).toEqual({
+        dateInterface1: { date1: new Date(0) },
+      })
+    })
+    describe(`object field in union`, () => {
+      test(`case 1 with __typename`, async () => {
+        ctx.res({ body: { data: { dateUnion: { __typename: `DateObject1`, date1: 0 } } } })
+        expect(await client().query({ dateUnion: { __typename: true, onDateObject1: { date1: true } } })).toEqual({
+          dateUnion: { __typename: `DateObject1`, date1: new Date(0) },
+        })
+      })
+      test(`case 1 without __typename`, async () => {
+        ctx.res({ body: { data: { dateUnion: { date1: 0 } } } })
+        expect(await client().query({ dateUnion: { onDateObject1: { date1: true } } })).toEqual({
+          dateUnion: { date1: new Date(0) },
+        })
+      })
+      test(`case 2`, async () => {
+        ctx.res({ body: { data: { dateUnion: { date2: 0 } } } })
+        expect(await client().query({ dateUnion: { onDateObject1: { date1: true }, onDateObject2: { date2: true } } }))
+          .toEqual({ dateUnion: { date2: new Date(0) } })
+      })
+      test(`case 2 miss`, async () => {
+        ctx.res({ body: { data: { dateUnion: null } } })
+        expect(await client().query({ dateUnion: { onDateObject1: { date1: true } } }))
+          .toEqual({ dateUnion: null })
+      })
+    })
   })
+
   describe(`input`, () => {
     test.todo(`arg field`)
     test.todo(`input object field`)

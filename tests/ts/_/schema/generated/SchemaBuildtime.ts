@@ -9,6 +9,8 @@ export namespace $ {
       Subscription: null
     }
     objects: {
+      DateObject1: Object.DateObject1
+      DateObject2: Object.DateObject2
       Foo: Object.Foo
       Bar: Object.Bar
       ObjectNested: Object.ObjectNested
@@ -19,6 +21,7 @@ export namespace $ {
       Object2ImplementingInterface: Object.Object2ImplementingInterface
     }
     unions: {
+      DateUnion: Union.DateUnion
       FooBarUnion: Union.FooBarUnion
       lowerCaseUnion: Union.lowerCaseUnion
     }
@@ -34,6 +37,10 @@ export namespace Root {
     date: _.Field<_.Output.Nullable<$Scalar.Date>>
     dateNonNull: _.Field<$Scalar.Date>
     dateList: _.Field<_.Output.Nullable<_.Output.List<_.Output.Nullable<$Scalar.Date>>>>
+    dateObject1: _.Field<_.Output.Nullable<Object.DateObject1>>
+    dateUnion: _.Field<_.Output.Nullable<Union.DateUnion>>
+    dateInterface1: _.Field<_.Output.Nullable<Interface.DateInterface1>>
+    dateListNonNull: _.Field<_.Output.List<$Scalar.Date>>
     interface: _.Field<_.Output.Nullable<Interface.Interface>>
     id: _.Field<_.Output.Nullable<$Scalar.ID>>
     idNonNull: _.Field<$Scalar.ID>
@@ -144,6 +151,10 @@ export namespace InputObject {
 // ------------------------------------------------------------ //
 
 export namespace Interface {
+  export type DateInterface1 = _.Interface<'DateInterface1', {
+    date1: _.Field<_.Output.Nullable<$Scalar.Date>>
+  }, [Object.DateObject1]>
+
   export type Interface = _.Interface<'Interface', {
     id: _.Field<_.Output.Nullable<$Scalar.ID>>
   }, [Object.Object1ImplementingInterface, Object.Object2ImplementingInterface]>
@@ -154,6 +165,14 @@ export namespace Interface {
 // ------------------------------------------------------------ //
 
 export namespace Object {
+  export type DateObject1 = _.Object<'DateObject1', {
+    date1: _.Field<_.Output.Nullable<$Scalar.Date>>
+  }>
+
+  export type DateObject2 = _.Object<'DateObject2', {
+    date2: _.Field<_.Output.Nullable<$Scalar.Date>>
+  }>
+
   /**
    * Object documentation.
    */
@@ -207,6 +226,8 @@ export namespace Object {
 // ------------------------------------------------------------ //
 
 export namespace Union {
+  export type DateUnion = _.Union<'DateUnion', [Object.DateObject1, Object.DateObject2]>
+
   /**
    * Union documentation.
    */

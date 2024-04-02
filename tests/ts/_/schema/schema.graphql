@@ -4,6 +4,10 @@ type Query {
 	date: Date
 	dateNonNull: Date!
 	dateList: [Date]
+	dateObject1: DateObject1
+	dateUnion: DateUnion
+	dateInterface1: DateInterface1
+	dateListNonNull: [Date!]!
 	interface: Interface
 	id: ID
 	idNonNull: ID!
@@ -29,6 +33,20 @@ type Query {
 	"""
 	abcEnum: ABCEnum
 	lowerCaseUnion: lowerCaseUnion
+}
+
+interface DateInterface1 {
+	date1: Date
+}
+
+union DateUnion = DateObject1 | DateObject2
+
+type DateObject1 implements DateInterface1 {
+	date1: Date
+}
+
+type DateObject2 {
+	date2: Date
 }
 
 input InputObject {

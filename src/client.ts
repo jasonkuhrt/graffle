@@ -84,6 +84,8 @@ const decodeCustomScalars = (index: ObjectType, documentQueryObject: object): ob
 }
 
 const decodeCustomScalarValue = (indexType, v) => {
+  if (v === null) return null
+
   const type = readMaybeThunk(indexType)
   const typeWithoutNonNull = Output.unwrapNonNull(type) as Output.Named | Output.List<any>
 
@@ -108,8 +110,8 @@ const decodeCustomScalarValue = (indexType, v) => {
     // todo handle aliases -- will require having the selection set available for reference too :/
     // @ts-expect-error fixme
     // eslint-disable-next-line
-    const ObjectType = possibleObjects.implementors.find((ObjectType) => {
-      if (v.__typename === ObjectType.fields.__typename.typeUnwrapped) return true
+    const ObjectType = possibleObjects.find((ObjectType) => {
+      if (v.__typename === ObjectType.fields.__typename.type.type) return true
       if (Object.keys(v).every(fieldName => ObjectType.fields[fieldName] !== undefined)) return true
       return false
     }) as undefined | ObjectType

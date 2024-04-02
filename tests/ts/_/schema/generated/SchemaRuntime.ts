@@ -7,6 +7,10 @@ export const Query = _.Object(`Query`, {
   date: _.Output.field(_.Output.Nullable($Scalar.Date)),
   dateNonNull: _.Output.field($Scalar.Date),
   dateList: _.Output.field(_.Output.Nullable(_.Output.List(_.Output.Nullable($Scalar.Date)))),
+  dateObject1: _.Output.field(_.Output.Nullable(() => DateObject1)),
+  dateUnion: _.Output.field(_.Output.Nullable(() => DateUnion)),
+  dateInterface1: _.Output.field(_.Output.Nullable(() => DateInterface1)),
+  dateListNonNull: _.Output.field(_.Output.List($Scalar.Date)),
   interface: _.Output.field(_.Output.Nullable(() => Interface)),
   id: _.Output.field(_.Output.Nullable($Scalar.ID)),
   idNonNull: _.Output.field($Scalar.ID),
@@ -31,6 +35,14 @@ export const Query = _.Object(`Query`, {
   fooBarUnion: _.Output.field(_.Output.Nullable(() => FooBarUnion)),
   abcEnum: _.Output.field(_.Output.Nullable(ABCEnum)),
   lowerCaseUnion: _.Output.field(_.Output.Nullable(() => lowerCaseUnion)),
+})
+
+export const DateObject1 = _.Object(`DateObject1`, {
+  date1: _.Output.field(_.Output.Nullable($Scalar.Date)),
+})
+
+export const DateObject2 = _.Object(`DateObject2`, {
+  date2: _.Output.field(_.Output.Nullable($Scalar.Date)),
 })
 
 export const Foo = _.Object(`Foo`, {
@@ -72,10 +84,17 @@ export const Object2ImplementingInterface = _.Object(`Object2ImplementingInterfa
   boolean: _.Output.field(_.Output.Nullable($Scalar.Boolean)),
 })
 
+export const DateUnion = _.Union(`DateUnion`, [DateObject1, DateObject2])
+
 export const FooBarUnion = _.Union(`FooBarUnion`, [Foo, Bar])
 
 export const lowerCaseUnion = _.Union(`lowerCaseUnion`, [lowerCaseObject, lowerCaseObject2])
 
+export const DateInterface1 = _.Interface(
+  `DateInterface1`,
+  { date1: _.Output.field(_.Output.Nullable($Scalar.Date)) },
+  [DateObject1],
+)
 export const Interface = _.Interface(`Interface`, { id: _.Output.field(_.Output.Nullable($Scalar.ID)) }, [
   Object1ImplementingInterface,
   Object2ImplementingInterface,
@@ -88,6 +107,8 @@ export const $Index = {
     Subscription: null,
   },
   objects: {
+    DateObject1,
+    DateObject2,
     Foo,
     Bar,
     ObjectNested,
@@ -98,6 +119,7 @@ export const $Index = {
     Object2ImplementingInterface,
   },
   unions: {
+    DateUnion,
     FooBarUnion,
     lowerCaseUnion,
   },
