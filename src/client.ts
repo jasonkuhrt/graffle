@@ -1,4 +1,5 @@
 import request from './entrypoints/main.js'
+import type { Exact } from './lib/prelude.js'
 import type { ResultSet } from './ResultSet/__.js'
 import type { Schema } from './Schema/__.js'
 import { SelectionSet } from './SelectionSet/__.js'
@@ -9,14 +10,14 @@ export type Client<$SchemaIndex extends Schema.Index> =
       $SchemaIndex['Root']['Query'] extends null
         ? unknown
         : {
-            query: <$SelectionSet extends SelectionSet.Query<$SchemaIndex>>(selectionSet: $SelectionSet) => Promise<ResultSet.Query<$SelectionSet, $SchemaIndex>>
+            query: <$SelectionSet extends object>(selectionSet: Exact<$SelectionSet, SelectionSet.Query<$SchemaIndex>>) => Promise<ResultSet.Query<$SelectionSet, $SchemaIndex>>
           }
     )
   & (
       $SchemaIndex['Root']['Mutation'] extends null
       ? unknown
       : {
-          mutation: <$SelectionSet extends SelectionSet.Mutation<$SchemaIndex>>(selectionSet: $SelectionSet) => Promise<ResultSet.Mutation<$SelectionSet,$SchemaIndex>>
+          mutation: <$SelectionSet extends object>(selectionSet: Exact<$SelectionSet, SelectionSet.Mutation<$SchemaIndex>>) => Promise<ResultSet.Mutation<$SelectionSet,$SchemaIndex>>
         }
     )
 // todo

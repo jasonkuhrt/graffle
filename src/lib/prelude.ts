@@ -1,3 +1,4 @@
+/* eslint-disable */
 export type RemoveIndex<T> = {
   [K in keyof T as string extends K ? never : number extends K ? never : K]: T[K]
 }
@@ -88,9 +89,15 @@ export const entries = <T extends Record<string, any>>(obj: T) => Object.entries
 
 export const values = <T extends Record<string, unknown>>(obj: T): T[keyof T][] => Object.values(obj) as T[keyof T][]
 
-export type Exact<A, W> =
-  | (A extends unknown ? (W extends A ? { [K in keyof A]: Exact<A[K], W[K]> } : W) : never)
-  | (A extends Narrowable ? A : never)
+// dprint-ignore
+export type Exact<$Value, $Constraint> =
+  (
+    $Value extends unknown  ? $Constraint extends $Value   ?  {} extends $Value    ?  $Constraint :
+                                                                                      { [K in keyof $Value]: Exact<$Value[K], $Constraint[K]> } :
+                                                              $Constraint :
+                              never
+  )
+  | ($Value extends Narrowable ? $Value : never)
 
 export type Narrowable = string | number | bigint | boolean | []
 
