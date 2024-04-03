@@ -53,7 +53,7 @@ const indicatorOrSelectionSet = (ss: Indicator | SS): string => {
       label: typeof $stream === `boolean` ? undefined : $stream.label,
       initialCount: typeof $stream === `boolean` ? undefined : $stream.initialCount,
     }
-    directives += `@defer(${directiveArgs(config)})`
+    directives += `@stream(${directiveArgs(config)})`
   }
 
   if ($defer !== undefined) {
