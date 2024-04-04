@@ -23,6 +23,13 @@ export interface Args<$Fields extends any = any> {
   fields: $Fields
 }
 
+export const Args = <F>(fields: F): Args<F> => {
+  return {
+    allOptional: false,
+    fields,
+  }
+}
+
 export type Field<$Type extends any = any, $Args extends Args | null = Args | null> = {
   typeUnwrapped: Type.Output.Unwrap<$Type>
   type: $Type

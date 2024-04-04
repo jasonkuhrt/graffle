@@ -3,38 +3,9 @@ import * as $Scalar from './Scalar.js'
 
 export const ABCEnum = _.Enum(`ABCEnum`, [`A`, `B`, `C`])
 
-export const Query = _.Object(`Query`, {
-  date: _.Output.field(_.Output.Nullable($Scalar.Date)),
-  dateNonNull: _.Output.field($Scalar.Date),
-  dateList: _.Output.field(_.Output.Nullable(_.Output.List(_.Output.Nullable($Scalar.Date)))),
-  dateObject1: _.Output.field(_.Output.Nullable(() => DateObject1)),
-  dateUnion: _.Output.field(_.Output.Nullable(() => DateUnion)),
-  dateInterface1: _.Output.field(_.Output.Nullable(() => DateInterface1)),
-  dateListNonNull: _.Output.field(_.Output.List($Scalar.Date)),
-  interface: _.Output.field(_.Output.Nullable(() => Interface)),
-  id: _.Output.field(_.Output.Nullable($Scalar.ID)),
-  idNonNull: _.Output.field($Scalar.ID),
-  string: _.Output.field(_.Output.Nullable($Scalar.String)),
-  stringWithRequiredArg: _.Output.field(_.Output.Nullable($Scalar.String)),
-  stringWithArgs: _.Output.field(_.Output.Nullable($Scalar.String)),
-  stringWithArgEnum: _.Output.field(_.Output.Nullable($Scalar.String)),
-  stringWithListArg: _.Output.field(_.Output.Nullable($Scalar.String)),
-  stringWithListArgRequired: _.Output.field(_.Output.Nullable($Scalar.String)),
-  stringWithArgInputObject: _.Output.field(_.Output.Nullable($Scalar.String)),
-  stringWithArgInputObjectRequired: _.Output.field(_.Output.Nullable($Scalar.String)),
-  listListIntNonNull: _.Output.field(_.Output.List(_.Output.List($Scalar.Int))),
-  listListInt: _.Output.field(
-    _.Output.Nullable(_.Output.List(_.Output.Nullable(_.Output.List(_.Output.Nullable($Scalar.Int))))),
-  ),
-  listInt: _.Output.field(_.Output.Nullable(_.Output.List(_.Output.Nullable($Scalar.Int)))),
-  listIntNonNull: _.Output.field(_.Output.List($Scalar.Int)),
-  object: _.Output.field(_.Output.Nullable(() => Object1)),
-  objectNonNull: _.Output.field(() => Object1),
-  objectNested: _.Output.field(_.Output.Nullable(() => ObjectNested)),
-  objectWithArgs: _.Output.field(_.Output.Nullable(() => Object1)),
-  fooBarUnion: _.Output.field(_.Output.Nullable(() => FooBarUnion)),
-  abcEnum: _.Output.field(_.Output.Nullable(ABCEnum)),
-  lowerCaseUnion: _.Output.field(_.Output.Nullable(() => lowerCaseUnion)),
+export const InputObject = _.InputObject(`InputObject`, {
+  id: _.Input.field(_.Input.Nullable($Scalar.ID)),
+  idRequired: _.Input.field($Scalar.ID),
 })
 
 export const DateObject1 = _.Object(`DateObject1`, {
@@ -99,6 +70,68 @@ export const Interface = _.Interface(`Interface`, { id: _.Output.field(_.Output.
   Object1ImplementingInterface,
   Object2ImplementingInterface,
 ])
+
+export const Query = _.Object(`Query`, {
+  date: _.Output.field(_.Output.Nullable($Scalar.Date)),
+  dateNonNull: _.Output.field($Scalar.Date),
+  dateList: _.Output.field(_.Output.Nullable(_.Output.List(_.Output.Nullable($Scalar.Date)))),
+  dateObject1: _.Output.field(_.Output.Nullable(() => DateObject1)),
+  dateUnion: _.Output.field(_.Output.Nullable(() => DateUnion)),
+  dateInterface1: _.Output.field(_.Output.Nullable(() => DateInterface1)),
+  dateListNonNull: _.Output.field(_.Output.List($Scalar.Date)),
+  dateArg: _.Output.field(_.Output.Nullable($Scalar.Date), _.Args({ date: _.Input.Nullable($Scalar.Date) })),
+  interface: _.Output.field(_.Output.Nullable(() => Interface)),
+  id: _.Output.field(_.Output.Nullable($Scalar.ID)),
+  idNonNull: _.Output.field($Scalar.ID),
+  string: _.Output.field(_.Output.Nullable($Scalar.String)),
+  stringWithRequiredArg: _.Output.field(_.Output.Nullable($Scalar.String), _.Args({ string: $Scalar.String })),
+  stringWithArgs: _.Output.field(
+    _.Output.Nullable($Scalar.String),
+    _.Args({
+      string: _.Input.Nullable($Scalar.String),
+      int: _.Input.Nullable($Scalar.Int),
+      float: _.Input.Nullable($Scalar.Float),
+      boolean: _.Input.Nullable($Scalar.Boolean),
+      id: _.Input.Nullable($Scalar.ID),
+    }),
+  ),
+  stringWithArgEnum: _.Output.field(_.Output.Nullable($Scalar.String), _.Args({ ABCEnum: _.Input.Nullable(ABCEnum) })),
+  stringWithListArg: _.Output.field(
+    _.Output.Nullable($Scalar.String),
+    _.Args({ ints: _.Input.Nullable(_.Input.List(_.Input.Nullable($Scalar.Int))) }),
+  ),
+  stringWithListArgRequired: _.Output.field(
+    _.Output.Nullable($Scalar.String),
+    _.Args({ ints: _.Input.List(_.Input.Nullable($Scalar.Int)) }),
+  ),
+  stringWithArgInputObject: _.Output.field(
+    _.Output.Nullable($Scalar.String),
+    _.Args({ input: _.Input.Nullable(InputObject) }),
+  ),
+  stringWithArgInputObjectRequired: _.Output.field(_.Output.Nullable($Scalar.String), _.Args({ input: InputObject })),
+  listListIntNonNull: _.Output.field(_.Output.List(_.Output.List($Scalar.Int))),
+  listListInt: _.Output.field(
+    _.Output.Nullable(_.Output.List(_.Output.Nullable(_.Output.List(_.Output.Nullable($Scalar.Int))))),
+  ),
+  listInt: _.Output.field(_.Output.Nullable(_.Output.List(_.Output.Nullable($Scalar.Int)))),
+  listIntNonNull: _.Output.field(_.Output.List($Scalar.Int)),
+  object: _.Output.field(_.Output.Nullable(() => Object1)),
+  objectNonNull: _.Output.field(() => Object1),
+  objectNested: _.Output.field(_.Output.Nullable(() => ObjectNested)),
+  objectWithArgs: _.Output.field(
+    _.Output.Nullable(() => Object1),
+    _.Args({
+      string: _.Input.Nullable($Scalar.String),
+      int: _.Input.Nullable($Scalar.Int),
+      float: _.Input.Nullable($Scalar.Float),
+      boolean: _.Input.Nullable($Scalar.Boolean),
+      id: _.Input.Nullable($Scalar.ID),
+    }),
+  ),
+  fooBarUnion: _.Output.field(_.Output.Nullable(() => FooBarUnion)),
+  abcEnum: _.Output.field(_.Output.Nullable(ABCEnum)),
+  lowerCaseUnion: _.Output.field(_.Output.Nullable(() => lowerCaseUnion)),
+})
 
 export const $Index = {
   Root: {

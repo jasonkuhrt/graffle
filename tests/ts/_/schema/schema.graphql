@@ -8,6 +8,7 @@ type Query {
 	dateUnion: DateUnion
 	dateInterface1: DateInterface1
 	dateListNonNull: [Date!]!
+	dateArg(date: Date): Date
 	interface: Interface
 	id: ID
 	idNonNull: ID!

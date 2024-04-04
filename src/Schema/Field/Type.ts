@@ -1,9 +1,8 @@
 import type { TSError } from '../../lib/TSError.js'
 import type { NamedType } from '../NamedType/__.js'
-import type { Args } from './Field.js'
+import type { Args, Field } from './Field.js'
 
 const buildTimeOnly: any = undefined
-
 export namespace Base {
   export interface Nullable<$Type> {
     kind: 'nullable'
@@ -53,8 +52,8 @@ export namespace Output {
                                                   TSError<'Unwrap', 'Unknown $Type', { $Type: $Type }>
   // dprint-ignore
   export type UnwrapNonNull<$Type> =
-  $Type extends Nullable<infer $innerType>  ? UnwrapNonNull<$innerType>
-                                            : $Type
+    $Type extends Nullable<infer $innerType>  ? UnwrapNonNull<$innerType>
+                                              : $Type
 
   export const unwrapNonNull = <$Type extends Any>(type: $Type): UnwrapNonNull<$Type> => {
     if (type.kind === `nullable`) return type.type
@@ -89,6 +88,32 @@ export namespace Input {
   export type Nullable<$InnerType extends Any = Any> = Base.Nullable<$InnerType>
   export type List<$InnerType extends Any = Any> = Base.List<$InnerType>
   export type Any = List<any> | Nullable<any> | NamedType.AnyInput
+
+  export const Nullable = <$InnerType extends Any>(type: MaybeThunk<$InnerType>): Nullable<$InnerType> => ({
+    kind: `nullable`,
+    type,
+  })
+
+  export const List = <$InnerType extends Any>(type: $InnerType): List<$InnerType> => ({
+    kind: `list`,
+    type,
+  })
+
+  export const field = <$Type extends Any, $Args extends Args | null = null>(type: $Type): Field<$Type> => {
+    return {
+      type,
+    }
+  }
+
+  // dprint-ignore
+  type UnwrapNonNull<$Type> =
+    $Type extends Nullable<infer $innerType>  ? UnwrapNonNull<$innerType>
+                                              : $Type
+
+  export const unwrapNonNull = <$Type extends Any>(type: $Type): UnwrapNonNull<$Type> => {
+    if (type.kind === `nullable`) return type.type
+    return type as UnwrapNonNull<$Type>
+  }
 }
 
 type MaybeThunk<$Type> = $Type | Thunk<$Type>

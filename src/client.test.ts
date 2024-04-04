@@ -63,14 +63,28 @@ describe(`custom scalar`, () => {
       })
       test(`case 2 miss`, async () => {
         ctx.res({ body: { data: { dateUnion: null } } })
-        expect(await client().query({ dateUnion: { onDateObject1: { date1: true } } }))
-          .toEqual({ dateUnion: null })
+        expect(await client().query({ dateUnion: { onDateObject1: { date1: true } } })).toEqual({ dateUnion: null }) // dprint-ignore
       })
     })
   })
 
   describe(`input`, () => {
-    test.todo(`arg field`)
+    test(`arg field`, async () => {
+      ctx.res({ body: { data: { dateArg: new Date(0) } } })
+      const client = create<$.Index>({
+        url: ctx.url,
+        schemaIndex,
+        hooks: {
+          documentEncode: (input, run) => {
+            const result = run(input)
+            expect(result.dateArg.$args.date).toEqual(new Date(0).getTime())
+            return result
+          },
+        },
+      })
+      ctx.res({ body: {} })
+      await client.query({ dateArg: { $args: { date: new Date(0) } } })
+    })
     test.todo(`input object field`)
   })
 })

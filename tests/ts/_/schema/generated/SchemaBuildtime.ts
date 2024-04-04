@@ -41,6 +41,12 @@ export namespace Root {
     dateUnion: _.Field<_.Output.Nullable<Union.DateUnion>>
     dateInterface1: _.Field<_.Output.Nullable<Interface.DateInterface1>>
     dateListNonNull: _.Field<_.Output.List<$Scalar.Date>>
+    dateArg: _.Field<
+      _.Output.Nullable<$Scalar.Date>,
+      _.Args<{
+        date: _.Input.Nullable<$Scalar.Date>
+      }>
+    >
     interface: _.Field<_.Output.Nullable<Interface.Interface>>
     id: _.Field<_.Output.Nullable<$Scalar.ID>>
     idNonNull: _.Field<$Scalar.ID>
