@@ -93,6 +93,10 @@ describe(`custom scalar`, () => {
       const client = clientExpected((doc) => expect(doc.dateArg.$args.date).toEqual(new Date(0).getTime()))
       await client.query({ dateArg: { $args: { date: new Date(0) } } })
     })
+    test.todo('arg field in non-null')
+    test.todo('arg field in list')
+    test.todo('arg field in non-null list')
+    test.todo('arg field in non-null list non-null')
     test(`input object field`, async () => {
       const client = clientExpected((doc) => {
         expect(doc.dateArgInputObject.$args.input.dateRequired).toEqual(new Date(0).getTime())

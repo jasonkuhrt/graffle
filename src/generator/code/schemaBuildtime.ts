@@ -125,14 +125,14 @@ const concreteRenderers = defineConcreteRenderers({
       Code.export$(
         Code.type(
           node.name,
-          `_.Enum<${Code.quote(node.name)}, ${Code.tuple(node.getValues().map((_) => Code.quote(_.name)))} >`,
+          `$.Enum<${Code.quote(node.name)}, ${Code.tuple(node.getValues().map((_) => Code.quote(_.name)))} >`,
         ),
       ),
     ),
   GraphQLInputObjectType: (config, node) =>
     Code.TSDoc(
       getDocumentation(config, node),
-      Code.export$(Code.type(node.name, `_.InputObject<${Code.quote(node.name)}, ${renderInputFields(config, node)}>`)),
+      Code.export$(Code.type(node.name, `$.InputObject<${Code.quote(node.name)}, ${renderInputFields(config, node)}>`)),
     ),
   GraphQLInterfaceType: (config, node) => {
     const implementors = config.typeMapByKind.GraphQLObjectType.filter(_ =>
@@ -142,7 +142,7 @@ const concreteRenderers = defineConcreteRenderers({
       getDocumentation(config, node),
       Code.export$(Code.type(
         node.name,
-        `_.Interface<${Code.quote(node.name)}, ${renderOutputFields(config, node)}, ${
+        `$.Interface<${Code.quote(node.name)}, ${renderOutputFields(config, node)}, ${
           Code.tuple(implementors.map(_ => `Object.${_.name}`))
         }>`,
       )),
@@ -151,7 +151,7 @@ const concreteRenderers = defineConcreteRenderers({
   GraphQLObjectType: (config, node) =>
     Code.TSDoc(
       getDocumentation(config, node),
-      Code.export$(Code.type(node.name, `_.Object<${Code.quote(node.name)}, ${renderOutputFields(config, node)}>`)),
+      Code.export$(Code.type(node.name, `$.Object<${Code.quote(node.name)}, ${renderOutputFields(config, node)}>`)),
     ),
   GraphQLScalarType: () => ``,
   GraphQLUnionType: (config, node) =>
@@ -160,7 +160,7 @@ const concreteRenderers = defineConcreteRenderers({
       Code.export$(
         Code.type(
           node.name,
-          `_.Union<${Code.quote(node.name)},${
+          `$.Union<${Code.quote(node.name)},${
             Code.tuple(
               node
                 .getTypes()
@@ -253,7 +253,7 @@ const renderOutputField = (config: Config, field: AnyField): string => {
     ? renderArgs(config, field.args)
     : null
 
-  return `_.Field<${type}${args ? `, ${args}` : ``}>`
+  return `$.Field<${type}${args ? `, ${args}` : ``}>`
 }
 
 const renderInputField = (config: Config, field: AnyField): string => {
@@ -269,14 +269,14 @@ const buildType = (direction: 'input' | 'output', config: Config, node: AnyClass
     // const namedTypeCode = `_.Named<${namedTypeReference}>`
     const namedTypeCode = namedTypeReference
     return nullable
-      ? `_.${ns}.Nullable<${namedTypeCode}>`
+      ? `$.${ns}.Nullable<${namedTypeCode}>`
       : namedTypeCode
   }
 
   if (isListType(nodeInner)) {
-    const fieldType = `_.${ns}.List<${buildType(direction, config, nodeInner.ofType)}>` as any as string
+    const fieldType = `$.${ns}.List<${buildType(direction, config, nodeInner.ofType)}>` as any as string
     return nullable
-      ? `_.${ns}.Nullable<${fieldType}>`
+      ? `$.${ns}.Nullable<${fieldType}>`
       : fieldType
   }
 
@@ -285,7 +285,7 @@ const buildType = (direction: 'input' | 'output', config: Config, node: AnyClass
 
 const renderArgs = (config: Config, args: readonly GraphQLArgument[]) => {
   let hasRequiredArgs = false
-  const argsRendered = `_.Args<${
+  const argsRendered = `$.Args<${
     Code.object(
       Code.fields(
         args.map((arg) => {
@@ -307,7 +307,7 @@ const renderArgs = (config: Config, args: readonly GraphQLArgument[]) => {
 export const generateSchemaBuildtime = (config: Config) => {
   let code = ``
 
-  code += `import type * as _ from '${config.libraryPaths.schema}'\n`
+  code += `import type * as $ from '${config.libraryPaths.schema}'\n`
   code += `import type * as $Scalar from './Scalar.ts'\n`
   code += `\n\n`
 

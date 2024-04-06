@@ -1,7 +1,7 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`generates types from GraphQL SDL file 1`] = `
-"import type * as _ from '../../../../../src/Schema/__.js'
+"import type * as $ from '../../../../../src/Schema/__.js'
 import type * as $Scalar from './Scalar.ts'
 
 // ------------------------------------------------------------ //
@@ -9,101 +9,101 @@ import type * as $Scalar from './Scalar.ts'
 // ------------------------------------------------------------ //
 
 export namespace Root {
-  export type Query = _.Object<'Query', {
-    date: _.Field<_.Output.Nullable<$Scalar.Date>>
-    dateNonNull: _.Field<$Scalar.Date>
-    dateList: _.Field<_.Output.Nullable<_.Output.List<_.Output.Nullable<$Scalar.Date>>>>
-    dateObject1: _.Field<_.Output.Nullable<Object.DateObject1>>
-    dateUnion: _.Field<_.Output.Nullable<Union.DateUnion>>
-    dateInterface1: _.Field<_.Output.Nullable<Interface.DateInterface1>>
-    dateListNonNull: _.Field<_.Output.List<$Scalar.Date>>
-    dateArg: _.Field<
-      _.Output.Nullable<$Scalar.Date>,
-      _.Args<{
-        date: _.Input.Nullable<$Scalar.Date>
+  export type Query = $.Object<'Query', {
+    date: $.Field<$.Output.Nullable<$Scalar.Date>>
+    dateNonNull: $.Field<$Scalar.Date>
+    dateList: $.Field<$.Output.Nullable<$.Output.List<$.Output.Nullable<$Scalar.Date>>>>
+    dateObject1: $.Field<$.Output.Nullable<Object.DateObject1>>
+    dateUnion: $.Field<$.Output.Nullable<Union.DateUnion>>
+    dateInterface1: $.Field<$.Output.Nullable<Interface.DateInterface1>>
+    dateListNonNull: $.Field<$.Output.List<$Scalar.Date>>
+    dateArg: $.Field<
+      $.Output.Nullable<$Scalar.Date>,
+      $.Args<{
+        date: $.Input.Nullable<$Scalar.Date>
       }>
     >
-    dateArgInputObject: _.Field<
-      _.Output.Nullable<$Scalar.Date>,
-      _.Args<{
-        input: _.Input.Nullable<InputObject.InputObject>
+    dateArgInputObject: $.Field<
+      $.Output.Nullable<$Scalar.Date>,
+      $.Args<{
+        input: $.Input.Nullable<InputObject.InputObject>
       }>
     >
-    interface: _.Field<_.Output.Nullable<Interface.Interface>>
-    id: _.Field<_.Output.Nullable<$Scalar.ID>>
-    idNonNull: _.Field<$Scalar.ID>
-    string: _.Field<_.Output.Nullable<$Scalar.String>>
-    stringWithRequiredArg: _.Field<
-      _.Output.Nullable<$Scalar.String>,
-      _.Args<{
+    interface: $.Field<$.Output.Nullable<Interface.Interface>>
+    id: $.Field<$.Output.Nullable<$Scalar.ID>>
+    idNonNull: $.Field<$Scalar.ID>
+    string: $.Field<$.Output.Nullable<$Scalar.String>>
+    stringWithRequiredArg: $.Field<
+      $.Output.Nullable<$Scalar.String>,
+      $.Args<{
         string: $Scalar.String
       }>
     >
-    stringWithArgs: _.Field<
-      _.Output.Nullable<$Scalar.String>,
-      _.Args<{
-        string: _.Input.Nullable<$Scalar.String>
-        int: _.Input.Nullable<$Scalar.Int>
-        float: _.Input.Nullable<$Scalar.Float>
-        boolean: _.Input.Nullable<$Scalar.Boolean>
-        id: _.Input.Nullable<$Scalar.ID>
+    stringWithArgs: $.Field<
+      $.Output.Nullable<$Scalar.String>,
+      $.Args<{
+        string: $.Input.Nullable<$Scalar.String>
+        int: $.Input.Nullable<$Scalar.Int>
+        float: $.Input.Nullable<$Scalar.Float>
+        boolean: $.Input.Nullable<$Scalar.Boolean>
+        id: $.Input.Nullable<$Scalar.ID>
       }>
     >
-    stringWithArgEnum: _.Field<
-      _.Output.Nullable<$Scalar.String>,
-      _.Args<{
-        ABCEnum: _.Input.Nullable<Enum.ABCEnum>
+    stringWithArgEnum: $.Field<
+      $.Output.Nullable<$Scalar.String>,
+      $.Args<{
+        ABCEnum: $.Input.Nullable<Enum.ABCEnum>
       }>
     >
-    stringWithListArg: _.Field<
-      _.Output.Nullable<$Scalar.String>,
-      _.Args<{
-        ints: _.Input.Nullable<_.Input.List<_.Input.Nullable<$Scalar.Int>>>
+    stringWithListArg: $.Field<
+      $.Output.Nullable<$Scalar.String>,
+      $.Args<{
+        ints: $.Input.Nullable<$.Input.List<$.Input.Nullable<$Scalar.Int>>>
       }>
     >
-    stringWithListArgRequired: _.Field<
-      _.Output.Nullable<$Scalar.String>,
-      _.Args<{
-        ints: _.Input.List<_.Input.Nullable<$Scalar.Int>>
+    stringWithListArgRequired: $.Field<
+      $.Output.Nullable<$Scalar.String>,
+      $.Args<{
+        ints: $.Input.List<$.Input.Nullable<$Scalar.Int>>
       }>
     >
-    stringWithArgInputObject: _.Field<
-      _.Output.Nullable<$Scalar.String>,
-      _.Args<{
-        input: _.Input.Nullable<InputObject.InputObject>
+    stringWithArgInputObject: $.Field<
+      $.Output.Nullable<$Scalar.String>,
+      $.Args<{
+        input: $.Input.Nullable<InputObject.InputObject>
       }>
     >
-    stringWithArgInputObjectRequired: _.Field<
-      _.Output.Nullable<$Scalar.String>,
-      _.Args<{
+    stringWithArgInputObjectRequired: $.Field<
+      $.Output.Nullable<$Scalar.String>,
+      $.Args<{
         input: InputObject.InputObject
       }>
     >
-    listListIntNonNull: _.Field<_.Output.List<_.Output.List<$Scalar.Int>>>
-    listListInt: _.Field<
-      _.Output.Nullable<_.Output.List<_.Output.Nullable<_.Output.List<_.Output.Nullable<$Scalar.Int>>>>>
+    listListIntNonNull: $.Field<$.Output.List<$.Output.List<$Scalar.Int>>>
+    listListInt: $.Field<
+      $.Output.Nullable<$.Output.List<$.Output.Nullable<$.Output.List<$.Output.Nullable<$Scalar.Int>>>>>
     >
-    listInt: _.Field<_.Output.Nullable<_.Output.List<_.Output.Nullable<$Scalar.Int>>>>
-    listIntNonNull: _.Field<_.Output.List<$Scalar.Int>>
-    object: _.Field<_.Output.Nullable<Object.Object1>>
-    objectNonNull: _.Field<Object.Object1>
-    objectNested: _.Field<_.Output.Nullable<Object.ObjectNested>>
-    objectWithArgs: _.Field<
-      _.Output.Nullable<Object.Object1>,
-      _.Args<{
-        string: _.Input.Nullable<$Scalar.String>
-        int: _.Input.Nullable<$Scalar.Int>
-        float: _.Input.Nullable<$Scalar.Float>
-        boolean: _.Input.Nullable<$Scalar.Boolean>
-        id: _.Input.Nullable<$Scalar.ID>
+    listInt: $.Field<$.Output.Nullable<$.Output.List<$.Output.Nullable<$Scalar.Int>>>>
+    listIntNonNull: $.Field<$.Output.List<$Scalar.Int>>
+    object: $.Field<$.Output.Nullable<Object.Object1>>
+    objectNonNull: $.Field<Object.Object1>
+    objectNested: $.Field<$.Output.Nullable<Object.ObjectNested>>
+    objectWithArgs: $.Field<
+      $.Output.Nullable<Object.Object1>,
+      $.Args<{
+        string: $.Input.Nullable<$Scalar.String>
+        int: $.Input.Nullable<$Scalar.Int>
+        float: $.Input.Nullable<$Scalar.Float>
+        boolean: $.Input.Nullable<$Scalar.Boolean>
+        id: $.Input.Nullable<$Scalar.ID>
       }>
     >
-    fooBarUnion: _.Field<_.Output.Nullable<Union.FooBarUnion>>
+    fooBarUnion: $.Field<$.Output.Nullable<Union.FooBarUnion>>
     /**
      * Query enum field documentation.
      */
-    abcEnum: _.Field<_.Output.Nullable<Enum.ABCEnum>>
-    lowerCaseUnion: _.Field<_.Output.Nullable<Union.lowerCaseUnion>>
+    abcEnum: $.Field<$.Output.Nullable<Enum.ABCEnum>>
+    lowerCaseUnion: $.Field<$.Output.Nullable<Union.lowerCaseUnion>>
   }>
 }
 
@@ -120,7 +120,7 @@ export namespace Enum {
    * "B" - Enum B member documentation.
    * "C" - Enum C member documentation. (DEPRECATED: Enum value C is deprecated.)
    */
-  export type ABCEnum = _.Enum<'ABCEnum', ['A', 'B', 'C']>
+  export type ABCEnum = $.Enum<'ABCEnum', ['A', 'B', 'C']>
 }
 
 // ------------------------------------------------------------ //
@@ -128,10 +128,10 @@ export namespace Enum {
 // ------------------------------------------------------------ //
 
 export namespace InputObject {
-  export type InputObject = _.InputObject<'InputObject', {
-    id: _.Input.Nullable<$Scalar.ID>
+  export type InputObject = $.InputObject<'InputObject', {
+    id: $.Input.Nullable<$Scalar.ID>
     idRequired: $Scalar.ID
-    date: _.Input.Nullable<$Scalar.Date>
+    date: $.Input.Nullable<$Scalar.Date>
     dateRequired: $Scalar.Date
   }>
 }
@@ -141,12 +141,12 @@ export namespace InputObject {
 // ------------------------------------------------------------ //
 
 export namespace Interface {
-  export type DateInterface1 = _.Interface<'DateInterface1', {
-    date1: _.Field<_.Output.Nullable<$Scalar.Date>>
+  export type DateInterface1 = $.Interface<'DateInterface1', {
+    date1: $.Field<$.Output.Nullable<$Scalar.Date>>
   }, [Object.DateObject1]>
 
-  export type Interface = _.Interface<'Interface', {
-    id: _.Field<_.Output.Nullable<$Scalar.ID>>
+  export type Interface = $.Interface<'Interface', {
+    id: $.Field<$.Output.Nullable<$Scalar.ID>>
   }, [Object.Object1ImplementingInterface, Object.Object2ImplementingInterface]>
 }
 
@@ -155,59 +155,59 @@ export namespace Interface {
 // ------------------------------------------------------------ //
 
 export namespace Object {
-  export type DateObject1 = _.Object<'DateObject1', {
-    date1: _.Field<_.Output.Nullable<$Scalar.Date>>
+  export type DateObject1 = $.Object<'DateObject1', {
+    date1: $.Field<$.Output.Nullable<$Scalar.Date>>
   }>
 
-  export type DateObject2 = _.Object<'DateObject2', {
-    date2: _.Field<_.Output.Nullable<$Scalar.Date>>
+  export type DateObject2 = $.Object<'DateObject2', {
+    date2: $.Field<$.Output.Nullable<$Scalar.Date>>
   }>
 
   /**
    * Object documentation.
    */
-  export type Foo = _.Object<'Foo', {
+  export type Foo = $.Object<'Foo', {
     /**
      * Field documentation.
      *
      * @deprecated Field a is deprecated.
      */
-    id: _.Field<_.Output.Nullable<$Scalar.ID>>
+    id: $.Field<$.Output.Nullable<$Scalar.ID>>
   }>
 
-  export type Bar = _.Object<'Bar', {
-    int: _.Field<_.Output.Nullable<$Scalar.Int>>
+  export type Bar = $.Object<'Bar', {
+    int: $.Field<$.Output.Nullable<$Scalar.Int>>
   }>
 
-  export type ObjectNested = _.Object<'ObjectNested', {
-    id: _.Field<_.Output.Nullable<$Scalar.ID>>
-    object: _.Field<_.Output.Nullable<Object.Object1>>
+  export type ObjectNested = $.Object<'ObjectNested', {
+    id: $.Field<$.Output.Nullable<$Scalar.ID>>
+    object: $.Field<$.Output.Nullable<Object.Object1>>
   }>
 
-  export type lowerCaseObject = _.Object<'lowerCaseObject', {
-    id: _.Field<_.Output.Nullable<$Scalar.ID>>
+  export type lowerCaseObject = $.Object<'lowerCaseObject', {
+    id: $.Field<$.Output.Nullable<$Scalar.ID>>
   }>
 
-  export type lowerCaseObject2 = _.Object<'lowerCaseObject2', {
-    int: _.Field<_.Output.Nullable<$Scalar.Int>>
+  export type lowerCaseObject2 = $.Object<'lowerCaseObject2', {
+    int: $.Field<$.Output.Nullable<$Scalar.Int>>
   }>
 
-  export type Object1 = _.Object<'Object1', {
-    string: _.Field<_.Output.Nullable<$Scalar.String>>
-    int: _.Field<_.Output.Nullable<$Scalar.Int>>
-    float: _.Field<_.Output.Nullable<$Scalar.Float>>
-    boolean: _.Field<_.Output.Nullable<$Scalar.Boolean>>
-    id: _.Field<_.Output.Nullable<$Scalar.ID>>
+  export type Object1 = $.Object<'Object1', {
+    string: $.Field<$.Output.Nullable<$Scalar.String>>
+    int: $.Field<$.Output.Nullable<$Scalar.Int>>
+    float: $.Field<$.Output.Nullable<$Scalar.Float>>
+    boolean: $.Field<$.Output.Nullable<$Scalar.Boolean>>
+    id: $.Field<$.Output.Nullable<$Scalar.ID>>
   }>
 
-  export type Object1ImplementingInterface = _.Object<'Object1ImplementingInterface', {
-    id: _.Field<_.Output.Nullable<$Scalar.ID>>
-    int: _.Field<_.Output.Nullable<$Scalar.Int>>
+  export type Object1ImplementingInterface = $.Object<'Object1ImplementingInterface', {
+    id: $.Field<$.Output.Nullable<$Scalar.ID>>
+    int: $.Field<$.Output.Nullable<$Scalar.Int>>
   }>
 
-  export type Object2ImplementingInterface = _.Object<'Object2ImplementingInterface', {
-    id: _.Field<_.Output.Nullable<$Scalar.ID>>
-    boolean: _.Field<_.Output.Nullable<$Scalar.Boolean>>
+  export type Object2ImplementingInterface = $.Object<'Object2ImplementingInterface', {
+    id: $.Field<$.Output.Nullable<$Scalar.ID>>
+    boolean: $.Field<$.Output.Nullable<$Scalar.Boolean>>
   }>
 }
 
@@ -216,14 +216,14 @@ export namespace Object {
 // ------------------------------------------------------------ //
 
 export namespace Union {
-  export type DateUnion = _.Union<'DateUnion', [Object.DateObject1, Object.DateObject2]>
+  export type DateUnion = $.Union<'DateUnion', [Object.DateObject1, Object.DateObject2]>
 
   /**
    * Union documentation.
    */
-  export type FooBarUnion = _.Union<'FooBarUnion', [Object.Foo, Object.Bar]>
+  export type FooBarUnion = $.Union<'FooBarUnion', [Object.Foo, Object.Bar]>
 
-  export type lowerCaseUnion = _.Union<'lowerCaseUnion', [Object.lowerCaseObject, Object.lowerCaseObject2]>
+  export type lowerCaseUnion = $.Union<'lowerCaseUnion', [Object.lowerCaseObject, Object.lowerCaseObject2]>
 }
 "
 `;
