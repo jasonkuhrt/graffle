@@ -17,7 +17,8 @@ export type TypeMapByKind =
     [Name in keyof NameToClassNamedType]: InstanceType<NameToClassNamedType[Name]>[]
   }
   & { GraphQLRootTypes: GraphQLObjectType<any, any>[] }
-  & { GraphQLCustomScalarType: GraphQLScalarType<any, any>[] }
+  & { GraphQLScalarTypeCustom: GraphQLScalarType<any, any>[] }
+  & { GraphQLScalarTypeStandard: GraphQLScalarType<any, any>[] }
 
 export const standardScalarTypeNames = {
   String: `String`,
@@ -64,7 +65,8 @@ export const getTypeMapByKind = (schema: GraphQLSchema) => {
   const typeMapByKind: TypeMapByKind = {
     GraphQLRootTypes: [],
     GraphQLScalarType: [],
-    GraphQLCustomScalarType: [],
+    GraphQLScalarTypeCustom: [],
+    GraphQLScalarTypeStandard: [],
     GraphQLEnumType: [],
     GraphQLInputObjectType: [],
     GraphQLInterfaceType: [],
@@ -77,7 +79,9 @@ export const getTypeMapByKind = (schema: GraphQLSchema) => {
       case type instanceof GraphQLScalarType:
         typeMapByKind.GraphQLScalarType.push(type)
         if (isCustomScalarType(type)) {
-          typeMapByKind.GraphQLCustomScalarType.push(type)
+          typeMapByKind.GraphQLScalarTypeCustom.push(type)
+        } else {
+          typeMapByKind.GraphQLScalarTypeStandard.push(type)
         }
         break
       case type instanceof GraphQLEnumType:

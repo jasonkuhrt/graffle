@@ -6,6 +6,8 @@ export const ABCEnum = _.Enum(`ABCEnum`, [`A`, `B`, `C`])
 export const InputObject = _.InputObject(`InputObject`, {
   id: _.Input.field(_.Input.Nullable($Scalar.ID)),
   idRequired: _.Input.field($Scalar.ID),
+  date: _.Input.field(_.Input.Nullable($Scalar.Date)),
+  dateRequired: _.Input.field($Scalar.Date),
 })
 
 export const DateObject1 = _.Object(`DateObject1`, {
@@ -80,6 +82,7 @@ export const Query = _.Object(`Query`, {
   dateInterface1: _.Output.field(_.Output.Nullable(() => DateInterface1)),
   dateListNonNull: _.Output.field(_.Output.List($Scalar.Date)),
   dateArg: _.Output.field(_.Output.Nullable($Scalar.Date), _.Args({ date: _.Input.Nullable($Scalar.Date) })),
+  dateArgInputObject: _.Output.field(_.Output.Nullable($Scalar.Date), _.Args({ input: _.Input.Nullable(InputObject) })),
   interface: _.Output.field(_.Output.Nullable(() => Interface)),
   id: _.Output.field(_.Output.Nullable($Scalar.ID)),
   idNonNull: _.Output.field($Scalar.ID),

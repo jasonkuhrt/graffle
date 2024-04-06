@@ -20,9 +20,6 @@ import type {
 } from '../../lib/graphql.js'
 import {
   getNodeDisplayName,
-  hasMutation,
-  hasQuery,
-  hasSubscription,
   isDeprecatableNode,
   isGraphQLOutputField,
   type NameToClass,
@@ -314,37 +311,10 @@ export const generateSchemaBuildtime = (config: Config) => {
   code += `import type * as $Scalar from './Scalar.ts'\n`
   code += `\n\n`
 
-  code += Code.export$(
-    Code.namespace(
-      `$`,
-      Code.group(
-        Code.export$(
-          Code.interface$(
-            `Index`,
-            Code.objectFrom({
-              Root: {
-                type: Code.objectFrom({
-                  Query: hasQuery(config.typeMapByKind) ? `Root.Query` : null,
-                  Mutation: hasMutation(config.typeMapByKind) ? `Root.Mutation` : null,
-                  Subscription: hasSubscription(config.typeMapByKind) ? `Root.Subscription` : null,
-                }),
-              },
-              objects: Code.objectFromEntries(
-                config.typeMapByKind.GraphQLObjectType.map(_ => [_.name, Code.propertyAccess(`Object`, _.name)]),
-              ),
-              unions: Code.objectFromEntries(
-                config.typeMapByKind.GraphQLUnionType.map(_ => [_.name, Code.propertyAccess(`Union`, _.name)]),
-              ),
-            }),
-          ),
-        ),
-      ),
-    ),
-  )
-
   for (const [name, types] of entries(config.typeMapByKind)) {
     if (name === `GraphQLScalarType`) continue
-    if (name === `GraphQLCustomScalarType`) continue
+    if (name === `GraphQLScalarTypeCustom`) continue
+    if (name === `GraphQLScalarTypeStandard`) continue
 
     const namespaceName = name === `GraphQLRootTypes` ? `Root` : namespaceNames[name]
     code += Code.commentSectionTitle(namespaceName)

@@ -112,7 +112,10 @@ const encodeCustomScalarsArgs = (index: Args, args: object): object => {
       if (!indexArg) throw new Error(`Arg not found: ${argName}`)
 
       const type = indexArg.type
-      const typeWithoutNonNull = Input.unwrapNonNull(type) as Output.Named | Output.List<any>
+      const typeWithoutNonNull = Input.unwrapNonNull(type) as Input.Any
+      if (typeWithoutNonNull.kind === `InputObject`) {
+        return [argName, encodeCustomScalarsArgs(typeWithoutNonNull, argValue)]
+      }
       if (typeWithoutNonNull.kind === `Scalar`) {
         return [argName, typeWithoutNonNull.codec.encode(argValue)]
       }

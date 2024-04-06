@@ -4,33 +4,6 @@ exports[`generates types from GraphQL SDL file 1`] = `
 "import type * as _ from '../../../../../src/Schema/__.js'
 import type * as $Scalar from './Scalar.ts'
 
-export namespace $ {
-  export interface Index {
-    Root: {
-      Query: Root.Query
-      Mutation: null
-      Subscription: null
-    }
-    objects: {
-      DateObject1: Object.DateObject1
-      DateObject2: Object.DateObject2
-      Foo: Object.Foo
-      Bar: Object.Bar
-      ObjectNested: Object.ObjectNested
-      lowerCaseObject: Object.lowerCaseObject
-      lowerCaseObject2: Object.lowerCaseObject2
-      Object1: Object.Object1
-      Object1ImplementingInterface: Object.Object1ImplementingInterface
-      Object2ImplementingInterface: Object.Object2ImplementingInterface
-    }
-    unions: {
-      DateUnion: Union.DateUnion
-      FooBarUnion: Union.FooBarUnion
-      lowerCaseUnion: Union.lowerCaseUnion
-    }
-  }
-}
-
 // ------------------------------------------------------------ //
 //                             Root                             //
 // ------------------------------------------------------------ //
@@ -48,6 +21,12 @@ export namespace Root {
       _.Output.Nullable<$Scalar.Date>,
       _.Args<{
         date: _.Input.Nullable<$Scalar.Date>
+      }>
+    >
+    dateArgInputObject: _.Field<
+      _.Output.Nullable<$Scalar.Date>,
+      _.Args<{
+        input: _.Input.Nullable<InputObject.InputObject>
       }>
     >
     interface: _.Field<_.Output.Nullable<Interface.Interface>>
@@ -152,6 +131,8 @@ export namespace InputObject {
   export type InputObject = _.InputObject<'InputObject', {
     id: _.Input.Nullable<$Scalar.ID>
     idRequired: $Scalar.ID
+    date: _.Input.Nullable<$Scalar.Date>
+    dateRequired: $Scalar.Date
   }>
 }
 
@@ -253,9 +234,11 @@ exports[`generates types from GraphQL SDL file 2`] = `
 export * from '../../../../../src/Schema/NamedType/Scalar/Scalar.js'
 export * from '../customScalarCodecs.js'
 
+export type Date = typeof CustomScalar.Date
+
 declare global {
   interface SchemaCustomScalars {
-    Date: typeof CustomScalar.Date
+    Date: Date
   }
 }
 "
@@ -270,6 +253,8 @@ export const ABCEnum = _.Enum(\`ABCEnum\`, [\`A\`, \`B\`, \`C\`])
 export const InputObject = _.InputObject(\`InputObject\`, {
   id: _.Input.field(_.Input.Nullable($Scalar.ID)),
   idRequired: _.Input.field($Scalar.ID),
+  date: _.Input.field(_.Input.Nullable($Scalar.Date)),
+  dateRequired: _.Input.field($Scalar.Date),
 })
 
 export const DateObject1 = _.Object(\`DateObject1\`, {
@@ -344,6 +329,7 @@ export const Query = _.Object(\`Query\`, {
   dateInterface1: _.Output.field(_.Output.Nullable(() => DateInterface1)),
   dateListNonNull: _.Output.field(_.Output.List($Scalar.Date)),
   dateArg: _.Output.field(_.Output.Nullable($Scalar.Date), _.Args({ date: _.Input.Nullable($Scalar.Date) })),
+  dateArgInputObject: _.Output.field(_.Output.Nullable($Scalar.Date), _.Args({ input: _.Input.Nullable(InputObject) })),
   interface: _.Output.field(_.Output.Nullable(() => Interface)),
   id: _.Output.field(_.Output.Nullable($Scalar.ID)),
   idNonNull: _.Output.field($Scalar.ID),

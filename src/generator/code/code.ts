@@ -4,6 +4,7 @@ import { buildSchema } from 'graphql'
 import * as Path from 'node:path'
 import type { TypeMapByKind } from '../../lib/graphql.js'
 import { getTypeMapByKind } from '../../lib/graphql.js'
+import { generateIndex } from './index.js'
 import { generateScalar } from './scalar.js'
 import { generateSchemaBuildtime } from './schemaBuildtime.js'
 import { generateRuntimeSchema } from './schemaRuntime.js'
@@ -61,6 +62,8 @@ export const resolveOptions = (input: Input): Config => {
 export const generateCode = (input: Input) => {
   const config = resolveOptions(input)
 
+  const indexCode = generateIndex(config)
+
   const scalarsCode = generateScalar(config)
 
   const buildtimeSchema = generateSchemaBuildtime(config)
@@ -73,6 +76,7 @@ export const generateCode = (input: Input) => {
   }
 
   return {
+    index: input.options?.formatter?.formatText(`memory.ts`, indexCode, defaultDprintConfig) ?? indexCode,
     scalars: input.options?.formatter?.formatText(`memory.ts`, scalarsCode, defaultDprintConfig)
       ?? scalarsCode,
     schemaBuildtime: input.options?.formatter?.formatText(`memory.ts`, buildtimeSchema, defaultDprintConfig)

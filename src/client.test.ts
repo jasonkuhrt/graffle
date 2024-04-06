@@ -1,4 +1,5 @@
-import { describe, expect, test } from 'vitest'
+/* eslint-disable */
+import { beforeEach, describe, expect, test } from 'vitest'
 import { setupMockServer } from '../tests/raw/__helpers.js'
 import type { $ } from '../tests/ts/_/schema/generated/SchemaBuildtime.js'
 import { $Index as schemaIndex } from '../tests/ts/_/schema/generated/SchemaRuntime.js'
@@ -69,22 +70,37 @@ describe(`custom scalar`, () => {
   })
 
   describe(`input`, () => {
-    test(`arg field`, async () => {
-      ctx.res({ body: { data: { dateArg: new Date(0) } } })
+    // needed to avoid runtime error but data ignored because we only test input below.
+    beforeEach(() => {
+      ctx.res({ body: { data: {} } })
+    })
+    const clientExpected = (expectedDocument: (document: any) => void) => {
       const client = create<$.Index>({
         url: ctx.url,
         schemaIndex,
         hooks: {
           documentEncode: (input, run) => {
             const result = run(input)
-            expect(result.dateArg.$args.date).toEqual(new Date(0).getTime())
+            expectedDocument(result)
             return result
           },
         },
       })
-      ctx.res({ body: {} })
+      return client
+    }
+
+    test(`arg field`, async () => {
+      const client = clientExpected((doc) => expect(doc.dateArg.$args.date).toEqual(new Date(0).getTime()))
       await client.query({ dateArg: { $args: { date: new Date(0) } } })
     })
-    test.todo(`input object field`)
+    test(`input object field`, async () => {
+      const client = clientExpected((doc) => {
+        expect(doc.dateArgInputObject.$args.input.dateRequired).toEqual(new Date(0).getTime())
+        expect(doc.dateArgInputObject.$args.input.date).toEqual(new Date(1).getTime())
+      })
+      await client.query({
+        dateArgInputObject: { $args: { input: { idRequired: '', dateRequired: new Date(0), date: new Date(1) } } },
+      })
+    })
   })
 })

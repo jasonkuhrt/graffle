@@ -1,33 +1,6 @@
 import type * as _ from '../../../../../src/Schema/__.js'
 import type * as $Scalar from './Scalar.ts'
 
-export namespace $ {
-  export interface Index {
-    Root: {
-      Query: Root.Query
-      Mutation: null
-      Subscription: null
-    }
-    objects: {
-      DateObject1: Object.DateObject1
-      DateObject2: Object.DateObject2
-      Foo: Object.Foo
-      Bar: Object.Bar
-      ObjectNested: Object.ObjectNested
-      lowerCaseObject: Object.lowerCaseObject
-      lowerCaseObject2: Object.lowerCaseObject2
-      Object1: Object.Object1
-      Object1ImplementingInterface: Object.Object1ImplementingInterface
-      Object2ImplementingInterface: Object.Object2ImplementingInterface
-    }
-    unions: {
-      DateUnion: Union.DateUnion
-      FooBarUnion: Union.FooBarUnion
-      lowerCaseUnion: Union.lowerCaseUnion
-    }
-  }
-}
-
 // ------------------------------------------------------------ //
 //                             Root                             //
 // ------------------------------------------------------------ //
@@ -45,6 +18,12 @@ export namespace Root {
       _.Output.Nullable<$Scalar.Date>,
       _.Args<{
         date: _.Input.Nullable<$Scalar.Date>
+      }>
+    >
+    dateArgInputObject: _.Field<
+      _.Output.Nullable<$Scalar.Date>,
+      _.Args<{
+        input: _.Input.Nullable<InputObject.InputObject>
       }>
     >
     interface: _.Field<_.Output.Nullable<Interface.Interface>>
@@ -149,6 +128,8 @@ export namespace InputObject {
   export type InputObject = _.InputObject<'InputObject', {
     id: _.Input.Nullable<$Scalar.ID>
     idRequired: $Scalar.ID
+    date: _.Input.Nullable<$Scalar.Date>
+    dateRequired: $Scalar.Date
   }>
 }
 

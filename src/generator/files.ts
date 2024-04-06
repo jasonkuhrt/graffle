@@ -30,6 +30,7 @@ export const generateFiles = async (input: Input) => {
     options,
   })
   await fs.mkdir(input.outputDirPath, { recursive: true })
+  await fs.writeFile(`${input.outputDirPath}/Index.ts`, code.index, { encoding: `utf8` })
   await fs.writeFile(`${input.outputDirPath}/SchemaBuildtime.ts`, code.schemaBuildtime, { encoding: `utf8` })
   await fs.writeFile(`${input.outputDirPath}/Scalar.ts`, code.scalars, { encoding: `utf8` })
   await fs.writeFile(`${input.outputDirPath}/SchemaRuntime.ts`, code.schemaRuntime, { encoding: `utf8` })
