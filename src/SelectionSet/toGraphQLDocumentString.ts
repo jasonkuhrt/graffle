@@ -40,6 +40,7 @@ const directiveArgs = (config: object) => {
 }
 
 const indicatorOrSelectionSet = (ss: Indicator | SS): string => {
+  if (ss === null) return `null` // todo test this case
   if (isIndicator(ss)) return ``
 
   const { $include, $skip, $defer, $stream, $, ...rest } = ss

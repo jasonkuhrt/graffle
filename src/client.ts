@@ -5,7 +5,8 @@ import type { Exact } from './lib/prelude.js'
 import type { ResultSet } from './ResultSet/__.js'
 import type { Object as ObjectType, Schema } from './Schema/__.js'
 import { Output } from './Schema/__.js'
-import { Input, readMaybeThunk } from './Schema/Field/Type.js'
+import type { Input } from './Schema/Field/Type.js'
+import { readMaybeThunk } from './Schema/Field/Type.js'
 import { SelectionSet } from './SelectionSet/__.js'
 import type { Args } from './SelectionSet/SelectionSet.js'
 import type { GraphQLDocumentObject } from './SelectionSet/toGraphQLDocumentString.js'
@@ -97,6 +98,7 @@ const encodeCustomScalars = (input: { index: ObjectType; documentObject: object 
   return Object.fromEntries(
     Object.entries(input.documentObject).map(([fieldName, fieldValue]) => {
       if (fieldValue.$args) {
+        // console.log(input.index.fields[fieldName].args)
         fieldValue.$args = encodeCustomScalarsArgs(input.index.fields[fieldName].args, fieldValue.$args)
         return [fieldName, fieldValue]
       }
@@ -108,20 +110,25 @@ const encodeCustomScalars = (input: { index: ObjectType; documentObject: object 
 const encodeCustomScalarsArgs = (index: Args, args: object): object => {
   return Object.fromEntries(
     Object.entries(args).map(([argName, argValue]) => {
+      // console.log(index)
       const indexArg = index.fields[argName]
       if (!indexArg) throw new Error(`Arg not found: ${argName}`)
-
-      const type = indexArg.type
-      const typeWithoutNonNull = Input.unwrapNonNull(type) as Input.Any
-      if (typeWithoutNonNull.kind === `InputObject`) {
-        return [argName, encodeCustomScalarsArgs(typeWithoutNonNull, argValue)]
-      }
-      if (typeWithoutNonNull.kind === `Scalar`) {
-        return [argName, typeWithoutNonNull.codec.encode(argValue)]
-      }
-      return [argName, argValue]
+      return [argName, encodeCustomScalarsArgValue(indexArg, argValue)]
     }),
   )
+}
+
+const encodeCustomScalarsArgValue = (indexArg: ObjectType, argValue: any): any => {
+  // console.log({ indexArg, argValue })
+  if (argValue === null) return null // todo could check if index agrees is nullable.
+  if (indexArg.kind === `nullable`) return encodeCustomScalarsArgValue(indexArg.type, argValue)
+  if (indexArg.kind === `list`) return argValue.map(_ => encodeCustomScalarsArgValue(indexArg.type, _))
+  if (indexArg.kind === `InputObject`) {
+    const fields = Object.fromEntries(Object.entries(indexArg.fields).map(([k, v]) => [k, v.type]))
+    return encodeCustomScalarsArgs({ fields }, argValue)
+  }
+  if (indexArg.kind === `Scalar`) return indexArg.codec.encode(argValue)
+  throw new Error(`Unsupported arg kind: ${indexArg}`)
 }
 
 const decodeCustomScalars = (index: ObjectType, documentQueryObject: object): object => {

@@ -20,6 +20,30 @@ export namespace Root {
         date: $.Input.Nullable<$Scalar.Date>
       }>
     >
+    dateArgNonNull: $.Field<
+      $.Output.Nullable<$Scalar.Date>,
+      $.Args<{
+        date: $Scalar.Date
+      }>
+    >
+    dateArgList: $.Field<
+      $.Output.Nullable<$Scalar.Date>,
+      $.Args<{
+        date: $.Input.Nullable<$.Input.List<$.Input.Nullable<$Scalar.Date>>>
+      }>
+    >
+    dateArgNonNullList: $.Field<
+      $.Output.Nullable<$Scalar.Date>,
+      $.Args<{
+        date: $.Input.List<$.Input.Nullable<$Scalar.Date>>
+      }>
+    >
+    dateArgNonNullListNonNull: $.Field<
+      $.Output.Nullable<$Scalar.Date>,
+      $.Args<{
+        date: $.Input.List<$Scalar.Date>
+      }>
+    >
     dateArgInputObject: $.Field<
       $.Output.Nullable<$Scalar.Date>,
       $.Args<{

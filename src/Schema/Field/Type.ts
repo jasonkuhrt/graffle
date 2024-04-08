@@ -110,7 +110,7 @@ export namespace Input {
     $Type extends Nullable<infer $innerType>  ? UnwrapNonNull<$innerType>
                                               : $Type
 
-  export const unwrapNonNull = <$Type extends Any>(type: $Type): UnwrapNonNull<$Type> => {
+  export const unwrapNullable = <$Type extends Any>(type: $Type): UnwrapNonNull<$Type> => {
     if (type.kind === `nullable`) return type.type
     return type as UnwrapNonNull<$Type>
   }

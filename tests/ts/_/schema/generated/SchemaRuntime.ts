@@ -82,6 +82,19 @@ export const Query = _.Object(`Query`, {
   dateInterface1: _.Output.field(_.Output.Nullable(() => DateInterface1)),
   dateListNonNull: _.Output.field(_.Output.List($Scalar.Date)),
   dateArg: _.Output.field(_.Output.Nullable($Scalar.Date), _.Args({ date: _.Input.Nullable($Scalar.Date) })),
+  dateArgNonNull: _.Output.field(_.Output.Nullable($Scalar.Date), _.Args({ date: $Scalar.Date })),
+  dateArgList: _.Output.field(
+    _.Output.Nullable($Scalar.Date),
+    _.Args({ date: _.Input.Nullable(_.Input.List(_.Input.Nullable($Scalar.Date))) }),
+  ),
+  dateArgNonNullList: _.Output.field(
+    _.Output.Nullable($Scalar.Date),
+    _.Args({ date: _.Input.List(_.Input.Nullable($Scalar.Date)) }),
+  ),
+  dateArgNonNullListNonNull: _.Output.field(
+    _.Output.Nullable($Scalar.Date),
+    _.Args({ date: _.Input.List($Scalar.Date) }),
+  ),
   dateArgInputObject: _.Output.field(_.Output.Nullable($Scalar.Date), _.Args({ input: _.Input.Nullable(InputObject) })),
   interface: _.Output.field(_.Output.Nullable(() => Interface)),
   id: _.Output.field(_.Output.Nullable($Scalar.ID)),
