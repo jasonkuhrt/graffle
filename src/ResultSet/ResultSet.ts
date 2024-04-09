@@ -81,7 +81,7 @@ type FieldType<
   $Type extends Schema.Field.Type.Output.Nullable<infer $InnerType> ? null | FieldType<$SelectionSet, $InnerType, $Index> :
   $Type extends Schema.Field.Type.Output.List<infer $InnerType>     ? Array<FieldType<$SelectionSet, $InnerType, $Index>> :
   $Type extends Schema.Named.Enum<infer _, infer $Members>          ? $Members[number] :
-  $Type extends Schema.Named.Scalar.Any                             ? ReturnType<$Type['constructor']> :
+  $Type extends Schema.Named.Scalar.Any                             ? ReturnType<$Type['codec']['decode']> :
   $Type extends Schema.Named.Object                                 ? Object<$SelectionSet,$Type,$Index> :
   $Type extends Schema.Named.Interface                              ? Interface<$SelectionSet,$Type,$Index> :
   $Type extends Schema.Named.Union                                  ? Union<$SelectionSet,$Type,$Index> :

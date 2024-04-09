@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
 import { expectTypeOf, test } from 'vitest'
-import type * as Schema from '../../tests/ts/_/schema/generated/Schema.js'
+import type { $ } from '../../tests/ts/_/schema/generated/Index.js'
 import type { SelectionSet } from '../SelectionSet/__.js'
 import type { ResultSet } from './__.js'
 
-type I = Schema.$.Index
+type I = $.Index
 type RS<$selectionSet extends SelectionSet.Query<I>> = ResultSet.Query<$selectionSet, I>
 
 // dprint-ignore
