@@ -24,6 +24,8 @@ export interface Object<
 const Object$ = <$Name extends string, $Fields extends Record<keyof $Fields, Output.Field>>(
   name: $Name,
   fields: $Fields,
+  // eslint-disable-next-line
+  // @ts-ignore infinite depth issue
 ): Object<$Name, $Fields> => ({
   kind: `Object`,
   fields: {
