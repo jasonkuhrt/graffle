@@ -3,7 +3,7 @@ import request from './entrypoints/main.js'
 import { type RootTypeName, standardScalarTypeNames } from './lib/graphql.js'
 import type { Exact } from './lib/prelude.js'
 import type { ResultSet } from './ResultSet/__.js'
-import type { Object as ObjectType, Schema } from './Schema/__.js'
+import type { Object$2, Schema } from './Schema/__.js'
 import { Output } from './Schema/__.js'
 import type { Input } from './Schema/Field/Type.js'
 import { readMaybeThunk } from './Schema/Field/Type.js'
@@ -35,7 +35,7 @@ export type Client<$SchemaIndex extends Schema.Index> =
 //
 
 interface HookInputDocumentEncode {
-  rootIndex: ObjectType
+  rootIndex: Object$2
   documentObject: GraphQLDocumentObject
 }
 
@@ -103,7 +103,7 @@ namespace SSValue {
 
 const encodeCustomScalars = (
   input: {
-    index: ObjectType
+    index: Object$2
     documentObject: SelectionSet.GraphQLDocumentObject
   },
 ): GraphQLDocumentObject => {
@@ -154,7 +154,7 @@ const encodeCustomScalarsArgValue = (indexArg: Input.Any, argValue: SSValue.Arg)
   throw new Error(`Unsupported arg kind: ${String(indexArg)}`)
 }
 
-const decodeCustomScalars = (index: ObjectType, documentQueryObject: object): object => {
+const decodeCustomScalars = (index: Object$2, documentQueryObject: object): object => {
   return Object.fromEntries(
     Object.entries(documentQueryObject).map(([fieldName, v]) => {
       const indexField = index.fields[fieldName]
@@ -216,7 +216,7 @@ const decodeCustomScalarValue = (
       if (fieldValue.__typename === ObjectType.fields.__typename.type.type) return true
       if (Object.keys(fieldValue).every(fieldName => ObjectType.fields[fieldName] !== undefined)) return true
       return false
-    }) as undefined | ObjectType
+    }) as undefined | Object$2
     if (!ObjectType) throw new Error(`Could not pick object for ${typeWithoutNonNull.kind} selection`)
     return decodeCustomScalars(ObjectType, fieldValue)
   }

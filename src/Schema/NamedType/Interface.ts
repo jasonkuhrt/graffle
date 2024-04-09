@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
 import type { Output } from '../__.js'
-import type { Object } from './Object.js'
+import type { Object$2 } from './Object.js'
 
 export type Interface<
   $Name extends string = string,
   $Fields extends Record<string, Output.Field<any>> = Record<string, Output.Field<any>>,
-  $Implementors extends [Object, ...Object[]] = [Object, ...Object[]],
+  $Implementors extends [Object$2, ...Object$2[]] = [Object$2, ...Object$2[]],
 > = {
   kind: 'Interface'
   name: $Name
@@ -17,7 +17,7 @@ export type Interface<
 export const Interface = <
   $Name extends string,
   $Fields extends Record<keyof $Fields, Output.Field>,
-  $Implementors extends [Object, ...Object[]],
+  $Implementors extends [Object$2, ...Object$2[]],
 >(
   name: $Name,
   fields: $Fields,

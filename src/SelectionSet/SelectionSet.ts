@@ -4,21 +4,21 @@ import type { MaybeList, StringNonEmpty, Values } from '../lib/prelude.js'
 import type { TSError } from '../lib/TSError.js'
 import type { Schema } from '../Schema/__.js'
 
-export type Query<$Index extends Schema.Index> = $Index['Root']['Query'] extends Schema.Named.Object
+export type Query<$Index extends Schema.Index> = $Index['Root']['Query'] extends Schema.Named.Object$2
   ? Object<$Index['Root']['Query'], $Index>
   : never
 
-export type Mutation<$Index extends Schema.Index> = $Index['Root']['Mutation'] extends Schema.Named.Object
+export type Mutation<$Index extends Schema.Index> = $Index['Root']['Mutation'] extends Schema.Named.Object$2
   ? Object<$Index['Root']['Mutation'], $Index>
   : never
 
-export type Subscription<$Index extends Schema.Index> = $Index['Root']['Subscription'] extends Schema.Named.Object
+export type Subscription<$Index extends Schema.Index> = $Index['Root']['Subscription'] extends Schema.Named.Object$2
   ? Object<$Index['Root']['Subscription'], $Index>
   : never
 
 // dprint-ignore
 type Object<
-  $Fields extends Schema.Named.Object,
+  $Fields extends Schema.Named.Object$2,
   $Index extends Schema.Index,
 > = Fields<$Fields['fields'], $Index>
 
@@ -95,7 +95,7 @@ type Interface<$Node extends Schema.Named.Interface, $Index extends Schema.Index
     >
 
 // dprint-ignore
-type InterfaceDistributed<$Node extends Schema.Named.Object, $Index extends Schema.Index> = 
+type InterfaceDistributed<$Node extends Schema.Named.Object$2, $Index extends Schema.Index> = 
   $Node extends any
     ? {
       [$typename in $Node['fields']['__typename']['type']['type'] as `on${Capitalize<$typename>}`]?:
@@ -109,7 +109,7 @@ type Union<$Node extends Schema.Named.Union, $Index extends Schema.Index> =
   & { __typename?: NoArgsIndicator }
 
 // dprint-ignore
-type UnionDistributed<$Object extends Schema.Named.Object,$Index extends Schema.Index> = 
+type UnionDistributed<$Object extends Schema.Named.Object$2,$Index extends Schema.Index> = 
   $Object extends any
   ? {
      [$typename in $Object['fields']['__typename']['type']['type'] as `on${Capitalize<$typename>}`]?:

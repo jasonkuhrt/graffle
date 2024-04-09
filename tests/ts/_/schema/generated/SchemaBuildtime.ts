@@ -6,7 +6,7 @@ import type * as $Scalar from './Scalar.ts'
 // ------------------------------------------------------------ //
 
 export namespace Root {
-  export type Query = $.Object<'Query', {
+  export type Query = $.Object$2<'Query', {
     date: $.Field<$.Output.Nullable<$Scalar.Date>>
     dateNonNull: $.Field<$Scalar.Date>
     dateList: $.Field<$.Output.Nullable<$.Output.List<$.Output.Nullable<$Scalar.Date>>>>
@@ -176,18 +176,18 @@ export namespace Interface {
 // ------------------------------------------------------------ //
 
 export namespace Object {
-  export type DateObject1 = $.Object<'DateObject1', {
+  export type DateObject1 = $.Object$2<'DateObject1', {
     date1: $.Field<$.Output.Nullable<$Scalar.Date>>
   }>
 
-  export type DateObject2 = $.Object<'DateObject2', {
+  export type DateObject2 = $.Object$2<'DateObject2', {
     date2: $.Field<$.Output.Nullable<$Scalar.Date>>
   }>
 
   /**
    * Object documentation.
    */
-  export type Foo = $.Object<'Foo', {
+  export type Foo = $.Object$2<'Foo', {
     /**
      * Field documentation.
      *
@@ -196,24 +196,24 @@ export namespace Object {
     id: $.Field<$.Output.Nullable<$Scalar.ID>>
   }>
 
-  export type Bar = $.Object<'Bar', {
+  export type Bar = $.Object$2<'Bar', {
     int: $.Field<$.Output.Nullable<$Scalar.Int>>
   }>
 
-  export type ObjectNested = $.Object<'ObjectNested', {
+  export type ObjectNested = $.Object$2<'ObjectNested', {
     id: $.Field<$.Output.Nullable<$Scalar.ID>>
     object: $.Field<$.Output.Nullable<Object.Object1>>
   }>
 
-  export type lowerCaseObject = $.Object<'lowerCaseObject', {
+  export type lowerCaseObject = $.Object$2<'lowerCaseObject', {
     id: $.Field<$.Output.Nullable<$Scalar.ID>>
   }>
 
-  export type lowerCaseObject2 = $.Object<'lowerCaseObject2', {
+  export type lowerCaseObject2 = $.Object$2<'lowerCaseObject2', {
     int: $.Field<$.Output.Nullable<$Scalar.Int>>
   }>
 
-  export type Object1 = $.Object<'Object1', {
+  export type Object1 = $.Object$2<'Object1', {
     string: $.Field<$.Output.Nullable<$Scalar.String>>
     int: $.Field<$.Output.Nullable<$Scalar.Int>>
     float: $.Field<$.Output.Nullable<$Scalar.Float>>
@@ -221,12 +221,12 @@ export namespace Object {
     id: $.Field<$.Output.Nullable<$Scalar.ID>>
   }>
 
-  export type Object1ImplementingInterface = $.Object<'Object1ImplementingInterface', {
+  export type Object1ImplementingInterface = $.Object$2<'Object1ImplementingInterface', {
     id: $.Field<$.Output.Nullable<$Scalar.ID>>
     int: $.Field<$.Output.Nullable<$Scalar.Int>>
   }>
 
-  export type Object2ImplementingInterface = $.Object<'Object2ImplementingInterface', {
+  export type Object2ImplementingInterface = $.Object$2<'Object2ImplementingInterface', {
     id: $.Field<$.Output.Nullable<$Scalar.ID>>
     boolean: $.Field<$.Output.Nullable<$Scalar.Boolean>>
   }>
