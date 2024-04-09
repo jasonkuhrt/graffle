@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
-import type { Object } from './Object.js'
+import type { Obj } from './Obj.js'
 
 export type Union<
   $Name extends string = string,
-  $Members extends [Object, ...Object[]] = [Object, ...Object[]],
+  $Members extends [Obj, ...Obj[]] = [Obj, ...Obj[]],
 > = {
   kind: `Union`
   name: $Name
@@ -13,7 +13,7 @@ export type Union<
 
 export const Union = <
   $Name extends string,
-  $Members extends [Object, ...Object[]],
+  $Members extends [Obj, ...Obj[]],
 >(
   name: $Name,
   members: $Members,

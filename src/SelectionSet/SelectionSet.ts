@@ -4,21 +4,21 @@ import type { MaybeList, StringNonEmpty, Values } from '../lib/prelude.js'
 import type { TSError } from '../lib/TSError.js'
 import type { Schema } from '../Schema/__.js'
 
-export type Query<$Index extends Schema.Index> = $Index['Root']['Query'] extends Schema.Named.Object
-  ? Object<$Index['Root']['Query'], $Index>
+export type Query<$Index extends Schema.Index> = $Index['Root']['Query'] extends Schema.Named.Obj
+  ? Obj<$Index['Root']['Query'], $Index>
   : never
 
-export type Mutation<$Index extends Schema.Index> = $Index['Root']['Mutation'] extends Schema.Named.Object
-  ? Object<$Index['Root']['Mutation'], $Index>
+export type Mutation<$Index extends Schema.Index> = $Index['Root']['Mutation'] extends Schema.Named.Obj
+  ? Obj<$Index['Root']['Mutation'], $Index>
   : never
 
-export type Subscription<$Index extends Schema.Index> = $Index['Root']['Subscription'] extends Schema.Named.Object
-  ? Object<$Index['Root']['Subscription'], $Index>
+export type Subscription<$Index extends Schema.Index> = $Index['Root']['Subscription'] extends Schema.Named.Obj
+  ? Obj<$Index['Root']['Subscription'], $Index>
   : never
 
 // dprint-ignore
-type Object<
-  $Fields extends Schema.Named.Object,
+type Obj<
+  $Fields extends Schema.Named.Obj,
   $Index extends Schema.Index,
 > = Fields<$Fields['fields'], $Index>
 
@@ -73,7 +73,7 @@ export type Field<
   // @ts-ignore infinite depth issue, can this be fixed?
   $Field['typeUnwrapped']['kind'] extends 'Scalar'              ? Indicator<$Field> :
   $Field['typeUnwrapped']['kind'] extends 'Enum'                ? Indicator<$Field> :
-  $Field['typeUnwrapped']['kind'] extends 'Object'              ? Object<$Field['typeUnwrapped'], $Index> & FieldDirectives & Arguments<$Field> :
+  $Field['typeUnwrapped']['kind'] extends 'Object'              ? Obj<$Field['typeUnwrapped'], $Index> & FieldDirectives & Arguments<$Field> :
   $Field['typeUnwrapped']['kind'] extends 'Union'               ? Union<$Field['typeUnwrapped'], $Index> :
   $Field['typeUnwrapped']['kind'] extends 'Interface'           ? Interface<$Field['typeUnwrapped'], $Index> :
                                                                 TSError<'SelectionSetField', '$Field case not handled', { $Field: $Field }>
@@ -95,11 +95,11 @@ type Interface<$Node extends Schema.Named.Interface, $Index extends Schema.Index
     >
 
 // dprint-ignore
-type InterfaceDistributed<$Node extends Schema.Named.Object, $Index extends Schema.Index> = 
+type InterfaceDistributed<$Node extends Schema.Named.Obj, $Index extends Schema.Index> = 
   $Node extends any
     ? {
       [$typename in $Node['fields']['__typename']['type']['type'] as `on${Capitalize<$typename>}`]?:
-        Object<$Node, $Index> & FieldDirectives
+        Obj<$Node, $Index> & FieldDirectives
     }
     : never
 
@@ -109,11 +109,11 @@ type Union<$Node extends Schema.Named.Union, $Index extends Schema.Index> =
   & { __typename?: NoArgsIndicator }
 
 // dprint-ignore
-type UnionDistributed<$Object extends Schema.Named.Object,$Index extends Schema.Index> = 
+type UnionDistributed<$Object extends Schema.Named.Obj, $Index extends Schema.Index> = 
   $Object extends any
   ? {
      [$typename in $Object['fields']['__typename']['type']['type'] as `on${Capitalize<$typename>}`]?:
-        Object<$Object, $Index> & FieldDirectives
+        Obj<$Object, $Index> & FieldDirectives
     }
   : never
 
