@@ -4,13 +4,13 @@ import { Output } from '../Field/Type.js'
 import type { Scalar } from './_.js'
 import type { Enum } from './Enum.js'
 
-export type Fields = Record<string, Output.Field<Output.List<any> | Output.Nullable<any> | Obj | Enum | Scalar.Any>>
+export type Fields = Record<string, Output.Field<Output.List<any> | Output.Nullable<any> | Object | Enum | Scalar.Any>>
 
 export type ObjectFields = {
   __typename: Output.Field<Output.__typename>
 } & Fields
 
-export interface Obj<
+export interface Object<
   $Name extends string = string,
   $Fields extends Fields = Fields,
 > {
@@ -21,15 +21,15 @@ export interface Obj<
 }
 
 // Naming this "Object" breaks Vitest: https://github.com/vitest-dev/vitest/issues/5463
-export const Obj = <$Name extends string, $Fields extends Record<keyof $Fields, Output.Field>>(
+const Object$ = <$Name extends string, $Fields extends Record<keyof $Fields, Output.Field>>(
   name: $Name,
   fields: $Fields,
-  // eslint-disable-next-line
-  // @ts-ignore infinite depth issue
-): Obj<$Name, $Fields> => ({
+): Object<$Name, $Fields> => ({
   kind: `Object`,
   fields: {
     __typename: Output.field(Output.__typename(name)),
     ...fields,
   },
 })
+
+export { Object$ as Object }

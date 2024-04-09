@@ -98,7 +98,7 @@ const object = (config: Config, type: GraphQLObjectType) => {
     return `${field.name}: ${outputField(config, field)}`
   }).join(`,\n`)
   return `
-    export const ${type.name} = _.Obj(\`${type.name}\`, {
+    export const ${type.name} = _.Object(\`${type.name}\`, {
       ${fields}
     })
 	`

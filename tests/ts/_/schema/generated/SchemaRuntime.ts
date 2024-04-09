@@ -10,36 +10,36 @@ export const InputObject = _.InputObject(`InputObject`, {
   dateRequired: _.Input.field($Scalar.Date),
 })
 
-export const DateObject1 = _.Obj(`DateObject1`, {
+export const DateObject1 = _.Object(`DateObject1`, {
   date1: _.Output.field(_.Output.Nullable($Scalar.Date)),
 })
 
-export const DateObject2 = _.Obj(`DateObject2`, {
+export const DateObject2 = _.Object(`DateObject2`, {
   date2: _.Output.field(_.Output.Nullable($Scalar.Date)),
 })
 
-export const Foo = _.Obj(`Foo`, {
+export const Foo = _.Object(`Foo`, {
   id: _.Output.field(_.Output.Nullable($Scalar.ID)),
 })
 
-export const Bar = _.Obj(`Bar`, {
+export const Bar = _.Object(`Bar`, {
   int: _.Output.field(_.Output.Nullable($Scalar.Int)),
 })
 
-export const ObjectNested = _.Obj(`ObjectNested`, {
+export const ObjectNested = _.Object(`ObjectNested`, {
   id: _.Output.field(_.Output.Nullable($Scalar.ID)),
   object: _.Output.field(_.Output.Nullable(() => Object1)),
 })
 
-export const lowerCaseObject = _.Obj(`lowerCaseObject`, {
+export const lowerCaseObject = _.Object(`lowerCaseObject`, {
   id: _.Output.field(_.Output.Nullable($Scalar.ID)),
 })
 
-export const lowerCaseObject2 = _.Obj(`lowerCaseObject2`, {
+export const lowerCaseObject2 = _.Object(`lowerCaseObject2`, {
   int: _.Output.field(_.Output.Nullable($Scalar.Int)),
 })
 
-export const Object1 = _.Obj(`Object1`, {
+export const Object1 = _.Object(`Object1`, {
   string: _.Output.field(_.Output.Nullable($Scalar.String)),
   int: _.Output.field(_.Output.Nullable($Scalar.Int)),
   float: _.Output.field(_.Output.Nullable($Scalar.Float)),
@@ -47,12 +47,12 @@ export const Object1 = _.Obj(`Object1`, {
   id: _.Output.field(_.Output.Nullable($Scalar.ID)),
 })
 
-export const Object1ImplementingInterface = _.Obj(`Object1ImplementingInterface`, {
+export const Object1ImplementingInterface = _.Object(`Object1ImplementingInterface`, {
   id: _.Output.field(_.Output.Nullable($Scalar.ID)),
   int: _.Output.field(_.Output.Nullable($Scalar.Int)),
 })
 
-export const Object2ImplementingInterface = _.Obj(`Object2ImplementingInterface`, {
+export const Object2ImplementingInterface = _.Object(`Object2ImplementingInterface`, {
   id: _.Output.field(_.Output.Nullable($Scalar.ID)),
   boolean: _.Output.field(_.Output.Nullable($Scalar.Boolean)),
 })
@@ -73,7 +73,7 @@ export const Interface = _.Interface(`Interface`, { id: _.Output.field(_.Output.
   Object2ImplementingInterface,
 ])
 
-export const Query = _.Obj(`Query`, {
+export const Query = _.Object(`Query`, {
   date: _.Output.field(_.Output.Nullable($Scalar.Date)),
   dateNonNull: _.Output.field($Scalar.Date),
   dateList: _.Output.field(_.Output.Nullable(_.Output.List(_.Output.Nullable($Scalar.Date)))),
