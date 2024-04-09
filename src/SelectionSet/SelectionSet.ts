@@ -245,7 +245,7 @@ type InferTypeInput<$InputType extends Schema.Field.Input.Any> =
   $InputType extends Schema.Field.Input.List<infer $InnerType>        ? InferTypeInput<$InnerType>[] :
   $InputType extends Schema.Named.InputObject<infer _, infer $Fields> ? ArgFields<$Fields> :
   $InputType extends Schema.Named.Enum<infer _, infer $Members>       ? $Members[number] :
-  $InputType extends Schema.Named.Scalar.Any                          ? ReturnType<$InputType['constructor']> :
+  $InputType extends Schema.Named.Scalar.Any                          ? ReturnType<$InputType['codec']['decode']> :
                                                                         TSError<'InferTypeInput', 'Unknown $InputType', { $InputType: $InputType }> // never
 
 /**
