@@ -90,48 +90,48 @@ describe(`custom scalar`, () => {
     }
 
     test(`arg field`, async () => {
-      const client = clientExpected((doc) => expect(doc.dateArg.$args.date).toEqual(new Date(0).getTime()))
-      await client.query({ dateArg: { $args: { date: new Date(0) } } })
+      const client = clientExpected((doc) => expect(doc.dateArg.$.date).toEqual(new Date(0).getTime()))
+      await client.query({ dateArg: { $: { date: new Date(0) } } })
     })
     test('arg field in non-null', async () => {
-      const client = clientExpected((doc) => expect(doc.dateArgNonNull.$args.date).toEqual(new Date(0).getTime()))
-      await client.query({ dateArgNonNull: { $args: { date: new Date(0) } } })
+      const client = clientExpected((doc) => expect(doc.dateArgNonNull.$.date).toEqual(new Date(0).getTime()))
+      await client.query({ dateArgNonNull: { $: { date: new Date(0) } } })
     })
     test('arg field in list', async () => {
       const client = clientExpected((doc) =>
-        expect(doc.dateArgList.$args.date).toEqual([new Date(0).getTime(), new Date(1).getTime()])
+        expect(doc.dateArgList.$.date).toEqual([new Date(0).getTime(), new Date(1).getTime()])
       )
-      await client.query({ dateArgList: { $args: { date: [new Date(0), new Date(1)] } } })
+      await client.query({ dateArgList: { $: { date: [new Date(0), new Date(1)] } } })
     })
     test('arg field in list (null)', async () => {
-      const client = clientExpected((doc) => expect(doc.dateArgList.$args.date).toEqual(null))
-      await client.query({ dateArgList: { $args: { date: null } } })
+      const client = clientExpected((doc) => expect(doc.dateArgList.$.date).toEqual(null))
+      await client.query({ dateArgList: { $: { date: null } } })
     })
     test('arg field in non-null list (with list)', async () => {
       const client = clientExpected((doc) =>
-        expect(doc.dateArgNonNullList.$args.date).toEqual([new Date(0).getTime(), new Date(1).getTime()])
+        expect(doc.dateArgNonNullList.$.date).toEqual([new Date(0).getTime(), new Date(1).getTime()])
       )
-      await client.query({ dateArgNonNullList: { $args: { date: [new Date(0), new Date(1)] } } })
+      await client.query({ dateArgNonNullList: { $: { date: [new Date(0), new Date(1)] } } })
     })
     test('arg field in non-null list (with null)', async () => {
       const client = clientExpected((doc) =>
-        expect(doc.dateArgNonNullList.$args.date).toEqual([null, new Date(0).getTime()])
+        expect(doc.dateArgNonNullList.$.date).toEqual([null, new Date(0).getTime()])
       )
-      await client.query({ dateArgNonNullList: { $args: { date: [null, new Date(0)] } } })
+      await client.query({ dateArgNonNullList: { $: { date: [null, new Date(0)] } } })
     })
     test('arg field in non-null list non-null', async () => {
       const client = clientExpected((doc) =>
-        expect(doc.dateArgNonNullListNonNull.$args.date).toEqual([new Date(0).getTime(), new Date(1).getTime()])
+        expect(doc.dateArgNonNullListNonNull.$.date).toEqual([new Date(0).getTime(), new Date(1).getTime()])
       )
-      await client.query({ dateArgNonNullListNonNull: { $args: { date: [new Date(0), new Date(1)] } } })
+      await client.query({ dateArgNonNullListNonNull: { $: { date: [new Date(0), new Date(1)] } } })
     })
     test(`input object field`, async () => {
       const client = clientExpected((doc) => {
-        expect(doc.dateArgInputObject.$args.input.dateRequired).toEqual(new Date(0).getTime())
-        expect(doc.dateArgInputObject.$args.input.date).toEqual(new Date(1).getTime())
+        expect(doc.dateArgInputObject.$.input.dateRequired).toEqual(new Date(0).getTime())
+        expect(doc.dateArgInputObject.$.input.date).toEqual(new Date(1).getTime())
       })
       await client.query({
-        dateArgInputObject: { $args: { input: { idRequired: '', dateRequired: new Date(0), date: new Date(1) } } },
+        dateArgInputObject: { $: { input: { idRequired: '', dateRequired: new Date(0), date: new Date(1) } } },
       })
     })
   })

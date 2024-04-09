@@ -87,19 +87,34 @@ export const create = <$SchemaIndex extends Schema.Index>(input: Input): Client<
     query: sendDocumentObject(`Query`),
     mutation: sendDocumentObject(`Mutation`),
     // todo
-    // subscription: async () => {
-    // },
+    // subscription: async () => {},
   }
 
   return client
 }
 
-const encodeCustomScalars = (input: { index: ObjectType; documentObject: object }): GraphQLDocumentObject => {
+namespace SSValue {
+  export type Obj = {
+    $?: Args2
+  }
+  export type Args2 = Record<string, Arg>
+  export type Arg = boolean | Arg[] | { [key: string]: Arg }
+}
+
+const encodeCustomScalars = (
+  input: {
+    index: ObjectType
+    documentObject: SelectionSet.GraphQLDocumentObject
+  },
+): GraphQLDocumentObject => {
   return Object.fromEntries(
     Object.entries(input.documentObject).map(([fieldName, fieldValue]) => {
-      if (fieldValue.$args) {
-        // console.log(input.index.fields[fieldName].args)
-        fieldValue.$args = encodeCustomScalarsArgs(input.index.fields[fieldName].args, fieldValue.$args)
+      if (typeof fieldValue === `object` && `$` in fieldValue) {
+        const field = input.index.fields[fieldName]
+        if (!field?.args) throw new Error(`Field has no args: ${fieldName}`)
+        if (!field) throw new Error(`Field not found: ${fieldName}`)
+        // @ts-expect-error fixme
+        fieldValue.$ = encodeCustomScalarsArgs(field.args, fieldValue.$)
         return [fieldName, fieldValue]
       }
       return [fieldName, fieldValue]
@@ -107,28 +122,36 @@ const encodeCustomScalars = (input: { index: ObjectType; documentObject: object 
   )
 }
 
-const encodeCustomScalarsArgs = (index: Args, args: object): object => {
+const encodeCustomScalarsArgs = (indexArgs: Args<any>, valueArgs: SSValue.Args2): object => {
   return Object.fromEntries(
-    Object.entries(args).map(([argName, argValue]) => {
-      // console.log(index)
-      const indexArg = index.fields[argName]
+    Object.entries(valueArgs).map(([argName, argValue]) => {
+      // @ts-expect-error fixme
+      const indexArg = indexArgs.fields[argName] // eslint-disable-line
       if (!indexArg) throw new Error(`Arg not found: ${argName}`)
       return [argName, encodeCustomScalarsArgValue(indexArg, argValue)]
     }),
   )
 }
 
-const encodeCustomScalarsArgValue = (indexArg: ObjectType, argValue: any): any => {
+const encodeCustomScalarsArgValue = (indexArg: Input.Any, argValue: SSValue.Arg): any => {
   // console.log({ indexArg, argValue })
   if (argValue === null) return null // todo could check if index agrees is nullable.
-  if (indexArg.kind === `nullable`) return encodeCustomScalarsArgValue(indexArg.type, argValue)
-  if (indexArg.kind === `list`) return argValue.map(_ => encodeCustomScalarsArgValue(indexArg.type, _))
+  if (indexArg.kind === `nullable`) {
+    return encodeCustomScalarsArgValue(indexArg.type, argValue)
+  }
+  if (indexArg.kind === `list`) {
+    if (!Array.isArray(argValue)) throw new Error(`Expected array. Got: ${String(argValue)}`)
+    return argValue.map(_ => encodeCustomScalarsArgValue(indexArg.type, _))
+  }
   if (indexArg.kind === `InputObject`) {
-    const fields = Object.fromEntries(Object.entries(indexArg.fields).map(([k, v]) => [k, v.type]))
+    // dprint-ignore
+    if (typeof argValue !== `object` || Array.isArray(argValue)) throw new Error(`Expected object. Got: ${String(argValue)}`)
+    const fields = Object.fromEntries(Object.entries(indexArg.fields).map(([k, v]) => [k, v.type])) // eslint-disable-line
     return encodeCustomScalarsArgs({ fields }, argValue)
   }
+  // @ts-expect-error fixme
   if (indexArg.kind === `Scalar`) return indexArg.codec.encode(argValue)
-  throw new Error(`Unsupported arg kind: ${indexArg}`)
+  throw new Error(`Unsupported arg kind: ${String(indexArg)}`)
 }
 
 const decodeCustomScalars = (index: ObjectType, documentQueryObject: object): object => {
@@ -139,17 +162,24 @@ const decodeCustomScalars = (index: ObjectType, documentQueryObject: object): ob
 
       const type = readMaybeThunk(indexField.type)
       const typeWithoutNonNull = Output.unwrapNonNull(type) as Output.Named | Output.List<any>
-      const v2 = decodeCustomScalarValue(typeWithoutNonNull, v)
+      const v2 = decodeCustomScalarValue(typeWithoutNonNull, v) // eslint-disable-line
       return [fieldName, v2]
     }),
   )
 }
 
-const decodeCustomScalarValue = (indexType: ObjectType, fieldValue: null | GraphQLObject | GraphQLObject[]) => {
+// @ts-expect-error fixme
+const decodeCustomScalarValue = (
+  indexType: Output.Any,
+  fieldValue: string | boolean | null | number | GraphQLObject | GraphQLObject[],
+) => {
   if (fieldValue === null) return null
 
   const indexTypeDethunked = readMaybeThunk(indexType)
-  const typeWithoutNonNull = Output.unwrapNonNull(indexTypeDethunked) as Output.Named | Output.List<any>
+  const typeWithoutNonNull = Output.unwrapNonNull(indexTypeDethunked) as
+    | Output.Named
+    | Output.List<any>
+    | Output.__typename<any>
 
   if (typeWithoutNonNull.kind === `list`) {
     assertArray(fieldValue)
@@ -159,6 +189,8 @@ const decodeCustomScalarValue = (indexType: ObjectType, fieldValue: null | Graph
   }
 
   if (typeWithoutNonNull.kind === `Scalar` && !(typeWithoutNonNull.name in standardScalarTypeNames)) {
+    if (typeof fieldValue === `object`) throw new Error(`Expected scalar. Got: ${String(fieldValue)}`)
+    // @ts-expect-error fixme
     return typeWithoutNonNull.codec.decode(fieldValue)
   }
 
@@ -177,7 +209,8 @@ const decodeCustomScalarValue = (indexType: ObjectType, fieldValue: null | Graph
       ? typeWithoutNonNull.implementors
       : typeWithoutNonNull.members
     // todo handle aliases -- will require having the selection set available for reference too :/
-    // @ts-expect-error fixme
+    // eslint-disable-next-line
+    // @ts-ignore infinite depth issue
     // eslint-disable-next-line
     const ObjectType = possibleObjects.find((ObjectType) => {
       if (fieldValue.__typename === ObjectType.fields.__typename.type.type) return true

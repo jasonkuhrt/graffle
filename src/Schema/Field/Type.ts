@@ -1,6 +1,6 @@
 import type { TSError } from '../../lib/TSError.js'
 import type { NamedType } from '../NamedType/__.js'
-import type { Args, Field } from './Field.js'
+import type { Args } from './Field.js'
 
 const buildTimeOnly: any = undefined
 export namespace Base {
@@ -34,7 +34,8 @@ export namespace Output {
     type: MaybeThunk<$Type>,
   ): Nullable<$Type> => ({
     kind: `nullable`,
-    type,
+    // at type level "type" is not a thunk
+    type: type as any, // eslint-disable-line
   })
 
   export const List = <$Type extends Any>(type: $Type): List<$Type> => ({
@@ -71,8 +72,9 @@ export namespace Output {
     args: $Args = null as $Args,
   ): Field<$Type, $Args> => {
     return {
-      typeUnwrapped: buildTimeOnly,
-      type,
+      typeUnwrapped: buildTimeOnly, // eslint-disable-line
+      // At type level "type" is not a thunk
+      type: type as any, // eslint-disable-line
       args,
     }
   }
@@ -91,7 +93,8 @@ export namespace Input {
 
   export const Nullable = <$InnerType extends Any>(type: MaybeThunk<$InnerType>): Nullable<$InnerType> => ({
     kind: `nullable`,
-    type,
+    // at type level "type" is not a thunk
+    type: type as any, // eslint-disable-line
   })
 
   export const List = <$InnerType extends Any>(type: $InnerType): List<$InnerType> => ({
@@ -99,9 +102,9 @@ export namespace Input {
     type,
   })
 
-  export const field = <$Type extends Any, $Args extends Args | null = null>(type: $Type): Field<$Type> => {
+  export const field = <$Type extends Any>(type: $Type): Field<$Type> => {
     return {
-      type,
+      type: type,
     }
   }
 
@@ -112,7 +115,13 @@ export namespace Input {
 
   export const unwrapNullable = <$Type extends Any>(type: $Type): UnwrapNonNull<$Type> => {
     if (type.kind === `nullable`) return type.type
-    return type as UnwrapNonNull<$Type>
+    // @ts-expect-error fixme
+    return type
+  }
+
+  export type Field<$Type extends any = any> = {
+    // typeUnwrapped: Type.Output.Unwrap<$Type>
+    type: $Type
   }
 }
 
@@ -121,4 +130,5 @@ type MaybeThunk<$Type> = $Type | Thunk<$Type>
 type Thunk<$Type> = () => $Type
 
 export const readMaybeThunk = <T>(maybeThunk: MaybeThunk<T>): T =>
+  // @ts-expect-error fixme
   typeof maybeThunk === `function` ? maybeThunk() : maybeThunk

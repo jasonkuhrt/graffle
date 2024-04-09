@@ -6,7 +6,7 @@ import { generateCode, type Input as GenerateInput } from './code/code.js'
 
 export interface Input {
   outputDirPath: string
-  code: Omit<GenerateInput, 'schemaSource' | 'sourceDirPath'>
+  code?: Omit<GenerateInput, 'schemaSource' | 'sourceDirPath'>
   sourceDirPath?: string
   schemaPath?: string
   format?: boolean
