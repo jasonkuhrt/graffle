@@ -1,32 +1,40 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
-import type { Field } from '../Field/Field.js'
-import { field } from '../Field/Field.js'
 import { Output } from '../Field/Type.js'
+import type { Scalar } from './_.js'
+import type { Enum } from './Enum.js'
 
-export type Fields = Record<string, Field<any>>
+export type Fields = Record<
+  string,
+  Output.Field<Output.List<any> | Output.Nullable<any> | Object$2 | Enum | Scalar.Any>
+>
 
 export type ObjectFields = {
-  __typename: Field<Output.__typename>
+  __typename: Output.Field<Output.__typename>
 } & Fields
 
-export interface Object<
+export interface Object$2<
   $Name extends string = string,
   $Fields extends Fields = Fields,
 > {
   kind: 'Object'
   fields: {
-    __typename: Field<Output.__typename<$Name>>
+    __typename: Output.Field<Output.__typename<$Name>>
   } & $Fields
 }
 
-export const Object = <$Name extends string, $Fields extends Record<keyof $Fields, Field>>(
+// Naming this "Object" breaks Vitest: https://github.com/vitest-dev/vitest/issues/5463
+export const Object$ = <$Name extends string, $Fields extends Record<keyof $Fields, Output.Field>>(
   name: $Name,
   fields: $Fields,
-): Object<$Name, $Fields> => ({
+  // eslint-disable-next-line
+  // @ts-ignore infinite depth issue
+): Object$2<$Name, $Fields> => ({
   kind: `Object`,
   fields: {
-    __typename: field(Output.__typename(name)),
+    __typename: Output.field(Output.__typename(name)),
     ...fields,
   },
 })
+
+export { Object$ as Object }

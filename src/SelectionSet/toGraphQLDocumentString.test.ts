@@ -1,10 +1,10 @@
 import { parse, print } from 'graphql'
 import { describe, expect, test } from 'vitest'
-import type * as Schema from '../../tests/ts/_/schema/Schema.js'
+import type { $ } from '../../tests/ts/_/schema/generated/Index.js'
 import type { SelectionSet } from './__.js'
 import { toGraphQLDocumentString } from './toGraphQLDocumentString.js'
 
-type Q = SelectionSet.Query<Schema.$.Index>
+type Q = SelectionSet.Query<$.Index>
 const s = (selectionSet: Q) => selectionSet
 const prepareResult = (ss: Q) => {
   const graphqlDocumentString = toGraphQLDocumentString(ss as any)

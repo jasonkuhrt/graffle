@@ -1,15 +1,13 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
-import type { Object, Union } from './__.js'
+import type { Object$2, Union } from './__.js'
 
 export interface Index {
   Root: {
-    Query: null | Object
-    Mutation: null | Object
-    Subscription: null | Object
+    Query: null | Object$2
+    Mutation: null | Object$2
+    Subscription: null | Object$2
   }
-  objects: Record<string, Object>
-  unions: {
-    Union: null | Union
-  }
+  objects: Record<string, Object$2>
+  unions: Record<string, Union>
 }

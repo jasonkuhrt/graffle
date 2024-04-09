@@ -1,6 +1,7 @@
 import type { NamedType } from '../NamedType/__.js'
 import type { Scalar } from '../NamedType/Scalar/_.js'
-import * as Type from './Type.js'
+
+import type * as Type from './Type.js'
 
 export type * as Type from './Type.js'
 
@@ -22,16 +23,11 @@ export interface Args<$Fields extends any = any> {
   fields: $Fields
 }
 
-export const field = <$Type extends Type.Output.Any, $Args extends null | Args = null>(
-  type: $Type,
-  args: $Args = null as $Args,
-): Field<$Type, $Args> => {
+export const Args = <F>(fields: F): Args<F> => {
   return {
-    // eslint-disable-next-line
-    // @ts-ignore infinite depth issue, can this be fixed?
-    typeUnwrapped: Type.Output.unwrap(type),
-    type,
-    args,
+    // @ts-expect-error todo
+    allOptional: false,
+    fields,
   }
 }
 

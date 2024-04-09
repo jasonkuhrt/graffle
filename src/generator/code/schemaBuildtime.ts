@@ -5,13 +5,10 @@ import type {
   GraphQLInterfaceType,
   GraphQLNamedType,
   GraphQLObjectType,
-  GraphQLSchema,
 } from 'graphql'
-import { GraphQLNonNull, isEnumType, isListType, isNamedType } from 'graphql'
-import { buildSchema } from 'graphql'
+import { isEnumType, isListType, isNamedType } from 'graphql'
 import _ from 'json-bigint'
-import fs from 'node:fs/promises'
-import { Code } from '../lib/Code.js'
+import { Code } from '../../lib/Code.js'
 import type {
   AnyClass,
   AnyField,
@@ -20,16 +17,16 @@ import type {
   Describable,
   NamedNameToClass,
   NameToClassNamedType,
-  TypeMapByKind,
-} from '../lib/graphql.js'
+} from '../../lib/graphql.js'
 import {
   getNodeDisplayName,
-  getTypeMapByKind,
   isDeprecatableNode,
   isGraphQLOutputField,
   type NameToClass,
-} from '../lib/graphql.js'
-import { entries, values } from '../lib/prelude.js'
+  unwrapToNonNull,
+} from '../../lib/graphql.js'
+import { entries, values } from '../../lib/prelude.js'
+import type { Config } from './code.js'
 
 const namespaceNames = {
   GraphQLEnumType: `Enum`,
@@ -128,14 +125,14 @@ const concreteRenderers = defineConcreteRenderers({
       Code.export$(
         Code.type(
           node.name,
-          `_.Enum<${Code.quote(node.name)}, ${Code.tuple(node.getValues().map((_) => Code.quote(_.name)))} >`,
+          `$.Enum<${Code.quote(node.name)}, ${Code.tuple(node.getValues().map((_) => Code.quote(_.name)))} >`,
         ),
       ),
     ),
   GraphQLInputObjectType: (config, node) =>
     Code.TSDoc(
       getDocumentation(config, node),
-      Code.export$(Code.type(node.name, `_.InputObject<${Code.quote(node.name)}, ${renderInputFields(config, node)}>`)),
+      Code.export$(Code.type(node.name, `$.InputObject<${Code.quote(node.name)}, ${renderInputFields(config, node)}>`)),
     ),
   GraphQLInterfaceType: (config, node) => {
     const implementors = config.typeMapByKind.GraphQLObjectType.filter(_ =>
@@ -145,7 +142,7 @@ const concreteRenderers = defineConcreteRenderers({
       getDocumentation(config, node),
       Code.export$(Code.type(
         node.name,
-        `_.Interface<${Code.quote(node.name)}, ${renderOutputFields(config, node)}, ${
+        `$.Interface<${Code.quote(node.name)}, ${renderOutputFields(config, node)}, ${
           Code.tuple(implementors.map(_ => `Object.${_.name}`))
         }>`,
       )),
@@ -154,7 +151,7 @@ const concreteRenderers = defineConcreteRenderers({
   GraphQLObjectType: (config, node) =>
     Code.TSDoc(
       getDocumentation(config, node),
-      Code.export$(Code.type(node.name, `_.Object<${Code.quote(node.name)}, ${renderOutputFields(config, node)}>`)),
+      Code.export$(Code.type(node.name, `$.Object$2<${Code.quote(node.name)}, ${renderOutputFields(config, node)}>`)),
     ),
   GraphQLScalarType: () => ``,
   GraphQLUnionType: (config, node) =>
@@ -163,7 +160,7 @@ const concreteRenderers = defineConcreteRenderers({
       Code.export$(
         Code.type(
           node.name,
-          `_.Union<${Code.quote(node.name)},${
+          `$.Union<${Code.quote(node.name)},${
             Code.tuple(
               node
                 .getTypes()
@@ -256,7 +253,7 @@ const renderOutputField = (config: Config, field: AnyField): string => {
     ? renderArgs(config, field.args)
     : null
 
-  return `_.Field<${type}${args ? `, ${args}` : ``}>`
+  return `$.Field<${type}${args ? `, ${args}` : ``}>`
 }
 
 const renderInputField = (config: Config, field: AnyField): string => {
@@ -265,21 +262,21 @@ const renderInputField = (config: Config, field: AnyField): string => {
 
 const buildType = (direction: 'input' | 'output', config: Config, node: AnyClass) => {
   const ns = direction === `input` ? `Input` : `Output`
-  const { node: nodeInner, nullable } = unwrapNonNull(node)
+  const { ofType: nodeInner, nullable } = unwrapToNonNull(node)
 
   if (isNamedType(nodeInner)) {
     const namedTypeReference = dispatchToReferenceRenderer(config, nodeInner)
     // const namedTypeCode = `_.Named<${namedTypeReference}>`
     const namedTypeCode = namedTypeReference
     return nullable
-      ? `_.${ns}.Nullable<${namedTypeCode}>`
+      ? `$.${ns}.Nullable<${namedTypeCode}>`
       : namedTypeCode
   }
 
   if (isListType(nodeInner)) {
-    const fieldType = `_.${ns}.List<${buildType(direction, config, nodeInner.ofType)}>` as any as string
+    const fieldType = `$.${ns}.List<${buildType(direction, config, nodeInner.ofType)}>` as any as string
     return nullable
-      ? `_.${ns}.Nullable<${fieldType}>`
+      ? `$.${ns}.Nullable<${fieldType}>`
       : fieldType
   }
 
@@ -288,11 +285,11 @@ const buildType = (direction: 'input' | 'output', config: Config, node: AnyClass
 
 const renderArgs = (config: Config, args: readonly GraphQLArgument[]) => {
   let hasRequiredArgs = false
-  const argsRendered = `_.Args<${
+  const argsRendered = `$.Args<${
     Code.object(
       Code.fields(
         args.map((arg) => {
-          const { nullable } = unwrapNonNull(arg.type)
+          const { nullable } = unwrapToNonNull(arg.type)
           hasRequiredArgs = hasRequiredArgs || !nullable
           return Code.field(
             arg.name,
@@ -305,124 +302,23 @@ const renderArgs = (config: Config, args: readonly GraphQLArgument[]) => {
   return argsRendered
 }
 
-const unwrapNonNull = (
-  node: AnyClass,
-): { node: AnyClass; nullable: boolean } => {
-  const [nodeUnwrapped, nullable] = node instanceof GraphQLNonNull ? [node.ofType, false] : [node, true]
-  return { node: nodeUnwrapped, nullable }
-}
-
-// const scalarTypeMap: Record<string, 'string' | 'number' | 'boolean'> = {
-//   ID: `string`,
-//   Int: `number`,
-//   String: `string`,
-//   Float: `number`,
-//   Boolean: `boolean`,
-// }
-
 // high level
 
-interface Input {
-  schemaModulePath?: string
-  scalarsModulePath?: string
-  schemaSource: string
-  options?: {
-    formatter?: Formatter
-    TSDoc?: {
-      noDocPolicy?: 'message' | 'ignore'
-    }
-  }
-}
+export const generateSchemaBuildtime = (config: Config) => {
+  let code = ``
 
-interface Config {
-  schema: GraphQLSchema
-  typeMapByKind: TypeMapByKind
-  TSDoc: {
-    noDocPolicy: 'message' | 'ignore'
-  }
-}
+  code += `import type * as $ from '${config.libraryPaths.schema}'\n`
+  code += `import type * as $Scalar from './Scalar.ts'\n`
+  code += `\n\n`
 
-const resolveOptions = (input: Input): Config => {
-  const schema = buildSchema(input.schemaSource)
-  return {
-    schema,
-    typeMapByKind: getTypeMapByKind(schema),
-    TSDoc: {
-      noDocPolicy: input.options?.TSDoc?.noDocPolicy ?? `ignore`,
-    },
-  }
-}
-
-export const generateCode = (input: Input) => {
-  const config = resolveOptions(input)
-  const { typeMapByKind } = config
-
-  const hasQuery = typeMapByKind.GraphQLRootTypes.find(
-    (_) => _.name === `Query`,
-  )
-  const hasMutation = typeMapByKind.GraphQLRootTypes.find(
-    (_) => _.name === `Mutation`,
-  )
-  const hasSubscription = typeMapByKind.GraphQLRootTypes.find(
-    (_) => _.name === `Subscription`,
-  )
-
-  let schemaCode = ``
-
-  const schemaModulePath = input.schemaModulePath ?? `graphql-request/alpha/schema`
-  const scalarsModulePath = input.scalarsModulePath ?? `graphql-request/alpha/schema/scalars`
-
-  schemaCode += `import type * as _ from ${Code.quote(schemaModulePath)}\n`
-  schemaCode += `import type * as $Scalar from './Scalar.ts'\n`
-  schemaCode += `\n\n`
-
-  schemaCode += Code.export$(
-    Code.namespace(
-      `$`,
-      Code.group(
-        Code.export$(
-          Code.interface$(
-            `Index`,
-            Code.objectFrom({
-              Root: {
-                type: Code.objectFrom({
-                  Query: hasQuery ? `Root.Query` : null,
-                  Mutation: hasMutation ? `Root.Mutation` : null,
-                  Subscription: hasSubscription ? `Root.Subscription` : null,
-                }),
-              },
-              objects: Code.objectFromEntries(
-                typeMapByKind.GraphQLObjectType.map(_ => [_.name, Code.propertyAccess(`Object`, _.name)]),
-              ),
-              unions: {
-                type: Code.objectFrom(
-                  {
-                    Union: {
-                      type: typeMapByKind.GraphQLUnionType.length > 0
-                        ? Code.unionItems(
-                          typeMapByKind.GraphQLUnionType.map(
-                            (_) => Code.propertyAccess(`Union`, _.name),
-                          ),
-                        )
-                        : null,
-                    },
-                  },
-                ),
-              },
-            }),
-          ),
-        ),
-      ),
-    ),
-  )
-
-  for (const [name, types] of entries(typeMapByKind)) {
+  for (const [name, types] of entries(config.typeMapByKind)) {
     if (name === `GraphQLScalarType`) continue
-    if (name === `GraphQLCustomScalarType`) continue
+    if (name === `GraphQLScalarTypeCustom`) continue
+    if (name === `GraphQLScalarTypeStandard`) continue
 
     const namespaceName = name === `GraphQLRootTypes` ? `Root` : namespaceNames[name]
-    schemaCode += Code.commentSectionTitle(namespaceName)
-    schemaCode += Code.export$(
+    code += Code.commentSectionTitle(namespaceName)
+    code += Code.export$(
       Code.namespace(
         namespaceName,
         types.length === 0
@@ -434,67 +330,5 @@ export const generateCode = (input: Input) => {
     )
   }
 
-  let scalarsCode = ``
-
-  scalarsCode += `
-    import * as Scalar from ${Code.quote(scalarsModulePath)}
-
-    declare global {
-      interface SchemaCustomScalars {
-        Date: Date
-      }
-    }
-
-    ${
-    typeMapByKind.GraphQLCustomScalarType
-      .map((_) => {
-        return `
-          export const ${_.name} = Scalar.scalar('${_.name}', Scalar.nativeScalarConstructors.String)
-          export type ${_.name} = typeof ${_.name}
-        `
-      }).join(`\n`)
-  }
-
-    export * from ${Code.quote(scalarsModulePath)}
-  `
-
-  const defaultDprintConfig = {
-    quoteStyle: `preferSingle`,
-    semiColons: `asi`,
-  }
-
-  return {
-    scalars: input.options?.formatter?.formatText(`memory.ts`, scalarsCode, defaultDprintConfig)
-      ?? scalarsCode,
-    schema: input.options?.formatter?.formatText(`memory.ts`, schemaCode, defaultDprintConfig) ?? schemaCode,
-  }
-}
-
-import type { Formatter } from '@dprint/formatter'
-import { createFromBuffer } from '@dprint/formatter'
-import { getPath } from '@dprint/typescript'
-export const generateFiles = async (params: {
-  schemaPath: string
-  outputDirPath: string
-  schemaModulePath?: string
-  scalarsModulePath?: string
-  /**
-   * @defaultValue `true`
-   */
-  format?: boolean
-}) => {
-  const schemaSource = await fs.readFile(params.schemaPath, `utf8`)
-  const options = (params.format ?? true)
-    ? {
-      formatter: createFromBuffer(await fs.readFile(getPath())),
-    }
-    : undefined
-  const code = generateCode({
-    schemaSource,
-    ...params,
-    options,
-  })
-  await fs.mkdir(params.outputDirPath, { recursive: true })
-  await fs.writeFile(`${params.outputDirPath}/Schema.ts`, code.schema, { encoding: `utf8` })
-  await fs.writeFile(`${params.outputDirPath}/Scalar.ts`, code.scalars, { encoding: `utf8` })
+  return code
 }

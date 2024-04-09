@@ -17,7 +17,7 @@ type Args_ = string | boolean | null | number | Args
 
 type Indicator = 0 | 1 | boolean
 
-type SSRoot = {
+export type GraphQLDocumentObject = {
   [k: string]: Indicator | SS
 }
 
@@ -25,7 +25,7 @@ type SS = {
   [k: string]: Indicator | SS
 } & SpecialFields
 
-export const toGraphQLDocumentString = (ss: SSRoot) => {
+export const toGraphQLDocumentString = (ss: GraphQLDocumentObject) => {
   let docString = ``
   docString += `query {
 		${selectionSet(ss)}
@@ -40,6 +40,7 @@ const directiveArgs = (config: object) => {
 }
 
 const indicatorOrSelectionSet = (ss: Indicator | SS): string => {
+  if (ss === null) return `null` // todo test this case
   if (isIndicator(ss)) return ``
 
   const { $include, $skip, $defer, $stream, $, ...rest } = ss
@@ -92,7 +93,7 @@ const indicatorOrSelectionSet = (ss: Indicator | SS): string => {
 	}`
 }
 
-const selectionSet = (ss: SSRoot) => {
+const selectionSet = (ss: GraphQLDocumentObject) => {
   return Object.entries(ss).filter(([_, v]) => {
     return isPositiveIndicator(v)
   }).map(([field, ss]) => {

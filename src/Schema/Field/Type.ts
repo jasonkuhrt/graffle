@@ -1,6 +1,8 @@
 import type { TSError } from '../../lib/TSError.js'
 import type { NamedType } from '../NamedType/__.js'
+import type { Args } from './Field.js'
 
+const buildTimeOnly: any = undefined
 export namespace Base {
   export interface Nullable<$Type> {
     kind: 'nullable'
@@ -17,17 +19,29 @@ export namespace Output {
     kind: 'typename'
     type: $Type
   }
-  export type Nullable<$Type extends Any> = Base.Nullable<$Type>
+
+  export type Named = NamedType.AnyOutput
+
+  export type Nullable<$Type extends Output.List<any> | __typename<any> | NamedType.AnyOutput> = Base.Nullable<$Type>
+
   export type List<$Type extends Any> = Base.List<$Type>
 
   export type Any = Output.List<any> | __typename<any> | Base.Nullable<any> | NamedType.AnyOutput
 
   export const __typename = <$Type extends string>(type: $Type): __typename<$Type> => ({ kind: `typename`, type })
-  export const nullable = <$Type extends __typename<any> | List<any>>(type: $Type): Nullable<$Type> => ({
+
+  export const Nullable = <$Type extends __typename<any> | List<any> | NamedType.AnyOutput>(
+    type: MaybeThunk<$Type>,
+  ): Nullable<$Type> => ({
     kind: `nullable`,
+    // at type level "type" is not a thunk
+    type: type as any, // eslint-disable-line
+  })
+
+  export const List = <$Type extends Any>(type: $Type): List<$Type> => ({
+    kind: `list`,
     type,
   })
-  export const list = <$Type extends Any>(type: $Type): List<$Type> => ({ kind: `list`, type })
 
   // todo extends any because of infinite depth issue in generated schema types
   // dprint-ignore
@@ -37,10 +51,38 @@ export namespace Output {
       $Type extends __typename                  ? $Type['type'] :
       $Type extends NamedType.AnyOutput         ? $Type : 
                                                   TSError<'Unwrap', 'Unknown $Type', { $Type: $Type }>
+  // dprint-ignore
+  export type UnwrapNonNull<$Type> =
+    $Type extends Nullable<infer $innerType>  ? UnwrapNonNull<$innerType>
+                                              : $Type
+
+  export const unwrapNonNull = <$Type extends Any>(type: $Type): UnwrapNonNull<$Type> => {
+    if (type.kind === `nullable`) return type.type
+    return type as UnwrapNonNull<$Type>
+  }
 
   export const unwrap = <$Type extends Any>(type: $Type): Unwrap<$Type> => {
+    console.log({ type })
     // @ts-expect-error fixme
     return type.kind === `named` ? type.type : unwrap(type.type)
+  }
+
+  export const field = <$Type extends Any, $Args extends null | Args = null>(
+    type: MaybeThunk<$Type>,
+    args: $Args = null as $Args,
+  ): Field<$Type, $Args> => {
+    return {
+      typeUnwrapped: buildTimeOnly, // eslint-disable-line
+      // At type level "type" is not a thunk
+      type: type as any, // eslint-disable-line
+      args,
+    }
+  }
+
+  export type Field<$Type extends any = any, $Args extends Args | null = Args | null> = {
+    typeUnwrapped: Unwrap<$Type>
+    type: $Type
+    args: $Args
   }
 }
 
@@ -48,4 +90,45 @@ export namespace Input {
   export type Nullable<$InnerType extends Any = Any> = Base.Nullable<$InnerType>
   export type List<$InnerType extends Any = Any> = Base.List<$InnerType>
   export type Any = List<any> | Nullable<any> | NamedType.AnyInput
+
+  export const Nullable = <$InnerType extends Any>(type: MaybeThunk<$InnerType>): Nullable<$InnerType> => ({
+    kind: `nullable`,
+    // at type level "type" is not a thunk
+    type: type as any, // eslint-disable-line
+  })
+
+  export const List = <$InnerType extends Any>(type: $InnerType): List<$InnerType> => ({
+    kind: `list`,
+    type,
+  })
+
+  export const field = <$Type extends Any>(type: $Type): Field<$Type> => {
+    return {
+      type: type,
+    }
+  }
+
+  // dprint-ignore
+  type UnwrapNonNull<$Type> =
+    $Type extends Nullable<infer $innerType>  ? UnwrapNonNull<$innerType>
+                                              : $Type
+
+  export const unwrapNullable = <$Type extends Any>(type: $Type): UnwrapNonNull<$Type> => {
+    if (type.kind === `nullable`) return type.type
+    // @ts-expect-error fixme
+    return type
+  }
+
+  export type Field<$Type extends any = any> = {
+    // typeUnwrapped: Type.Output.Unwrap<$Type>
+    type: $Type
+  }
 }
+
+type MaybeThunk<$Type> = $Type | Thunk<$Type>
+
+type Thunk<$Type> = () => $Type
+
+export const readMaybeThunk = <T>(maybeThunk: MaybeThunk<T>): T =>
+  // @ts-expect-error fixme
+  typeof maybeThunk === `function` ? maybeThunk() : maybeThunk

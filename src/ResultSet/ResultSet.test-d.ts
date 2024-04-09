@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
 import { expectTypeOf, test } from 'vitest'
-import type * as Schema from '../../tests/ts/_/schema/Schema.js'
+import type { $ } from '../../tests/ts/_/schema/generated/Index.js'
+import type * as Schema from '../../tests/ts/_/schema/generated/SchemaBuildtime.js'
 import type { SelectionSet } from '../SelectionSet/__.js'
 import type { ResultSet } from './__.js'
 
-type I = Schema.$.Index
+type I = $.Index
 type RS<$selectionSet extends SelectionSet.Query<I>> = ResultSet.Query<$selectionSet, I>
 
 // dprint-ignore
@@ -24,7 +25,7 @@ test(`general`, () => {
   expectTypeOf<RS<{ id: true; string: undefined }>>().toEqualTypeOf<{ id: null | string }>()
   
   // Custom Scalar
-  expectTypeOf<RS<{ date: true }>>().toEqualTypeOf<{ date: null | string }>()
+  expectTypeOf<RS<{ date: true }>>().toEqualTypeOf<{ date: null | Date }>()
 
   // List
   expectTypeOf<RS<{ listIntNonNull: true }>>().toEqualTypeOf<{ listIntNonNull: number[] }>()
@@ -41,11 +42,11 @@ test(`general`, () => {
   expectTypeOf<RS<{ objectNonNull: { id: true } }>>().toEqualTypeOf<{ objectNonNull: { id: string | null } }>()
 
   // scalars-wildcard
-  expectTypeOf<RS<{ objectNonNull: { $scalars: true } }>>().toEqualTypeOf<{ objectNonNull: { __typename: "Object"; string: null|string; int: null|number; float: null|number; boolean: null|boolean; id: null|string; } }>()
+  expectTypeOf<RS<{ objectNonNull: { $scalars: true } }>>().toEqualTypeOf<{ objectNonNull: { __typename: "Object1"; string: null|string; int: null|number; float: null|number; boolean: null|boolean; id: null|string } }>()
   // scalars-wildcard with nested object
   expectTypeOf<RS<{ objectNested: { $scalars: true } }>>().toEqualTypeOf<{ objectNested: null | { __typename: "ObjectNested"; id: null|string } }>()
   // __typename
-  expectTypeOf<RS<{ objectNonNull: { __typename: true } }>>().toEqualTypeOf<{ objectNonNull: { __typename: "Object" } }>()
+  expectTypeOf<RS<{ objectNonNull: { __typename: true } }>>().toEqualTypeOf<{ objectNonNull: { __typename: "Object1" } }>()
 
   // Union
   expectTypeOf<RS<{ fooBarUnion: { __typename: true } }>>().toEqualTypeOf<{ fooBarUnion: null | { __typename: "Foo" } | { __typename: "Bar" } }>()

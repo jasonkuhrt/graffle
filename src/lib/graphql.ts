@@ -8,6 +8,8 @@ import {
   GraphQLObjectType,
   GraphQLScalarType,
   GraphQLUnionType,
+  isListType,
+  isNonNullType,
 } from 'graphql'
 
 export type TypeMapByKind =
@@ -15,14 +17,46 @@ export type TypeMapByKind =
     [Name in keyof NameToClassNamedType]: InstanceType<NameToClassNamedType[Name]>[]
   }
   & { GraphQLRootTypes: GraphQLObjectType<any, any>[] }
-  & { GraphQLCustomScalarType: GraphQLScalarType<any, any>[] }
+  & { GraphQLScalarTypeCustom: GraphQLScalarType<any, any>[] }
+  & { GraphQLScalarTypeStandard: GraphQLScalarType<any, any>[] }
 
-const scalarTypeNames = {
+export const standardScalarTypeNames = {
   String: `String`,
   ID: `ID`,
   Int: `Int`,
   Float: `Float`,
   Boolean: `Boolean`,
+}
+
+export const RootTypeName = {
+  Query: `Query`,
+  Mutation: `Mutation`,
+  Subscription: `Subscription`,
+} as const
+
+export type RootTypeName = keyof typeof RootTypeName
+
+export const isStandardScalarType = (type: GraphQLScalarType) => {
+  return type.name in standardScalarTypeNames
+}
+
+export const isCustomScalarType = (type: GraphQLScalarType) => {
+  return !isStandardScalarType(type)
+}
+
+export const unwrapToNamed = (
+  type: AnyClass,
+): AnyClass => {
+  if (isNonNullType(type)) return unwrapToNamed(unwrapToNonNull(type).ofType)
+  if (isListType(type)) return unwrapToNamed(type.ofType)
+  return type
+}
+
+export const unwrapToNonNull = (
+  type: AnyClass,
+): { ofType: AnyClass; nullable: boolean } => {
+  const [nodeUnwrapped, nullable] = type instanceof GraphQLNonNull ? [type.ofType, false] : [type, true]
+  return { ofType: nodeUnwrapped, nullable }
 }
 
 export const getTypeMapByKind = (schema: GraphQLSchema) => {
@@ -31,7 +65,8 @@ export const getTypeMapByKind = (schema: GraphQLSchema) => {
   const typeMapByKind: TypeMapByKind = {
     GraphQLRootTypes: [],
     GraphQLScalarType: [],
-    GraphQLCustomScalarType: [],
+    GraphQLScalarTypeCustom: [],
+    GraphQLScalarTypeStandard: [],
     GraphQLEnumType: [],
     GraphQLInputObjectType: [],
     GraphQLInterfaceType: [],
@@ -43,8 +78,10 @@ export const getTypeMapByKind = (schema: GraphQLSchema) => {
     switch (true) {
       case type instanceof GraphQLScalarType:
         typeMapByKind.GraphQLScalarType.push(type)
-        if (!(type.name in scalarTypeNames)) {
-          typeMapByKind.GraphQLCustomScalarType.push(type)
+        if (isCustomScalarType(type)) {
+          typeMapByKind.GraphQLScalarTypeCustom.push(type)
+        } else {
+          typeMapByKind.GraphQLScalarTypeStandard.push(type)
         }
         break
       case type instanceof GraphQLEnumType:
@@ -184,3 +221,11 @@ const toDisplayName = (nodeName: NodeNamePlus) => {
 export const isDeprecatableNode = (node: object): node is GraphQLEnumValue | AnyField => {
   return `deprecationReason` in node
 }
+
+export const hasQuery = (typeMapByKind: TypeMapByKind) => typeMapByKind.GraphQLRootTypes.find((_) => _.name === `Query`)
+
+export const hasMutation = (typeMapByKind: TypeMapByKind) =>
+  typeMapByKind.GraphQLRootTypes.find((_) => _.name === `Mutation`)
+
+export const hasSubscription = (typeMapByKind: TypeMapByKind) =>
+  typeMapByKind.GraphQLRootTypes.find((_) => _.name === `Subscription`)

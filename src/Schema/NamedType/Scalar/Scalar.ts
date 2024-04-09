@@ -1,40 +1,43 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
-import { nativeScalarConstructors } from './nativeConstructors.js'
+import type { Codec } from './codec.js'
+import { nativeScalarCodecs } from './nativeScalarCodecs.js'
 
-export { nativeScalarConstructors } from './nativeConstructors.js'
+export { nativeScalarCodecs } from './nativeScalarCodecs.js'
 
 export const ScalarKind = `Scalar`
 
 export type ScalarKind = typeof ScalarKind
 
-export const scalar = <$Name extends string, $TypeConstructor extends () => string | number | boolean>(
+export type StandardScalarRuntimeTypes = boolean | number | string
+
+export const scalar = <$Name extends string, $Codec extends Codec<any, any>>(
   name: $Name,
-  constructor: $TypeConstructor,
-): Scalar<$Name, $TypeConstructor> => ({
+  codec: $Codec,
+): Scalar<$Name, $Codec> => ({
   kind: ScalarKind,
   name: name,
-  constructor: constructor as any, // eslint-disable-line
+  codec: codec as any, // eslint-disable-line
 })
 
 export interface Scalar<
   $Name extends string = string,
-  $TypeConstructor extends () => string | number | boolean = () => string | number | boolean,
+  $Codec extends Codec = Codec,
 > {
   kind: ScalarKind
   name: $Name
-  constructor: $TypeConstructor
+  codec: $Codec
 }
 
-export const String = scalar(`String`, nativeScalarConstructors.String)
+export const String = scalar(`String`, nativeScalarCodecs.String)
 
-export const ID = scalar(`ID`, nativeScalarConstructors.String)
+export const ID = scalar(`ID`, nativeScalarCodecs.String)
 
-export const Int = scalar(`Int`, nativeScalarConstructors.Number)
+export const Int = scalar(`Int`, nativeScalarCodecs.Number)
 
-export const Float = scalar(`Float`, nativeScalarConstructors.Number)
+export const Float = scalar(`Float`, nativeScalarCodecs.Number)
 
-export const Boolean = scalar(`Boolean`, nativeScalarConstructors.Boolean)
+export const Boolean = scalar(`Boolean`, nativeScalarCodecs.Boolean)
 
 export type ID = typeof ID
 

@@ -1,8 +1,8 @@
 import { assertType, expectTypeOf, test } from 'vitest'
-import type * as Schema from '../../tests/ts/_/schema/Schema.js'
+import type { $ } from '../../tests/ts/_/schema/generated/Index.js'
 import type { SelectionSet } from './__.js'
 
-type Q = SelectionSet.Query<Schema.$.Index>
+type Q = SelectionSet.Query<$.Index>
 
 test(`ParseAliasExpression`, () => {
   expectTypeOf<SelectionSet.ParseAliasExpression<'a_as_b'>>().toEqualTypeOf<SelectionSet.Alias<'a', 'b'>>()
@@ -13,6 +13,7 @@ test(`ParseAliasExpression`, () => {
   expectTypeOf<SelectionSet.ParseAliasExpression<'1_as_2'>>().toEqualTypeOf<'1_as_2'>()
 })
 
+// dprint-ignore
 test(`Query`, () => {
   assertType<Q>({ __typename: true })
 
@@ -190,11 +191,17 @@ test(`Query`, () => {
   assertType<Q>({ stringWithListArgRequired: { $: {} } })
   // @ts-expect-error missing non-null "ints" arg
   assertType<Q>({ stringWithListArgRequired: { $: { ints: null } } })
+  
+  // custom scalar arg
+  // @ts-expect-error wrong type
+  assertType<Q>({ dateArg: { $: { date: 0 } } })
+  assertType<Q>({ dateArg: { $: { date: null } } })
+  assertType<Q>({ dateArg: { $: { date: new Date(0) } } })
 
   // input object arg
-  assertType<Q>({ stringWithArgInputObjectRequired: { $: { input: { id: ``, idRequired: `` } } } })
-  assertType<Q>({ stringWithArgInputObjectRequired: { $: { input: { id: null, idRequired: `` } } } })
-  assertType<Q>({ stringWithArgInputObjectRequired: { $: { input: { idRequired: `` } } } })
+  assertType<Q>({ stringWithArgInputObjectRequired: { $: { input: { id: ``, idRequired: ``, dateRequired: new Date(0) } } } })
+  assertType<Q>({ stringWithArgInputObjectRequired: { $: { input: { id: null, idRequired: ``, dateRequired: new Date(0) } } } })
+  assertType<Q>({ stringWithArgInputObjectRequired: { $: { input: { idRequired: ``, dateRequired: new Date(0) } } } })
   // @ts-expect-error missing "idRequired" field
   assertType<Q>({ stringWithArgInputObjectRequired: { $: { input: {} } } })
 
