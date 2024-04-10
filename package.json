@@ -100,7 +100,7 @@
     "body-parser": "^1.20.2",
     "doctoc": "^2.2.1",
     "dripip": "^0.10.0",
-    "eslint": "^8.57.0",
+    "eslint": "^9.0.0",
     "eslint-config-prisma": "^0.2.0",
     "eslint-plugin-deprecation": "^2.0.0",
     "eslint-plugin-only-warn": "^1.1.0",
