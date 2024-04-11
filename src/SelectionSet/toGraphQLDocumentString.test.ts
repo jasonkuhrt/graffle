@@ -4,10 +4,11 @@ import type { Index } from '../../tests/ts/_/schema/generated/Index.js'
 import type { SelectionSet } from './__.js'
 import { toGraphQLDocumentString } from './toGraphQLDocumentString.js'
 
+// @ts-expect-error ignoreme
 type Q = SelectionSet.Query<Index>
 const s = (selectionSet: Q) => selectionSet
 const prepareResult = (ss: Q) => {
-  const graphqlDocumentString = toGraphQLDocumentString(ss)
+  const graphqlDocumentString = toGraphQLDocumentString(ss as any) // eslint-disable-line
   // Should parse, ensures is syntactically valid graphql document.
   const document = parse(graphqlDocumentString)
   const graphqlDocumentStringFormatted = print(document)
