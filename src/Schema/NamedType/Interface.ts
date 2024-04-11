@@ -1,5 +1,3 @@
- 
-
 import type { Output } from '../__.js'
 import type { Object$2 } from './Object.js'
 

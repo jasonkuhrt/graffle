@@ -1,5 +1,3 @@
- 
-
 type Fields = Record<string, any>
 
 export interface InputObject<

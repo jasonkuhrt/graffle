@@ -7,7 +7,7 @@ import { create } from './client.js'
 
 const ctx = setupMockServer()
 const data = { fooBarUnion: { int: 1 } }
- 
+
 // @ts-ignore infinite depth
 const client = () => create<$.Index>({ url: ctx.url, schemaIndex })
 

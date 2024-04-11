@@ -57,7 +57,6 @@ export const Scalars = {
   Boolean,
 }
 
- 
 export type Any = String | Int | Boolean | ID | Float | SchemaCustomScalars[keyof SchemaCustomScalars]
 
 declare global {
