@@ -26,6 +26,6 @@ export class ClientError extends Error {
   }
 
   private static extractMessage(response: GraphQLResponse): string {
-    return response.errors?.[0]?.message ?? `GraphQL Error (Code: ${response.status})`
+    return response.errors?.[0]?.message ?? `GraphQL Error (Code: ${String(response.status)})`
   }
 }

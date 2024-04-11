@@ -39,7 +39,7 @@ const directiveArgs = (config: object) => {
   }).join(`, `)
 }
 
-const indicatorOrSelectionSet = (ss: Indicator | SS): string => {
+const indicatorOrSelectionSet = (ss: null | Indicator | SS): string => {
   if (ss === null) return `null` // todo test this case
   if (isIndicator(ss)) return ``
 
@@ -67,12 +67,12 @@ const indicatorOrSelectionSet = (ss: Indicator | SS): string => {
 
   if ($include !== undefined) {
     directives += `@include(if: ${
-      typeof $include === `boolean` ? $include : $include.if === undefined ? true : $include.if
+      String(typeof $include === `boolean` ? $include : $include.if === undefined ? true : $include.if)
     })`
   }
 
   if ($skip !== undefined) {
-    directives += `@skip(if: ${typeof $skip === `boolean` ? $skip : $skip.if === undefined ? true : $skip.if})`
+    directives += `@skip(if: ${String(typeof $skip === `boolean` ? $skip : $skip.if === undefined ? true : $skip.if)})`
   }
 
   if ($ !== undefined) {
@@ -105,7 +105,7 @@ const selectionSet = (ss: GraphQLDocumentObject) => {
 const resolveFragment = (field: string) => {
   const match = field.match(fragmentPattern)
   if (match?.groups) {
-    return `...on ${match.groups[`name`]}`
+    return `...on ${match.groups[`name`]!}`
   }
   return field
 }
@@ -114,7 +114,7 @@ const resolveFragment = (field: string) => {
 const resolveAlias = (field: string) => {
   const match = field.match(aliasPattern)
   if (match?.groups) {
-    return `${match.groups[`actual`]}: ${match.groups[`alias`]}`
+    return `${match.groups[`actual`]!}: ${match.groups[`alias`]!}`
   }
   return field
 }

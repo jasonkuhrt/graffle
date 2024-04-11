@@ -28,10 +28,10 @@ interface Input {
    * @defaultValue `'POST'`
    */
   method?: HTTPMethodInput
-  fetch: Fetch
+  fetch?: Fetch
   fetchOptions: FetchOptions
   headers?: HeadersInit
-  middleware?: RequestMiddleware<Variables>
+  middleware?: RequestMiddleware
   request:
     | {
       _tag: 'Single'
@@ -107,20 +107,20 @@ export const runRequest = async (input: Input): Promise<ClientError | GraphQLCli
       variables: input.request.variables,
     })
   }
-
-  if (result._tag === `Single`) {
-    // @ts-expect-error todo
-    return {
-      ...clientResponseBase,
-      ...executionResultClientResponseFields(config)(result.executionResult),
-    }
-  }
-
-  if (result._tag === `Batch`) {
-    return {
-      ...clientResponseBase,
-      data: result.executionResults.map(executionResultClientResponseFields(config)),
-    }
+  switch (result._tag) {
+    case `Single`:
+      // @ts-expect-error todo
+      return {
+        ...clientResponseBase,
+        ...executionResultClientResponseFields(config)(result.executionResult),
+      }
+    case `Batch`:
+      return {
+        ...clientResponseBase,
+        data: result.executionResults.map(executionResultClientResponseFields(config)),
+      }
+    default:
+      casesExhausted(result)
   }
 }
 
@@ -192,46 +192,48 @@ const createFetcher = (method: 'GET' | 'POST') => async (params: Input) => {
 }
 
 const buildBody = (params: Input) => {
-  if (params.request._tag === `Single`) {
-    const {
-      variables,
-      document: { expression, operationName },
-    } = params.request
-    return { query: expression, variables, operationName }
-  } else if (params.request._tag === `Batch`) {
-    return zip(params.request.query, params.request.variables ?? []).map(([query, variables]) => ({
-      query,
-      variables,
-    }))
-  } else {
-    throw casesExhausted(params.request)
+  switch (params.request._tag) {
+    case `Single`:
+      return {
+        query: params.request.document.expression,
+        variables: params.request.variables,
+        operationName: params.request.document.operationName,
+      }
+    case `Batch`:
+      return zip(params.request.query, params.request.variables ?? []).map(([query, variables]) => ({
+        query,
+        variables,
+      }))
+    default:
+      throw casesExhausted(params.request) // eslint-disable-line
   }
 }
 
 const buildQueryParams = (params: Input): URLSearchParams => {
   const $jsonSerializer = params.fetchOptions.jsonSerializer ?? defaultJsonSerializer
   const searchParams = new URLSearchParams()
-
-  if (params.request._tag === `Single`) {
-    searchParams.append(`query`, cleanQuery(params.request.document.expression))
-    if (params.request.variables) {
-      searchParams.append(`variables`, $jsonSerializer.stringify(params.request.variables))
+  switch (params.request._tag) {
+    case `Single`: {
+      searchParams.append(`query`, cleanQuery(params.request.document.expression))
+      if (params.request.variables) {
+        searchParams.append(`variables`, $jsonSerializer.stringify(params.request.variables))
+      }
+      if (params.request.document.operationName) {
+        searchParams.append(`operationName`, params.request.document.operationName)
+      }
+      return searchParams
     }
-    if (params.request.document.operationName) {
-      searchParams.append(`operationName`, params.request.document.operationName)
+    case `Batch`: {
+      const variablesSerialized = params.request.variables?.map((v) => $jsonSerializer.stringify(v)) ?? []
+      const queriesCleaned = params.request.query.map(cleanQuery)
+      const payload = zip(queriesCleaned, variablesSerialized).map(([query, variables]) => ({
+        query,
+        variables,
+      }))
+      searchParams.append(`query`, $jsonSerializer.stringify(payload))
+      return searchParams
     }
-    return searchParams
-  } else if (params.request._tag === `Batch`) {
-    const variablesSerialized = params.request.variables?.map((v) => $jsonSerializer.stringify(v)) ?? []
-    const queriesCleaned = params.request.query.map(cleanQuery)
-    const payload = zip(queriesCleaned, variablesSerialized).map(([query, variables]) => ({
-      query,
-      variables,
-    }))
-    searchParams.append(`query`, $jsonSerializer.stringify(payload))
-  } else {
-    throw casesExhausted(params.request)
+    default:
+      throw casesExhausted(params.request) // eslint-disable-line
   }
-
-  return searchParams
 }

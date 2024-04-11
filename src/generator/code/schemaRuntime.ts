@@ -60,10 +60,10 @@ const index = (config: Config) => {
         Subscription ${hasSubscription(config.typeMapByKind) ? `` : `:null`}
       },
       objects: {
-        ${config.typeMapByKind.GraphQLObjectType.map(_ => `${_.name}`).join(`,\n`)},
+        ${config.typeMapByKind.GraphQLObjectType.map(_ => _.name).join(`,\n`)},
       },
       unions: {
-        ${config.typeMapByKind.GraphQLUnionType.map(_ => `${_.name}`).join(`,\n`)},
+        ${config.typeMapByKind.GraphQLUnionType.map(_ => _.name).join(`,\n`)},
       }
     }
   `

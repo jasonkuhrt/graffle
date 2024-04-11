@@ -57,7 +57,7 @@ export const Scalars = {
   Boolean,
 }
 
-// eslint-disable-next-line
+ 
 export type Any = String | Int | Boolean | ID | Float | SchemaCustomScalars[keyof SchemaCustomScalars]
 
 declare global {

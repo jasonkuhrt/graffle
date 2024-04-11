@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/ban-types */
+ 
 
 import { Output } from '../Field/Type.js'
 import type { Scalar } from './_.js'

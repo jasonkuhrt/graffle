@@ -70,7 +70,7 @@ export const setupMockServer = <T extends MockSpec | MockSpecBatch = MockSpec>(
     await new Promise((res) => {
       ctx.nodeServer.once(`listening`, res)
     })
-    ctx.url = `http://localhost:${port}`
+    ctx.url = `http://localhost:${String(port)}`
     ctx.res = (spec?: T): MockResult<T> => {
       const requests: CapturedRequest[] = []
       // eslint-disable-next-line
@@ -109,7 +109,7 @@ export const setupMockServer = <T extends MockSpec | MockSpecBatch = MockSpec>(
 
   afterAll(async () => {
     await new Promise((resolve) => {
-      ctx.nodeServer?.close(() => {
+      ctx.nodeServer.close(() => {
         resolve(undefined)
       })
     })
@@ -148,13 +148,15 @@ export const createApolloServerContext = ({ typeDefs, resolvers }: ApolloServerC
     ctx.server = await startApolloServer({ typeDefs, resolvers })
     const address = ctx.server.address()
     if (address && typeof address === `object`) {
-      ctx.url = `http://localhost:${address.port}/graphql`
+      ctx.url = `http://localhost:${String(address.port)}/graphql`
     }
   })
 
   afterEach(async () => {
     await new Promise((res) => {
-      ctx.server?.close(() => res(undefined)) ?? res(undefined)
+      ctx.server.close(() => {
+        res(undefined)
+      })
     })
   })
 

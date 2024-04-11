@@ -33,7 +33,7 @@ it(`should abort a request when the signal is defined in GraphQLClient and after
   expect.assertions(1)
 
   const client = new GraphQLClient(ctx.url, { signal: abortController.signal })
-  client.request(`{ me { id } }`).catch((error) => {
+  client.request(`{ me { id } }`).catch((error: unknown) => {
     expect(error).toHaveProperty(`name`, `AbortError`)
   })
 
@@ -152,7 +152,7 @@ it(`should abort a request after the request has been sent`, async () => {
     url: ctx.url,
     document: `{ me { id } }`,
     signal: abortController.signal,
-  }).catch((error) => {
+  }).catch((error: unknown) => {
     expect(error).toHaveProperty(`name`, `AbortError`)
   })
 
@@ -195,7 +195,7 @@ it(`should abort a raw request after the request has been sent`, async () => {
     url: ctx.url,
     query: `{ me { id } }`,
     signal: abortController.signal,
-  }).catch((error) => {
+  }).catch((error: unknown) => {
     expect(error).toHaveProperty(`name`, `AbortError`)
   })
 
@@ -238,7 +238,7 @@ it(`should abort batch requests after a request has been sent`, async () => {
     url: ctx.url,
     documents: [{ document: `{ me { id } }` }, { document: `{ me { id } }` }],
     signal: abortController.signal,
-  }).catch((error) => {
+  }).catch((error: unknown) => {
     expect(error).toHaveProperty(`name`, `AbortError`)
   })
 

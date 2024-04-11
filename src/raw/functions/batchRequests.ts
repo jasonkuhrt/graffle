@@ -89,6 +89,7 @@ export const parseBatchRequestArgs = <V extends Variables = Variables>(
   documentsOrOptions: BatchRequestDocument<V>[] | BatchRequestsOptions<V>,
   requestHeaders?: HeadersInit,
 ): BatchRequestsOptions<V> => {
+  // eslint-disable-next-line
   return (documentsOrOptions as BatchRequestsOptions<V>).documents
     ? (documentsOrOptions as BatchRequestsOptions<V>)
     : {

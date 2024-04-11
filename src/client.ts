@@ -60,7 +60,7 @@ export const create = <$SchemaIndex extends Schema.Index>(input: Input): Client<
     input: Parameters<ExcludeUndefined<Input['hooks']>[$Name]>[0],
     fn: Parameters<ExcludeUndefined<Input['hooks']>[$Name]>[1],
   ) => {
-    return parentInput.hooks?.[name]?.(input, fn) ?? fn(input)
+    return parentInput.hooks?.[name](input, fn) ?? fn(input)
   }
 
   const sendDocumentObject = (rootType: RootTypeName) => async (documentObject: GraphQLDocumentObject) => {
@@ -112,7 +112,7 @@ const encodeCustomScalars = (
       if (typeof fieldValue === `object` && `$` in fieldValue) {
         const field = input.index.fields[fieldName]
         if (!field?.args) throw new Error(`Field has no args: ${fieldName}`)
-        if (!field) throw new Error(`Field not found: ${fieldName}`)
+        if (!field) throw new Error(`Field not found: ${fieldName}`) // eslint-disable-line
         // @ts-expect-error fixme
         fieldValue.$ = encodeCustomScalarsArgs(field.args, fieldValue.$)
         return [fieldName, fieldValue]
@@ -133,8 +133,7 @@ const encodeCustomScalarsArgs = (indexArgs: Args<any>, valueArgs: SSValue.Args2)
   )
 }
 
-const encodeCustomScalarsArgValue = (indexArg: Input.Any, argValue: SSValue.Arg): any => {
-  // console.log({ indexArg, argValue })
+const encodeCustomScalarsArgValue = (indexArg: Input.Any, argValue: null | SSValue.Arg): any => {
   if (argValue === null) return null // todo could check if index agrees is nullable.
   if (indexArg.kind === `nullable`) {
     return encodeCustomScalarsArgValue(indexArg.type, argValue)

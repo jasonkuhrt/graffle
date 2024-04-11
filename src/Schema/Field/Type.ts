@@ -62,7 +62,6 @@ export namespace Output {
   }
 
   export const unwrap = <$Type extends Any>(type: $Type): Unwrap<$Type> => {
-    console.log({ type })
     // @ts-expect-error fixme
     return type.kind === `named` ? type.type : unwrap(type.type)
   }
