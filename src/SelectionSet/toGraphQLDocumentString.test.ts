@@ -1,13 +1,13 @@
 import { parse, print } from 'graphql'
 import { describe, expect, test } from 'vitest'
-import type { $ } from '../../tests/ts/_/schema/generated/Index.js'
+import type { Index } from '../../tests/ts/_/schema/generated/Index.js'
 import type { SelectionSet } from './__.js'
 import { toGraphQLDocumentString } from './toGraphQLDocumentString.js'
 
-type Q = SelectionSet.Query<$.Index>
+type Q = SelectionSet.Query<Index>
 const s = (selectionSet: Q) => selectionSet
 const prepareResult = (ss: Q) => {
-  const graphqlDocumentString = toGraphQLDocumentString(ss as any)
+  const graphqlDocumentString = toGraphQLDocumentString(ss)
   // Should parse, ensures is syntactically valid graphql document.
   const document = parse(graphqlDocumentString)
   const graphqlDocumentStringFormatted = print(document)
