@@ -51,7 +51,7 @@ const getAccessToken = () => Promise.resolve(`some special token here`)
       const traceId = response.headers.get(`x-b3-trace-id`) || `unknown`
       console.error(
         `[${traceId}] Request error:
-        status ${response.status}
+        status ${String(response.status)}
         details: ${response.errors.map((_) => _.message).join(`, `)}`,
       )
     }

@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-types */
-
 import type { Object$2 } from './Object.js'
 
 export type Union<

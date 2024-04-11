@@ -224,7 +224,7 @@ export class GraphQLClient {
     return response.data
   }
 
-  setHeaders(headers: HeadersInit): GraphQLClient {
+  setHeaders(headers: HeadersInit): this {
     this.requestConfig.headers = headers
     return this
   }
@@ -232,7 +232,7 @@ export class GraphQLClient {
   /**
    * Attach a header to the client. All subsequent requests will have this header.
    */
-  setHeader(key: string, value: string): GraphQLClient {
+  setHeader(key: string, value: string): this {
     const { headers } = this.requestConfig
 
     if (headers) {
@@ -249,7 +249,7 @@ export class GraphQLClient {
   /**
    * Change the client endpoint. All subsequent requests will send to this endpoint.
    */
-  setEndpoint(value: string): GraphQLClient {
+  setEndpoint(value: string): this {
     this.url = value
     return this
   }

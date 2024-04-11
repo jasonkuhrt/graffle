@@ -16,7 +16,7 @@ export type TypeMapByKind =
   & {
     [Name in keyof NameToClassNamedType]: InstanceType<NameToClassNamedType[Name]>[]
   }
-  & { GraphQLRootTypes: GraphQLObjectType<any, any>[] }
+  & { GraphQLRootTypes: GraphQLObjectType[] }
   & { GraphQLScalarTypeCustom: GraphQLScalarType<any, any>[] }
   & { GraphQLScalarTypeStandard: GraphQLScalarType<any, any>[] }
 
@@ -149,7 +149,7 @@ export const NameToClass = {
   ...NamedNameToClass,
 } as const
 
-export type AnyGraphQLOutputField = GraphQLField<any, any, any>
+export type AnyGraphQLOutputField = GraphQLField<any, any>
 
 export type AnyField = AnyGraphQLOutputField | GraphQLInputField
 

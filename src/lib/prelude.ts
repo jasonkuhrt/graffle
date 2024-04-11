@@ -43,7 +43,7 @@ export const tryCatch = <$Return, $Throw extends Error = Error>(
   fn: () => $Return,
 ): $Return extends Promise<any> ? Promise<Awaited<$Return> | $Throw> : $Return | $Throw => {
   try {
-    const result = fn() as any // eslint-disable-line
+    const result = fn() as any
     if (isPromiseLikeValue(result)) {
       return result.catch((error) => {
         return errorFromMaybeError(error)
@@ -172,4 +172,4 @@ export type GetKeyOr<T, Key, Or> = Key extends keyof T ? T[Key] : Or
 
 import type { ConditionalSimplifyDeep } from 'type-fest/source/conditional-simplify.js'
 
-export type SimplifyDeep<T> = ConditionalSimplifyDeep<T, Function | Iterable<unknown> | Date, object> // eslint-disable-line
+export type SimplifyDeep<T> = ConditionalSimplifyDeep<T, Function | Iterable<unknown> | Date, object>

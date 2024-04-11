@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-types */
-
 import type { Object$2, Union } from './__.js'
 
 export interface Index {

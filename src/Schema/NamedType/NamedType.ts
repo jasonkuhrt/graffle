@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-types */
-
 import type { Digit, Letter } from '../../lib/prelude.js'
 import type { Enum } from './Enum.js'
 import type { InputObject } from './InputObjet.js'

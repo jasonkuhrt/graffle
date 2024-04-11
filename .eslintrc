@@ -1,8 +1,0 @@
-{
-  "root": true,
-  "extends": ["prisma"],
-  "overrides": [],
-  "rules": {
-    "simple-import-sort/imports": "off"
-  }
-}
