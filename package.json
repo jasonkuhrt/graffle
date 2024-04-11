@@ -65,7 +65,7 @@
     "check": "pnpm check:types && pnpm check:format && pnpm check:lint",
     "check:types": "pnpm tsc --noEmit",
     "check:format": "dprint check && pnpm build:docs && git diff --exit-code README.md",
-    "check:lint": "eslint . --ext .ts,.tsx --max-warnings 0",
+    "check:lint": "eslint . --max-warnings 0",
     "prepublishOnly": "pnpm build",
     "build:docs": "doctoc README.md --notitle && dprint fmt README.md",
     "build": "pnpm clean && pnpm tsc --project tsconfig.build.json && chmod +x ./build/cli/generate.js",
