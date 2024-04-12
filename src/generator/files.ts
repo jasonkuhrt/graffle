@@ -3,7 +3,7 @@ import { getPath } from '@dprint/typescript'
 import _ from 'json-bigint'
 import fs from 'node:fs/promises'
 import * as Path from 'node:path'
-import { errorFromMaybeError } from '../lib/prelude.js'
+import { fileExists } from '../lib/prelude.js'
 import { generateCode, type Input as GenerateInput } from './code/code.js'
 
 export interface Input {
@@ -44,15 +44,4 @@ export const generateFiles = async (input: Input) => {
   await fs.writeFile(`${input.outputDirPath}/SchemaBuildtime.ts`, code.schemaBuildtime, { encoding: `utf8` })
   await fs.writeFile(`${input.outputDirPath}/Scalar.ts`, code.scalars, { encoding: `utf8` })
   await fs.writeFile(`${input.outputDirPath}/SchemaRuntime.ts`, code.schemaRuntime, { encoding: `utf8` })
-}
-
-const fileExists = async (path: string) => {
-  return Boolean(
-    await fs.stat(path).catch((_: unknown) => {
-      const error = errorFromMaybeError(_)
-      return `code` in error && typeof error.code === `string` && error.code === `ENOENT`
-        ? null
-        : Promise.reject(error)
-    }),
-  )
 }
