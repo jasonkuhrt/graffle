@@ -4,6 +4,7 @@ import type { Simplify } from 'type-fest'
 import type { GetKeyOr, SimplifyDeep } from '../lib/prelude.js'
 import type { TSError } from '../lib/TSError.js'
 import type { Schema, SomeField } from '../Schema/__.js'
+import type { PickScalarFields } from '../Schema/Output/Output.js'
 import type { SelectionSet } from '../SelectionSet/__.js'
 
 // dprint-ignore
@@ -27,11 +28,7 @@ export type Object$<$SelectionSet, $Node extends Schema.Output.Object$2, $Index 
      */
     ?
       {
-      // TODO no more type unwrapped field
-      [$Key in keyof $Node['fields'] as $Node['fields'][$Key] extends Schema.Field<Schema.Output.__typename, any>  | {'typeUnwrapped':{kind:'Scalar'}} ? $Key : never]:
-        // eslint-disable-next-line
-        // @ts-ignore infinite depth issue, can this be fixed?
-         Field<$SelectionSet, Schema.Field.As<$Node['fields'][$Key]>, $Index>
+        [$Key in keyof PickScalarFields<$Node>]: Field<$SelectionSet, $Node['fields'][$Key], $Index>
       }
     /**
      * Handle fields in regular way.

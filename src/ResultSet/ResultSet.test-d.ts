@@ -41,7 +41,6 @@ test(`general`, () => {
   // non-nullable
   expectTypeOf<RS<{ objectNonNull: { id: true } }>>().toEqualTypeOf<{ objectNonNull: { id: string | null } }>()
 
-  type x= RS<{ objectNonNull: { $scalars: true } }>
   // scalars-wildcard
   expectTypeOf<RS<{ objectNonNull: { $scalars: true } }>>().toEqualTypeOf<{ objectNonNull: { __typename: "Object1"; string: null|string; int: null|number; float: null|number; boolean: null|boolean; id: null|string } }>()
   // scalars-wildcard with nested object

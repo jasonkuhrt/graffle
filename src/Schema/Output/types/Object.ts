@@ -1,5 +1,7 @@
 import type { Field, SomeFields } from '../../Field.js'
 import { field } from '../../Field.js'
+import type { Hybrid } from '../../Hybrid/__.js'
+import type { UnwrapToNamed } from '../typeGroups.js'
 import { __typename } from './__typename.js'
 
 export interface Object$2<
@@ -27,3 +29,10 @@ export const Object$ = <$Name extends string, $Fields extends Record<keyof $Fiel
 })
 
 export { Object$ as Object }
+
+// dprint-ignore
+export type PickScalarFields<$Object extends Object$2> = {
+  [
+    $Key in keyof $Object['fields'] as UnwrapToNamed<$Object['fields'][$Key]['type']> extends Hybrid.Scalar.Any | __typename ? $Key : never
+  ]: $Object['fields'][$Key]
+}

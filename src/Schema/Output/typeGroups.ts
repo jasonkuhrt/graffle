@@ -12,3 +12,9 @@ export type Named = Interface | Enum | Object$2 | Union | Hybrid.Scalar.Any
 export type Unnamed = List<any> | Nullable<any>
 
 export type Any = Unnamed | Named | __typename
+
+// dprint-ignore
+export type UnwrapToNamed<$Type extends Any> =
+	$Type extends List<infer $Inner> ? UnwrapToNamed<$Inner> :
+	$Type extends Nullable<infer $Inner> ? UnwrapToNamed<$Inner> :
+	$Type
