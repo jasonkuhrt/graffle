@@ -17,9 +17,7 @@ type Args_ = string | boolean | null | number | Args
 
 type Indicator = 0 | 1 | boolean
 
-export type GraphQLDocumentObject = {
-  [k: string]: Indicator | SS
-}
+export type GraphQLDocumentObject = Record<string, Indicator | SS>
 
 type SS = {
   [k: string]: Indicator | SS

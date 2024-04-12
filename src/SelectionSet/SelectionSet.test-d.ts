@@ -1,8 +1,8 @@
 import { assertType, expectTypeOf, test } from 'vitest'
-import type { $ } from '../../tests/ts/_/schema/generated/Index.js'
+import type { Index } from '../../tests/ts/_/schema/generated/Index.js'
 import type { SelectionSet } from './__.js'
 
-type Q = SelectionSet.Query<$.Index>
+type Q = SelectionSet.Query<Index>
 
 test(`ParseAliasExpression`, () => {
   expectTypeOf<SelectionSet.ParseAliasExpression<'a_as_b'>>().toEqualTypeOf<SelectionSet.Alias<'a', 'b'>>()

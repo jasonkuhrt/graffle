@@ -1,7 +1,7 @@
 /* eslint-disable */
 import { beforeEach, describe, expect, test } from 'vitest'
 import { setupMockServer } from '../tests/raw/__helpers.js'
-import type { $ } from '../tests/ts/_/schema/generated/Index.js'
+import type { Index } from '../tests/ts/_/schema/generated/Index.js'
 import { $Index as schemaIndex } from '../tests/ts/_/schema/generated/SchemaRuntime.js'
 import { create } from './client.js'
 
@@ -9,7 +9,7 @@ const ctx = setupMockServer()
 const data = { fooBarUnion: { int: 1 } }
 
 // @ts-ignore infinite depth
-const client = () => create<$.Index>({ url: ctx.url, schemaIndex })
+const client = () => create<Index>({ url: ctx.url, schemaIndex })
 
 test.todo(`query`, async () => {
   const mockRes = ctx.res({ body: { data } }).spec.body!
@@ -75,7 +75,7 @@ describe(`custom scalar`, () => {
       ctx.res({ body: { data: {} } })
     })
     const clientExpected = (expectedDocument: (document: any) => void) => {
-      const client = create<$.Index>({
+      const client = create<Index>({
         url: ctx.url,
         schemaIndex,
         hooks: {
