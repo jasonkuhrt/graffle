@@ -17,6 +17,9 @@ export interface Input {
   importPaths?: {
     customScalarCodecs?: string
   }
+  /**
+   * The GraphQL SDL source code.
+   */
   schemaSource: string
   options?: {
     /**
@@ -32,6 +35,7 @@ export interface Input {
 
 export interface Config {
   schema: GraphQLSchema
+  typeMapByKind: TypeMapByKind
   libraryPaths: {
     schema: string
     scalars: string
@@ -39,9 +43,11 @@ export interface Config {
   importPaths: {
     customScalarCodecs: string
   }
-  typeMapByKind: TypeMapByKind
-  TSDoc: {
-    noDocPolicy: 'message' | 'ignore'
+  options: {
+    customScalars: boolean
+    TSDoc: {
+      noDocPolicy: 'message' | 'ignore'
+    }
   }
 }
 
@@ -57,8 +63,11 @@ export const resolveOptions = (input: Input): Config => {
       schema: input.libraryPaths?.schema ?? `graphql-request/alpha/schema`,
     },
     typeMapByKind: getTypeMapByKind(schema),
-    TSDoc: {
-      noDocPolicy: input.options?.TSDoc?.noDocPolicy ?? `ignore`,
+    options: {
+      customScalars: input.options?.customScalars ?? false,
+      TSDoc: {
+        noDocPolicy: input.options?.TSDoc?.noDocPolicy ?? `ignore`,
+      },
     },
   }
 }

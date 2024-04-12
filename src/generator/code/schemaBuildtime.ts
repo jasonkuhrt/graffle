@@ -176,7 +176,7 @@ const concreteRenderers = defineConcreteRenderers({
 
 const getDocumentation = (config: Config, node: Describable) => {
   const generalDescription = node.description
-    ?? (config.TSDoc.noDocPolicy === `message` ? defaultDescription(node) : null)
+    ?? (config.options.TSDoc.noDocPolicy === `message` ? defaultDescription(node) : null)
 
   const deprecationDescription = isDeprecatableNode(node) && node.deprecationReason
     ? `@deprecated ${node.deprecationReason}`
@@ -191,7 +191,7 @@ const getDocumentation = (config: Config, node: Describable) => {
           : null
         const generalDescription = _.description
           ? _.description
-          : config.TSDoc.noDocPolicy === `message`
+          : config.options.TSDoc.noDocPolicy === `message`
           ? `Missing description.`
           : null
         if (!generalDescription && !deprecationDescription) return null
