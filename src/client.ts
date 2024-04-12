@@ -3,7 +3,7 @@ import request from './entrypoints/main.js'
 import { type RootTypeName, standardScalarTypeNames } from './lib/graphql.js'
 import type { Exact } from './lib/prelude.js'
 import type { ResultSet } from './ResultSet/__.js'
-import type { Object$2, Schema } from './Schema/__.js'
+import type { Object$, Schema } from './Schema/__.js'
 import { Output } from './Schema/__.js'
 import type { Input } from './Schema/Field/Type.js'
 import { readMaybeThunk } from './Schema/Field/Type.js'
@@ -35,7 +35,7 @@ export type Client<$SchemaIndex extends Schema.Index> =
 //
 
 interface HookInputDocumentEncode {
-  rootIndex: Object$2
+  rootIndex: Object$
   documentObject: GraphQLDocumentObject
 }
 
@@ -103,7 +103,7 @@ namespace SSValue {
 
 const encodeCustomScalars = (
   input: {
-    index: Object$2
+    index: Object$
     documentObject: SelectionSet.GraphQLDocumentObject
   },
 ): GraphQLDocumentObject => {
@@ -153,14 +153,14 @@ const encodeCustomScalarsArgValue = (indexArg: Input.Any, argValue: null | SSVal
   throw new Error(`Unsupported arg kind: ${String(indexArg)}`)
 }
 
-const decodeCustomScalars = (index: Object$2, documentQueryObject: object): object => {
+const decodeCustomScalars = (index: Object$, documentQueryObject: object): object => {
   return Object.fromEntries(
     Object.entries(documentQueryObject).map(([fieldName, v]) => {
       const indexField = index.fields[fieldName]
       if (!indexField) throw new Error(`Field not found: ${fieldName}`)
 
       const type = readMaybeThunk(indexField.type)
-      const typeWithoutNonNull = Output.unwrapNonNull(type) as Output.Named | Output.List<any>
+      const typeWithoutNonNull = Output.unwrapNonNull(type)
       const v2 = decodeCustomScalarValue(typeWithoutNonNull, v) // eslint-disable-line
       return [fieldName, v2]
     }),
@@ -175,10 +175,7 @@ const decodeCustomScalarValue = (
   if (fieldValue === null) return null
 
   const indexTypeDethunked = readMaybeThunk(indexType)
-  const typeWithoutNonNull = Output.unwrapNonNull(indexTypeDethunked) as
-    | Output.Named
-    | Output.List<any>
-    | Output.__typename<any>
+  const typeWithoutNonNull = Output.unwrapNonNull(indexTypeDethunked)
 
   if (typeWithoutNonNull.kind === `list`) {
     assertArray(fieldValue)
@@ -215,7 +212,7 @@ const decodeCustomScalarValue = (
       if (fieldValue.__typename === ObjectType.fields.__typename.type.type) return true
       if (Object.keys(fieldValue).every(fieldName => ObjectType.fields[fieldName] !== undefined)) return true
       return false
-    }) as undefined | Object$2
+    }) as undefined | Object$
     if (!ObjectType) throw new Error(`Could not pick object for ${typeWithoutNonNull.kind} selection`)
     return decodeCustomScalars(ObjectType, fieldValue)
   }

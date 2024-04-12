@@ -1,8 +1,8 @@
-import type { Object$2 } from './Object.js'
+import type { Object$ } from './Object.js'
 
 export type Union<
   $Name extends string = string,
-  $Members extends [Object$2, ...Object$2[]] = [Object$2, ...Object$2[]],
+  $Members extends [Object$, ...Object$[]] = [Object$, ...Object$[]],
 > = {
   kind: `Union`
   name: $Name
@@ -11,7 +11,7 @@ export type Union<
 
 export const Union = <
   $Name extends string,
-  $Members extends [Object$2, ...Object$2[]],
+  $Members extends [Object$, ...Object$[]],
 >(
   name: $Name,
   members: $Members,

@@ -4,14 +4,14 @@ import type { Enum } from './Enum.js'
 
 export type Fields = Record<
   string,
-  Output.Field<Output.List<any> | Output.Nullable<any> | Object$2 | Enum | Scalar.Any>
+  Output.Field<Output.List<any> | Output.Nullable<any> | Object$ | Enum | Scalar.Any>
 >
 
 export type ObjectFields = {
   __typename: Output.Field<Output.__typename>
 } & Fields
 
-export interface Object$2<
+export interface Object$<
   $Name extends string = string,
   $Fields extends Fields = Fields,
 > {
@@ -27,7 +27,7 @@ export const Object$ = <$Name extends string, $Fields extends Record<keyof $Fiel
   fields: $Fields,
   // eslint-disable-next-line
   // @ts-ignore infinite depth issue
-): Object$2<$Name, $Fields> => ({
+): Object$<$Name, $Fields> => ({
   kind: `Object`,
   fields: {
     __typename: Output.field(Output.__typename(name)),

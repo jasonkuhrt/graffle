@@ -151,7 +151,7 @@ const concreteRenderers = defineConcreteRenderers({
   GraphQLObjectType: (config, node) =>
     Code.TSDoc(
       getDocumentation(config, node),
-      Code.export$(Code.type(node.name, `$.Object$2<${Code.quote(node.name)}, ${renderOutputFields(config, node)}>`)),
+      Code.export$(Code.type(node.name, `$.Object$<${Code.quote(node.name)}, ${renderOutputFields(config, node)}>`)),
     ),
   GraphQLScalarType: () => ``,
   GraphQLUnionType: (config, node) =>

@@ -1,10 +1,10 @@
 import type { Output } from '../__.js'
-import type { Object$2 } from './Object.js'
+import type { Object$ } from './Object.js'
 
 export type Interface<
   $Name extends string = string,
   $Fields extends Record<string, Output.Field> = Record<string, Output.Field>,
-  $Implementors extends [Object$2, ...Object$2[]] = [Object$2, ...Object$2[]],
+  $Implementors extends [Object$, ...Object$[]] = [Object$, ...Object$[]],
 > = {
   kind: 'Interface'
   name: $Name
@@ -15,7 +15,7 @@ export type Interface<
 export const Interface = <
   $Name extends string,
   $Fields extends Record<keyof $Fields, Output.Field>,
-  $Implementors extends [Object$2, ...Object$2[]],
+  $Implementors extends [Object$, ...Object$[]],
 >(
   name: $Name,
   fields: $Fields,
