@@ -111,7 +111,7 @@ const encodeCustomScalars = (
       if (typeof fieldValue === `object` && `$` in fieldValue) {
         const field = input.index.fields[fieldName]
         if (!field?.args) throw new Error(`Field has no args: ${fieldName}`)
-        if (!field) throw new Error(`Field not found: ${fieldName}`)
+        if (!field) throw new Error(`Field not found: ${fieldName}`) // eslint-disable-line
         // @ts-expect-error fixme
         fieldValue.$ = encodeCustomScalarsArgs(field.args, fieldValue.$)
         return [fieldName, fieldValue]
@@ -159,7 +159,7 @@ const decodeCustomScalars = (index: Object$2, documentQueryObject: object): obje
       if (!indexField) throw new Error(`Field not found: ${fieldName}`)
 
       const type = readMaybeThunk(indexField.type)
-      const typeWithoutNonNull = Output.unwrapNonNull(type) as Output.Named | Output.List<any>
+      const typeWithoutNonNull = Output.unwrapNullable(type) as Output.Named | Output.List<any>
       const v2 = decodeCustomScalarValue(typeWithoutNonNull, v) // eslint-disable-line
       return [fieldName, v2]
     }),
@@ -174,7 +174,7 @@ const decodeCustomScalarValue = (
   if (fieldValue === null) return null
 
   const indexTypeDethunked = readMaybeThunk(indexType)
-  const typeWithoutNonNull = Output.unwrapNonNull(indexTypeDethunked)
+  const typeWithoutNonNull = Output.unwrapNullable(indexTypeDethunked) as Exclude<Output.Any, Output.Nullable<any>>
 
   if (typeWithoutNonNull.kind === `list`) {
     assertArray(fieldValue)

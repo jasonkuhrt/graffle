@@ -20,14 +20,15 @@ export type Unwrap<$Type extends any> =
       $Type extends __typename                  ? $Type['type'] :
       $Type extends Named         							? $Type : 
                                                   TSError<'Unwrap', 'Unknown $Type', { $Type: $Type }>
+
 // dprint-ignore
-export type UnwrapNonNull<$Type> =
-    $Type extends Nullable<infer $innerType>  ? UnwrapNonNull<$innerType>
+export type UnwrapNullable<$Type> =
+    $Type extends Nullable<infer $innerType>  ? UnwrapNullable<$innerType>
                                               : $Type
 
-export const unwrapNonNull = <$Type extends Any>(type: $Type): UnwrapNonNull<$Type> => {
+export const unwrapNullable = <$Type extends Any>(type: $Type): UnwrapNullable<$Type> => {
   if (type.kind === `nullable`) return type.type
-  return type as UnwrapNonNull<$Type>
+  return type as UnwrapNullable<$Type>
 }
 
 export const unwrap = <$Type extends Any>(type: $Type): Unwrap<$Type> => {

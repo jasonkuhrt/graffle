@@ -9,6 +9,6 @@ import type { Union } from './types/Union.js'
 
 export type Named = Interface | Enum | Object$2 | Union | Hybrid.Scalar.Any
 
-export type Unnamed = List<any> | __typename<any> | Nullable<any>
+export type Unnamed = List<any> | Nullable<any>
 
-export type Any = Unnamed | Named
+export type Any = Unnamed | Named | __typename
