@@ -9,7 +9,7 @@ import { toGraphQLDocumentString } from './toGraphQLDocumentString.js'
 type Q = SelectionSet.Query<Index>
 const s = (selectionSet: Q) => selectionSet
 const prepareResult = (ss: Q) => {
-  const graphqlDocumentString = toGraphQLDocumentString(ss as any) // eslint-disable-line
+  const graphqlDocumentString = toGraphQLDocumentString(ss as any)  
   // Should parse, ensures is syntactically valid graphql document.
   const document = parse(graphqlDocumentString)
   const graphqlDocumentStringFormatted = print(document)

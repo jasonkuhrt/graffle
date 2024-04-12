@@ -19,6 +19,10 @@ export interface Input {
   }
   schemaSource: string
   options?: {
+    /**
+     * Should custom scalars definitions be imported into the generated output?
+     */
+    customScalars?: boolean
     formatter?: Formatter
     TSDoc?: {
       noDocPolicy?: 'message' | 'ignore'
