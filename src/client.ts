@@ -5,8 +5,7 @@ import type { Exact } from './lib/prelude.js'
 import type { ResultSet } from './ResultSet/__.js'
 import type { Object$2, Schema } from './Schema/__.js'
 import { Output } from './Schema/__.js'
-import type { Input } from './Schema/Field/Type.js'
-import { readMaybeThunk } from './Schema/Field/Type.js'
+import { readMaybeThunk } from './Schema/core/helpers.js'
 import { SelectionSet } from './SelectionSet/__.js'
 import type { Args } from './SelectionSet/SelectionSet.js'
 import type { GraphQLDocumentObject } from './SelectionSet/toGraphQLDocumentString.js'
@@ -133,7 +132,7 @@ const encodeCustomScalarsArgs = (indexArgs: Args<any>, valueArgs: SSValue.Args2)
   )
 }
 
-const encodeCustomScalarsArgValue = (indexArg: Input.Any, argValue: null | SSValue.Arg): any => {
+const encodeCustomScalarsArgValue = (indexArg: Schema.Input.Any, argValue: null | SSValue.Arg): any => {
   if (argValue === null) return null // todo could check if index agrees is nullable.
   if (indexArg.kind === `nullable`) {
     return encodeCustomScalarsArgValue(indexArg.type, argValue)
@@ -160,7 +159,7 @@ const decodeCustomScalars = (index: Object$2, documentQueryObject: object): obje
       if (!indexField) throw new Error(`Field not found: ${fieldName}`)
 
       const type = readMaybeThunk(indexField.type)
-      const typeWithoutNonNull = Output.unwrapNonNull(type) as Output.Named | Output.List<any>
+      const typeWithoutNonNull = Output.unwrapNullable(type) as Output.Named | Output.List<any>
       const v2 = decodeCustomScalarValue(typeWithoutNonNull, v) // eslint-disable-line
       return [fieldName, v2]
     }),
@@ -175,10 +174,7 @@ const decodeCustomScalarValue = (
   if (fieldValue === null) return null
 
   const indexTypeDethunked = readMaybeThunk(indexType)
-  const typeWithoutNonNull = Output.unwrapNonNull(indexTypeDethunked) as
-    | Output.Named
-    | Output.List<any>
-    | Output.__typename<any>
+  const typeWithoutNonNull = Output.unwrapNullable(indexTypeDethunked) as Exclude<Output.Any, Output.Nullable<any>>
 
   if (typeWithoutNonNull.kind === `list`) {
     assertArray(fieldValue)

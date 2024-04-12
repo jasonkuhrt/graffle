@@ -9,7 +9,7 @@ test(`generates types from GraphQL SDL file`, async () => {
     code: {
       libraryPaths: {
         schema: `../../../../../src/Schema/__.js`,
-        scalars: `../../../../../src/Schema/NamedType/Scalar/Scalar.js`,
+        scalars: `../../../../../src/Schema/Hybrid/types/Scalar/Scalar.js`,
       },
     },
   })

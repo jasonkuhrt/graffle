@@ -1,8 +1,8 @@
-type Fields = Record<string, any>
+export type InputFields = Record<string, any>
 
 export interface InputObject<
   $Name extends string = string,
-  $Fields extends Fields = Fields,
+  $Fields extends InputFields = InputFields,
 > {
   kind: 'InputObject'
   name: $Name

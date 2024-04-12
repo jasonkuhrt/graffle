@@ -26,7 +26,7 @@ export const generateFiles = async (input: Input) => {
     customScalarCodecsFilePath.replace(/\.ts$/, `.js`),
   )
   const customScalarCodecsPathExists = await fileExists(customScalarCodecsFilePath)
-  const formatter = (input.format ?? true) ? createFromBuffer(await fs.readFile(getPath())) : undefined
+  const typeScriptFormatter = (input.format ?? true) ? createFromBuffer(await fs.readFile(getPath())) : undefined
 
   const code = generateCode({
     schemaSource,
@@ -35,7 +35,7 @@ export const generateFiles = async (input: Input) => {
     },
     ...input.code,
     options: {
-      formatter,
+      formatter: typeScriptFormatter,
       customScalars: customScalarCodecsPathExists,
     },
   })

@@ -29,7 +29,7 @@ export const generateRuntimeSchema = (
 
   code.push(
     `
-      import * as _ from '${config.libraryPaths.schema}'
+      import * as $ from '${config.libraryPaths.schema}'
       import * as $Scalar from './Scalar.js'
     `,
   )
@@ -60,10 +60,10 @@ const index = (config: Config) => {
         Subscription ${hasSubscription(config.typeMapByKind) ? `` : `:null`}
       },
       objects: {
-        ${config.typeMapByKind.GraphQLObjectType.map(_ => _.name).join(`,\n`)},
+        ${config.typeMapByKind.GraphQLObjectType.map(type => type.name).join(`,\n`)},
       },
       unions: {
-        ${config.typeMapByKind.GraphQLUnionType.map(_ => _.name).join(`,\n`)},
+        ${config.typeMapByKind.GraphQLUnionType.map(type => type.name).join(`,\n`)},
       }
     }
   `
@@ -72,7 +72,7 @@ const index = (config: Config) => {
 const union = (config: Config, type: GraphQLUnionType) => {
   // todo probably need thunks here
   const members = type.getTypes().map(t => t.name).join(`, `)
-  return `export const ${type.name} = _.Union(\`${type.name}\`, [${members}])\n`
+  return `export const ${type.name} = $.Union(\`${type.name}\`, [${members}])\n`
 }
 
 const interface$ = (config: Config, type: GraphQLInterfaceType) => {
@@ -83,14 +83,14 @@ const interface$ = (config: Config, type: GraphQLInterfaceType) => {
   const fields = Object.values(type.getFields()).map((field) => {
     return `${field.name}: ${outputField(config, field)}`
   }).join(`,\n`)
-  return `export const ${type.name} = _.Interface(\`${type.name}\`, {${fields}}, [${implementors}])`
+  return `export const ${type.name} = $.Interface(\`${type.name}\`, {${fields}}, [${implementors}])`
 }
 
 const enum$ = (config: Config, type: GraphQLEnumType) => {
   const members = type.getValues().map((value) => {
     return `\`${value.name}\``
   }).join(`, `)
-  return `export const ${type.name} = _.Enum(\`${type.name}\`, [${members}])`
+  return `export const ${type.name} = $.Enum(\`${type.name}\`, [${members}])`
 }
 
 const object = (config: Config, type: GraphQLObjectType) => {
@@ -98,7 +98,7 @@ const object = (config: Config, type: GraphQLObjectType) => {
     return `${field.name}: ${outputField(config, field)}`
   }).join(`,\n`)
   return `
-    export const ${type.name} = _.Object$(\`${type.name}\`, {
+    export const ${type.name} = $.Object$(\`${type.name}\`, {
       ${fields}
     })
 	`
@@ -109,7 +109,7 @@ const inputObject = (config: Config, type: GraphQLInputObjectType) => {
     `,\n`,
   )
   return `
-    export const ${type.name} = _.InputObject(\`${type.name}\`, {
+    export const ${type.name} = $.InputObject(\`${type.name}\`, {
       ${fields}
     })
 	`
@@ -117,18 +117,18 @@ const inputObject = (config: Config, type: GraphQLInputObjectType) => {
 
 const inputField = (config: Config, field: GraphQLInputField): string => {
   const type = buildType(`input`, config, field.type)
-  return `_.Input.field(${type})`
+  return `$.Input.field(${type})`
 }
 
 const outputField = (config: Config, field: AnyGraphQLOutputField): string => {
   const type = buildType(`output`, config, field.type)
   return field.args.length > 0
-    ? `_.Output.field(${type}, ${renderArgs(config, field.args)})`
-    : `_.Output.field(${type})`
+    ? `$.field(${type}, ${renderArgs(config, field.args)})`
+    : `$.field(${type})`
 }
 
 const renderArgs = (config: Config, args: readonly GraphQLArgument[]) => {
-  return `_.Args({${args.map(arg => renderArg(config, arg)).join(`, `)}})`
+  return `$.Args({${args.map(arg => renderArg(config, arg)).join(`, `)}})`
 }
 
 const renderArg = (config: Config, arg: GraphQLArgument) => {
@@ -161,14 +161,14 @@ const buildType = (direction: 'input' | 'output', config: Config, node: AnyClass
     const namedTypeReference = dispatchNamedType(config, nodeInner)
     const namedTypeCode = namedTypeReference
     return nullable
-      ? `_.${ns}.Nullable(${namedTypeCode})`
+      ? `$.${ns}.Nullable(${namedTypeCode})`
       : namedTypeCode
   }
 
   if (isListType(nodeInner)) {
-    const fieldType = `_.${ns}.List(${buildType(direction, config, nodeInner.ofType)})` as any as string
+    const fieldType = `$.${ns}.List(${buildType(direction, config, nodeInner.ofType)})` as any as string
     return nullable
-      ? `_.${ns}.Nullable(${fieldType})`
+      ? `$.${ns}.Nullable(${fieldType})`
       : fieldType
   }
 
