@@ -1,1 +1,1 @@
-export * from '../../Schema/Hybrid/Scalar/Scalar.js'
+export * from '../../Schema/Hybrid/types/Scalar/Scalar.js'

@@ -5,6 +5,7 @@ import type { List } from './types/List.js'
 import type { Nullable } from './types/Nullable.js'
 
 export * from './typeGroups.js'
+export * from './types/__typename.js'
 export * from './types/Interface.js'
 export * from './types/List.js'
 export * from './types/Nullable.js'

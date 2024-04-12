@@ -5,8 +5,7 @@ import type { Exact } from './lib/prelude.js'
 import type { ResultSet } from './ResultSet/__.js'
 import type { Object$2, Schema } from './Schema/__.js'
 import { Output } from './Schema/__.js'
-import type { Input } from './Schema/Field/Type.js'
-import { readMaybeThunk } from './Schema/Field/Type.js'
+import { readMaybeThunk } from './Schema/core/helpers.js'
 import { SelectionSet } from './SelectionSet/__.js'
 import type { Args } from './SelectionSet/SelectionSet.js'
 import type { GraphQLDocumentObject } from './SelectionSet/toGraphQLDocumentString.js'
@@ -112,7 +111,7 @@ const encodeCustomScalars = (
       if (typeof fieldValue === `object` && `$` in fieldValue) {
         const field = input.index.fields[fieldName]
         if (!field?.args) throw new Error(`Field has no args: ${fieldName}`)
-        if (!field) throw new Error(`Field not found: ${fieldName}`) // eslint-disable-line
+        if (!field) throw new Error(`Field not found: ${fieldName}`)
         // @ts-expect-error fixme
         fieldValue.$ = encodeCustomScalarsArgs(field.args, fieldValue.$)
         return [fieldName, fieldValue]
@@ -133,7 +132,7 @@ const encodeCustomScalarsArgs = (indexArgs: Args<any>, valueArgs: SSValue.Args2)
   )
 }
 
-const encodeCustomScalarsArgValue = (indexArg: Input.Any, argValue: null | SSValue.Arg): any => {
+const encodeCustomScalarsArgValue = (indexArg: Schema.Input.Any, argValue: null | SSValue.Arg): any => {
   if (argValue === null) return null // todo could check if index agrees is nullable.
   if (indexArg.kind === `nullable`) {
     return encodeCustomScalarsArgValue(indexArg.type, argValue)
@@ -175,10 +174,7 @@ const decodeCustomScalarValue = (
   if (fieldValue === null) return null
 
   const indexTypeDethunked = readMaybeThunk(indexType)
-  const typeWithoutNonNull = Output.unwrapNonNull(indexTypeDethunked) as
-    | Output.Named
-    | Output.List<any>
-    | Output.__typename<any>
+  const typeWithoutNonNull = Output.unwrapNonNull(indexTypeDethunked)
 
   if (typeWithoutNonNull.kind === `list`) {
     assertArray(fieldValue)

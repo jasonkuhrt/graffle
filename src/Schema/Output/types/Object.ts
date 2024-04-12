@@ -1,5 +1,5 @@
-import type { Field } from '../../_.js'
-import { field } from '../../Field/Field.js'
+import type { Field } from '../../Field.js'
+import { field } from '../../Field.js'
 import type { Hybrid } from '../../Hybrid/__.js'
 import { __typename } from './__typename.js'
 import type { List } from './List.js'
@@ -11,12 +11,12 @@ export interface Object$2<
 > {
   kind: 'Object'
   fields: {
-    __typename: Field.Field<__typename<$Name>>
+    __typename: Field<__typename<$Name>>
   } & $Fields
 }
 
 // Naming this "Object" breaks Vitest: https://github.com/vitest-dev/vitest/issues/5463
-export const Object$ = <$Name extends string, $Fields extends Record<keyof $Fields, Field.Field>>(
+export const Object$ = <$Name extends string, $Fields extends Record<keyof $Fields, Field>>(
   name: $Name,
   fields: $Fields,
   // eslint-disable-next-line
@@ -33,6 +33,5 @@ export { Object$ as Object }
 
 type Fields = Record<
   string,
-  // eslint-disable-next-line
-  Field.Field<List<any> | Nullable<any> | Object$2 | Hybrid.Enum | Hybrid.Scalar.Any>
+  Field<List<any> | Nullable<any> | Object$2 | Hybrid.Enum | Hybrid.Scalar.Any>
 >

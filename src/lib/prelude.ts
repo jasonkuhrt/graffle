@@ -186,3 +186,5 @@ export const fileExists = async (path: string) => {
     }),
   )
 }
+
+export type As<T, U> = U extends T ? U : never

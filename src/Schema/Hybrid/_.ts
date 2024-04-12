@@ -1,2 +1,2 @@
-export * from './Enum.js'
-export * from './Scalar/_.js'
+export * from './types/Enum.js'
+export * from './types/Scalar/_.js'

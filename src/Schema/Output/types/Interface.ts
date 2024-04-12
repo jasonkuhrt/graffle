@@ -1,9 +1,9 @@
-import type { Field } from '../../Field/__.js'
+import type { Field } from '../../Field.js'
 import type { Object$2 } from './Object.js'
 
 export type Interface<
   $Name extends string = string,
-  $Fields extends Record<string, Field.Field> = Record<string, Field.Field>,
+  $Fields extends Record<string, Field> = Record<string, Field>,
   $Implementors extends [Object$2, ...Object$2[]] = [Object$2, ...Object$2[]],
 > = {
   kind: 'Interface'
@@ -14,7 +14,7 @@ export type Interface<
 
 export const Interface = <
   $Name extends string,
-  $Fields extends Record<keyof $Fields, Field.Field>,
+  $Fields extends Record<keyof $Fields, Field>,
   $Implementors extends [Object$2, ...Object$2[]],
 >(
   name: $Name,

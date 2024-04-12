@@ -1,5 +1,5 @@
 import type { Hybrid } from '../Hybrid/__.js'
-import type { Enum } from '../Hybrid/Enum.js'
+import type { Enum } from '../Hybrid/types/Enum.js'
 import type { __typename } from './types/__typename.js'
 import type { Interface } from './types/Interface.js'
 import type { List } from './types/List.js'

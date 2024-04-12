@@ -19,7 +19,7 @@ export type Subscription<$SelectionSetSubscription extends object, $Index extend
   SimplifyDeep<Object$<$SelectionSetSubscription, Exclude<$Index['Root']['Subscription'], null>, $Index>>
 
 // dprint-ignore
-export type Object$<$SelectionSet, $Node extends Schema.Named.Object$2, $Index extends Schema.Index> =
+export type Object$<$SelectionSet, $Node extends Schema.Output.Object$2, $Index extends Schema.Index> =
   SelectionSet.IsSelectScalarsWildcard<$SelectionSet> extends true
 
     /**
@@ -27,7 +27,7 @@ export type Object$<$SelectionSet, $Node extends Schema.Named.Object$2, $Index e
      */
     ?
       {
-      [$Key in keyof $Node['fields'] as $Node['fields'][$Key] extends Schema.Field.Field<Schema.Field.Type.Output.__typename>  | {'typeUnwrapped':{kind:'Scalar'}} ? $Key : never]:
+      [$Key in keyof $Node['fields'] as $Node['fields'][$Key] extends Schema.Field<Schema.Output.__typename>  | {'typeUnwrapped':{kind:'Scalar'}} ? $Key : never]:
         // eslint-disable-next-line
         // @ts-ignore infinite depth issue, can this be fixed?
          Field<$SelectionSet, Schema.Field.As<$Node['fields'][$Key]>, $Index>
@@ -44,15 +44,15 @@ export type Object$<$SelectionSet, $Node extends Schema.Named.Object$2, $Index e
       }>
 
 // dprint-ignore
-type Union<$SelectionSet, $Node extends Schema.Named.Union, $Index extends Schema.Index> =
+type Union<$SelectionSet, $Node extends Schema.Output.Union, $Index extends Schema.Index> =
   OnTypeFragment<$SelectionSet,$Node['members'][number], $Index>
 
 // dprint-ignore
-type Interface<$SelectionSet, $Node extends Schema.Named.Interface, $Index extends Schema.Index> =
+type Interface<$SelectionSet, $Node extends Schema.Output.Interface, $Index extends Schema.Index> =
   OnTypeFragment<$SelectionSet, $Node['implementors'][number], $Index>
 
 // dprint-ignore
-type OnTypeFragment<$SelectionSet, $Node extends Schema.Named.Object$2, $Index extends Schema.Index> =
+type OnTypeFragment<$SelectionSet, $Node extends Schema.Output.Object$2, $Index extends Schema.Index> =
   $Node extends any // force distribution
     ? Object$<
         GetKeyOr<$SelectionSet, `on${Capitalize<$Node['fields']['__typename']['type']['type']>}`, {}> & SelectionSet.OmitOnTypeFragments<$SelectionSet>,
@@ -62,7 +62,7 @@ type OnTypeFragment<$SelectionSet, $Node extends Schema.Named.Object$2, $Index e
     : never
 
 // dprint-ignore
-type Field<$SelectionSet, $Field extends Schema.Field.Field, $Index extends Schema.Index> =
+type Field<$SelectionSet, $Field extends Schema.Field, $Index extends Schema.Index> =
   $SelectionSet extends SelectionSet.Directive.Include.Negative | SelectionSet.Directive.Skip.Positive ?
      null :
      (
@@ -74,18 +74,18 @@ type Field<$SelectionSet, $Field extends Schema.Field.Field, $Index extends Sche
 // dprint-ignore
 type FieldType<
   $SelectionSet,
-  $Type extends Schema.Field.Type.Output.Any,
+  $Type extends Schema.Output.Any,
   $Index extends Schema.Index
 > =Simplify<
-  $Type extends Schema.Field.Type.Output.__typename<infer $Value>   ? $Value :
-  $Type extends Schema.Field.Type.Output.Nullable<infer $InnerType> ? null | FieldType<$SelectionSet, $InnerType, $Index> :
-  $Type extends Schema.Field.Type.Output.List<infer $InnerType>     ? Array<FieldType<$SelectionSet, $InnerType, $Index>> :
-  $Type extends Schema.Named.Enum<infer _, infer $Members>          ? $Members[number] :
-  $Type extends Schema.Named.Scalar.Any                             ? ReturnType<$Type['codec']['decode']> :
-  $Type extends Schema.Named.Object$2                                 ? Object$<$SelectionSet,$Type,$Index> :
-  $Type extends Schema.Named.Interface                              ? Interface<$SelectionSet,$Type,$Index> :
-  $Type extends Schema.Named.Union                                  ? Union<$SelectionSet,$Type,$Index> :
-                                                                      TSError<'FieldType', `Unknown type`, { $Type: $Type }>
+  $Type extends Schema.__typename<infer $Value>             ? $Value :
+  $Type extends Schema.Output.Nullable<infer $InnerType>    ? null | FieldType<$SelectionSet, $InnerType, $Index> :
+  $Type extends Schema.Output.List<infer $InnerType>        ? Array<FieldType<$SelectionSet, $InnerType, $Index>> :
+  $Type extends Schema.Enum<infer _, infer $Members>        ? $Members[number] :
+  $Type extends Schema.Scalar.Any                           ? ReturnType<$Type['codec']['decode']> :
+  $Type extends Schema.Object$2                             ? Object$<$SelectionSet,$Type,$Index> :
+  $Type extends Schema.Interface                            ? Interface<$SelectionSet,$Type,$Index> :
+  $Type extends Schema.Union                                ? Union<$SelectionSet,$Type,$Index> :
+                                                              TSError<'FieldType', `Unknown type`, { $Type: $Type }>
   >
 
 // dprint-ignore
@@ -104,5 +104,5 @@ type FieldDirectiveSkip<$SelectionSet> =
 
 // dprint-ignore
 export namespace Errors {
-  export type UnknownFieldName<$FieldName extends string, $Object extends Schema.Named.Object$2> = TSError<'Object', `field "${$FieldName}" does not exist on object "${$Object['fields']['__typename']['type']['type']}"`>
+  export type UnknownFieldName<$FieldName extends string, $Object extends Schema.Object$2> = TSError<'Object', `field "${$FieldName}" does not exist on object "${$Object['fields']['__typename']['type']['type']}"`>
 }
