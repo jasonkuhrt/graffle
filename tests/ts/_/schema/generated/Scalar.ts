@@ -6,5 +6,5 @@ declare global {
   }
 }
 
-export * from '../../../../../src/Schema/NamedType/Scalar/Scalar.js'
+export * from '../../../../../src/Schema/Hybrid/types/Scalar/Scalar.js'
 export * from '../customScalarCodecs.js'

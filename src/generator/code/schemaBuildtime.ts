@@ -253,7 +253,7 @@ const renderOutputField = (config: Config, field: AnyField): string => {
     ? renderArgs(config, field.args)
     : null
 
-  return `$.Field<${type}${args ? `, ${args}` : ``}>`
+  return `$.Field<${type}${args ? `, ${args}` : `, null`}>`
 }
 
 const renderInputField = (config: Config, field: AnyField): string => {
