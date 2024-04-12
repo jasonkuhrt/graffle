@@ -4,7 +4,8 @@ import type { Index } from '../../tests/ts/_/schema/generated/Index.js'
 import type { SelectionSet } from './__.js'
 import { toGraphQLDocumentString } from './toGraphQLDocumentString.js'
 
-// @ts-expect-error ignoreme
+// eslint-disable-next-line
+// @ts-ignore
 type Q = SelectionSet.Query<Index>
 const s = (selectionSet: Q) => selectionSet
 const prepareResult = (ss: Q) => {
