@@ -2,7 +2,14 @@
 
 import type { MaybeList, StringNonEmpty, Values } from '../lib/prelude.js'
 import type { TSError } from '../lib/TSError.js'
-import type { InputFieldsAllNullable, Schema, SomeField, SomeFields } from '../Schema/__.js'
+import type {
+  InputFieldsAllNullable,
+  OmitNullableFields,
+  PickNullableFields,
+  Schema,
+  SomeField,
+  SomeFields,
+} from '../Schema/__.js'
 
 export type Query<$Index extends Schema.Index> = $Index['Root']['Query'] extends Schema.Object$2
   ? Object<$Index['Root']['Query'], $Index>
@@ -242,13 +249,6 @@ type InputField<$InputType extends Schema.Input.Any> =
   $InputType extends Schema.Enum<infer _, infer $Members>       ? $Members[number] :
   $InputType extends Schema.Scalar.Any                          ? ReturnType<$InputType['codec']['decode']> :
                                                                   TSError<'InferTypeInput', 'Unknown $InputType', { $InputType: $InputType }> // never
-type OmitNullableFields<$Fields extends Schema.InputObject['fields']> = {
-  [Key in keyof $Fields as $Fields[Key] extends Schema.Input.Nullable<any> ? never : Key]: $Fields[Key]
-}
-
-type PickNullableFields<$Fields extends Schema.InputObject['fields']> = {
-  [Key in keyof $Fields as $Fields[Key] extends Schema.Input.Nullable<any> ? Key : never]: $Fields[Key]
-}
 
 /**
  * @see https://spec.graphql.org/draft/#sec-Type-System.Directives.Built-in-Directives
