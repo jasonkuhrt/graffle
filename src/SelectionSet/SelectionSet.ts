@@ -23,10 +23,7 @@ type Object<
 > = Fields<$Fields['fields'], $Index>
 
 // dprint-ignore
-type Fields<
-  $Fields extends Schema.Fields,
-  $Index extends Schema.Index,
-> =
+type Fields<$Fields extends Record<string, Schema.Field<Schema.Output.Any>>, $Index extends Schema.Index> =
   &
   {
     [Key in keyof $Fields]?:
