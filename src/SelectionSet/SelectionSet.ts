@@ -222,8 +222,10 @@ export type OmitNegativeIndicators<$SelectionSet> = {
  */
 export type NoArgsIndicator = ClientIndicator | FieldDirectives
 
+// todo something is wrong here, resulting types are `any`.
 // dprint-ignore
 export type Indicator<$Field extends Schema.Field = Schema.Field> =
+
 // $Field['args']['allOptional']
 $Field['args'] extends Schema.Args        ? $Field['args']['allOptional'] extends true
                                             ? ({ $?: Args<$Field['args']> } & FieldDirectives) | ClientIndicator :
