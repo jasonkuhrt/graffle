@@ -1,14 +1,4 @@
-import type { Digit, Letter } from '../../lib/prelude.js'
-import type { Enum } from './Enum.js'
-import type { InputObject } from './InputObjet.js'
-import type { Interface } from './Interface.js'
-import type { Object$2 } from './Object.js'
-import type { Scalar } from './Scalar/_.js'
-import type { Union } from './Union.js'
-
-export type AnyOutput = Interface | Enum | Object$2 | Scalar.Any | Union
-export type AnyInput = Enum | Scalar.Any | InputObject
-export type Any = AnyOutput | AnyInput
+import type { Digit, Letter } from '../../../lib/prelude.js'
 
 /**
  * @see http://spec.graphql.org/draft/#sec-Names

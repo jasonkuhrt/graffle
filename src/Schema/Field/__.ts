@@ -1,2 +1,1 @@
-export * from './Field.js'
-export * from './Type.js'
+export * as Field from './Field.js'
