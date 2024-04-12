@@ -27,6 +27,7 @@ export type Object$<$SelectionSet, $Node extends Schema.Output.Object$2, $Index 
      */
     ?
       {
+      // TODO no more type unwrapped field
       [$Key in keyof $Node['fields'] as $Node['fields'][$Key] extends Schema.Field<Schema.Output.__typename>  | {'typeUnwrapped':{kind:'Scalar'}} ? $Key : never]:
         // eslint-disable-next-line
         // @ts-ignore infinite depth issue, can this be fixed?

@@ -12,6 +12,5 @@ export const field = <$Type extends Any>(type: $Type): Field<$Type> => {
 }
 
 export type Field<$Type extends any = any> = {
-  // typeUnwrapped: Type.Output.Unwrap<$Type>
   type: $Type
 }

@@ -16,20 +16,22 @@ export type Subscription<$Index extends Schema.Index> = $Index['Root']['Subscrip
   ? Object<$Index['Root']['Subscription'], $Index>
   : never
 
-// dprint-ignore
-type Object<
-  $Fields extends Schema.Object$2,
-  $Index extends Schema.Index,
-> = Fields<$Fields['fields'], $Index>
+type OutputField = Schema.Field<Schema.Output.Any>
+
+type OutputFields = Record<string, OutputField>
 
 // dprint-ignore
-type Fields<$Fields extends Record<string, Schema.Field<Schema.Output.Any>>, $Index extends Schema.Index> =
+type Object<$Object extends Schema.Object$2, $Index extends Schema.Index> =
+  Fields<$Object['fields'], $Index>
+
+// dprint-ignore
+type Fields<$Fields extends OutputFields, $Index extends Schema.Index> =
   &
   {
     [Key in keyof $Fields]?:
       // eslint-disable-next-line
       // @ts-ignore excessive deep error, fixme?
-      Field<As<Schema.Field,$Fields[Key]>, $Index>
+      Field<As<Schema.Field, $Fields[Key]>, $Index>
   }
   &
   /**
@@ -40,7 +42,7 @@ type Fields<$Fields extends Record<string, Schema.Field<Schema.Output.Any>>, $In
     [
       Key in keyof $Fields as `${keyof $Fields & string}_as_${StringNonEmpty}`
     ]?:
-     Field<As<Schema.Field,$Fields[Key]>, $Index>
+     Field<As<Schema.Field, $Fields[Key]>, $Index>
   }
   &
   /**
@@ -64,16 +66,23 @@ export type IsSelectScalarsWildcard<SS> = SS extends { $scalars: ClientIndicator
 export type Field<
   $Field extends Schema.Field,
   $Index extends Schema.Index,
+> = Field_<$Field['type'], $Field, $Index>
+
+// dprint-ignore
+export type Field_<
+  $type extends Schema.Output.Any,
+  $Field extends Schema.Field,
+  $Index extends Schema.Index,
 > =
-  $Field['type']['kind'] extends 'typename'                     ? NoArgsIndicator :
-  // eslint-disable-next-line
-  // @ts-ignore infinite depth issue, can this be fixed?
-  $Field['typeUnwrapped']['kind'] extends 'Scalar'              ? Indicator<$Field> :
-  $Field['typeUnwrapped']['kind'] extends 'Enum'                ? Indicator<$Field> :
-  $Field['typeUnwrapped']['kind'] extends 'Object'              ? Object<$Field['typeUnwrapped'], $Index> & FieldDirectives & Arguments<$Field> :
-  $Field['typeUnwrapped']['kind'] extends 'Union'               ? Union<$Field['typeUnwrapped'], $Index> :
-  $Field['typeUnwrapped']['kind'] extends 'Interface'           ? Interface<$Field['typeUnwrapped'], $Index> :
-                                                                TSError<'SelectionSetField', '$Field case not handled', { $Field: $Field }>
+  $type extends Schema.__typename                         ? NoArgsIndicator :
+  $type extends Schema.Scalar.Any                         ? Indicator<$Field> :
+  $type extends Schema.Enum                               ? Indicator<$Field> :
+  $type extends Schema.Output.Nullable<infer $typeInner>  ? Field_<$typeInner, $Field, $Index> :
+  $type extends Schema.Output.List<infer $typeInner>      ? Field_<$typeInner, $Field, $Index> :
+  $type extends Schema.Object$2                           ? Object<$type, $Index> & FieldDirectives & Arguments<$Field> :
+  $type extends Schema.Union                              ? Union<$type, $Index> :
+  $type extends Schema.Interface                          ? Interface<$type, $Index> :
+                                                            TSError<'Field', '$Field case not handled', { $Field: $Field }>
 // dprint-ignore
 type Arguments<$Field extends Schema.Field> =
 $Field['args'] extends Schema.Args        ? $Field['args']['allOptional'] extends true  ? { $?: Args<$Field['args']> } :
@@ -224,26 +233,30 @@ $Field['args'] extends Schema.Args        ? $Field['args']['allOptional'] extend
 // dprint-ignore
 export type Args<$Args extends Schema.Args> = ArgFields<$Args['fields']>
 
+// dprint-ignore
 export type ArgFields<$ArgFields extends Schema.InputObject['fields']> =
   & {
-    [
-      Key in keyof $ArgFields as $ArgFields[Key] extends Schema.Input.Nullable<any> ? never : Key
-    ]: InferTypeInput<$ArgFields[Key]>
-  }
+      [Key in keyof OmitNullableFields<$ArgFields>]: InputField<$ArgFields[Key]>
+    }
   & {
-    [
-      Key in keyof $ArgFields as $ArgFields[Key] extends Schema.Input.Nullable<any> ? Key : never
-    ]?: null | InferTypeInput<$ArgFields[Key]>
-  }
+      [Key in keyof PickNullableFields<$ArgFields>]?: InputField<$ArgFields[Key]> | null
+    }
 
 // dprint-ignore
-type InferTypeInput<$InputType extends Schema.Input.Any> =
-  $InputType extends Schema.Input.Nullable<infer $InnerType>    ? InferTypeInput<$InnerType> | null :
-  $InputType extends Schema.Input.List<infer $InnerType>        ? InferTypeInput<$InnerType>[] :
+type InputField<$InputType extends Schema.Input.Any> =
+  $InputType extends Schema.Input.Nullable<infer $InnerType>    ? InputField<$InnerType> | null :
+  $InputType extends Schema.Input.List<infer $InnerType>        ? InputField<$InnerType>[] :
   $InputType extends Schema.InputObject<infer _, infer $Fields> ? ArgFields<$Fields> :
   $InputType extends Schema.Enum<infer _, infer $Members>       ? $Members[number] :
   $InputType extends Schema.Scalar.Any                          ? ReturnType<$InputType['codec']['decode']> :
                                                                   TSError<'InferTypeInput', 'Unknown $InputType', { $InputType: $InputType }> // never
+type OmitNullableFields<$Fields extends Schema.InputObject['fields']> = {
+  [Key in keyof $Fields as $Fields[Key] extends Schema.Input.Nullable<any> ? never : Key]: $Fields[Key]
+}
+
+type PickNullableFields<$Fields extends Schema.InputObject['fields']> = {
+  [Key in keyof $Fields as $Fields[Key] extends Schema.Input.Nullable<any> ? Key : never]: $Fields[Key]
+}
 
 /**
  * @see https://spec.graphql.org/draft/#sec-Type-System.Directives.Built-in-Directives

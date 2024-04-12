@@ -204,6 +204,7 @@ test(`Query`, () => {
   assertType<Q>({ stringWithArgInputObjectRequired: { $: { input: { idRequired: ``, dateRequired: new Date(0) } } } })
   // @ts-expect-error missing "idRequired" field
   assertType<Q>({ stringWithArgInputObjectRequired: { $: { input: {} } } })
+  // type x = Exclude<Q['stringWithArgInputObjectRequired'],undefined>['$']['input']
 
   // all-optional + scalar + directive
   assertType<Q>({ stringWithArgs: { $: { boolean: true }, $skip: true } })

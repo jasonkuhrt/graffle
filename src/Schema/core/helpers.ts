@@ -6,8 +6,6 @@ export const readMaybeThunk = <T>(maybeThunk: MaybeThunk<T>): T =>
   // @ts-expect-error fixme
   typeof maybeThunk === `function` ? maybeThunk() : maybeThunk
 
-export const buildTimeOnly: any = undefined
-
 export namespace Base {
   export interface Nullable<$Type> {
     kind: 'nullable'
