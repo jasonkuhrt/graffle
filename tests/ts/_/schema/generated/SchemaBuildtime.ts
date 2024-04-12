@@ -125,6 +125,10 @@ export namespace Root {
      */
     abcEnum: $.Field<$.Output.Nullable<Enum.ABCEnum>>
     lowerCaseUnion: $.Field<$.Output.Nullable<Union.lowerCaseUnion>>
+    // unionFooBar: $.Field<$.Output.Nullable<Union.FooBarUnion>>
+    // unionObject: $.Field<$.Output.Nullable<Object.ObjectUnion>>
+    unionFooBarNonNull: $.Field<Union.FooBarUnion>
+    // unionObjectNonNull: $.Field<Object.ObjectUnion>
   }>
 }
 
@@ -182,6 +186,10 @@ export namespace Object {
 
   export type DateObject2 = $.Object$2<'DateObject2', {
     date2: $.Field<$.Output.Nullable<$Scalar.Date>>
+  }>
+
+  export type ObjectUnion = $.Object$2<'ObjectUnion', {
+    fooBarUnion: $.Field<$.Output.Nullable<Union.FooBarUnion>>
   }>
 
   /**

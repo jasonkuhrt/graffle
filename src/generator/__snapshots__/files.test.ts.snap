@@ -128,6 +128,10 @@ export namespace Root {
      */
     abcEnum: $.Field<$.Output.Nullable<Enum.ABCEnum>>
     lowerCaseUnion: $.Field<$.Output.Nullable<Union.lowerCaseUnion>>
+    unionFooBar: $.Field<$.Output.Nullable<Union.FooBarUnion>>
+    unionObject: $.Field<$.Output.Nullable<Object.ObjectUnion>>
+    unionFooBarNonNull: $.Field<Union.FooBarUnion>
+    unionObjectNonNull: $.Field<Object.ObjectUnion>
   }>
 }
 
@@ -185,6 +189,10 @@ export namespace Object {
 
   export type DateObject2 = $.Object$2<'DateObject2', {
     date2: $.Field<$.Output.Nullable<$Scalar.Date>>
+  }>
+
+  export type ObjectUnion = $.Object$2<'ObjectUnion', {
+    fooBarUnion: $.Field<$.Output.Nullable<Union.FooBarUnion>>
   }>
 
   /**
@@ -285,6 +293,10 @@ export const DateObject1 = _.Object$(\`DateObject1\`, {
 
 export const DateObject2 = _.Object$(\`DateObject2\`, {
   date2: _.Output.field(_.Output.Nullable($Scalar.Date)),
+})
+
+export const ObjectUnion = _.Object$(\`ObjectUnion\`, {
+  fooBarUnion: _.Output.field(_.Output.Nullable(() => FooBarUnion)),
 })
 
 export const Foo = _.Object$(\`Foo\`, {
@@ -416,6 +428,10 @@ export const Query = _.Object$(\`Query\`, {
   fooBarUnion: _.Output.field(_.Output.Nullable(() => FooBarUnion)),
   abcEnum: _.Output.field(_.Output.Nullable(ABCEnum)),
   lowerCaseUnion: _.Output.field(_.Output.Nullable(() => lowerCaseUnion)),
+  unionFooBar: _.Output.field(_.Output.Nullable(() => FooBarUnion)),
+  unionObject: _.Output.field(_.Output.Nullable(() => ObjectUnion)),
+  unionFooBarNonNull: _.Output.field(() => FooBarUnion),
+  unionObjectNonNull: _.Output.field(() => ObjectUnion),
 })
 
 export const $Index = {
@@ -427,6 +443,7 @@ export const $Index = {
   objects: {
     DateObject1,
     DateObject2,
+    ObjectUnion,
     Foo,
     Bar,
     ObjectNested,

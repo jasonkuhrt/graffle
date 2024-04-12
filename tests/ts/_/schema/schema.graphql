@@ -39,6 +39,11 @@ type Query {
 	"""
 	abcEnum: ABCEnum
 	lowerCaseUnion: lowerCaseUnion
+	unionFooBar: FooBarUnion
+	unionObject: ObjectUnion
+	unionFooBarNonNull: FooBarUnion!
+	unionObjectNonNull: ObjectUnion!
+
 }
 
 interface DateInterface1 {
@@ -60,6 +65,10 @@ input InputObject {
 	idRequired: ID!
 	date: Date
 	dateRequired: Date!
+}
+
+type ObjectUnion {
+	fooBarUnion: FooBarUnion
 }
 
 """

@@ -1,9 +1,11 @@
 import { Output } from '../Field/Type.js'
-import type { Scalar } from './_.js'
+import type { Interface, Scalar, Union } from './_.js'
 import type { Enum } from './Enum.js'
 
 export type Fields = Record<
   string,
+  // todo needs union
+  // todo needs interface
   Output.Field<Output.List<any> | Output.Nullable<any> | Object$2 | Enum | Scalar.Any>
 >
 

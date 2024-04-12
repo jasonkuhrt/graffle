@@ -18,6 +18,10 @@ export const DateObject2 = _.Object$(`DateObject2`, {
   date2: _.Output.field(_.Output.Nullable($Scalar.Date)),
 })
 
+export const ObjectUnion = _.Object$(`ObjectUnion`, {
+  fooBarUnion: _.Output.field(_.Output.Nullable(() => FooBarUnion)),
+})
+
 export const Foo = _.Object$(`Foo`, {
   id: _.Output.field(_.Output.Nullable($Scalar.ID)),
 })
@@ -147,6 +151,10 @@ export const Query = _.Object$(`Query`, {
   fooBarUnion: _.Output.field(_.Output.Nullable(() => FooBarUnion)),
   abcEnum: _.Output.field(_.Output.Nullable(ABCEnum)),
   lowerCaseUnion: _.Output.field(_.Output.Nullable(() => lowerCaseUnion)),
+  unionFooBar: _.Output.field(_.Output.Nullable(() => FooBarUnion)),
+  unionObject: _.Output.field(_.Output.Nullable(() => ObjectUnion)),
+  unionFooBarNonNull: _.Output.field(() => FooBarUnion),
+  unionObjectNonNull: _.Output.field(() => ObjectUnion),
 })
 
 export const $Index = {
@@ -158,6 +166,7 @@ export const $Index = {
   objects: {
     DateObject1,
     DateObject2,
+    ObjectUnion,
     Foo,
     Bar,
     ObjectNested,
