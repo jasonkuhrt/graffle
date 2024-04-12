@@ -22,7 +22,7 @@ export const generateFiles = async (input: Input) => {
   const customScalarCodecsPath = Path.relative(input.outputDirPath, Path.join(sourceDirPath, `customScalarCodecs.js`))
   // todo support other extensions: .tsx,.js,.mjs,.cjs
   const customScalarCodecsPathExists = await fileExists(customScalarCodecsPath.replace(`.js`, `.ts`))
-  const formatter = input.format ? createFromBuffer(await fs.readFile(getPath())) : undefined
+  const formatter = (input.format ?? true) ? createFromBuffer(await fs.readFile(getPath())) : undefined
 
   const options: GenerateInput['options'] = {
     formatter,
