@@ -2,7 +2,7 @@
 
 import type { MaybeList, StringNonEmpty, Values } from '../lib/prelude.js'
 import type { TSError } from '../lib/TSError.js'
-import type { Schema, SomeField, SomeFields } from '../Schema/__.js'
+import type { InputFieldsAllNullable, Schema, SomeField, SomeFields } from '../Schema/__.js'
 
 export type Query<$Index extends Schema.Index> = $Index['Root']['Query'] extends Schema.Object$2
   ? Object<$Index['Root']['Query'], $Index>
@@ -78,8 +78,8 @@ export type Field_<
                                                             TSError<'Field', '$Field case not handled', { $Field: $Field }>
 // dprint-ignore
 type Arguments<$Field extends SomeField> =
-  $Field['args'] extends Schema.Args<any>         ? $Field['args']['allOptional'] extends true  ? { $?: Args<$Field['args']> } :
-                                                                                                  { $: Args<$Field['args']> } :
+  $Field['args'] extends Schema.Args<any>         ? InputFieldsAllNullable<$Field['args']['fields']> extends true  ?  { $?: Args<$Field['args']> } :
+                                                                                                                      { $: Args<$Field['args']> } :
                                                   {}
 
 // dprint-ignore
@@ -215,15 +215,12 @@ export type OmitNegativeIndicators<$SelectionSet> = {
  */
 export type NoArgsIndicator = ClientIndicator | FieldDirectives
 
-// todo something is wrong here, resulting types are `any`.
 // dprint-ignore
 export type Indicator<$Field extends SomeField> =
-
-// $Field['args']['allOptional']
-$Field['args'] extends Schema.Args<any>        ? $Field['args']['allOptional'] extends true
-                                            ? ({ $?: Args<$Field['args']> } & FieldDirectives) | ClientIndicator :
-                                              { $: Args<$Field['args']> } & FieldDirectives :
-                                            NoArgsIndicator
+$Field['args'] extends Schema.Args<any>        ?  InputFieldsAllNullable<$Field['args']['fields']> extends true
+                                                    ? ({ $?: Args<$Field['args']> } & FieldDirectives) | ClientIndicator :
+                                                      { $: Args<$Field['args']> } & FieldDirectives :
+                                                  NoArgsIndicator
 
 // dprint-ignore
 export type Args<$Args extends Schema.Args<any>> = ArgFields<$Args['fields']>
