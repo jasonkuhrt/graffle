@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
-import type { As, MaybeList, StringNonEmpty, Values } from '../lib/prelude.js'
+import type { MaybeList, StringNonEmpty, Values } from '../lib/prelude.js'
 import type { TSError } from '../lib/TSError.js'
-import type { Schema } from '../Schema/__.js'
+import type { Schema, SomeField, SomeFields } from '../Schema/__.js'
 
 export type Query<$Index extends Schema.Index> = $Index['Root']['Query'] extends Schema.Object$2
   ? Object<$Index['Root']['Query'], $Index>
@@ -16,22 +16,18 @@ export type Subscription<$Index extends Schema.Index> = $Index['Root']['Subscrip
   ? Object<$Index['Root']['Subscription'], $Index>
   : never
 
-type OutputField = Schema.Field<Schema.Output.Any>
-
-type OutputFields = Record<string, OutputField>
-
 // dprint-ignore
 type Object<$Object extends Schema.Object$2, $Index extends Schema.Index> =
   Fields<$Object['fields'], $Index>
 
 // dprint-ignore
-type Fields<$Fields extends OutputFields, $Index extends Schema.Index> =
+type Fields<$Fields extends SomeFields, $Index extends Schema.Index> =
   &
   {
     [Key in keyof $Fields]?:
       // eslint-disable-next-line
       // @ts-ignore excessive deep error, fixme?
-      Field<As<Schema.Field, $Fields[Key]>, $Index>
+      Field<$Fields[Key], $Index>
   }
   &
   /**
@@ -42,7 +38,7 @@ type Fields<$Fields extends OutputFields, $Index extends Schema.Index> =
     [
       Key in keyof $Fields as `${keyof $Fields & string}_as_${StringNonEmpty}`
     ]?:
-     Field<As<Schema.Field, $Fields[Key]>, $Index>
+     Field<$Fields[Key], $Index>
   }
   &
   /**
@@ -63,31 +59,28 @@ type Fields<$Fields extends OutputFields, $Index extends Schema.Index> =
 export type IsSelectScalarsWildcard<SS> = SS extends { $scalars: ClientIndicatorPositive } ? true : false
 
 // dprint-ignore
-export type Field<
-  $Field extends Schema.Field,
-  $Index extends Schema.Index,
-> = Field_<$Field['type'], $Field, $Index>
+export type Field<$Field extends SomeField, $Index extends Schema.Index> = Field_<$Field['type'], $Field, $Index>
 
 // dprint-ignore
 export type Field_<
   $type extends Schema.Output.Any,
-  $Field extends Schema.Field,
+  $Field extends SomeField,
   $Index extends Schema.Index,
 > =
+  $type extends Schema.Output.Nullable<infer $typeInner>  ? Field_<$typeInner, $Field, $Index> :
+  $type extends Schema.Output.List<infer $typeInner>      ? Field_<$typeInner, $Field, $Index> :
   $type extends Schema.__typename                         ? NoArgsIndicator :
   $type extends Schema.Scalar.Any                         ? Indicator<$Field> :
   $type extends Schema.Enum                               ? Indicator<$Field> :
-  $type extends Schema.Output.Nullable<infer $typeInner>  ? Field_<$typeInner, $Field, $Index> :
-  $type extends Schema.Output.List<infer $typeInner>      ? Field_<$typeInner, $Field, $Index> :
   $type extends Schema.Object$2                           ? Object<$type, $Index> & FieldDirectives & Arguments<$Field> :
   $type extends Schema.Union                              ? Union<$type, $Index> :
   $type extends Schema.Interface                          ? Interface<$type, $Index> :
                                                             TSError<'Field', '$Field case not handled', { $Field: $Field }>
 // dprint-ignore
-type Arguments<$Field extends Schema.Field> =
-$Field['args'] extends Schema.Args        ? $Field['args']['allOptional'] extends true  ? { $?: Args<$Field['args']> } :
-                                                                                          { $: Args<$Field['args']> } :
-                                            {}
+type Arguments<$Field extends SomeField> =
+  $Field['args'] extends Schema.Args<any>         ? $Field['args']['allOptional'] extends true  ? { $?: Args<$Field['args']> } :
+                                                                                                  { $: Args<$Field['args']> } :
+                                                  {}
 
 // dprint-ignore
 type Interface<$Node extends Schema.Interface, $Index extends Schema.Index> = 
@@ -224,16 +217,16 @@ export type NoArgsIndicator = ClientIndicator | FieldDirectives
 
 // todo something is wrong here, resulting types are `any`.
 // dprint-ignore
-export type Indicator<$Field extends Schema.Field = Schema.Field> =
+export type Indicator<$Field extends SomeField> =
 
 // $Field['args']['allOptional']
-$Field['args'] extends Schema.Args        ? $Field['args']['allOptional'] extends true
+$Field['args'] extends Schema.Args<any>        ? $Field['args']['allOptional'] extends true
                                             ? ({ $?: Args<$Field['args']> } & FieldDirectives) | ClientIndicator :
                                               { $: Args<$Field['args']> } & FieldDirectives :
                                             NoArgsIndicator
 
 // dprint-ignore
-export type Args<$Args extends Schema.Args> = ArgFields<$Args['fields']>
+export type Args<$Args extends Schema.Args<any>> = ArgFields<$Args['fields']>
 
 // dprint-ignore
 export type ArgFields<$ArgFields extends Schema.InputObject['fields']> =

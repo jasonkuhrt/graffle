@@ -3,7 +3,7 @@
 import type { Simplify } from 'type-fest'
 import type { GetKeyOr, SimplifyDeep } from '../lib/prelude.js'
 import type { TSError } from '../lib/TSError.js'
-import type { Schema } from '../Schema/__.js'
+import type { Schema, SomeField } from '../Schema/__.js'
 import type { SelectionSet } from '../SelectionSet/__.js'
 
 // dprint-ignore
@@ -28,7 +28,7 @@ export type Object$<$SelectionSet, $Node extends Schema.Output.Object$2, $Index 
     ?
       {
       // TODO no more type unwrapped field
-      [$Key in keyof $Node['fields'] as $Node['fields'][$Key] extends Schema.Field<Schema.Output.__typename>  | {'typeUnwrapped':{kind:'Scalar'}} ? $Key : never]:
+      [$Key in keyof $Node['fields'] as $Node['fields'][$Key] extends Schema.Field<Schema.Output.__typename, any>  | {'typeUnwrapped':{kind:'Scalar'}} ? $Key : never]:
         // eslint-disable-next-line
         // @ts-ignore infinite depth issue, can this be fixed?
          Field<$SelectionSet, Schema.Field.As<$Node['fields'][$Key]>, $Index>
@@ -63,7 +63,7 @@ type OnTypeFragment<$SelectionSet, $Node extends Schema.Output.Object$2, $Index 
     : never
 
 // dprint-ignore
-type Field<$SelectionSet, $Field extends Schema.Field, $Index extends Schema.Index> =
+type Field<$SelectionSet, $Field extends SomeField, $Index extends Schema.Index> =
   $SelectionSet extends SelectionSet.Directive.Include.Negative | SelectionSet.Directive.Skip.Positive ?
      null :
      (
