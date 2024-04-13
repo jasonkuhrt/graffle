@@ -26,7 +26,8 @@ export type SomeField = Field<
   | Output.List<any>
   | Output.Nullable<any>
   | Output.Object$2<string, any>
-  | Output.Union<string, [any, ...any[]]>,
+  | Output.Union<string, [any, ...any[]]>
+  | Output.Interface<string, Record<string, Field<any, Args<any> | null>>, [any, ...any[]]>,
   Args<any> | null
 >
 

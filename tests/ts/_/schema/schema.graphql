@@ -14,7 +14,6 @@ type Query {
 	dateArgNonNullList(date: [Date]!): Date
 	dateArgNonNullListNonNull(date: [Date!]!): Date
 	dateArgInputObject(input: InputObject): Date
-	interface: Interface
 	id: ID
 	idNonNull: ID!
 	string: String
@@ -39,11 +38,12 @@ type Query {
 	"""
 	abcEnum: ABCEnum
 	lowerCaseUnion: lowerCaseUnion
+	interface: Interface
+	interfaceNonNull: Interface!
 	unionFooBar: FooBarUnion
 	unionObject: ObjectUnion
 	unionFooBarNonNull: FooBarUnion!
 	unionObjectNonNull: ObjectUnion!
-
 }
 
 interface DateInterface1 {

@@ -50,7 +50,6 @@ export namespace Root {
         input: $.Input.Nullable<InputObject.InputObject>
       }>
     >
-    interface: $.Field<$.Output.Nullable<Interface.Interface>, null>
     id: $.Field<$.Output.Nullable<$Scalar.ID>, null>
     idNonNull: $.Field<$Scalar.ID, null>
     string: $.Field<$.Output.Nullable<$Scalar.String>, null>
@@ -126,6 +125,8 @@ export namespace Root {
      */
     abcEnum: $.Field<$.Output.Nullable<Enum.ABCEnum>, null>
     lowerCaseUnion: $.Field<$.Output.Nullable<Union.lowerCaseUnion>, null>
+    interface: $.Field<$.Output.Nullable<Interface.Interface>, null>
+    interfaceNonNull: $.Field<Interface.Interface, null>
     unionFooBar: $.Field<$.Output.Nullable<Union.FooBarUnion>, null>
     unionObject: $.Field<$.Output.Nullable<Object.ObjectUnion>, null>
     unionFooBarNonNull: $.Field<Union.FooBarUnion, null>
