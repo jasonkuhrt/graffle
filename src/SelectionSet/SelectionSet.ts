@@ -80,7 +80,7 @@ export type Field_<
   $type extends Schema.Scalar.Any                         ? Indicator<$Field> :
   $type extends Schema.Enum                               ? Indicator<$Field> :
   $type extends Schema.Object$2                           ? Object<$type, $Index> & FieldDirectives & Arguments<$Field> :
-  $type extends Schema.Union                              ? Union<$type, $Index> :
+  $type extends Schema.Union                                 ? Union<$type, $Index> :
   $type extends Schema.Interface                          ? Interface<$type, $Index> :
                                                             TSError<'Field', '$Field case not handled', { $Field: $Field }>
 // dprint-ignore

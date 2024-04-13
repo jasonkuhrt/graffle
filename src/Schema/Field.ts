@@ -19,9 +19,14 @@ export const field = <$Type extends Output.Any, $Args extends null | Args<any> =
   }
 }
 
-// todo test non null union and non null interface fields
+// todo test  non null interface fields
 export type SomeField = Field<
-  Hybrid.Enum | Hybrid.Scalar.Any | Output.List<any> | Output.Nullable<any> | Output.Object$2<any, any>,
+  | Hybrid.Enum
+  | Hybrid.Scalar.Any
+  | Output.List<any>
+  | Output.Nullable<any>
+  | Output.Object$2<string, any>
+  | Output.Union<string, [any, ...any[]]>,
   Args<any> | null
 >
 

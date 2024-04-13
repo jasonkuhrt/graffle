@@ -9,6 +9,7 @@ export interface Index {
   objects: {
     DateObject1: Schema.Object.DateObject1
     DateObject2: Schema.Object.DateObject2
+    ObjectUnion: Schema.Object.ObjectUnion
     Foo: Schema.Object.Foo
     Bar: Schema.Object.Bar
     ObjectNested: Schema.Object.ObjectNested
