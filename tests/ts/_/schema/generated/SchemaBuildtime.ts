@@ -124,17 +124,12 @@ export namespace Root {
     /**
      * Query enum field documentation.
      */
-<<<<<<< HEAD
-    abcEnum: $.Field<$.Output.Nullable<Enum.ABCEnum>>
-    lowerCaseUnion: $.Field<$.Output.Nullable<Union.lowerCaseUnion>>
-    // unionFooBar: $.Field<$.Output.Nullable<Union.FooBarUnion>>
-    // unionObject: $.Field<$.Output.Nullable<Object.ObjectUnion>>
-    unionFooBarNonNull: $.Field<Union.FooBarUnion>
-    // unionObjectNonNull: $.Field<Object.ObjectUnion>
-=======
     abcEnum: $.Field<$.Output.Nullable<Enum.ABCEnum>, null>
     lowerCaseUnion: $.Field<$.Output.Nullable<Union.lowerCaseUnion>, null>
->>>>>>> main
+    unionFooBar: $.Field<$.Output.Nullable<Union.FooBarUnion>, null>
+    unionObject: $.Field<$.Output.Nullable<Object.ObjectUnion>, null>
+    unionFooBarNonNull: $.Field<Union.FooBarUnion, null>
+    unionObjectNonNull: $.Field<Object.ObjectUnion, null>
   }>
 }
 
@@ -195,7 +190,7 @@ export namespace Object {
   }>
 
   export type ObjectUnion = $.Object$2<'ObjectUnion', {
-    fooBarUnion: $.Field<$.Output.Nullable<Union.FooBarUnion>>
+    fooBarUnion: $.Field<$.Output.Nullable<Union.FooBarUnion>, null>
   }>
 
   /**

@@ -18,17 +18,12 @@ export const DateObject2 = $.Object$(`DateObject2`, {
   date2: $.field($.Output.Nullable($Scalar.Date)),
 })
 
-<<<<<<< HEAD
-export const ObjectUnion = _.Object$(`ObjectUnion`, {
-  fooBarUnion: _.Output.field(_.Output.Nullable(() => FooBarUnion)),
+export const ObjectUnion = $.Object$(`ObjectUnion`, {
+  fooBarUnion: $.field($.Output.Nullable(() => FooBarUnion)),
 })
 
-export const Foo = _.Object$(`Foo`, {
-  id: _.Output.field(_.Output.Nullable($Scalar.ID)),
-=======
 export const Foo = $.Object$(`Foo`, {
   id: $.field($.Output.Nullable($Scalar.ID)),
->>>>>>> main
 })
 
 export const Bar = $.Object$(`Bar`, {
@@ -148,19 +143,13 @@ export const Query = $.Object$(`Query`, {
       id: $.Input.Nullable($Scalar.ID),
     }),
   ),
-<<<<<<< HEAD
-  fooBarUnion: _.Output.field(_.Output.Nullable(() => FooBarUnion)),
-  abcEnum: _.Output.field(_.Output.Nullable(ABCEnum)),
-  lowerCaseUnion: _.Output.field(_.Output.Nullable(() => lowerCaseUnion)),
-  unionFooBar: _.Output.field(_.Output.Nullable(() => FooBarUnion)),
-  unionObject: _.Output.field(_.Output.Nullable(() => ObjectUnion)),
-  unionFooBarNonNull: _.Output.field(() => FooBarUnion),
-  unionObjectNonNull: _.Output.field(() => ObjectUnion),
-=======
   fooBarUnion: $.field($.Output.Nullable(() => FooBarUnion)),
   abcEnum: $.field($.Output.Nullable(ABCEnum)),
   lowerCaseUnion: $.field($.Output.Nullable(() => lowerCaseUnion)),
->>>>>>> main
+  unionFooBar: $.field($.Output.Nullable(() => FooBarUnion)),
+  unionObject: $.field($.Output.Nullable(() => ObjectUnion)),
+  unionFooBarNonNull: $.field(() => FooBarUnion),
+  unionObjectNonNull: $.field(() => ObjectUnion),
 })
 
 export const $Index = {
