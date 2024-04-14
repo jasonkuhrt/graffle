@@ -132,8 +132,9 @@ const encodeCustomScalarsArgs = (indexArgs: Args<any>, valueArgs: SSValue.Args2)
   )
 }
 
-const encodeCustomScalarsArgValue = (indexArg: Schema.Input.Any, argValue: null | SSValue.Arg): any => {
+const encodeCustomScalarsArgValue = (indexArgMaybeThunk: Schema.Input.Any, argValue: null | SSValue.Arg): any => {
   if (argValue === null) return null // todo could check if index agrees is nullable.
+  const indexArg = readMaybeThunk(indexArgMaybeThunk)
   if (indexArg.kind === `nullable`) {
     return encodeCustomScalarsArgValue(indexArg.type, argValue)
   }

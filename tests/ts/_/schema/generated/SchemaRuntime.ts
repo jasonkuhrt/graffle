@@ -3,6 +3,10 @@ import * as $Scalar from './Scalar.js'
 
 export const ABCEnum = $.Enum(`ABCEnum`, [`A`, `B`, `C`])
 
+export const InputObjectNested = $.InputObject(`InputObjectNested`, {
+  InputObject: $.Input.field(() => $.Input.Nullable(InputObject)),
+})
+
 export const InputObject = $.InputObject(`InputObject`, {
   id: $.Input.field($.Input.Nullable($Scalar.ID)),
   idRequired: $.Input.field($Scalar.ID),
@@ -119,6 +123,7 @@ export const Query = $.Object$(`Query`, {
   ),
   dateArgNonNullListNonNull: $.field($.Output.Nullable($Scalar.Date), $.Args({ date: $.Input.List($Scalar.Date) })),
   dateArgInputObject: $.field($.Output.Nullable($Scalar.Date), $.Args({ input: $.Input.Nullable(InputObject) })),
+  InputObjectNested: $.field($.Output.Nullable($Scalar.ID), $.Args({ input: $.Input.Nullable(InputObjectNested) })),
   id: $.field($.Output.Nullable($Scalar.ID)),
   idNonNull: $.field($Scalar.ID),
   string: $.field($.Output.Nullable($Scalar.String)),

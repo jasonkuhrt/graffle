@@ -119,7 +119,7 @@ const inputObject = (config: Config, type: GraphQLInputObjectType) => {
 
 const inputField = (config: Config, field: GraphQLInputField): string => {
   const type = buildType(`input`, config, field.type)
-  return `$.Input.field(${type})`
+  return `$.Input.field(${isInputObjectType(field.type) ? `() => ${type}` : type})`
 }
 
 const outputField = (config: Config, field: AnyGraphQLOutputField): string => {

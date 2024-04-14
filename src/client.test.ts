@@ -134,5 +134,16 @@ describe(`custom scalar`, () => {
         dateArgInputObject: { $: { input: { idRequired: '', dateRequired: new Date(0), date: new Date(1) } } },
       })
     })
+    test(`nested input object field`, async () => {
+      const client = clientExpected((doc) => {
+        expect(doc.InputObjectNested.$.input.InputObject.dateRequired).toEqual(new Date(0).getTime())
+        expect(doc.InputObjectNested.$.input.InputObject.date).toEqual(new Date(1).getTime())
+      })
+      await client.query({
+        InputObjectNested: {
+          $: { input: { InputObject: { idRequired: '', dateRequired: new Date(0), date: new Date(1) } } },
+        },
+      })
+    })
   })
 })

@@ -1,6 +1,7 @@
 scalar Date
 
 type Query {
+	# Custom Scalar
 	date: Date
 	dateNonNull: Date!
 	dateList: [Date]
@@ -14,6 +15,11 @@ type Query {
 	dateArgNonNullList(date: [Date]!): Date
 	dateArgNonNullListNonNull(date: [Date!]!): Date
 	dateArgInputObject(input: InputObject): Date
+	# Input Object
+	# Note: It is important that the type `InputObjectNested` is defined before `InputObject` in the generated runtime schema.
+	# This is to force the case of needing a thunk, to make sure our tests for it are actually testing the case.
+	InputObjectNested(input: InputObjectNested): ID
+	# Scalar
 	id: ID
 	idNonNull: ID!
 	string: String
@@ -24,15 +30,18 @@ type Query {
 	stringWithListArgRequired(ints:[Int]!): String
 	stringWithArgInputObject(input:InputObject): String
 	stringWithArgInputObjectRequired(input:InputObject!): String
+	# List Scalar
 	listListIntNonNull: [[Int!]!]!
 	listListInt: [[Int]]
 	listInt: [Int]
 	listIntNonNull: [Int!]!
+	# Object
 	object: Object1
 	objectNonNull: Object1!
 	objectNested: ObjectNested
 	objectWithArgs(string:String, int:Int, float:Float, boolean:Boolean, id:ID): Object1
 	fooBarUnion: FooBarUnion
+	# Object List
 	objectList: [Object1]
 	objectListNonNull: [Object1!]!
 	"""
@@ -40,8 +49,10 @@ type Query {
 	"""
 	abcEnum: ABCEnum
 	lowerCaseUnion: lowerCaseUnion
+	# Interface
 	interface: Interface
 	interfaceNonNull: Interface!
+	# Union
 	unionFooBar: FooBarUnion
 	unionObject: ObjectUnion
 	unionFooBarNonNull: FooBarUnion!
@@ -60,6 +71,10 @@ type DateObject1 implements DateInterface1 {
 
 type DateObject2 {
 	date2: Date
+}
+
+input InputObjectNested {
+	InputObject: InputObject
 }
 
 input InputObject {
