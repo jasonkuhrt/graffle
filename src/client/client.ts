@@ -14,14 +14,18 @@ export type Client<$SchemaIndex extends Schema.Index> =
       $SchemaIndex['Root']['Query'] extends null
         ? unknown
         : {
-            query: <$SelectionSet extends object>(selectionSet: Exact<$SelectionSet, SelectionSet.Query<$SchemaIndex>>) => Promise<ResultSet.Query<$SelectionSet, $SchemaIndex>>
+            query: {
+              $batch: <$SelectionSet extends object>(selectionSet: Exact<$SelectionSet, SelectionSet.Query<$SchemaIndex>>) => Promise<ResultSet.Query<$SelectionSet, $SchemaIndex>>
+            }
           }
     )
   & (
       $SchemaIndex['Root']['Mutation'] extends null
       ? unknown
       : {
-          mutation: <$SelectionSet extends object>(selectionSet: Exact<$SelectionSet, SelectionSet.Mutation<$SchemaIndex>>) => Promise<ResultSet.Mutation<$SelectionSet,$SchemaIndex>>
+          mutation: {
+            $batch: <$SelectionSet extends object>(selectionSet: Exact<$SelectionSet, SelectionSet.Mutation<$SchemaIndex>>) => Promise<ResultSet.Mutation<$SelectionSet,$SchemaIndex>>
+          }
         }
     )
 // todo
