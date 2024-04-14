@@ -123,6 +123,8 @@ export namespace Root {
       }>
     >
     fooBarUnion: $.Field<$.Output.Nullable<Union.FooBarUnion>, null>
+    objectList: $.Field<$.Output.Nullable<$.Output.List<$.Output.Nullable<Object.Object1>>>, null>
+    objectListNonNull: $.Field<$.Output.List<Object.Object1>, null>
     /**
      * Query enum field documentation.
      */
@@ -422,6 +424,8 @@ export const Query = $.Object$(\`Query\`, {
     }),
   ),
   fooBarUnion: $.field($.Output.Nullable(() => FooBarUnion)),
+  objectList: $.field($.Output.Nullable($.Output.List($.Output.Nullable(() => Object1)))),
+  objectListNonNull: $.field($.Output.List(() => Object1)),
   abcEnum: $.field($.Output.Nullable(ABCEnum)),
   lowerCaseUnion: $.field($.Output.Nullable(() => lowerCaseUnion)),
   interface: $.field($.Output.Nullable(() => Interface)),

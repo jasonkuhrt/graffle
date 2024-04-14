@@ -143,6 +143,8 @@ export const Query = $.Object$(`Query`, {
     }),
   ),
   fooBarUnion: $.field($.Output.Nullable(() => FooBarUnion)),
+  objectList: $.field($.Output.Nullable($.Output.List($.Output.Nullable(() => Object1)))),
+  objectListNonNull: $.field($.Output.List(() => Object1)),
   abcEnum: $.field($.Output.Nullable(ABCEnum)),
   lowerCaseUnion: $.field($.Output.Nullable(() => lowerCaseUnion)),
   interface: $.field($.Output.Nullable(() => Interface)),

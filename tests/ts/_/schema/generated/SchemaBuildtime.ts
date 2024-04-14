@@ -120,6 +120,8 @@ export namespace Root {
       }>
     >
     fooBarUnion: $.Field<$.Output.Nullable<Union.FooBarUnion>, null>
+    objectList: $.Field<$.Output.Nullable<$.Output.List<$.Output.Nullable<Object.Object1>>>, null>
+    objectListNonNull: $.Field<$.Output.List<Object.Object1>, null>
     /**
      * Query enum field documentation.
      */

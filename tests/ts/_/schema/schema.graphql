@@ -33,6 +33,8 @@ type Query {
 	objectNested: ObjectNested
 	objectWithArgs(string:String, int:Int, float:Float, boolean:Boolean, id:ID): Object1
 	fooBarUnion: FooBarUnion
+	objectList: [Object1]
+	objectListNonNull: [Object1!]!
 	"""
 	Query enum field documentation.
 	"""
