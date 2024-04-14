@@ -20,6 +20,7 @@ type Query {
 	# Note: It is important that the type `InputObjectNested` is defined before `InputObject` in the generated runtime schema.
 	# This is to force the case of needing a thunk, to make sure our tests for it are actually testing the case.
 	InputObjectNested(input: InputObjectNested): ID
+	InputObjectNestedNonNull(input: InputObjectNested!): ID
 	# Scalar
 	id: ID
 	idNonNull: ID!
@@ -76,6 +77,10 @@ type DateObject2 {
 
 input InputObjectNested {
 	InputObject: InputObject
+}
+
+input InputObjectNestedNonNull {
+	InputObject: InputObject!
 }
 
 input InputObject {

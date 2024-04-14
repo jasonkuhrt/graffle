@@ -19,7 +19,7 @@ import {
   isUnionType,
 } from 'graphql'
 import type { AnyClass, AnyGraphQLOutputField } from '../../lib/graphql.js'
-import { hasMutation, hasQuery, hasSubscription, unwrapToNonNull } from '../../lib/graphql.js'
+import { hasMutation, hasQuery, hasSubscription, unwrapToNamed, unwrapToNonNull } from '../../lib/graphql.js'
 import type { Config } from './code.js'
 
 export const generateRuntimeSchema = (
@@ -116,10 +116,12 @@ const inputObject = (config: Config, type: GraphQLInputObjectType) => {
     })
 	`
 }
+unwrapToNamed
 
 const inputField = (config: Config, field: GraphQLInputField): string => {
   const type = buildType(`input`, config, field.type)
-  return `$.Input.field(${isInputObjectType(field.type) ? `() => ${type}` : type})`
+  const isNeedThunk = isInputObjectType(unwrapToNamed(field.type))
+  return `$.Input.field(${isNeedThunk ? `() => ${type}` : type})`
 }
 
 const outputField = (config: Config, field: AnyGraphQLOutputField): string => {

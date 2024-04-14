@@ -56,6 +56,12 @@ export namespace Root {
         input: $.Input.Nullable<InputObject.InputObjectNested>
       }>
     >
+    InputObjectNestedNonNull: $.Field<
+      $.Output.Nullable<$Scalar.ID>,
+      $.Args<{
+        input: InputObject.InputObjectNested
+      }>
+    >
     id: $.Field<$.Output.Nullable<$Scalar.ID>, null>
     idNonNull: $.Field<$Scalar.ID, null>
     string: $.Field<$.Output.Nullable<$Scalar.String>, null>
@@ -165,6 +171,10 @@ export namespace Enum {
 export namespace InputObject {
   export type InputObjectNested = $.InputObject<'InputObjectNested', {
     InputObject: $.Input.Nullable<InputObject.InputObject>
+  }>
+
+  export type InputObjectNestedNonNull = $.InputObject<'InputObjectNestedNonNull', {
+    InputObject: InputObject.InputObject
   }>
 
   export type InputObject = $.InputObject<'InputObject', {
