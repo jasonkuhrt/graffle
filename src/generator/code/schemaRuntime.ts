@@ -98,6 +98,8 @@ const object = (config: Config, type: GraphQLObjectType) => {
     return `${field.name}: ${outputField(config, field)}`
   }).join(`,\n`)
   return `
+    // eslint-disable-next-line
+    // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
     export const ${type.name} = $.Object$(\`${type.name}\`, {
       ${fields}
     })
