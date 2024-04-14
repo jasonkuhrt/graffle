@@ -72,7 +72,10 @@ const index = (config: Config) => {
 const union = (config: Config, type: GraphQLUnionType) => {
   // todo probably need thunks here
   const members = type.getTypes().map(t => t.name).join(`, `)
-  return `export const ${type.name} = $.Union(\`${type.name}\`, [${members}])\n`
+  return `
+  // eslint-disable-next-line
+  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
+  export const ${type.name} = $.Union(\`${type.name}\`, [${members}])\n`
 }
 
 const interface$ = (config: Config, type: GraphQLInterfaceType) => {

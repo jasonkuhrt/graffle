@@ -91,10 +91,16 @@ export const Object2ImplementingInterface = $.Object$(`Object2ImplementingInterf
   boolean: $.field($.Output.Nullable($Scalar.Boolean)),
 })
 
+// eslint-disable-next-line
+// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
 export const DateUnion = $.Union(`DateUnion`, [DateObject1, DateObject2])
 
+// eslint-disable-next-line
+// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
 export const FooBarUnion = $.Union(`FooBarUnion`, [Foo, Bar])
 
+// eslint-disable-next-line
+// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
 export const lowerCaseUnion = $.Union(`lowerCaseUnion`, [lowerCaseObject, lowerCaseObject2])
 
 export const DateInterface1 = $.Interface(`DateInterface1`, { date1: $.field($.Output.Nullable($Scalar.Date)) }, [
