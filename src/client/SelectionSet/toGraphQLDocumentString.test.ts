@@ -1,6 +1,6 @@
 import { parse, print } from 'graphql'
 import { describe, expect, test } from 'vitest'
-import type { Index } from '../../tests/ts/_/schema/generated/Index.js'
+import type { Index } from '../../../tests/ts/_/schema/generated/Index.js'
 import type { SelectionSet } from './__.js'
 import { toGraphQLDocumentString } from './toGraphQLDocumentString.js'
 

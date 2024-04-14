@@ -1,96 +1,10 @@
-import type { ExcludeUndefined } from 'type-fest/source/required-deep.js'
-import request from './entrypoints/main.js'
-import { type RootTypeName, standardScalarTypeNames } from './lib/graphql.js'
-import type { Exact } from './lib/prelude.js'
-import type { ResultSet } from './ResultSet/__.js'
-import type { Object$2, Schema } from './Schema/__.js'
-import { Output } from './Schema/__.js'
-import { readMaybeThunk } from './Schema/core/helpers.js'
-import { SelectionSet } from './SelectionSet/__.js'
+import { standardScalarTypeNames } from '../lib/graphql.js'
+import type { Object$2, Schema } from '../Schema/__.js'
+import { Output } from '../Schema/__.js'
+import { readMaybeThunk } from '../Schema/core/helpers.js'
+import type { SelectionSet } from './SelectionSet/__.js'
 import type { Args } from './SelectionSet/SelectionSet.js'
 import type { GraphQLDocumentObject } from './SelectionSet/toGraphQLDocumentString.js'
-
-// dprint-ignore
-export type Client<$SchemaIndex extends Schema.Index> =
-  & (
-      $SchemaIndex['Root']['Query'] extends null
-        ? unknown
-        : {
-            query: <$SelectionSet extends object>(selectionSet: Exact<$SelectionSet, SelectionSet.Query<$SchemaIndex>>) => Promise<ResultSet.Query<$SelectionSet, $SchemaIndex>>
-          }
-    )
-  & (
-      $SchemaIndex['Root']['Mutation'] extends null
-      ? unknown
-      : {
-          mutation: <$SelectionSet extends object>(selectionSet: Exact<$SelectionSet, SelectionSet.Mutation<$SchemaIndex>>) => Promise<ResultSet.Mutation<$SelectionSet,$SchemaIndex>>
-        }
-    )
-// todo
-// & ($SchemaIndex['Root']['Subscription'] extends null ? {
-//     subscription: <$SelectionSet extends SelectionSet.Subscription<$SchemaIndex>>(selectionSet: $SelectionSet) => Promise<ResultSet.Subscription<$SelectionSet,$SchemaIndex>>
-//   }
-//   : unknown)
-//
-
-interface HookInputDocumentEncode {
-  rootIndex: Object$2
-  documentObject: GraphQLDocumentObject
-}
-
-interface Input {
-  url: URL | string
-  headers?: HeadersInit
-  // If there are no custom scalars then this property is useless. Improve types.
-  schemaIndex: Schema.Index
-  hooks?: {
-    documentEncode: (
-      input: HookInputDocumentEncode,
-      fn: (input: HookInputDocumentEncode) => GraphQLDocumentObject,
-    ) => GraphQLDocumentObject
-  }
-}
-
-export const create = <$SchemaIndex extends Schema.Index>(input: Input): Client<$SchemaIndex> => {
-  const parentInput = input
-
-  const runHookable = <$Name extends keyof ExcludeUndefined<Input['hooks']>>(
-    name: $Name,
-    input: Parameters<ExcludeUndefined<Input['hooks']>[$Name]>[0],
-    fn: Parameters<ExcludeUndefined<Input['hooks']>[$Name]>[1],
-  ) => {
-    return parentInput.hooks?.[name](input, fn) ?? fn(input)
-  }
-
-  const sendDocumentObject = (rootType: RootTypeName) => async (documentObject: GraphQLDocumentObject) => {
-    const rootIndex = input.schemaIndex.Root[rootType]
-    if (!rootIndex) throw new Error(`Root type not found: ${rootType}`)
-
-    const documentObjectEncoded = runHookable(
-      `documentEncode`,
-      { rootIndex, documentObject },
-      ({ rootIndex, documentObject }) => encodeCustomScalars({ index: rootIndex, documentObject }),
-    )
-    const documentString = SelectionSet.toGraphQLDocumentString(documentObjectEncoded)
-    const result = await request({
-      url: new URL(input.url).href,
-      requestHeaders: input.headers,
-      document: documentString,
-    })
-    const resultDecoded = decodeCustomScalars(rootIndex, result as object)
-    return resultDecoded
-  }
-
-  // @ts-expect-error ignoreme
-  const client: Client<$SchemaIndex> = {
-    query: sendDocumentObject(`Query`),
-    mutation: sendDocumentObject(`Mutation`),
-    // todo
-    // subscription: async () => {},
-  }
-
-  return client
-}
 
 namespace SSValue {
   export type Obj = {
@@ -100,9 +14,9 @@ namespace SSValue {
   export type Arg = boolean | Arg[] | { [key: string]: Arg }
 }
 
-const encodeCustomScalars = (
+export const encode = (
   input: {
-    index: Object$2
+    index: Schema.Object$2
     documentObject: SelectionSet.GraphQLDocumentObject
   },
 ): GraphQLDocumentObject => {
@@ -153,7 +67,7 @@ const encodeCustomScalarsArgValue = (indexArgMaybeThunk: Schema.Input.Any, argVa
   throw new Error(`Unsupported arg kind: ${String(indexArg)}`)
 }
 
-const decodeCustomScalars = (index: Object$2, documentQueryObject: object): object => {
+export const decode = (index: Schema.Object$2, documentQueryObject: object): object => {
   return Object.fromEntries(
     Object.entries(documentQueryObject).map(([fieldName, v]) => {
       const indexField = index.fields[fieldName]
@@ -197,7 +111,7 @@ const decodeCustomScalarValue = (
   assertGraphQLObject(fieldValue)
 
   if (typeWithoutNonNull.kind === `Object`) {
-    return decodeCustomScalars(typeWithoutNonNull, fieldValue)
+    return decode(typeWithoutNonNull, fieldValue)
   }
 
   if (typeWithoutNonNull.kind === `Interface` || typeWithoutNonNull.kind === `Union`) {
@@ -214,14 +128,10 @@ const decodeCustomScalarValue = (
       return false
     }) as undefined | Object$2
     if (!ObjectType) throw new Error(`Could not pick object for ${typeWithoutNonNull.kind} selection`)
-    return decodeCustomScalars(ObjectType, fieldValue)
+    return decode(ObjectType, fieldValue)
   }
 
   return fieldValue
-}
-
-type GraphQLObject = {
-  __typename?: string
 }
 
 // eslint-disable-next-line
@@ -240,4 +150,8 @@ function assertGraphQLObject(v: unknown): asserts v is GraphQLObject {
   if (`__typename` in v && typeof v.__typename !== `string`) {
     throw new Error(`Expected string __typename or undefined. Got: ${String(v.__typename)}`)
   }
+}
+
+type GraphQLObject = {
+  __typename?: string
 }

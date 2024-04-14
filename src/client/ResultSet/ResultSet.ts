@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
 import type { Simplify } from 'type-fest'
-import type { GetKeyOr, SimplifyDeep } from '../lib/prelude.js'
-import type { TSError } from '../lib/TSError.js'
-import type { Schema, SomeField } from '../Schema/__.js'
-import type { PickScalarFields } from '../Schema/Output/Output.js'
+import type { GetKeyOr, SimplifyDeep } from '../../lib/prelude.js'
+import type { TSError } from '../../lib/TSError.js'
+import type { Schema, SomeField } from '../../Schema/__.js'
+import type { PickScalarFields } from '../../Schema/Output/Output.js'
 import type { SelectionSet } from '../SelectionSet/__.js'
 
 // dprint-ignore

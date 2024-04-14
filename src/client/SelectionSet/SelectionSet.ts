@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
-import type { MaybeList, StringNonEmpty, Values } from '../lib/prelude.js'
-import type { TSError } from '../lib/TSError.js'
+import type { MaybeList, StringNonEmpty, Values } from '../../lib/prelude.js'
+import type { TSError } from '../../lib/TSError.js'
 import type {
   InputFieldsAllNullable,
   OmitNullableFields,
@@ -9,7 +9,7 @@ import type {
   Schema,
   SomeField,
   SomeFields,
-} from '../Schema/__.js'
+} from '../../Schema/__.js'
 
 export type Query<$Index extends Schema.Index> = $Index['Root']['Query'] extends Schema.Object$2
   ? Object<$Index['Root']['Query'], $Index>

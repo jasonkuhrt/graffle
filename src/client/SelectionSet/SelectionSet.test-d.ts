@@ -1,5 +1,5 @@
 import { assertType, expectTypeOf, test } from 'vitest'
-import type { Index } from '../../tests/ts/_/schema/generated/Index.js'
+import type { Index } from '../../../tests/ts/_/schema/generated/Index.js'
 import type { SelectionSet } from './__.js'
 
 type Q = SelectionSet.Query<Index>
