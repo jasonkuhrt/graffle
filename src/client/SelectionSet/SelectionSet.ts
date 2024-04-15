@@ -89,7 +89,7 @@ type Arguments<$Field extends SomeField> =
                                                   {}
 
 // dprint-ignore
-type Interface<$Node extends Schema.Interface, $Index extends Schema.Index> = 
+export type Interface<$Node extends Schema.Interface, $Index extends Schema.Index> = 
   & InterfaceDistributed<$Node['implementors'][number], $Index>
   & Fields<
       & $Node['fields']
@@ -109,7 +109,7 @@ type InterfaceDistributed<$Node extends Schema.Object$2, $Index extends Schema.I
     : never
 
 // dprint-ignore
-type Union<$Node extends Schema.Union, $Index extends Schema.Index> =
+export type Union<$Node extends Schema.Union, $Index extends Schema.Index> =
   & UnionDistributed<$Node['members'][number], $Index>
   & { __typename?: NoArgsIndicator }
 

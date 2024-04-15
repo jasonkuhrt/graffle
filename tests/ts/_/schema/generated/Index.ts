@@ -24,4 +24,8 @@ export interface Index {
     FooBarUnion: Schema.Union.FooBarUnion
     lowerCaseUnion: Schema.Union.lowerCaseUnion
   }
+  interfaces: {
+    DateInterface1: Schema.Interface.DateInterface1
+    Interface: Schema.Interface.Interface
+  }
 }

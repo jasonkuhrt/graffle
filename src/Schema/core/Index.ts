@@ -7,6 +7,6 @@ export interface Index {
     Subscription: null | Output.Object$2
   }
   objects: Record<string, Output.Object$2>
-  // todo unused?
   unions: Record<string, Output.Union>
+  interfaces: Record<string, Output.Interface>
 }

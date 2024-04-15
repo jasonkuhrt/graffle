@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { beforeEach, describe, expect, test } from 'vitest'
+import { expect, test } from 'vitest'
 import { setupMockServer } from '../../tests/raw/__helpers.js'
 import type { Index } from '../../tests/ts/_/schema/generated/Index.js'
 import { $Index as schemaIndex } from '../../tests/ts/_/schema/generated/SchemaRuntime.js'

@@ -23,6 +23,9 @@ export const generateIndex = (config: Config) => {
         unions: Code.objectFromEntries(
           config.typeMapByKind.GraphQLUnionType.map(_ => [_.name, `${namespace}.Union.${_.name}`]),
         ),
+        interfaces: Code.objectFromEntries(
+          config.typeMapByKind.GraphQLInterfaceType.map(_ => [_.name, `${namespace}.Interface.${_.name}`]),
+        ),
       }),
     ),
   )
