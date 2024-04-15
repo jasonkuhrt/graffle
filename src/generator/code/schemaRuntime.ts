@@ -27,6 +27,7 @@ export const generateRuntimeSchema = (
 ) => {
   const code: string[] = []
 
+  code.push(`/* eslint-disable */\n`)
   code.push(
     `
       import * as $ from '${config.libraryPaths.schema}'
@@ -60,10 +61,10 @@ const index = (config: Config) => {
         Subscription ${hasSubscription(config.typeMapByKind) ? `` : `:null`}
       },
       objects: {
-        ${config.typeMapByKind.GraphQLObjectType.map(type => type.name).join(`,\n`)},
+        ${config.typeMapByKind.GraphQLObjectType.map(type => type.name).join(`,\n`)}
       },
       unions: {
-        ${config.typeMapByKind.GraphQLUnionType.map(type => type.name).join(`,\n`)},
+        ${config.typeMapByKind.GraphQLUnionType.map(type => type.name).join(`,\n`)}
       }
     }
   `

@@ -24,11 +24,13 @@ type SS = {
 } & SpecialFields
 
 export const toGraphQLDocumentString = (ss: GraphQLDocumentObject) => {
-  let docString = ``
-  docString += `query {
+  return `query ${toGraphQLDocumentSelectionSet(ss)}`
+}
+
+export const toGraphQLDocumentSelectionSet = (ss: GraphQLDocumentObject) => {
+  return `{
 		${selectionSet(ss)}
 	}`
-  return docString
 }
 
 const directiveArgs = (config: object) => {

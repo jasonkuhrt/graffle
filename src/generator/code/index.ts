@@ -4,9 +4,10 @@ import type { Config } from './code.js'
 
 export const generateIndex = (config: Config) => {
   const namespace = `Schema`
-  let code = ``
-  code += `import type * as ${namespace} from './SchemaBuildtime.js'\n\n`
-  code += Code.export$(
+  const code = []
+  code.push(`/* eslint-disable */\n`)
+  code.push(`import type * as ${namespace} from './SchemaBuildtime.js'\n`)
+  code.push(Code.export$(
     Code.interface$(
       `Index`,
       Code.objectFrom({
@@ -28,7 +29,7 @@ export const generateIndex = (config: Config) => {
         ),
       }),
     ),
-  )
+  ))
 
-  return code
+  return code.join(`\n`)
 }

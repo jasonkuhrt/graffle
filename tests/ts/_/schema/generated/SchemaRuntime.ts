@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import * as $ from '../../../../../src/Schema/__.js'
 import * as $Scalar from './Scalar.js'
 

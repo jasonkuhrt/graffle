@@ -299,7 +299,9 @@ export * from '../customScalarCodecs.js'
 `;
 
 exports[`generates types from GraphQL SDL file 3`] = `
-"import * as $ from '../../../../../src/Schema/__.js'
+"/* eslint-disable */
+
+import * as $ from '../../../../../src/Schema/__.js'
 import * as $Scalar from './Scalar.js'
 
 export const ABCEnum = $.Enum(\`ABCEnum\`, [\`A\`, \`B\`, \`C\`])
@@ -520,6 +522,96 @@ export const $Index = {
     FooBarUnion,
     lowerCaseUnion,
   },
+}
+"
+`;
+
+exports[`schema2 1`] = `
+"import type * as $ from '../../../../src/Schema/__.js'
+import type * as $Scalar from './Scalar.ts'
+
+// ------------------------------------------------------------ //
+//                             Root                             //
+// ------------------------------------------------------------ //
+
+export namespace Root {
+  export type Query = $.Object$2<'Query', {
+    id: $.Field<$.Output.Nullable<$Scalar.ID>, null>
+  }>
+}
+
+// ------------------------------------------------------------ //
+//                             Enum                             //
+// ------------------------------------------------------------ //
+
+export namespace Enum {
+  // -- no types --
+}
+
+// ------------------------------------------------------------ //
+//                         InputObject                          //
+// ------------------------------------------------------------ //
+
+export namespace InputObject {
+  // -- no types --
+}
+
+// ------------------------------------------------------------ //
+//                          Interface                           //
+// ------------------------------------------------------------ //
+
+export namespace Interface {
+  // -- no types --
+}
+
+// ------------------------------------------------------------ //
+//                            Object                            //
+// ------------------------------------------------------------ //
+
+export namespace Object {
+  // -- no types --
+}
+
+// ------------------------------------------------------------ //
+//                            Union                             //
+// ------------------------------------------------------------ //
+
+export namespace Union {
+  // -- no types --
+}
+"
+`;
+
+exports[`schema2 2`] = `
+"declare global {
+  interface SchemaCustomScalars {
+  }
+}
+
+export * from '../../../../src/Schema/Hybrid/types/Scalar/Scalar.js'
+"
+`;
+
+exports[`schema2 3`] = `
+"/* eslint-disable */
+
+import * as $ from '../../../../src/Schema/__.js'
+import * as $Scalar from './Scalar.js'
+
+// eslint-disable-next-line
+// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
+export const Query = $.Object$(\`Query\`, {
+  id: $.field($.Output.Nullable($Scalar.ID)),
+})
+
+export const $Index = {
+  Root: {
+    Query,
+    Mutation: null,
+    Subscription: null,
+  },
+  objects: {},
+  unions: {},
 }
 "
 `;
