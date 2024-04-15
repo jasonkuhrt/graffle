@@ -1,3 +1,4 @@
+import type { DocumentNode } from 'graphql'
 import type { ExcludeUndefined } from 'type-fest/source/required-deep.js'
 import request from '../entrypoints/main.js'
 import { type RootTypeName } from '../lib/graphql.js'
@@ -9,7 +10,7 @@ import { SelectionSet } from './SelectionSet/__.js'
 import type { GraphQLDocumentObject } from './SelectionSet/toGraphQLDocumentString.js'
 
 // dprint-ignore
-type RootTypeMethods<$Index extends Schema.Index, $RootTypeName extends Schema.RootTypeName>  = 
+type RootTypeMethods<$Index extends Schema.Index, $RootTypeName extends Schema.RootTypeName> =
   & {
       $batch: <$SelectionSet extends object>(selectionSet: Exact<$SelectionSet, SelectionSet.Root<$Index, $RootTypeName>>) =>
                 Promise<ResultSet.Root<$SelectionSet, $Index,$RootTypeName>>
@@ -22,6 +23,9 @@ type RootTypeMethods<$Index extends Schema.Index, $RootTypeName extends Schema.R
 
 // dprint-ignore
 export type Client<$Index extends Schema.Index> =
+  & {
+      raw: (document: DocumentNode, variables?:object) => Promise<object>
+    }
   & (
       $Index['Root']['Query'] extends null
         ? unknown
@@ -31,10 +35,10 @@ export type Client<$Index extends Schema.Index> =
     )
   & (
       $Index['Root']['Mutation'] extends null
-      ? unknown
-      : {
-          mutation: RootTypeMethods<$Index, 'Mutation'>
-        }
+        ? unknown
+        : {
+            mutation: RootTypeMethods<$Index, 'Mutation'>
+          }
     )
 // todo
 // & ($SchemaIndex['Root']['Subscription'] extends null ? {
@@ -86,6 +90,7 @@ export const create = <$SchemaIndex extends Schema.Index>(input: Input): Client<
       url: new URL(input.url).href,
       requestHeaders: input.headers,
       document: documentString,
+      // todo handle variables
     })
     const resultDecoded = CustomScalars.decode(rootIndex, result as object)
     return resultDecoded
@@ -93,8 +98,22 @@ export const create = <$SchemaIndex extends Schema.Index>(input: Input): Client<
 
   // @ts-expect-error ignoreme
   const client: Client<$SchemaIndex> = {
-    query: sendDocumentObject(`Query`),
-    mutation: sendDocumentObject(`Mutation`),
+    raw: async (document, variables) => {
+      return await request({
+        url: new URL(input.url).href,
+        requestHeaders: input.headers,
+        document,
+        variables,
+      })
+    },
+    query: {
+      $batch: sendDocumentObject(`Query`),
+      // todo proxy that allows calling any query field
+    },
+    mutation: {
+      $batch: sendDocumentObject(`Mutation`),
+      // todo proxy that allows calling any mutation field
+    },
     // todo
     // subscription: async () => {},
   }
