@@ -7,22 +7,25 @@ import type { Schema, SomeField } from '../../Schema/__.js'
 import type { PickScalarFields } from '../../Schema/Output/Output.js'
 import type { SelectionSet } from '../SelectionSet/__.js'
 
-// dprint-ignore
-export type Query<$SelectionSetQuery extends object, $Index extends Schema.Index> =
-  SimplifyDeep<Object$<$SelectionSetQuery, Exclude<$Index['Root']['Query'], null>, $Index>>
+type ExcludeNull<T> = Exclude<T, null>
+
+export type Root<
+  $SelectionSet extends object,
+  $Index extends Schema.Index,
+  $RootTypeName extends Schema.RootTypeName,
+> = SimplifyDeep<Object$<$SelectionSet, ExcludeNull<$Index['Root'][$RootTypeName]>, $Index>>
+
+export type Query<$SelectionSet extends object, $Index extends Schema.Index> = Root<$SelectionSet, $Index, 'Query'>
 
 // dprint-ignore
-export type Mutation<$SelectionSetMutation extends object, $Index extends Schema.Index> =
-  SimplifyDeep<Object$<$SelectionSetMutation, Exclude<$Index['Root']['Mutation'], null>, $Index>>
+export type Mutation<$SelectionSet extends object, $Index extends Schema.Index> = Root<$SelectionSet, $Index, 'Mutation'>
 
 // dprint-ignore
-export type Subscription<$SelectionSetSubscription extends object, $Index extends Schema.Index> =
-  SimplifyDeep<Object$<$SelectionSetSubscription, Exclude<$Index['Root']['Subscription'], null>, $Index>>
+export type Subscription<$SelectionSet extends object, $Index extends Schema.Index> = Root<$SelectionSet, $Index, 'Subscription'>
 
 // dprint-ignore
 export type Object$<$SelectionSet, $Node extends Schema.Output.Object$2, $Index extends Schema.Index> =
   SelectionSet.IsSelectScalarsWildcard<$SelectionSet> extends true
-
     /**
      * Handle Scalars Wildcard
      */

@@ -9,23 +9,31 @@ import { SelectionSet } from './SelectionSet/__.js'
 import type { GraphQLDocumentObject } from './SelectionSet/toGraphQLDocumentString.js'
 
 // dprint-ignore
-export type Client<$SchemaIndex extends Schema.Index> =
+type RootTypeMethods<$Index extends Schema.Index, $RootTypeName extends Schema.RootTypeName>  = 
+  & {
+      $batch: <$SelectionSet extends object>(selectionSet: Exact<$SelectionSet, SelectionSet.Root<$Index, $RootTypeName>>) =>
+                Promise<ResultSet.Root<$SelectionSet, $Index,$RootTypeName>>
+    }
+  // todo test this
+  & {
+      [$ObjectName in keyof $Index['objects']]: <$SelectionSet extends object>(selectionSet: Exact<$SelectionSet, SelectionSet.Object<$Index['objects'][$ObjectName], $Index>>) =>
+                                                Promise<ResultSet.Root<$SelectionSet, $Index,$RootTypeName>>
+    }
+
+// dprint-ignore
+export type Client<$Index extends Schema.Index> =
   & (
-      $SchemaIndex['Root']['Query'] extends null
+      $Index['Root']['Query'] extends null
         ? unknown
         : {
-            query: {
-              $batch: <$SelectionSet extends object>(selectionSet: Exact<$SelectionSet, SelectionSet.Query<$SchemaIndex>>) => Promise<ResultSet.Query<$SelectionSet, $SchemaIndex>>
-            }
+            query: RootTypeMethods<$Index, 'Query'>
           }
     )
   & (
-      $SchemaIndex['Root']['Mutation'] extends null
+      $Index['Root']['Mutation'] extends null
       ? unknown
       : {
-          mutation: {
-            $batch: <$SelectionSet extends object>(selectionSet: Exact<$SelectionSet, SelectionSet.Mutation<$SchemaIndex>>) => Promise<ResultSet.Mutation<$SelectionSet,$SchemaIndex>>
-          }
+          mutation: RootTypeMethods<$Index, 'Mutation'>
         }
     )
 // todo

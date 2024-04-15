@@ -11,20 +11,19 @@ import type {
   SomeFields,
 } from '../../Schema/__.js'
 
-export type Query<$Index extends Schema.Index> = $Index['Root']['Query'] extends Schema.Object$2
-  ? Object<$Index['Root']['Query'], $Index>
-  : never
+export type Query<$Index extends Schema.Index> = Root<$Index, 'Query'>
 
-export type Mutation<$Index extends Schema.Index> = $Index['Root']['Mutation'] extends Schema.Object$2
-  ? Object<$Index['Root']['Mutation'], $Index>
-  : never
+export type Mutation<$Index extends Schema.Index> = Root<$Index, 'Mutation'>
 
-export type Subscription<$Index extends Schema.Index> = $Index['Root']['Subscription'] extends Schema.Object$2
-  ? Object<$Index['Root']['Subscription'], $Index>
-  : never
+export type Subscription<$Index extends Schema.Index> = Root<$Index, 'Subscription'>
 
 // dprint-ignore
-type Object<$Object extends Schema.Object$2, $Index extends Schema.Index> =
+export type Root<$Index extends Schema.Index, Type extends keyof Schema.Index['Root']> =
+  $Index['Root'][Type] extends Schema.Object$2 ?  Object<$Index['Root'][Type], $Index> :
+                                                  never
+
+// dprint-ignore
+export type Object<$Object extends Schema.Object$2, $Index extends Schema.Index> =
   Fields<$Object['fields'], $Index>
 
 // dprint-ignore

@@ -1,4 +1,5 @@
 export * from './Args.js'
+export { RootTypeName } from './core/helpers.js'
 export * from './core/Index.js'
 export * from './core/Named/__.js'
 export * from './Field.js'
