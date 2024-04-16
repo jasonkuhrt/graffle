@@ -21,8 +21,8 @@ export namespace Code {
       string,
       null | string | boolean | number | { type: null | string | boolean | number; optional?: boolean; tsdoc?: string }
     >,
-  ) =>
-    Code.object(
+  ) => {
+    return Code.object(
       Code.fields(
         Object.entries(object).map(([name, spec]) =>
           [name, spec && typeof spec === `object` ? spec : { type: spec }] as const
@@ -32,6 +32,7 @@ export namespace Code {
           ) => Code.field(name, String(spec.type), { optional: spec.optional })),
       ),
     )
+  }
   export const type = (name: string, type: string) => `type ${name} = ${type}`
   export const interface$ = (name: string, object: string) => `interface ${name} ${object}`
   export const export$ = (thing: string) => `export ${thing}`

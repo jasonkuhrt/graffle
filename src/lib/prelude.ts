@@ -188,3 +188,18 @@ export const fileExists = async (path: string) => {
 }
 
 export type As<T, U> = U extends T ? U : never
+
+export type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends ((k: infer I) => void) ? I : never
+
+export type LastOf<T> = UnionToIntersection<T extends any ? () => T : never> extends () => infer R ? R : never
+
+// TS4.0+
+export type Push<T extends any[], V> = [...T, V]
+
+// TS4.1+
+export type UnionToTuple<T, L = LastOf<T>, N = [T] extends [never] ? true : false> = true extends N ? []
+  : Push<UnionToTuple<Exclude<T, L>>, L>
+
+export type CountKeys<T> = keyof T extends never ? 0 : UnionToTuple<keyof T>['length']
+export type IsMultipleKeys<T> = IsMultiple<CountKeys<T>>
+export type IsMultiple<T> = T extends 0 ? false : T extends 1 ? false : true

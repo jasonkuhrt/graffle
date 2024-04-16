@@ -27,6 +27,7 @@ export const generateRuntimeSchema = (
 ) => {
   const code: string[] = []
 
+  code.push(`/* eslint-disable */\n`)
   code.push(
     `
       import * as $ from '${config.libraryPaths.schema}'
@@ -60,10 +61,13 @@ const index = (config: Config) => {
         Subscription ${hasSubscription(config.typeMapByKind) ? `` : `:null`}
       },
       objects: {
-        ${config.typeMapByKind.GraphQLObjectType.map(type => type.name).join(`,\n`)},
+        ${config.typeMapByKind.GraphQLObjectType.map(type => type.name).join(`,\n`)}
       },
       unions: {
-        ${config.typeMapByKind.GraphQLUnionType.map(type => type.name).join(`,\n`)},
+        ${config.typeMapByKind.GraphQLUnionType.map(type => type.name).join(`,\n`)}
+      },
+      interfaces: {
+        ${config.typeMapByKind.GraphQLInterfaceType.map(type => type.name).join(`,\n`)}
       }
     }
   `
@@ -73,7 +77,6 @@ const union = (config: Config, type: GraphQLUnionType) => {
   // todo probably need thunks here
   const members = type.getTypes().map(t => t.name).join(`, `)
   return `
-  // eslint-disable-next-line
   // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
   export const ${type.name} = $.Union(\`${type.name}\`, [${members}])\n`
 }
@@ -101,7 +104,6 @@ const object = (config: Config, type: GraphQLObjectType) => {
     return `${field.name}: ${outputField(config, field)}`
   }).join(`,\n`)
   return `
-    // eslint-disable-next-line
     // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
     export const ${type.name} = $.Object$(\`${type.name}\`, {
       ${fields}

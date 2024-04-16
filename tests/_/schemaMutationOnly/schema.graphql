@@ -1,0 +1,4 @@
+type Mutation {
+  id: ID
+  idNonNull: ID!
+}

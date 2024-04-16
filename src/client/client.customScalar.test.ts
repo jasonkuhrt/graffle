@@ -8,8 +8,7 @@ import { create } from './client.js'
 const ctx = setupMockServer()
 const data = { fooBarUnion: { int: 1 } }
 
-// @ts-ignore infinite depth
-const client = () => create<Index>({ url: ctx.url, schemaIndex })
+const client = () => create<Index>({ schema: ctx.url, schemaIndex })
 
 describe(`output`, () => {
   test(`query field`, async () => {
@@ -79,7 +78,7 @@ describe(`input`, () => {
   })
   const clientExpected = (expectedDocument: (document: any) => void) => {
     const client = create<Index>({
-      url: ctx.url,
+      schema: ctx.url,
       schemaIndex,
       hooks: {
         documentEncode: (input, run) => {

@@ -1,30 +1,88 @@
-import type { DocumentNode } from 'graphql'
+import { type DocumentNode, execute, graphql, type GraphQLSchema } from 'graphql'
+import type { MergeExclusive, NonEmptyObject } from 'type-fest'
 import type { ExcludeUndefined } from 'type-fest/source/required-deep.js'
 import request from '../entrypoints/main.js'
 import { type RootTypeName } from '../lib/graphql.js'
-import type { Exact } from '../lib/prelude.js'
+import type { Exact, IsMultipleKeys } from '../lib/prelude.js'
+import type { TSError } from '../lib/TSError.js'
 import type { Object$2, Schema } from '../Schema/__.js'
 import * as CustomScalars from './customScalars.js'
+import { toDocumentExpression } from './document.js'
 import type { ResultSet } from './ResultSet/__.js'
 import { SelectionSet } from './SelectionSet/__.js'
 import type { GraphQLDocumentObject } from './SelectionSet/toGraphQLDocumentString.js'
 
+type Variables = Record<string, string | number | boolean | null> // todo or any custom scalars too
+
+// dprint-ignore
+type RootMethod<$Index extends Schema.Index, $RootTypeName extends Schema.RootTypeName> =
+  <$SelectionSet extends object>(selectionSet: Exact<$SelectionSet, SelectionSet.Root<$Index, $RootTypeName>>) =>
+    Promise<ResultSet.Root<$SelectionSet, $Index, $RootTypeName>>
+
+// dprint-ignore
+type ObjectMethod<$Index extends Schema.Index, $ObjectName extends keyof $Index['objects']> =
+  <$SelectionSet extends object>(selectionSet: Exact<$SelectionSet, SelectionSet.Object<$Index['objects'][$ObjectName], $Index>>) =>
+    Promise<ResultSet.Object$<$SelectionSet, $Index['objects'][$ObjectName], $Index>>
+
 // dprint-ignore
 type RootTypeMethods<$Index extends Schema.Index, $RootTypeName extends Schema.RootTypeName> =
   & {
-      $batch: <$SelectionSet extends object>(selectionSet: Exact<$SelectionSet, SelectionSet.Root<$Index, $RootTypeName>>) =>
-                Promise<ResultSet.Root<$SelectionSet, $Index,$RootTypeName>>
+      $batch: RootMethod<$Index, $RootTypeName>
     }
   // todo test this
   & {
-      [$ObjectName in keyof $Index['objects']]: <$SelectionSet extends object>(selectionSet: Exact<$SelectionSet, SelectionSet.Object<$Index['objects'][$ObjectName], $Index>>) =>
-                                                Promise<ResultSet.Root<$SelectionSet, $Index,$RootTypeName>>
+      [$ObjectName in keyof $Index['objects']]: ObjectMethod<$Index, $ObjectName>
     }
+
+// todo the name below should be limited to a valid graphql root type name
+// dprint-ignore
+type Document<$Index extends Schema.Index> =
+  {
+    [name: string]:
+      $Index['Root']['Query'] extends null    ? { mutation: SelectionSet.Root<$Index, 'Mutation'> } :
+      $Index['Root']['Mutation'] extends null ? { query: SelectionSet.Root<$Index, 'Query'> } :
+                                                MergeExclusive<
+                                                  {
+                                                    query: SelectionSet.Root<$Index, 'Query'>
+                                                  },
+                                                  {
+                                                    mutation: SelectionSet.Root<$Index, 'Mutation'>
+                                                  }
+                                                >
+  }
+
+// dprint-ignore
+type GetOperation<T extends {query:any}|{mutation:any}> =
+  T extends {query:infer U}    ? U : 
+  T extends {mutation:infer U} ? U :
+  never
+
+// dprint-ignore
+type ValidateDocumentOperationNames<$Document> =
+  // This initial condition checks that the document is not already in an error state.
+  // Namely from for example { x: { mutation: { ... }}} where the schema has no mutations.
+  // Which is statically caught by the `Document` type. In that case the document type variable
+  // no longer functions per normal with regards to keyof utility, not returning exact keys of the object
+  // but instead this more general union. Not totally clear _why_, but we have tests covering this...
+  string | number extends keyof $Document
+    ? $Document
+    : keyof { [K in keyof $Document & string as Schema.Named.NameParse<K> extends never ? K : never]: K } extends never
+      ? $Document 
+      : TSError<'ValidateDocumentOperationNames', `One or more Invalid operation name in document: ${keyof { [K in keyof $Document & string as Schema.Named.NameParse<K> extends never ? K : never]: K }}`>
 
 // dprint-ignore
 export type Client<$Index extends Schema.Index> =
   & {
-      raw: (document: DocumentNode, variables?:object) => Promise<object>
+      // todo test raw
+      raw: (document: string | DocumentNode, variables?:Variables) => Promise<object>
+      document: <$Document extends Document<$Index>>
+                  (document: ValidateDocumentOperationNames<NonEmptyObject<$Document>>) =>
+                  // (document: $Document) =>
+                    {
+                      run:  <$Name extends keyof $Document & string, $Params extends (IsMultipleKeys<$Document> extends true ? [name: $Name] : ([] | [name: $Name | undefined]))>
+                              (...params: $Params) =>
+                                Promise<ResultSet.Root<GetOperation<$Document[$Name]>, $Index, 'Query'>>
+                    }
     }
   & (
       $Index['Root']['Query'] extends null
@@ -53,7 +111,7 @@ interface HookInputDocumentEncode {
 }
 
 interface Input {
-  url: URL | string
+  schema: URL | string | GraphQLSchema
   headers?: HeadersInit
   // If there are no custom scalars then this property is useless. Improve types.
   schemaIndex: Schema.Index
@@ -76,7 +134,44 @@ export const create = <$SchemaIndex extends Schema.Index>(input: Input): Client<
     return parentInput.hooks?.[name](input, fn) ?? fn(input)
   }
 
-  const sendDocumentObject = (rootType: RootTypeName) => async (documentObject: GraphQLDocumentObject) => {
+  const executeDocumentExpression = async (
+    { document, variables, operationName }: {
+      document: string | DocumentNode
+      variables?: Variables
+      operationName?: string
+    },
+  ) => {
+    if (input.schema instanceof URL || typeof input.schema === `string`) {
+      return await request({
+        url: new URL(input.schema).href, // todo allow relative urls - what does fetch in node do?
+        requestHeaders: input.headers,
+        document,
+        variables,
+      })
+    } else {
+      if (typeof document === `string`) {
+        return await graphql({
+          schema: input.schema,
+          source: document,
+          // contextValue: createContextValue(), // todo
+          variableValues: variables,
+          operationName,
+        })
+      } else if (typeof document === `object`) {
+        return await execute({
+          schema: input.schema,
+          document,
+          // contextValue: createContextValue(), // todo
+          variableValues: variables,
+          operationName,
+        })
+      } else {
+        throw new Error(`Unsupported GraphQL document type: ${String(document)}`)
+      }
+    }
+  }
+
+  const executeDocumentObject = (rootType: RootTypeName) => async (documentObject: GraphQLDocumentObject) => {
     const rootIndex = input.schemaIndex.Root[rootType]
     if (!rootIndex) throw new Error(`Root type not found: ${rootType}`)
 
@@ -86,12 +181,8 @@ export const create = <$SchemaIndex extends Schema.Index>(input: Input): Client<
       ({ rootIndex, documentObject }) => CustomScalars.encode({ index: rootIndex, documentObject }),
     )
     const documentString = SelectionSet.toGraphQLDocumentString(documentObjectEncoded)
-    const result = await request({
-      url: new URL(input.url).href,
-      requestHeaders: input.headers,
-      document: documentString,
-      // todo handle variables
-    })
+    // todo variables
+    const result = await executeDocumentExpression({ document: documentString })
     const resultDecoded = CustomScalars.decode(rootIndex, result as object)
     return resultDecoded
   }
@@ -99,19 +190,26 @@ export const create = <$SchemaIndex extends Schema.Index>(input: Input): Client<
   // @ts-expect-error ignoreme
   const client: Client<$SchemaIndex> = {
     raw: async (document, variables) => {
-      return await request({
-        url: new URL(input.url).href,
-        requestHeaders: input.headers,
-        document,
-        variables,
-      })
+      return await executeDocumentExpression({ document, variables })
+    },
+    document: (documentObject) => {
+      return {
+        run: async (operationName) => {
+          const documentExpression = toDocumentExpression(documentObject as any)
+          return await executeDocumentExpression({
+            document: documentExpression,
+            operationName,
+            // todo variables
+          })
+        },
+      }
     },
     query: {
-      $batch: sendDocumentObject(`Query`),
+      $batch: executeDocumentObject(`Query`),
       // todo proxy that allows calling any query field
     },
     mutation: {
-      $batch: sendDocumentObject(`Mutation`),
+      $batch: executeDocumentObject(`Mutation`),
       // todo proxy that allows calling any mutation field
     },
     // todo
