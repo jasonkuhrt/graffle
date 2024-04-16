@@ -1,3 +1,4 @@
 type Query {
   id: ID
+  idNonNull: ID!
 }

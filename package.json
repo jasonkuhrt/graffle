@@ -58,7 +58,7 @@
   },
   "homepage": "https://github.com/jasonkuhrt/graphql-request",
   "scripts": {
-    "gen:test:schema": "tsx tests/_/schema/schema.ts",
+    "gen:test:schema": "tsx tests/_/schema/schemaGenerate.ts",
     "demo": "tsx src/cli/generateSchema.ts && dprint fmt src/demo.ts",
     "dev": "rm -rf dist && tsc --watch",
     "format": "pnpm build:docs && dprint fmt",

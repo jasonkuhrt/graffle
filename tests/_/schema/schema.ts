@@ -13,6 +13,7 @@ const builder = new SchemaBuilder<{
 builder.queryType({
   fields: t => ({
     id: t.id({ resolve: () => db.id1 }),
+    idNonNull: t.id({ nullable: false, resolve: () => db.id1 }),
   }),
 })
 
