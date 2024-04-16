@@ -6,16 +6,16 @@ import { create } from './client.js'
 
 const client = create<Index>({ schema, schemaIndex: $Index })
 
-const withTwo = client.document({
-  foo: {
-    query: { id: true },
-  },
-  bar: {
-    query: { idNonNull: true },
-  },
-})
-
 describe(`document with two queries`, () => {
+  const withTwo = client.document({
+    foo: {
+      query: { id: true },
+    },
+    bar: {
+      query: { idNonNull: true },
+    },
+  })
+
   test(`works`, async () => {
     const { run } = withTwo
     expect(await run(`foo`)).toEqual({ data: { id: db.id1 } })
@@ -52,5 +52,26 @@ test(`document with one query`, async () => {
   expect(await run(undefined)).toEqual({ data: { id: db.id1 } })
 })
 
-// todo mutation
-// todo mutation and query mixed
+test(`document with one mutation`, async () => {
+  const { run } = client.document({
+    foo: {
+      mutation: { id: true },
+    },
+  })
+  expect(await run(`foo`)).toEqual({ data: { id: db.id1 } })
+  expect(await run()).toEqual({ data: { id: db.id1 } })
+  expect(await run(undefined)).toEqual({ data: { id: db.id1 } })
+})
+
+test(`document with one mutation and one query`, async () => {
+  const { run } = client.document({
+    foo: {
+      mutation: { id: true },
+    },
+    bar: {
+      query: { idNonNull: true },
+    },
+  })
+  expect(await run(`foo`)).toEqual({ data: { id: db.id1 } })
+  expect(await run(`bar`)).toEqual({ data: { idNonNull: db.id1 } })
+})

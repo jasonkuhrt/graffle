@@ -6,11 +6,6 @@ import type * as $Scalar from './Scalar.ts'
 // ------------------------------------------------------------ //
 
 export namespace Root {
-  export type Mutation = $.Object$2<'Mutation', {
-    id: $.Field<$.Output.Nullable<$Scalar.ID>, null>
-    idNonNull: $.Field<$Scalar.ID, null>
-  }>
-
   export type Query = $.Object$2<'Query', {
     id: $.Field<$.Output.Nullable<$Scalar.ID>, null>
     idNonNull: $.Field<$Scalar.ID, null>

@@ -10,13 +10,6 @@ const builder = new SchemaBuilder<{
   defaultFieldNullability: true,
 })
 
-builder.queryType({
-  fields: t => ({
-    id: t.id({ resolve: () => db.id1 }),
-    idNonNull: t.id({ nullable: false, resolve: () => db.id1 }),
-  }),
-})
-
 builder.mutationType({
   fields: t => ({
     id: t.id({ resolve: () => db.id1 }),

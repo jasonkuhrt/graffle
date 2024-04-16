@@ -1,10 +1,10 @@
 import { describe, expectTypeOf, test } from 'vitest'
-import type { Index } from '../../tests/_/schema/generated/Index.js'
-import { $Index } from '../../tests/_/schema/generated/SchemaRuntime.js'
-import { schema } from '../../tests/_/schema/schema.js'
+import * as Schema from '../../tests/_/schema/schema.js'
+import * as SchemaMutationOnly from '../../tests/_/schemaMutationOnly/schema.js'
+import * as SchemaQueryOnly from '../../tests/_/schemaQueryOnly/schema.js'
 import { create } from './client.js'
 
-const client = create<Index>({ schema, schemaIndex: $Index })
+const client = create<Schema.Index>({ schema: Schema.schema, schemaIndex: Schema.$Index })
 
 test(`requires input`, () => {
   // @ts-expect-error missing input
@@ -25,6 +25,27 @@ describe(`input`, () => {
       bar: { query: { id: true } },
     }).run
     expectTypeOf(run).toMatchTypeOf<(name: 'foo' | 'bar') => Promise<any>>()
+  })
+
+  test(`root operation not available if it is not in schema`, () => {
+    const clientQueryOnly = create<SchemaQueryOnly.Index>({
+      schema: SchemaQueryOnly.schema,
+      schemaIndex: SchemaQueryOnly.$Index,
+    })
+    clientQueryOnly.document({
+      foo: { query: { id: true } },
+      // @ts-expect-error mutation not in schema
+      bar: { mutation: { id: true } },
+    })
+    const clientMutationOnly = create<SchemaMutationOnly.Index>({
+      schema: SchemaMutationOnly.schema,
+      schemaIndex: SchemaMutationOnly.$Index,
+    })
+    clientMutationOnly.document({
+      // @ts-expect-error mutation not in schema
+      foo: { query: { id: true } },
+      bar: { mutation: { id: true } },
+    })
   })
 })
 
@@ -50,6 +71,4 @@ describe(`output`, () => {
     }).run(`foo`)
     expectTypeOf(result).toEqualTypeOf<{ id: string | null }>()
   })
-  // todo mutation test
-  // todo mutation & query mix test
 })

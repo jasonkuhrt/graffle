@@ -2,8 +2,3 @@ type Mutation {
   id: ID
   idNonNull: ID!
 }
-
-type Query {
-  id: ID
-  idNonNull: ID!
-}

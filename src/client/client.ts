@@ -37,11 +37,17 @@ type RootTypeMethods<$Index extends Schema.Index, $RootTypeName extends Schema.R
 // dprint-ignore
 type Document<$Index extends Schema.Index> =
   {
-    [name: string]: MergeExclusive<{
-      query: SelectionSet.Root<$Index, 'Query'>
-    }, {
-      mutation: SelectionSet.Root<$Index, 'Mutation'>
-    }>
+    [name: string]:
+      $Index['Root']['Query'] extends null    ? { mutation: SelectionSet.Root<$Index, 'Mutation'> } :
+      $Index['Root']['Mutation'] extends null ? { query: SelectionSet.Root<$Index, 'Query'> } :
+                                                MergeExclusive<
+                                                  {
+                                                    query: SelectionSet.Root<$Index, 'Query'>
+                                                  },
+                                                  {
+                                                    mutation: SelectionSet.Root<$Index, 'Mutation'>
+                                                  }
+                                                >
   }
 
 // dprint-ignore

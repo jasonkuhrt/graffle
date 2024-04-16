@@ -10,11 +10,6 @@ export namespace Root {
     id: $.Field<$.Output.Nullable<$Scalar.ID>, null>
     idNonNull: $.Field<$Scalar.ID, null>
   }>
-
-  export type Query = $.Object$2<'Query', {
-    id: $.Field<$.Output.Nullable<$Scalar.ID>, null>
-    idNonNull: $.Field<$Scalar.ID, null>
-  }>
 }
 
 // ------------------------------------------------------------ //

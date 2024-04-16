@@ -4,7 +4,7 @@ import type * as Schema from './SchemaBuildtime.js'
 
 export interface Index {
   Root: {
-    Query: Schema.Root.Query
+    Query: null
     Mutation: Schema.Root.Mutation
     Subscription: null
   }
