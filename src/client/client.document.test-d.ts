@@ -42,7 +42,7 @@ describe(`input`, () => {
       schemaIndex: SchemaMutationOnly.$Index,
     })
     clientMutationOnly.document({
-      // @ts-expect-error mutation not in schema
+      // @ts-expect-error query not in schema
       foo: { query: { id: true } },
       bar: { mutation: { id: true } },
     })

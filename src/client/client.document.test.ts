@@ -34,6 +34,7 @@ describe(`document with two queries`, () => {
     await expect(run(`boo`)).resolves.toMatchObject({ errors: [{ message: `Unknown operation named "boo".` }] })
   })
   test(`error if invalid name in document`, async () => {
+    // @ts-expect-error
     const { run } = client.document({ foo$: { query: { id: true } } })
     await expect(run(`foo$`)).resolves.toMatchObject({
       errors: [{ message: `Syntax Error: Expected "{", found "$".` }],

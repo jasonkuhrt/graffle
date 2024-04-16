@@ -4,6 +4,7 @@ import type { ExcludeUndefined } from 'type-fest/source/required-deep.js'
 import request from '../entrypoints/main.js'
 import { type RootTypeName } from '../lib/graphql.js'
 import type { Exact, IsMultipleKeys } from '../lib/prelude.js'
+import type { TSError } from '../lib/TSError.js'
 import type { Object$2, Schema } from '../Schema/__.js'
 import * as CustomScalars from './customScalars.js'
 import { toDocumentExpression } from './document.js'
@@ -57,12 +58,26 @@ type GetOperation<T extends {query:any}|{mutation:any}> =
   never
 
 // dprint-ignore
+type ValidateDocumentOperationNames<$Document> =
+  // This initial condition checks that the document is not already in an error state.
+  // Namely from for example { x: { mutation: { ... }}} where the schema has no mutations.
+  // Which is statically caught by the `Document` type. In that case the document type variable
+  // no longer functions per normal with regards to keyof utility, not returning exact keys of the object
+  // but instead this more general union. Not totally clear _why_, but we have tests covering this...
+  string | number extends keyof $Document
+    ? $Document
+    : keyof { [K in keyof $Document & string as Schema.Named.NameParse<K> extends never ? K : never]: K } extends never
+      ? $Document 
+      : TSError<'ValidateDocumentOperationNames', `One or more Invalid operation name in document: ${keyof { [K in keyof $Document & string as Schema.Named.NameParse<K> extends never ? K : never]: K }}`>
+
+// dprint-ignore
 export type Client<$Index extends Schema.Index> =
   & {
       // todo test raw
-      raw: (document: string|DocumentNode, variables?:Variables) => Promise<object>
+      raw: (document: string | DocumentNode, variables?:Variables) => Promise<object>
       document: <$Document extends Document<$Index>>
-                  (document: NonEmptyObject<$Document>) =>
+                  (document: ValidateDocumentOperationNames<NonEmptyObject<$Document>>) =>
+                  // (document: $Document) =>
                     {
                       run:  <$Name extends keyof $Document & string, $Params extends (IsMultipleKeys<$Document> extends true ? [name: $Name] : ([] | [name: $Name | undefined]))>
                               (...params: $Params) =>

@@ -14,4 +14,5 @@ test(`NameParse`, () => {
   expectTypeOf<NamedType.NameParse<'1_a'>>().toEqualTypeOf<never>()
   expectTypeOf<NamedType.NameParse<'$'>>().toEqualTypeOf<never>()
   expectTypeOf<NamedType.NameParse<'$a'>>().toEqualTypeOf<never>()
+  expectTypeOf<NamedType.NameParse<'foo$'>>().toEqualTypeOf<never>()
 })
