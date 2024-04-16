@@ -144,6 +144,8 @@ export const create = <$SchemaIndex extends Schema.Index>(input: Input): Client<
           variableValues: variables,
           operationName,
         })
+      } else {
+        throw new Error(`Unsupported GraphQL document type: ${String(document)}`)
       }
     }
   }
