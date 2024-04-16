@@ -11,8 +11,3 @@ export const toDocumentExpression = (
     return `${operationType} ${operationName} ${documentString}`
   }).join(`\n\n`)
 }
-
-// const operationTypes = {
-//   query: `query`,
-//   mutation: `mutation`,
-// }

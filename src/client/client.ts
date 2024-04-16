@@ -1,5 +1,5 @@
 import { type DocumentNode, execute, graphql, type GraphQLSchema } from 'graphql'
-import type { MergeExclusive } from 'type-fest'
+import type { MergeExclusive, NonEmptyObject, UnionToIntersection } from 'type-fest'
 import type { ExcludeUndefined } from 'type-fest/source/required-deep.js'
 import request from '../entrypoints/main.js'
 import { type RootTypeName } from '../lib/graphql.js'
@@ -33,6 +33,23 @@ type RootTypeMethods<$Index extends Schema.Index, $RootTypeName extends Schema.R
       [$ObjectName in keyof $Index['objects']]: ObjectMethod<$Index, $ObjectName>
     }
 
+type UnionToIntersection<U> =
+  (U extends any ? (k: U) => void : never) extends ((k: infer I) => void) ? I : never
+
+type LastOf<T> =
+  UnionToIntersection<T extends any ? () => T : never> extends () => (infer R) ? R : never
+
+// TS4.0+
+type Push<T extends any[], V> = [...T, V];
+
+// TS4.1+
+type UnionToTuple<T, L = LastOf<T>, N = [T] extends [never] ? true : false> =
+  true extends N ? [] : Push<UnionToTuple<Exclude<T, L>>, L>
+
+type CountKeys<T> = keyof T extends never ? 0 : UnionToTuple<keyof T>['length']
+type IsMultipleKeys<T> = IsMultiple<CountKeys<T>>
+type IsMultiple<T> = T extends 0 ? false : T extends 1 ? false : true 
+    
 // todo the name below should be limited to a valid graphql root type name
 // dprint-ignore
 type Document<$Index extends Schema.Index> =
@@ -56,9 +73,11 @@ export type Client<$Index extends Schema.Index> =
       // todo test raw
       raw: (document: string|DocumentNode, variables?:Variables) => Promise<object>
       document: <$Document extends Document<$Index>>
-                  (document: Exact<$Document, Document<$Index>>) =>
+                  (document: NonEmptyObject<$Document>) =>
                     {
-                      run: <$Name extends keyof $Document & string>(name: $Name) => Promise<ResultSet.Root<GetOperation<$Document[$Name]>, $Index, 'Query'>>
+                      run:  <$Name extends keyof $Document & string, $Params extends (IsMultipleKeys<$Document> extends true ? [name: $Name] : ([]|[name: $Name | undefined]))>
+                              (...params: $Params) =>
+                                Promise<ResultSet.Root<GetOperation<$Document[$Name]>, $Index, 'Query'>>
                     }
     }
   & (

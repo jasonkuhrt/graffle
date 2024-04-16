@@ -20,56 +20,47 @@ export const InputObject = $.InputObject(`InputObject`, {
   dateRequired: $.Input.field($Scalar.Date),
 })
 
-// eslint-disable-next-line
 // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
 export const DateObject1 = $.Object$(`DateObject1`, {
   date1: $.field($.Output.Nullable($Scalar.Date)),
 })
 
-// eslint-disable-next-line
 // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
 export const DateObject2 = $.Object$(`DateObject2`, {
   date2: $.field($.Output.Nullable($Scalar.Date)),
 })
 
-// eslint-disable-next-line
 // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
 export const ObjectUnion = $.Object$(`ObjectUnion`, {
   fooBarUnion: $.field($.Output.Nullable(() => FooBarUnion)),
 })
 
-// eslint-disable-next-line
 // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
 export const Foo = $.Object$(`Foo`, {
   id: $.field($.Output.Nullable($Scalar.ID)),
 })
 
-// eslint-disable-next-line
 // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
 export const Bar = $.Object$(`Bar`, {
   int: $.field($.Output.Nullable($Scalar.Int)),
 })
 
-// eslint-disable-next-line
 // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
 export const ObjectNested = $.Object$(`ObjectNested`, {
   id: $.field($.Output.Nullable($Scalar.ID)),
   object: $.field($.Output.Nullable(() => Object1)),
 })
 
-// eslint-disable-next-line
 // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
 export const lowerCaseObject = $.Object$(`lowerCaseObject`, {
   id: $.field($.Output.Nullable($Scalar.ID)),
 })
 
-// eslint-disable-next-line
 // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
 export const lowerCaseObject2 = $.Object$(`lowerCaseObject2`, {
   int: $.field($.Output.Nullable($Scalar.Int)),
 })
 
-// eslint-disable-next-line
 // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
 export const Object1 = $.Object$(`Object1`, {
   string: $.field($.Output.Nullable($Scalar.String)),
@@ -79,29 +70,24 @@ export const Object1 = $.Object$(`Object1`, {
   id: $.field($.Output.Nullable($Scalar.ID)),
 })
 
-// eslint-disable-next-line
 // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
 export const Object1ImplementingInterface = $.Object$(`Object1ImplementingInterface`, {
   id: $.field($.Output.Nullable($Scalar.ID)),
   int: $.field($.Output.Nullable($Scalar.Int)),
 })
 
-// eslint-disable-next-line
 // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
 export const Object2ImplementingInterface = $.Object$(`Object2ImplementingInterface`, {
   id: $.field($.Output.Nullable($Scalar.ID)),
   boolean: $.field($.Output.Nullable($Scalar.Boolean)),
 })
 
-// eslint-disable-next-line
 // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
 export const DateUnion = $.Union(`DateUnion`, [DateObject1, DateObject2])
 
-// eslint-disable-next-line
 // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
 export const FooBarUnion = $.Union(`FooBarUnion`, [Foo, Bar])
 
-// eslint-disable-next-line
 // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
 export const lowerCaseUnion = $.Union(`lowerCaseUnion`, [lowerCaseObject, lowerCaseObject2])
 
@@ -113,7 +99,6 @@ export const Interface = $.Interface(`Interface`, { id: $.field($.Output.Nullabl
   Object2ImplementingInterface,
 ])
 
-// eslint-disable-next-line
 // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
 export const Query = $.Object$(`Query`, {
   date: $.field($.Output.Nullable($Scalar.Date)),
@@ -220,5 +205,9 @@ export const $Index = {
     DateUnion,
     FooBarUnion,
     lowerCaseUnion,
+  },
+  interfaces: {
+    DateInterface1,
+    Interface,
   },
 }
