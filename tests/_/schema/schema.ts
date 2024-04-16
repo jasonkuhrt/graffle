@@ -1,6 +1,6 @@
 import SchemaBuilder from '@pothos/core'
 
-const db = {
+export const db = {
   id1: `abc`,
 }
 

@@ -1,4 +1,5 @@
 import { type DocumentNode, execute, graphql, type GraphQLSchema } from 'graphql'
+import type { MergeExclusive } from 'type-fest'
 import type { ExcludeUndefined } from 'type-fest/source/required-deep.js'
 import request from '../entrypoints/main.js'
 import { type RootTypeName } from '../lib/graphql.js'
@@ -32,37 +33,33 @@ type RootTypeMethods<$Index extends Schema.Index, $RootTypeName extends Schema.R
       [$ObjectName in keyof $Index['objects']]: ObjectMethod<$Index, $ObjectName>
     }
 
+// todo the name below should be limited to a valid graphql root type name
 // dprint-ignore
-type Document<$Index extends Schema.Index, Names extends string> = {
-   // todo should not be required? Only if >1? Even then only of no query for query?
-  $run: Names
-  query?: SelectionSet.Root<$Index, 'Query'>
-  [namedQuery: `query_${string}`]: SelectionSet.Root<$Index, 'Query'>
-  mutation?: SelectionSet.Root<$Index, 'Mutation'>
-  [namedMutation: `mutation_${string}`]: SelectionSet.Root<$Index, 'Mutation'>
-  // todo
-  // subscription?: RootMethod<$Index, 'Subscription'>
-  // [namedSubscription: `subscription_${string}`]: RootMethod<$Index, 'Subscription'>
-}
+type Document<$Index extends Schema.Index> =
+  {
+    [name: string]: MergeExclusive<{
+      query: SelectionSet.Root<$Index, 'Query'>
+    }, {
+      mutation: SelectionSet.Root<$Index, 'Mutation'>
+    }>
+  }
 
-type Infer<T extends object> = Infer_<keyof T & string>
-
-// todo the $name below should be limited to a valid graphql root type name
 // dprint-ignore
-type Infer_<T extends string> =
-  T extends 'query'                       ? 'query' :
-  T extends 'mutation'                    ? 'mutation' :
-  T extends `query_${infer $Name}`        ? $Name :
-  T extends `mutation_${infer $Name}`     ? $Name :
-                                            never
+type GetOperation<T extends {query:any}|{mutation:any}> =
+  T extends {query:infer U}    ? U : 
+  T extends {mutation:infer U} ? U :
+  never
 
 // dprint-ignore
 export type Client<$Index extends Schema.Index> =
   & {
       // todo test raw
       raw: (document: string|DocumentNode, variables?:Variables) => Promise<object>
-      // todo test
-      document: <$Document extends Document<$Index, Infer<$Document>>>(document: $Document) => Promise<object>
+      document: <$Document extends Document<$Index>>
+                  (document: Exact<$Document, Document<$Index>>) =>
+                    {
+                      run: <$Name extends keyof $Document & string>(name: $Name) => Promise<ResultSet.Root<GetOperation<$Document[$Name]>, $Index, 'Query'>>
+                    }
     }
   & (
       $Index['Root']['Query'] extends null
@@ -114,7 +111,13 @@ export const create = <$SchemaIndex extends Schema.Index>(input: Input): Client<
     return parentInput.hooks?.[name](input, fn) ?? fn(input)
   }
 
-  const executeDocumentExpression = async (document: string | DocumentNode, variables?: Variables) => {
+  const executeDocumentExpression = async (
+    { document, variables, operationName }: {
+      document: string | DocumentNode
+      variables?: Variables
+      operationName?: string
+    },
+  ) => {
     if (input.schema instanceof URL || typeof input.schema === `string`) {
       return await request({
         url: new URL(input.schema).href, // todo allow relative urls - what does fetch in node do?
@@ -129,7 +132,7 @@ export const create = <$SchemaIndex extends Schema.Index>(input: Input): Client<
           source: document,
           // contextValue: createContextValue(), // todo
           variableValues: variables,
-          // operationName: input.operationName,
+          operationName,
         })
       } else if (typeof document === `object`) {
         return await execute({
@@ -137,7 +140,7 @@ export const create = <$SchemaIndex extends Schema.Index>(input: Input): Client<
           document,
           // contextValue: createContextValue(), // todo
           variableValues: variables,
-          // operationName: input.operationName,
+          operationName,
         })
       }
     }
@@ -154,7 +157,7 @@ export const create = <$SchemaIndex extends Schema.Index>(input: Input): Client<
     )
     const documentString = SelectionSet.toGraphQLDocumentString(documentObjectEncoded)
     // todo variables
-    const result = await executeDocumentExpression(documentString)
+    const result = await executeDocumentExpression({ document: documentString })
     const resultDecoded = CustomScalars.decode(rootIndex, result as object)
     return resultDecoded
   }
@@ -162,13 +165,19 @@ export const create = <$SchemaIndex extends Schema.Index>(input: Input): Client<
   // @ts-expect-error ignoreme
   const client: Client<$SchemaIndex> = {
     raw: async (document, variables) => {
-      return await executeDocumentExpression(document, variables)
+      return await executeDocumentExpression({ document, variables })
     },
-
-    document: async (documentObject) => {
-      const documentString = toDocumentExpression(documentObject as any)
-      // todo variables
-      return await executeDocumentExpression(documentString)
+    document: (documentObject) => {
+      return {
+        run: async (operationName) => {
+          const documentExpression = toDocumentExpression(documentObject as any)
+          return await executeDocumentExpression({
+            document: documentExpression,
+            operationName,
+            // todo variables
+          })
+        },
+      }
     },
     query: {
       $batch: executeDocumentObject(`Query`),
