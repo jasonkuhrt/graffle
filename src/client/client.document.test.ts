@@ -1,7 +1,8 @@
 import { describe, expect, test } from 'vitest'
+import { db } from '../../tests/_/db.js'
 import type { Index } from '../../tests/_/schema/generated/Index.js'
 import { $Index } from '../../tests/_/schema/generated/SchemaRuntime.js'
-import { db, schema } from '../../tests/_/schema/schema.js'
+import { schema } from '../../tests/_/schema/schema.js'
 import { create } from './client.js'
 
 const client = create<Index>({ schema, schemaIndex: $Index })

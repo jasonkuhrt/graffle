@@ -5,7 +5,7 @@ import request from '../entrypoints/main.js'
 import { type RootTypeName } from '../lib/graphql.js'
 import type { Exact, IsMultipleKeys } from '../lib/prelude.js'
 import type { TSError } from '../lib/TSError.js'
-import type { Object$2, Schema } from '../Schema/__.js'
+import type { InputFieldsAllNullable, Object$2, Schema } from '../Schema/__.js'
 import * as CustomScalars from './customScalars.js'
 import { toDocumentExpression } from './document.js'
 import type { ResultSet } from './ResultSet/__.js'
@@ -15,26 +15,44 @@ import type { GraphQLDocumentObject } from './SelectionSet/toGraphQLDocumentStri
 type Variables = Record<string, string | number | boolean | null> // todo or any custom scalars too
 
 // dprint-ignore
+type RootTypeMethods<$Index extends Schema.Index, $RootTypeName extends Schema.RootTypeName> =
+  $Index['Root'][$RootTypeName] extends Schema.Object$2 ?
+  (
+  & {
+      $batch: RootMethod<$Index, $RootTypeName>
+    }
+  & {
+      [$RootTypeField in keyof $Index['Root'][$RootTypeName]['fields'] & string]: RootTypeMethod<$Index, $Index['Root'][$RootTypeName]['fields'][$RootTypeField]>
+    }
+  )
+  : TSError<'RootTypeMethods', `Your schema does not have the root type "${$RootTypeName}".`>
+
+// dprint-ignore
 type RootMethod<$Index extends Schema.Index, $RootTypeName extends Schema.RootTypeName> =
   <$SelectionSet extends object>(selectionSet: Exact<$SelectionSet, SelectionSet.Root<$Index, $RootTypeName>>) =>
     Promise<ResultSet.Root<$SelectionSet, $Index, $RootTypeName>>
 
 // dprint-ignore
-type ObjectMethod<$Index extends Schema.Index, $ObjectName extends keyof $Index['objects']> =
-  <$SelectionSet extends object>(selectionSet: Exact<$SelectionSet, SelectionSet.Object<$Index['objects'][$ObjectName], $Index>>) =>
-    Promise<ResultSet.Object$<$SelectionSet, $Index['objects'][$ObjectName], $Index>>
+type RootTypeMethod<$Index extends Schema.Index, $Field extends Schema.SomeField> =
+  RootTypeMethod_<$Index, $Field, $Field['type']>
 
 // dprint-ignore
-type RootTypeMethods<$Index extends Schema.Index, $RootTypeName extends Schema.RootTypeName> =
-  & {
-      $batch: RootMethod<$Index, $RootTypeName>
-    }
-  // todo test this
-  & {
-      [$ObjectName in keyof $Index['objects']]: ObjectMethod<$Index, $ObjectName>
-    }
+type RootTypeMethod_<$Index extends Schema.Index, $Field extends Schema.SomeField, $Type extends Schema.Output.Any> =
+  $Type extends Schema.Output.Nullable<infer $InnerType>    ? RootTypeMethod_<$Index, $Field, $InnerType> : 
+  $Type extends Schema.Output.List<infer $InnerType>        ? RootTypeMethod_<$Index, $Field, $InnerType> :
+  $Type extends Schema.Scalar.Any                           ? ScalarFieldMethod<$Index,$Field> :
+                                                              FieldMethod<$Index, $Field>
 
-// todo the name below should be limited to a valid graphql root type name
+// dprint-ignore
+type FieldMethod<$Index extends Schema.Index, $Field extends Schema.SomeField> =
+  <$SelectionSet>(selectionSet: Exact<$SelectionSet, SelectionSet.Field<$Field, $Index>>) => Promise<ResultSet.Field<$SelectionSet, $Field, $Index>>
+
+// dprint-ignore
+type ScalarFieldMethod<$Index extends Schema.Index, $Field extends Schema.SomeField> =
+  $Field['args'] extends Schema.Args<infer $Fields> ? InputFieldsAllNullable<$Fields> extends true  ? <$SelectionSet>(args?: Exact<$SelectionSet, SelectionSet.Args<$Field['args']>>) => Promise<ResultSet.Field<$SelectionSet, $Field, $Index>> :
+                                                                                                      <$SelectionSet>(args: Exact<$SelectionSet, SelectionSet.Args<$Field['args']>>) => Promise<ResultSet.Field<$SelectionSet, $Field, $Index>> :
+                                                      (() => Promise<ResultSet.Field<true, $Field, $Index>>)
+
 // dprint-ignore
 type Document<$Index extends Schema.Index> =
   {

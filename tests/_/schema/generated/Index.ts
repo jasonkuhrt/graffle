@@ -8,7 +8,9 @@ export interface Index {
     Mutation: Schema.Root.Mutation
     Subscription: null
   }
-  objects: {}
+  objects: {
+    DateObject1: Schema.Object.DateObject1
+  }
   unions: {}
   interfaces: {}
 }

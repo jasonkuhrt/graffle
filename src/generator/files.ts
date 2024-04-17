@@ -10,6 +10,7 @@ export interface Input {
   outputDirPath: string
   code?: Omit<GenerateInput, 'schemaSource' | 'sourceDirPath' | 'options'>
   sourceDirPath?: string
+  sourceCustomScalarCodecsFilePath?: string
   schemaPath?: string
   format?: boolean
 }
@@ -20,7 +21,8 @@ export const generateFiles = async (input: Input) => {
   const schemaSource = await fs.readFile(schemaPath, `utf8`)
 
   // todo support other extensions: .tsx,.js,.mjs,.cjs
-  const customScalarCodecsFilePath = Path.join(sourceDirPath, `customScalarCodecs.ts`)
+  const customScalarCodecsFilePath = input.sourceCustomScalarCodecsFilePath
+    ?? Path.join(sourceDirPath, `customScalarCodecs.ts`)
   const customScalarCodecsImportPath = Path.relative(
     input.outputDirPath,
     customScalarCodecsFilePath.replace(/\.ts$/, `.js`),

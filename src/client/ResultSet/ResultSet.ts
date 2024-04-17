@@ -1,19 +1,11 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
 import type { Simplify } from 'type-fest'
-import type { GetKeyOr, SimplifyDeep } from '../../lib/prelude.js'
+import type { ExcludeNull, GetKeyOr, SimplifyDeep } from '../../lib/prelude.js'
 import type { TSError } from '../../lib/TSError.js'
 import type { Schema, SomeField } from '../../Schema/__.js'
 import type { PickScalarFields } from '../../Schema/Output/Output.js'
 import type { SelectionSet } from '../SelectionSet/__.js'
-
-type ExcludeNull<T> = Exclude<T, null>
-
-export type Root<
-  $SelectionSet extends object,
-  $Index extends Schema.Index,
-  $RootTypeName extends Schema.RootTypeName,
-> = SimplifyDeep<Object$<$SelectionSet, ExcludeNull<$Index['Root'][$RootTypeName]>, $Index>>
 
 export type Query<$SelectionSet extends object, $Index extends Schema.Index> = Root<$SelectionSet, $Index, 'Query'>
 
@@ -22,6 +14,13 @@ export type Mutation<$SelectionSet extends object, $Index extends Schema.Index> 
 
 // dprint-ignore
 export type Subscription<$SelectionSet extends object, $Index extends Schema.Index> = Root<$SelectionSet, $Index, 'Subscription'>
+
+export type Root<
+  $SelectionSet extends object,
+  $Index extends Schema.Index,
+  $RootTypeName extends Schema.RootTypeName,
+> = SimplifyDeep<Object$<$SelectionSet, ExcludeNull<$Index['Root'][$RootTypeName]>, $Index>>
+
 
 // dprint-ignore
 export type Object$<$SelectionSet, $Node extends Schema.Output.Object$2, $Index extends Schema.Index> =
@@ -63,7 +62,7 @@ type OnTypeFragment<$SelectionSet, $Node extends Schema.Output.Object$2, $Index 
     : never
 
 // dprint-ignore
-type Field<$SelectionSet, $Field extends SomeField, $Index extends Schema.Index> =
+export type Field<$SelectionSet, $Field extends SomeField, $Index extends Schema.Index> =
   $SelectionSet extends SelectionSet.Directive.Include.Negative | SelectionSet.Directive.Skip.Positive ?
      null :
      (

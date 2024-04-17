@@ -1,8 +1,5 @@
 import SchemaBuilder from '@pothos/core'
-
-export const db = {
-  id1: `abc`,
-}
+import { db } from '../db.js'
 
 const builder = new SchemaBuilder<{
   DefaultFieldNullability: true
@@ -21,5 +18,5 @@ export const schema = builder.toSchema({
   sortSchema: true,
 })
 
-export { Index } from './generated/Index.js'
+export type { Index } from './generated/Index.js'
 export { $Index } from './generated/SchemaRuntime.js'

@@ -7,8 +7,14 @@ export const generateScalar = (config: Config) => {
   const needsDefaultCustomScalarImplementation = config.typeMapByKind.GraphQLScalarTypeCustom.length > 0
     && !config.options.customScalars
 
+  const StandardScalarNamespace = `StandardScalar`
   code += `
 
+  ${
+    needsDefaultCustomScalarImplementation
+      ? `import * as ${StandardScalarNamespace} from '${config.libraryPaths.scalars}'`
+      : ``
+  }
   ${config.options.customScalars ? `import type * as CustomScalar from '${config.importPaths.customScalarCodecs}'` : ``}
 
     declare global {
@@ -16,7 +22,9 @@ export const generateScalar = (config: Config) => {
         ${
     config.typeMapByKind.GraphQLScalarTypeCustom
       .map((_) => {
-        return `${_.name}: ${needsDefaultCustomScalarImplementation ? `String` : `CustomScalar.${_.name}`}`
+        return `${_.name}: ${
+          needsDefaultCustomScalarImplementation ? `${StandardScalarNamespace}.String` : `CustomScalar.${_.name}`
+        }`
       }).join(`\n`)
   }
       }
@@ -34,7 +42,10 @@ export const generateScalar = (config: Config) => {
 ${
       config.typeMapByKind.GraphQLScalarTypeCustom
         .flatMap((_) => {
-          return [`export const ${_.name} = String`, `export type ${_.name} = String`]
+          return [
+            `export const ${_.name} = ${StandardScalarNamespace}.String`,
+            `export type ${_.name} = ${StandardScalarNamespace}.String`,
+          ]
         }).join(`\n`)
     }
     `
