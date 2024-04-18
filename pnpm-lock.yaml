@@ -13,7 +13,7 @@ importers:
         version: 0.2.1
       '@dprint/typescript':
         specifier: ^0.90.2
-        version: 0.90.2
+        version: 0.90.3
       '@graphql-typed-document-node/core':
         specifier: ^3.2.0
         version: 3.2.0(graphql@16.8.1)
@@ -222,8 +222,8 @@ packages:
     cpu: [x64]
     os: [linux]
 
-  '@dprint/typescript@0.90.2':
-    resolution: {integrity: sha512-m1Lkz6hq2BCitZe5BWma1gZXBYHmo28lm9njnBjJtc6S4ydToaY7xRRTNyVXd5+kwvnRpbqmaiC7Bz0OXi+NNg==}
+  '@dprint/typescript@0.90.3':
+    resolution: {integrity: sha512-tQikHHThDqgN82i0Xm9gwOd01aG4mQB7mGDM68Bs/tMYmqc2Hjgg0dC/dnSDZ1AyomM+PoCMB/zn9MN1381vug==}
 
   '@dprint/win32-x64@0.45.1':
     resolution: {integrity: sha512-2l78XM7KsW46P2Yv6uPB3fE+y92EsBlrCxi+RVQ0pbznPFdMdkLyGgaCuh683zdld14jHlaADpIQ7YchGAEMAg==}
@@ -3381,7 +3381,7 @@ snapshots:
   '@dprint/linux-x64-musl@0.45.1':
     optional: true
 
-  '@dprint/typescript@0.90.2': {}
+  '@dprint/typescript@0.90.3': {}
 
   '@dprint/win32-x64@0.45.1':
     optional: true
