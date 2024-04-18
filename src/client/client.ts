@@ -239,10 +239,12 @@ export const create = <$SchemaIndex extends Schema.Index>(input: Input): Client<
               Schema.Output.unwrapToNamed(readMaybeThunk(input.schemaIndex.Root.Query?.fields[key]?.type)),
             )
             if (!type) throw new Error(`Query field not found: ${String(key)}`)
-            const isScalar = type.kind === `Scalar`
-            const isHasArgs = input.schemaIndex.Root.Query?.fields[key] !== null
+            const isSchemaScalar = type.kind === `Scalar`
+            const isSchemaHasArgs = input.schemaIndex.Root.Query?.fields[key] !== null
             const documentObject = {
-              [key]: isScalar ? isHasArgs ? { $: argsOrSelectionSet } : true : argsOrSelectionSet,
+              [key]: isSchemaScalar
+                ? isSchemaHasArgs && argsOrSelectionSet ? { $: argsOrSelectionSet } : true
+                : argsOrSelectionSet,
             }
             const result = await executeDocumentObjectQuery(documentObject)
             return result[key]
