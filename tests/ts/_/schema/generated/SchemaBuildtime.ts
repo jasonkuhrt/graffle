@@ -140,8 +140,20 @@ export namespace Root {
     abcEnum: $.Field<$.Output.Nullable<Enum.ABCEnum>, null>
     lowerCaseUnion: $.Field<$.Output.Nullable<Union.lowerCaseUnion>, null>
     interface: $.Field<$.Output.Nullable<Interface.Interface>, null>
+    interfaceWithArgs: $.Field<
+      $.Output.Nullable<Interface.Interface>,
+      $.Args<{
+        id: $Scalar.ID
+      }>
+    >
     interfaceNonNull: $.Field<Interface.Interface, null>
     unionFooBar: $.Field<$.Output.Nullable<Union.FooBarUnion>, null>
+    unionFooBarWithArgs: $.Field<
+      $.Output.Nullable<Union.FooBarUnion>,
+      $.Args<{
+        id: $.Input.Nullable<$Scalar.ID>
+      }>
+    >
     unionObject: $.Field<$.Output.Nullable<Object.ObjectUnion>, null>
     unionFooBarNonNull: $.Field<Union.FooBarUnion, null>
     unionObjectNonNull: $.Field<Object.ObjectUnion, null>

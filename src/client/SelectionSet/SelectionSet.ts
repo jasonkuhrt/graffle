@@ -91,8 +91,8 @@ export type Field_<
   $type extends Schema.Scalar.Any                         ? Indicator<$Field> :
   $type extends Schema.Enum                               ? Indicator<$Field> :
   $type extends Schema.Object$2                           ? Object<$type, $Index> & ($Options['hideDirectives'] extends true ? {} : FieldDirectives) & Arguments<$Field> :
-  $type extends Schema.Union                              ? Union<$type, $Index> :
-  $type extends Schema.Interface                          ? Interface<$type, $Index> :
+  $type extends Schema.Union                              ? Union<$type, $Index> & Arguments<$Field> :
+  $type extends Schema.Interface                          ? Interface<$type, $Index> & Arguments<$Field> :
                                                             TSError<'Field', '$Field case not handled', { $Field: $Field }>
 // dprint-ignore
 type Arguments<$Field extends SomeField> =

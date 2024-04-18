@@ -53,9 +53,11 @@ type Query {
 	lowerCaseUnion: lowerCaseUnion
 	# Interface
 	interface: Interface
+	interfaceWithArgs(id:ID!): Interface
 	interfaceNonNull: Interface!
 	# Union
 	unionFooBar: FooBarUnion
+	unionFooBarWithArgs(id:ID): FooBarUnion
 	unionObject: ObjectUnion
 	unionFooBarNonNull: FooBarUnion!
 	unionObjectNonNull: ObjectUnion!

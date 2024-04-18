@@ -74,6 +74,7 @@ test(`Query`, () => {
   assertType<Q>({ interface: { __typename: true } })
   assertType<Q>({ interface: { __typename: { $defer: true } } })
   assertType<Q>({ interface: { $scalars: true } })
+  assertType<Q>({ interfaceWithArgs: { $: { id: `abc` }, id: true } })
   // @ts-expect-error needs fragment
   assertType<Q>({ interface: { id: true, int: true } })
   // @ts-expect-error needs fragment
@@ -224,6 +225,8 @@ test(`Query`, () => {
   assertType<Q>({ scalars: { $scalars: { $skip: true } } })
   // union fragment
   assertType<Q>({ fooBarUnion: { onBar: { $scalars: true } } })
+  assertType<Q>({ unionFooBarWithArgs: { $: { id: `abc` }, onBar: { $scalars: true } } })
+
   // assertType<S>({ scalars: select() })
 
   // todo empty selection set not allowed, with arguments given

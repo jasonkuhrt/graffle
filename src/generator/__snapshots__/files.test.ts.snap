@@ -143,8 +143,20 @@ export namespace Root {
     abcEnum: $.Field<$.Output.Nullable<Enum.ABCEnum>, null>
     lowerCaseUnion: $.Field<$.Output.Nullable<Union.lowerCaseUnion>, null>
     interface: $.Field<$.Output.Nullable<Interface.Interface>, null>
+    interfaceWithArgs: $.Field<
+      $.Output.Nullable<Interface.Interface>,
+      $.Args<{
+        id: $Scalar.ID
+      }>
+    >
     interfaceNonNull: $.Field<Interface.Interface, null>
     unionFooBar: $.Field<$.Output.Nullable<Union.FooBarUnion>, null>
+    unionFooBarWithArgs: $.Field<
+      $.Output.Nullable<Union.FooBarUnion>,
+      $.Args<{
+        id: $.Input.Nullable<$Scalar.ID>
+      }>
+    >
     unionObject: $.Field<$.Output.Nullable<Object.ObjectUnion>, null>
     unionFooBarNonNull: $.Field<Union.FooBarUnion, null>
     unionObjectNonNull: $.Field<Object.ObjectUnion, null>
@@ -476,8 +488,10 @@ export const Query = $.Object$(\`Query\`, {
   abcEnum: $.field($.Output.Nullable(ABCEnum)),
   lowerCaseUnion: $.field($.Output.Nullable(() => lowerCaseUnion)),
   interface: $.field($.Output.Nullable(() => Interface)),
+  interfaceWithArgs: $.field($.Output.Nullable(() => Interface), $.Args({ id: $Scalar.ID })),
   interfaceNonNull: $.field(() => Interface),
   unionFooBar: $.field($.Output.Nullable(() => FooBarUnion)),
+  unionFooBarWithArgs: $.field($.Output.Nullable(() => FooBarUnion), $.Args({ id: $.Input.Nullable($Scalar.ID) })),
   unionObject: $.field($.Output.Nullable(() => ObjectUnion)),
   unionFooBarNonNull: $.field(() => FooBarUnion),
   unionObjectNonNull: $.field(() => ObjectUnion),
