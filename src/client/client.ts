@@ -1,4 +1,4 @@
-import type { GraphQLError } from 'graphql'
+import type { ExecutionResult } from 'graphql'
 import { type DocumentNode, execute, graphql, type GraphQLSchema } from 'graphql'
 import type { MergeExclusive, NonEmptyObject } from 'type-fest'
 import type { ExcludeUndefined } from 'type-fest/source/required-deep.js'
@@ -161,15 +161,15 @@ export const create = <$SchemaIndex extends Schema.Index>(input: Input): Client<
       variables?: Variables
       operationName?: string
     },
-  ): Promise<{ data?: object; errors?: [GraphQLError, ...GraphQLError[]] }> => {
+  ): Promise<ExecutionResult> => {
     if (input.schema instanceof URL || typeof input.schema === `string`) {
-      const data = await request({
+      // todo return errors too
+      const data: ExecutionResult['data'] = await request({
         url: new URL(input.schema).href, // todo allow relative urls - what does fetch in node do?
         requestHeaders: input.headers,
         document,
         variables,
       })
-      // todo return errors too
       return { data }
     } else {
       if (typeof document === `string`) {
@@ -236,7 +236,7 @@ export const create = <$SchemaIndex extends Schema.Index>(input: Input): Client<
         if (key === `$batch`) {
           return executeDocumentObjectQuery
         } else {
-          return async (argsOrSelectionSet) => {
+          return async (argsOrSelectionSet: object) => {
             const type = readMaybeThunk(
               Schema.Output.unwrapToNamed(readMaybeThunk(input.schemaIndex.Root.Query?.fields[key]?.type)),
             )
@@ -247,7 +247,7 @@ export const create = <$SchemaIndex extends Schema.Index>(input: Input): Client<
               [key]: isSchemaScalar
                 ? isSchemaHasArgs && argsOrSelectionSet ? { $: argsOrSelectionSet } : true
                 : argsOrSelectionSet,
-            }
+            } as GraphQLDocumentObject
             const result = await executeDocumentObjectQuery(documentObject)
             return result[key]
           }
