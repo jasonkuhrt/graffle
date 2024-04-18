@@ -15,6 +15,7 @@ const generate = async ({ schema, outputSchemaPath }: { schema: GraphQLSchema; o
   )
   await generateFiles({
     sourceDirPath,
+    sourceCustomScalarCodecsFilePath: join(`./tests/_/customScalarCodecs.ts`),
     outputDirPath: join(sourceDirPath, `/generated`),
     code: {
       libraryPaths: {
@@ -38,4 +39,16 @@ await generate({
 await generate({
   schema,
   outputSchemaPath: `./tests/_/schema/schema.graphql`,
+})
+
+await generateFiles({
+  sourceDirPath: `./tests/ts/_/schema`,
+  sourceCustomScalarCodecsFilePath: join(`./tests/_/customScalarCodecs.ts`),
+  outputDirPath: `./tests/ts/_/schema/generated`,
+  code: {
+    libraryPaths: {
+      schema: `../../../../../src/Schema/__.js`,
+      scalars: `../../../../../src/Schema/Hybrid/types/Scalar/Scalar.js`,
+    },
+  },
 })

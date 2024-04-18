@@ -98,7 +98,11 @@ const decodeCustomScalarValue = (
     })
   }
 
-  if (typeWithoutNonNull.kind === `Scalar` && !(typeWithoutNonNull.name in standardScalarTypeNames)) {
+  if (typeWithoutNonNull.kind === `Scalar`) {
+    if ((typeWithoutNonNull.name in standardScalarTypeNames)) {
+      // todo test this case
+      return fieldValue
+    }
     if (typeof fieldValue === `object`) throw new Error(`Expected scalar. Got: ${String(fieldValue)}`)
     // @ts-expect-error fixme
     return typeWithoutNonNull.codec.decode(fieldValue)

@@ -1,9 +1,61 @@
+type Bar {
+  int: Int
+}
+
+"""
+A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.This scalar is serialized to a string in ISO 8601 format and parsed from a string in ISO 8601 format.
+"""
+scalar Date
+
+type DateObject1 {
+  date1: Date
+}
+
+"""Object documentation."""
+type Foo {
+  """Field documentation."""
+  id: ID @deprecated(reason: "Field a is deprecated.")
+}
+
+"""Union documentation."""
+union FooBarUnion = Bar | Foo
+
+interface Interface {
+  id: ID
+}
+
 type Mutation {
   id: ID
   idNonNull: ID!
 }
 
+type Object1 {
+  boolean: Boolean
+  float: Float
+  id: ID
+  int: Int
+  string: String
+}
+
+type Object1ImplementingInterface implements Interface {
+  id: ID
+  int: Int
+}
+
+type Object2ImplementingInterface implements Interface {
+  boolean: Boolean
+  id: ID
+}
+
 type Query {
+  date: Date
+  dateArg(date: Date): Date
+  dateArgNonNull(date: Date!): Date
+  dateNonNull: Date!
+  dateObject1: DateObject1
   id: ID
   idNonNull: ID!
+  interface: Interface
+  objectWithArgs(boolean: Boolean, float: Float, id: ID, int: Int, string: String): Object1
+  unionFooBar: FooBarUnion
 }
