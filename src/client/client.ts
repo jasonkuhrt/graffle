@@ -1,3 +1,4 @@
+import type { GraphQLError } from 'graphql'
 import { type DocumentNode, execute, graphql, type GraphQLSchema } from 'graphql'
 import type { MergeExclusive, NonEmptyObject } from 'type-fest'
 import type { ExcludeUndefined } from 'type-fest/source/required-deep.js'
@@ -160,7 +161,7 @@ export const create = <$SchemaIndex extends Schema.Index>(input: Input): Client<
       variables?: Variables
       operationName?: string
     },
-  ): Promise<{ data?: object; errors?: [] }> => {
+  ): Promise<{ data?: object; errors?: [GraphQLError, ...GraphQLError[]] }> => {
     if (input.schema instanceof URL || typeof input.schema === `string`) {
       const data = await request({
         url: new URL(input.schema).href, // todo allow relative urls - what does fetch in node do?
@@ -205,6 +206,7 @@ export const create = <$SchemaIndex extends Schema.Index>(input: Input): Client<
     const documentString = SelectionSet.toGraphQLDocumentString(documentObjectEncoded)
     // todo variables
     const result = await executeDocumentExpression({ document: documentString })
+    if (result.errors && (result.errors.length > 0)) throw new AggregateError(result.errors)
     // todo check for errors
     const resultDecoded = CustomScalars.decode(rootIndex, result.data as object)
     return resultDecoded
