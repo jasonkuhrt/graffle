@@ -44,11 +44,11 @@ type RootTypeMethod_<$Index extends Schema.Index, $Field extends Schema.SomeFiel
   $Type extends Schema.Output.Nullable<infer $InnerType>    ? RootTypeMethod_<$Index, $Field, $InnerType> : 
   $Type extends Schema.Output.List<infer $InnerType>        ? RootTypeMethod_<$Index, $Field, $InnerType> :
   $Type extends Schema.Scalar.Any                           ? ScalarFieldMethod<$Index,$Field> :
-                                                              FieldMethod<$Index, $Field>
+                                                              ObjectLikeFieldMethod<$Index, $Field>
 
 // dprint-ignore
-type FieldMethod<$Index extends Schema.Index, $Field extends Schema.SomeField> =
-  <$SelectionSet>(selectionSet: Exact<$SelectionSet, SelectionSet.Field<$Field, $Index>>) => Promise<ResultSet.Field<$SelectionSet, $Field, $Index>>
+type ObjectLikeFieldMethod<$Index extends Schema.Index, $Field extends Schema.SomeField> =
+  <$SelectionSet>(selectionSet: Exact<$SelectionSet, SelectionSet.Field<$Field, $Index, { hideDirectives: true }>>) => Promise<ResultSet.Field<$SelectionSet, $Field, $Index>>
 
 // dprint-ignore
 type ScalarFieldMethod<$Index extends Schema.Index, $Field extends Schema.SomeField> =
@@ -206,7 +206,8 @@ export const create = <$SchemaIndex extends Schema.Index>(input: Input): Client<
     const documentString = SelectionSet.toGraphQLDocumentString(documentObjectEncoded)
     // todo variables
     const result = await executeDocumentExpression({ document: documentString })
-    if (result.errors && (result.errors.length > 0)) throw new AggregateError(result.errors)
+    // @ts-expect-error todo make global available in TS...
+    if (result.errors && (result.errors.length > 0)) throw new AggregateError(result.errors) // eslint-disable-line
     // todo check for errors
     const resultDecoded = CustomScalars.decode(rootIndex, result.data as object)
     return resultDecoded
@@ -236,19 +237,21 @@ export const create = <$SchemaIndex extends Schema.Index>(input: Input): Client<
         if (key === `$batch`) {
           return executeDocumentObjectQuery
         } else {
-          return async (argsOrSelectionSet: object) => {
+          return async (argsOrSelectionSet?: object) => {
             const type = readMaybeThunk(
+              // eslint-disable-next-line
+              // @ts-ignore excess depth error
               Schema.Output.unwrapToNamed(readMaybeThunk(input.schemaIndex.Root.Query?.fields[key]?.type)),
-            )
-            if (!type) throw new Error(`Query field not found: ${String(key)}`)
+            ) as Schema.Output.Named
+            if (!type) throw new Error(`Query field not found: ${String(key)}`) // eslint-disable-line
             const isSchemaScalar = type.kind === `Scalar`
-            const isSchemaHasArgs = input.schemaIndex.Root.Query?.fields[key] !== null
+            const isSchemaHasArgs = Boolean(input.schemaIndex.Root.Query?.fields[key]?.args)
             const documentObject = {
               [key]: isSchemaScalar
                 ? isSchemaHasArgs && argsOrSelectionSet ? { $: argsOrSelectionSet } : true
                 : argsOrSelectionSet,
             } as GraphQLDocumentObject
-            const result = await executeDocumentObjectQuery(documentObject)
+            const result = await executeDocumentObjectQuery(documentObject) as { [key in typeof key]: any }
             return result[key]
           }
         }

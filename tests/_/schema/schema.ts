@@ -78,14 +78,14 @@ const Interface = builder.simpleInterface(`Interface`, {
   },
 })
 
-const Object1ImplementingInterface = builder.simpleObject(`Object1ImplementingInterface`, {
+builder.simpleObject(`Object1ImplementingInterface`, {
   interfaces: [Interface],
   fields: t => ({
     int: t.int(),
   }),
 })
 
-const Object2ImplementingInterface = builder.simpleObject(`Object2ImplementingInterface`, {
+builder.simpleObject(`Object2ImplementingInterface`, {
   interfaces: [Interface],
   fields: t => ({
     boolean: t.boolean(),
@@ -134,9 +134,7 @@ builder.queryType({
   }),
 })
 
-export const schema = builder.toSchema({
-  sortSchema: true,
-})
+export const schema = builder.toSchema({ sortSchema: true })
 
 export type { Index } from './generated/Index.js'
 export { $Index } from './generated/SchemaRuntime.js'

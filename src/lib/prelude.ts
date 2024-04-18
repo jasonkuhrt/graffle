@@ -99,6 +99,16 @@ export type Exact<$Value, $Constraint> =
   )
   | ($Value extends Narrowable ? $Value : never)
 
+// dprint-ignore
+// export type ExactObjectNonEmpty<$Value, $Constraint> =
+//   (
+//     $Value extends unknown  ? $Constraint extends $Value   ?  keyof $Value extends never  ? ({ 'TypeScript Error: You must supply at least one key.': true } & $Constraint)  :
+//                                                                                             { [K in keyof $Value]: Exact<$Value[K], $Constraint[K]> } :
+//                                                               $Constraint :
+//                               never
+//   )
+//   | ($Value extends Narrowable ? $Value : never)
+
 export type Narrowable = string | number | bigint | boolean | []
 
 export type Letter = LetterLower | LetterUpper
@@ -203,6 +213,5 @@ export type UnionToTuple<T, L = LastOf<T>, N = [T] extends [never] ? true : fals
 export type CountKeys<T> = keyof T extends never ? 0 : UnionToTuple<keyof T>['length']
 export type IsMultipleKeys<T> = IsMultiple<CountKeys<T>>
 export type IsMultiple<T> = T extends 0 ? false : T extends 1 ? false : true
-
 
 export type ExcludeNull<T> = Exclude<T, null>

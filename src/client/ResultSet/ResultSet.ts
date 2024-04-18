@@ -21,7 +21,6 @@ export type Root<
   $RootTypeName extends Schema.RootTypeName,
 > = SimplifyDeep<Object$<$SelectionSet, ExcludeNull<$Index['Root'][$RootTypeName]>, $Index>>
 
-
 // dprint-ignore
 export type Object$<$SelectionSet, $Node extends Schema.Output.Object$2, $Index extends Schema.Index> =
   SelectionSet.IsSelectScalarsWildcard<$SelectionSet> extends true

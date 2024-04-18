@@ -64,22 +64,34 @@ type Fields<$Fields extends SomeFields, $Index extends Schema.Index> =
 
 export type IsSelectScalarsWildcard<SS> = SS extends { $scalars: ClientIndicatorPositive } ? true : false
 
+type FieldOptions = {
+  /**
+   * When using root type field methods there is no point in directives since there can be
+   * no no peer fields with those function that by design target sending one root type field.
+   */
+  hideDirectives?: boolean
+}
+
+type FieldOptionsDefault = { hideDirectives: false }
+
 // dprint-ignore
-export type Field<$Field extends SomeField, $Index extends Schema.Index> = Field_<$Field['type'], $Field, $Index>
+export type Field<$Field extends SomeField, $Index extends Schema.Index, $Options extends FieldOptions = FieldOptionsDefault> =
+  Field_<$Field['type'], $Field, $Index, $Options>
 
 // dprint-ignore
 export type Field_<
   $type extends Schema.Output.Any,
   $Field extends SomeField,
   $Index extends Schema.Index,
+  $Options extends FieldOptions
 > =
-  $type extends Schema.Output.Nullable<infer $typeInner>  ? Field_<$typeInner, $Field, $Index> :
-  $type extends Schema.Output.List<infer $typeInner>      ? Field_<$typeInner, $Field, $Index> :
+  $type extends Schema.Output.Nullable<infer $typeInner>  ? Field_<$typeInner, $Field, $Index, $Options> :
+  $type extends Schema.Output.List<infer $typeInner>      ? Field_<$typeInner, $Field, $Index, $Options> :
   $type extends Schema.__typename                         ? NoArgsIndicator :
   $type extends Schema.Scalar.Any                         ? Indicator<$Field> :
   $type extends Schema.Enum                               ? Indicator<$Field> :
-  $type extends Schema.Object$2                           ? Object<$type, $Index> & FieldDirectives & Arguments<$Field> :
-  $type extends Schema.Union                                 ? Union<$type, $Index> :
+  $type extends Schema.Object$2                           ? Object<$type, $Index> & ($Options['hideDirectives'] extends true ? {} : FieldDirectives) & Arguments<$Field> :
+  $type extends Schema.Union                              ? Union<$type, $Index> :
   $type extends Schema.Interface                          ? Interface<$type, $Index> :
                                                             TSError<'Field', '$Field case not handled', { $Field: $Field }>
 // dprint-ignore
