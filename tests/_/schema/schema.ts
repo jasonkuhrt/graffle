@@ -63,12 +63,12 @@ builder.queryType({
     dateArg: t.field({
       type: `Date`,
       args: { date: t.arg({ type: `Date` }) },
-      resolve: () => db.date0,
+      resolve: (_, args) => args.date ?? db.date0,
     }),
     dateArgNonNull: t.field({
       type: `Date`,
       args: { date: t.arg({ required: true, type: `Date` }) },
-      resolve: () => db.date0,
+      resolve: (_, args) => args.date,
     }),
     // ...
     id: t.id({ resolve: () => db.id1 }),

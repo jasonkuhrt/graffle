@@ -20,9 +20,8 @@ describe(`query`, () => {
   })
   test(`scalar arg`, async () => {
     await expect(client.query.dateArg()).resolves.toEqual(db.date0)
-    // await client.query.dateArg({ date: db.date0 })
-    await expect(client.query.dateArg({ date: db.date0 })).resolves.toEqual(db.date0)
+    await expect(client.query.dateArg({ date: db.date1 })).resolves.toEqual(db.date1)
+    await expect(client.query.dateArgNonNull({ date: db.date1 })).resolves.toEqual(db.date1)
   })
-  // todo scalar arg
   // todo object arg
 })
