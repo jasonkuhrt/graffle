@@ -285,7 +285,7 @@ export namespace Union {
 `;
 
 exports[`generates types from GraphQL SDL file 2`] = `
-"import type * as CustomScalar from '../customScalarCodecs.js'
+"import type * as CustomScalar from '../../../../_/customScalarCodecs.js'
 
 declare global {
   interface SchemaCustomScalars {
@@ -294,7 +294,7 @@ declare global {
 }
 
 export * from '../../../../../src/Schema/Hybrid/types/Scalar/Scalar.js'
-export * from '../customScalarCodecs.js'
+export * from '../../../../_/customScalarCodecs.js'
 "
 `;
 
@@ -547,6 +547,7 @@ export namespace Root {
     dateObject1: $.Field<$.Output.Nullable<Object.DateObject1>, null>
     id: $.Field<$.Output.Nullable<$Scalar.ID>, null>
     idNonNull: $.Field<$Scalar.ID, null>
+    unionFooBar: $.Field<$.Output.Nullable<Union.FooBarUnion>, null>
   }>
 }
 
@@ -579,8 +580,24 @@ export namespace Interface {
 // ------------------------------------------------------------ //
 
 export namespace Object {
+  export type Bar = $.Object$2<'Bar', {
+    int: $.Field<$.Output.Nullable<$Scalar.Int>, null>
+  }>
+
   export type DateObject1 = $.Object$2<'DateObject1', {
     date1: $.Field<$.Output.Nullable<$Scalar.Date>, null>
+  }>
+
+  /**
+   * Object documentation.
+   */
+  export type Foo = $.Object$2<'Foo', {
+    /**
+     * Field documentation.
+     *
+     * @deprecated Field a is deprecated.
+     */
+    id: $.Field<$.Output.Nullable<$Scalar.ID>, null>
   }>
 }
 
@@ -589,7 +606,10 @@ export namespace Object {
 // ------------------------------------------------------------ //
 
 export namespace Union {
-  // -- no types --
+  /**
+   * Union documentation.
+   */
+  export type FooBarUnion = $.Union<'FooBarUnion', [Object.Bar, Object.Foo]>
 }
 "
 `;
@@ -615,9 +635,22 @@ import * as $ from '../../../../src/Schema/__.js'
 import * as $Scalar from './Scalar.js'
 
 // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
+export const Bar = $.Object$(\`Bar\`, {
+  int: $.field($.Output.Nullable($Scalar.Int)),
+})
+
+// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
 export const DateObject1 = $.Object$(\`DateObject1\`, {
   date1: $.field($.Output.Nullable($Scalar.Date)),
 })
+
+// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
+export const Foo = $.Object$(\`Foo\`, {
+  id: $.field($.Output.Nullable($Scalar.ID)),
+})
+
+// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
+export const FooBarUnion = $.Union(\`FooBarUnion\`, [Bar, Foo])
 
 // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
 export const Mutation = $.Object$(\`Mutation\`, {
@@ -634,6 +667,7 @@ export const Query = $.Object$(\`Query\`, {
   dateObject1: $.field($.Output.Nullable(() => DateObject1)),
   id: $.field($.Output.Nullable($Scalar.ID)),
   idNonNull: $.field($Scalar.ID),
+  unionFooBar: $.field($.Output.Nullable(() => FooBarUnion)),
 })
 
 export const $Index = {
@@ -643,9 +677,13 @@ export const $Index = {
     Subscription: null,
   },
   objects: {
+    Bar,
     DateObject1,
+    Foo,
   },
-  unions: {},
+  unions: {
+    FooBarUnion,
+  },
   interfaces: {},
 }
 "
