@@ -29,6 +29,17 @@ export namespace Root {
     dateObject1: $.Field<$.Output.Nullable<Object.DateObject1>, null>
     id: $.Field<$.Output.Nullable<$Scalar.ID>, null>
     idNonNull: $.Field<$Scalar.ID, null>
+    interface: $.Field<$.Output.Nullable<Interface.Interface>, null>
+    objectWithArgs: $.Field<
+      $.Output.Nullable<Object.Object1>,
+      $.Args<{
+        boolean: $.Input.Nullable<$Scalar.Boolean>
+        float: $.Input.Nullable<$Scalar.Float>
+        id: $.Input.Nullable<$Scalar.ID>
+        int: $.Input.Nullable<$Scalar.Int>
+        string: $.Input.Nullable<$Scalar.String>
+      }>
+    >
     unionFooBar: $.Field<$.Output.Nullable<Union.FooBarUnion>, null>
   }>
 }
@@ -54,7 +65,9 @@ export namespace InputObject {
 // ------------------------------------------------------------ //
 
 export namespace Interface {
-  // -- no types --
+  export type Interface = $.Interface<'Interface', {
+    id: $.Field<$.Output.Nullable<$Scalar.ID>, null>
+  }, [Object.Object1ImplementingInterface, Object.Object2ImplementingInterface]>
 }
 
 // ------------------------------------------------------------ //
@@ -79,6 +92,24 @@ export namespace Object {
      *
      * @deprecated Field a is deprecated.
      */
+    id: $.Field<$.Output.Nullable<$Scalar.ID>, null>
+  }>
+
+  export type Object1 = $.Object$2<'Object1', {
+    boolean: $.Field<$.Output.Nullable<$Scalar.Boolean>, null>
+    float: $.Field<$.Output.Nullable<$Scalar.Float>, null>
+    id: $.Field<$.Output.Nullable<$Scalar.ID>, null>
+    int: $.Field<$.Output.Nullable<$Scalar.Int>, null>
+    string: $.Field<$.Output.Nullable<$Scalar.String>, null>
+  }>
+
+  export type Object1ImplementingInterface = $.Object$2<'Object1ImplementingInterface', {
+    id: $.Field<$.Output.Nullable<$Scalar.ID>, null>
+    int: $.Field<$.Output.Nullable<$Scalar.Int>, null>
+  }>
+
+  export type Object2ImplementingInterface = $.Object$2<'Object2ImplementingInterface', {
+    boolean: $.Field<$.Output.Nullable<$Scalar.Boolean>, null>
     id: $.Field<$.Output.Nullable<$Scalar.ID>, null>
   }>
 }

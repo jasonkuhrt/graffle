@@ -20,9 +20,31 @@ type Foo {
 """Union documentation."""
 union FooBarUnion = Bar | Foo
 
+interface Interface {
+  id: ID
+}
+
 type Mutation {
   id: ID
   idNonNull: ID!
+}
+
+type Object1 {
+  boolean: Boolean
+  float: Float
+  id: ID
+  int: Int
+  string: String
+}
+
+type Object1ImplementingInterface implements Interface {
+  id: ID
+  int: Int
+}
+
+type Object2ImplementingInterface implements Interface {
+  boolean: Boolean
+  id: ID
 }
 
 type Query {
@@ -33,5 +55,7 @@ type Query {
   dateObject1: DateObject1
   id: ID
   idNonNull: ID!
+  interface: Interface
+  objectWithArgs(boolean: Boolean, float: Float, id: ID, int: Int, string: String): Object1
   unionFooBar: FooBarUnion
 }

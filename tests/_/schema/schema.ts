@@ -2,6 +2,7 @@ import SchemaBuilder from '@pothos/core'
 import SimpleObjectsPlugin from '@pothos/plugin-simple-objects'
 import { DateTimeISOResolver } from 'graphql-scalars'
 import { db } from '../db.js'
+import type { ID } from './generated/Scalar.js'
 
 const builder = new SchemaBuilder<{
   DefaultFieldNullability: true
@@ -23,6 +24,16 @@ builder.addScalarType(`Date`, DateTimeISOResolver, {})
 const DateObject1 = builder.simpleObject(`DateObject1`, {
   fields: t => ({
     date1: t.field({ type: `Date` }),
+  }),
+})
+
+const Object1 = builder.simpleObject(`Object1`, {
+  fields: t => ({
+    string: t.string(),
+    int: t.int(),
+    float: t.float(),
+    boolean: t.boolean(),
+    id: t.id(),
   }),
 })
 
@@ -54,6 +65,33 @@ builder.mutationType({
   }),
 })
 
+interface Interface {
+  id: ID
+}
+
+const Interface = builder.simpleInterface(`Interface`, {
+  fields: t => ({
+    id: t.id(),
+  }),
+  resolveType: value => {
+    return `boolean` in value ? `Object2ImplementingInterface` : `Object1ImplementingInterface`
+  },
+})
+
+const Object1ImplementingInterface = builder.simpleObject(`Object1ImplementingInterface`, {
+  interfaces: [Interface],
+  fields: t => ({
+    int: t.int(),
+  }),
+})
+
+const Object2ImplementingInterface = builder.simpleObject(`Object2ImplementingInterface`, {
+  interfaces: [Interface],
+  fields: t => ({
+    boolean: t.boolean(),
+  }),
+})
+
 builder.queryType({
   fields: t => ({
     // Custom Scalar
@@ -69,6 +107,24 @@ builder.queryType({
       type: `Date`,
       args: { date: t.arg({ required: true, type: `Date` }) },
       resolve: (_, args) => args.date,
+    }),
+    objectWithArgs: t.field({
+      args: {
+        string: t.arg.string(),
+        int: t.arg.int(),
+        float: t.arg.float(),
+        boolean: t.arg.boolean(),
+        id: t.arg.id(),
+      },
+      type: Object1,
+      resolve: (_, args) => ({ ...db.object1, ...args }),
+    }),
+    interface: t.field({
+      type: Interface,
+      resolve: () => ({
+        id: db.id,
+        int: db.int,
+      }),
     }),
     // ...
     id: t.id({ resolve: () => db.id1 }),

@@ -10,4 +10,11 @@ export const db = {
   bar: {
     int: 123,
   },
+  object1: {
+    string: `abc`,
+    int: 123,
+    float: 123.456,
+    boolean: true,
+    id: `abc`,
+  },
 }
