@@ -29,10 +29,10 @@ importers:
     devDependencies:
       '@pothos/core':
         specifier: ^3.41.0
-        version: 3.41.0(graphql@16.8.1)
+        version: 3.41.1(graphql@16.8.1)
       '@pothos/plugin-simple-objects':
         specifier: ^3.7.0
-        version: 3.7.0(@pothos/core@3.41.0(graphql@16.8.1))(graphql@16.8.1)
+        version: 3.7.0(@pothos/core@3.41.1(graphql@16.8.1))(graphql@16.8.1)
       '@tsconfig/node16':
         specifier: ^16.1.3
         version: 16.1.3
@@ -716,8 +716,8 @@ packages:
   '@octokit/types@6.41.0':
     resolution: {integrity: sha512-eJ2jbzjdijiL3B4PrSQaSjuF2sPEQPVCPzBvTHJD9Nz+9dw2SGH4K4xeQJ77YfTq5bRQ+bD8wT11JbeDPmxmGg==}
 
-  '@pothos/core@3.41.0':
-    resolution: {integrity: sha512-Nb7uPDTXVjdrWqHs5aoD1r6JEdQ9FnJYlf7gv47o1b/bb8rVDAZQaviVvaChal7YQcyFGgCFb0/YNNHLNBEjNw==}
+  '@pothos/core@3.41.1':
+    resolution: {integrity: sha512-K+TGTK2Q7rmLU9WaC1cSDiGZaU9M+gHNbCYBom2W1vHuEYDUAiihVHz9tXYsrYjFMJSK+wLJ7Xp2374bQa9x/w==}
     peerDependencies:
       graphql: '>=15.1.0'
 
@@ -3876,13 +3876,13 @@ snapshots:
     dependencies:
       '@octokit/openapi-types': 12.11.0
 
-  '@pothos/core@3.41.0(graphql@16.8.1)':
+  '@pothos/core@3.41.1(graphql@16.8.1)':
     dependencies:
       graphql: 16.8.1
 
-  '@pothos/plugin-simple-objects@3.7.0(@pothos/core@3.41.0(graphql@16.8.1))(graphql@16.8.1)':
+  '@pothos/plugin-simple-objects@3.7.0(@pothos/core@3.41.1(graphql@16.8.1))(graphql@16.8.1)':
     dependencies:
-      '@pothos/core': 3.41.0(graphql@16.8.1)
+      '@pothos/core': 3.41.1(graphql@16.8.1)
       graphql: 16.8.1
 
   '@protobufjs/aspromise@1.1.2': {}
