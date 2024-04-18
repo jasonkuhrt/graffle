@@ -12,4 +12,12 @@ describe(`query`, () => {
   test(`object`, async () => {
     await expect(client.query.dateObject1({ date1: true })).resolves.toEqual({ date1: new Date(0) })
   })
+  test(`union found`, async () => {
+    await expect(client.query.unionFooBar({ onFoo: { id: true } })).resolves.toEqual({ id: db.id })
+  })
+  test(`union not found`, async () => {
+    await expect(client.query.unionFooBar({ onBar: { int: true } })).resolves.toEqual({})
+  })
+  // todo scalar arg
+  // todo object arg
 })

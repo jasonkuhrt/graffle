@@ -4,9 +4,22 @@ import * as $ from '../../../../src/Schema/__.js'
 import * as $Scalar from './Scalar.js'
 
 // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
+export const Bar = $.Object$(`Bar`, {
+  int: $.field($.Output.Nullable($Scalar.Int)),
+})
+
+// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
 export const DateObject1 = $.Object$(`DateObject1`, {
   date1: $.field($.Output.Nullable($Scalar.Date)),
 })
+
+// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
+export const Foo = $.Object$(`Foo`, {
+  id: $.field($.Output.Nullable($Scalar.ID)),
+})
+
+// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
+export const FooBarUnion = $.Union(`FooBarUnion`, [Bar, Foo])
 
 // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
 export const Mutation = $.Object$(`Mutation`, {
@@ -23,6 +36,7 @@ export const Query = $.Object$(`Query`, {
   dateObject1: $.field($.Output.Nullable(() => DateObject1)),
   id: $.field($.Output.Nullable($Scalar.ID)),
   idNonNull: $.field($Scalar.ID),
+  unionFooBar: $.field($.Output.Nullable(() => FooBarUnion)),
 })
 
 export const $Index = {
@@ -32,8 +46,12 @@ export const $Index = {
     Subscription: null,
   },
   objects: {
+    Bar,
     DateObject1,
+    Foo,
   },
-  unions: {},
+  unions: {
+    FooBarUnion,
+  },
   interfaces: {},
 }

@@ -29,6 +29,7 @@ export namespace Root {
     dateObject1: $.Field<$.Output.Nullable<Object.DateObject1>, null>
     id: $.Field<$.Output.Nullable<$Scalar.ID>, null>
     idNonNull: $.Field<$Scalar.ID, null>
+    unionFooBar: $.Field<$.Output.Nullable<Union.FooBarUnion>, null>
   }>
 }
 
@@ -61,8 +62,24 @@ export namespace Interface {
 // ------------------------------------------------------------ //
 
 export namespace Object {
+  export type Bar = $.Object$2<'Bar', {
+    int: $.Field<$.Output.Nullable<$Scalar.Int>, null>
+  }>
+
   export type DateObject1 = $.Object$2<'DateObject1', {
     date1: $.Field<$.Output.Nullable<$Scalar.Date>, null>
+  }>
+
+  /**
+   * Object documentation.
+   */
+  export type Foo = $.Object$2<'Foo', {
+    /**
+     * Field documentation.
+     *
+     * @deprecated Field a is deprecated.
+     */
+    id: $.Field<$.Output.Nullable<$Scalar.ID>, null>
   }>
 }
 
@@ -71,5 +88,8 @@ export namespace Object {
 // ------------------------------------------------------------ //
 
 export namespace Union {
-  // -- no types --
+  /**
+   * Union documentation.
+   */
+  export type FooBarUnion = $.Union<'FooBarUnion', [Object.Bar, Object.Foo]>
 }

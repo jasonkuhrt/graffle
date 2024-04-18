@@ -17,7 +17,8 @@ test(`query`, () => {
   // object
   expectTypeOf(client.query.dateObject1({ date1: true })).resolves.toEqualTypeOf<{ date1: Date | null } | null>()
   expectTypeOf(client.query.dateObject1({ $scalars: true })).resolves.toEqualTypeOf<{ __typename: "DateObject1"; date1: Date | null } | null>()
-  // todo union, interface
+  expectTypeOf(client.query.unionFooBar({ onFoo: { id: true }})).resolves.toEqualTypeOf<{} | { id: string | null } | null>() // eslint-disable-line
+  // todo interface
 
   // @ts-expect-error missing input selection set
   client.query.dateObject1() // eslint-disable-line

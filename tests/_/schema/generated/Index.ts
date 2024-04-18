@@ -9,8 +9,12 @@ export interface Index {
     Subscription: null
   }
   objects: {
+    Bar: Schema.Object.Bar
     DateObject1: Schema.Object.DateObject1
+    Foo: Schema.Object.Foo
   }
-  unions: {}
+  unions: {
+    FooBarUnion: Schema.Union.FooBarUnion
+  }
   interfaces: {}
 }

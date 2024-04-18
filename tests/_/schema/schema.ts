@@ -26,6 +26,34 @@ const DateObject1 = builder.simpleObject(`DateObject1`, {
   }),
 })
 
+const Foo = builder.simpleObject(`Foo`, {
+  description: `Object documentation.`,
+  fields: t => ({
+    id: t.id({ description: `Field documentation.`, deprecationReason: `Field a is deprecated.` }),
+  }),
+})
+
+const Bar = builder.simpleObject(`Bar`, {
+  fields: t => ({
+    int: t.int(),
+  }),
+})
+
+const FooBarUnion = builder.unionType(`FooBarUnion`, {
+  types: [Foo, Bar],
+  description: `Union documentation.`,
+  resolveType: value => {
+    return `int` in value ? `Bar` : `Foo`
+  },
+})
+
+builder.mutationType({
+  fields: t => ({
+    id: t.id({ resolve: () => db.id1 }),
+    idNonNull: t.id({ nullable: false, resolve: () => db.id1 }),
+  }),
+})
+
 builder.queryType({
   fields: t => ({
     // Custom Scalar
@@ -45,13 +73,8 @@ builder.queryType({
     // ...
     id: t.id({ resolve: () => db.id1 }),
     idNonNull: t.id({ nullable: false, resolve: () => db.id1 }),
-  }),
-})
-
-builder.mutationType({
-  fields: t => ({
-    id: t.id({ resolve: () => db.id1 }),
-    idNonNull: t.id({ nullable: false, resolve: () => db.id1 }),
+    // union
+    unionFooBar: t.field({ type: FooBarUnion, resolve: () => db.foo }),
   }),
 })
 
