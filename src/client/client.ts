@@ -5,7 +5,9 @@ import request from '../entrypoints/main.js'
 import { type RootTypeName } from '../lib/graphql.js'
 import type { Exact, IsMultipleKeys } from '../lib/prelude.js'
 import type { TSError } from '../lib/TSError.js'
-import type { InputFieldsAllNullable, Object$2, Schema } from '../Schema/__.js'
+import type { InputFieldsAllNullable, Object$2 } from '../Schema/__.js'
+import { Schema } from '../Schema/__.js'
+import { readMaybeThunk } from '../Schema/core/helpers.js'
 import * as CustomScalars from './customScalars.js'
 import { toDocumentExpression } from './document.js'
 import type { ResultSet } from './ResultSet/__.js'
@@ -158,14 +160,16 @@ export const create = <$SchemaIndex extends Schema.Index>(input: Input): Client<
       variables?: Variables
       operationName?: string
     },
-  ) => {
+  ): Promise<{ data?: object; errors?: [] }> => {
     if (input.schema instanceof URL || typeof input.schema === `string`) {
-      return await request({
+      const data = await request({
         url: new URL(input.schema).href, // todo allow relative urls - what does fetch in node do?
         requestHeaders: input.headers,
         document,
         variables,
       })
+      // todo return errors too
+      return { data }
     } else {
       if (typeof document === `string`) {
         return await graphql({
@@ -201,9 +205,12 @@ export const create = <$SchemaIndex extends Schema.Index>(input: Input): Client<
     const documentString = SelectionSet.toGraphQLDocumentString(documentObjectEncoded)
     // todo variables
     const result = await executeDocumentExpression({ document: documentString })
-    const resultDecoded = CustomScalars.decode(rootIndex, result as object)
+    // todo check for errors
+    const resultDecoded = CustomScalars.decode(rootIndex, result.data as object)
     return resultDecoded
   }
+
+  const executeDocumentObjectQuery = executeDocumentObject(`Query`)
 
   // @ts-expect-error ignoreme
   const client: Client<$SchemaIndex> = {
@@ -222,10 +229,27 @@ export const create = <$SchemaIndex extends Schema.Index>(input: Input): Client<
         },
       }
     },
-    query: {
-      $batch: executeDocumentObject(`Query`),
-      // todo proxy that allows calling any query field
-    },
+    query: new Proxy({}, {
+      get: (_, key) => {
+        if (key === `$batch`) {
+          return executeDocumentObjectQuery
+        } else {
+          return async (argsOrSelectionSet) => {
+            const type = readMaybeThunk(
+              Schema.Output.unwrapToNamed(readMaybeThunk(input.schemaIndex.Root.Query?.fields[key]?.type)),
+            )
+            if (!type) throw new Error(`Query field not found: ${String(key)}`)
+            const isScalar = type.kind === `Scalar`
+            const isHasArgs = input.schemaIndex.Root.Query?.fields[key] !== null
+            const documentObject = {
+              [key]: isScalar ? isHasArgs ? { $: argsOrSelectionSet } : true : argsOrSelectionSet,
+            }
+            const result = await executeDocumentObjectQuery(documentObject)
+            return result[key]
+          }
+        }
+      },
+    }),
     mutation: {
       $batch: executeDocumentObject(`Mutation`),
       // todo proxy that allows calling any mutation field

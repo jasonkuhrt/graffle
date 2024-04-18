@@ -1,4 +1,5 @@
 import type { TSError } from '../../lib/TSError.js'
+import { readMaybeThunk } from '../core/helpers.js'
 import type { Any, Named } from './typeGroups.js'
 import type { __typename } from './types/__typename.js'
 import type { List } from './types/List.js'
@@ -31,7 +32,7 @@ export const unwrapNullable = <$Type extends Any>(type: $Type): UnwrapNullable<$
   return type as UnwrapNullable<$Type>
 }
 
-export const unwrap = <$Type extends Any>(type: $Type): Unwrap<$Type> => {
+export const unwrapToNamed = <$Type extends Any>(type: $Type): Unwrap<$Type> => {
   // @ts-expect-error fixme
-  return type.kind === `named` ? type.type : unwrap(type.type)
+  return type.kind === `list` || type.kind === `nullable` ? unwrapToNamed(readMaybeThunk(type).type) : type
 }
