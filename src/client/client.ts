@@ -88,7 +88,7 @@ type ValidateDocumentOperationNames<$Document> =
   string | number extends keyof $Document
     ? $Document
     : keyof { [K in keyof $Document & string as Schema.Named.NameParse<K> extends never ? K : never]: K } extends never
-      ? $Document 
+      ? $Document
       : TSError<'ValidateDocumentOperationNames', `One or more Invalid operation name in document: ${keyof { [K in keyof $Document & string as Schema.Named.NameParse<K> extends never ? K : never]: K }}`>
 
 // dprint-ignore
