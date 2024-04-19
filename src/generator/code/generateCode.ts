@@ -7,8 +7,8 @@ import { getTypeMapByKind } from '../../lib/graphql.js'
 import { generateIndex } from './Index.js'
 import { generateScalar } from './Scalar.js'
 import { generateSchemaBuildtime } from './SchemaBuildtime.js'
-import { generateRuntimeSchema } from './SchemaRuntime2.js'
-import { generateSelect } from './Select2.js'
+import { generateRuntimeSchema } from './SchemaRuntime.js'
+import { generateSelect } from './Select.js'
 
 export interface Input {
   libraryPaths?: {
