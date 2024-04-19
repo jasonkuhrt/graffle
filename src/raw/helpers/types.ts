@@ -99,7 +99,7 @@ export type RequestMiddleware<V extends Variables = Variables> = (
   request: RequestExtendedInit<V>,
 ) => RequestExtendedInit | Promise<RequestExtendedInit>
 
-type RequestExtendedInit<V extends Variables = Variables> = RequestInit & {
+export type RequestExtendedInit<V extends Variables = Variables> = RequestInit & {
   url: string
   operationName?: string
   variables?: V
