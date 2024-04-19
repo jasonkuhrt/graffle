@@ -1,4 +1,4 @@
-import type * as $ from '../../../../../src/Schema/__.js'
+import type * as $ from '../../../../../src/entrypoints/alpha/schema.js'
 import type * as $Scalar from './Scalar.ts'
 
 // ------------------------------------------------------------ //

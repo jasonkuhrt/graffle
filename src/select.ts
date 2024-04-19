@@ -4,7 +4,7 @@ import type { Schema } from './Schema/__.js'
 
 // todo test
 // dprint-ignore
-export type Select<$Index extends Schema.Index> =
+type TypeSelectionSets<$Index extends Schema.Index> =
 & {
 		[$RootTypeName in Schema.RootTypeName]:
 			<$SelectionSet extends object>(selectionSet: Exact<$SelectionSet, SelectionSet.Root<$Index, $RootTypeName>>) =>
@@ -26,7 +26,7 @@ export type Select<$Index extends Schema.Index> =
 				$SelectionSet
 	}
 
-export const create = <$Index extends Schema.Index>(): Select<$Index> => {
+export const create = <$Index extends Schema.Index>(): TypeSelectionSets<$Index> => {
   return idProxy as any
 }
 

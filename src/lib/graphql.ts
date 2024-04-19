@@ -16,7 +16,7 @@ export type TypeMapByKind =
   & {
     [Name in keyof NameToClassNamedType]: InstanceType<NameToClassNamedType[Name]>[]
   }
-  & { GraphQLRootTypes: GraphQLObjectType[] }
+  & { GraphQLRootType: GraphQLObjectType[] }
   & { GraphQLScalarTypeCustom: GraphQLScalarType<any, any>[] }
   & { GraphQLScalarTypeStandard: GraphQLScalarType<any, any>[] }
 
@@ -63,7 +63,7 @@ export const getTypeMapByKind = (schema: GraphQLSchema) => {
   const typeMap = schema.getTypeMap()
   const typeMapValues = Object.values(typeMap)
   const typeMapByKind: TypeMapByKind = {
-    GraphQLRootTypes: [],
+    GraphQLRootType: [],
     GraphQLScalarType: [],
     GraphQLScalarTypeCustom: [],
     GraphQLScalarTypeStandard: [],
@@ -95,7 +95,7 @@ export const getTypeMapByKind = (schema: GraphQLSchema) => {
         break
       case type instanceof GraphQLObjectType:
         if (type.name === `Query` || type.name === `Mutation` || type.name === `Subscription`) {
-          typeMapByKind.GraphQLRootTypes.push(type)
+          typeMapByKind.GraphQLRootType.push(type)
         } else {
           typeMapByKind.GraphQLObjectType.push(type)
         }
@@ -222,10 +222,10 @@ export const isDeprecatableNode = (node: object): node is GraphQLEnumValue | Any
   return `deprecationReason` in node
 }
 
-export const hasQuery = (typeMapByKind: TypeMapByKind) => typeMapByKind.GraphQLRootTypes.find((_) => _.name === `Query`)
+export const hasQuery = (typeMapByKind: TypeMapByKind) => typeMapByKind.GraphQLRootType.find((_) => _.name === `Query`)
 
 export const hasMutation = (typeMapByKind: TypeMapByKind) =>
-  typeMapByKind.GraphQLRootTypes.find((_) => _.name === `Mutation`)
+  typeMapByKind.GraphQLRootType.find((_) => _.name === `Mutation`)
 
 export const hasSubscription = (typeMapByKind: TypeMapByKind) =>
-  typeMapByKind.GraphQLRootTypes.find((_) => _.name === `Subscription`)
+  typeMapByKind.GraphQLRootType.find((_) => _.name === `Subscription`)
