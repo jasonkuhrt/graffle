@@ -50,7 +50,7 @@ type TypeResultSets<$Index extends Schema.Index> =
 			<$SelectionSet extends object>(selectionSet: Exact<$SelectionSet, SelectionSet.Interface<$Index['interfaces'][$Name], $Index>>) =>
 				ResultSet.Interface<$SelectionSet, $Index['interfaces'][$Name], $Index>
 	}
-	
+
 export const create = <$Index extends Schema.Index>(): TypeSelectionSets<$Index> => {
   return idProxy as any
 }
