@@ -80,17 +80,17 @@
   },
   "dependencies": {
     "@dprint/formatter": "^0.2.1",
-    "@dprint/typescript": "^0.90.2",
+    "@dprint/typescript": "^0.90.3",
     "@graphql-typed-document-node/core": "^3.2.0",
     "@molt/command": "^0.9.0",
     "dprint": "^0.45.1",
-    "zod": "^3.22.4"
+    "zod": "^3.22.5"
   },
   "peerDependencies": {
     "graphql": "14 - 16"
   },
   "devDependencies": {
-    "@pothos/core": "^3.41.0",
+    "@pothos/core": "^3.41.1",
     "@pothos/plugin-simple-objects": "^3.7.0",
     "@tsconfig/node16": "^16.1.3",
     "@types/body-parser": "^1.19.5",
