@@ -92,6 +92,7 @@ export type RequestOptions<V extends Variables = Variables, T = unknown> =
 
 export type ResponseMiddleware = (
   response: GraphQLClientResponse<unknown> | ClientError | Error,
+  request: RequestExtendedInit,
 ) => void
 
 export type RequestMiddleware<V extends Variables = Variables> = (
