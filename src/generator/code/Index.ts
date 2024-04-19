@@ -1,7 +1,7 @@
 import { Code } from '../../lib/Code.js'
 import { hasMutation, hasQuery, hasSubscription } from '../../lib/graphql.js'
 import type { Config } from './generateCode.js'
-import { moduleNameSchemaBuildtime } from './SchemaBuildtime2.js'
+import { moduleNameSchemaBuildtime } from './SchemaBuildtime.js'
 
 export const moduleNameIndex = `Index`
 

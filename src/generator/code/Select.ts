@@ -1,5 +1,5 @@
 import type { Config } from './generateCode.js'
-import { moduleNameIndex } from './Index2.js'
+import { moduleNameIndex } from './Index.js'
 
 export const moduleNameSelect = `Select`
 

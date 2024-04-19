@@ -21,7 +21,7 @@ import {
 import type { AnyClass, AnyGraphQLOutputField } from '../../lib/graphql.js'
 import { hasMutation, hasQuery, hasSubscription, unwrapToNamed, unwrapToNonNull } from '../../lib/graphql.js'
 import type { Config } from './generateCode.js'
-import { moduleNameScalar } from './Scalar2.js'
+import { moduleNameScalar } from './Scalar.js'
 
 export const moduleNameSchemaRuntime = `SchemaRuntime`
 
