@@ -4,10 +4,11 @@ import { buildSchema } from 'graphql'
 import * as Path from 'node:path'
 import type { TypeMapByKind } from '../../lib/graphql.js'
 import { getTypeMapByKind } from '../../lib/graphql.js'
-import { generateIndex } from './index.js'
-import { generateScalar } from './scalar.js'
-import { generateSchemaBuildtime } from './schemaBuildtime.js'
-import { generateRuntimeSchema } from './schemaRuntime.js'
+import { generateIndex } from './Index2.js'
+import { generateScalar } from './Scalar2.js'
+import { generateSchemaBuildtime } from './SchemaBuildtime2.js'
+import { generateRuntimeSchema } from './SchemaRuntime2.js'
+import { generateSelect } from './Select2.js'
 
 export interface Input {
   libraryPaths?: {
@@ -73,28 +74,23 @@ export const resolveOptions = (input: Input): Config => {
 }
 
 export const generateCode = (input: Input) => {
-  const config = resolveOptions(input)
-
-  const indexCode = generateIndex(config)
-
-  const scalarsCode = generateScalar(config)
-
-  const buildtimeSchema = generateSchemaBuildtime(config)
-
-  const runtimeSchema = generateRuntimeSchema(config)
-
   const defaultDprintConfig = {
     quoteStyle: `preferSingle`,
     semiColons: `asi`,
   }
+  const format = (source: string) =>
+    input.options?.formatter?.formatText(`memory.ts`, source, defaultDprintConfig) ?? source
 
-  return {
-    index: input.options?.formatter?.formatText(`memory.ts`, indexCode, defaultDprintConfig) ?? indexCode,
-    scalars: input.options?.formatter?.formatText(`memory.ts`, scalarsCode, defaultDprintConfig)
-      ?? scalarsCode,
-    schemaBuildtime: input.options?.formatter?.formatText(`memory.ts`, buildtimeSchema, defaultDprintConfig)
-      ?? buildtimeSchema,
-    schemaRuntime: input.options?.formatter?.formatText(`memory.ts`, runtimeSchema, defaultDprintConfig)
-      ?? runtimeSchema,
-  }
+  const config = resolveOptions(input)
+
+  return [
+    generateIndex,
+    generateScalar,
+    generateSchemaBuildtime,
+    generateRuntimeSchema,
+    generateSelect,
+  ].map(_ => _(config)).map(code => ({
+    ...code,
+    code: format(code.code),
+  }))
 }

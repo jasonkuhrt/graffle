@@ -1,12 +1,15 @@
 import { Code } from '../../lib/Code.js'
 import { hasMutation, hasQuery, hasSubscription } from '../../lib/graphql.js'
-import type { Config } from './code.js'
+import type { Config } from './generateCode.js'
+import { moduleNameSchemaBuildtime } from './SchemaBuildtime2.js'
+
+export const moduleNameIndex = `Index`
 
 export const generateIndex = (config: Config) => {
   const namespace = `Schema`
   const code = []
   code.push(`/* eslint-disable */\n`)
-  code.push(`import type * as ${namespace} from './SchemaBuildtime.js'\n`)
+  code.push(`import type * as ${namespace} from './${moduleNameSchemaBuildtime}.js'\n`)
   code.push(Code.export$(
     Code.interface$(
       `Index`,
@@ -31,5 +34,8 @@ export const generateIndex = (config: Config) => {
     ),
   ))
 
-  return code.join(`\n`)
+  return {
+    code: code.join(`\n`),
+    moduleName: moduleNameIndex,
+  }
 }

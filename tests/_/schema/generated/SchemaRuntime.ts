@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-import * as $ from '../../../../src/Schema/__.js'
+import * as $ from '../../../../src/entrypoints/alpha/schema.js'
 import * as $Scalar from './Scalar.js'
 
 // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.

@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-import * as $ from '../../../../../src/Schema/__.js'
+import * as $ from '../../../../../src/entrypoints/alpha/schema.js'
 import * as $Scalar from './Scalar.js'
 
 export const ABCEnum = $.Enum(`ABCEnum`, [`A`, `B`, `C`])

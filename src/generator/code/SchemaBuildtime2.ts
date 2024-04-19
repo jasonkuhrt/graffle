@@ -26,7 +26,9 @@ import {
   unwrapToNonNull,
 } from '../../lib/graphql.js'
 import { entries, values } from '../../lib/prelude.js'
-import type { Config } from './code.js'
+import type { Config } from './generateCode.js'
+
+export const moduleNameSchemaBuildtime = `SchemaBuildtime`
 
 const namespaceNames = {
   GraphQLEnumType: `Enum`,
@@ -316,7 +318,7 @@ export const generateSchemaBuildtime = (config: Config) => {
     if (name === `GraphQLScalarTypeCustom`) continue
     if (name === `GraphQLScalarTypeStandard`) continue
 
-    const namespaceName = name === `GraphQLRootTypes` ? `Root` : namespaceNames[name]
+    const namespaceName = name === `GraphQLRootType` ? `Root` : namespaceNames[name]
     code += Code.commentSectionTitle(namespaceName)
     code += Code.export$(
       Code.namespace(
@@ -330,5 +332,8 @@ export const generateSchemaBuildtime = (config: Config) => {
     )
   }
 
-  return code
+  return {
+    code,
+    moduleName: moduleNameSchemaBuildtime,
+  }
 }

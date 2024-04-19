@@ -1,4 +1,6 @@
-import type { Config } from './code.js'
+import type { Config } from './generateCode.js'
+
+export const moduleNameScalar = `Scalar`
 
 export const generateScalar = (config: Config) => {
   let code = ``
@@ -51,5 +53,8 @@ ${
     `
   }
 
-  return code
+  return {
+    code,
+    moduleName: moduleNameScalar,
+  }
 }

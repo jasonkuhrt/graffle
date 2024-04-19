@@ -20,7 +20,10 @@ import {
 } from 'graphql'
 import type { AnyClass, AnyGraphQLOutputField } from '../../lib/graphql.js'
 import { hasMutation, hasQuery, hasSubscription, unwrapToNamed, unwrapToNonNull } from '../../lib/graphql.js'
-import type { Config } from './code.js'
+import type { Config } from './generateCode.js'
+import { moduleNameScalar } from './Scalar2.js'
+
+export const moduleNameSchemaRuntime = `SchemaRuntime`
 
 export const generateRuntimeSchema = (
   config: Config,
@@ -31,7 +34,7 @@ export const generateRuntimeSchema = (
   code.push(
     `
       import * as $ from '${config.libraryPaths.schema}'
-      import * as $Scalar from './Scalar.js'
+      import * as $Scalar from './${moduleNameScalar}.js'
     `,
   )
 
@@ -41,14 +44,17 @@ export const generateRuntimeSchema = (
     config.typeMapByKind.GraphQLObjectType.map(type => object(config, type)).join(`\n`),
     config.typeMapByKind.GraphQLUnionType.map(type => union(config, type)).join(`\n`),
     config.typeMapByKind.GraphQLInterfaceType.map(type => interface$(config, type)).join(`\n`),
-    config.typeMapByKind.GraphQLRootTypes.map(type => object(config, type)).join(`\n`),
+    config.typeMapByKind.GraphQLRootType.map(type => object(config, type)).join(`\n`),
   )
 
   code.push(
     index(config),
   )
 
-  return code.join(`\n`)
+  return {
+    code: code.join(`\n`),
+    moduleName: moduleNameSchemaRuntime,
+  }
 }
 
 const index = (config: Config) => {

@@ -4,7 +4,7 @@ import _ from 'json-bigint'
 import fs from 'node:fs/promises'
 import * as Path from 'node:path'
 import { fileExists } from '../lib/prelude.js'
-import { generateCode, type Input as GenerateInput } from './code/code.js'
+import { generateCode, type Input as GenerateInput } from './code/generateCode.js'
 
 export interface Input {
   outputDirPath: string
@@ -30,7 +30,7 @@ export const generateFiles = async (input: Input) => {
   const customScalarCodecsPathExists = await fileExists(customScalarCodecsFilePath)
   const typeScriptFormatter = (input.format ?? true) ? createFromBuffer(await fs.readFile(getPath())) : undefined
 
-  const code = generateCode({
+  const codes = generateCode({
     schemaSource,
     importPaths: {
       customScalarCodecs: customScalarCodecsImportPath,
@@ -41,9 +41,11 @@ export const generateFiles = async (input: Input) => {
       customScalars: customScalarCodecsPathExists,
     },
   })
+
   await fs.mkdir(input.outputDirPath, { recursive: true })
-  await fs.writeFile(`${input.outputDirPath}/Index.ts`, code.index, { encoding: `utf8` })
-  await fs.writeFile(`${input.outputDirPath}/SchemaBuildtime.ts`, code.schemaBuildtime, { encoding: `utf8` })
-  await fs.writeFile(`${input.outputDirPath}/Scalar.ts`, code.scalars, { encoding: `utf8` })
-  await fs.writeFile(`${input.outputDirPath}/SchemaRuntime.ts`, code.schemaRuntime, { encoding: `utf8` })
+  await Promise.all(
+    codes.map((code) => {
+      return fs.writeFile(`${input.outputDirPath}/${code.moduleName}.ts`, code.code, { encoding: `utf8` })
+    }),
+  )
 }

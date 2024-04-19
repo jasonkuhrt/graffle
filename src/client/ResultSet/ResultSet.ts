@@ -43,11 +43,11 @@ export type Object$<$SelectionSet, $Node extends Schema.Output.Object$2, $Index 
       }>
 
 // dprint-ignore
-type Union<$SelectionSet, $Node extends Schema.Output.Union, $Index extends Schema.Index> =
+export type Union<$SelectionSet, $Node extends Schema.Output.Union, $Index extends Schema.Index> =
   OnTypeFragment<$SelectionSet,$Node['members'][number], $Index>
 
 // dprint-ignore
-type Interface<$SelectionSet, $Node extends Schema.Output.Interface, $Index extends Schema.Index> =
+export type Interface<$SelectionSet, $Node extends Schema.Output.Interface, $Index extends Schema.Index> =
   OnTypeFragment<$SelectionSet, $Node['implementors'][number], $Index>
 
 // dprint-ignore
