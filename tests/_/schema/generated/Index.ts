@@ -11,6 +11,8 @@ export interface Index {
   objects: {
     Bar: Schema.Object.Bar
     DateObject1: Schema.Object.DateObject1
+    ErrorOne: Schema.Object.ErrorOne
+    ErrorTwo: Schema.Object.ErrorTwo
     Foo: Schema.Object.Foo
     Object1: Schema.Object.Object1
     Object1ImplementingInterface: Schema.Object.Object1ImplementingInterface
@@ -18,8 +20,16 @@ export interface Index {
   }
   unions: {
     FooBarUnion: Schema.Union.FooBarUnion
+    Result: Schema.Union.Result
   }
   interfaces: {
+    Error: Schema.Interface.Error
     Interface: Schema.Interface.Interface
+  }
+  error: {
+    objects: {
+      ErrorOne: Schema.Object.ErrorOne
+      ErrorTwo: Schema.Object.ErrorTwo
+    }
   }
 }

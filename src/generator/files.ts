@@ -4,6 +4,7 @@ import _ from 'json-bigint'
 import fs from 'node:fs/promises'
 import * as Path from 'node:path'
 import { fileExists } from '../lib/prelude.js'
+import type { OptionsInput } from './code/generateCode.js'
 import { generateCode, type Input as GenerateInput } from './code/generateCode.js'
 
 export interface Input {
@@ -13,6 +14,7 @@ export interface Input {
   sourceCustomScalarCodecsFilePath?: string
   schemaPath?: string
   format?: boolean
+  errorTypeNamePattern?: OptionsInput['errorTypeNamePattern']
 }
 
 export const generateFiles = async (input: Input) => {
@@ -39,6 +41,7 @@ export const generateFiles = async (input: Input) => {
     options: {
       formatter: typeScriptFormatter,
       customScalars: customScalarCodecsPathExists,
+      errorTypeNamePattern: input.errorTypeNamePattern,
     },
   })
 

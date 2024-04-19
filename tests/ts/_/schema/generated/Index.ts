@@ -30,4 +30,7 @@ export interface Index {
     DateInterface1: Schema.Interface.DateInterface1
     Interface: Schema.Interface.Interface
   }
+  error: {
+    objects: {}
+  }
 }

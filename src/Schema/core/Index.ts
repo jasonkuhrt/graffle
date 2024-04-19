@@ -9,4 +9,7 @@ export interface Index {
   objects: Record<string, Output.Object$2>
   unions: Record<string, Output.Union>
   interfaces: Record<string, Output.Interface>
+  error: {
+    objects: Record<string, Output.Object$2>
+  }
 }

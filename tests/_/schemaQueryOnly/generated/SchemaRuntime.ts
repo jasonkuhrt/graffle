@@ -18,4 +18,7 @@ export const $Index = {
   objects: {},
   unions: {},
   interfaces: {},
+  error: {
+    objects: {},
+  },
 }

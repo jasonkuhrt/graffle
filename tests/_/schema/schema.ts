@@ -92,8 +92,44 @@ builder.simpleObject(`Object2ImplementingInterface`, {
   }),
 })
 
+const ErrorInterface = builder.simpleInterface(`Error`, {
+  fields: t => ({
+    message: t.string({ nullable: false }),
+  }),
+})
+
+const ErrorOne = builder.simpleObject(`ErrorOne`, {
+  interfaces: [ErrorInterface],
+  fields: t => ({
+    infoId: t.id(),
+  }),
+})
+
+const ErrorTwo = builder.simpleObject(`ErrorTwo`, {
+  interfaces: [ErrorInterface],
+  fields: t => ({
+    infoInt: t.int(),
+  }),
+})
+
+const Result = builder.unionType(`Result`, {
+  types: [Object1, ErrorOne, ErrorTwo],
+  resolveType: (data) => {
+    return `infoId` in data ? `ErrorOne` : `infoInt` in data ? `ErrorTwo` : `Object1`
+  },
+})
+
+const ResultCase = builder.enumType(`Case`, { values: [`Object1`, `ErrorOne`, `ErrorTwo`] as const })
+
 builder.queryType({
   fields: t => ({
+    result: t.field({
+      args: { case: t.arg({ type: ResultCase, required: true }) },
+      type: Result,
+      resolve: (_, args) => {
+        return db[args.case]
+      },
+    }),
     // Custom Scalar
     date: t.field({ type: `Date`, resolve: () => db.date0 }),
     dateNonNull: t.field({ nullable: false, type: `Date`, resolve: () => db.date0 }),
@@ -117,7 +153,7 @@ builder.queryType({
         id: t.arg.id(),
       },
       type: Object1,
-      resolve: (_, args) => ({ ...db.object1, ...args }),
+      resolve: (_, args) => ({ ...db.Object1, ...args }),
     }),
     interface: t.field({
       type: Interface,

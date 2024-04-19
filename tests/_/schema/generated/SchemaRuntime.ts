@@ -3,6 +3,8 @@
 import * as $ from '../../../../src/entrypoints/alpha/schema.js'
 import * as $Scalar from './Scalar.js'
 
+export const Case = $.Enum(`Case`, [`ErrorOne`, `ErrorTwo`, `Object1`])
+
 // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
 export const Bar = $.Object$(`Bar`, {
   int: $.field($.Output.Nullable($Scalar.Int)),
@@ -11,6 +13,18 @@ export const Bar = $.Object$(`Bar`, {
 // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
 export const DateObject1 = $.Object$(`DateObject1`, {
   date1: $.field($.Output.Nullable($Scalar.Date)),
+})
+
+// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
+export const ErrorOne = $.Object$(`ErrorOne`, {
+  infoId: $.field($.Output.Nullable($Scalar.ID)),
+  message: $.field($Scalar.String),
+})
+
+// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
+export const ErrorTwo = $.Object$(`ErrorTwo`, {
+  infoInt: $.field($.Output.Nullable($Scalar.Int)),
+  message: $.field($Scalar.String),
 })
 
 // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
@@ -42,6 +56,10 @@ export const Object2ImplementingInterface = $.Object$(`Object2ImplementingInterf
 // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
 export const FooBarUnion = $.Union(`FooBarUnion`, [Bar, Foo])
 
+// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
+export const Result = $.Union(`Result`, [ErrorOne, ErrorTwo, Object1])
+
+export const Error = $.Interface(`Error`, { message: $.field($Scalar.String) }, [ErrorOne, ErrorTwo])
 export const Interface = $.Interface(`Interface`, { id: $.field($.Output.Nullable($Scalar.ID)) }, [
   Object1ImplementingInterface,
   Object2ImplementingInterface,
@@ -73,6 +91,7 @@ export const Query = $.Object$(`Query`, {
       string: $.Input.Nullable($Scalar.String),
     }),
   ),
+  result: $.field($.Output.Nullable(() => Result), $.Args({ case: Case })),
   unionFooBar: $.field($.Output.Nullable(() => FooBarUnion)),
 })
 
@@ -85,6 +104,8 @@ export const $Index = {
   objects: {
     Bar,
     DateObject1,
+    ErrorOne,
+    ErrorTwo,
     Foo,
     Object1,
     Object1ImplementingInterface,
@@ -92,8 +113,16 @@ export const $Index = {
   },
   unions: {
     FooBarUnion,
+    Result,
   },
   interfaces: {
+    Error,
     Interface,
+  },
+  error: {
+    objects: {
+      ErrorOne,
+      ErrorTwo,
+    },
   },
 }

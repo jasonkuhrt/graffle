@@ -74,6 +74,11 @@ const index = (config: Config) => {
       },
       interfaces: {
         ${config.typeMapByKind.GraphQLInterfaceType.map(type => type.name).join(`,\n`)}
+      },
+      error: {
+        objects: {
+          ${config.error.objects.map(type => type.name).join(`,\n`)}
+        }
       }
     }
   `

@@ -1,14 +1,27 @@
 import type { Formatter } from '@dprint/formatter'
-import type { GraphQLSchema } from 'graphql'
+import type { GraphQLObjectType, GraphQLSchema } from 'graphql'
 import { buildSchema } from 'graphql'
 import * as Path from 'node:path'
 import type { TypeMapByKind } from '../../lib/graphql.js'
 import { getTypeMapByKind } from '../../lib/graphql.js'
+import { generateError } from './Error.js'
 import { generateIndex } from './Index.js'
 import { generateScalar } from './Scalar.js'
 import { generateSchemaBuildtime } from './SchemaBuildtime.js'
 import { generateRuntimeSchema } from './SchemaRuntime.js'
 import { generateSelect } from './Select.js'
+
+export interface OptionsInput {
+  errorTypeNamePattern?: RegExp
+  /**
+   * Should custom scalars definitions be imported into the generated output?
+   */
+  customScalars?: boolean
+  formatter?: Formatter
+  TSDoc?: {
+    noDocPolicy?: 'message' | 'ignore'
+  }
+}
 
 export interface Input {
   libraryPaths?: {
@@ -22,21 +35,16 @@ export interface Input {
    * The GraphQL SDL source code.
    */
   schemaSource: string
-  options?: {
-    /**
-     * Should custom scalars definitions be imported into the generated output?
-     */
-    customScalars?: boolean
-    formatter?: Formatter
-    TSDoc?: {
-      noDocPolicy?: 'message' | 'ignore'
-    }
-  }
+  options?: OptionsInput
 }
 
 export interface Config {
   schema: GraphQLSchema
   typeMapByKind: TypeMapByKind
+  error: {
+    objects: GraphQLObjectType[]
+    enabled: boolean
+  }
   libraryPaths: {
     schema: string
     scalars: string
@@ -45,6 +53,7 @@ export interface Config {
     customScalarCodecs: string
   }
   options: {
+    errorTypeNamePattern: RegExp | null
     customScalars: boolean
     TSDoc: {
       noDocPolicy: 'message' | 'ignore'
@@ -53,9 +62,18 @@ export interface Config {
 }
 
 export const resolveOptions = (input: Input): Config => {
+  const errorTypeNamePattern = input.options?.errorTypeNamePattern ?? null
   const schema = buildSchema(input.schemaSource)
+  const typeMapByKind = getTypeMapByKind(schema)
+  const errorObjects = errorTypeNamePattern
+    ? Object.values(typeMapByKind.GraphQLObjectType).filter(_ => _.name.match(errorTypeNamePattern))
+    : []
   return {
     schema,
+    error: {
+      enabled: Boolean(errorTypeNamePattern),
+      objects: errorObjects,
+    },
     importPaths: {
       customScalarCodecs: input.importPaths?.customScalarCodecs ?? Path.join(process.cwd(), `customScalarCodecs.js`),
     },
@@ -63,8 +81,9 @@ export const resolveOptions = (input: Input): Config => {
       scalars: input.libraryPaths?.scalars ?? `graphql-request/alpha/schema/scalars`,
       schema: input.libraryPaths?.schema ?? `graphql-request/alpha/schema`,
     },
-    typeMapByKind: getTypeMapByKind(schema),
+    typeMapByKind,
     options: {
+      errorTypeNamePattern,
       customScalars: input.options?.customScalars ?? false,
       TSDoc: {
         noDocPolicy: input.options?.TSDoc?.noDocPolicy ?? `ignore`,
@@ -84,6 +103,7 @@ export const generateCode = (input: Input) => {
   const config = resolveOptions(input)
 
   return [
+    generateError,
     generateIndex,
     generateScalar,
     generateSchemaBuildtime,

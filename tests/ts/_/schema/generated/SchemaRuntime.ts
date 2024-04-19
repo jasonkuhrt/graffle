@@ -212,4 +212,7 @@ export const $Index = {
     DateInterface1,
     Interface,
   },
+  error: {
+    objects: {},
+  },
 }

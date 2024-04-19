@@ -30,6 +30,13 @@ export const generateIndex = (config: Config) => {
         interfaces: Code.objectFromEntries(
           config.typeMapByKind.GraphQLInterfaceType.map(_ => [_.name, `${namespace}.Interface.${_.name}`]),
         ),
+        // todo jsdoc comment saying:
+        // Objects that match this pattern name: /.../
+        error: Code.objectFrom({
+          objects: Code.objectFromEntries(
+            config.error.objects.map(_ => [_.name, `${namespace}.Object.${_.name}`]),
+          ),
+        }),
       }),
     ),
   ))

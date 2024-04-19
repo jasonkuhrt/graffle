@@ -2,12 +2,15 @@ import type { GraphQLSchema } from 'graphql'
 import { printSchema } from 'graphql'
 import fs from 'node:fs/promises'
 import { dirname, join } from 'node:path'
+import type { OptionsInput } from '../../src/generator/code/generateCode.js'
 import { generateFiles } from '../../src/generator/files.js'
 import { schema as schema } from './schema/schema.js'
 import { schema as schemaMutationOnly } from './schemaMutationOnly/schema.js'
 import { schema as schemaQueryOnly } from './schemaQueryOnly/schema.js'
 
-const generate = async ({ schema, outputSchemaPath }: { schema: GraphQLSchema; outputSchemaPath: string }) => {
+const generate = async (
+  { schema, outputSchemaPath, options }: { schema: GraphQLSchema; outputSchemaPath: string; options?: OptionsInput },
+) => {
   const sourceDirPath = dirname(outputSchemaPath)
   await fs.writeFile(
     outputSchemaPath,
@@ -23,6 +26,7 @@ const generate = async ({ schema, outputSchemaPath }: { schema: GraphQLSchema; o
         scalars: `../../../../src/Schema/Hybrid/types/Scalar/Scalar.js`,
       },
     },
+    ...options,
   })
 }
 
@@ -39,6 +43,7 @@ await generate({
 await generate({
   schema,
   outputSchemaPath: `./tests/_/schema/schema.graphql`,
+  options: { errorTypeNamePattern: /^Error.+/ },
 })
 
 await generateFiles({

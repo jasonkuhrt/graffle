@@ -28,6 +28,12 @@ export type Bar<$SelectionSet extends SelectionSet.Object<Index['objects']['Bar'
 export type DateObject1<$SelectionSet extends SelectionSet.Object<Index['objects']['DateObject1'], Index>> =
   ResultSet.Object$<$SelectionSet, Index['objects']['DateObject1'], Index>
 
+export type ErrorOne<$SelectionSet extends SelectionSet.Object<Index['objects']['ErrorOne'], Index>> =
+  ResultSet.Object$<$SelectionSet, Index['objects']['ErrorOne'], Index>
+
+export type ErrorTwo<$SelectionSet extends SelectionSet.Object<Index['objects']['ErrorTwo'], Index>> =
+  ResultSet.Object$<$SelectionSet, Index['objects']['ErrorTwo'], Index>
+
 export type Foo<$SelectionSet extends SelectionSet.Object<Index['objects']['Foo'], Index>> = ResultSet.Object$<
   $SelectionSet,
   Index['objects']['Foo'],
@@ -54,8 +60,17 @@ export type Object2ImplementingInterface<
 export type FooBarUnion<$SelectionSet extends SelectionSet.Union<Index['unions']['FooBarUnion'], Index>> =
   ResultSet.Union<$SelectionSet, Index['unions']['FooBarUnion'], Index>
 
+export type Result<$SelectionSet extends SelectionSet.Union<Index['unions']['Result'], Index>> = ResultSet.Union<
+  $SelectionSet,
+  Index['unions']['Result'],
+  Index
+>
+
 // Interface Types
 // ---------------
+
+export type Error<$SelectionSet extends SelectionSet.Interface<Index['interfaces']['Error'], Index>> =
+  ResultSet.Interface<$SelectionSet, Index['interfaces']['Error'], Index>
 
 export type Interface<$SelectionSet extends SelectionSet.Interface<Index['interfaces']['Interface'], Index>> =
   ResultSet.Interface<$SelectionSet, Index['interfaces']['Interface'], Index>

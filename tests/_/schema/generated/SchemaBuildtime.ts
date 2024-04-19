@@ -40,6 +40,12 @@ export namespace Root {
         string: $.Input.Nullable<$Scalar.String>
       }>
     >
+    result: $.Field<
+      $.Output.Nullable<Union.Result>,
+      $.Args<{
+        case: Enum.Case
+      }>
+    >
     unionFooBar: $.Field<$.Output.Nullable<Union.FooBarUnion>, null>
   }>
 }
@@ -49,7 +55,7 @@ export namespace Root {
 // ------------------------------------------------------------ //
 
 export namespace Enum {
-  // -- no types --
+  export type Case = $.Enum<'Case', ['ErrorOne', 'ErrorTwo', 'Object1']>
 }
 
 // ------------------------------------------------------------ //
@@ -65,6 +71,10 @@ export namespace InputObject {
 // ------------------------------------------------------------ //
 
 export namespace Interface {
+  export type Error = $.Interface<'Error', {
+    message: $.Field<$Scalar.String, null>
+  }, [Object.ErrorOne, Object.ErrorTwo]>
+
   export type Interface = $.Interface<'Interface', {
     id: $.Field<$.Output.Nullable<$Scalar.ID>, null>
   }, [Object.Object1ImplementingInterface, Object.Object2ImplementingInterface]>
@@ -81,6 +91,16 @@ export namespace Object {
 
   export type DateObject1 = $.Object$2<'DateObject1', {
     date1: $.Field<$.Output.Nullable<$Scalar.Date>, null>
+  }>
+
+  export type ErrorOne = $.Object$2<'ErrorOne', {
+    infoId: $.Field<$.Output.Nullable<$Scalar.ID>, null>
+    message: $.Field<$Scalar.String, null>
+  }>
+
+  export type ErrorTwo = $.Object$2<'ErrorTwo', {
+    infoInt: $.Field<$.Output.Nullable<$Scalar.Int>, null>
+    message: $.Field<$Scalar.String, null>
   }>
 
   /**
@@ -123,4 +143,6 @@ export namespace Union {
    * Union documentation.
    */
   export type FooBarUnion = $.Union<'FooBarUnion', [Object.Bar, Object.Foo]>
+
+  export type Result = $.Union<'Result', [Object.ErrorOne, Object.ErrorTwo, Object.Object1]>
 }

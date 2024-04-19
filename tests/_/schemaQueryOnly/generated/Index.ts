@@ -11,4 +11,7 @@ export interface Index {
   objects: {}
   unions: {}
   interfaces: {}
+  error: {
+    objects: {}
+  }
 }

@@ -3,6 +3,9 @@ import { expect, test } from 'vitest'
 
 test(`generates types from GraphQL SDL file`, async () => {
   expect(
+    await readFile(`./tests/ts/_/schema/generated/Error.ts`, `utf8`),
+  ).toMatchSnapshot()
+  expect(
     await readFile(`./tests/ts/_/schema/generated/Select.ts`, `utf8`),
   ).toMatchSnapshot()
   expect(
@@ -20,6 +23,9 @@ test(`generates types from GraphQL SDL file`, async () => {
 })
 
 test(`schema2`, async () => {
+  expect(
+    await readFile(`./tests/_/schema/generated/Error.ts`, `utf8`),
+  ).toMatchSnapshot()
   expect(
     await readFile(`./tests/_/schema/generated/Select.ts`, `utf8`),
   ).toMatchSnapshot()
