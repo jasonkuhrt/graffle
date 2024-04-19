@@ -67,7 +67,7 @@ export type Field<$SelectionSet, $Field extends SomeField, $Index extends Schema
      (
         | FieldDirectiveInclude<$SelectionSet>
         | FieldDirectiveSkip<$SelectionSet>
-        | FieldType<$SelectionSet, $Field['type'], $Index>
+        | FieldType<Omit<$SelectionSet, '$'>, $Field['type'], $Index>
       )
 
 // dprint-ignore
@@ -75,7 +75,7 @@ type FieldType<
   $SelectionSet,
   $Type extends Schema.Output.Any,
   $Index extends Schema.Index
-> =Simplify<
+> = Simplify<
   $Type extends Schema.__typename<infer $Value>             ? $Value :
   $Type extends Schema.Output.Nullable<infer $InnerType>    ? null | FieldType<$SelectionSet, $InnerType, $Index> :
   $Type extends Schema.Output.List<infer $InnerType>        ? Array<FieldType<$SelectionSet, $InnerType, $Index>> :
