@@ -1,7 +1,130 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`generates types from GraphQL SDL file 1`] = `
-"import type * as $ from '../../../../../src/Schema/__.js'
+"import { ResultSet, SelectionSet } from '../../../../../src/entrypoints/alpha/schema.js'
+import { Index } from './Index.js'
+
+// Root Types
+// ----------
+
+export type Query<$SelectionSet extends SelectionSet.Root<Index, 'Query'>> = ResultSet.Root<
+  $SelectionSet,
+  Index,
+  'Query'
+>
+
+// Object Types
+// ------------
+
+export type DateObject1<$SelectionSet extends SelectionSet.Object<Index['objects']['DateObject1'], Index>> =
+  ResultSet.Object$<$SelectionSet, Index['objects']['DateObject1'], Index>
+
+export type DateObject2<$SelectionSet extends SelectionSet.Object<Index['objects']['DateObject2'], Index>> =
+  ResultSet.Object$<$SelectionSet, Index['objects']['DateObject2'], Index>
+
+export type ObjectUnion<$SelectionSet extends SelectionSet.Object<Index['objects']['ObjectUnion'], Index>> =
+  ResultSet.Object$<$SelectionSet, Index['objects']['ObjectUnion'], Index>
+
+export type Foo<$SelectionSet extends SelectionSet.Object<Index['objects']['Foo'], Index>> = ResultSet.Object$<
+  $SelectionSet,
+  Index['objects']['Foo'],
+  Index
+>
+
+export type Bar<$SelectionSet extends SelectionSet.Object<Index['objects']['Bar'], Index>> = ResultSet.Object$<
+  $SelectionSet,
+  Index['objects']['Bar'],
+  Index
+>
+
+export type ObjectNested<$SelectionSet extends SelectionSet.Object<Index['objects']['ObjectNested'], Index>> =
+  ResultSet.Object$<$SelectionSet, Index['objects']['ObjectNested'], Index>
+
+export type lowerCaseObject<$SelectionSet extends SelectionSet.Object<Index['objects']['lowerCaseObject'], Index>> =
+  ResultSet.Object$<$SelectionSet, Index['objects']['lowerCaseObject'], Index>
+
+export type lowerCaseObject2<$SelectionSet extends SelectionSet.Object<Index['objects']['lowerCaseObject2'], Index>> =
+  ResultSet.Object$<$SelectionSet, Index['objects']['lowerCaseObject2'], Index>
+
+export type Object1<$SelectionSet extends SelectionSet.Object<Index['objects']['Object1'], Index>> = ResultSet.Object$<
+  $SelectionSet,
+  Index['objects']['Object1'],
+  Index
+>
+
+export type Object1ImplementingInterface<
+  $SelectionSet extends SelectionSet.Object<Index['objects']['Object1ImplementingInterface'], Index>,
+> = ResultSet.Object$<$SelectionSet, Index['objects']['Object1ImplementingInterface'], Index>
+
+export type Object2ImplementingInterface<
+  $SelectionSet extends SelectionSet.Object<Index['objects']['Object2ImplementingInterface'], Index>,
+> = ResultSet.Object$<$SelectionSet, Index['objects']['Object2ImplementingInterface'], Index>
+
+// Union Types
+// -----------
+
+export type DateUnion<$SelectionSet extends SelectionSet.Union<Index['unions']['DateUnion'], Index>> = ResultSet.Union<
+  $SelectionSet,
+  Index['unions']['DateUnion'],
+  Index
+>
+
+export type FooBarUnion<$SelectionSet extends SelectionSet.Union<Index['unions']['FooBarUnion'], Index>> =
+  ResultSet.Union<$SelectionSet, Index['unions']['FooBarUnion'], Index>
+
+export type lowerCaseUnion<$SelectionSet extends SelectionSet.Union<Index['unions']['lowerCaseUnion'], Index>> =
+  ResultSet.Union<$SelectionSet, Index['unions']['lowerCaseUnion'], Index>
+
+// Interface Types
+// ---------------
+
+export type DateInterface1<$SelectionSet extends SelectionSet.Interface<Index['interfaces']['DateInterface1'], Index>> =
+  ResultSet.Interface<$SelectionSet, Index['interfaces']['DateInterface1'], Index>
+
+export type Interface<$SelectionSet extends SelectionSet.Interface<Index['interfaces']['Interface'], Index>> =
+  ResultSet.Interface<$SelectionSet, Index['interfaces']['Interface'], Index>
+"
+`;
+
+exports[`generates types from GraphQL SDL file 2`] = `
+"/* eslint-disable */
+
+import type * as Schema from './SchemaBuildtime.js'
+
+export interface Index {
+  Root: {
+    Query: Schema.Root.Query
+    Mutation: null
+    Subscription: null
+  }
+  objects: {
+    DateObject1: Schema.Object.DateObject1
+    DateObject2: Schema.Object.DateObject2
+    ObjectUnion: Schema.Object.ObjectUnion
+    Foo: Schema.Object.Foo
+    Bar: Schema.Object.Bar
+    ObjectNested: Schema.Object.ObjectNested
+    lowerCaseObject: Schema.Object.lowerCaseObject
+    lowerCaseObject2: Schema.Object.lowerCaseObject2
+    Object1: Schema.Object.Object1
+    Object1ImplementingInterface: Schema.Object.Object1ImplementingInterface
+    Object2ImplementingInterface: Schema.Object.Object2ImplementingInterface
+  }
+  unions: {
+    DateUnion: Schema.Union.DateUnion
+    FooBarUnion: Schema.Union.FooBarUnion
+    lowerCaseUnion: Schema.Union.lowerCaseUnion
+  }
+  interfaces: {
+    DateInterface1: Schema.Interface.DateInterface1
+    Interface: Schema.Interface.Interface
+  }
+}
+"
+`;
+
+exports[`generates types from GraphQL SDL file 3`] = `
+"import type * as $ from '../../../../../src/entrypoints/alpha/schema.js'
 import type * as $Scalar from './Scalar.ts'
 
 // ------------------------------------------------------------ //
@@ -296,7 +419,7 @@ export namespace Union {
 "
 `;
 
-exports[`generates types from GraphQL SDL file 2`] = `
+exports[`generates types from GraphQL SDL file 4`] = `
 "import type * as CustomScalar from '../../../../_/customScalarCodecs.js'
 
 declare global {
@@ -310,10 +433,10 @@ export * from '../../../../_/customScalarCodecs.js'
 "
 `;
 
-exports[`generates types from GraphQL SDL file 3`] = `
+exports[`generates types from GraphQL SDL file 5`] = `
 "/* eslint-disable */
 
-import * as $ from '../../../../../src/Schema/__.js'
+import * as $ from '../../../../../src/entrypoints/alpha/schema.js'
 import * as $Scalar from './Scalar.js'
 
 export const ABCEnum = $.Enum(\`ABCEnum\`, [\`A\`, \`B\`, \`C\`])
@@ -530,7 +653,101 @@ export const $Index = {
 `;
 
 exports[`schema2 1`] = `
-"import type * as $ from '../../../../src/Schema/__.js'
+"import { ResultSet, SelectionSet } from '../../../../src/entrypoints/alpha/schema.js'
+import { Index } from './Index.js'
+
+// Root Types
+// ----------
+
+export type Mutation<$SelectionSet extends SelectionSet.Root<Index, 'Mutation'>> = ResultSet.Root<
+  $SelectionSet,
+  Index,
+  'Mutation'
+>
+
+export type Query<$SelectionSet extends SelectionSet.Root<Index, 'Query'>> = ResultSet.Root<
+  $SelectionSet,
+  Index,
+  'Query'
+>
+
+// Object Types
+// ------------
+
+export type Bar<$SelectionSet extends SelectionSet.Object<Index['objects']['Bar'], Index>> = ResultSet.Object$<
+  $SelectionSet,
+  Index['objects']['Bar'],
+  Index
+>
+
+export type DateObject1<$SelectionSet extends SelectionSet.Object<Index['objects']['DateObject1'], Index>> =
+  ResultSet.Object$<$SelectionSet, Index['objects']['DateObject1'], Index>
+
+export type Foo<$SelectionSet extends SelectionSet.Object<Index['objects']['Foo'], Index>> = ResultSet.Object$<
+  $SelectionSet,
+  Index['objects']['Foo'],
+  Index
+>
+
+export type Object1<$SelectionSet extends SelectionSet.Object<Index['objects']['Object1'], Index>> = ResultSet.Object$<
+  $SelectionSet,
+  Index['objects']['Object1'],
+  Index
+>
+
+export type Object1ImplementingInterface<
+  $SelectionSet extends SelectionSet.Object<Index['objects']['Object1ImplementingInterface'], Index>,
+> = ResultSet.Object$<$SelectionSet, Index['objects']['Object1ImplementingInterface'], Index>
+
+export type Object2ImplementingInterface<
+  $SelectionSet extends SelectionSet.Object<Index['objects']['Object2ImplementingInterface'], Index>,
+> = ResultSet.Object$<$SelectionSet, Index['objects']['Object2ImplementingInterface'], Index>
+
+// Union Types
+// -----------
+
+export type FooBarUnion<$SelectionSet extends SelectionSet.Union<Index['unions']['FooBarUnion'], Index>> =
+  ResultSet.Union<$SelectionSet, Index['unions']['FooBarUnion'], Index>
+
+// Interface Types
+// ---------------
+
+export type Interface<$SelectionSet extends SelectionSet.Interface<Index['interfaces']['Interface'], Index>> =
+  ResultSet.Interface<$SelectionSet, Index['interfaces']['Interface'], Index>
+"
+`;
+
+exports[`schema2 2`] = `
+"/* eslint-disable */
+
+import type * as Schema from './SchemaBuildtime.js'
+
+export interface Index {
+  Root: {
+    Query: Schema.Root.Query
+    Mutation: Schema.Root.Mutation
+    Subscription: null
+  }
+  objects: {
+    Bar: Schema.Object.Bar
+    DateObject1: Schema.Object.DateObject1
+    Foo: Schema.Object.Foo
+    Object1: Schema.Object.Object1
+    Object1ImplementingInterface: Schema.Object.Object1ImplementingInterface
+    Object2ImplementingInterface: Schema.Object.Object2ImplementingInterface
+  }
+  unions: {
+    FooBarUnion: Schema.Union.FooBarUnion
+  }
+  interfaces: {
+    Interface: Schema.Interface.Interface
+  }
+}
+"
+`;
+
+exports[`schema2 3`] = `
+"import type * as $ from '../../../../src/entrypoints/alpha/schema.js'
 import type * as $Scalar from './Scalar.ts'
 
 // ------------------------------------------------------------ //
@@ -659,7 +876,7 @@ export namespace Union {
 "
 `;
 
-exports[`schema2 2`] = `
+exports[`schema2 4`] = `
 "import type * as CustomScalar from '../../customScalarCodecs.js'
 
 declare global {
@@ -673,10 +890,10 @@ export * from '../../customScalarCodecs.js'
 "
 `;
 
-exports[`schema2 3`] = `
+exports[`schema2 5`] = `
 "/* eslint-disable */
 
-import * as $ from '../../../../src/Schema/__.js'
+import * as $ from '../../../../src/entrypoints/alpha/schema.js'
 import * as $Scalar from './Scalar.js'
 
 // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
