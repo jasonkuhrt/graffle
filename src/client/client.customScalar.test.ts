@@ -1,8 +1,8 @@
 /* eslint-disable */
 import { beforeEach, describe, expect, test } from 'vitest'
 import { db } from '../../tests/_/db.js'
-import { setupMockServer } from '../../tests/raw/__helpers.js'
 import { $Index as schemaIndex } from '../../tests/_/schema/generated/SchemaRuntime.js'
+import { setupMockServer } from '../../tests/raw/__helpers.js'
 import { create } from './client.js'
 
 const ctx = setupMockServer()
