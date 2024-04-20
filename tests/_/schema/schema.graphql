@@ -1,3 +1,12 @@
+"""Enum documentation."""
+enum ABCEnum {
+  A @deprecated(reason: "Enum value A is deprecated.")
+
+  """Enum B member documentation."""
+  B
+  C @deprecated(reason: "Enum value C is deprecated.")
+}
+
 type Bar {
   int: Int
 }
@@ -13,9 +22,19 @@ A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `dat
 """
 scalar Date
 
-type DateObject1 {
+interface DateInterface1 {
   date1: Date
 }
+
+type DateObject1 implements DateInterface1 {
+  date1: Date
+}
+
+type DateObject2 {
+  date2: Date
+}
+
+union DateUnion = DateObject1 | DateObject2
 
 interface Error {
   message: String!
@@ -39,6 +58,21 @@ type Foo {
 
 """Union documentation."""
 union FooBarUnion = Bar | Foo
+
+input InputObject {
+  date: Date
+  dateRequired: Date!
+  id: ID
+  idRequired: ID!
+}
+
+input InputObjectNested {
+  InputObject: InputObject
+}
+
+input InputObjectNestedNonNull {
+  InputObject: InputObject!
+}
 
 interface Interface {
   id: ID
@@ -67,18 +101,74 @@ type Object2ImplementingInterface implements Interface {
   id: ID
 }
 
+type ObjectNested {
+  id: ID
+  object: Object1
+}
+
+type ObjectUnion {
+  fooBarUnion: FooBarUnion
+}
+
 type Query {
+  InputObjectNested(input: InputObjectNested): ID
+  InputObjectNestedNonNull(input: InputObjectNestedNonNull!): ID
+
+  """Query enum field documentation."""
+  abcEnum: ABCEnum
   date: Date
   dateArg(date: Date): Date
+  dateArgInputObject(input: InputObject): Date
+  dateArgList(date: [Date!]): Date
   dateArgNonNull(date: Date!): Date
+  dateArgNonNullList(date: [Date]!): Date
+  dateArgNonNullListNonNull(date: [Date!]!): Date
+  dateInterface1: DateInterface1
+  dateList: [Date!]
+  dateListNonNull: [Date!]!
   dateNonNull: Date!
   dateObject1: DateObject1
+  dateUnion: DateUnion
   id: ID
   idNonNull: ID!
   interface: Interface
+  interfaceNonNull: Interface!
+  interfaceWithArgs(id: ID!): Interface
+  listInt: [Int]
+  listIntNonNull: [Int!]!
+  listListInt: [[Int]]
+  listListIntNonNull: [[Int!]!]!
+  lowerCaseUnion: lowerCaseUnion
+  object: Object1
+  objectList: [Object1!]
+  objectListNonNull: [Object1!]!
+  objectNested: ObjectNested
+  objectNonNull: Object1!
   objectWithArgs(boolean: Boolean, float: Float, id: ID, int: Int, string: String): Object1
   result(case: Case!): Result
+  string: String
+  stringWithArgEnum(ABCEnum: ABCEnum): String
+  stringWithArgInputObject(input: InputObject): String
+  stringWithArgInputObjectRequired(input: InputObject!): String
+  stringWithArgs(boolean: Boolean, float: Float, id: ID, int: Int, string: String): String
+  stringWithListArg(ints: [Int]): String
+  stringWithListArgRequired(ints: [Int!]!): String
+  stringWithRequiredArg(string: String!): String
   unionFooBar: FooBarUnion
+  unionFooBarNonNull: FooBarUnion!
+  unionFooBarWithArgs(id: ID): FooBarUnion
+  unionObject: ObjectUnion
+  unionObjectNonNull: ObjectUnion!
 }
 
 union Result = ErrorOne | ErrorTwo | Object1
+
+type lowerCaseObject {
+  id: ID
+}
+
+type lowerCaseObject2 {
+  int: Int
+}
+
+union lowerCaseUnion = lowerCaseObject | lowerCaseObject2

@@ -1,5 +1,5 @@
 import { assertType, expectTypeOf, test } from 'vitest'
-import type { Index } from '../../../tests/ts/_/schema/generated/Index.js'
+import type { Index } from '../../../tests/_/schema/generated/Index.js'
 import type { SelectionSet } from './__.js'
 
 type Q = SelectionSet.Query<Index>
@@ -52,15 +52,15 @@ test(`Query`, () => {
   assertType<Q>({ object: { a2: true } })
 
   // Union
-  assertType<Q>({ fooBarUnion: { __typename: true } })
-  assertType<Q>({ fooBarUnion: { onFoo: { __typename: true } } })
-  assertType<Q>({ fooBarUnion: { onFoo: { id: true } } })
+  assertType<Q>({ unionFooBar: { __typename: true } })
+  assertType<Q>({ unionFooBar: { onFoo: { __typename: true } } })
+  assertType<Q>({ unionFooBar: { onFoo: { id: true } } })
   // @ts-expect-error no b
-  assertType<Q>({ fooBarUnion: { onFoo: { id2: true } } })
-  assertType<Q>({ fooBarUnion: { onBar: { __typename: true } } })
-  assertType<Q>({ fooBarUnion: { onBar: { int: true } } })
+  assertType<Q>({ unionFooBar: { onFoo: { id2: true } } })
+  assertType<Q>({ unionFooBar: { onBar: { __typename: true } } })
+  assertType<Q>({ unionFooBar: { onBar: { int: true } } })
   // @ts-expect-error no a
-  assertType<Q>({ fooBarUnion: { onBar: { int2: true } } })
+  assertType<Q>({ unionFooBar: { onBar: { int2: true } } })
 
   // Union fragments Case
   assertType<Q>({ lowerCaseUnion: { onLowerCaseObject: { id: true }, onLowerCaseObject2: { int: true } } })
@@ -112,7 +112,7 @@ test(`Query`, () => {
   assertType<Q>({ object: { $skip: true, string: true } })
   // assertType<S>({ scalars: skip().select({ a: true }) })
   // on fragment
-  assertType<Q>({ fooBarUnion: { onBar: { $skip: true, int: true } } })
+  assertType<Q>({ unionFooBar: { onBar: { $skip: true, int: true } } })
   // @include
   assertType<Q>({ string: { $include: true } })
   assertType<Q>({ string: { $include: false } })
@@ -224,7 +224,7 @@ test(`Query`, () => {
   // @ts-expect-error no directives on scalars field
   assertType<Q>({ scalars: { $scalars: { $skip: true } } })
   // union fragment
-  assertType<Q>({ fooBarUnion: { onBar: { $scalars: true } } })
+  assertType<Q>({ unionFooBar: { onBar: { $scalars: true } } })
   assertType<Q>({ unionFooBarWithArgs: { $: { id: `abc` }, onBar: { $scalars: true } } })
 
   // assertType<S>({ scalars: select() })

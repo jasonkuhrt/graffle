@@ -811,13 +811,13 @@ exports[`other > Query 9`] = `
 exports[`union > Query 1`] = `
 "
 {
-  "fooBarUnion": {
+  "unionFooBar": {
     "__typename": true
   }
 }
 --------------
 {
-  fooBarUnion {
+  unionFooBar {
     __typename
   }
 }
@@ -827,7 +827,7 @@ exports[`union > Query 1`] = `
 exports[`union > Query 2`] = `
 "
 {
-  "fooBarUnion": {
+  "unionFooBar": {
     "onBar": {
       "int": true
     }
@@ -835,7 +835,7 @@ exports[`union > Query 2`] = `
 }
 --------------
 {
-  fooBarUnion {
+  unionFooBar {
     ... on Bar {
       int
     }
@@ -847,7 +847,7 @@ exports[`union > Query 2`] = `
 exports[`union > Query 3`] = `
 "
 {
-  "fooBarUnion": {
+  "unionFooBar": {
     "onBar": {
       "$skip": true,
       "int": true
@@ -856,7 +856,7 @@ exports[`union > Query 3`] = `
 }
 --------------
 {
-  fooBarUnion {
+  unionFooBar {
     ... on Bar @skip(if: true) {
       int
     }

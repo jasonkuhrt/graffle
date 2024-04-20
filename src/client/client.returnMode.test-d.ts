@@ -3,8 +3,8 @@ import { ExecutionResult } from 'graphql'
 import { ObjMap } from 'graphql/jsutils/ObjMap.js'
 import { describe } from 'node:test'
 import { expectTypeOf, test } from 'vitest'
+import { $Index as schemaIndex } from '../../tests/_/schema/generated/SchemaRuntime.js'
 import { schema } from '../../tests/_/schema/schema.js'
-import { $Index as schemaIndex } from '../../tests/ts/_/schema/generated/SchemaRuntime.js'
 import { create } from './client.js'
 
 // dprint-ignore
