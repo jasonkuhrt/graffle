@@ -3,7 +3,7 @@ import { type DocumentNode, execute, graphql, type GraphQLSchema } from 'graphql
 import type { MergeExclusive, NonEmptyObject } from 'type-fest'
 import type { ExcludeUndefined } from 'type-fest/source/required-deep.js'
 import request from '../entrypoints/main.js'
-import { type RootTypeName } from '../lib/graphql.js'
+import type { RootTypeName } from '../lib/graphql.js'
 import type { Exact, IsMultipleKeys } from '../lib/prelude.js'
 import type { TSError } from '../lib/TSError.js'
 import type { InputFieldsAllNullable, Object$2 } from '../Schema/__.js'
@@ -13,48 +13,72 @@ import * as CustomScalars from './customScalars.js'
 import { toDocumentExpression } from './document.js'
 import type { ResultSet } from './ResultSet/__.js'
 import { SelectionSet } from './SelectionSet/__.js'
-import type { GraphQLDocumentObject } from './SelectionSet/toGraphQLDocumentString.js'
+import type { DocumentObject, GraphQLObjectSelection } from './SelectionSet/toGraphQLDocumentString.js'
 
 type Variables = Record<string, string | number | boolean | null> // todo or any custom scalars too
 
+type RootTypeFieldContext = {
+  Config: Config
+  Index: Schema.Index
+  RootTypeName: Schema.RootTypeName
+  RootTypeFieldName: string
+  Field: Schema.SomeField
+}
+
 // dprint-ignore
-type RootTypeMethods<$Index extends Schema.Index, $RootTypeName extends Schema.RootTypeName> =
+type RootTypeMethods<$Config extends OptionsInputDefaults, $Index extends Schema.Index, $RootTypeName extends Schema.RootTypeName> =
   $Index['Root'][$RootTypeName] extends Schema.Object$2 ?
   (
   & {
-      $batch: RootMethod<$Index, $RootTypeName>
+      $batch: RootMethod<$Config, $Index, $RootTypeName>
     }
   & {
-      [$RootTypeField in keyof $Index['Root'][$RootTypeName]['fields'] & string]: RootTypeMethod<$Index, $Index['Root'][$RootTypeName]['fields'][$RootTypeField]>
+      [$RootTypeFieldName in keyof $Index['Root'][$RootTypeName]['fields'] & string]:
+        RootTypeFieldMethod<{
+          Config: $Config,
+          Index: $Index,
+          RootTypeName: $RootTypeName,
+          RootTypeFieldName: $RootTypeFieldName
+          Field: $Index['Root'][$RootTypeName]['fields'][$RootTypeFieldName]
+        }>
     }
   )
   : TSError<'RootTypeMethods', `Your schema does not have the root type "${$RootTypeName}".`>
 
 // dprint-ignore
-type RootMethod<$Index extends Schema.Index, $RootTypeName extends Schema.RootTypeName> =
+type RootMethod<$Config extends Config, $Index extends Schema.Index, $RootTypeName extends Schema.RootTypeName> =
   <$SelectionSet extends object>(selectionSet: Exact<$SelectionSet, SelectionSet.Root<$Index, $RootTypeName>>) =>
-    Promise<ResultSet.Root<$SelectionSet, $Index, $RootTypeName>>
+    Promise<ReturnMode<$Config, ResultSet.Root<$SelectionSet, $Index, $RootTypeName>>>
 
 // dprint-ignore
-type RootTypeMethod<$Index extends Schema.Index, $Field extends Schema.SomeField> =
-  RootTypeMethod_<$Index, $Field, $Field['type']>
+// type RootTypeFieldMethod<$Config extends OptionsInputDefaults, $Index extends Schema.Index, $RootTypeName extends Schema.RootTypeName, $RootTypeFieldName extends string> =
+type RootTypeFieldMethod<$Context extends RootTypeFieldContext> =
+  RootTypeFieldMethod_<$Context, $Context['Field']['type']>
 
 // dprint-ignore
-type RootTypeMethod_<$Index extends Schema.Index, $Field extends Schema.SomeField, $Type extends Schema.Output.Any> =
-  $Type extends Schema.Output.Nullable<infer $InnerType>    ? RootTypeMethod_<$Index, $Field, $InnerType> : 
-  $Type extends Schema.Output.List<infer $InnerType>        ? RootTypeMethod_<$Index, $Field, $InnerType> :
-  $Type extends Schema.Scalar.Any                           ? ScalarFieldMethod<$Index,$Field> :
-                                                              ObjectLikeFieldMethod<$Index, $Field>
+type RootTypeFieldMethod_<$Context extends RootTypeFieldContext, $Type extends Schema.Output.Any> =
+  $Type extends Schema.Output.Nullable<infer $InnerType>    ? RootTypeFieldMethod_<$Context, $InnerType> : 
+  $Type extends Schema.Output.List<infer $InnerType>        ? RootTypeFieldMethod_<$Context, $InnerType> :
+  $Type extends Schema.Scalar.Any                           ? ScalarFieldMethod<$Context> :
+  // todo test this case
+  $Type extends Schema.__typename                           ? ScalarFieldMethod<$Context> :
+                                                              ObjectLikeFieldMethod<$Context>
 
 // dprint-ignore
-type ObjectLikeFieldMethod<$Index extends Schema.Index, $Field extends Schema.SomeField> =
-  <$SelectionSet>(selectionSet: Exact<$SelectionSet, SelectionSet.Field<$Field, $Index, { hideDirectives: true }>>) => Promise<ResultSet.Field<$SelectionSet, $Field, $Index>>
+type ObjectLikeFieldMethod<$Context extends RootTypeFieldContext> =
+  <$SelectionSet>(selectionSet: Exact<$SelectionSet, SelectionSet.Field<$Context['Field'], $Context['Index'], { hideDirectives: true }>>) =>
+    Promise<ReturnModeForFieldMethod<$Context, ResultSet.Field<$SelectionSet, $Context['Field'], $Context['Index']>>>
 
 // dprint-ignore
-type ScalarFieldMethod<$Index extends Schema.Index, $Field extends Schema.SomeField> =
-  $Field['args'] extends Schema.Args<infer $Fields> ? InputFieldsAllNullable<$Fields> extends true  ? <$SelectionSet>(args?: Exact<$SelectionSet, SelectionSet.Args<$Field['args']>>) => Promise<ResultSet.Field<$SelectionSet, $Field, $Index>> :
-                                                                                                      <$SelectionSet>(args: Exact<$SelectionSet, SelectionSet.Args<$Field['args']>>) => Promise<ResultSet.Field<$SelectionSet, $Field, $Index>> :
-                                                      (() => Promise<ResultSet.Field<true, $Field, $Index>>)
+type ScalarFieldMethod<$Context extends RootTypeFieldContext> =
+  $Context['Field']['args'] extends Schema.Args<infer $Fields>  ? InputFieldsAllNullable<$Fields> extends true  ? <$SelectionSet>(args?: Exact<$SelectionSet, SelectionSet.Args<$Context['Field']['args']>>) => Promise<ReturnModeForFieldMethod<$Context, ResultSet.Field<$SelectionSet, $Context['Field'], $Context['Index']>>> :
+                                                                                                                  <$SelectionSet>(args:  Exact<$SelectionSet, SelectionSet.Args<$Context['Field']['args']>>) => Promise<ReturnModeForFieldMethod<$Context, ResultSet.Field<$SelectionSet, $Context['Field'], $Context['Index']>>> :
+                                                                  (() => Promise<ReturnModeForFieldMethod<$Context, ResultSet.Field<true, $Context['Field'], $Context['Index']>>>)
+// dprint-ignore
+type ReturnModeForFieldMethod<$Context extends RootTypeFieldContext, $Data> =
+  $Context['Config']['returnMode'] extends 'data'
+    ? $Data
+    : ExecutionResult<{ [k in $Context['RootTypeFieldName']] : $Data }>
 
 // dprint-ignore
 type Document<$Index extends Schema.Index> =
@@ -91,32 +115,57 @@ type ValidateDocumentOperationNames<$Document> =
       ? $Document
       : TSError<'ValidateDocumentOperationNames', `One or more Invalid operation name in document: ${keyof { [K in keyof $Document & string as Schema.Named.NameParse<K> extends never ? K : never]: K }}`>
 
+// todo: dataAndErrors | dataAndSchemaErrors
+type ReturnModeType = 'graphql' | 'data'
+
+type OptionsInput = {
+  returnMode: ReturnModeType | undefined
+}
+
+type OptionsInputDefaults = {
+  returnMode: 'data'
+}
+
+type Config = {
+  returnMode: ReturnModeType
+}
+
+type ApplyInputDefaults<Input extends OptionsInput> = {
+  [Key in keyof OptionsInputDefaults]: undefined extends Input[Key] ? OptionsInputDefaults[Key] : Input[Key]
+}
+
 // dprint-ignore
-export type Client<$Index extends Schema.Index> =
+type ReturnMode<$Config extends Config, $Data> =
+  $Config['returnMode'] extends 'graphql' ? ExecutionResult<$Data> : $Data
+
+// dprint-ignore
+export type Client<$Index extends Schema.Index, $Config extends OptionsInputDefaults> =
   & {
       // todo test raw
-      raw: (document: string | DocumentNode, variables?:Variables) => Promise<object>
+      raw: (document: string | DocumentNode, variables?:Variables,operationName?:string) => Promise<ExecutionResult>
       document: <$Document extends Document<$Index>>
                   (document: ValidateDocumentOperationNames<NonEmptyObject<$Document>>) =>
                   // (document: $Document) =>
                     {
                       run:  <$Name extends keyof $Document & string, $Params extends (IsMultipleKeys<$Document> extends true ? [name: $Name] : ([] | [name: $Name | undefined]))>
                               (...params: $Params) =>
-                                Promise<ResultSet.Root<GetOperation<$Document[$Name]>, $Index, 'Query'>>
+                                Promise<
+                                  ReturnMode<$Config, ResultSet.Root<GetOperation<$Document[$Name]>, $Index, 'Query'>>
+                                >
                     }
     }
   & (
       $Index['Root']['Query'] extends null
         ? unknown
         : {
-            query: RootTypeMethods<$Index, 'Query'>
+            query: RootTypeMethods<$Config, $Index, 'Query'>
           }
     )
   & (
       $Index['Root']['Mutation'] extends null
         ? unknown
         : {
-            mutation: RootTypeMethods<$Index, 'Mutation'>
+            mutation: RootTypeMethods<$Config, $Index, 'Mutation'>
           }
     )
 // todo
@@ -128,24 +177,44 @@ export type Client<$Index extends Schema.Index> =
 
 interface HookInputDocumentEncode {
   rootIndex: Object$2
-  documentObject: GraphQLDocumentObject
+  documentObject: GraphQLObjectSelection
 }
 
 interface Input {
+  /**
+   * @defaultValue 'default'
+   */
+  name?: keyof NamedSchemas
   schema: URL | string | GraphQLSchema
   headers?: HeadersInit
-  // If there are no custom scalars then this property is useless. Improve types.
+  /**
+   * Used internally for several functions.
+   *
+   * When custom scalars are being used, this runtime schema is used to
+   * encode/decode them before/after your application sends/receives them.
+   *
+   * When using root type field methods, this runtime schema is used to assist how arguments on scalars versus objects
+   * are constructed into the sent GraphQL document.
+   */
   schemaIndex: Schema.Index
+  returnMode?: ReturnModeType
   hooks?: {
     documentEncode: (
       input: HookInputDocumentEncode,
-      fn: (input: HookInputDocumentEncode) => GraphQLDocumentObject,
-    ) => GraphQLDocumentObject
+      fn: (input: HookInputDocumentEncode) => GraphQLObjectSelection,
+    ) => GraphQLObjectSelection
   }
 }
 
-export const create = <$SchemaIndex extends Schema.Index>(input: Input): Client<$SchemaIndex> => {
+export const create = <$Input extends Input>(
+  input: $Input,
+): Client<
+  // @ts-expect-error fixme
+  (undefined extends $Input['name'] ? NamedSchemas['default']['index'] : NamedSchemas[$Input['name']]['index']),
+  ApplyInputDefaults<{ returnMode: $Input['returnMode'] }>
+> => {
   const parentInput = input
+  const returnMode = input.returnMode ?? `data`
 
   const runHookable = <$Name extends keyof ExcludeUndefined<Input['hooks']>>(
     name: $Name,
@@ -162,6 +231,7 @@ export const create = <$SchemaIndex extends Schema.Index>(input: Input): Client<
       operationName?: string
     },
   ): Promise<ExecutionResult> => {
+    let result: ExecutionResult
     if (input.schema instanceof URL || typeof input.schema === `string`) {
       // todo return errors too
       const data: ExecutionResult['data'] = await request({
@@ -169,11 +239,12 @@ export const create = <$SchemaIndex extends Schema.Index>(input: Input): Client<
         requestHeaders: input.headers,
         document,
         variables,
+        // todo use operationName
       })
-      return { data }
+      result = { data }
     } else {
       if (typeof document === `string`) {
-        return await graphql({
+        result = await graphql({
           schema: input.schema,
           source: document,
           // contextValue: createContextValue(), // todo
@@ -181,7 +252,7 @@ export const create = <$SchemaIndex extends Schema.Index>(input: Input): Client<
           operationName,
         })
       } else if (typeof document === `object`) {
-        return await execute({
+        result = await execute({
           schema: input.schema,
           document,
           // contextValue: createContextValue(), // todo
@@ -192,75 +263,119 @@ export const create = <$SchemaIndex extends Schema.Index>(input: Input): Client<
         throw new Error(`Unsupported GraphQL document type: ${String(document)}`)
       }
     }
+    return result
   }
 
-  const executeDocumentObject = (rootType: RootTypeName) => async (documentObject: GraphQLDocumentObject) => {
-    const rootIndex = input.schemaIndex.Root[rootType]
-    if (!rootIndex) throw new Error(`Root type not found: ${rootType}`)
+  const executeRootObject =
+    (rootTypeName: RootTypeName) => async (documentObject: GraphQLObjectSelection): Promise<ExecutionResult> => {
+      const rootIndex = input.schemaIndex.Root[rootTypeName]
+      if (!rootIndex) throw new Error(`Root type not found: ${rootTypeName}`)
 
-    const documentObjectEncoded = runHookable(
-      `documentEncode`,
-      { rootIndex, documentObject },
-      ({ rootIndex, documentObject }) => CustomScalars.encode({ index: rootIndex, documentObject }),
-    )
-    const documentString = SelectionSet.toGraphQLDocumentString(documentObjectEncoded)
-    // todo variables
-    const result = await executeDocumentExpression({ document: documentString })
-    // @ts-expect-error todo make global available in TS...
-    if (result.errors && (result.errors.length > 0)) throw new AggregateError(result.errors) // eslint-disable-line
-    // todo check for errors
-    const resultDecoded = CustomScalars.decode(rootIndex, result.data as object)
-    return resultDecoded
+      const documentObjectEncoded = runHookable(
+        `documentEncode`,
+        { rootIndex, documentObject },
+        ({ rootIndex, documentObject }) => CustomScalars.encode({ index: rootIndex, documentObject }),
+      )
+      const documentString = SelectionSet.selectionSet(documentObjectEncoded)
+      // todo variables
+      const result = await executeDocumentExpression({ document: documentString })
+      // @ts-expect-error todo make global available in TS...
+      if (result.errors && (result.errors.length > 0)) throw new AggregateError(result.errors) // eslint-disable-line
+      // todo check for errors
+      const dataDecoded = CustomScalars.decode(rootIndex, result.data)
+      return { ...result, data: dataDecoded }
+    }
+
+  const rootTypeNameToOperationName = {
+    Query: `query`,
+    Mutation: `mutation`,
+    Subscription: `subscription`,
+  } as const
+
+  const executeRootTypeFieldSelection = (rootTypeName: RootTypeName, key: string) => {
+    return async (argsOrSelectionSet?: object) => {
+      const type = readMaybeThunk(
+        // eslint-disable-next-line
+        // @ts-ignore excess depth error
+        Schema.Output.unwrapToNamed(readMaybeThunk(input.schemaIndex.Root[rootTypeName]?.fields[key]?.type)),
+      ) as Schema.Output.Named
+      if (!type) throw new Error(`${rootTypeName} field not found: ${String(key)}`) // eslint-disable-line
+      // @ts-expect-error fixme
+      const isSchemaScalarOrTypeName = type.kind === `Scalar` || type.kind === `typename` // todo fix type here, its valid
+      const isSchemaHasArgs = Boolean(input.schemaIndex.Root[rootTypeName]?.fields[key]?.args)
+      const documentObject = {
+        [rootTypeNameToOperationName[rootTypeName]]: {
+          [key]: isSchemaScalarOrTypeName
+            ? isSchemaHasArgs && argsOrSelectionSet ? { $: argsOrSelectionSet } : true
+            : argsOrSelectionSet,
+        },
+      } as GraphQLObjectSelection
+      const result = await rootObjectExecutors[rootTypeName](documentObject)
+      const resultHandled = handleReturn(result)
+      // @ts-expect-error make this type safe?
+      return returnMode === `data` ? resultHandled[key] : resultHandled
+    }
   }
 
-  const executeDocumentObjectQuery = executeDocumentObject(`Query`)
+  const handleReturn = (result: ExecutionResult) => {
+    switch (returnMode) {
+      case `data`: {
+        if (result.errors && result.errors.length > 0) {
+          // @ts-expect-error fixme -- get this global available
+          throw new AggregateError(result.errors) // eslint-disable-line
+        }
+        return result.data
+      }
+      default: {
+        return result
+      }
+    }
+  }
+
+  const rootObjectExecutors = {
+    Mutation: executeRootObject(`Mutation`),
+    Query: executeRootObject(`Query`),
+    Subscription: executeRootObject(`Subscription`),
+  }
+
+  const createRootTypeMethods = (rootTypeName: RootTypeName) =>
+    new Proxy({}, {
+      get: (_, key) => {
+        if (typeof key === `symbol`) throw new Error(`Symbols not supported.`)
+        if (key === `$batch`) {
+          return async (selectionSetOrIndicator: GraphQLObjectSelection) => {
+            const result = await rootObjectExecutors[rootTypeName]({
+              [rootTypeNameToOperationName[rootTypeName]]: selectionSetOrIndicator,
+            })
+            return handleReturn(result)
+          }
+        } else {
+          return executeRootTypeFieldSelection(rootTypeName, key)
+        }
+      },
+    })
 
   // @ts-expect-error ignoreme
-  const client: Client<$SchemaIndex> = {
-    raw: async (document, variables) => {
-      return await executeDocumentExpression({ document, variables })
+  const client: Client = {
+    raw: async (document: string | DocumentNode, variables?: Variables, operationName?: string) => {
+      return await executeDocumentExpression({ document, variables, operationName })
     },
-    document: (documentObject) => {
+    document: (documentObject: DocumentObject) => {
       return {
-        run: async (operationName) => {
-          const documentExpression = toDocumentExpression(documentObject as any)
-          return await executeDocumentExpression({
+        run: async (operationName: string) => {
+          // todo this does not support custom scalars
+          const documentExpression = toDocumentExpression(documentObject)
+          const result = await executeDocumentExpression({
             document: documentExpression,
             operationName,
             // todo variables
           })
+          return handleReturn(result)
         },
       }
     },
-    query: new Proxy({}, {
-      get: (_, key) => {
-        if (key === `$batch`) {
-          return executeDocumentObjectQuery
-        } else {
-          return async (argsOrSelectionSet?: object) => {
-            const type = readMaybeThunk(
-              // eslint-disable-next-line
-              // @ts-ignore excess depth error
-              Schema.Output.unwrapToNamed(readMaybeThunk(input.schemaIndex.Root.Query?.fields[key]?.type)),
-            ) as Schema.Output.Named
-            if (!type) throw new Error(`Query field not found: ${String(key)}`) // eslint-disable-line
-            const isSchemaScalar = type.kind === `Scalar`
-            const isSchemaHasArgs = Boolean(input.schemaIndex.Root.Query?.fields[key]?.args)
-            const documentObject = {
-              [key]: isSchemaScalar
-                ? isSchemaHasArgs && argsOrSelectionSet ? { $: argsOrSelectionSet } : true
-                : argsOrSelectionSet,
-            } as GraphQLDocumentObject
-            const result = await executeDocumentObjectQuery(documentObject) as { [key in typeof key]: any }
-            return result[key]
-          }
-        }
-      },
-    }),
-    mutation: {
-      $batch: executeDocumentObject(`Mutation`),
-      // todo proxy that allows calling any mutation field
-    },
+    query: createRootTypeMethods(`Query`),
+    mutation: createRootTypeMethods(`Mutation`),
     // todo
     // subscription: async () => {},
   }

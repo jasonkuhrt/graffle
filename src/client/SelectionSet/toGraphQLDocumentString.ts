@@ -17,17 +17,21 @@ type Args_ = string | boolean | null | number | Args
 
 type Indicator = 0 | 1 | boolean
 
-export type GraphQLDocumentObject = Record<string, Indicator | SS>
+export type DocumentObject = Record<string, GraphQLRootSelection>
 
-type SS = {
+export type GraphQLRootSelection = { query: GraphQLObjectSelection } | { mutation: GraphQLObjectSelection }
+
+export type GraphQLObjectSelection = Record<string, Indicator | SS>
+
+export type SS = {
   [k: string]: Indicator | SS
 } & SpecialFields
 
-export const toGraphQLDocumentString = (ss: GraphQLDocumentObject) => {
-  return `query ${toGraphQLDocumentSelectionSet(ss)}`
-}
+// export const toGraphQLDocumentString = (ss: GraphQLDocumentObject) => {
+//   return `query ${toGraphQLDocumentSelectionSet(ss)}`
+// }
 
-export const toGraphQLDocumentSelectionSet = (ss: GraphQLDocumentObject) => {
+export const toGraphQLDocumentSelectionSet = (ss: GraphQLObjectSelection) => {
   return `{
 		${selectionSet(ss)}
 	}`
@@ -93,7 +97,7 @@ const indicatorOrSelectionSet = (ss: null | Indicator | SS): string => {
 	}`
 }
 
-const selectionSet = (ss: GraphQLDocumentObject) => {
+export const selectionSet = (ss: GraphQLObjectSelection) => {
   return Object.entries(ss).filter(([_, v]) => {
     return isPositiveIndicator(v)
   }).map(([field, ss]) => {

@@ -1,10 +1,12 @@
+import type { ExecutionResult } from 'graphql'
 import { standardScalarTypeNames } from '../lib/graphql.js'
+import { mapValues } from '../lib/prelude.js'
 import type { Object$2, Schema } from '../Schema/__.js'
 import { Output } from '../Schema/__.js'
 import { readMaybeThunk } from '../Schema/core/helpers.js'
 import type { SelectionSet } from './SelectionSet/__.js'
 import type { Args } from './SelectionSet/SelectionSet.js'
-import type { GraphQLDocumentObject } from './SelectionSet/toGraphQLDocumentString.js'
+import type { GraphQLObjectSelection } from './SelectionSet/toGraphQLDocumentString.js'
 
 namespace SSValue {
   export type Obj = {
@@ -17,18 +19,22 @@ namespace SSValue {
 export const encode = (
   input: {
     index: Schema.Object$2
-    documentObject: SelectionSet.GraphQLDocumentObject
+    documentObject: SelectionSet.GraphQLObjectSelection
   },
-): GraphQLDocumentObject => {
+): GraphQLObjectSelection => {
   return Object.fromEntries(
     Object.entries(input.documentObject).map(([fieldName, fieldValue]) => {
-      if (typeof fieldValue === `object` && `$` in fieldValue) {
-        const field = input.index.fields[fieldName]
-        if (!field?.args) throw new Error(`Field has no args: ${fieldName}`)
-        if (!field) throw new Error(`Field not found: ${fieldName}`) // eslint-disable-line
-        // @ts-expect-error fixme
-        fieldValue.$ = encodeCustomScalarsArgs(field.args, fieldValue.$)
-        return [fieldName, fieldValue]
+      if (typeof fieldValue === `object`) {
+        if (`$` in fieldValue) {
+          const field = input.index.fields[fieldName]
+          if (!field?.args) throw new Error(`Field has no args: ${fieldName}`)
+          if (!field) throw new Error(`Field not found: ${fieldName}`) // eslint-disable-line
+          // @ts-expect-error fixme
+          fieldValue.$ = encodeCustomScalarsArgs(field.args, fieldValue.$)
+          return [fieldName, fieldValue]
+        }
+        // todo test nested inputs case
+        return [fieldName, encode({ index: input.index, documentObject: fieldValue })]
       }
       return [fieldName, fieldValue]
     }),
@@ -67,18 +73,17 @@ const encodeCustomScalarsArgValue = (indexArgMaybeThunk: Schema.Input.Any, argVa
   throw new Error(`Unsupported arg kind: ${String(indexArg)}`)
 }
 
-export const decode = (index: Schema.Object$2, documentQueryObject: object): object => {
-  return Object.fromEntries(
-    Object.entries(documentQueryObject).map(([fieldName, v]) => {
-      const indexField = index.fields[fieldName]
-      if (!indexField) throw new Error(`Field not found: ${fieldName}`)
+export const decode = <$Data extends ExecutionResult['data']>(index: Schema.Object$2, data: $Data): $Data => {
+  if (!data) return data
+  return mapValues(data, (v, fieldName) => {
+    const indexField = index.fields[fieldName]
+    if (!indexField) throw new Error(`Field not found: ${String(fieldName)}`)
 
-      const type = readMaybeThunk(indexField.type)
-      const typeWithoutNonNull = Output.unwrapNullable(type) as Output.Named | Output.List<any>
-      const v2 = decodeCustomScalarValue(typeWithoutNonNull, v) // eslint-disable-line
-      return [fieldName, v2]
-    }),
-  )
+    const type = readMaybeThunk(indexField.type)
+    const typeWithoutNonNull = Output.unwrapNullable(type) as Output.Named | Output.List<any>
+    const v2 = decodeCustomScalarValue(typeWithoutNonNull, v as any) // eslint-disable-line
+    return v2
+  }) as $Data
 }
 
 // @ts-expect-error fixme

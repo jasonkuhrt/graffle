@@ -4,7 +4,7 @@ import * as SchemaMutationOnly from '../../tests/_/schemaMutationOnly/schema.js'
 import * as SchemaQueryOnly from '../../tests/_/schemaQueryOnly/schema.js'
 import { create } from './client.js'
 
-const client = create<Schema.Index>({ schema: Schema.schema, schemaIndex: Schema.$Index })
+const client = create({ schema: Schema.schema, schemaIndex: Schema.$Index })
 
 test(`requires input`, () => {
   // @ts-expect-error missing input
@@ -28,7 +28,8 @@ describe(`input`, () => {
   })
 
   test(`root operation not available if it is not in schema`, () => {
-    const clientQueryOnly = create<SchemaQueryOnly.Index>({
+    const clientQueryOnly = create({
+      name: `QueryOnly`,
       schema: SchemaQueryOnly.schema,
       schemaIndex: SchemaQueryOnly.$Index,
     })
@@ -37,7 +38,8 @@ describe(`input`, () => {
       // @ts-expect-error mutation not in schema
       bar: { mutation: { id: true } },
     })
-    const clientMutationOnly = create<SchemaMutationOnly.Index>({
+    const clientMutationOnly = create({
+      name: `MutationOnly`,
       schema: SchemaMutationOnly.schema,
       schemaIndex: SchemaMutationOnly.$Index,
     })

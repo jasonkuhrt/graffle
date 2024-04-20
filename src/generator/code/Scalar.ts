@@ -17,20 +17,6 @@ export const generateScalar = (config: Config) => {
       ? `import * as ${StandardScalarNamespace} from '${config.libraryPaths.scalars}'`
       : ``
   }
-  ${config.options.customScalars ? `import type * as CustomScalar from '${config.importPaths.customScalarCodecs}'` : ``}
-
-    declare global {
-      interface SchemaCustomScalars {
-        ${
-    config.typeMapByKind.GraphQLScalarTypeCustom
-      .map((_) => {
-        return `${_.name}: ${
-          needsDefaultCustomScalarImplementation ? `${StandardScalarNamespace}.String` : `CustomScalar.${_.name}`
-        }`
-      }).join(`\n`)
-  }
-      }
-    }
 
     export * from '${config.libraryPaths.scalars}'
     ${config.options.customScalars ? `export * from '${config.importPaths.customScalarCodecs}'` : ``}

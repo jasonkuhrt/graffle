@@ -215,3 +215,17 @@ export type IsMultipleKeys<T> = IsMultiple<CountKeys<T>>
 export type IsMultiple<T> = T extends 0 ? false : T extends 1 ? false : true
 
 export type ExcludeNull<T> = Exclude<T, null>
+
+export const mapValues = <
+  $Obj extends Record<string, any>,
+  $Fn extends (value: $Obj[keyof $Obj], key: keyof $Obj) => any,
+>(
+  object: $Obj,
+  fn: $Fn,
+): Record<keyof $Obj, ReturnType<$Fn>> => {
+  return Object.fromEntries(
+    Object.entries(object).map(([key, value]) => {
+      return [key, fn(value, key)]
+    }),
+  ) as Record<keyof $Obj, ReturnType<$Fn>>
+}

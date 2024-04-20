@@ -5,6 +5,7 @@ import * as Path from 'node:path'
 import type { TypeMapByKind } from '../../lib/graphql.js'
 import { getTypeMapByKind } from '../../lib/graphql.js'
 import { generateError } from './Error.js'
+import { generateGlobal } from './global.js'
 import { generateIndex } from './Index.js'
 import { generateScalar } from './Scalar.js'
 import { generateSchemaBuildtime } from './SchemaBuildtime.js'
@@ -12,6 +13,7 @@ import { generateRuntimeSchema } from './SchemaRuntime.js'
 import { generateSelect } from './Select.js'
 
 export interface OptionsInput {
+  name?: string
   errorTypeNamePattern?: RegExp
   /**
    * Should custom scalars definitions be imported into the generated output?
@@ -24,6 +26,7 @@ export interface OptionsInput {
 }
 
 export interface Input {
+  name?: string
   libraryPaths?: {
     schema?: string
     scalars?: string
@@ -39,6 +42,7 @@ export interface Input {
 }
 
 export interface Config {
+  name: string
   schema: GraphQLSchema
   typeMapByKind: TypeMapByKind
   error: {
@@ -69,6 +73,7 @@ export const resolveOptions = (input: Input): Config => {
     ? Object.values(typeMapByKind.GraphQLObjectType).filter(_ => _.name.match(errorTypeNamePattern))
     : []
   return {
+    name: input.name ?? `default`,
     schema,
     error: {
       enabled: Boolean(errorTypeNamePattern),
@@ -103,6 +108,7 @@ export const generateCode = (input: Input) => {
   const config = resolveOptions(input)
 
   return [
+    generateGlobal,
     generateError,
     generateIndex,
     generateScalar,

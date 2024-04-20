@@ -3,7 +3,7 @@ import { expectTypeOf, test } from 'vitest'
 import * as Schema from '../../tests/_/schema/schema.js'
 import { create } from './client.js'
 
-const client = create<Schema.Index>({ schema: Schema.schema, schemaIndex: Schema.$Index })
+const client = create({ schema: Schema.schema, schemaIndex: Schema.$Index })
 
 // dprint-ignore
 test(`query`, () => {

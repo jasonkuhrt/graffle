@@ -8,6 +8,7 @@ import type { OptionsInput } from './code/generateCode.js'
 import { generateCode, type Input as GenerateInput } from './code/generateCode.js'
 
 export interface Input {
+  name?: string
   outputDirPath: string
   code?: Omit<GenerateInput, 'schemaSource' | 'sourceDirPath' | 'options'>
   sourceDirPath?: string
@@ -33,6 +34,7 @@ export const generateFiles = async (input: Input) => {
   const typeScriptFormatter = (input.format ?? true) ? createFromBuffer(await fs.readFile(getPath())) : undefined
 
   const codes = generateCode({
+    name: input.name,
     schemaSource,
     importPaths: {
       customScalarCodecs: customScalarCodecsImportPath,

@@ -2,7 +2,7 @@
 import { beforeEach, describe, expect, test } from 'vitest'
 import { db } from '../../tests/_/db.js'
 import { setupMockServer } from '../../tests/raw/__helpers.js'
-import type { Index } from '../../tests/ts/_/schema/generated/Index.js'
+// import type { Index } from '../../tests/ts/_/schema/generated/Index.js'
 import { $Index as schemaIndex } from '../../tests/ts/_/schema/generated/SchemaRuntime.js'
 import { create } from './client.js'
 
@@ -10,7 +10,7 @@ const ctx = setupMockServer()
 const date0Encoded = db.date0.toISOString()
 const date1Encoded = db.date1.toISOString()
 
-const client = () => create<Index>({ schema: ctx.url, schemaIndex })
+const client = () => create({ name: 'MigrateMe', schema: ctx.url, schemaIndex })
 
 describe(`output`, () => {
   test(`query field`, async () => {
@@ -79,13 +79,14 @@ describe(`input`, () => {
     ctx.res({ body: { data: {} } })
   })
   const clientExpected = (expectedDocument: (document: any) => void) => {
-    const client = create<Index>({
+    const client = create({
+      name: 'MigrateMe',
       schema: ctx.url,
       schemaIndex,
       hooks: {
         documentEncode: (input, run) => {
           const result = run(input)
-          expectedDocument(result)
+          expectedDocument(result['query'])
           return result
         },
       },

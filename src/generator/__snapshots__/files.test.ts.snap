@@ -441,15 +441,7 @@ export namespace Union {
 `;
 
 exports[`generates types from GraphQL SDL file 5`] = `
-"import type * as CustomScalar from '../../../../_/customScalarCodecs.js'
-
-declare global {
-  interface SchemaCustomScalars {
-    Date: CustomScalar.Date
-  }
-}
-
-export * from '../../../../../src/Schema/Hybrid/types/Scalar/Scalar.js'
+"export * from '../../../../../src/Schema/Hybrid/types/Scalar/Scalar.js'
 export * from '../../../../_/customScalarCodecs.js'
 "
 `;
@@ -969,15 +961,7 @@ export namespace Union {
 `;
 
 exports[`schema2 5`] = `
-"import type * as CustomScalar from '../../customScalarCodecs.js'
-
-declare global {
-  interface SchemaCustomScalars {
-    Date: CustomScalar.Date
-  }
-}
-
-export * from '../../../../src/Schema/Hybrid/types/Scalar/Scalar.js'
+"export * from '../../../../src/Schema/Hybrid/types/Scalar/Scalar.js'
 export * from '../../customScalarCodecs.js'
 "
 `;

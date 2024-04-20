@@ -10,6 +10,7 @@ export const generateIndex = (config: Config) => {
   const code = []
   code.push(`/* eslint-disable */\n`)
   code.push(`import type * as ${namespace} from './${moduleNameSchemaBuildtime}.js'\n`)
+
   code.push(Code.export$(
     Code.interface$(
       `Index`,

@@ -57,8 +57,8 @@ export const Scalars = {
   Boolean,
 }
 
-export type Any = String | Int | Boolean | ID | Float | SchemaCustomScalars[keyof SchemaCustomScalars]
+// todo this mixes scalars from different schemas
+export type Any = String | Int | Boolean | ID | Float | Values<NamedSchemas[keyof NamedSchemas]['customScalars']>
 
-declare global {
-  interface SchemaCustomScalars {}
-}
+type Values<T> = T extends any ? keyof T extends never ? never : T[keyof T] : never
+// type x = Values<NamedSchemas[keyof NamedSchemas]['customScalars']>
