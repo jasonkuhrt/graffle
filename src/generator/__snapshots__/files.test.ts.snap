@@ -1,673 +1,5 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`generates types from GraphQL SDL file 1`] = `
-"type Include<T, U> = Exclude<T, Exclude<T, U>>
-
-type ObjectWithTypeName = { __typename: string }
-
-const ErrorObjectsTypeNameSelectedEnum = {} as Record<string, ObjectWithTypeName>
-
-const ErrorObjectsTypeNameSelected = Object.values(ErrorObjectsTypeNameSelectedEnum)
-
-type ErrorObjectsTypeNameSelected = (typeof ErrorObjectsTypeNameSelected)[number]
-
-export const isError = <$Value>(value: $Value): value is Include<$Value, ErrorObjectsTypeNameSelected> => {
-  return typeof value === 'object' && value !== null && '__typename' in value
-    && ErrorObjectsTypeNameSelected.some(_ => _.__typename === value.__typename)
-}
-"
-`;
-
-exports[`generates types from GraphQL SDL file 2`] = `
-"import { ResultSet, SelectionSet } from '../../../../../src/entrypoints/alpha/schema.js'
-import { Index } from './Index.js'
-
-// Root Types
-// ----------
-
-export type Query<$SelectionSet extends SelectionSet.Root<Index, 'Query'>> = ResultSet.Root<
-  $SelectionSet,
-  Index,
-  'Query'
->
-
-// Object Types
-// ------------
-
-export type DateObject1<$SelectionSet extends SelectionSet.Object<Index['objects']['DateObject1'], Index>> =
-  ResultSet.Object$<$SelectionSet, Index['objects']['DateObject1'], Index>
-
-export type DateObject2<$SelectionSet extends SelectionSet.Object<Index['objects']['DateObject2'], Index>> =
-  ResultSet.Object$<$SelectionSet, Index['objects']['DateObject2'], Index>
-
-export type ObjectUnion<$SelectionSet extends SelectionSet.Object<Index['objects']['ObjectUnion'], Index>> =
-  ResultSet.Object$<$SelectionSet, Index['objects']['ObjectUnion'], Index>
-
-export type Foo<$SelectionSet extends SelectionSet.Object<Index['objects']['Foo'], Index>> = ResultSet.Object$<
-  $SelectionSet,
-  Index['objects']['Foo'],
-  Index
->
-
-export type Bar<$SelectionSet extends SelectionSet.Object<Index['objects']['Bar'], Index>> = ResultSet.Object$<
-  $SelectionSet,
-  Index['objects']['Bar'],
-  Index
->
-
-export type ObjectNested<$SelectionSet extends SelectionSet.Object<Index['objects']['ObjectNested'], Index>> =
-  ResultSet.Object$<$SelectionSet, Index['objects']['ObjectNested'], Index>
-
-export type lowerCaseObject<$SelectionSet extends SelectionSet.Object<Index['objects']['lowerCaseObject'], Index>> =
-  ResultSet.Object$<$SelectionSet, Index['objects']['lowerCaseObject'], Index>
-
-export type lowerCaseObject2<$SelectionSet extends SelectionSet.Object<Index['objects']['lowerCaseObject2'], Index>> =
-  ResultSet.Object$<$SelectionSet, Index['objects']['lowerCaseObject2'], Index>
-
-export type Object1<$SelectionSet extends SelectionSet.Object<Index['objects']['Object1'], Index>> = ResultSet.Object$<
-  $SelectionSet,
-  Index['objects']['Object1'],
-  Index
->
-
-export type Object1ImplementingInterface<
-  $SelectionSet extends SelectionSet.Object<Index['objects']['Object1ImplementingInterface'], Index>,
-> = ResultSet.Object$<$SelectionSet, Index['objects']['Object1ImplementingInterface'], Index>
-
-export type Object2ImplementingInterface<
-  $SelectionSet extends SelectionSet.Object<Index['objects']['Object2ImplementingInterface'], Index>,
-> = ResultSet.Object$<$SelectionSet, Index['objects']['Object2ImplementingInterface'], Index>
-
-// Union Types
-// -----------
-
-export type DateUnion<$SelectionSet extends SelectionSet.Union<Index['unions']['DateUnion'], Index>> = ResultSet.Union<
-  $SelectionSet,
-  Index['unions']['DateUnion'],
-  Index
->
-
-export type FooBarUnion<$SelectionSet extends SelectionSet.Union<Index['unions']['FooBarUnion'], Index>> =
-  ResultSet.Union<$SelectionSet, Index['unions']['FooBarUnion'], Index>
-
-export type lowerCaseUnion<$SelectionSet extends SelectionSet.Union<Index['unions']['lowerCaseUnion'], Index>> =
-  ResultSet.Union<$SelectionSet, Index['unions']['lowerCaseUnion'], Index>
-
-// Interface Types
-// ---------------
-
-export type DateInterface1<$SelectionSet extends SelectionSet.Interface<Index['interfaces']['DateInterface1'], Index>> =
-  ResultSet.Interface<$SelectionSet, Index['interfaces']['DateInterface1'], Index>
-
-export type Interface<$SelectionSet extends SelectionSet.Interface<Index['interfaces']['Interface'], Index>> =
-  ResultSet.Interface<$SelectionSet, Index['interfaces']['Interface'], Index>
-"
-`;
-
-exports[`generates types from GraphQL SDL file 3`] = `
-"/* eslint-disable */
-
-import type * as Schema from './SchemaBuildtime.js'
-
-export interface Index {
-  Root: {
-    Query: Schema.Root.Query
-    Mutation: null
-    Subscription: null
-  }
-  objects: {
-    DateObject1: Schema.Object.DateObject1
-    DateObject2: Schema.Object.DateObject2
-    ObjectUnion: Schema.Object.ObjectUnion
-    Foo: Schema.Object.Foo
-    Bar: Schema.Object.Bar
-    ObjectNested: Schema.Object.ObjectNested
-    lowerCaseObject: Schema.Object.lowerCaseObject
-    lowerCaseObject2: Schema.Object.lowerCaseObject2
-    Object1: Schema.Object.Object1
-    Object1ImplementingInterface: Schema.Object.Object1ImplementingInterface
-    Object2ImplementingInterface: Schema.Object.Object2ImplementingInterface
-  }
-  unions: {
-    DateUnion: Schema.Union.DateUnion
-    FooBarUnion: Schema.Union.FooBarUnion
-    lowerCaseUnion: Schema.Union.lowerCaseUnion
-  }
-  interfaces: {
-    DateInterface1: Schema.Interface.DateInterface1
-    Interface: Schema.Interface.Interface
-  }
-  error: {
-    objects: {}
-  }
-}
-"
-`;
-
-exports[`generates types from GraphQL SDL file 4`] = `
-"import type * as $ from '../../../../../src/entrypoints/alpha/schema.js'
-import type * as $Scalar from './Scalar.ts'
-
-// ------------------------------------------------------------ //
-//                             Root                             //
-// ------------------------------------------------------------ //
-
-export namespace Root {
-  export type Query = $.Object$2<'Query', {
-    date: $.Field<$.Output.Nullable<$Scalar.Date>, null>
-    dateNonNull: $.Field<$Scalar.Date, null>
-    dateList: $.Field<$.Output.Nullable<$.Output.List<$.Output.Nullable<$Scalar.Date>>>, null>
-    dateObject1: $.Field<$.Output.Nullable<Object.DateObject1>, null>
-    dateUnion: $.Field<$.Output.Nullable<Union.DateUnion>, null>
-    dateInterface1: $.Field<$.Output.Nullable<Interface.DateInterface1>, null>
-    dateListNonNull: $.Field<$.Output.List<$Scalar.Date>, null>
-    dateArg: $.Field<
-      $.Output.Nullable<$Scalar.Date>,
-      $.Args<{
-        date: $.Input.Nullable<$Scalar.Date>
-      }>
-    >
-    dateArgNonNull: $.Field<
-      $.Output.Nullable<$Scalar.Date>,
-      $.Args<{
-        date: $Scalar.Date
-      }>
-    >
-    dateArgList: $.Field<
-      $.Output.Nullable<$Scalar.Date>,
-      $.Args<{
-        date: $.Input.Nullable<$.Input.List<$.Input.Nullable<$Scalar.Date>>>
-      }>
-    >
-    dateArgNonNullList: $.Field<
-      $.Output.Nullable<$Scalar.Date>,
-      $.Args<{
-        date: $.Input.List<$.Input.Nullable<$Scalar.Date>>
-      }>
-    >
-    dateArgNonNullListNonNull: $.Field<
-      $.Output.Nullable<$Scalar.Date>,
-      $.Args<{
-        date: $.Input.List<$Scalar.Date>
-      }>
-    >
-    dateArgInputObject: $.Field<
-      $.Output.Nullable<$Scalar.Date>,
-      $.Args<{
-        input: $.Input.Nullable<InputObject.InputObject>
-      }>
-    >
-    InputObjectNested: $.Field<
-      $.Output.Nullable<$Scalar.ID>,
-      $.Args<{
-        input: $.Input.Nullable<InputObject.InputObjectNested>
-      }>
-    >
-    InputObjectNestedNonNull: $.Field<
-      $.Output.Nullable<$Scalar.ID>,
-      $.Args<{
-        input: InputObject.InputObjectNested
-      }>
-    >
-    id: $.Field<$.Output.Nullable<$Scalar.ID>, null>
-    idNonNull: $.Field<$Scalar.ID, null>
-    string: $.Field<$.Output.Nullable<$Scalar.String>, null>
-    stringWithRequiredArg: $.Field<
-      $.Output.Nullable<$Scalar.String>,
-      $.Args<{
-        string: $Scalar.String
-      }>
-    >
-    stringWithArgs: $.Field<
-      $.Output.Nullable<$Scalar.String>,
-      $.Args<{
-        string: $.Input.Nullable<$Scalar.String>
-        int: $.Input.Nullable<$Scalar.Int>
-        float: $.Input.Nullable<$Scalar.Float>
-        boolean: $.Input.Nullable<$Scalar.Boolean>
-        id: $.Input.Nullable<$Scalar.ID>
-      }>
-    >
-    stringWithArgEnum: $.Field<
-      $.Output.Nullable<$Scalar.String>,
-      $.Args<{
-        ABCEnum: $.Input.Nullable<Enum.ABCEnum>
-      }>
-    >
-    stringWithListArg: $.Field<
-      $.Output.Nullable<$Scalar.String>,
-      $.Args<{
-        ints: $.Input.Nullable<$.Input.List<$.Input.Nullable<$Scalar.Int>>>
-      }>
-    >
-    stringWithListArgRequired: $.Field<
-      $.Output.Nullable<$Scalar.String>,
-      $.Args<{
-        ints: $.Input.List<$.Input.Nullable<$Scalar.Int>>
-      }>
-    >
-    stringWithArgInputObject: $.Field<
-      $.Output.Nullable<$Scalar.String>,
-      $.Args<{
-        input: $.Input.Nullable<InputObject.InputObject>
-      }>
-    >
-    stringWithArgInputObjectRequired: $.Field<
-      $.Output.Nullable<$Scalar.String>,
-      $.Args<{
-        input: InputObject.InputObject
-      }>
-    >
-    listListIntNonNull: $.Field<$.Output.List<$.Output.List<$Scalar.Int>>, null>
-    listListInt: $.Field<
-      $.Output.Nullable<$.Output.List<$.Output.Nullable<$.Output.List<$.Output.Nullable<$Scalar.Int>>>>>,
-      null
-    >
-    listInt: $.Field<$.Output.Nullable<$.Output.List<$.Output.Nullable<$Scalar.Int>>>, null>
-    listIntNonNull: $.Field<$.Output.List<$Scalar.Int>, null>
-    object: $.Field<$.Output.Nullable<Object.Object1>, null>
-    objectNonNull: $.Field<Object.Object1, null>
-    objectNested: $.Field<$.Output.Nullable<Object.ObjectNested>, null>
-    objectWithArgs: $.Field<
-      $.Output.Nullable<Object.Object1>,
-      $.Args<{
-        string: $.Input.Nullable<$Scalar.String>
-        int: $.Input.Nullable<$Scalar.Int>
-        float: $.Input.Nullable<$Scalar.Float>
-        boolean: $.Input.Nullable<$Scalar.Boolean>
-        id: $.Input.Nullable<$Scalar.ID>
-      }>
-    >
-    fooBarUnion: $.Field<$.Output.Nullable<Union.FooBarUnion>, null>
-    objectList: $.Field<$.Output.Nullable<$.Output.List<$.Output.Nullable<Object.Object1>>>, null>
-    objectListNonNull: $.Field<$.Output.List<Object.Object1>, null>
-    /**
-     * Query enum field documentation.
-     */
-    abcEnum: $.Field<$.Output.Nullable<Enum.ABCEnum>, null>
-    lowerCaseUnion: $.Field<$.Output.Nullable<Union.lowerCaseUnion>, null>
-    interface: $.Field<$.Output.Nullable<Interface.Interface>, null>
-    interfaceWithArgs: $.Field<
-      $.Output.Nullable<Interface.Interface>,
-      $.Args<{
-        id: $Scalar.ID
-      }>
-    >
-    interfaceNonNull: $.Field<Interface.Interface, null>
-    unionFooBar: $.Field<$.Output.Nullable<Union.FooBarUnion>, null>
-    unionFooBarWithArgs: $.Field<
-      $.Output.Nullable<Union.FooBarUnion>,
-      $.Args<{
-        id: $.Input.Nullable<$Scalar.ID>
-      }>
-    >
-    unionObject: $.Field<$.Output.Nullable<Object.ObjectUnion>, null>
-    unionFooBarNonNull: $.Field<Union.FooBarUnion, null>
-    unionObjectNonNull: $.Field<Object.ObjectUnion, null>
-  }>
-}
-
-// ------------------------------------------------------------ //
-//                             Enum                             //
-// ------------------------------------------------------------ //
-
-export namespace Enum {
-  /**
-   * Enum documentation.
-   *
-   * Members
-   * "A" - (DEPRECATED: Enum value A is deprecated.)
-   * "B" - Enum B member documentation.
-   * "C" - Enum C member documentation. (DEPRECATED: Enum value C is deprecated.)
-   */
-  export type ABCEnum = $.Enum<'ABCEnum', ['A', 'B', 'C']>
-}
-
-// ------------------------------------------------------------ //
-//                         InputObject                          //
-// ------------------------------------------------------------ //
-
-export namespace InputObject {
-  export type InputObjectNested = $.InputObject<'InputObjectNested', {
-    InputObject: $.Input.Nullable<InputObject.InputObject>
-  }>
-
-  export type InputObjectNestedNonNull = $.InputObject<'InputObjectNestedNonNull', {
-    InputObject: InputObject.InputObject
-  }>
-
-  export type InputObject = $.InputObject<'InputObject', {
-    id: $.Input.Nullable<$Scalar.ID>
-    idRequired: $Scalar.ID
-    date: $.Input.Nullable<$Scalar.Date>
-    dateRequired: $Scalar.Date
-  }>
-}
-
-// ------------------------------------------------------------ //
-//                          Interface                           //
-// ------------------------------------------------------------ //
-
-export namespace Interface {
-  export type DateInterface1 = $.Interface<'DateInterface1', {
-    date1: $.Field<$.Output.Nullable<$Scalar.Date>, null>
-  }, [Object.DateObject1]>
-
-  export type Interface = $.Interface<'Interface', {
-    id: $.Field<$.Output.Nullable<$Scalar.ID>, null>
-  }, [Object.Object1ImplementingInterface, Object.Object2ImplementingInterface]>
-}
-
-// ------------------------------------------------------------ //
-//                            Object                            //
-// ------------------------------------------------------------ //
-
-export namespace Object {
-  export type DateObject1 = $.Object$2<'DateObject1', {
-    date1: $.Field<$.Output.Nullable<$Scalar.Date>, null>
-  }>
-
-  export type DateObject2 = $.Object$2<'DateObject2', {
-    date2: $.Field<$.Output.Nullable<$Scalar.Date>, null>
-  }>
-
-  export type ObjectUnion = $.Object$2<'ObjectUnion', {
-    fooBarUnion: $.Field<$.Output.Nullable<Union.FooBarUnion>, null>
-  }>
-
-  /**
-   * Object documentation.
-   */
-  export type Foo = $.Object$2<'Foo', {
-    /**
-     * Field documentation.
-     *
-     * @deprecated Field a is deprecated.
-     */
-    id: $.Field<$.Output.Nullable<$Scalar.ID>, null>
-  }>
-
-  export type Bar = $.Object$2<'Bar', {
-    int: $.Field<$.Output.Nullable<$Scalar.Int>, null>
-  }>
-
-  export type ObjectNested = $.Object$2<'ObjectNested', {
-    id: $.Field<$.Output.Nullable<$Scalar.ID>, null>
-    object: $.Field<$.Output.Nullable<Object.Object1>, null>
-  }>
-
-  export type lowerCaseObject = $.Object$2<'lowerCaseObject', {
-    id: $.Field<$.Output.Nullable<$Scalar.ID>, null>
-  }>
-
-  export type lowerCaseObject2 = $.Object$2<'lowerCaseObject2', {
-    int: $.Field<$.Output.Nullable<$Scalar.Int>, null>
-  }>
-
-  export type Object1 = $.Object$2<'Object1', {
-    string: $.Field<$.Output.Nullable<$Scalar.String>, null>
-    int: $.Field<$.Output.Nullable<$Scalar.Int>, null>
-    float: $.Field<$.Output.Nullable<$Scalar.Float>, null>
-    boolean: $.Field<$.Output.Nullable<$Scalar.Boolean>, null>
-    id: $.Field<$.Output.Nullable<$Scalar.ID>, null>
-  }>
-
-  export type Object1ImplementingInterface = $.Object$2<'Object1ImplementingInterface', {
-    id: $.Field<$.Output.Nullable<$Scalar.ID>, null>
-    int: $.Field<$.Output.Nullable<$Scalar.Int>, null>
-  }>
-
-  export type Object2ImplementingInterface = $.Object$2<'Object2ImplementingInterface', {
-    id: $.Field<$.Output.Nullable<$Scalar.ID>, null>
-    boolean: $.Field<$.Output.Nullable<$Scalar.Boolean>, null>
-  }>
-}
-
-// ------------------------------------------------------------ //
-//                            Union                             //
-// ------------------------------------------------------------ //
-
-export namespace Union {
-  export type DateUnion = $.Union<'DateUnion', [Object.DateObject1, Object.DateObject2]>
-
-  /**
-   * Union documentation.
-   */
-  export type FooBarUnion = $.Union<'FooBarUnion', [Object.Foo, Object.Bar]>
-
-  export type lowerCaseUnion = $.Union<'lowerCaseUnion', [Object.lowerCaseObject, Object.lowerCaseObject2]>
-}
-"
-`;
-
-exports[`generates types from GraphQL SDL file 5`] = `
-"export * from '../../../../../src/Schema/Hybrid/types/Scalar/Scalar.js'
-export * from '../../../../_/customScalarCodecs.js'
-"
-`;
-
-exports[`generates types from GraphQL SDL file 6`] = `
-"/* eslint-disable */
-
-import * as $ from '../../../../../src/entrypoints/alpha/schema.js'
-import * as $Scalar from './Scalar.js'
-
-export const ABCEnum = $.Enum(\`ABCEnum\`, [\`A\`, \`B\`, \`C\`])
-
-export const InputObjectNested = $.InputObject(\`InputObjectNested\`, {
-  InputObject: $.Input.field(() => $.Input.Nullable(InputObject)),
-})
-
-export const InputObjectNestedNonNull = $.InputObject(\`InputObjectNestedNonNull\`, {
-  InputObject: $.Input.field(() => InputObject),
-})
-
-export const InputObject = $.InputObject(\`InputObject\`, {
-  id: $.Input.field($.Input.Nullable($Scalar.ID)),
-  idRequired: $.Input.field($Scalar.ID),
-  date: $.Input.field($.Input.Nullable($Scalar.Date)),
-  dateRequired: $.Input.field($Scalar.Date),
-})
-
-// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-export const DateObject1 = $.Object$(\`DateObject1\`, {
-  date1: $.field($.Output.Nullable($Scalar.Date)),
-})
-
-// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-export const DateObject2 = $.Object$(\`DateObject2\`, {
-  date2: $.field($.Output.Nullable($Scalar.Date)),
-})
-
-// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-export const ObjectUnion = $.Object$(\`ObjectUnion\`, {
-  fooBarUnion: $.field($.Output.Nullable(() => FooBarUnion)),
-})
-
-// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-export const Foo = $.Object$(\`Foo\`, {
-  id: $.field($.Output.Nullable($Scalar.ID)),
-})
-
-// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-export const Bar = $.Object$(\`Bar\`, {
-  int: $.field($.Output.Nullable($Scalar.Int)),
-})
-
-// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-export const ObjectNested = $.Object$(\`ObjectNested\`, {
-  id: $.field($.Output.Nullable($Scalar.ID)),
-  object: $.field($.Output.Nullable(() => Object1)),
-})
-
-// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-export const lowerCaseObject = $.Object$(\`lowerCaseObject\`, {
-  id: $.field($.Output.Nullable($Scalar.ID)),
-})
-
-// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-export const lowerCaseObject2 = $.Object$(\`lowerCaseObject2\`, {
-  int: $.field($.Output.Nullable($Scalar.Int)),
-})
-
-// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-export const Object1 = $.Object$(\`Object1\`, {
-  string: $.field($.Output.Nullable($Scalar.String)),
-  int: $.field($.Output.Nullable($Scalar.Int)),
-  float: $.field($.Output.Nullable($Scalar.Float)),
-  boolean: $.field($.Output.Nullable($Scalar.Boolean)),
-  id: $.field($.Output.Nullable($Scalar.ID)),
-})
-
-// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-export const Object1ImplementingInterface = $.Object$(\`Object1ImplementingInterface\`, {
-  id: $.field($.Output.Nullable($Scalar.ID)),
-  int: $.field($.Output.Nullable($Scalar.Int)),
-})
-
-// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-export const Object2ImplementingInterface = $.Object$(\`Object2ImplementingInterface\`, {
-  id: $.field($.Output.Nullable($Scalar.ID)),
-  boolean: $.field($.Output.Nullable($Scalar.Boolean)),
-})
-
-// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-export const DateUnion = $.Union(\`DateUnion\`, [DateObject1, DateObject2])
-
-// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-export const FooBarUnion = $.Union(\`FooBarUnion\`, [Foo, Bar])
-
-// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-export const lowerCaseUnion = $.Union(\`lowerCaseUnion\`, [lowerCaseObject, lowerCaseObject2])
-
-export const DateInterface1 = $.Interface(\`DateInterface1\`, { date1: $.field($.Output.Nullable($Scalar.Date)) }, [
-  DateObject1,
-])
-export const Interface = $.Interface(\`Interface\`, { id: $.field($.Output.Nullable($Scalar.ID)) }, [
-  Object1ImplementingInterface,
-  Object2ImplementingInterface,
-])
-
-// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-export const Query = $.Object$(\`Query\`, {
-  date: $.field($.Output.Nullable($Scalar.Date)),
-  dateNonNull: $.field($Scalar.Date),
-  dateList: $.field($.Output.Nullable($.Output.List($.Output.Nullable($Scalar.Date)))),
-  dateObject1: $.field($.Output.Nullable(() => DateObject1)),
-  dateUnion: $.field($.Output.Nullable(() => DateUnion)),
-  dateInterface1: $.field($.Output.Nullable(() => DateInterface1)),
-  dateListNonNull: $.field($.Output.List($Scalar.Date)),
-  dateArg: $.field($.Output.Nullable($Scalar.Date), $.Args({ date: $.Input.Nullable($Scalar.Date) })),
-  dateArgNonNull: $.field($.Output.Nullable($Scalar.Date), $.Args({ date: $Scalar.Date })),
-  dateArgList: $.field(
-    $.Output.Nullable($Scalar.Date),
-    $.Args({ date: $.Input.Nullable($.Input.List($.Input.Nullable($Scalar.Date))) }),
-  ),
-  dateArgNonNullList: $.field(
-    $.Output.Nullable($Scalar.Date),
-    $.Args({ date: $.Input.List($.Input.Nullable($Scalar.Date)) }),
-  ),
-  dateArgNonNullListNonNull: $.field($.Output.Nullable($Scalar.Date), $.Args({ date: $.Input.List($Scalar.Date) })),
-  dateArgInputObject: $.field($.Output.Nullable($Scalar.Date), $.Args({ input: $.Input.Nullable(InputObject) })),
-  InputObjectNested: $.field($.Output.Nullable($Scalar.ID), $.Args({ input: $.Input.Nullable(InputObjectNested) })),
-  InputObjectNestedNonNull: $.field($.Output.Nullable($Scalar.ID), $.Args({ input: InputObjectNested })),
-  id: $.field($.Output.Nullable($Scalar.ID)),
-  idNonNull: $.field($Scalar.ID),
-  string: $.field($.Output.Nullable($Scalar.String)),
-  stringWithRequiredArg: $.field($.Output.Nullable($Scalar.String), $.Args({ string: $Scalar.String })),
-  stringWithArgs: $.field(
-    $.Output.Nullable($Scalar.String),
-    $.Args({
-      string: $.Input.Nullable($Scalar.String),
-      int: $.Input.Nullable($Scalar.Int),
-      float: $.Input.Nullable($Scalar.Float),
-      boolean: $.Input.Nullable($Scalar.Boolean),
-      id: $.Input.Nullable($Scalar.ID),
-    }),
-  ),
-  stringWithArgEnum: $.field($.Output.Nullable($Scalar.String), $.Args({ ABCEnum: $.Input.Nullable(ABCEnum) })),
-  stringWithListArg: $.field(
-    $.Output.Nullable($Scalar.String),
-    $.Args({ ints: $.Input.Nullable($.Input.List($.Input.Nullable($Scalar.Int))) }),
-  ),
-  stringWithListArgRequired: $.field(
-    $.Output.Nullable($Scalar.String),
-    $.Args({ ints: $.Input.List($.Input.Nullable($Scalar.Int)) }),
-  ),
-  stringWithArgInputObject: $.field(
-    $.Output.Nullable($Scalar.String),
-    $.Args({ input: $.Input.Nullable(InputObject) }),
-  ),
-  stringWithArgInputObjectRequired: $.field($.Output.Nullable($Scalar.String), $.Args({ input: InputObject })),
-  listListIntNonNull: $.field($.Output.List($.Output.List($Scalar.Int))),
-  listListInt: $.field(
-    $.Output.Nullable($.Output.List($.Output.Nullable($.Output.List($.Output.Nullable($Scalar.Int))))),
-  ),
-  listInt: $.field($.Output.Nullable($.Output.List($.Output.Nullable($Scalar.Int)))),
-  listIntNonNull: $.field($.Output.List($Scalar.Int)),
-  object: $.field($.Output.Nullable(() => Object1)),
-  objectNonNull: $.field(() => Object1),
-  objectNested: $.field($.Output.Nullable(() => ObjectNested)),
-  objectWithArgs: $.field(
-    $.Output.Nullable(() => Object1),
-    $.Args({
-      string: $.Input.Nullable($Scalar.String),
-      int: $.Input.Nullable($Scalar.Int),
-      float: $.Input.Nullable($Scalar.Float),
-      boolean: $.Input.Nullable($Scalar.Boolean),
-      id: $.Input.Nullable($Scalar.ID),
-    }),
-  ),
-  fooBarUnion: $.field($.Output.Nullable(() => FooBarUnion)),
-  objectList: $.field($.Output.Nullable($.Output.List($.Output.Nullable(() => Object1)))),
-  objectListNonNull: $.field($.Output.List(() => Object1)),
-  abcEnum: $.field($.Output.Nullable(ABCEnum)),
-  lowerCaseUnion: $.field($.Output.Nullable(() => lowerCaseUnion)),
-  interface: $.field($.Output.Nullable(() => Interface)),
-  interfaceWithArgs: $.field($.Output.Nullable(() => Interface), $.Args({ id: $Scalar.ID })),
-  interfaceNonNull: $.field(() => Interface),
-  unionFooBar: $.field($.Output.Nullable(() => FooBarUnion)),
-  unionFooBarWithArgs: $.field($.Output.Nullable(() => FooBarUnion), $.Args({ id: $.Input.Nullable($Scalar.ID) })),
-  unionObject: $.field($.Output.Nullable(() => ObjectUnion)),
-  unionFooBarNonNull: $.field(() => FooBarUnion),
-  unionObjectNonNull: $.field(() => ObjectUnion),
-})
-
-export const $Index = {
-  Root: {
-    Query,
-    Mutation: null,
-    Subscription: null,
-  },
-  objects: {
-    DateObject1,
-    DateObject2,
-    ObjectUnion,
-    Foo,
-    Bar,
-    ObjectNested,
-    lowerCaseObject,
-    lowerCaseObject2,
-    Object1,
-    Object1ImplementingInterface,
-    Object2ImplementingInterface,
-  },
-  unions: {
-    DateUnion,
-    FooBarUnion,
-    lowerCaseUnion,
-  },
-  interfaces: {
-    DateInterface1,
-    Interface,
-  },
-  error: {
-    objects: {},
-  },
-}
-"
-`;
-
 exports[`schema2 1`] = `
 "type Include<T, U> = Exclude<T, Exclude<T, U>>
 
@@ -720,6 +52,9 @@ export type Bar<$SelectionSet extends SelectionSet.Object<Index['objects']['Bar'
 export type DateObject1<$SelectionSet extends SelectionSet.Object<Index['objects']['DateObject1'], Index>> =
   ResultSet.Object$<$SelectionSet, Index['objects']['DateObject1'], Index>
 
+export type DateObject2<$SelectionSet extends SelectionSet.Object<Index['objects']['DateObject2'], Index>> =
+  ResultSet.Object$<$SelectionSet, Index['objects']['DateObject2'], Index>
+
 export type ErrorOne<$SelectionSet extends SelectionSet.Object<Index['objects']['ErrorOne'], Index>> =
   ResultSet.Object$<$SelectionSet, Index['objects']['ErrorOne'], Index>
 
@@ -746,8 +81,26 @@ export type Object2ImplementingInterface<
   $SelectionSet extends SelectionSet.Object<Index['objects']['Object2ImplementingInterface'], Index>,
 > = ResultSet.Object$<$SelectionSet, Index['objects']['Object2ImplementingInterface'], Index>
 
+export type ObjectNested<$SelectionSet extends SelectionSet.Object<Index['objects']['ObjectNested'], Index>> =
+  ResultSet.Object$<$SelectionSet, Index['objects']['ObjectNested'], Index>
+
+export type ObjectUnion<$SelectionSet extends SelectionSet.Object<Index['objects']['ObjectUnion'], Index>> =
+  ResultSet.Object$<$SelectionSet, Index['objects']['ObjectUnion'], Index>
+
+export type lowerCaseObject<$SelectionSet extends SelectionSet.Object<Index['objects']['lowerCaseObject'], Index>> =
+  ResultSet.Object$<$SelectionSet, Index['objects']['lowerCaseObject'], Index>
+
+export type lowerCaseObject2<$SelectionSet extends SelectionSet.Object<Index['objects']['lowerCaseObject2'], Index>> =
+  ResultSet.Object$<$SelectionSet, Index['objects']['lowerCaseObject2'], Index>
+
 // Union Types
 // -----------
+
+export type DateUnion<$SelectionSet extends SelectionSet.Union<Index['unions']['DateUnion'], Index>> = ResultSet.Union<
+  $SelectionSet,
+  Index['unions']['DateUnion'],
+  Index
+>
 
 export type FooBarUnion<$SelectionSet extends SelectionSet.Union<Index['unions']['FooBarUnion'], Index>> =
   ResultSet.Union<$SelectionSet, Index['unions']['FooBarUnion'], Index>
@@ -758,8 +111,14 @@ export type Result<$SelectionSet extends SelectionSet.Union<Index['unions']['Res
   Index
 >
 
+export type lowerCaseUnion<$SelectionSet extends SelectionSet.Union<Index['unions']['lowerCaseUnion'], Index>> =
+  ResultSet.Union<$SelectionSet, Index['unions']['lowerCaseUnion'], Index>
+
 // Interface Types
 // ---------------
+
+export type DateInterface1<$SelectionSet extends SelectionSet.Interface<Index['interfaces']['DateInterface1'], Index>> =
+  ResultSet.Interface<$SelectionSet, Index['interfaces']['DateInterface1'], Index>
 
 export type Error<$SelectionSet extends SelectionSet.Interface<Index['interfaces']['Error'], Index>> =
   ResultSet.Interface<$SelectionSet, Index['interfaces']['Error'], Index>
@@ -783,18 +142,26 @@ export interface Index {
   objects: {
     Bar: Schema.Object.Bar
     DateObject1: Schema.Object.DateObject1
+    DateObject2: Schema.Object.DateObject2
     ErrorOne: Schema.Object.ErrorOne
     ErrorTwo: Schema.Object.ErrorTwo
     Foo: Schema.Object.Foo
     Object1: Schema.Object.Object1
     Object1ImplementingInterface: Schema.Object.Object1ImplementingInterface
     Object2ImplementingInterface: Schema.Object.Object2ImplementingInterface
+    ObjectNested: Schema.Object.ObjectNested
+    ObjectUnion: Schema.Object.ObjectUnion
+    lowerCaseObject: Schema.Object.lowerCaseObject
+    lowerCaseObject2: Schema.Object.lowerCaseObject2
   }
   unions: {
+    DateUnion: Schema.Union.DateUnion
     FooBarUnion: Schema.Union.FooBarUnion
     Result: Schema.Union.Result
+    lowerCaseUnion: Schema.Union.lowerCaseUnion
   }
   interfaces: {
+    DateInterface1: Schema.Interface.DateInterface1
     Error: Schema.Interface.Error
     Interface: Schema.Interface.Interface
   }
@@ -823,11 +190,39 @@ export namespace Root {
   }>
 
   export type Query = $.Object$2<'Query', {
+    InputObjectNested: $.Field<
+      $.Output.Nullable<$Scalar.ID>,
+      $.Args<{
+        input: $.Input.Nullable<InputObject.InputObjectNested>
+      }>
+    >
+    InputObjectNestedNonNull: $.Field<
+      $.Output.Nullable<$Scalar.ID>,
+      $.Args<{
+        input: InputObject.InputObjectNestedNonNull
+      }>
+    >
+    /**
+     * Query enum field documentation.
+     */
+    abcEnum: $.Field<$.Output.Nullable<Enum.ABCEnum>, null>
     date: $.Field<$.Output.Nullable<$Scalar.Date>, null>
     dateArg: $.Field<
       $.Output.Nullable<$Scalar.Date>,
       $.Args<{
         date: $.Input.Nullable<$Scalar.Date>
+      }>
+    >
+    dateArgInputObject: $.Field<
+      $.Output.Nullable<$Scalar.Date>,
+      $.Args<{
+        input: $.Input.Nullable<InputObject.InputObject>
+      }>
+    >
+    dateArgList: $.Field<
+      $.Output.Nullable<$Scalar.Date>,
+      $.Args<{
+        date: $.Input.Nullable<$.Input.List<$Scalar.Date>>
       }>
     >
     dateArgNonNull: $.Field<
@@ -836,11 +231,47 @@ export namespace Root {
         date: $Scalar.Date
       }>
     >
+    dateArgNonNullList: $.Field<
+      $.Output.Nullable<$Scalar.Date>,
+      $.Args<{
+        date: $.Input.List<$.Input.Nullable<$Scalar.Date>>
+      }>
+    >
+    dateArgNonNullListNonNull: $.Field<
+      $.Output.Nullable<$Scalar.Date>,
+      $.Args<{
+        date: $.Input.List<$Scalar.Date>
+      }>
+    >
+    dateInterface1: $.Field<$.Output.Nullable<Interface.DateInterface1>, null>
+    dateList: $.Field<$.Output.Nullable<$.Output.List<$Scalar.Date>>, null>
+    dateListNonNull: $.Field<$.Output.List<$Scalar.Date>, null>
     dateNonNull: $.Field<$Scalar.Date, null>
     dateObject1: $.Field<$.Output.Nullable<Object.DateObject1>, null>
+    dateUnion: $.Field<$.Output.Nullable<Union.DateUnion>, null>
     id: $.Field<$.Output.Nullable<$Scalar.ID>, null>
     idNonNull: $.Field<$Scalar.ID, null>
     interface: $.Field<$.Output.Nullable<Interface.Interface>, null>
+    interfaceNonNull: $.Field<Interface.Interface, null>
+    interfaceWithArgs: $.Field<
+      $.Output.Nullable<Interface.Interface>,
+      $.Args<{
+        id: $Scalar.ID
+      }>
+    >
+    listInt: $.Field<$.Output.Nullable<$.Output.List<$.Output.Nullable<$Scalar.Int>>>, null>
+    listIntNonNull: $.Field<$.Output.List<$Scalar.Int>, null>
+    listListInt: $.Field<
+      $.Output.Nullable<$.Output.List<$.Output.Nullable<$.Output.List<$.Output.Nullable<$Scalar.Int>>>>>,
+      null
+    >
+    listListIntNonNull: $.Field<$.Output.List<$.Output.List<$Scalar.Int>>, null>
+    lowerCaseUnion: $.Field<$.Output.Nullable<Union.lowerCaseUnion>, null>
+    object: $.Field<$.Output.Nullable<Object.Object1>, null>
+    objectList: $.Field<$.Output.Nullable<$.Output.List<Object.Object1>>, null>
+    objectListNonNull: $.Field<$.Output.List<Object.Object1>, null>
+    objectNested: $.Field<$.Output.Nullable<Object.ObjectNested>, null>
+    objectNonNull: $.Field<Object.Object1, null>
     objectWithArgs: $.Field<
       $.Output.Nullable<Object.Object1>,
       $.Args<{
@@ -857,7 +288,63 @@ export namespace Root {
         case: Enum.Case
       }>
     >
+    string: $.Field<$.Output.Nullable<$Scalar.String>, null>
+    stringWithArgEnum: $.Field<
+      $.Output.Nullable<$Scalar.String>,
+      $.Args<{
+        ABCEnum: $.Input.Nullable<Enum.ABCEnum>
+      }>
+    >
+    stringWithArgInputObject: $.Field<
+      $.Output.Nullable<$Scalar.String>,
+      $.Args<{
+        input: $.Input.Nullable<InputObject.InputObject>
+      }>
+    >
+    stringWithArgInputObjectRequired: $.Field<
+      $.Output.Nullable<$Scalar.String>,
+      $.Args<{
+        input: InputObject.InputObject
+      }>
+    >
+    stringWithArgs: $.Field<
+      $.Output.Nullable<$Scalar.String>,
+      $.Args<{
+        boolean: $.Input.Nullable<$Scalar.Boolean>
+        float: $.Input.Nullable<$Scalar.Float>
+        id: $.Input.Nullable<$Scalar.ID>
+        int: $.Input.Nullable<$Scalar.Int>
+        string: $.Input.Nullable<$Scalar.String>
+      }>
+    >
+    stringWithListArg: $.Field<
+      $.Output.Nullable<$Scalar.String>,
+      $.Args<{
+        ints: $.Input.Nullable<$.Input.List<$.Input.Nullable<$Scalar.Int>>>
+      }>
+    >
+    stringWithListArgRequired: $.Field<
+      $.Output.Nullable<$Scalar.String>,
+      $.Args<{
+        ints: $.Input.List<$Scalar.Int>
+      }>
+    >
+    stringWithRequiredArg: $.Field<
+      $.Output.Nullable<$Scalar.String>,
+      $.Args<{
+        string: $Scalar.String
+      }>
+    >
     unionFooBar: $.Field<$.Output.Nullable<Union.FooBarUnion>, null>
+    unionFooBarNonNull: $.Field<Union.FooBarUnion, null>
+    unionFooBarWithArgs: $.Field<
+      $.Output.Nullable<Union.FooBarUnion>,
+      $.Args<{
+        id: $.Input.Nullable<$Scalar.ID>
+      }>
+    >
+    unionObject: $.Field<$.Output.Nullable<Object.ObjectUnion>, null>
+    unionObjectNonNull: $.Field<Object.ObjectUnion, null>
   }>
 }
 
@@ -866,6 +353,16 @@ export namespace Root {
 // ------------------------------------------------------------ //
 
 export namespace Enum {
+  /**
+   * Enum documentation.
+   *
+   * Members
+   * "A" - (DEPRECATED: Enum value A is deprecated.)
+   * "B" - Enum B member documentation.
+   * "C" - (DEPRECATED: Enum value C is deprecated.)
+   */
+  export type ABCEnum = $.Enum<'ABCEnum', ['A', 'B', 'C']>
+
   export type Case = $.Enum<'Case', ['ErrorOne', 'ErrorTwo', 'Object1']>
 }
 
@@ -874,7 +371,20 @@ export namespace Enum {
 // ------------------------------------------------------------ //
 
 export namespace InputObject {
-  // -- no types --
+  export type InputObject = $.InputObject<'InputObject', {
+    date: $.Input.Nullable<$Scalar.Date>
+    dateRequired: $Scalar.Date
+    id: $.Input.Nullable<$Scalar.ID>
+    idRequired: $Scalar.ID
+  }>
+
+  export type InputObjectNested = $.InputObject<'InputObjectNested', {
+    InputObject: $.Input.Nullable<InputObject.InputObject>
+  }>
+
+  export type InputObjectNestedNonNull = $.InputObject<'InputObjectNestedNonNull', {
+    InputObject: InputObject.InputObject
+  }>
 }
 
 // ------------------------------------------------------------ //
@@ -882,6 +392,10 @@ export namespace InputObject {
 // ------------------------------------------------------------ //
 
 export namespace Interface {
+  export type DateInterface1 = $.Interface<'DateInterface1', {
+    date1: $.Field<$.Output.Nullable<$Scalar.Date>, null>
+  }, [Object.DateObject1]>
+
   export type Error = $.Interface<'Error', {
     message: $.Field<$Scalar.String, null>
   }, [Object.ErrorOne, Object.ErrorTwo]>
@@ -902,6 +416,10 @@ export namespace Object {
 
   export type DateObject1 = $.Object$2<'DateObject1', {
     date1: $.Field<$.Output.Nullable<$Scalar.Date>, null>
+  }>
+
+  export type DateObject2 = $.Object$2<'DateObject2', {
+    date2: $.Field<$.Output.Nullable<$Scalar.Date>, null>
   }>
 
   export type ErrorOne = $.Object$2<'ErrorOne', {
@@ -943,6 +461,23 @@ export namespace Object {
     boolean: $.Field<$.Output.Nullable<$Scalar.Boolean>, null>
     id: $.Field<$.Output.Nullable<$Scalar.ID>, null>
   }>
+
+  export type ObjectNested = $.Object$2<'ObjectNested', {
+    id: $.Field<$.Output.Nullable<$Scalar.ID>, null>
+    object: $.Field<$.Output.Nullable<Object.Object1>, null>
+  }>
+
+  export type ObjectUnion = $.Object$2<'ObjectUnion', {
+    fooBarUnion: $.Field<$.Output.Nullable<Union.FooBarUnion>, null>
+  }>
+
+  export type lowerCaseObject = $.Object$2<'lowerCaseObject', {
+    id: $.Field<$.Output.Nullable<$Scalar.ID>, null>
+  }>
+
+  export type lowerCaseObject2 = $.Object$2<'lowerCaseObject2', {
+    int: $.Field<$.Output.Nullable<$Scalar.Int>, null>
+  }>
 }
 
 // ------------------------------------------------------------ //
@@ -950,12 +485,16 @@ export namespace Object {
 // ------------------------------------------------------------ //
 
 export namespace Union {
+  export type DateUnion = $.Union<'DateUnion', [Object.DateObject1, Object.DateObject2]>
+
   /**
    * Union documentation.
    */
   export type FooBarUnion = $.Union<'FooBarUnion', [Object.Bar, Object.Foo]>
 
   export type Result = $.Union<'Result', [Object.ErrorOne, Object.ErrorTwo, Object.Object1]>
+
+  export type lowerCaseUnion = $.Union<'lowerCaseUnion', [Object.lowerCaseObject, Object.lowerCaseObject2]>
 }
 "
 `;
@@ -972,7 +511,23 @@ exports[`schema2 6`] = `
 import * as $ from '../../../../src/entrypoints/alpha/schema.js'
 import * as $Scalar from './Scalar.js'
 
+export const ABCEnum = $.Enum(\`ABCEnum\`, [\`A\`, \`B\`, \`C\`])
 export const Case = $.Enum(\`Case\`, [\`ErrorOne\`, \`ErrorTwo\`, \`Object1\`])
+
+export const InputObject = $.InputObject(\`InputObject\`, {
+  date: $.Input.field($.Input.Nullable($Scalar.Date)),
+  dateRequired: $.Input.field($Scalar.Date),
+  id: $.Input.field($.Input.Nullable($Scalar.ID)),
+  idRequired: $.Input.field($Scalar.ID),
+})
+
+export const InputObjectNested = $.InputObject(\`InputObjectNested\`, {
+  InputObject: $.Input.field(() => $.Input.Nullable(InputObject)),
+})
+
+export const InputObjectNestedNonNull = $.InputObject(\`InputObjectNestedNonNull\`, {
+  InputObject: $.Input.field(() => InputObject),
+})
 
 // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
 export const Bar = $.Object$(\`Bar\`, {
@@ -982,6 +537,11 @@ export const Bar = $.Object$(\`Bar\`, {
 // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
 export const DateObject1 = $.Object$(\`DateObject1\`, {
   date1: $.field($.Output.Nullable($Scalar.Date)),
+})
+
+// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
+export const DateObject2 = $.Object$(\`DateObject2\`, {
+  date2: $.field($.Output.Nullable($Scalar.Date)),
 })
 
 // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
@@ -1023,11 +583,41 @@ export const Object2ImplementingInterface = $.Object$(\`Object2ImplementingInter
 })
 
 // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
+export const ObjectNested = $.Object$(\`ObjectNested\`, {
+  id: $.field($.Output.Nullable($Scalar.ID)),
+  object: $.field($.Output.Nullable(() => Object1)),
+})
+
+// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
+export const ObjectUnion = $.Object$(\`ObjectUnion\`, {
+  fooBarUnion: $.field($.Output.Nullable(() => FooBarUnion)),
+})
+
+// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
+export const lowerCaseObject = $.Object$(\`lowerCaseObject\`, {
+  id: $.field($.Output.Nullable($Scalar.ID)),
+})
+
+// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
+export const lowerCaseObject2 = $.Object$(\`lowerCaseObject2\`, {
+  int: $.field($.Output.Nullable($Scalar.Int)),
+})
+
+// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
+export const DateUnion = $.Union(\`DateUnion\`, [DateObject1, DateObject2])
+
+// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
 export const FooBarUnion = $.Union(\`FooBarUnion\`, [Bar, Foo])
 
 // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
 export const Result = $.Union(\`Result\`, [ErrorOne, ErrorTwo, Object1])
 
+// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
+export const lowerCaseUnion = $.Union(\`lowerCaseUnion\`, [lowerCaseObject, lowerCaseObject2])
+
+export const DateInterface1 = $.Interface(\`DateInterface1\`, { date1: $.field($.Output.Nullable($Scalar.Date)) }, [
+  DateObject1,
+])
 export const Error = $.Interface(\`Error\`, { message: $.field($Scalar.String) }, [ErrorOne, ErrorTwo])
 export const Interface = $.Interface(\`Interface\`, { id: $.field($.Output.Nullable($Scalar.ID)) }, [
   Object1ImplementingInterface,
@@ -1042,14 +632,42 @@ export const Mutation = $.Object$(\`Mutation\`, {
 
 // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
 export const Query = $.Object$(\`Query\`, {
+  InputObjectNested: $.field($.Output.Nullable($Scalar.ID), $.Args({ input: $.Input.Nullable(InputObjectNested) })),
+  InputObjectNestedNonNull: $.field($.Output.Nullable($Scalar.ID), $.Args({ input: InputObjectNestedNonNull })),
+  abcEnum: $.field($.Output.Nullable(ABCEnum)),
   date: $.field($.Output.Nullable($Scalar.Date)),
   dateArg: $.field($.Output.Nullable($Scalar.Date), $.Args({ date: $.Input.Nullable($Scalar.Date) })),
+  dateArgInputObject: $.field($.Output.Nullable($Scalar.Date), $.Args({ input: $.Input.Nullable(InputObject) })),
+  dateArgList: $.field($.Output.Nullable($Scalar.Date), $.Args({ date: $.Input.Nullable($.Input.List($Scalar.Date)) })),
   dateArgNonNull: $.field($.Output.Nullable($Scalar.Date), $.Args({ date: $Scalar.Date })),
+  dateArgNonNullList: $.field(
+    $.Output.Nullable($Scalar.Date),
+    $.Args({ date: $.Input.List($.Input.Nullable($Scalar.Date)) }),
+  ),
+  dateArgNonNullListNonNull: $.field($.Output.Nullable($Scalar.Date), $.Args({ date: $.Input.List($Scalar.Date) })),
+  dateInterface1: $.field($.Output.Nullable(() => DateInterface1)),
+  dateList: $.field($.Output.Nullable($.Output.List($Scalar.Date))),
+  dateListNonNull: $.field($.Output.List($Scalar.Date)),
   dateNonNull: $.field($Scalar.Date),
   dateObject1: $.field($.Output.Nullable(() => DateObject1)),
+  dateUnion: $.field($.Output.Nullable(() => DateUnion)),
   id: $.field($.Output.Nullable($Scalar.ID)),
   idNonNull: $.field($Scalar.ID),
   interface: $.field($.Output.Nullable(() => Interface)),
+  interfaceNonNull: $.field(() => Interface),
+  interfaceWithArgs: $.field($.Output.Nullable(() => Interface), $.Args({ id: $Scalar.ID })),
+  listInt: $.field($.Output.Nullable($.Output.List($.Output.Nullable($Scalar.Int)))),
+  listIntNonNull: $.field($.Output.List($Scalar.Int)),
+  listListInt: $.field(
+    $.Output.Nullable($.Output.List($.Output.Nullable($.Output.List($.Output.Nullable($Scalar.Int))))),
+  ),
+  listListIntNonNull: $.field($.Output.List($.Output.List($Scalar.Int))),
+  lowerCaseUnion: $.field($.Output.Nullable(() => lowerCaseUnion)),
+  object: $.field($.Output.Nullable(() => Object1)),
+  objectList: $.field($.Output.Nullable($.Output.List(() => Object1))),
+  objectListNonNull: $.field($.Output.List(() => Object1)),
+  objectNested: $.field($.Output.Nullable(() => ObjectNested)),
+  objectNonNull: $.field(() => Object1),
   objectWithArgs: $.field(
     $.Output.Nullable(() => Object1),
     $.Args({
@@ -1061,7 +679,34 @@ export const Query = $.Object$(\`Query\`, {
     }),
   ),
   result: $.field($.Output.Nullable(() => Result), $.Args({ case: Case })),
+  string: $.field($.Output.Nullable($Scalar.String)),
+  stringWithArgEnum: $.field($.Output.Nullable($Scalar.String), $.Args({ ABCEnum: $.Input.Nullable(ABCEnum) })),
+  stringWithArgInputObject: $.field(
+    $.Output.Nullable($Scalar.String),
+    $.Args({ input: $.Input.Nullable(InputObject) }),
+  ),
+  stringWithArgInputObjectRequired: $.field($.Output.Nullable($Scalar.String), $.Args({ input: InputObject })),
+  stringWithArgs: $.field(
+    $.Output.Nullable($Scalar.String),
+    $.Args({
+      boolean: $.Input.Nullable($Scalar.Boolean),
+      float: $.Input.Nullable($Scalar.Float),
+      id: $.Input.Nullable($Scalar.ID),
+      int: $.Input.Nullable($Scalar.Int),
+      string: $.Input.Nullable($Scalar.String),
+    }),
+  ),
+  stringWithListArg: $.field(
+    $.Output.Nullable($Scalar.String),
+    $.Args({ ints: $.Input.Nullable($.Input.List($.Input.Nullable($Scalar.Int))) }),
+  ),
+  stringWithListArgRequired: $.field($.Output.Nullable($Scalar.String), $.Args({ ints: $.Input.List($Scalar.Int) })),
+  stringWithRequiredArg: $.field($.Output.Nullable($Scalar.String), $.Args({ string: $Scalar.String })),
   unionFooBar: $.field($.Output.Nullable(() => FooBarUnion)),
+  unionFooBarNonNull: $.field(() => FooBarUnion),
+  unionFooBarWithArgs: $.field($.Output.Nullable(() => FooBarUnion), $.Args({ id: $.Input.Nullable($Scalar.ID) })),
+  unionObject: $.field($.Output.Nullable(() => ObjectUnion)),
+  unionObjectNonNull: $.field(() => ObjectUnion),
 })
 
 export const $Index = {
@@ -1073,18 +718,26 @@ export const $Index = {
   objects: {
     Bar,
     DateObject1,
+    DateObject2,
     ErrorOne,
     ErrorTwo,
     Foo,
     Object1,
     Object1ImplementingInterface,
     Object2ImplementingInterface,
+    ObjectNested,
+    ObjectUnion,
+    lowerCaseObject,
+    lowerCaseObject2,
   },
   unions: {
+    DateUnion,
     FooBarUnion,
     Result,
+    lowerCaseUnion,
   },
   interfaces: {
+    DateInterface1,
     Error,
     Interface,
   },

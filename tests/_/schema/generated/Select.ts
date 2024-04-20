@@ -28,6 +28,9 @@ export type Bar<$SelectionSet extends SelectionSet.Object<Index['objects']['Bar'
 export type DateObject1<$SelectionSet extends SelectionSet.Object<Index['objects']['DateObject1'], Index>> =
   ResultSet.Object$<$SelectionSet, Index['objects']['DateObject1'], Index>
 
+export type DateObject2<$SelectionSet extends SelectionSet.Object<Index['objects']['DateObject2'], Index>> =
+  ResultSet.Object$<$SelectionSet, Index['objects']['DateObject2'], Index>
+
 export type ErrorOne<$SelectionSet extends SelectionSet.Object<Index['objects']['ErrorOne'], Index>> =
   ResultSet.Object$<$SelectionSet, Index['objects']['ErrorOne'], Index>
 
@@ -54,8 +57,26 @@ export type Object2ImplementingInterface<
   $SelectionSet extends SelectionSet.Object<Index['objects']['Object2ImplementingInterface'], Index>,
 > = ResultSet.Object$<$SelectionSet, Index['objects']['Object2ImplementingInterface'], Index>
 
+export type ObjectNested<$SelectionSet extends SelectionSet.Object<Index['objects']['ObjectNested'], Index>> =
+  ResultSet.Object$<$SelectionSet, Index['objects']['ObjectNested'], Index>
+
+export type ObjectUnion<$SelectionSet extends SelectionSet.Object<Index['objects']['ObjectUnion'], Index>> =
+  ResultSet.Object$<$SelectionSet, Index['objects']['ObjectUnion'], Index>
+
+export type lowerCaseObject<$SelectionSet extends SelectionSet.Object<Index['objects']['lowerCaseObject'], Index>> =
+  ResultSet.Object$<$SelectionSet, Index['objects']['lowerCaseObject'], Index>
+
+export type lowerCaseObject2<$SelectionSet extends SelectionSet.Object<Index['objects']['lowerCaseObject2'], Index>> =
+  ResultSet.Object$<$SelectionSet, Index['objects']['lowerCaseObject2'], Index>
+
 // Union Types
 // -----------
+
+export type DateUnion<$SelectionSet extends SelectionSet.Union<Index['unions']['DateUnion'], Index>> = ResultSet.Union<
+  $SelectionSet,
+  Index['unions']['DateUnion'],
+  Index
+>
 
 export type FooBarUnion<$SelectionSet extends SelectionSet.Union<Index['unions']['FooBarUnion'], Index>> =
   ResultSet.Union<$SelectionSet, Index['unions']['FooBarUnion'], Index>
@@ -66,8 +87,14 @@ export type Result<$SelectionSet extends SelectionSet.Union<Index['unions']['Res
   Index
 >
 
+export type lowerCaseUnion<$SelectionSet extends SelectionSet.Union<Index['unions']['lowerCaseUnion'], Index>> =
+  ResultSet.Union<$SelectionSet, Index['unions']['lowerCaseUnion'], Index>
+
 // Interface Types
 // ---------------
+
+export type DateInterface1<$SelectionSet extends SelectionSet.Interface<Index['interfaces']['DateInterface1'], Index>> =
+  ResultSet.Interface<$SelectionSet, Index['interfaces']['DateInterface1'], Index>
 
 export type Error<$SelectionSet extends SelectionSet.Interface<Index['interfaces']['Error'], Index>> =
   ResultSet.Interface<$SelectionSet, Index['interfaces']['Error'], Index>

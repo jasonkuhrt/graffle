@@ -1,6 +1,6 @@
 import { parse, print } from 'graphql'
 import { describe, expect, test } from 'vitest'
-import type { Index } from '../../../tests/ts/_/schema/generated/Index.js'
+import type { Index } from '../../../tests/_/schema/generated/Index.js'
 import type { SelectionSet } from './__.js'
 import { toGraphQLDocumentSelectionSet } from './toGraphQLDocumentString.js'
 
@@ -23,10 +23,10 @@ const prepareResult = (ss: Q) => {
 
 describe(`union`, () => {
   test.each([
-    s({ fooBarUnion: { __typename: true } }),
-    s({ fooBarUnion: { onBar: { int: true } } }),
-    s({ fooBarUnion: { onBar: { $skip: true, int: true } } }),
-    // s({ fooBarUnion: { onBar: {} } }), // todo should be static type error
+    s({ unionFooBar: { __typename: true } }),
+    s({ unionFooBar: { onBar: { int: true } } }),
+    s({ unionFooBar: { onBar: { $skip: true, int: true } } }),
+    // s({ unionFooBar: { onBar: {} } }), // todo should be static type error
   ])(`Query`, (ss) => {
     expect(prepareResult(ss)).toMatchSnapshot()
   })

@@ -48,16 +48,3 @@ await generate({
   outputSchemaPath: `./tests/_/schema/schema.graphql`,
   options: { errorTypeNamePattern: /^Error.+/ },
 })
-
-await generateFiles({
-  name: `MigrateMe`,
-  sourceDirPath: `./tests/ts/_/schema`,
-  sourceCustomScalarCodecsFilePath: join(`./tests/_/customScalarCodecs.ts`),
-  outputDirPath: `./tests/ts/_/schema/generated`,
-  code: {
-    libraryPaths: {
-      schema: `../../../../../src/entrypoints/alpha/schema.js`,
-      scalars: `../../../../../src/Schema/Hybrid/types/Scalar/Scalar.js`,
-    },
-  },
-})

@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
 import { expectTypeOf, test } from 'vitest'
-import type { Index } from '../../../tests/ts/_/schema/generated/Index.js'
-import type * as Schema from '../../../tests/ts/_/schema/generated/SchemaBuildtime.js'
+import type { Index } from '../../../tests/_/schema/generated/Index.js'
+import type * as Schema from '../../../tests/_/schema/generated/SchemaBuildtime.js'
 import type { SelectionSet } from '../SelectionSet/__.js'
 import type { ResultSet } from './__.js'
 
@@ -51,10 +51,10 @@ test(`general`, () => {
   expectTypeOf<RS<{ objectNonNull: { __typename: true } }>>().toEqualTypeOf<{ objectNonNull: { __typename: "Object1" } }>()
 
   // Union
-  expectTypeOf<RS<{ fooBarUnion: { __typename: true } }>>().toEqualTypeOf<{ fooBarUnion: null | { __typename: "Foo" } | { __typename: "Bar" } }>()
-  expectTypeOf<RS<{ fooBarUnion: { onFoo: { __typename: true } } }>>().toEqualTypeOf<{ fooBarUnion: null | {} | { __typename: "Foo" } }>()
-  expectTypeOf<RS<{ fooBarUnion: { onFoo: { id: true } } }>>().toEqualTypeOf<{ fooBarUnion: null | {} | { id: null|string } }>()
-  expectTypeOf<RS<{ fooBarUnion: { __typename: true; onFoo: { id: true } } }>>().toEqualTypeOf<{ fooBarUnion: null | { __typename: "Bar" } | { __typename: "Foo"; id: null|string } }>()
+  expectTypeOf<RS<{ unionFooBar: { __typename: true } }>>().toEqualTypeOf<{ unionFooBar: null | { __typename: "Foo" } | { __typename: "Bar" } }>()
+  expectTypeOf<RS<{ unionFooBar: { onFoo: { __typename: true } } }>>().toEqualTypeOf<{ unionFooBar: null | {} | { __typename: "Foo" } }>()
+  expectTypeOf<RS<{ unionFooBar: { onFoo: { id: true } } }>>().toEqualTypeOf<{ unionFooBar: null | {} | { id: null|string } }>()
+  expectTypeOf<RS<{ unionFooBar: { __typename: true; onFoo: { id: true } } }>>().toEqualTypeOf<{ unionFooBar: null | { __typename: "Bar" } | { __typename: "Foo"; id: null|string } }>()
   // with Args
   expectTypeOf<RS<{ unionFooBarWithArgs: { $: { id: `abc` }, onFoo: { id: true } } }>>().toEqualTypeOf<{ unionFooBarWithArgs: null | {} | { id: null|string } }>()
 
@@ -82,7 +82,7 @@ test(`general`, () => {
   expectTypeOf<RS<{ id_as: true }>>().toEqualTypeOf<{ id_as: ResultSet.Errors.UnknownFieldName<'id_as', Schema.Root.Query> }>()
   expectTypeOf<RS<{ id_as_$: true }>>().toEqualTypeOf<{ id_as_$: ResultSet.Errors.UnknownFieldName<'id_as_$', Schema.Root.Query> }>()
   // union fragment
-  expectTypeOf<RS<{ fooBarUnion: { onFoo: { id_as_id2: true } } }>>().toEqualTypeOf<{ fooBarUnion: null | {} | { id2: null|string } }>()
+  expectTypeOf<RS<{ unionFooBar: { onFoo: { id_as_id2: true } } }>>().toEqualTypeOf<{ unionFooBar: null | {} | { id2: null|string } }>()
 
   // Directive @include
   // On scalar non-nullable
