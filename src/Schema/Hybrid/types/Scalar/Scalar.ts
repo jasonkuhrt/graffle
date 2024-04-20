@@ -61,4 +61,3 @@ export const Scalars = {
 export type Any = String | Int | Boolean | ID | Float | Values<NamedSchemas[keyof NamedSchemas]['customScalars']>
 
 type Values<T> = T extends any ? keyof T extends never ? never : T[keyof T] : never
-// type x = Values<NamedSchemas[keyof NamedSchemas]['customScalars']>
