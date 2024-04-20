@@ -102,13 +102,12 @@ await client.request(document)
   - [Batching Requests](./examples/graphql-batching-requests.ts)
 - Configuration:
   - [Fetch: Passing Options](./examples/configuration-fetch-options.ts)
-  - [Fetch: Use custom function (e.g. cookie support)](./examples/configuration-fetch-custom-function.ts)
   - [Custom JSON Serializer](./examples/configuration-request-json-serializer.ts)
   - [Incremental: Set Endpoint](./examples/configuration-incremental-endpoint.ts)
   - [Incremental: Set Request Headers](./examples/configuration-incremental-request-headers.ts)
-- Community
+- Community:
   - [GraphQL Code Generator for typed GraphQL Queries](./examples/community-graphql-code-generator.ts)
-- TypeScript
+- TypeScript:
   - [Use `TypedDocumentNode`](./examples/typescript-typed-document-node.ts)
 - Other:
   - [Middleware](./examples/other-middleware.ts)
