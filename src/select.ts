@@ -1,12 +1,12 @@
 import type { SelectionSet } from './client/SelectionSet/__.js'
+import type { RootTypeName } from './lib/graphql.js'
 import type { Exact } from './lib/prelude.js'
 import type { Schema } from './Schema/__.js'
 
-// todo test
 // dprint-ignore
 type TypeSelectionSets<$Index extends Schema.Index> =
 & {
-		[$RootTypeName in Schema.RootTypeName]:
+		[$RootTypeName in RootTypeName as $RootTypeName extends keyof $Index['Root'] ? $Index['Root'][$RootTypeName] extends null ? never : $RootTypeName:never ]:
 			<$SelectionSet extends object>(selectionSet: Exact<$SelectionSet, SelectionSet.Root<$Index, $RootTypeName>>) =>
 				$SelectionSet
 	}
@@ -33,3 +33,7 @@ export const create = <$Index extends Schema.Index>(): TypeSelectionSets<$Index>
 const idProxy = new Proxy({}, {
   get: () => (value: unknown) => value,
 })
+
+// eslint-disable-next-line
+// @ts-ignore generated types
+export const select: TypeSelectionSets<NamedSchemas['default']['index']> = idProxy
