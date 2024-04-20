@@ -35,10 +35,10 @@ const args = Command.create().description(`Generate a type safe GraphQL client.`
     },
   })
   .parse()
-
+import * as Path from 'node:path'
 await generateFiles({
+  sourceDirPath: Path.dirname(args.schema),
   outputDirPath: args.output,
-  schemaPath: args.schema,
   format: args.format,
   errorTypeNamePattern: args.schemaErrorType._tag === `schemaErrorTypePattern`
     ? new RegExp(args.schemaErrorType.value)
