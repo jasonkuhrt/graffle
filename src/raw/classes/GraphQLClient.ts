@@ -148,7 +148,7 @@ export class GraphQLClient {
     if (responseMiddleware) {
       responseMiddleware(response, {
         operationName: analyzedDocument.operationName,
-        variables,
+        variables: requestOptions.variables,
         url: this.url,
       })
     }
