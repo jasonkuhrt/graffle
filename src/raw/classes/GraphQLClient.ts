@@ -75,7 +75,11 @@ export class GraphQLClient {
     })
 
     if (responseMiddleware) {
-      responseMiddleware(response)
+      responseMiddleware(response, {
+        operationName: document.operationName,
+        variables,
+        url: this.url,
+      })
     }
 
     if (response instanceof Error) {
@@ -142,7 +146,11 @@ export class GraphQLClient {
     })
 
     if (responseMiddleware) {
-      responseMiddleware(response)
+      responseMiddleware(response, {
+        operationName: analyzedDocument.operationName,
+        variables: requestOptions.variables,
+        url: this.url,
+      })
     }
 
     if (response instanceof Error) {
@@ -214,7 +222,11 @@ export class GraphQLClient {
     })
 
     if (this.requestConfig.responseMiddleware) {
-      this.requestConfig.responseMiddleware(response)
+      this.requestConfig.responseMiddleware(response, {
+        operationName: undefined,
+        variables,
+        url: this.url,
+      })
     }
 
     if (response instanceof Error) {
