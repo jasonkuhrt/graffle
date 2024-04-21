@@ -107,6 +107,56 @@ describe(`middleware`, () => {
       expect(requestMiddleware).toBeCalledTimes(1)
       expect(res.result).toBe(123)
     })
+
+    describe(`when response middleware needs second req arg`, () => {
+      it(`request`, async () => {
+        await client.request({
+          document: `query x($foo: String) { foo(foo: $foo) }`,
+          variables: { foo: `bar` },
+        })
+        expect(responseMiddleware).toBeCalledTimes(1)
+
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const [_, res] = responseMiddleware.mock.calls[0]
+        expect(res).toMatchObject({
+          operationName: `x`,
+          url: ctx.url,
+          variables: { foo: `bar` },
+        })
+      })
+      it(`rawRequest`, async () => {
+        await client.rawRequest(`query x($foo: String) { foo(foo: $foo) }`, {
+          foo: `bar`,
+        })
+        expect(responseMiddleware).toBeCalledTimes(1)
+
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const [_, res] = responseMiddleware.mock.calls[0]
+        expect(res).toMatchObject({
+          operationName: `x`,
+          url: ctx.url,
+          variables: { foo: `bar` },
+        })
+      })
+
+      it(`batchRequests`, async () => {
+        await client.batchRequests([
+          {
+            document: `query x($foo: String) { foo(foo: $foo) }`,
+            variables: {foo: `bar`},
+          },
+        ])
+        expect(responseMiddleware).toBeCalledTimes(1)
+
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const [_, res] = responseMiddleware.mock.calls[0]
+        expect(res).toMatchObject({
+          operationName: undefined,
+          url: ctx.url,
+          variables: [{ foo: `bar` }],
+        })
+      })
+    });
   })
 
   describe(`async request middleware`, () => {
