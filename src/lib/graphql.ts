@@ -229,3 +229,5 @@ export const hasMutation = (typeMapByKind: TypeMapByKind) =>
 
 export const hasSubscription = (typeMapByKind: TypeMapByKind) =>
   typeMapByKind.GraphQLRootType.find((_) => _.name === `Subscription`)
+
+export type Variables = Record<string, string | number | boolean | null> // todo or any custom scalars too

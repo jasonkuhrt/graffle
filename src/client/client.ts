@@ -1,179 +1,27 @@
 import type { ExecutionResult } from 'graphql'
 import { type DocumentNode, execute, graphql, type GraphQLSchema } from 'graphql'
-import type { MergeExclusive, NonEmptyObject } from 'type-fest'
 import type { ExcludeUndefined } from 'type-fest/source/required-deep.js'
 import request from '../entrypoints/main.js'
-import type { RootTypeName } from '../lib/graphql.js'
-import type { Exact, IsMultipleKeys } from '../lib/prelude.js'
-import type { TSError } from '../lib/TSError.js'
-import type { InputFieldsAllNullable, Object$2 } from '../Schema/__.js'
+import type { RootTypeName, Variables } from '../lib/graphql.js'
+import type { Object$2 } from '../Schema/__.js'
 import { Schema } from '../Schema/__.js'
 import { readMaybeThunk } from '../Schema/core/helpers.js'
+import type { ApplyInputDefaults, OptionsInputDefaults, ReturnModeType } from './Config.js'
 import * as CustomScalars from './customScalars.js'
+import type { DocumentFn } from './document.js'
 import { toDocumentExpression } from './document.js'
-import type { ResultSet } from './ResultSet/__.js'
+import type { GetRootTypeMethods } from './RootTypeMethods.js'
 import { SelectionSet } from './SelectionSet/__.js'
 import type { DocumentObject, GraphQLObjectSelection } from './SelectionSet/toGraphQLDocumentString.js'
-
-type Variables = Record<string, string | number | boolean | null> // todo or any custom scalars too
-
-type RootTypeFieldContext = {
-  Config: Config
-  Index: Schema.Index
-  RootTypeName: Schema.RootTypeName
-  RootTypeFieldName: string
-  Field: Schema.SomeField
-}
-
-// dprint-ignore
-type RootTypeMethods<$Config extends OptionsInputDefaults, $Index extends Schema.Index, $RootTypeName extends Schema.RootTypeName> =
-  $Index['Root'][$RootTypeName] extends Schema.Object$2 ?
-  (
-  & {
-      $batch: RootMethod<$Config, $Index, $RootTypeName>
-    }
-  & {
-      [$RootTypeFieldName in keyof $Index['Root'][$RootTypeName]['fields'] & string]:
-        RootTypeFieldMethod<{
-          Config: $Config,
-          Index: $Index,
-          RootTypeName: $RootTypeName,
-          RootTypeFieldName: $RootTypeFieldName
-          Field: $Index['Root'][$RootTypeName]['fields'][$RootTypeFieldName]
-        }>
-    }
-  )
-  : TSError<'RootTypeMethods', `Your schema does not have the root type "${$RootTypeName}".`>
-
-// dprint-ignore
-type RootMethod<$Config extends Config, $Index extends Schema.Index, $RootTypeName extends Schema.RootTypeName> =
-  <$SelectionSet extends object>(selectionSet: Exact<$SelectionSet, SelectionSet.Root<$Index, $RootTypeName>>) =>
-    Promise<ReturnMode<$Config, ResultSet.Root<$SelectionSet, $Index, $RootTypeName>>>
-
-// dprint-ignore
-// type RootTypeFieldMethod<$Config extends OptionsInputDefaults, $Index extends Schema.Index, $RootTypeName extends Schema.RootTypeName, $RootTypeFieldName extends string> =
-type RootTypeFieldMethod<$Context extends RootTypeFieldContext> =
-  RootTypeFieldMethod_<$Context, $Context['Field']['type']>
-
-// dprint-ignore
-type RootTypeFieldMethod_<$Context extends RootTypeFieldContext, $Type extends Schema.Output.Any> =
-  $Type extends Schema.Output.Nullable<infer $InnerType>    ? RootTypeFieldMethod_<$Context, $InnerType> : 
-  $Type extends Schema.Output.List<infer $InnerType>        ? RootTypeFieldMethod_<$Context, $InnerType> :
-  $Type extends Schema.Scalar.Any                           ? ScalarFieldMethod<$Context> :
-  // todo test this case
-  $Type extends Schema.__typename                           ? ScalarFieldMethod<$Context> :
-                                                              ObjectLikeFieldMethod<$Context>
-
-// dprint-ignore
-type ObjectLikeFieldMethod<$Context extends RootTypeFieldContext> =
-  <$SelectionSet>(selectionSet: Exact<$SelectionSet, SelectionSet.Field<$Context['Field'], $Context['Index'], { hideDirectives: true }>>) =>
-    Promise<ReturnModeForFieldMethod<$Context, ResultSet.Field<$SelectionSet, $Context['Field'], $Context['Index']>>>
-
-// dprint-ignore
-type ScalarFieldMethod<$Context extends RootTypeFieldContext> =
-  $Context['Field']['args'] extends Schema.Args<infer $Fields>  ? InputFieldsAllNullable<$Fields> extends true  ? <$SelectionSet>(args?: Exact<$SelectionSet, SelectionSet.Args<$Context['Field']['args']>>) => Promise<ReturnModeForFieldMethod<$Context, ResultSet.Field<$SelectionSet, $Context['Field'], $Context['Index']>>> :
-                                                                                                                  <$SelectionSet>(args:  Exact<$SelectionSet, SelectionSet.Args<$Context['Field']['args']>>) => Promise<ReturnModeForFieldMethod<$Context, ResultSet.Field<$SelectionSet, $Context['Field'], $Context['Index']>>> :
-                                                                  (() => Promise<ReturnModeForFieldMethod<$Context, ResultSet.Field<true, $Context['Field'], $Context['Index']>>>)
-// dprint-ignore
-type ReturnModeForFieldMethod<$Context extends RootTypeFieldContext, $Data> =
-  $Context['Config']['returnMode'] extends 'data'
-    ? $Data
-    : ExecutionResult<{ [k in $Context['RootTypeFieldName']] : $Data }>
-
-// dprint-ignore
-type Document<$Index extends Schema.Index> =
-  {
-    [name: string]:
-      $Index['Root']['Query'] extends null    ? { mutation: SelectionSet.Root<$Index, 'Mutation'> } :
-      $Index['Root']['Mutation'] extends null ? { query: SelectionSet.Root<$Index, 'Query'> } :
-                                                MergeExclusive<
-                                                  {
-                                                    query: SelectionSet.Root<$Index, 'Query'>
-                                                  },
-                                                  {
-                                                    mutation: SelectionSet.Root<$Index, 'Mutation'>
-                                                  }
-                                                >
-  }
-
-// dprint-ignore
-type GetOperation<T extends {query:any}|{mutation:any}> =
-  T extends {query:infer U}    ? U : 
-  T extends {mutation:infer U} ? U :
-  never
-
-// dprint-ignore
-type ValidateDocumentOperationNames<$Document> =
-  // This initial condition checks that the document is not already in an error state.
-  // Namely from for example { x: { mutation: { ... }}} where the schema has no mutations.
-  // Which is statically caught by the `Document` type. In that case the document type variable
-  // no longer functions per normal with regards to keyof utility, not returning exact keys of the object
-  // but instead this more general union. Not totally clear _why_, but we have tests covering this...
-  string | number extends keyof $Document
-    ? $Document
-    : keyof { [K in keyof $Document & string as Schema.Named.NameParse<K> extends never ? K : never]: K } extends never
-      ? $Document
-      : TSError<'ValidateDocumentOperationNames', `One or more Invalid operation name in document: ${keyof { [K in keyof $Document & string as Schema.Named.NameParse<K> extends never ? K : never]: K }}`>
-
-// todo: dataAndErrors | dataAndSchemaErrors
-type ReturnModeType = 'graphql' | 'data'
-
-type OptionsInput = {
-  returnMode: ReturnModeType | undefined
-}
-
-type OptionsInputDefaults = {
-  returnMode: 'data'
-}
-
-type Config = {
-  returnMode: ReturnModeType
-}
-
-type ApplyInputDefaults<Input extends OptionsInput> = {
-  [Key in keyof OptionsInputDefaults]: undefined extends Input[Key] ? OptionsInputDefaults[Key] : Input[Key]
-}
-
-// dprint-ignore
-type ReturnMode<$Config extends Config, $Data> =
-  $Config['returnMode'] extends 'graphql' ? ExecutionResult<$Data> : $Data
 
 // dprint-ignore
 export type Client<$Index extends Schema.Index, $Config extends OptionsInputDefaults> =
   & {
       // todo test raw
-      raw: (document: string | DocumentNode, variables?:Variables,operationName?:string) => Promise<ExecutionResult>
-      document: <$Document extends Document<$Index>>
-                  (document: ValidateDocumentOperationNames<NonEmptyObject<$Document>>) =>
-                  // (document: $Document) =>
-                    {
-                      run:  <$Name extends keyof $Document & string, $Params extends (IsMultipleKeys<$Document> extends true ? [name: $Name] : ([] | [name: $Name | undefined]))>
-                              (...params: $Params) =>
-                                Promise<
-                                  ReturnMode<$Config, ResultSet.Root<GetOperation<$Document[$Name]>, $Index, 'Query'>>
-                                >
-                    }
+      raw: (document: string | DocumentNode, variables?:Variables, operationName?:string) => Promise<ExecutionResult>
+      document: DocumentFn<$Config, $Index>
     }
-  & (
-      $Index['Root']['Query'] extends null
-        ? unknown
-        : {
-            query: RootTypeMethods<$Config, $Index, 'Query'>
-          }
-    )
-  & (
-      $Index['Root']['Mutation'] extends null
-        ? unknown
-        : {
-            mutation: RootTypeMethods<$Config, $Index, 'Mutation'>
-          }
-    )
-// todo
-// & ($SchemaIndex['Root']['Subscription'] extends null ? {
-//     subscription: <$SelectionSet extends SelectionSet.Subscription<$SchemaIndex>>(selectionSet: $SelectionSet) => Promise<ResultSet.Subscription<$SelectionSet,$SchemaIndex>>
-//   }
-//   : unknown)
-//
+  & GetRootTypeMethods<$Config, $Index>
 
 interface HookInputDocumentEncode {
   rootIndex: Object$2
