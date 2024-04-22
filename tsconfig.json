@@ -9,7 +9,7 @@
     // Use ESM
     "module": "NodeNext",
     "moduleResolution": "nodenext",
-    
+
     // TODO enable, leads to lots of errors currently.
     "exactOptionalPropertyTypes": false,
     // We handle these with ESLint:
@@ -27,7 +27,7 @@
     // Other
     "skipLibCheck": true,
     "esModuleInterop": true,
-    "isolatedModules": false,
+    "isolatedModules": false
   },
   "include": ["src", "tests", "examples"],
   "exclude": ["build"]

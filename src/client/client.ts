@@ -127,7 +127,7 @@ export const create = <$Input extends Input>(
       const documentString = SelectionSet.selectionSet(documentObjectEncoded)
       // todo variables
       const result = await executeDocumentExpression({ document: documentString })
-      if (result.errors && (result.errors.length > 0)) throw new AggregateError(result.errors)  
+      if (result.errors && (result.errors.length > 0)) throw new AggregateError(result.errors)
       // todo check for errors
       const dataDecoded = CustomScalars.decode(rootIndex, result.data)
       return { ...result, data: dataDecoded }
@@ -168,7 +168,7 @@ export const create = <$Input extends Input>(
     switch (returnMode) {
       case `data`: {
         if (result.errors && result.errors.length > 0) {
-          throw new AggregateError(result.errors)  
+          throw new AggregateError(result.errors)
         }
         return result.data
       }
