@@ -143,7 +143,7 @@ describe(`middleware`, () => {
         await client.batchRequests([
           {
             document: `query x($foo: String) { foo(foo: $foo) }`,
-            variables: {foo: `bar`},
+            variables: { foo: `bar` },
           },
         ])
         expect(responseMiddleware).toBeCalledTimes(1)
@@ -156,7 +156,7 @@ describe(`middleware`, () => {
           variables: [{ foo: `bar` }],
         })
       })
-    });
+    })
   })
 
   describe(`async request middleware`, () => {

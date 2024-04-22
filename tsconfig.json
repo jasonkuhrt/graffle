@@ -1,17 +1,20 @@
 {
-  "extends": "@tsconfig/node16/tsconfig.json",
+  "extends": [
+    "@tsconfig/strictest/tsconfig.json",
+    "@tsconfig/node18/tsconfig.json"
+  ],
   "compilerOptions": {
-    "lib": ["DOM", "DOM.Iterable", "ES2020"],
+    "lib": ["DOM", "DOM.Iterable", "ES2023"],
+
     // Use ESM
     "module": "NodeNext",
     "moduleResolution": "nodenext",
 
-    // Make the compiler stricter, catch more errors
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUncheckedIndexedAccess": true,
-    "noImplicitOverride": true,
-    "noPropertyAccessFromIndexSignature": true,
+    // TODO enable, leads to lots of errors currently.
+    "exactOptionalPropertyTypes": false,
+    // We handle these with ESLint:
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
 
     // DX
     "sourceMap": true,
@@ -23,7 +26,8 @@
 
     // Other
     "skipLibCheck": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "isolatedModules": false
   },
   "include": ["src", "tests", "examples"],
   "exclude": ["build"]
