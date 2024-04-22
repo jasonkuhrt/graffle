@@ -84,7 +84,7 @@ const index = (config: Config) => {
   `
 }
 
-const union = (config: Config, type: GraphQLUnionType) => {
+const union = (_config: Config, type: GraphQLUnionType) => {
   // todo probably need thunks here
   const members = type.getTypes().map(t => t.name).join(`, `)
   return `
@@ -103,7 +103,7 @@ const interface$ = (config: Config, type: GraphQLInterfaceType) => {
   return `export const ${type.name} = $.Interface(\`${type.name}\`, {${fields}}, [${implementors}])`
 }
 
-const enum$ = (config: Config, type: GraphQLEnumType) => {
+const enum$ = (_config: Config, type: GraphQLEnumType) => {
   const members = type.getValues().map((value) => {
     return `\`${value.name}\``
   }).join(`, `)
@@ -156,7 +156,7 @@ const renderArg = (config: Config, arg: GraphQLArgument) => {
   return `${arg.name}: ${type}`
 }
 
-const scalar = (config: Config, type: GraphQLScalarType) => {
+const scalar = (_config: Config, type: GraphQLScalarType) => {
   return `$Scalar.${type.name}`
 }
 

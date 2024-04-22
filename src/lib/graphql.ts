@@ -195,7 +195,6 @@ export const getNodeName = (node: Describable): NodeNamePlus => {
       return `GraphQLScalarType`
     default:
       return `GraphQLField`
-      throw new Error(`Unknown node type: ${node.name}`)
   }
 }
 

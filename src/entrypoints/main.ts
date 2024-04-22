@@ -4,10 +4,10 @@ import {
   type BatchRequestsExtendedOptions,
   type BatchRequestsOptions,
 } from '../raw/functions/batchRequests.js'
-import { RequestExtendedOptions } from '../raw/functions/request.js'
+import type { RequestExtendedOptions } from '../raw/functions/request.js'
 import { request } from '../raw/functions/request.js'
 import type { GraphQLResponse, RequestMiddleware, ResponseMiddleware } from '../raw/helpers/types.js'
-import { RawRequestOptions, RequestDocument, RequestOptions, Variables } from '../raw/helpers/types.js'
+import type { RawRequestOptions, RequestDocument, RequestOptions, Variables } from '../raw/helpers/types.js'
 export { GraphQLClient } from '../raw/classes/GraphQLClient.js'
 export { batchRequests } from '../raw/functions/batchRequests.js'
 export { gql } from '../raw/functions/gql.js'
@@ -19,13 +19,13 @@ export {
   BatchRequestsOptions,
   ClientError,
   GraphQLResponse,
-  RawRequestOptions,
+  type RawRequestOptions,
   request,
-  RequestDocument,
-  RequestExtendedOptions,
+  type RequestDocument,
+  type RequestExtendedOptions,
   RequestMiddleware,
-  RequestOptions,
+  type RequestOptions,
   ResponseMiddleware,
-  Variables,
+  type Variables,
 }
 export default request
