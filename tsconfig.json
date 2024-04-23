@@ -5,7 +5,6 @@
   ],
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2023"],
-
     // Use ESM
     "module": "NodeNext",
     "moduleResolution": "nodenext",

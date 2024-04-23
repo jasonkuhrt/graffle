@@ -71,6 +71,12 @@ export namespace Root {
     dateNonNull: $.Field<$Scalar.Date, null>
     dateObject1: $.Field<$.Output.Nullable<Object.DateObject1>, null>
     dateUnion: $.Field<$.Output.Nullable<Union.DateUnion>, null>
+    error: $.Field<
+      $.Output.Nullable<$Scalar.String>,
+      $.Args<{
+        case: $.Input.Nullable<$Scalar.String>
+      }>
+    >
     id: $.Field<$.Output.Nullable<$Scalar.ID>, null>
     idNonNull: $.Field<$Scalar.ID, null>
     interface: $.Field<$.Output.Nullable<Interface.Interface>, null>

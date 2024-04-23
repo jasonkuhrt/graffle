@@ -35,6 +35,9 @@ export const generateGlobal = (config: Config) => {
       }).join(`\n`)
   }
         }
+        featureOptions: {
+          schemaErrors: ${config.options.errorTypeNamePattern ? `true` : `false`}
+        }
       }
     }
   }

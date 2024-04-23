@@ -1,7 +1,15 @@
 import type { ExecutionResult } from 'graphql'
 
-// todo: dataAndErrors | dataAndSchemaErrors
-export type ReturnModeType = 'graphql' | 'data'
+// todo: dataAndErrors
+export type ReturnModeType = ReturnModeTypeGraphQL | ReturnModeTypeData | ReturnModeTypeDataAndSchemaErrors
+
+export type ReturnModeTypeBase = ReturnModeTypeGraphQL | ReturnModeTypeData
+
+export type ReturnModeTypeData = 'data'
+
+export type ReturnModeTypeGraphQL = 'graphql'
+
+export type ReturnModeTypeDataAndSchemaErrors = 'dataAndSchemaErrors'
 
 export type OptionsInput = {
   returnMode: ReturnModeType | undefined
@@ -16,7 +24,8 @@ export type Config = {
 }
 
 export type ApplyInputDefaults<Input extends OptionsInput> = {
-  [Key in keyof OptionsInputDefaults]: undefined extends Input[Key] ? OptionsInputDefaults[Key] : Input[Key]
+  [Key in keyof OptionsInputDefaults]: undefined extends Input[Key] ? OptionsInputDefaults[Key]
+    : Exclude<Input[Key], undefined>
 }
 
 // dprint-ignore

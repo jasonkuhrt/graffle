@@ -5,6 +5,9 @@ declare global {
     MutationOnly: {
       index: Index
       customScalars: {}
+      featureOptions: {
+        schemaErrors: false
+      }
     }
   }
 }

@@ -2,20 +2,28 @@ import type { ExecutionResult } from 'graphql'
 import type { Exact } from '../lib/prelude.js'
 import type { TSError } from '../lib/TSError.js'
 import type { InputFieldsAllNullable, Schema } from '../Schema/__.js'
-import type { Config, OptionsInputDefaults, ReturnMode } from './Config.js'
+import type { Config, ReturnMode } from './Config.js'
 import type { ResultSet } from './ResultSet/__.js'
 import type { SelectionSet } from './SelectionSet/__.js'
+import type { GraphQLExecutionResultError, OperationName } from '../lib/graphql.js'
 
-type OperationName = 'query' | 'mutation'
+type RootTypeFieldContext = {
+  Config: Config
+  Index: Schema.Index
+  RootTypeName: Schema.RootTypeName
+  RootTypeFieldName: string
+  Field: Schema.SomeField
+}
+
 
 // dprint-ignore
-export type GetRootTypeMethods<$Config extends OptionsInputDefaults, $Index extends Schema.Index> = {
+export type GetRootTypeMethods<$Config extends Config, $Index extends Schema.Index> = {
 	[$OperationName in OperationName as $Index['Root'][Capitalize<$OperationName>] extends null ? never : $OperationName]:
 		RootTypeMethods<$Config, $Index, Capitalize<$OperationName>>
 }
 
 // dprint-ignore
-export type RootTypeMethods<$Config extends OptionsInputDefaults, $Index extends Schema.Index, $RootTypeName extends Schema.RootTypeName> =
+export type RootTypeMethods<$Config extends Config, $Index extends Schema.Index, $RootTypeName extends Schema.RootTypeName> =
   $Index['Root'][$RootTypeName] extends Schema.Object$2 ?
   (
   & {
@@ -65,14 +73,6 @@ type ScalarFieldMethod<$Context extends RootTypeFieldContext> =
                                                                   (() => Promise<ReturnModeForFieldMethod<$Context, ResultSet.Field<true, $Context['Field'], $Context['Index']>>>)
 // dprint-ignore
 type ReturnModeForFieldMethod<$Context extends RootTypeFieldContext, $Data> =
-  $Context['Config']['returnMode'] extends 'data'
-    ? $Data
-    : ExecutionResult<{ [k in $Context['RootTypeFieldName']] : $Data }>
-
-type RootTypeFieldContext = {
-  Config: Config
-  Index: Schema.Index
-  RootTypeName: Schema.RootTypeName
-  RootTypeFieldName: string
-  Field: Schema.SomeField
-}
+  $Context['Config']['returnMode'] extends 'graphql'
+    ? ExecutionResult<{ [k in $Context['RootTypeFieldName']] : $Data }>
+    : $Data | GraphQLExecutionResultError

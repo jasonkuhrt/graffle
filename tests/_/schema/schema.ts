@@ -211,6 +211,13 @@ const ObjectUnion = builder.simpleObject(`ObjectUnion`, {
 
 builder.queryType({
   fields: t => ({
+    // error
+    error: t.string({
+      args: { case: t.arg.string({ required: false }) },
+      resolve: () => {
+        throw new Error(`Something went wrong.`)
+      },
+    }),
     // Custom Scalar
     date: t.field({ type: `Date`, resolve: () => db.date0 }),
     dateNonNull: t.field({ nullable: false, type: `Date`, resolve: () => db.date0 }),

@@ -1,8 +1,10 @@
 /* eslint-disable */
+import { GraphQLError } from 'graphql'
 import { describe, expect, test } from 'vitest'
 import { db } from '../../tests/_/db.js'
 import { $Index as schemaIndex } from '../../tests/_/schema/generated/SchemaRuntime.js'
 import { schema } from '../../tests/_/schema/schema.js'
+import { Errors } from '../lib/errors/__.js'
 import { __typename } from '../Schema/_.js'
 import { create } from './client.js'
 
@@ -40,6 +42,9 @@ describe('data', () => {
   })
   test('query field method', async () => {
     await expect(client.query.__typename()).resolves.toEqual('Query')
+  })
+  test('query field method error', async () => {
+    await expect(client.query.error()).resolves.toMatchObject(new Errors.ContextualAggregateError(`One or more errors in the execution result.`, {}, [new GraphQLError('Something went wrong.')]))
   })
   test('query $batch', async () => {
     await expect(client.query.$batch({ __typename: true, id: true })).resolves.toEqual({ __typename: 'Query', id: db.id })
