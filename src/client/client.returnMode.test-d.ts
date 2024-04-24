@@ -12,7 +12,7 @@ import { create } from './client.js'
 describe('default is data', () => {
   const client = create({ schema, schemaIndex })
   test(`document`, async () => {
-    expectTypeOf(client.document({ main: { query: { id: true } } }).run()).resolves.toEqualTypeOf<{ id: string | null }>()
+    expectTypeOf(client.document({ main: { query: { id: true } } }).run()).resolves.toEqualTypeOf<{ id: string | null } | GraphQLExecutionResultError>()
   })
   test(`raw`, async () => {
     expectTypeOf(client.raw('query main {\nid\n}', {}, 'main')).resolves.toEqualTypeOf<ExecutionResult>()
@@ -21,7 +21,7 @@ describe('default is data', () => {
     await expectTypeOf(client.query.__typename()).resolves.toEqualTypeOf<'Query' | GraphQLExecutionResultError>()
   })
   test('query $batch', async () => {
-    await expectTypeOf(client.query.$batch({ __typename: true, id: true })).resolves.toEqualTypeOf<{ __typename: 'Query', id: string|null }>()
+    await expectTypeOf(client.query.$batch({ __typename: true, id: true })).resolves.toEqualTypeOf<{ __typename: 'Query', id: string|null } | GraphQLExecutionResultError>()
   })
 })
 
@@ -29,7 +29,7 @@ describe('default is data', () => {
 describe('data', () => {
   const client = create({ schema, schemaIndex, returnMode: 'data' })
   test(`document`, async () => {
-    expectTypeOf(client.document({ main: { query: { id: true } } }).run()).resolves.toEqualTypeOf<{ id: string | null }>()
+    expectTypeOf(client.document({ main: { query: { id: true } } }).run()).resolves.toEqualTypeOf<{ id: string | null } | GraphQLExecutionResultError>()
   })
   test(`raw`, async () => {
     expectTypeOf(client.raw('query main {\nid\n}', {}, 'main')).resolves.toEqualTypeOf<ExecutionResult>()
@@ -38,7 +38,7 @@ describe('data', () => {
     await expectTypeOf(client.query.__typename()).resolves.toEqualTypeOf<'Query' | GraphQLExecutionResultError>()
   })
   test('query $batch', async () => {
-    await expectTypeOf(client.query.$batch({ __typename: true, id: true })).resolves.toEqualTypeOf<{ __typename: 'Query', id: string|null }>()
+    await expectTypeOf(client.query.$batch({ __typename: true, id: true })).resolves.toEqualTypeOf<{ __typename: 'Query', id: string|null } | GraphQLExecutionResultError>()
   })
   test('result',async () => {
     const x = await client.query.result({$: { case: 'Object1' }, onObject1:{id:true},onErrorOne:{infoId:true},onErrorTwo:{infoInt:true}})
@@ -50,7 +50,7 @@ describe('dataAndSchemaErrors', () => {
   const client = create({ schema, schemaIndex, returnMode: 'dataAndSchemaErrors' })
   test(`document`, async () => {
     expectTypeOf(client.document({ main: { query: { id: true } } }).run()).resolves.toEqualTypeOf<
-      { id: string | null }
+      { id: string | null } | GraphQLExecutionResultError
     >()
   })
   test(`raw`, async () => {
@@ -61,7 +61,7 @@ describe('dataAndSchemaErrors', () => {
   })
   test('query $batch', async () => {
     await expectTypeOf(client.query.$batch({ __typename: true, id: true })).resolves.toEqualTypeOf<
-      { __typename: 'Query'; id: string | null }
+      { __typename: 'Query'; id: string | null } | GraphQLExecutionResultError
     >()
   })
 })
