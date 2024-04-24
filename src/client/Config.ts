@@ -1,4 +1,5 @@
 import type { ExecutionResult } from 'graphql'
+import type { GraphQLExecutionResultError } from '../lib/graphql.js'
 
 // todo: dataAndErrors
 export type ReturnModeType = ReturnModeTypeGraphQL | ReturnModeTypeData | ReturnModeTypeDataAndSchemaErrors
@@ -30,4 +31,5 @@ export type ApplyInputDefaults<Input extends OptionsInput> = {
 
 // dprint-ignore
 export type ReturnMode<$Config extends Config, $Data> =
-  $Config['returnMode'] extends 'graphql' ? ExecutionResult<$Data> : $Data
+  $Config['returnMode'] extends 'graphql' ? ExecutionResult<$Data> :
+                                            $Data | GraphQLExecutionResultError

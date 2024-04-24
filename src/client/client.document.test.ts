@@ -20,19 +20,19 @@ describe(`document with two queries`, () => {
   test(`error if no operation name is provided`, async () => {
     const { run } = withTwo
     // @ts-expect-error
-    await expect(run()).rejects.toMatchObject({
+    await expect(run()).resolves.toMatchObject({
       errors: [{ message: `Must provide operation name if query contains multiple operations.` }],
     })
   })
   test(`error if wrong operation name is provided`, async () => {
     const { run } = withTwo
     // @ts-expect-error
-    await expect(run(`boo`)).rejects.toMatchObject({ errors: [{ message: `Unknown operation named "boo".` }] })
+    await expect(run(`boo`)).resolves.toMatchObject({ errors: [{ message: `Unknown operation named "boo".` }] })
   })
   test(`error if invalid name in document`, async () => {
     // @ts-expect-error
     const { run } = client.document({ foo$: { query: { id: true } } })
-    await expect(run(`foo$`)).rejects.toMatchObject({
+    await expect(run(`foo$`)).resolves.toMatchObject({
       errors: [{ message: `Syntax Error: Expected "{", found "$".` }],
     })
   })
@@ -50,6 +50,11 @@ test(`document with one mutation`, async () => {
   await expect(run(`foo`)).resolves.toEqual({ id: db.id1 })
   await expect(run()).resolves.toEqual({ id: db.id1 })
   await expect(run(undefined)).resolves.toEqual({ id: db.id1 })
+})
+
+test(`error`, async () => {
+  const { run } = client.document({ foo: { query: { error: true } } })
+  await expect(run()).resolves.toMatchObject({ errors: [{ message: `Something went wrong.` }] })
 })
 
 test(`document with one mutation and one query`, async () => {
