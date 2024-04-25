@@ -2,7 +2,6 @@
 import { expectTypeOf, test } from 'vitest'
 import { isError } from '../../tests/_/schema/generated/Error.js'
 import * as Schema from '../../tests/_/schema/schema.js'
-import { GraphQLExecutionResultError } from '../lib/graphql.js'
 import { create } from './client.js'
 
 const client = create({ schema: Schema.schema, schemaIndex: Schema.$Index })
