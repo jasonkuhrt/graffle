@@ -231,4 +231,6 @@ export const mapValues = <
   ) as Record<keyof $Obj, ReturnType<$Fn>>
 }
 
-export type SetProperty<$Obj extends object, $Prop extends keyof $Obj, $Type extends $Obj[$Prop] > = Omit<$Obj, $Prop> & { [_ in $Prop]: $Type }
+export type SetProperty<$Obj extends object, $Prop extends keyof $Obj, $Type extends $Obj[$Prop]> =
+  & Omit<$Obj, $Prop>
+  & { [_ in $Prop]: $Type }

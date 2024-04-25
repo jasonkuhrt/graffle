@@ -1,5 +1,5 @@
 import { ContextualError } from './ContextualError.js'
-import type { Context,Cause } from './types.js'
+import type { Cause, Context } from './types.js'
 
 export class ErrorInternal<
   $Name extends string = 'ErrorInternal',
