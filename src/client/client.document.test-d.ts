@@ -3,7 +3,6 @@ import * as Schema from '../../tests/_/schema/schema.js'
 import * as SchemaMutationOnly from '../../tests/_/schemaMutationOnly/schema.js'
 import * as SchemaQueryOnly from '../../tests/_/schemaQueryOnly/schema.js'
 import { create } from './client.js'
-import type { GraphQLExecutionResultError } from '../lib/graphql.js'
 
 const client = create({ schema: Schema.schema, schemaIndex: Schema.$Index })
 
@@ -56,15 +55,15 @@ describe(`output`, () => {
   test(`document with one query`, async () => {
     {
       const result = await client.document({ foo: { query: { id: true } } }).run()
-      expectTypeOf(result).toEqualTypeOf<{ id: string | null } | GraphQLExecutionResultError>()
+      expectTypeOf(result).toEqualTypeOf<{ id: string | null }>()
     }
     {
       const result = await client.document({ foo: { query: { id: true } } }).run(`foo`)
-      expectTypeOf(result).toEqualTypeOf<{ id: string | null } | GraphQLExecutionResultError>()
+      expectTypeOf(result).toEqualTypeOf<{ id: string | null }>()
     }
     {
       const result = await client.document({ foo: { query: { id: true } } }).run(undefined)
-      expectTypeOf(result).toEqualTypeOf<{ id: string | null } | GraphQLExecutionResultError>()
+      expectTypeOf(result).toEqualTypeOf<{ id: string | null }>()
     }
   })
   test(`document with two queries`, async () => {
@@ -72,6 +71,6 @@ describe(`output`, () => {
       foo: { query: { id: true } },
       bar: { query: { id: true } },
     }).run(`foo`)
-    expectTypeOf(result).toEqualTypeOf<{ id: string | null } | GraphQLExecutionResultError>()
+    expectTypeOf(result).toEqualTypeOf<{ id: string | null }>()
   })
 })
