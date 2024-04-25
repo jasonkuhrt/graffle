@@ -1,4 +1,4 @@
-import type { GraphQLEnumValue, GraphQLField, GraphQLInputField, GraphQLSchema } from 'graphql'
+import type { GraphQLEnumValue, GraphQLError, GraphQLField, GraphQLInputField, GraphQLSchema } from 'graphql'
 import {
   GraphQLEnumType,
   GraphQLInputObjectType,
@@ -11,6 +11,7 @@ import {
   isListType,
   isNonNullType,
 } from 'graphql'
+import type { Errors } from './errors/__.js'
 
 export type TypeMapByKind =
   & {
@@ -230,3 +231,7 @@ export const hasSubscription = (typeMapByKind: TypeMapByKind) =>
   typeMapByKind.GraphQLRootType.find((_) => _.name === `Subscription`)
 
 export type Variables = Record<string, string | number | boolean | null> // todo or any custom scalars too
+
+export type GraphQLExecutionResultError = Errors.ContextualAggregateError<GraphQLError>
+
+export type OperationName = 'query' | 'mutation'

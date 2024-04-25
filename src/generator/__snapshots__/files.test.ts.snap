@@ -249,6 +249,12 @@ export namespace Root {
     dateNonNull: $.Field<$Scalar.Date, null>
     dateObject1: $.Field<$.Output.Nullable<Object.DateObject1>, null>
     dateUnion: $.Field<$.Output.Nullable<Union.DateUnion>, null>
+    error: $.Field<
+      $.Output.Nullable<$Scalar.String>,
+      $.Args<{
+        case: $.Input.Nullable<$Scalar.String>
+      }>
+    >
     id: $.Field<$.Output.Nullable<$Scalar.ID>, null>
     idNonNull: $.Field<$Scalar.ID, null>
     interface: $.Field<$.Output.Nullable<Interface.Interface>, null>
@@ -651,6 +657,7 @@ export const Query = $.Object$(\`Query\`, {
   dateNonNull: $.field($Scalar.Date),
   dateObject1: $.field($.Output.Nullable(() => DateObject1)),
   dateUnion: $.field($.Output.Nullable(() => DateUnion)),
+  error: $.field($.Output.Nullable($Scalar.String), $.Args({ case: $.Input.Nullable($Scalar.String) })),
   id: $.field($.Output.Nullable($Scalar.ID)),
   idNonNull: $.field($Scalar.ID),
   interface: $.field($.Output.Nullable(() => Interface)),

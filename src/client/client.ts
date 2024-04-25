@@ -2,11 +2,13 @@ import type { ExecutionResult } from 'graphql'
 import { type DocumentNode, execute, graphql, type GraphQLSchema } from 'graphql'
 import type { ExcludeUndefined } from 'type-fest/source/required-deep.js'
 import request from '../entrypoints/main.js'
+import type { GlobalRegistry } from '../globalRegistry.js'
+import { Errors } from '../lib/errors/__.js'
 import type { RootTypeName, Variables } from '../lib/graphql.js'
 import type { Object$2 } from '../Schema/__.js'
 import { Schema } from '../Schema/__.js'
 import { readMaybeThunk } from '../Schema/core/helpers.js'
-import type { ApplyInputDefaults, OptionsInputDefaults, ReturnModeType } from './Config.js'
+import type { ApplyInputDefaults, Config, ReturnModeTypeBase, ReturnModeTypeDataAndSchemaErrors } from './Config.js'
 import * as CustomScalars from './customScalars.js'
 import type { DocumentFn } from './document.js'
 import { toDocumentExpression } from './document.js'
@@ -15,7 +17,7 @@ import { SelectionSet } from './SelectionSet/__.js'
 import type { DocumentObject, GraphQLObjectSelection } from './SelectionSet/toGraphQLDocumentString.js'
 
 // dprint-ignore
-export type Client<$Index extends Schema.Index, $Config extends OptionsInputDefaults> =
+export type Client<$Index extends Schema.Index, $Config extends Config> =
   & {
       // todo test raw
       raw: (document: string | DocumentNode, variables?:Variables, operationName?:string) => Promise<ExecutionResult>
@@ -28,37 +30,41 @@ interface HookInputDocumentEncode {
   documentObject: GraphQLObjectSelection
 }
 
-interface Input {
-  /**
-   * @defaultValue 'default'
-   */
-  name?: keyof NamedSchemas
-  schema: URL | string | GraphQLSchema
-  headers?: HeadersInit
-  /**
-   * Used internally for several functions.
-   *
-   * When custom scalars are being used, this runtime schema is used to
-   * encode/decode them before/after your application sends/receives them.
-   *
-   * When using root type field methods, this runtime schema is used to assist how arguments on scalars versus objects
-   * are constructed into the sent GraphQL document.
-   */
-  schemaIndex: Schema.Index
-  returnMode?: ReturnModeType
-  hooks?: {
-    documentEncode: (
-      input: HookInputDocumentEncode,
-      fn: (input: HookInputDocumentEncode) => GraphQLObjectSelection,
-    ) => GraphQLObjectSelection
+type InputForSchema<$Name extends GlobalRegistry.SchemaNames> = $Name extends any ? {
+    /**
+     * @defaultValue 'default'
+     */
+    name?: $Name
+    schema: URL | string | GraphQLSchema
+    headers?: HeadersInit
+    /**
+     * Used internally for several functions.
+     *
+     * When custom scalars are being used, this runtime schema is used to
+     * encode/decode them before/after your application sends/receives them.
+     *
+     * When using root type field methods, this runtime schema is used to assist how arguments on scalars versus objects
+     * are constructed into the sent GraphQL document.
+     */
+    schemaIndex: Schema.Index
+    returnMode?:
+      | ReturnModeTypeBase
+      | (GlobalRegistry.HasSchemaErrors<$Name> extends true ? ReturnModeTypeDataAndSchemaErrors : never)
+    hooks?: {
+      documentEncode: (
+        input: HookInputDocumentEncode,
+        fn: (input: HookInputDocumentEncode) => GraphQLObjectSelection,
+      ) => GraphQLObjectSelection
+    }
   }
-}
+  : never
+
+type Input = InputForSchema<GlobalRegistry.SchemaNames>
 
 export const create = <$Input extends Input>(
   input: $Input,
 ): Client<
-  // @ts-expect-error fixme
-  (undefined extends $Input['name'] ? NamedSchemas['default']['index'] : NamedSchemas[$Input['name']]['index']),
+  GlobalRegistry.GetSchemaIndexOptionally<$Input['name']>,
   ApplyInputDefaults<{ returnMode: $Input['returnMode'] }>
 > => {
   const parentInput = input
@@ -127,8 +133,7 @@ export const create = <$Input extends Input>(
       const documentString = SelectionSet.selectionSet(documentObjectEncoded)
       // todo variables
       const result = await executeDocumentExpression({ document: documentString })
-      if (result.errors && (result.errors.length > 0)) throw new AggregateError(result.errors)
-      // todo check for errors
+      // if (result.errors && (result.errors.length > 0)) throw new AggregateError(result.errors)
       const dataDecoded = CustomScalars.decode(rootIndex, result.data)
       return { ...result, data: dataDecoded }
     }
@@ -159,16 +164,24 @@ export const create = <$Input extends Input>(
       } as GraphQLObjectSelection
       const result = await rootObjectExecutors[rootTypeName](documentObject)
       const resultHandled = handleReturn(result)
+      if (resultHandled instanceof Error) return resultHandled
       // @ts-expect-error make this type safe?
-      return returnMode === `data` ? resultHandled[key] : resultHandled
+      return returnMode === `data` || returnMode === `dataAndAllErrors` ? resultHandled[key] : resultHandled
     }
   }
 
   const handleReturn = (result: ExecutionResult) => {
     switch (returnMode) {
+      case `dataAndAllErrors`:
       case `data`: {
         if (result.errors && result.errors.length > 0) {
-          throw new AggregateError(result.errors)
+          const error = new Errors.ContextualAggregateError(
+            `One or more errors in the execution result.`,
+            {},
+            result.errors,
+          )
+          if (returnMode === `data`) throw error
+          return error
         }
         return result.data
       }
@@ -188,15 +201,46 @@ export const create = <$Input extends Input>(
     new Proxy({}, {
       get: (_, key) => {
         if (typeof key === `symbol`) throw new Error(`Symbols not supported.`)
-        if (key === `$batch`) {
+
+        // todo We need to document that in order for this to 100% work none of the user's root type fields can end with "OrThrow".
+        const isOrThrow = key.endsWith(`OrThrow`)
+
+        if (key.startsWith(`$batch`)) {
           return async (selectionSetOrIndicator: GraphQLObjectSelection) => {
-            const result = await rootObjectExecutors[rootTypeName]({
+            const resultRaw = await rootObjectExecutors[rootTypeName]({
               [rootTypeNameToOperationName[rootTypeName]]: selectionSetOrIndicator,
             })
-            return handleReturn(result)
+            const result = handleReturn(resultRaw)
+            if (isOrThrow && result instanceof Error) throw result
+            // todo consolidate
+            // @ts-expect-error fixme
+            if (isOrThrow && returnMode === `graphql` && result.errors && result.errors.length > 0) {
+              throw new Errors.ContextualAggregateError(
+                `One or more errors in the execution result.`,
+                {},
+                // @ts-expect-error fixme
+                result.errors,
+              )
+            }
+            return result
           }
         } else {
-          return executeRootTypeFieldSelection(rootTypeName, key)
+          const fieldName = isOrThrow ? key.slice(0, -7) : key
+          return async (argsOrSelectionSet?: object) => {
+            const result = await executeRootTypeFieldSelection(rootTypeName, fieldName)(argsOrSelectionSet) // eslint-disable-line
+            if (isOrThrow && result instanceof Error) throw result
+            // todo consolidate
+            // eslint-disable-next-line
+            if (isOrThrow && returnMode === `graphql` && result.errors.length > 0) {
+              throw new Errors.ContextualAggregateError(
+                `One or more errors in the execution result.`,
+                {},
+                // eslint-disable-next-line
+                result.errors,
+              )
+            }
+            return result
+          }
         }
       },
     })
@@ -207,16 +251,27 @@ export const create = <$Input extends Input>(
       return await executeDocumentExpression({ document, variables, operationName })
     },
     document: (documentObject: DocumentObject) => {
+      const run = async (operationName: string) => {
+        // todo this does not support custom scalars
+        const documentExpression = toDocumentExpression(documentObject)
+        const result = await executeDocumentExpression({
+          document: documentExpression,
+          operationName,
+          // todo variables
+        })
+        return handleReturn(result)
+      }
       return {
-        run: async (operationName: string) => {
-          // todo this does not support custom scalars
-          const documentExpression = toDocumentExpression(documentObject)
-          const result = await executeDocumentExpression({
-            document: documentExpression,
-            operationName,
-            // todo variables
-          })
-          return handleReturn(result)
+        run,
+        runOrThrow: async (operationName: string) => {
+          const result = await run(operationName)
+          if (result instanceof Error) throw result
+          // @ts-expect-error fixme
+          if (returnMode === `graphql` && result.errors && result.errors.length > 0) {
+            // @ts-expect-error fixme
+            throw new Errors.ContextualAggregateError(`One or more errors in the execution result.`, {}, result.errors)
+          }
+          return result
         },
       }
     },

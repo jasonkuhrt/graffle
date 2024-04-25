@@ -143,6 +143,7 @@ export const Query = $.Object$(`Query`, {
   dateNonNull: $.field($Scalar.Date),
   dateObject1: $.field($.Output.Nullable(() => DateObject1)),
   dateUnion: $.field($.Output.Nullable(() => DateUnion)),
+  error: $.field($.Output.Nullable($Scalar.String), $.Args({ case: $.Input.Nullable($Scalar.String) })),
   id: $.field($.Output.Nullable($Scalar.ID)),
   idNonNull: $.field($Scalar.ID),
   interface: $.field($.Output.Nullable(() => Interface)),

@@ -5,6 +5,9 @@ declare global {
     QueryOnly: {
       index: Index
       customScalars: {}
+      featureOptions: {
+        schemaErrors: false
+      }
     }
   }
 }

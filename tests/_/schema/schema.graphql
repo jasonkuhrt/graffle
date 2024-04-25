@@ -129,6 +129,7 @@ type Query {
   dateNonNull: Date!
   dateObject1: DateObject1
   dateUnion: DateUnion
+  error(case: String): String
   id: ID
   idNonNull: ID!
   interface: Interface

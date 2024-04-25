@@ -5,6 +5,7 @@ import { create } from './client.js'
 
 const client = create({ schema: Schema.schema, schemaIndex: Schema.$Index })
 
+// dprint-ignore
 describe(`query`, () => {
   test(`scalar`, async () => {
     await expect(client.query.id()).resolves.toEqual(db.id1)
@@ -30,11 +31,33 @@ describe(`query`, () => {
     await expect(client.query.interface({ id: true })).resolves.toEqual({ id: db.id })
   })
   test(`interface instance found`, async () => {
-    await expect(client.query.interface({ onObject1ImplementingInterface: { int: true } })).resolves.toEqual({
-      int: db.int,
-    })
+    await expect(client.query.interface({ onObject1ImplementingInterface: { int: true } })).resolves.toEqual({ int: db.int })
   })
   test(`interface instance not found`, async () => {
     await expect(client.query.interface({ onObject2ImplementingInterface: { boolean: true } })).resolves.toEqual({})
+  })
+  describe(`orThrow`, () => {
+    test(`without error`, async () => {
+      await expect(client.query.objectWithArgsOrThrow({ $: { id: `x` }, id: true })).resolves.toEqual({ id: `x` })
+    })
+    test(`with error`, async () => {
+      await expect(client.query.errorOrThrow()).rejects.toMatchObject(db.error)
+    })
+  })
+  describe(`$batch`, () => {
+    test(`success`, async () => {
+      await expect(client.query.$batch({ id: true })).resolves.toMatchObject({ id:db.id })
+    })
+    test(`error`, async () => {
+      await expect(client.query.$batch({ error: true })).rejects.toMatchObject(db.error)
+    })
+    describe(`orThrow`, () => {
+    test(`success`, async () => {
+      await expect(client.query.$batchOrThrow({ id: true })).resolves.toMatchObject({ id:db.id })
+    })
+    test(`error`, async () => {
+      await expect(client.query.$batchOrThrow({ error: true })).rejects.toMatchObject(db.error)
+    })  
+    })
   })
 })

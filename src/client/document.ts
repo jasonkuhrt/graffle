@@ -2,7 +2,7 @@ import type { MergeExclusive, NonEmptyObject } from 'type-fest'
 import type { IsMultipleKeys } from '../lib/prelude.js'
 import type { TSError } from '../lib/TSError.js'
 import type { Schema } from '../Schema/__.js'
-import type { Config, ReturnMode } from './Config.js'
+import type { Config, OrThrowifyConfig, ReturnMode } from './Config.js'
 import type { ResultSet } from './ResultSet/__.js'
 import { SelectionSet } from './SelectionSet/__.js'
 import type { DocumentObject } from './SelectionSet/toGraphQLDocumentString.js'
@@ -16,6 +16,12 @@ export type DocumentFn<$Config extends Config, $Index extends Schema.Index> =
       $Params extends (IsMultipleKeys<$Document> extends true ? [name: $Name] : ([] | [name: $Name | undefined])),
     >(...params: $Params) => Promise<
       ReturnMode<$Config, ResultSet.Root<GetOperation<$Document[$Name]>, $Index, 'Query'>>
+    >
+    runOrThrow: <
+      $Name extends keyof $Document & string,
+      $Params extends (IsMultipleKeys<$Document> extends true ? [name: $Name] : ([] | [name: $Name | undefined])),
+    >(...params: $Params) => Promise<
+      ReturnMode<OrThrowifyConfig<$Config>, ResultSet.Root<GetOperation<$Document[$Name]>, $Index, 'Query'>>
     >
   }
 

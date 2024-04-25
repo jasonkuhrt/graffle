@@ -1,4 +1,12 @@
+import { GraphQLError } from 'graphql'
+import { Errors } from '../../src/lib/errors/__.js'
+
 const date0 = new Date(0)
+
+// const error = { errors: [{ message: `Something went wrong.` }] }
+const error = new Errors.ContextualAggregateError(`One or more errors in the execution result.`, {}, [
+  new GraphQLError(`Something went wrong.`),
+])
 
 const id = `abc`
 
@@ -54,4 +62,5 @@ export const db = {
   DateInterface1: {
     date1: date0,
   },
+  error,
 } as const

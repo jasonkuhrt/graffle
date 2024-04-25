@@ -9,6 +9,9 @@ declare global {
       customScalars: {
         Date: CustomScalar.Date
       }
+      featureOptions: {
+        schemaErrors: true
+      }
     }
   }
 }

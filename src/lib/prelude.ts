@@ -185,6 +185,7 @@ import type { ConditionalSimplifyDeep } from 'type-fest/source/conditional-simpl
 export type SimplifyDeep<T> = ConditionalSimplifyDeep<T, Function | Iterable<unknown> | Date, object>
 
 import fs from 'node:fs/promises'
+import { $ } from 'vitest/dist/reporters-LqC_WI4d.js'
 
 export const fileExists = async (path: string) => {
   return Boolean(
@@ -229,3 +230,7 @@ export const mapValues = <
     }),
   ) as Record<keyof $Obj, ReturnType<$Fn>>
 }
+
+export type SetProperty<$Obj extends object, $Prop extends keyof $Obj, $Type extends $Obj[$Prop]> =
+  & Omit<$Obj, $Prop>
+  & { [_ in $Prop]: $Type }

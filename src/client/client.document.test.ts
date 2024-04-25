@@ -52,6 +52,11 @@ test(`document with one mutation`, async () => {
   await expect(run(undefined)).resolves.toEqual({ id: db.id1 })
 })
 
+test(`error`, async () => {
+  const { run } = client.document({ foo: { query: { error: true } } })
+  await expect(run()).rejects.toMatchObject({ errors: [{ message: `Something went wrong.` }] })
+})
+
 test(`document with one mutation and one query`, async () => {
   const { run } = client.document({
     foo: {
