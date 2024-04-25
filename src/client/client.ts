@@ -166,15 +166,22 @@ export const create = <$Input extends Input>(
       const resultHandled = handleReturn(result)
       if (resultHandled instanceof Error) return resultHandled
       // @ts-expect-error make this type safe?
-      return returnMode === `data` ? resultHandled[key] : resultHandled
+      return returnMode === `data` || returnMode === `dataAndAllErrors` ? resultHandled[key] : resultHandled
     }
   }
 
   const handleReturn = (result: ExecutionResult) => {
     switch (returnMode) {
+      case `dataAndAllErrors`:
       case `data`: {
         if (result.errors && result.errors.length > 0) {
-          return new Errors.ContextualAggregateError(`One or more errors in the execution result.`, {}, result.errors)
+          const error = new Errors.ContextualAggregateError(
+            `One or more errors in the execution result.`,
+            {},
+            result.errors,
+          )
+          if (returnMode === `data`) throw error
+          return error
         }
         return result.data
       }
@@ -194,15 +201,46 @@ export const create = <$Input extends Input>(
     new Proxy({}, {
       get: (_, key) => {
         if (typeof key === `symbol`) throw new Error(`Symbols not supported.`)
-        if (key === `$batch`) {
+
+        // todo We need to document that in order for this to 100% work none of the user's root type fields can end with "OrThrow".
+        const isOrThrow = key.endsWith(`OrThrow`)
+
+        if (key.startsWith(`$batch`)) {
           return async (selectionSetOrIndicator: GraphQLObjectSelection) => {
-            const result = await rootObjectExecutors[rootTypeName]({
+            const resultRaw = await rootObjectExecutors[rootTypeName]({
               [rootTypeNameToOperationName[rootTypeName]]: selectionSetOrIndicator,
             })
-            return handleReturn(result)
+            const result = handleReturn(resultRaw)
+            if (isOrThrow && result instanceof Error) throw result
+            // todo consolidate
+            // @ts-expect-error fixme
+            if (isOrThrow && returnMode === `graphql` && result.errors && result.errors.length > 0) {
+              throw new Errors.ContextualAggregateError(
+                `One or more errors in the execution result.`,
+                {},
+                // @ts-expect-error fixme
+                result.errors,
+              )
+            }
+            return result
           }
         } else {
-          return executeRootTypeFieldSelection(rootTypeName, key)
+          const fieldName = isOrThrow ? key.slice(0, -7) : key
+          return async (argsOrSelectionSet?: object) => {
+            const result = await executeRootTypeFieldSelection(rootTypeName, fieldName)(argsOrSelectionSet) // eslint-disable-line
+            if (isOrThrow && result instanceof Error) throw result
+            // todo consolidate
+            // eslint-disable-next-line
+            if (isOrThrow && returnMode === `graphql` && result.errors.length > 0) {
+              throw new Errors.ContextualAggregateError(
+                `One or more errors in the execution result.`,
+                {},
+                // eslint-disable-next-line
+                result.errors,
+              )
+            }
+            return result
+          }
         }
       },
     })
@@ -213,16 +251,27 @@ export const create = <$Input extends Input>(
       return await executeDocumentExpression({ document, variables, operationName })
     },
     document: (documentObject: DocumentObject) => {
+      const run = async (operationName: string) => {
+        // todo this does not support custom scalars
+        const documentExpression = toDocumentExpression(documentObject)
+        const result = await executeDocumentExpression({
+          document: documentExpression,
+          operationName,
+          // todo variables
+        })
+        return handleReturn(result)
+      }
       return {
-        run: async (operationName: string) => {
-          // todo this does not support custom scalars
-          const documentExpression = toDocumentExpression(documentObject)
-          const result = await executeDocumentExpression({
-            document: documentExpression,
-            operationName,
-            // todo variables
-          })
-          return handleReturn(result)
+        run,
+        runOrThrow: async (operationName: string) => {
+          const result = await run(operationName)
+          if (result instanceof Error) throw result
+          // @ts-expect-error fixme
+          if (returnMode === `graphql` && result.errors && result.errors.length > 0) {
+            // @ts-expect-error fixme
+            throw new Errors.ContextualAggregateError(`One or more errors in the execution result.`, {}, result.errors)
+          }
+          return result
         },
       }
     },
