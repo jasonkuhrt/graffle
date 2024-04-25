@@ -32,6 +32,10 @@ export namespace GlobalRegistry {
   // eslint-disable-next-line
   // @ts-ignore populated after generation
   export type GetSchemaIndexOptionally<$Name extends SchemaNames | undefined> = $Name extends SchemaNames
+    // eslint-disable-next-line
+    // @ts-ignore populated after generation
     ? NamedSchemas[$Name]['index']
+    // eslint-disable-next-line
+    // @ts-ignore populated after generation
     : NamedSchemas['default']['index']
 }
