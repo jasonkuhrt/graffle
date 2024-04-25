@@ -185,7 +185,6 @@ import type { ConditionalSimplifyDeep } from 'type-fest/source/conditional-simpl
 export type SimplifyDeep<T> = ConditionalSimplifyDeep<T, Function | Iterable<unknown> | Date, object>
 
 import fs from 'node:fs/promises'
-import { $ } from 'vitest/dist/reporters-LqC_WI4d.js'
 
 export const fileExists = async (path: string) => {
   return Boolean(
