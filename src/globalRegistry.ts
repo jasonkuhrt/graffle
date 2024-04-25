@@ -23,8 +23,14 @@ export namespace GlobalRegistry {
     ? TSError<'SchemaNames', 'No schemas have been registered. Did you run graphql-request generate?'>
     : keyof NamedSchemas
 
+  // todo use conditional types?
+  // eslint-disable-next-line
+  // @ts-ignore populated after generation
   export type HasSchemaErrors<$Name extends SchemaNames> = NamedSchemas[$Name]['featureOptions']['schemaErrors']
 
+  // todo use conditional types?
+  // eslint-disable-next-line
+  // @ts-ignore populated after generation
   export type GetSchemaIndexOptionally<$Name extends SchemaNames | undefined> = $Name extends SchemaNames
     ? NamedSchemas[$Name]['index']
     : NamedSchemas['default']['index']
