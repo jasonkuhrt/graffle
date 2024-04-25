@@ -80,11 +80,11 @@
   },
   "dependencies": {
     "@dprint/formatter": "^0.2.1",
-    "@dprint/typescript": "^0.90.3",
+    "@dprint/typescript": "^0.90.4",
     "@graphql-typed-document-node/core": "^3.2.0",
     "@molt/command": "^0.9.0",
     "dprint": "^0.45.1",
-    "zod": "^3.23.0"
+    "zod": "^3.23.4"
   },
   "peerDependencies": {
     "graphql": "14 - 16"
@@ -120,9 +120,9 @@
     "happy-dom": "^14.7.1",
     "json-bigint": "^1.0.0",
     "tsx": "^4.7.2",
-    "type-fest": "^4.16.0",
+    "type-fest": "^4.17.0",
     "typescript": "^5.4.5",
     "typescript-eslint": "^7.7.1",
-    "vitest": "^1.5.0"
+    "vitest": "^1.5.1"
   }
 }
