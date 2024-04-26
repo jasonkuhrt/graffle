@@ -45,6 +45,11 @@ export interface Config {
   name: string
   schema: GraphQLSchema
   typeMapByKind: TypeMapByKind
+  rootTypes: {
+    Query: GraphQLObjectType | null
+    Mutation: GraphQLObjectType | null
+    Subscription: GraphQLObjectType | null
+  }
   error: {
     objects: GraphQLObjectType[]
     enabled: boolean
@@ -87,6 +92,11 @@ export const resolveOptions = (input: Input): Config => {
       schema: input.libraryPaths?.schema ?? `graphql-request/alpha/schema`,
     },
     typeMapByKind,
+    rootTypes: {
+      Query: typeMapByKind.GraphQLRootType.find(_ => _.name === `Query`) ?? null,
+      Mutation: typeMapByKind.GraphQLRootType.find(_ => _.name === `Mutation`) ?? null,
+      Subscription: typeMapByKind.GraphQLRootType.find(_ => _.name === `Subscription`) ?? null,
+    },
     options: {
       errorTypeNamePattern,
       customScalars: input.options?.customScalars ?? false,

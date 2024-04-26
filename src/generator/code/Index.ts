@@ -1,5 +1,6 @@
+import { isUnionType } from 'graphql'
 import { Code } from '../../lib/Code.js'
-import { hasMutation, hasQuery, hasSubscription } from '../../lib/graphql.js'
+import { hasMutation, hasQuery, hasSubscription, unwrapToNamed } from '../../lib/graphql.js'
 import type { Config } from './generateCode.js'
 import { moduleNameSchemaBuildtime } from './SchemaBuildtime.js'
 
@@ -15,6 +16,7 @@ export const generateIndex = (config: Config) => {
     Code.interface$(
       `Index`,
       Code.objectFrom({
+        name: Code.quote(config.name),
         Root: {
           type: Code.objectFrom({
             Query: hasQuery(config.typeMapByKind) ? `${namespace}.Root.Query` : null,
@@ -37,6 +39,24 @@ export const generateIndex = (config: Config) => {
           objects: Code.objectFromEntries(
             config.error.objects.map(_ => [_.name, `${namespace}.Object.${_.name}`]),
           ),
+          objectsTypename: Code.objectFromEntries(
+            config.error.objects.map(_ => [_.name, `{ __typename: "${_.name}" }`]),
+          ),
+          rootResultFields: `{
+          ${
+            Object.entries(config.rootTypes).map(([rootTypeName, rootType]) => {
+              if (!rootType) return `${rootTypeName}: {}`
+
+              const resultFields = Object.values(rootType.getFields()).filter((field) => {
+                const type = unwrapToNamed(field.type)
+                return isUnionType(type)
+                  && type.getTypes().some(_ => config.error.objects.some(__ => __.name === _.name))
+              }).map((field) => field.name)
+
+              return `${rootType.name}: {\n${resultFields.map(_ => `${_}: "${_}"`).join(`,\n`)} }`
+            }).join(`\n`)
+          }
+          }`,
         }),
       }),
     ),

@@ -170,6 +170,10 @@ export interface Index {
       ErrorOne: Schema.Object.ErrorOne
       ErrorTwo: Schema.Object.ErrorTwo
     }
+    objectsTypename: {
+      ErrorOne: { __typename: 'ErrorOne' }
+      ErrorTwo: { __typename: 'ErrorTwo' }
+    }
   }
 }
 "
@@ -752,6 +756,10 @@ export const $Index = {
     objects: {
       ErrorOne,
       ErrorTwo,
+    },
+    objectsTypename: {
+      ErrorOne: { __typename: 'ErrorOne' },
+      ErrorTwo: { __typename: 'ErrorTwo' },
     },
   },
 }

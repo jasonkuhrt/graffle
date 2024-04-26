@@ -61,6 +61,7 @@ const index = (config: Config) => {
   // todo input objects for decode/encode input object fields
   return `
     export const $Index = {
+      name: "${config.name}" as const,
       Root: {
         Query ${hasQuery(config.typeMapByKind) ? `` : `:null`} ,
         Mutation ${hasMutation(config.typeMapByKind) ? `` : `:null`},
@@ -78,6 +79,24 @@ const index = (config: Config) => {
       error: {
         objects: {
           ${config.error.objects.map(type => type.name).join(`,\n`)}
+        },
+        objectsTypename: {
+         ${config.error.objects.map(_ => `${_.name}: { __typename: "${_.name}" }`).join(`,\n`)}
+        },
+        rootResultFields: {
+          ${
+    Object.entries(config.rootTypes).map(([rootTypeName, rootType]) => {
+      if (!rootType) return `${rootTypeName}: {}`
+
+      const resultFields = Object.values(rootType.getFields()).filter((field) => {
+        const type = unwrapToNamed(field.type)
+        return isUnionType(type)
+          && type.getTypes().some(_ => config.error.objects.some(__ => __.name === _.name))
+      }).map((field) => field.name)
+
+      return `${rootType.name}: {\n${resultFields.map(_ => `${_}: "${_}" as const`).join(`,\n`)} }`
+    }).join(`,\n`)
+  }
         }
       }
     }

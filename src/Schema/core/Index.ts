@@ -1,6 +1,8 @@
+import type { GlobalRegistry } from '../../globalRegistry.js'
 import type { Output } from '../Output/__.js'
 
 export interface Index {
+  name: GlobalRegistry.SchemaNames
   Root: {
     Query: null | Output.Object$2
     Mutation: null | Output.Object$2
@@ -11,5 +13,11 @@ export interface Index {
   interfaces: Record<string, Output.Interface>
   error: {
     objects: Record<string, Output.Object$2>
+    objectsTypename: Record<string, { __typename: string }>
+    rootResultFields: {
+      Query: Record<string, string>
+      Mutation: Record<string, string>
+      Subscription: Record<string, string>
+    }
   }
 }

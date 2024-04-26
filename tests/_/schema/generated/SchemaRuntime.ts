@@ -203,6 +203,7 @@ export const Query = $.Object$(`Query`, {
 })
 
 export const $Index = {
+  name: 'default' as const,
   Root: {
     Query,
     Mutation,
@@ -238,6 +239,17 @@ export const $Index = {
     objects: {
       ErrorOne,
       ErrorTwo,
+    },
+    objectsTypename: {
+      ErrorOne: { __typename: 'ErrorOne' },
+      ErrorTwo: { __typename: 'ErrorTwo' },
+    },
+    rootResultFields: {
+      Query: {
+        result: 'result' as const,
+      },
+      Mutation: {},
+      Subscription: {},
     },
   },
 }

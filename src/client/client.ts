@@ -8,7 +8,7 @@ import type { RootTypeName, Variables } from '../lib/graphql.js'
 import type { Object$2 } from '../Schema/__.js'
 import { Schema } from '../Schema/__.js'
 import { readMaybeThunk } from '../Schema/core/helpers.js'
-import type { ApplyInputDefaults, Config, ReturnModeTypeBase, ReturnModeTypeDataAndSchemaErrors } from './Config.js'
+import type { ApplyInputDefaults, Config, ReturnModeTypeBase, ReturnModeTypeSuccessData } from './Config.js'
 import * as CustomScalars from './customScalars.js'
 import type { DocumentFn } from './document.js'
 import { toDocumentExpression } from './document.js'
@@ -49,7 +49,7 @@ type InputForSchema<$Name extends GlobalRegistry.SchemaNames> = $Name extends an
     schemaIndex: Schema.Index
     returnMode?:
       | ReturnModeTypeBase
-      | (GlobalRegistry.HasSchemaErrors<$Name> extends true ? ReturnModeTypeDataAndSchemaErrors : never)
+      | (GlobalRegistry.HasSchemaErrors<$Name> extends true ? ReturnModeTypeSuccessData : never)
     hooks?: {
       documentEncode: (
         input: HookInputDocumentEncode,
@@ -166,13 +166,13 @@ export const create = <$Input extends Input>(
       const resultHandled = handleReturn(result)
       if (resultHandled instanceof Error) return resultHandled
       // @ts-expect-error make this type safe?
-      return returnMode === `data` || returnMode === `dataAndAllErrors` ? resultHandled[key] : resultHandled
+      return returnMode === `data` || returnMode === `dataAndErrors` ? resultHandled[key] : resultHandled
     }
   }
 
   const handleReturn = (result: ExecutionResult) => {
     switch (returnMode) {
-      case `dataAndAllErrors`:
+      case `dataAndErrors`:
       case `data`: {
         if (result.errors && result.errors.length > 0) {
           const error = new Errors.ContextualAggregateError(

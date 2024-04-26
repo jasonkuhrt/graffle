@@ -47,8 +47,8 @@ describe('default (data)', () => {
 })
 
 // dprint-ignore
-describe('dataAndAllErrors', () => {
-  const client = create({ schema, schemaIndex, returnMode: 'dataAndAllErrors' })
+describe('dataAndErrors', () => {
+  const client = create({ schema, schemaIndex, returnMode: 'dataAndErrors' })
   test(`document`, async () => {
     await expect(client.document({ main: { query: { id: true } } }).run()).resolves.toEqual({ id: db.id })
   })
