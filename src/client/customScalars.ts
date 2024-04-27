@@ -19,7 +19,7 @@ namespace SSValue {
 export const encode = (
   input: {
     index: Schema.Object$2
-    documentObject: SelectionSet.GraphQLObjectSelection
+    documentObject: SelectionSet.Print.GraphQLObjectSelection
   },
 ): GraphQLObjectSelection => {
   return Object.fromEntries(
@@ -55,25 +55,29 @@ const encodeCustomScalarsArgs = (indexArgs: Args<any>, valueArgs: SSValue.Args2)
 const encodeCustomScalarsArgValue = (indexArgMaybeThunk: Schema.Input.Any, argValue: null | SSValue.Arg): any => {
   if (argValue === null) return null // todo could check if index agrees is nullable.
   const indexArg = readMaybeThunk(indexArgMaybeThunk)
-  if (indexArg.kind === `nullable`) {
-    return encodeCustomScalarsArgValue(indexArg.type, argValue)
+  switch (indexArg.kind) {
+    case `nullable`:
+      return encodeCustomScalarsArgValue(indexArg.type, argValue)
+    case `list`: {
+      if (!Array.isArray(argValue)) throw new Error(`Expected array. Got: ${String(argValue)}`)
+      return argValue.map(_ => encodeCustomScalarsArgValue(indexArg.type, _))
+    }
+    case `InputObject`: {
+      // dprint-ignore
+      if (typeof argValue !== `object` || Array.isArray(argValue)) throw new Error(`Expected object. Got: ${String(argValue)}`)
+      const fields = Object.fromEntries(Object.entries(indexArg.fields).map(([k, v]) => [k, v.type])) // eslint-disable-line
+      return encodeCustomScalarsArgs({ fields }, argValue)
+    }
+    case `Enum`: {
+      return argValue
+    }
+    case `Scalar`: {
+      // @ts-expect-error fixme
+      return indexArg.codec.encode(argValue)
+    }
+    default:
+      throw new Error(`Unsupported arg kind: ${JSON.stringify(indexArg)}`)
   }
-  if (indexArg.kind === `list`) {
-    if (!Array.isArray(argValue)) throw new Error(`Expected array. Got: ${String(argValue)}`)
-    return argValue.map(_ => encodeCustomScalarsArgValue(indexArg.type, _))
-  }
-  if (indexArg.kind === `InputObject`) {
-    // dprint-ignore
-    if (typeof argValue !== `object` || Array.isArray(argValue)) throw new Error(`Expected object. Got: ${String(argValue)}`)
-    const fields = Object.fromEntries(Object.entries(indexArg.fields).map(([k, v]) => [k, v.type])) // eslint-disable-line
-    return encodeCustomScalarsArgs({ fields }, argValue)
-  }
-  if (indexArg.kind === `Enum`) {
-    return argValue
-  }
-  // @ts-expect-error fixme
-  if (indexArg.kind === `Scalar`) return indexArg.codec.encode(argValue)
-  throw new Error(`Unsupported arg kind: ${JSON.stringify(indexArg)}`)
 }
 
 export const decode = <$Data extends ExecutionResult['data']>(index: Schema.Object$2, data: $Data): $Data => {

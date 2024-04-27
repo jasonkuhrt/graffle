@@ -142,6 +142,7 @@ export const create = <$Input extends Input>(
       const documentString = SelectionSet.Print.rootTypeSelectionSet(
         encodeContext,
         rootIndex,
+        // @ts-expect-error fixme
         selectionEncoded[rootTypeNameToOperationName[rootTypeName]],
       )
       // console.log(documentString)
@@ -195,15 +196,22 @@ export const create = <$Input extends Input>(
           return error
         }
         if (returnMode === `successData`) {
+          if (!isPlainObject(result.data)) throw new Error(`Expected data to be an object.`)
           const schemaErrors = Object.entries(result.data).map(([rootFieldName, rootFieldValue]) => {
             // todo do not hardcode root type
             const isResultField = Boolean(input.schemaIndex.error.rootResultFields.Query[rootFieldName])
+            if (!isResultField) return null
+            if (!isPlainObject(rootFieldValue)) return new Error(`Expected result field to be an object.`)
+            const __typename = rootFieldValue[`__typename`]
+            if (typeof __typename !== `string`) throw new Error(`Expected __typename to be selected and a string.`)
             const isErrorObject = Boolean(
-              isResultField && input.schemaIndex.error.objectsTypename[rootFieldValue.__typename],
+              input.schemaIndex.error.objectsTypename[__typename],
             )
-            return isErrorObject ? new Error(`Failure on field ${rootFieldName}: ${rootFieldValue.__typename}`) : null
+            if (!isErrorObject) return null
+            // todo extract message
+            return new Error(`Failure on field ${rootFieldName}: ${__typename}`)
           }).filter((_): _ is Error => _ !== null)
-          if (schemaErrors.length === 1) throw schemaErrors[0]
+          if (schemaErrors.length === 1) throw schemaErrors[0]!
           if (schemaErrors.length > 0) {
             const error = new Errors.ContextualAggregateError(
               `One or more schema errors in the execution result.`,

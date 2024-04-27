@@ -56,7 +56,8 @@ const directiveArgs = (config: object) => {
   }).join(`, `)
 }
 
-const resolveDirectives = (ss: SS) => {
+const resolveDirectives = (ss: Indicator | SS) => {
+  if (isIndicator(ss)) return ``
   const { $include, $skip, $defer, $stream } = ss
 
   let directives = ``
@@ -91,7 +92,8 @@ const resolveDirectives = (ss: SS) => {
   return directives
 }
 
-const resolveArgs = (schemaField: Schema.SomeField, ss: SS) => {
+const resolveArgs = (schemaField: Schema.SomeField, ss: Indicator | SS) => {
+  if (isIndicator(ss)) return ``
   const { $ } = ss
   let args = ``
   if ($ !== undefined) {
@@ -150,23 +152,24 @@ const indicatorOrSelectionSet = (
 export const selectionSet = (
   context: Context,
   schemaItem: Schema.Object$2 | Schema.Union | Schema.Interface,
-  ss: GraphQLObjectSelection,
+  ss: Indicator | SS,
 ): string => {
   // todo optimize by doing single loop
-  const applicableSelections = Object.entries(ss).filter(([_, ss]) => isPositiveIndicator(ss))
+  const applicableSelections = Object.entries(ss).filter(([_, ss]) => isPositiveIndicator(ss)) as [
+    string,
+    SS | Indicator,
+  ][]
   switch (schemaItem.kind) {
     case `Object`: {
-      const rootTypeName = ((RootTypeName as any)[schemaItem.fields.__typename.type.type] ?? null) as
-        | RootTypeName
-        | null
+      const rootTypeName = (RootTypeName as Record<string, RootTypeName>)[schemaItem.fields.__typename.type.type]
+        ?? null
       return applicableSelections.map(([fieldExpression, ss]) => {
         const fieldName = parseFieldName(fieldExpression)
         const schemaField = schemaItem.fields[fieldName.actual]
         if (!schemaField) throw new Error(`Field ${fieldExpression} not found in schema object`)
         // dprint-ignore
         if (rootTypeName&&context.config.returnMode===`successData`&&context.schemaIndex.error.rootResultFields[rootTypeName][fieldName.actual]) {
-
-          (ss as any).__typename = true
+          (ss as Record<string, boolean>)[`__typename`] = true
         }
         return `${resolveFragment(resolveAlias(fieldExpression))} ${indicatorOrSelectionSet(context, schemaField, ss)}`
       }).join(`\n`) + `\n`
@@ -209,9 +212,10 @@ export const selectionSet = (
           case `FieldOn`: {
             const schemaObject = context.schemaIndex[`objects`][fieldItem.typeOrFragmentName]
             if (!schemaObject) throw new Error(`Fragment ${fieldItem.typeOrFragmentName} not found in schema`)
+            // if (isIndicator(ss)) throw new Error(`Union field must have selection set`)
             return `${renderOn(fieldItem)} ${resolveDirectives(ss)} { ${
-              selectionSet(context, schemaObject, pruneNonSelections(ss))
-            } }`
+              // @ts-expect-error fixme
+              selectionSet(context, schemaObject, pruneNonSelections(ss))} }`
           }
           default: {
             throw new Error(`Unknown field item tag`)
