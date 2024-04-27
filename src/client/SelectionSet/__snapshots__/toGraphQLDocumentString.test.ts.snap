@@ -669,6 +669,25 @@ exports[`args > Query 4`] = `
 "
 `;
 
+exports[`enum > Query 1`] = `
+"
+{
+  "result": {
+    "$": {
+      "case": "Object1"
+    },
+    "__typename": true
+  }
+}
+--------------
+{
+  result(case: Object1) {
+    __typename
+  }
+}
+"
+`;
+
 exports[`other > Query 1`] = `
 "
 {

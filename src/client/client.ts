@@ -5,16 +5,23 @@ import request from '../entrypoints/main.js'
 import type { GlobalRegistry } from '../globalRegistry.js'
 import { Errors } from '../lib/errors/__.js'
 import type { RootTypeName, Variables } from '../lib/graphql.js'
+import { isPlainObject } from '../lib/prelude.js'
 import type { Object$2 } from '../Schema/__.js'
 import { Schema } from '../Schema/__.js'
 import { readMaybeThunk } from '../Schema/core/helpers.js'
-import type { ApplyInputDefaults, Config, ReturnModeTypeBase, ReturnModeTypeDataAndSchemaErrors } from './Config.js'
+import type {
+  ApplyInputDefaults,
+  Config,
+  ReturnModeType,
+  ReturnModeTypeBase,
+  ReturnModeTypeSuccessData,
+} from './Config.js'
 import * as CustomScalars from './customScalars.js'
 import type { DocumentFn } from './document.js'
-import { toDocumentExpression } from './document.js'
+import { rootTypeNameToOperationName, toDocumentString } from './document.js'
 import type { GetRootTypeMethods } from './RootTypeMethods.js'
 import { SelectionSet } from './SelectionSet/__.js'
-import type { DocumentObject, GraphQLObjectSelection } from './SelectionSet/toGraphQLDocumentString.js'
+import type { Context, DocumentObject, GraphQLObjectSelection } from './SelectionSet/toGraphQLDocumentString.js'
 
 // dprint-ignore
 export type Client<$Index extends Schema.Index, $Config extends Config> =
@@ -49,7 +56,7 @@ type InputForSchema<$Name extends GlobalRegistry.SchemaNames> = $Name extends an
     schemaIndex: Schema.Index
     returnMode?:
       | ReturnModeTypeBase
-      | (GlobalRegistry.HasSchemaErrors<$Name> extends true ? ReturnModeTypeDataAndSchemaErrors : never)
+      | (GlobalRegistry.HasSchemaErrors<$Name> extends true ? ReturnModeTypeSuccessData : never)
     hooks?: {
       documentEncode: (
         input: HookInputDocumentEncode,
@@ -68,7 +75,19 @@ export const create = <$Input extends Input>(
   ApplyInputDefaults<{ returnMode: $Input['returnMode'] }>
 > => {
   const parentInput = input
-  const returnMode = input.returnMode ?? `data`
+  /**
+   * @remarks Without generation the type of returnMode can be `ReturnModeTypeBase` which leads
+   * TS to think some errors below are invalid checks because of a non-present member.
+   * However our implementation here needs to be generic and support all return modes
+   * so we force cast it as such.
+   */
+  const returnMode = input.returnMode ?? `data` as ReturnModeType
+  const encodeContext: Context = {
+    schemaIndex: input.schemaIndex,
+    config: {
+      returnMode,
+    },
+  }
 
   const runHookable = <$Name extends keyof ExcludeUndefined<Input['hooks']>>(
     name: $Name,
@@ -78,7 +97,7 @@ export const create = <$Input extends Input>(
     return parentInput.hooks?.[name](input, fn) ?? fn(input)
   }
 
-  const executeDocumentExpression = async (
+  const executeDocumentString = async (
     { document, variables, operationName }: {
       document: string | DocumentNode
       variables?: Variables
@@ -120,31 +139,33 @@ export const create = <$Input extends Input>(
     return result
   }
 
-  const executeRootObject =
-    (rootTypeName: RootTypeName) => async (documentObject: GraphQLObjectSelection): Promise<ExecutionResult> => {
+  const executeRootType =
+    (rootTypeName: RootTypeName) => async (selection: GraphQLObjectSelection): Promise<ExecutionResult> => {
       const rootIndex = input.schemaIndex.Root[rootTypeName]
       if (!rootIndex) throw new Error(`Root type not found: ${rootTypeName}`)
 
-      const documentObjectEncoded = runHookable(
+      // todo one encoding pass
+      const selectionEncoded = runHookable(
         `documentEncode`,
-        { rootIndex, documentObject },
+        // todo rename to rootObject
+        { rootIndex, documentObject: selection },
         ({ rootIndex, documentObject }) => CustomScalars.encode({ index: rootIndex, documentObject }),
       )
-      const documentString = SelectionSet.selectionSet(documentObjectEncoded)
+      const documentString = SelectionSet.Print.rootTypeSelectionSet(
+        encodeContext,
+        rootIndex,
+        // @ts-expect-error fixme
+        selectionEncoded[rootTypeNameToOperationName[rootTypeName]],
+      )
+      // console.log(documentString)
       // todo variables
-      const result = await executeDocumentExpression({ document: documentString })
+      const result = await executeDocumentString({ document: documentString })
       // if (result.errors && (result.errors.length > 0)) throw new AggregateError(result.errors)
       const dataDecoded = CustomScalars.decode(rootIndex, result.data)
       return { ...result, data: dataDecoded }
     }
 
-  const rootTypeNameToOperationName = {
-    Query: `query`,
-    Mutation: `mutation`,
-    Subscription: `subscription`,
-  } as const
-
-  const executeRootTypeFieldSelection = (rootTypeName: RootTypeName, key: string) => {
+  const executeRootTypeField = (rootTypeName: RootTypeName, key: string) => {
     return async (argsOrSelectionSet?: object) => {
       const type = readMaybeThunk(
         // eslint-disable-next-line
@@ -165,14 +186,17 @@ export const create = <$Input extends Input>(
       const result = await rootObjectExecutors[rootTypeName](documentObject)
       const resultHandled = handleReturn(result)
       if (resultHandled instanceof Error) return resultHandled
-      // @ts-expect-error make this type safe?
-      return returnMode === `data` || returnMode === `dataAndAllErrors` ? resultHandled[key] : resultHandled
+      return returnMode === `data` || returnMode === `dataAndErrors` || returnMode === `successData`
+        // @ts-expect-error make this type safe?
+        ? resultHandled[key]
+        : resultHandled
     }
   }
 
   const handleReturn = (result: ExecutionResult) => {
     switch (returnMode) {
-      case `dataAndAllErrors`:
+      case `dataAndErrors`:
+      case `successData`:
       case `data`: {
         if (result.errors && result.errors.length > 0) {
           const error = new Errors.ContextualAggregateError(
@@ -180,8 +204,34 @@ export const create = <$Input extends Input>(
             {},
             result.errors,
           )
-          if (returnMode === `data`) throw error
+          if (returnMode === `data` || returnMode === `successData`) throw error
           return error
+        }
+        if (returnMode === `successData`) {
+          if (!isPlainObject(result.data)) throw new Error(`Expected data to be an object.`)
+          const schemaErrors = Object.entries(result.data).map(([rootFieldName, rootFieldValue]) => {
+            // todo do not hardcode root type
+            const isResultField = Boolean(input.schemaIndex.error.rootResultFields.Query[rootFieldName])
+            if (!isResultField) return null
+            if (!isPlainObject(rootFieldValue)) return new Error(`Expected result field to be an object.`)
+            const __typename = rootFieldValue[`__typename`]
+            if (typeof __typename !== `string`) throw new Error(`Expected __typename to be selected and a string.`)
+            const isErrorObject = Boolean(
+              input.schemaIndex.error.objectsTypename[__typename],
+            )
+            if (!isErrorObject) return null
+            // todo extract message
+            return new Error(`Failure on field ${rootFieldName}: ${__typename}`)
+          }).filter((_): _ is Error => _ !== null)
+          if (schemaErrors.length === 1) throw schemaErrors[0]!
+          if (schemaErrors.length > 0) {
+            const error = new Errors.ContextualAggregateError(
+              `One or more schema errors in the execution result.`,
+              {},
+              schemaErrors,
+            )
+            throw error
+          }
         }
         return result.data
       }
@@ -192,9 +242,9 @@ export const create = <$Input extends Input>(
   }
 
   const rootObjectExecutors = {
-    Mutation: executeRootObject(`Mutation`),
-    Query: executeRootObject(`Query`),
-    Subscription: executeRootObject(`Subscription`),
+    Mutation: executeRootType(`Mutation`),
+    Query: executeRootType(`Query`),
+    Subscription: executeRootType(`Subscription`),
   }
 
   const createRootTypeMethods = (rootTypeName: RootTypeName) =>
@@ -227,7 +277,7 @@ export const create = <$Input extends Input>(
         } else {
           const fieldName = isOrThrow ? key.slice(0, -7) : key
           return async (argsOrSelectionSet?: object) => {
-            const result = await executeRootTypeFieldSelection(rootTypeName, fieldName)(argsOrSelectionSet) // eslint-disable-line
+            const result = await executeRootTypeField(rootTypeName, fieldName)(argsOrSelectionSet) // eslint-disable-line
             if (isOrThrow && result instanceof Error) throw result
             // todo consolidate
             // eslint-disable-next-line
@@ -248,14 +298,29 @@ export const create = <$Input extends Input>(
   // @ts-expect-error ignoreme
   const client: Client = {
     raw: async (document: string | DocumentNode, variables?: Variables, operationName?: string) => {
-      return await executeDocumentExpression({ document, variables, operationName })
+      return await executeDocumentString({ document, variables, operationName })
     },
     document: (documentObject: DocumentObject) => {
       const run = async (operationName: string) => {
+        // 1. if returnMode is successData OR using orThrow
+        // 2. for each root type key
+        // 3. filter to only result fields
+        // 4. inject __typename selection
+        // if (returnMode === 'successData') {
+        //   Object.values(documentObject).forEach((rootTypeSelection) => {
+        //     Object.entries(rootTypeSelection).forEach(([fieldExpression, fieldValue]) => {
+        //       if (fieldExpression === 'result') {
+        //         // @ts-expect-error fixme
+        //         fieldValue.__typename = true
+        //       }
+        //     })
+        //   })
+        // }
         // todo this does not support custom scalars
-        const documentExpression = toDocumentExpression(documentObject)
-        const result = await executeDocumentExpression({
-          document: documentExpression,
+
+        const documentString = toDocumentString(encodeContext, documentObject)
+        const result = await executeDocumentString({
+          document: documentString,
           operationName,
           // todo variables
         })

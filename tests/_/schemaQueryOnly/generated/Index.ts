@@ -3,6 +3,7 @@
 import type * as Schema from './SchemaBuildtime.js'
 
 export interface Index {
+  name: 'QueryOnly'
   Root: {
     Query: Schema.Root.Query
     Mutation: null
@@ -13,5 +14,11 @@ export interface Index {
   interfaces: {}
   error: {
     objects: {}
+    objectsTypename: {}
+    rootResultFields: {
+      Query: {}
+      Mutation: {}
+      Subscription: {}
+    }
   }
 }

@@ -2,10 +2,10 @@ import type { MergeExclusive, NonEmptyObject } from 'type-fest'
 import type { IsMultipleKeys } from '../lib/prelude.js'
 import type { TSError } from '../lib/TSError.js'
 import type { Schema } from '../Schema/__.js'
-import type { Config, OrThrowifyConfig, ReturnMode } from './Config.js'
+import type { AugmentRootTypeSelectionWithTypename, Config, OrThrowifyConfig, ReturnModeRootType } from './Config.js'
 import type { ResultSet } from './ResultSet/__.js'
 import { SelectionSet } from './SelectionSet/__.js'
-import type { DocumentObject } from './SelectionSet/toGraphQLDocumentString.js'
+import type { Context, DocumentObject } from './SelectionSet/toGraphQLDocumentString.js'
 
 // dprint-ignore
 export type DocumentFn<$Config extends Config, $Index extends Schema.Index> =
@@ -15,24 +15,35 @@ export type DocumentFn<$Config extends Config, $Index extends Schema.Index> =
       $Name extends keyof $Document & string,
       $Params extends (IsMultipleKeys<$Document> extends true ? [name: $Name] : ([] | [name: $Name | undefined])),
     >(...params: $Params) => Promise<
-      ReturnMode<$Config, ResultSet.Root<GetOperation<$Document[$Name]>, $Index, 'Query'>>
+      ReturnModeRootType<$Config, $Index, ResultSet.Root<GetRootTypeSelection<$Config,$Index,$Document[$Name]>, $Index, GetRootType<$Document[$Name]>>>
     >
     runOrThrow: <
       $Name extends keyof $Document & string,
       $Params extends (IsMultipleKeys<$Document> extends true ? [name: $Name] : ([] | [name: $Name | undefined])),
     >(...params: $Params) => Promise<
-      ReturnMode<OrThrowifyConfig<$Config>, ResultSet.Root<GetOperation<$Document[$Name]>, $Index, 'Query'>>
+      ReturnModeRootType<OrThrowifyConfig<$Config>, $Index, ResultSet.Root<GetRootTypeSelection<OrThrowifyConfig<$Config>, $Index, $Document[$Name]>, $Index, GetRootType<$Document[$Name]>>>
     >
   }
 
-export const toDocumentExpression = (
+export const toDocumentString = (
+  context: Context,
   document: DocumentObject,
 ) => {
-  return Object.entries(document).map(([operationName, operationInput]) => {
-    const operationType = `query` in operationInput ? `query` : `mutation`
-    const operation = `query` in operationInput ? operationInput[`query`] : operationInput[`mutation`]
-    const documentString = SelectionSet.toGraphQLDocumentSelectionSet(operation)
-    return `${operationType} ${operationName} ${documentString}`
+  return Object.entries(document).map(([operationName, operationDocument]) => {
+    const operationType = `query` in operationDocument ? `query` : `mutation`
+    const rootType = operationTypeToRootType[operationType]
+    const rootTypeDocument = (operationDocument as any)[operationType] as SelectionSet.Print.GraphQLObjectSelection // eslint-disable-line
+
+    const schemaRootType = context.schemaIndex[`Root`][rootType]
+    if (!schemaRootType) throw new Error(`Schema has no ${rootType} root type`)
+
+    const documentString = SelectionSet.Print.rootTypeSelectionSet(
+      context,
+      schemaRootType,
+      rootTypeDocument,
+      operationName,
+    )
+    return documentString
   }).join(`\n\n`)
 }
 
@@ -66,7 +77,29 @@ export type ValidateDocumentOperationNames<$Document> =
       : TSError<'ValidateDocumentOperationNames', `One or more Invalid operation name in document: ${keyof { [K in keyof $Document & string as Schema.Named.NameParse<K> extends never ? K : never]: K }}`>
 
 // dprint-ignore
-type GetOperation<T extends {query:any}|{mutation:any}> =
-  T extends {query:infer U}    ? U : 
-  T extends {mutation:infer U} ? U :
+type GetRootTypeSelection<
+  $Config extends Config,
+  $Index extends Schema.Index,
+  $Selection extends object 
+> =
+  $Selection extends { query: infer U extends object }    ? AugmentRootTypeSelectionWithTypename<$Config, $Index, 'Query', U> : 
+  $Selection extends { mutation: infer U extends object } ? AugmentRootTypeSelectionWithTypename<$Config, $Index, 'Mutation', U> :
   never
+
+// dprint-ignore
+type GetRootType<$Selection extends object> =
+  $Selection extends {query:any}    ? 'Query' : 
+  $Selection extends {mutation:any} ? 'Mutation' :
+  never
+
+export const operationTypeToRootType = {
+  query: `Query`,
+  mutation: `Mutation`,
+  subscription: `Subscription`,
+} as const
+
+export const rootTypeNameToOperationName = {
+  Query: `query`,
+  Mutation: `mutation`,
+  Subscription: `subscription`,
+} as const

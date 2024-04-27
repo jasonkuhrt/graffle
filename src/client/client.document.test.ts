@@ -4,6 +4,8 @@ import { $Index } from '../../tests/_/schema/generated/SchemaRuntime.js'
 import { schema } from '../../tests/_/schema/schema.js'
 import { create } from './client.js'
 
+// todo test with custom scalars
+
 const client = create({ schema, schemaIndex: $Index })
 
 describe(`document with two queries`, () => {

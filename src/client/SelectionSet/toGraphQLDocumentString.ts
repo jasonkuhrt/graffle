@@ -1,3 +1,8 @@
+import { RootTypeName } from '../../lib/graphql.js'
+import { lowerCaseFirstLetter } from '../../lib/prelude.js'
+import { Schema } from '../../Schema/__.js'
+import { readMaybeThunk } from '../../Schema/core/helpers.js'
+import type { ReturnModeType } from '../Config.js'
 import type { SelectionSet } from './__.js'
 import { aliasPattern, fragmentPattern } from './SelectionSet.js'
 
@@ -27,14 +32,22 @@ export type SS = {
   [k: string]: Indicator | SS
 } & SpecialFields
 
-// export const toGraphQLDocumentString = (ss: GraphQLDocumentObject) => {
-//   return `query ${toGraphQLDocumentSelectionSet(ss)}`
-// }
+export interface Context {
+  schemaIndex: Schema.Index
+  config: {
+    returnMode: ReturnModeType
+  }
+}
 
-export const toGraphQLDocumentSelectionSet = (ss: GraphQLObjectSelection) => {
-  return `{
-		${selectionSet(ss)}
-	}`
+export const rootTypeSelectionSet = (
+  context: Context,
+  schemaObject: Schema.Object$2,
+  ss: GraphQLObjectSelection,
+  name?: string,
+) => {
+  return `${lowerCaseFirstLetter(schemaObject.fields.__typename.type.type)} ${name ?? ``} { ${
+    selectionSet(context, schemaObject, ss)
+  } }`
 }
 
 const directiveArgs = (config: object) => {
@@ -43,13 +56,10 @@ const directiveArgs = (config: object) => {
   }).join(`, `)
 }
 
-const indicatorOrSelectionSet = (ss: null | Indicator | SS): string => {
-  if (ss === null) return `null` // todo test this case
+const resolveDirectives = (ss: Indicator | SS) => {
   if (isIndicator(ss)) return ``
+  const { $include, $skip, $defer, $stream } = ss
 
-  const { $include, $skip, $defer, $stream, $, ...rest } = ss
-
-  let args = ``
   let directives = ``
 
   if ($stream !== undefined) {
@@ -79,30 +89,171 @@ const indicatorOrSelectionSet = (ss: null | Indicator | SS): string => {
     directives += `@skip(if: ${String(typeof $skip === `boolean` ? $skip : $skip.if === undefined ? true : $skip.if)})`
   }
 
+  return directives
+}
+
+const resolveArgs = (schemaField: Schema.SomeField, ss: Indicator | SS) => {
+  if (isIndicator(ss)) return ``
+  const { $ } = ss
+  let args = ``
   if ($ !== undefined) {
+    const schemaArgs = schemaField.args
+    if (!schemaArgs) throw new Error(`Field has no args`)
+
     const entries = Object.entries($)
     args = entries.length === 0 ? `` : `(${
-      entries.map(([k, v]) => {
-        return `${k}: ${JSON.stringify(v)}`
+      entries.map(([argName, v]) => {
+        const schemaArg = schemaArgs.fields[argName] as Schema.Input.Any | undefined // eslint-disable-line
+        if (!schemaArg) throw new Error(`Arg ${argName} not found in schema field`)
+        if (schemaArg.kind === `Enum`) {
+          return `${argName}: ${String(v)}`
+        } else {
+          // todo if enum, do not quote, requires schema index
+          return `${argName}: ${JSON.stringify(v)}`
+        }
       }).join(`, `)
     })`
   }
+  return args
+}
+const pruneNonSelections = (ss: SS) => {
+  const entries = Object.entries(ss)
+  const selectEntries = entries.filter(_ => !_[0].startsWith(`$`))
+  return Object.fromEntries(selectEntries)
+}
 
-  if (Object.keys(rest).length === 0) {
+const indicatorOrSelectionSet = (
+  context: Context,
+  schemaField: Schema.SomeField,
+  ss: null | Indicator | SS,
+): string => {
+  if (ss === null) return `null` // todo test this case
+  if (isIndicator(ss)) return ``
+
+  const entries = Object.entries(ss)
+  const selectEntries = entries.filter(_ => !_[0].startsWith(`$`))
+  const directives = resolveDirectives(ss)
+  const args = resolveArgs(schemaField, ss)
+
+  if (selectEntries.length === 0) {
     return `${args} ${directives}`
   }
 
+  const selection = Object.fromEntries(selectEntries) as GraphQLObjectSelection
+
+  // eslint-disable-next-line
+  // @ts-ignore ID error
+  const schemaNamedOutputType = Schema.Output.unwrapToNamed(schemaField.type) as Schema.Object$2
   return `${args} ${directives} {
-		${selectionSet(rest)}
+		${selectionSet(context, readMaybeThunk(schemaNamedOutputType), selection)}
 	}`
 }
 
-export const selectionSet = (ss: GraphQLObjectSelection) => {
-  return Object.entries(ss).filter(([_, v]) => {
-    return isPositiveIndicator(v)
-  }).map(([field, ss]) => {
-    return `${resolveFragment(resolveAlias(field))} ${indicatorOrSelectionSet(ss)}`
-  }).join(`\n`) + `\n`
+export const selectionSet = (
+  context: Context,
+  schemaItem: Schema.Object$2 | Schema.Union | Schema.Interface,
+  ss: Indicator | SS,
+): string => {
+  // todo optimize by doing single loop
+  const applicableSelections = Object.entries(ss).filter(([_, ss]) => isPositiveIndicator(ss)) as [
+    string,
+    SS | Indicator,
+  ][]
+  switch (schemaItem.kind) {
+    case `Object`: {
+      const rootTypeName = (RootTypeName as Record<string, RootTypeName>)[schemaItem.fields.__typename.type.type]
+        ?? null
+      return applicableSelections.map(([fieldExpression, ss]) => {
+        const fieldName = parseFieldName(fieldExpression)
+        const schemaField = schemaItem.fields[fieldName.actual]
+        if (!schemaField) throw new Error(`Field ${fieldExpression} not found in schema object`)
+        // dprint-ignore
+        if (rootTypeName&&context.config.returnMode===`successData`&&context.schemaIndex.error.rootResultFields[rootTypeName][fieldName.actual]) {
+          (ss as Record<string, boolean>)[`__typename`] = true
+        }
+        return `${resolveFragment(resolveAlias(fieldExpression))} ${indicatorOrSelectionSet(context, schemaField, ss)}`
+      }).join(`\n`) + `\n`
+    }
+    case `Interface`: {
+      return applicableSelections.map(([fieldExpression, ss]) => {
+        const fieldItem = parseFieldItem(fieldExpression)
+        switch (fieldItem._tag) {
+          case `FieldName`: {
+            if (fieldItem.actual === `__typename`) {
+              return `${renderFieldName(fieldItem)} ${resolveDirectives(ss)}`
+            }
+            const schemaField = schemaItem.fields[fieldItem.actual]
+            if (!schemaField) throw new Error(`Field ${fieldExpression} not found in schema object`)
+            // dprint-ignore
+            return `${resolveFragment(resolveAlias(fieldExpression))} ${ indicatorOrSelectionSet(context, schemaField, ss) }`
+          }
+          case `FieldOn`: {
+            const schemaObject = context.schemaIndex[`objects`][fieldItem.typeOrFragmentName]
+            if (!schemaObject) throw new Error(`Fragment ${fieldItem.typeOrFragmentName} not found in schema`)
+            return `${renderOn(fieldItem)} ${resolveDirectives(ss)} { ${selectionSet(context, schemaObject, ss)} }`
+          }
+          default: {
+            throw new Error(`Unknown field item tag`)
+          }
+        }
+      }).join(`\n`) + `\n`
+    }
+    case `Union`: {
+      return applicableSelections.map(([fieldExpression, ss]) => {
+        const fieldItem = parseFieldItem(fieldExpression)
+        switch (fieldItem._tag) {
+          case `FieldName`: {
+            if (fieldItem.actual === `__typename`) {
+              return `${renderFieldName(fieldItem)} ${resolveDirectives(ss)}`
+            }
+            // todo
+            throw new Error(`todo resolve common interface fields from unions`)
+          }
+          case `FieldOn`: {
+            const schemaObject = context.schemaIndex[`objects`][fieldItem.typeOrFragmentName]
+            if (!schemaObject) throw new Error(`Fragment ${fieldItem.typeOrFragmentName} not found in schema`)
+            // if (isIndicator(ss)) throw new Error(`Union field must have selection set`)
+            return `${renderOn(fieldItem)} ${resolveDirectives(ss)} { ${
+              // @ts-expect-error fixme
+              selectionSet(context, schemaObject, pruneNonSelections(ss))} }`
+          }
+          default: {
+            throw new Error(`Unknown field item tag`)
+          }
+        }
+      }).join(`\n`) + `\n`
+    }
+    default:
+      throw new Error(`Unknown schema item kind`)
+  }
+}
+
+type FieldItem = FieldOn | FieldName
+
+const parseFieldItem = (field: string): FieldItem => {
+  const on = parseOnExpression(field)
+  if (on) return on
+  return parseFieldName(field)
+}
+
+interface FieldOn {
+  _tag: 'FieldOn'
+  typeOrFragmentName: string
+}
+
+const parseOnExpression = (field: string): null | FieldOn => {
+  const match = field.match(fragmentPattern)
+  if (match?.groups) {
+    return {
+      _tag: `FieldOn`,
+      typeOrFragmentName: match.groups[`name`]!,
+    }
+  }
+  return null
+}
+
+const renderOn = (on: FieldOn) => {
+  return `...on ${on.typeOrFragmentName}`
 }
 
 // todo use a given schema to ensure that field is actually a fragment and not just happened to be using pattern onX
@@ -112,6 +263,36 @@ const resolveFragment = (field: string) => {
     return `...on ${match.groups[`name`]!}`
   }
   return field
+}
+
+interface FieldName {
+  _tag: 'FieldName'
+  actual: string
+  alias: string | null
+}
+// todo use a given schema to ensure that field is actually a fragment and not just happened to be using pattern onX
+const parseFieldName = (field: string): FieldName => {
+  const match = field.match(aliasPattern)
+  if (match?.groups) {
+    return {
+      _tag: `FieldName`,
+      actual: match.groups[`actual`]!,
+      alias: match.groups[`alias`]!,
+    }
+  }
+  return {
+    _tag: `FieldName`,
+    actual: field,
+    alias: null,
+  }
+}
+
+const renderFieldName = (fieldName: FieldName) => {
+  if (fieldName.alias) {
+    return `${fieldName.actual}: ${fieldName.alias}`
+  } else {
+    return fieldName.actual
+  }
 }
 
 // todo use a given schema to ensure that field is actually a fragment and not just happened to be using pattern onX

@@ -3,6 +3,7 @@
 import type * as Schema from './SchemaBuildtime.js'
 
 export interface Index {
+  name: 'default'
   Root: {
     Query: Schema.Root.Query
     Mutation: Schema.Root.Mutation
@@ -38,6 +39,17 @@ export interface Index {
     objects: {
       ErrorOne: Schema.Object.ErrorOne
       ErrorTwo: Schema.Object.ErrorTwo
+    }
+    objectsTypename: {
+      ErrorOne: { __typename: 'ErrorOne' }
+      ErrorTwo: { __typename: 'ErrorTwo' }
+    }
+    rootResultFields: {
+      Query: {
+        result: 'result'
+      }
+      Mutation: {}
+      Subscription: {}
     }
   }
 }

@@ -2,7 +2,14 @@ import type { OperationName } from '../lib/graphql.js'
 import type { Exact } from '../lib/prelude.js'
 import type { TSError } from '../lib/TSError.js'
 import type { InputFieldsAllNullable, Schema } from '../Schema/__.js'
-import type { Config, OrThrowifyConfig, ReturnMode } from './Config.js'
+import type {
+  AugmentRootTypeSelectionWithTypename,
+  Config,
+  CreateSelectionTypename,
+  OrThrowifyConfig,
+  ReturnModeRootField,
+  ReturnModeRootType,
+} from './Config.js'
 import type { ResultSet } from './ResultSet/__.js'
 import type { SelectionSet } from './SelectionSet/__.js'
 
@@ -54,10 +61,9 @@ export type RootTypeMethods<$Config extends Config, $Index extends Schema.Index,
 // dprint-ignore
 type RootMethod<$Config extends Config, $Index extends Schema.Index, $RootTypeName extends Schema.RootTypeName> =
   <$SelectionSet extends object>(selectionSet: Exact<$SelectionSet, SelectionSet.Root<$Index, $RootTypeName>>) =>
-    Promise<ReturnMode<$Config, ResultSet.Root<$SelectionSet, $Index, $RootTypeName>>>
+    Promise<ReturnModeRootType<$Config, $Index, ResultSet.Root<AugmentRootTypeSelectionWithTypename<$Config,$Index,$RootTypeName,$SelectionSet>, $Index, $RootTypeName>>>
 
 // dprint-ignore
-// type RootTypeFieldMethod<$Config extends OptionsInputDefaults, $Index extends Schema.Index, $RootTypeName extends Schema.RootTypeName, $RootTypeFieldName extends string> =
 type RootTypeFieldMethod<$Context extends RootTypeFieldContext> =
   RootTypeFieldMethod_<$Context, $Context['Field']['type']>
 
@@ -73,7 +79,7 @@ type RootTypeFieldMethod_<$Context extends RootTypeFieldContext, $Type extends S
 // dprint-ignore
 type ObjectLikeFieldMethod<$Context extends RootTypeFieldContext> =
   <$SelectionSet>(selectionSet: Exact<$SelectionSet, SelectionSet.Field<$Context['Field'], $Context['Index'], { hideDirectives: true }>>) =>
-    Promise<ReturnModeForFieldMethod<$Context, ResultSet.Field<$SelectionSet, $Context['Field'], $Context['Index']>>>
+    Promise<ReturnModeForFieldMethod<$Context, ResultSet.Field<$SelectionSet & CreateSelectionTypename<$Context['Config'],$Context['Index']>, $Context['Field'], $Context['Index']>>>
 
 // dprint-ignore
 type ScalarFieldMethod<$Context extends RootTypeFieldContext> =
@@ -82,4 +88,4 @@ type ScalarFieldMethod<$Context extends RootTypeFieldContext> =
                                                                   (() => Promise<ReturnModeForFieldMethod<$Context, ResultSet.Field<true, $Context['Field'], $Context['Index']>>>)
 // dprint-ignore
 type ReturnModeForFieldMethod<$Context extends RootTypeFieldContext, $Data> =
-  ReturnMode<$Context['Config'], $Data, { [k in $Context['RootTypeFieldName']] : $Data }>
+  ReturnModeRootField<$Context['Config'], $Context['Index'], $Data, { [k in $Context['RootTypeFieldName']] : $Data }>

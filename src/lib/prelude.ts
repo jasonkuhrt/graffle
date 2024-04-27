@@ -81,7 +81,7 @@ export const casesExhausted = (value: never): never => {
   throw new Error(`Unhandled case: ${String(value)}`)
 }
 
-export const isPlainObject = (value: unknown): value is object => {
+export const isPlainObject = (value: unknown): value is Record<string, unknown> => {
   return typeof value === `object` && value !== null && !Array.isArray(value)
 }
 
@@ -233,3 +233,7 @@ export const mapValues = <
 export type SetProperty<$Obj extends object, $Prop extends keyof $Obj, $Type extends $Obj[$Prop]> =
   & Omit<$Obj, $Prop>
   & { [_ in $Prop]: $Type }
+
+export const lowerCaseFirstLetter = (s: string) => {
+  return s.charAt(0).toLowerCase() + s.slice(1)
+}

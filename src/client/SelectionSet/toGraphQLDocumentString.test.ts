@@ -1,15 +1,18 @@
 import { parse, print } from 'graphql'
 import { describe, expect, test } from 'vitest'
 import type { Index } from '../../../tests/_/schema/generated/Index.js'
+import { $Index as schemaIndex } from '../../../tests/_/schema/generated/SchemaRuntime.js'
 import type { SelectionSet } from './__.js'
-import { toGraphQLDocumentSelectionSet } from './toGraphQLDocumentString.js'
+import type { Context } from './toGraphQLDocumentString.js'
+import { rootTypeSelectionSet } from './toGraphQLDocumentString.js'
 
 // eslint-disable-next-line
 // @ts-ignore
 type Q = SelectionSet.Query<Index>
 const s = (selectionSet: Q) => selectionSet
 const prepareResult = (ss: Q) => {
-  const graphqlDocumentString = toGraphQLDocumentSelectionSet(ss as any)
+  const context: Context = { schemaIndex, config: { returnMode: `data` } }
+  const graphqlDocumentString = rootTypeSelectionSet(context, schemaIndex[`Root`][`Query`], ss as any)
   // Should parse, ensures is syntactically valid graphql document.
   const document = parse(graphqlDocumentString)
   const graphqlDocumentStringFormatted = print(document)
@@ -20,6 +23,14 @@ const prepareResult = (ss: Q) => {
     + `\n`
   return beforeAfter
 }
+
+describe(`enum`, () => {
+  test.each([
+    s({ result: { $: { case: `Object1` }, __typename: true } }),
+  ])(`Query`, (ss) => {
+    expect(prepareResult(ss)).toMatchSnapshot()
+  })
+})
 
 describe(`union`, () => {
   test.each([

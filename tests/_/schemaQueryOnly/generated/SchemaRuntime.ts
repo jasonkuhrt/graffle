@@ -10,6 +10,7 @@ export const Query = $.Object$(`Query`, {
 })
 
 export const $Index = {
+  name: 'QueryOnly' as const,
   Root: {
     Query,
     Mutation: null,
@@ -20,5 +21,11 @@ export const $Index = {
   interfaces: {},
   error: {
     objects: {},
+    objectsTypename: {},
+    rootResultFields: {
+      Query: {},
+      Mutation: {},
+      Subscription: {},
+    },
   },
 }
