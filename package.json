@@ -119,10 +119,10 @@
     "graphql-tag": "^2.12.6",
     "happy-dom": "^14.7.1",
     "json-bigint": "^1.0.0",
-    "tsx": "^4.7.2",
+    "tsx": "^4.7.3",
     "type-fest": "^4.17.0",
     "typescript": "^5.4.5",
     "typescript-eslint": "^7.7.1",
-    "vitest": "^1.5.1"
+    "vitest": "^1.5.2"
   }
 }
