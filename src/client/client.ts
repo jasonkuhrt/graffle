@@ -9,7 +9,13 @@ import { isPlainObject } from '../lib/prelude.js'
 import type { Object$2 } from '../Schema/__.js'
 import { Schema } from '../Schema/__.js'
 import { readMaybeThunk } from '../Schema/core/helpers.js'
-import type { ApplyInputDefaults, Config, ReturnModeTypeBase, ReturnModeTypeSuccessData } from './Config.js'
+import type {
+  ApplyInputDefaults,
+  Config,
+  ReturnModeType,
+  ReturnModeTypeBase,
+  ReturnModeTypeSuccessData,
+} from './Config.js'
 import * as CustomScalars from './customScalars.js'
 import type { DocumentFn } from './document.js'
 import { rootTypeNameToOperationName, toDocumentString } from './document.js'
@@ -69,7 +75,7 @@ export const create = <$Input extends Input>(
   ApplyInputDefaults<{ returnMode: $Input['returnMode'] }>
 > => {
   const parentInput = input
-  const returnMode = input.returnMode ?? `data`
+  const returnMode = input.returnMode ?? `data` as ReturnModeType
   const encodeContext: Context = {
     schemaIndex: input.schemaIndex,
     config: {
