@@ -75,6 +75,12 @@ export const create = <$Input extends Input>(
   ApplyInputDefaults<{ returnMode: $Input['returnMode'] }>
 > => {
   const parentInput = input
+  /**
+   * @remarks Without generation the type of returnMode can be `ReturnModeTypeBase` which leads
+   * TS to think some errors below are invalid checks because of a non-present member.
+   * However our implementation here needs to be generic and support all return modes
+   * so we force cast it as such.
+   */
   const returnMode = input.returnMode ?? `data` as ReturnModeType
   const encodeContext: Context = {
     schemaIndex: input.schemaIndex,
