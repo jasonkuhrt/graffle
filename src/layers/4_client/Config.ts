@@ -1,8 +1,8 @@
 import type { ExecutionResult } from 'graphql'
-import type { GlobalRegistry } from '../2_generator/globalRegistry.js'
 import type { GraphQLExecutionResultError } from '../../lib/graphql.js'
 import type { SetProperty } from '../../lib/prelude.js'
 import type { Schema } from '../1_Schema/__.js'
+import type { GlobalRegistry } from '../2_generator/globalRegistry.js'
 
 export type ReturnModeType =
   | ReturnModeTypeGraphQL

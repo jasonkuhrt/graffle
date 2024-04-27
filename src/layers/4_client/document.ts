@@ -2,10 +2,10 @@ import type { MergeExclusive, NonEmptyObject } from 'type-fest'
 import type { IsMultipleKeys } from '../../lib/prelude.js'
 import type { TSError } from '../../lib/TSError.js'
 import type { Schema } from '../1_Schema/__.js'
-import type { AugmentRootTypeSelectionWithTypename, Config, OrThrowifyConfig, ReturnModeRootType } from './Config.js'
 import type { ResultSet } from '../3_IO/ResultSet/__.js'
 import { SelectionSet } from '../3_IO/SelectionSet/__.js'
 import type { Context, DocumentObject } from '../3_IO/SelectionSet/toGraphQLDocumentString.js'
+import type { AugmentRootTypeSelectionWithTypename, Config, OrThrowifyConfig, ReturnModeRootType } from './Config.js'
 
 // dprint-ignore
 export type DocumentFn<$Config extends Config, $Index extends Schema.Index> =

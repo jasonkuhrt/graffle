@@ -2,13 +2,15 @@ import type { ExecutionResult } from 'graphql'
 import { type DocumentNode, execute, graphql, type GraphQLSchema } from 'graphql'
 import type { ExcludeUndefined } from 'type-fest/source/required-deep.js'
 import request from '../../entrypoints/main.js'
-import type { GlobalRegistry } from '../2_generator/globalRegistry.js'
 import { Errors } from '../../lib/errors/__.js'
 import type { RootTypeName, Variables } from '../../lib/graphql.js'
 import { isPlainObject } from '../../lib/prelude.js'
 import type { Object$2 } from '../1_Schema/__.js'
 import { Schema } from '../1_Schema/__.js'
 import { readMaybeThunk } from '../1_Schema/core/helpers.js'
+import type { GlobalRegistry } from '../2_generator/globalRegistry.js'
+import { SelectionSet } from '../3_IO/SelectionSet/__.js'
+import type { Context, DocumentObject, GraphQLObjectSelection } from '../3_IO/SelectionSet/toGraphQLDocumentString.js'
 import type {
   ApplyInputDefaults,
   Config,
@@ -20,8 +22,6 @@ import * as CustomScalars from './customScalars.js'
 import type { DocumentFn } from './document.js'
 import { rootTypeNameToOperationName, toDocumentString } from './document.js'
 import type { GetRootTypeMethods } from './RootTypeMethods.js'
-import { SelectionSet } from '../3_IO/SelectionSet/__.js'
-import type { Context, DocumentObject, GraphQLObjectSelection } from '../3_IO/SelectionSet/toGraphQLDocumentString.js'
 
 // dprint-ignore
 export type Client<$Index extends Schema.Index, $Config extends Config> =
