@@ -107,14 +107,17 @@ describe('successData', () => {
     test('query.$batch', async () => {
       await expect(client.query.$batch({ result:{$:{case:'Object1'},__typename:true} })).resolves.toEqual({result:{__typename: "Object1"}})
     })
-    describe('without explicit __typename', () => {
+    describe.todo('throws', async () => {
+      //todo
+    })
+    describe.todo('without explicit __typename', () => {
       test('document', async () => {
         await expect(client.document({x:{query:{result:{$:{case:'Object1'}}}}}).run()).resolves.toEqual({result:{__typename: "Object1"}})
       })
-      test.todo('query.<fieldMethod>', async () => {
+      test('query.<fieldMethod>', async () => {
         await expect(client.query.result({$:{case:'Object1'}})).resolves.toEqual({__typename: "Object1"})
       })
-      test.todo('query.$batch', async () => {
+      test('query.$batch', async () => {
         await expect(client.query.$batch({ result:{$:{case:'Object1'}} })).resolves.toEqual({result:{__typename: "Object1"}})
       })
     })
