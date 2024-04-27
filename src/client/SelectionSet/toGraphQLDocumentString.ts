@@ -143,60 +143,69 @@ export const selectionSet = (
   schemaItem: Schema.Object$2 | Schema.Union | Schema.Interface,
   ss: GraphQLObjectSelection,
 ) => {
-  // console.log(ss, schemaItem.kind)
-  return Object.entries(ss).filter(([_, ss]) => {
-    return isPositiveIndicator(ss)
-  }).map(([fieldExpression, ss]) => {
-    if (schemaItem.kind === `Object`) {
-      const fieldName = parseFieldName(fieldExpression)
-      const schemaField = schemaItem.fields[fieldName.actual]
-      if (!schemaField) throw new Error(`Field ${fieldExpression} not found in schema object`)
-      // dprint-ignore
-      return `${resolveFragment(resolveAlias(fieldExpression))} ${ indicatorOrSelectionSet(schemaIndex, schemaField, ss) }`
-    } else if (schemaItem.kind === `Union`) {
-      const fieldItem = parseFieldItem(fieldExpression)
-      switch (fieldItem._tag) {
-        case `FieldName`: {
-          if (fieldItem.actual === `__typename`) {
-            return `${renderFieldName(fieldItem)} ${resolveDirectives(ss)}`
-          }
-          // todo
-          throw new Error(`todo resolve common interface fields from unions`)
-        }
-        case `FieldOn`: {
-          const schemaObject = schemaIndex[`objects`][fieldItem.typeOrFragmentName]
-          if (!schemaObject) throw new Error(`Fragment ${fieldItem.typeOrFragmentName} not found in schema`)
-          return `${renderOn(fieldItem)} ${resolveDirectives(ss)} { ${
-            selectionSet(schemaIndex, schemaObject, pruneNonSelections(ss))
-          } }`
-        }
-        default: {
-          throw new Error(`Unknown field item tag`)
-        }
-      }
-    } else if (schemaItem.kind === `Interface`) {
-      const fieldItem = parseFieldItem(fieldExpression)
-      switch (fieldItem._tag) {
-        case `FieldName`: {
-          if (fieldItem.actual === `__typename`) {
-            return `${renderFieldName(fieldItem)} ${resolveDirectives(ss)}`
-          }
-          // todo
-          throw new Error(`todo resolve common interface fields from unions`)
-        }
-        case `FieldOn`: {
-          const schemaObject = schemaIndex[`objects`][fieldItem.typeOrFragmentName]
-          if (!schemaObject) throw new Error(`Fragment ${fieldItem.typeOrFragmentName} not found in schema`)
-          return `${renderOn(fieldItem)} ${resolveDirectives(ss)} { ${selectionSet(schemaIndex, schemaObject, ss)} }`
-        }
-        default: {
-          throw new Error(`Unknown field item tag`)
-        }
-      }
-    } else {
-      throw new Error(`Unknown schema item kind`)
+  // todo optimize by doing single loop
+  const applicableSelections = Object.entries(ss).filter(([_, ss]) => isPositiveIndicator(ss))
+  switch (schemaItem.kind) {
+    case `Object`: {
+      return applicableSelections.map(([fieldExpression, ss]) => {
+        const fieldName = parseFieldName(fieldExpression)
+        const schemaField = schemaItem.fields[fieldName.actual]
+        if (!schemaField) throw new Error(`Field ${fieldExpression} not found in schema object`)
+        // dprint-ignore
+        return `${resolveFragment(resolveAlias(fieldExpression))} ${ indicatorOrSelectionSet(schemaIndex, schemaField, ss) }`
+      }).join(`\n`) + `\n`
     }
-  }).join(`\n`) + `\n`
+    case `Interface`: {
+      return applicableSelections.map(([fieldExpression, ss]) => {
+        const fieldItem = parseFieldItem(fieldExpression)
+        switch (fieldItem._tag) {
+          case `FieldName`: {
+            if (fieldItem.actual === `__typename`) {
+              return `${renderFieldName(fieldItem)} ${resolveDirectives(ss)}`
+            }
+            const schemaField = schemaItem.fields[fieldItem.actual]
+            if (!schemaField) throw new Error(`Field ${fieldExpression} not found in schema object`)
+            // dprint-ignore
+            return `${resolveFragment(resolveAlias(fieldExpression))} ${ indicatorOrSelectionSet(schemaIndex, schemaField, ss) }`
+          }
+          case `FieldOn`: {
+            const schemaObject = schemaIndex[`objects`][fieldItem.typeOrFragmentName]
+            if (!schemaObject) throw new Error(`Fragment ${fieldItem.typeOrFragmentName} not found in schema`)
+            return `${renderOn(fieldItem)} ${resolveDirectives(ss)} { ${selectionSet(schemaIndex, schemaObject, ss)} }`
+          }
+          default: {
+            throw new Error(`Unknown field item tag`)
+          }
+        }
+      }).join(`\n`) + `\n`
+    }
+    case `Union`: {
+      return applicableSelections.map(([fieldExpression, ss]) => {
+        const fieldItem = parseFieldItem(fieldExpression)
+        switch (fieldItem._tag) {
+          case `FieldName`: {
+            if (fieldItem.actual === `__typename`) {
+              return `${renderFieldName(fieldItem)} ${resolveDirectives(ss)}`
+            }
+            // todo
+            throw new Error(`todo resolve common interface fields from unions`)
+          }
+          case `FieldOn`: {
+            const schemaObject = schemaIndex[`objects`][fieldItem.typeOrFragmentName]
+            if (!schemaObject) throw new Error(`Fragment ${fieldItem.typeOrFragmentName} not found in schema`)
+            return `${renderOn(fieldItem)} ${resolveDirectives(ss)} { ${
+              selectionSet(schemaIndex, schemaObject, pruneNonSelections(ss))
+            } }`
+          }
+          default: {
+            throw new Error(`Unknown field item tag`)
+          }
+        }
+      }).join(`\n`) + `\n`
+    }
+    default:
+      throw new Error(`Unknown schema item kind`)
+  }
 }
 
 type FieldItem = FieldOn | FieldName
