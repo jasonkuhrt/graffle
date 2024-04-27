@@ -3,7 +3,7 @@
 import { Command } from '@molt/command'
 import * as Path from 'node:path'
 import { z } from 'zod'
-import { generateFiles } from '../generator/files.js'
+import { generateFiles } from '../layers/2_generator/files.js'
 
 const args = Command.create().description(`Generate a type safe GraphQL client.`)
   .parameter(`schema`, z.string().min(1).describe(`File path to where your GraphQL schema is.`))
