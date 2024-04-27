@@ -233,3 +233,7 @@ export const mapValues = <
 export type SetProperty<$Obj extends object, $Prop extends keyof $Obj, $Type extends $Obj[$Prop]> =
   & Omit<$Obj, $Prop>
   & { [_ in $Prop]: $Type }
+
+export const lowerCaseFirstLetter = (s: string) => {
+  return s.charAt(0).toLowerCase() + s.slice(1)
+}

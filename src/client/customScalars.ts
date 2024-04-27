@@ -68,9 +68,12 @@ const encodeCustomScalarsArgValue = (indexArgMaybeThunk: Schema.Input.Any, argVa
     const fields = Object.fromEntries(Object.entries(indexArg.fields).map(([k, v]) => [k, v.type])) // eslint-disable-line
     return encodeCustomScalarsArgs({ fields }, argValue)
   }
+  if (indexArg.kind === `Enum`) {
+    return argValue
+  }
   // @ts-expect-error fixme
   if (indexArg.kind === `Scalar`) return indexArg.codec.encode(argValue)
-  throw new Error(`Unsupported arg kind: ${String(indexArg)}`)
+  throw new Error(`Unsupported arg kind: ${JSON.stringify(indexArg)}`)
 }
 
 export const decode = <$Data extends ExecutionResult['data']>(index: Schema.Object$2, data: $Data): $Data => {

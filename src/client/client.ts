@@ -121,16 +121,23 @@ export const create = <$Input extends Input>(
   }
 
   const executeRootObject =
-    (rootTypeName: RootTypeName) => async (documentObject: GraphQLObjectSelection): Promise<ExecutionResult> => {
+    (rootTypeName: RootTypeName) => async (rootObject: GraphQLObjectSelection): Promise<ExecutionResult> => {
       const rootIndex = input.schemaIndex.Root[rootTypeName]
       if (!rootIndex) throw new Error(`Root type not found: ${rootTypeName}`)
 
       const documentObjectEncoded = runHookable(
         `documentEncode`,
-        { rootIndex, documentObject },
+        // todo rename to rootObject
+        { rootIndex, documentObject: rootObject },
         ({ rootIndex, documentObject }) => CustomScalars.encode({ index: rootIndex, documentObject }),
       )
-      const documentString = SelectionSet.selectionSet(documentObjectEncoded)
+      // console.log(documentObjectEncoded)
+      const documentString = SelectionSet.Print.rootSelectionSet(
+        input.schemaIndex,
+        rootIndex,
+        documentObjectEncoded[rootTypeNameToOperationName[rootTypeName]],
+      )
+      // console.log(documentString)
       // todo variables
       const result = await executeDocumentExpression({ document: documentString })
       // if (result.errors && (result.errors.length > 0)) throw new AggregateError(result.errors)
@@ -165,14 +172,17 @@ export const create = <$Input extends Input>(
       const result = await rootObjectExecutors[rootTypeName](documentObject)
       const resultHandled = handleReturn(result)
       if (resultHandled instanceof Error) return resultHandled
-      // @ts-expect-error make this type safe?
-      return returnMode === `data` || returnMode === `dataAndErrors` ? resultHandled[key] : resultHandled
+      return returnMode === `data` || returnMode === `dataAndErrors` || returnMode === `successData`
+        // @ts-expect-error make this type safe?
+        ? resultHandled[key]
+        : resultHandled
     }
   }
 
   const handleReturn = (result: ExecutionResult) => {
     switch (returnMode) {
       case `dataAndErrors`:
+      case `successData`:
       case `data`: {
         if (result.errors && result.errors.length > 0) {
           const error = new Errors.ContextualAggregateError(
@@ -180,7 +190,7 @@ export const create = <$Input extends Input>(
             {},
             result.errors,
           )
-          if (returnMode === `data`) throw error
+          if (returnMode === `data` || returnMode === `successData`) throw error
           return error
         }
         return result.data
@@ -253,7 +263,7 @@ export const create = <$Input extends Input>(
     document: (documentObject: DocumentObject) => {
       const run = async (operationName: string) => {
         // todo this does not support custom scalars
-        const documentExpression = toDocumentExpression(documentObject)
+        const documentExpression = toDocumentExpression(input.schemaIndex, documentObject)
         const result = await executeDocumentExpression({
           document: documentExpression,
           operationName,

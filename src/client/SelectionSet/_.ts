@@ -1,2 +1,2 @@
 export * from './SelectionSet.js'
-export * from './toGraphQLDocumentString.js'
+export * as Print from './toGraphQLDocumentString.js'

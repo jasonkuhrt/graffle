@@ -25,14 +25,23 @@ export type DocumentFn<$Config extends Config, $Index extends Schema.Index> =
     >
   }
 
+const operationTypeToRootType = {
+  query: `Query`,
+  mutation: `Mutation`,
+  subscription: `Subscription`,
+} as const
 export const toDocumentExpression = (
+  schemaIndex: Schema.Index,
   document: DocumentObject,
 ) => {
   return Object.entries(document).map(([operationName, operationInput]) => {
     const operationType = `query` in operationInput ? `query` : `mutation`
+    const rootType = operationTypeToRootType[operationType]
     const operation = `query` in operationInput ? operationInput[`query`] : operationInput[`mutation`]
-    const documentString = SelectionSet.toGraphQLDocumentSelectionSet(operation)
-    return `${operationType} ${operationName} ${documentString}`
+    const schemaRoot = schemaIndex[`Root`][rootType]
+    if (!schemaRoot) throw new Error(`Schema has no ${rootType} root type`)
+    const documentString = SelectionSet.Print.rootSelectionSet(schemaIndex, schemaRoot, operation, operationName)
+    return documentString
   }).join(`\n\n`)
 }
 
