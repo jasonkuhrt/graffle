@@ -3,14 +3,16 @@ import { describe, expect, test } from 'vitest'
 import type { Index } from '../../../tests/_/schema/generated/Index.js'
 import { $Index as schemaIndex } from '../../../tests/_/schema/generated/SchemaRuntime.js'
 import type { SelectionSet } from './__.js'
-import { rootSelectionSet } from './toGraphQLDocumentString.js'
+import type { Context } from './toGraphQLDocumentString.js'
+import { rootTypeSelectionSet } from './toGraphQLDocumentString.js'
 
 // eslint-disable-next-line
 // @ts-ignore
 type Q = SelectionSet.Query<Index>
 const s = (selectionSet: Q) => selectionSet
 const prepareResult = (ss: Q) => {
-  const graphqlDocumentString = rootSelectionSet(schemaIndex, schemaIndex[`Root`][`Query`], ss as any)
+  const context: Context = { schemaIndex, config: { returnMode: `data` } }
+  const graphqlDocumentString = rootTypeSelectionSet(context, schemaIndex[`Root`][`Query`], ss as any)
   // Should parse, ensures is syntactically valid graphql document.
   const document = parse(graphqlDocumentString)
   const graphqlDocumentStringFormatted = print(document)

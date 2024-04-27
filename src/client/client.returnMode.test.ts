@@ -107,10 +107,7 @@ describe('successData', () => {
     test('query.$batch', async () => {
       await expect(client.query.$batch({ result:{$:{case:'Object1'},__typename:true} })).resolves.toEqual({result:{__typename: "Object1"}})
     })
-    describe.todo('throws', async () => {
-      //todo
-    })
-    describe.todo('without explicit __typename', () => {
+    describe('without explicit __typename', () => {
       test('document', async () => {
         await expect(client.document({x:{query:{result:{$:{case:'Object1'}}}}}).run()).resolves.toEqual({result:{__typename: "Object1"}})
       })
@@ -120,6 +117,18 @@ describe('successData', () => {
       test('query.$batch', async () => {
         await expect(client.query.$batch({ result:{$:{case:'Object1'}} })).resolves.toEqual({result:{__typename: "Object1"}})
       })
+    })
+    describe('throws', async () => {
+      test('document', async () => {
+        await expect(client.document({x:{query:{result:{$:{case:'ErrorOne'}}}}}).run()).rejects.toEqual(db.ErrorOneError)
+      })
+      test('query.<fieldMethod>', async () => {
+        await expect(client.query.result({$:{case:'ErrorOne'}})).rejects.toEqual(db.ErrorOneError)
+      })
+      test('query.$batch', async () => {
+        await expect(client.query.$batch({ result:{$:{case:'ErrorOne'}} })).rejects.toEqual(db.ErrorOneError)
+      })
+      // todo result twice, using aliases, check that aggregate error is thrown
     })
   })
   test(`raw`, async () => {

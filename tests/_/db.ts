@@ -8,6 +8,9 @@ const error = new Errors.ContextualAggregateError(`One or more errors in the exe
   new GraphQLError(`Something went wrong.`),
 ])
 
+const ErrorOneError = new Error(`Failure on field result: ErrorOne`)
+const ErrorTwoError = new Error(`Failure on field result: ErrorTwo`)
+
 const id = `abc`
 
 const int = 123
@@ -41,6 +44,8 @@ export const db = {
   ABCEnum: `A`,
   ErrorOne: { message: `errorOne`, infoId: id },
   ErrorTwo: { message: `errorOne`, infoInt: int },
+  ErrorOneError,
+  ErrorTwoError,
   int,
   id,
   id1: id,

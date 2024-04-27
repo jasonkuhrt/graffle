@@ -5,7 +5,7 @@ import type { Schema } from '../Schema/__.js'
 import type { AugmentRootTypeSelectionWithTypename, Config, OrThrowifyConfig, ReturnModeRootType } from './Config.js'
 import type { ResultSet } from './ResultSet/__.js'
 import { SelectionSet } from './SelectionSet/__.js'
-import type { DocumentObject } from './SelectionSet/toGraphQLDocumentString.js'
+import type { Context, DocumentObject } from './SelectionSet/toGraphQLDocumentString.js'
 
 // dprint-ignore
 export type DocumentFn<$Config extends Config, $Index extends Schema.Index> =
@@ -25,22 +25,24 @@ export type DocumentFn<$Config extends Config, $Index extends Schema.Index> =
     >
   }
 
-const operationTypeToRootType = {
-  query: `Query`,
-  mutation: `Mutation`,
-  subscription: `Subscription`,
-} as const
-export const toDocumentExpression = (
-  schemaIndex: Schema.Index,
+export const toDocumentString = (
+  context: Context,
   document: DocumentObject,
 ) => {
-  return Object.entries(document).map(([operationName, operationInput]) => {
-    const operationType = `query` in operationInput ? `query` : `mutation`
+  return Object.entries(document).map(([operationName, operationDocument]) => {
+    const operationType = `query` in operationDocument ? `query` : `mutation`
     const rootType = operationTypeToRootType[operationType]
-    const operation = `query` in operationInput ? operationInput[`query`] : operationInput[`mutation`]
-    const schemaRoot = schemaIndex[`Root`][rootType]
-    if (!schemaRoot) throw new Error(`Schema has no ${rootType} root type`)
-    const documentString = SelectionSet.Print.rootSelectionSet(schemaIndex, schemaRoot, operation, operationName)
+    const rootTypeDocument = (operationDocument as any)[operationType] as SelectionSet.Print.GraphQLObjectSelection // eslint-disable-line
+
+    const schemaRootType = context.schemaIndex[`Root`][rootType]
+    if (!schemaRootType) throw new Error(`Schema has no ${rootType} root type`)
+
+    const documentString = SelectionSet.Print.rootTypeSelectionSet(
+      context,
+      schemaRootType,
+      rootTypeDocument,
+      operationName,
+    )
     return documentString
   }).join(`\n\n`)
 }
@@ -89,3 +91,15 @@ type GetRootType<$Selection extends object> =
   $Selection extends {query:any}    ? 'Query' : 
   $Selection extends {mutation:any} ? 'Mutation' :
   never
+
+export const operationTypeToRootType = {
+  query: `Query`,
+  mutation: `Mutation`,
+  subscription: `Subscription`,
+} as const
+
+export const rootTypeNameToOperationName = {
+  Query: `query`,
+  Mutation: `mutation`,
+  Subscription: `subscription`,
+} as const

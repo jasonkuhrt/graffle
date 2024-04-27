@@ -1,6 +1,8 @@
+import { RootTypeName } from '../../lib/graphql.js'
 import { lowerCaseFirstLetter } from '../../lib/prelude.js'
 import { Schema } from '../../Schema/__.js'
 import { readMaybeThunk } from '../../Schema/core/helpers.js'
+import type { ReturnModeType } from '../Config.js'
 import type { SelectionSet } from './__.js'
 import { aliasPattern, fragmentPattern } from './SelectionSet.js'
 
@@ -30,14 +32,21 @@ export type SS = {
   [k: string]: Indicator | SS
 } & SpecialFields
 
-export const rootSelectionSet = (
-  schemaIndex: Schema.Index,
+export interface Context {
+  schemaIndex: Schema.Index
+  config: {
+    returnMode: ReturnModeType
+  }
+}
+
+export const rootTypeSelectionSet = (
+  context: Context,
   schemaObject: Schema.Object$2,
   ss: GraphQLObjectSelection,
   name?: string,
 ) => {
   return `${lowerCaseFirstLetter(schemaObject.fields.__typename.type.type)} ${name ?? ``} { ${
-    selectionSet(schemaIndex, schemaObject, ss)
+    selectionSet(context, schemaObject, ss)
   } }`
 }
 
@@ -112,7 +121,7 @@ const pruneNonSelections = (ss: SS) => {
 }
 
 const indicatorOrSelectionSet = (
-  schemaIndex: Schema.Index,
+  context: Context,
   schemaField: Schema.SomeField,
   ss: null | Indicator | SS,
 ): string => {
@@ -134,25 +143,32 @@ const indicatorOrSelectionSet = (
   // @ts-ignore ID error
   const schemaNamedOutputType = Schema.Output.unwrapToNamed(schemaField.type) as Schema.Object$2
   return `${args} ${directives} {
-		${selectionSet(schemaIndex, readMaybeThunk(schemaNamedOutputType), selection)}
+		${selectionSet(context, readMaybeThunk(schemaNamedOutputType), selection)}
 	}`
 }
 
 export const selectionSet = (
-  schemaIndex: Schema.Index,
+  context: Context,
   schemaItem: Schema.Object$2 | Schema.Union | Schema.Interface,
   ss: GraphQLObjectSelection,
-) => {
+): string => {
   // todo optimize by doing single loop
   const applicableSelections = Object.entries(ss).filter(([_, ss]) => isPositiveIndicator(ss))
   switch (schemaItem.kind) {
     case `Object`: {
+      const rootTypeName = ((RootTypeName as any)[schemaItem.fields.__typename.type.type] ?? null) as
+        | RootTypeName
+        | null
       return applicableSelections.map(([fieldExpression, ss]) => {
         const fieldName = parseFieldName(fieldExpression)
         const schemaField = schemaItem.fields[fieldName.actual]
         if (!schemaField) throw new Error(`Field ${fieldExpression} not found in schema object`)
         // dprint-ignore
-        return `${resolveFragment(resolveAlias(fieldExpression))} ${ indicatorOrSelectionSet(schemaIndex, schemaField, ss) }`
+        if (rootTypeName&&context.config.returnMode===`successData`&&context.schemaIndex.error.rootResultFields[rootTypeName][fieldName.actual]) {
+
+          (ss as any).__typename = true
+        }
+        return `${resolveFragment(resolveAlias(fieldExpression))} ${indicatorOrSelectionSet(context, schemaField, ss)}`
       }).join(`\n`) + `\n`
     }
     case `Interface`: {
@@ -166,12 +182,12 @@ export const selectionSet = (
             const schemaField = schemaItem.fields[fieldItem.actual]
             if (!schemaField) throw new Error(`Field ${fieldExpression} not found in schema object`)
             // dprint-ignore
-            return `${resolveFragment(resolveAlias(fieldExpression))} ${ indicatorOrSelectionSet(schemaIndex, schemaField, ss) }`
+            return `${resolveFragment(resolveAlias(fieldExpression))} ${ indicatorOrSelectionSet(context, schemaField, ss) }`
           }
           case `FieldOn`: {
-            const schemaObject = schemaIndex[`objects`][fieldItem.typeOrFragmentName]
+            const schemaObject = context.schemaIndex[`objects`][fieldItem.typeOrFragmentName]
             if (!schemaObject) throw new Error(`Fragment ${fieldItem.typeOrFragmentName} not found in schema`)
-            return `${renderOn(fieldItem)} ${resolveDirectives(ss)} { ${selectionSet(schemaIndex, schemaObject, ss)} }`
+            return `${renderOn(fieldItem)} ${resolveDirectives(ss)} { ${selectionSet(context, schemaObject, ss)} }`
           }
           default: {
             throw new Error(`Unknown field item tag`)
@@ -191,10 +207,10 @@ export const selectionSet = (
             throw new Error(`todo resolve common interface fields from unions`)
           }
           case `FieldOn`: {
-            const schemaObject = schemaIndex[`objects`][fieldItem.typeOrFragmentName]
+            const schemaObject = context.schemaIndex[`objects`][fieldItem.typeOrFragmentName]
             if (!schemaObject) throw new Error(`Fragment ${fieldItem.typeOrFragmentName} not found in schema`)
             return `${renderOn(fieldItem)} ${resolveDirectives(ss)} { ${
-              selectionSet(schemaIndex, schemaObject, pruneNonSelections(ss))
+              selectionSet(context, schemaObject, pruneNonSelections(ss))
             } }`
           }
           default: {
