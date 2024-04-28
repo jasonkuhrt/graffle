@@ -1,5 +1,5 @@
 import { RootTypeName } from '../../lib/graphql.js'
-import { lowerCaseFirstLetter } from '../../lib/prelude.js'
+import { assertArray, assertObject, lowerCaseFirstLetter } from '../../lib/prelude.js'
 import { Schema } from '../1_Schema/__.js'
 import { readMaybeThunk } from '../1_Schema/core/helpers.js'
 import type { ReturnModeType } from '../5_client/Config.js'
@@ -26,9 +26,9 @@ type SpecialFields = {
   $?: Args
 }
 
-type Args = { [k: string]: Args_ }
+type Args = { [k: string]: ArgValue }
 
-type Args_ = string | boolean | null | number | Args
+type ArgValue = string | boolean | null | number | Args
 
 export type DocumentObject = Record<string, GraphQLRootSelection>
 
@@ -46,6 +46,13 @@ export interface Context {
   schemaIndex: Schema.Index
   config: {
     returnMode: ReturnModeType
+    // typeHooks: {
+    //   /**
+    //    * Control encoding for custom scalars
+    //    * found in inputs.
+    //    */
+    //   customScalar: (v: Schema.Scalar.Scalar) => Schema.Scalar.StandardScalarRuntimeTypes
+    // }
   }
 }
 
@@ -85,32 +92,64 @@ const resolveDirectives = (fieldValue: FieldValue) => {
   return directives
 }
 
-const resolveArgs = (schemaField: Schema.SomeField, ss: Indicator | SS) => {
+const resolveArgValue = (
+  context: Context,
+  schemaArgTypeMaybeThunk: Schema.Input.Any,
+  argValue: ArgValue,
+): string => {
+  if (argValue === null) return String(null) // todo could check if index agrees is nullable.
+
+  const schemaArgType = readMaybeThunk(schemaArgTypeMaybeThunk)
+
+  switch (schemaArgType.kind) {
+    case `nullable`:
+      return resolveArgValue(context, schemaArgType.type, argValue)
+    case `list`: {
+      assertArray(argValue)
+      const value = argValue.map(_ => resolveArgValue(context, schemaArgType.type, _ as ArgValue))
+      return `[${value.join(`, `)}]`
+    }
+    case `InputObject`: {
+      assertObject(argValue)
+      const entries = Object.entries(argValue).map(([argName, argValue]) => {
+        const schemaArgField = schemaArgType.fields[argName] as Schema.Input.Field | undefined
+        if (!schemaArgField) throw new Error(`Arg not found: ${argName}`)
+        return [argName, resolveArgValue(context, schemaArgField.type, argValue)]
+      })
+      return `{ ${entries.map(([k, v]) => `${k!}: ${v!}`).join(`, `)} }`
+    }
+    case `Enum`: {
+      return String(argValue)
+    }
+    case `Scalar`: {
+      // @ts-expect-error fixme
+      return JSON.stringify(schemaArgType.codec.encode(argValue))
+    }
+    default:
+      throw new Error(`Unsupported arg kind: ${JSON.stringify(schemaArgType)}`)
+  }
+}
+
+const resolveArgs = (context: Context, schemaField: Schema.SomeField, ss: Indicator | SS) => {
   if (isIndicator(ss)) return ``
 
   const { $ } = ss
+  if ($ === undefined) return ``
 
-  let args = ``
-  if ($ !== undefined) {
-    const schemaArgs = schemaField.args
-    if (!schemaArgs) throw new Error(`Field has no args`)
+  const schemaArgs = schemaField.args
+  if (!schemaArgs) throw new Error(`Field has no args`)
 
-    const entries = Object.entries($)
-    args = entries.length === 0 ? `` : `(${
-      entries.map(([argName, v]) => {
-        const schemaArg = schemaArgs.fields[argName] as Schema.Input.Any | undefined // eslint-disable-line
-        if (!schemaArg) throw new Error(`Arg ${argName} not found in schema field`)
-        if (schemaArg.kind === `Enum`) {
-          return `${argName}: ${String(v)}`
-        } else {
-          // todo if enum, do not quote, requires schema index
-          return `${argName}: ${JSON.stringify(v)}`
-        }
-      }).join(`, `)
-    })`
-  }
+  const argEntries = Object.entries($)
+  if (argEntries.length === 0) return ``
 
-  return args
+  return `(${
+    argEntries.map(([argFieldName, v]) => {
+      const schemaArgField = schemaArgs.fields[argFieldName] as Schema.Input.Any | undefined // eslint-disable-line
+      if (!schemaArgField) throw new Error(`Arg field ${argFieldName} not found in schema.`)
+      const valueEncoded = resolveArgValue(context, schemaArgField, v)
+      return `${argFieldName}: ${valueEncoded}`
+    }).join(`, `)
+  })`
 }
 const pruneNonSelections = (ss: SS) => {
   const entries = Object.entries(ss)
@@ -129,7 +168,7 @@ const resolveFieldValue = (
 
   const entries = Object.entries(fieldValue)
   const directives = resolveDirectives(fieldValue)
-  const args = resolveArgs(schemaField, fieldValue)
+  const args = resolveArgs(context, schemaField, fieldValue)
   const selects = entries.filter(_ => isSelectFieldName(_[0]))
 
   if (selects.length === 0) {
