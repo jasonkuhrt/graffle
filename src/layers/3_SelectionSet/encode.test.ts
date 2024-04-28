@@ -11,21 +11,8 @@ import { rootTypeSelectionSet } from './encode.js'
 // @ts-ignore
 type Q = SelectionSet.Query<Index>
 const s = (selectionSet: Q) => selectionSet
-const prepareResult = (ss: Q) => {
-  const context: Context = { schemaIndex, config: { returnMode: `data` } }
-  const graphqlDocumentString = rootTypeSelectionSet(context, schemaIndex[`Root`][`Query`], ss as any)
-  // Should parse, ensures is syntactically valid graphql document.
-  const document = parse(graphqlDocumentString)
-  const graphqlDocumentStringFormatted = print(document)
-  const beforeAfter = `\n`
-    + JSON.stringify(ss, null, 2)
-    + `\n--------------\n`
-    + graphqlDocumentStringFormatted
-    + `\n`
-  return beforeAfter
-}
 
-const testArgs = [
+const testEachArgs = [
   `Query`,
   (
     ...args: [SelectionSet.Object<Index['Root']['Query'], Index>] | [
@@ -33,21 +20,25 @@ const testArgs = [
       ss: SelectionSet.Object<Index['Root']['Query'], Index>,
     ]
   ) => {
-    if (args.length === 1) {
-      const [ss] = args
-      expect(prepareResult(ss)).toMatchSnapshot()
-      return
-    } else {
-      const [description, ss] = args
-      expect(prepareResult(ss)).toMatchSnapshot(description)
-    }
+    const [description, ss] = args.length === 1 ? [undefined, args[0]] : args
+    const context: Context = { schemaIndex, config: { returnMode: `data` } }
+    const graphqlDocumentString = rootTypeSelectionSet(context, schemaIndex[`Root`][`Query`], ss as any)
+    // Should parse, ensures is syntactically valid graphql document.
+    const document = parse(graphqlDocumentString)
+    const graphqlDocumentStringFormatted = print(document)
+    const beforeAfter = `\n`
+      + JSON.stringify(ss, null, 2)
+      + `\n--------------\n`
+      + graphqlDocumentStringFormatted
+      + `\n`
+    expect(beforeAfter).toMatchSnapshot(description)
   },
 ] as const
 
 describe(`enum`, () => {
   test.each([
     [s({ result: { $: { case: `Object1` }, __typename: true } })],
-  ])(...testArgs)
+  ])(...testEachArgs)
 })
 
 describe(`union`, () => {
@@ -56,7 +47,7 @@ describe(`union`, () => {
     [s({ unionFooBar: { onBar: { int: true } } })],
     [s({ unionFooBar: { onBar: { $skip: true, int: true } } })],
     // s({ unionFooBar: { onBar: {} } }), // todo should be static type error
-  ])(...testArgs)
+  ])(...testEachArgs)
 })
 
 describe(`alias`, () => {
@@ -65,7 +56,7 @@ describe(`alias`, () => {
     [s({ id_as_x: true, id_as_id2: true })],
     [s({ id_as_x: { $skip: true } })],
     [s({ object_as_x: { $skip: true, id: true } })],
-  ])(...testArgs)
+  ])(...testEachArgs)
 })
 
 describe(`args`, () => {
@@ -76,7 +67,7 @@ describe(`args`, () => {
     // s({ objectWithArgs: { $: {} } }), // todo should be static error
     [s({ objectWithArgs: { $: { id: `` }, id: true } })],
     [s({ objectWithArgs: { $: {}, id: true } })],
-  ])(...testArgs)
+  ])(...testEachArgs)
 })
 
 describe(`$include`, () => {
@@ -88,7 +79,7 @@ describe(`$include`, () => {
     [s({ object: { $include: { if: false }, id: true } })],
     [s({ object: { $include: { if: undefined }, id: true } })],
     [s({ object: { $include: {}, id: true } })],
-  ])(...testArgs)
+  ])(...testEachArgs)
 })
 
 describe(`$skip`, () => {
@@ -100,7 +91,7 @@ describe(`$skip`, () => {
     [s({ object: { $skip: { if: false }, id: true } })],
     [s({ object: { $skip: { if: undefined }, id: true } })],
     [s({ object: { $skip: {}, id: true } })],
-  ])(...testArgs)
+  ])(...testEachArgs)
 })
 
 describe(`$defer`, () => {
@@ -113,7 +104,7 @@ describe(`$defer`, () => {
     [s({ object: { $defer: { if: undefined }, id: true } })],
     [s({ object: { $defer: {}, id: true } })],
     [s({ object: { $defer: { label: `foobar` }, id: true } })],
-  ])(...testArgs)
+  ])(...testEachArgs)
 })
 
 describe(`$stream`, () => {
@@ -127,7 +118,7 @@ describe(`$stream`, () => {
     [s({ object: { $stream: {}, id: true } })],
     [s({ object: { $stream: { label: `foobar` }, id: true } })],
     [s({ object: { $stream: { initialCount: 5 }, id: true } })],
-  ])(...testArgs)
+  ])(...testEachArgs)
 })
 
 describe(`other`, () => {
@@ -142,7 +133,7 @@ describe(`other`, () => {
     [s({ object: { id: true } })],
     [s({ objectNested: { object: { string: true, id: true, int: false } } })],
     [s({ objectNested: { object: { string: true, id: true, int: { $skip: true } } } })],
-  ])(...testArgs)
+  ])(...testEachArgs)
 })
 
 describe(`args`, () => {
@@ -158,6 +149,6 @@ describe(`args`, () => {
       [`arg field in non-null list non-null`,s({ dateArgNonNullListNonNull: { $: { date: [db.date0, new Date(1)] } } })],
       [`input object field`,s({ dateArgInputObject: { $: { input: { idRequired: ``, dateRequired: db.date0, date: new Date(1) } } } })],
       [`nested input object field`,s({ InputObjectNested: { $: { input: { InputObject: { idRequired: ``, dateRequired: db.date0, date: new Date(1) } } } } })]
-    ] as const)(...testArgs)
+    ] as const)(...testEachArgs)
   })
 })
