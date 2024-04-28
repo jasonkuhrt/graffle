@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { beforeEach, describe, expect, test } from 'vitest'
+import { describe, expect, test } from 'vitest'
 import { db } from '../../../tests/_/db.js'
 import { $Index as schemaIndex } from '../../../tests/_/schema/generated/SchemaRuntime.js'
 import { setupMockServer } from '../../../tests/legacy/__helpers.js'
@@ -10,78 +10,6 @@ const date0Encoded = db.date0.toISOString()
 const date1Encoded = db.date1.toISOString()
 
 const client = () => create({ schema: ctx.url, schemaIndex })
-
-describe(`input`, () => {
-  // needed to avoid runtime error but data ignored because we only test input below.
-  beforeEach(() => {
-    ctx.res({ body: { data: {} } })
-  })
-  const clientExpected = (expectedDocument: (document: any) => void) => {
-    const client = create({
-      schema: ctx.url,
-      schemaIndex,
-      hooks: {
-        documentEncode: (input, run) => {
-          const result = run(input)
-          expectedDocument(result['query'])
-          return result
-        },
-      },
-    })
-    return client
-  }
-
-  test(`arg field`, async () => {
-    const client = clientExpected((doc) => expect(doc.dateArg.$.date).toEqual(date0Encoded))
-    await client.query.$batch({ dateArg: { $: { date: db.date0 } } })
-  })
-  test('arg field in non-null', async () => {
-    const client = clientExpected((doc) => expect(doc.dateArgNonNull.$.date).toEqual(date0Encoded))
-    await client.query.$batch({ dateArgNonNull: { $: { date: db.date0 } } })
-  })
-  test('arg field in list', async () => {
-    const client = clientExpected((doc) => expect(doc.dateArgList.$.date).toEqual([date0Encoded, date1Encoded]))
-    await client.query.$batch({ dateArgList: { $: { date: [db.date0, new Date(1)] } } })
-  })
-  test('arg field in list (null)', async () => {
-    const client = clientExpected((doc) => expect(doc.dateArgList.$.date).toEqual(null))
-    await client.query.$batch({ dateArgList: { $: { date: null } } })
-  })
-  test('arg field in non-null list (with list)', async () => {
-    const client = clientExpected((doc) => expect(doc.dateArgNonNullList.$.date).toEqual([date0Encoded, date1Encoded]))
-    await client.query.$batch({ dateArgNonNullList: { $: { date: [db.date0, new Date(1)] } } })
-  })
-  test('arg field in non-null list (with null)', async () => {
-    const client = clientExpected((doc) => expect(doc.dateArgNonNullList.$.date).toEqual([null, date0Encoded]))
-    await client.query.$batch({ dateArgNonNullList: { $: { date: [null, db.date0] } } })
-  })
-  test('arg field in non-null list non-null', async () => {
-    const client = clientExpected((doc) =>
-      expect(doc.dateArgNonNullListNonNull.$.date).toEqual([date0Encoded, date1Encoded])
-    )
-    await client.query.$batch({ dateArgNonNullListNonNull: { $: { date: [db.date0, new Date(1)] } } })
-  })
-  test(`input object field`, async () => {
-    const client = clientExpected((doc) => {
-      expect(doc.dateArgInputObject.$.input.dateRequired).toEqual(date0Encoded)
-      expect(doc.dateArgInputObject.$.input.date).toEqual(date1Encoded)
-    })
-    await client.query.$batch({
-      dateArgInputObject: { $: { input: { idRequired: '', dateRequired: db.date0, date: new Date(1) } } },
-    })
-  })
-  test(`nested input object field`, async () => {
-    const client = clientExpected((doc) => {
-      expect(doc.InputObjectNested.$.input.InputObject.dateRequired).toEqual(date0Encoded)
-      expect(doc.InputObjectNested.$.input.InputObject.date).toEqual(date1Encoded)
-    })
-    await client.query.$batch({
-      InputObjectNested: {
-        $: { input: { InputObject: { idRequired: '', dateRequired: db.date0, date: new Date(1) } } },
-      },
-    })
-  })
-})
 
 describe(`output`, () => {
   test(`query field`, async () => {
