@@ -41,7 +41,7 @@ describe(`query`, () => {
       await expect(client.query.objectWithArgsOrThrow({ $: { id: `x` }, id: true })).resolves.toEqual({ id: `x` })
     })
     test(`with error`, async () => {
-      await expect(client.query.errorOrThrow()).rejects.toMatchObject(db.error)
+      await expect(client.query.errorOrThrow()).rejects.toMatchObject(db.errorAggregate)
     })
   })
   describe(`$batch`, () => {
@@ -49,14 +49,14 @@ describe(`query`, () => {
       await expect(client.query.$batch({ id: true })).resolves.toMatchObject({ id:db.id })
     })
     test(`error`, async () => {
-      await expect(client.query.$batch({ error: true })).rejects.toMatchObject(db.error)
+      await expect(client.query.$batch({ error: true })).rejects.toMatchObject(db.errorAggregate)
     })
     describe(`orThrow`, () => {
     test(`success`, async () => {
       await expect(client.query.$batchOrThrow({ id: true })).resolves.toMatchObject({ id:db.id })
     })
     test(`error`, async () => {
-      await expect(client.query.$batchOrThrow({ error: true })).rejects.toMatchObject(db.error)
+      await expect(client.query.$batchOrThrow({ error: true })).rejects.toMatchObject(db.errorAggregate)
     })  
     })
   })

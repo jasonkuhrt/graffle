@@ -16,7 +16,7 @@ describe('default (data)', () => {
     await expect(client.document({ main: { query: { id: true } } }).runOrThrow()).resolves.toEqual({ id: db.id })
   })
   test(`document.runOrThrow error`, async () => {
-    await expect(client.document({ main: { query: { error: true } } }).runOrThrow()).rejects.toEqual(db.error)
+    await expect(client.document({ main: { query: { error: true } } }).runOrThrow()).rejects.toEqual(db.errorAggregate)
   })
   test('raw', async () => {
     await expect(client.raw('query main {\nid\n}', {}, 'main')).resolves.toEqual({ data: { id: db.id } })
@@ -25,16 +25,16 @@ describe('default (data)', () => {
     await expect(client.query.__typename()).resolves.toEqual('Query')
   })
   test('query.<fieldMethod> error', async () => {
-    await expect(client.query.error()).rejects.toMatchObject(db.error)
+    await expect(client.query.error()).rejects.toMatchObject(db.errorAggregate)
   })
   test('query.<fieldMethod> error orThrow', async () => {
-    await expect(client.query.errorOrThrow()).rejects.toMatchObject(db.error)
+    await expect(client.query.errorOrThrow()).rejects.toMatchObject(db.errorAggregate)
   })
   test('query.$batch', async () => {
     await expect(client.query.$batch({ __typename: true, id: true })).resolves.toEqual({ __typename: 'Query', id: db.id })
   })
   test('query.$batchOrThrow error', async () => {
-    await expect(client.query.$batchOrThrow({ error: true })).rejects.toMatchObject(db.error)
+    await expect(client.query.$batchOrThrow({ error: true })).rejects.toMatchObject(db.errorAggregate)
   })
   test('mutation.<fieldMethod>', async () => {
     await expect(client.mutation.__typename()).resolves.toEqual('Mutation')
@@ -54,7 +54,7 @@ describe('dataAndErrors', () => {
     await expect(client.document({ main: { query: { id: true } } }).runOrThrow()).resolves.toEqual({ id: db.id })
   })
   test(`document.runOrThrow error`, async () => {
-    await expect(client.document({ main: { query: { error: true } } }).runOrThrow()).rejects.toEqual(db.error)
+    await expect(client.document({ main: { query: { error: true } } }).runOrThrow()).rejects.toEqual(db.errorAggregate)
   })
   test('raw', async () => {
     await expect(client.raw('query main {\nid\n}', {}, 'main')).resolves.toEqual({ data: { id: db.id } })
@@ -63,16 +63,16 @@ describe('dataAndErrors', () => {
     await expect(client.query.__typename()).resolves.toEqual('Query')
   })
   test('query.<fieldMethod> error', async () => {
-    await expect(client.query.error()).resolves.toMatchObject(db.error)
+    await expect(client.query.error()).resolves.toMatchObject(db.errorAggregate)
   })
   test('query.<fieldMethod> error orThrow', async () => {
-    await expect(client.query.errorOrThrow()).rejects.toMatchObject(db.error)
+    await expect(client.query.errorOrThrow()).rejects.toMatchObject(db.errorAggregate)
   })
   test('query.$batch', async () => {
     await expect(client.query.$batch({ __typename: true, id: true })).resolves.toEqual({ __typename: 'Query', id: db.id })
   })
   test('query.$batchOrThrow error', async () => {
-    await expect(client.query.$batchOrThrow({ error: true })).rejects.toMatchObject(db.error)
+    await expect(client.query.$batchOrThrow({ error: true })).rejects.toMatchObject(db.errorAggregate)
   })
   test('mutation.<fieldMethod>', async () => {
     await expect(client.mutation.__typename()).resolves.toEqual('Mutation')
@@ -146,7 +146,7 @@ describe('graphql', () => {
     await expect(client.document({ main: { query: { id: true } } }).runOrThrow()).resolves.toEqual({data:{ id: db.id }})
   })
   test(`document.runOrThrow error`, async () => {
-    await expect(client.document({ main: { query: { error: true } } }).runOrThrow()).rejects.toEqual(db.error)
+    await expect(client.document({ main: { query: { error: true } } }).runOrThrow()).rejects.toEqual(db.errorAggregate)
   })
   test('raw', async () => {
     await expect(client.raw('query main {\nid\n}', {}, 'main')).resolves.toEqual({ data: { id: db.id } })
@@ -155,16 +155,16 @@ describe('graphql', () => {
     await expect(client.query.__typename()).resolves.toEqual({ data: { __typename: 'Query' } })
   })
   test('query.<fieldMethod> error', async () => {
-    await expect(client.query.error()).resolves.toMatchObject({ errors:db.error['errors'] })
+    await expect(client.query.error()).resolves.toMatchObject({ errors:db.errorAggregate['errors'] })
   })
   test('query.<fieldMethod> orThrow error', async () => {
-    await expect(client.query.errorOrThrow()).rejects.toMatchObject(db.error)
+    await expect(client.query.errorOrThrow()).rejects.toMatchObject(db.errorAggregate)
   })
   test('query.$batch', async () => {
     await expect(client.query.$batch({ __typename: true, id: true })).resolves.toEqual({ data: { __typename: 'Query', id: db.id } })
   })
   test('query.$batchOrThrow error', async () => {
-    await expect(client.query.$batchOrThrow({ error: true })).rejects.toMatchObject(db.error)
+    await expect(client.query.$batchOrThrow({ error: true })).rejects.toMatchObject(db.errorAggregate)
   })
   test('mutation.<fieldMethod>', async () => {
     await expect(client.mutation.__typename()).resolves.toEqual({ data: { __typename: 'Mutation' } })

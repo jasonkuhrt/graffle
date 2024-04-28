@@ -11,6 +11,7 @@ import {
   isListType,
   isNonNullType,
 } from 'graphql'
+import type { ObjMap } from 'graphql/jsutils/ObjMap.js'
 import type { Errors } from './errors/__.js'
 
 export type TypeMapByKind =
@@ -247,3 +248,12 @@ export type Variables = Record<string, string | number | boolean | null> // todo
 export type GraphQLExecutionResultError = Errors.ContextualAggregateError<GraphQLError>
 
 export type OperationName = 'query' | 'mutation'
+
+export interface SomeExecutionResultWithoutErrors<
+  TData = ObjMap<unknown>,
+  TExtensions = ObjMap<unknown>,
+> {
+  errors?: readonly []
+  data?: TData | null
+  extensions?: TExtensions
+}

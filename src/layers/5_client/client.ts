@@ -2,6 +2,7 @@ import type { ExecutionResult } from 'graphql'
 import { type DocumentNode, execute, graphql, type GraphQLSchema } from 'graphql'
 import request from '../../entrypoints/main.js'
 import { Errors } from '../../lib/errors/__.js'
+import type { SomeExecutionResultWithoutErrors } from '../../lib/graphql.js'
 import { type RootTypeName, rootTypeNameToOperationName, type Variables } from '../../lib/graphql.js'
 import { isPlainObject } from '../../lib/prelude.js'
 import type { Object$2 } from '../1_Schema/__.js'
@@ -27,6 +28,7 @@ export type Client<$Index extends Schema.Index, $Config extends Config> =
   & {
       // todo test raw
       raw: (document: string | DocumentNode, variables?:Variables, operationName?:string) => Promise<ExecutionResult>
+      rawOrThrow: (document: string | DocumentNode, variables?:Variables, operationName?:string) => Promise<SomeExecutionResultWithoutErrors>
       document: DocumentFn<$Config, $Index>
     }
   & GetRootTypeMethods<$Config, $Index>
@@ -294,6 +296,18 @@ export const create = <$Input extends Input>(
   const client: Client = {
     raw: async (document: string | DocumentNode, variables?: Variables, operationName?: string) => {
       return await executeGraphQLDocument({ document, variables, operationName })
+    },
+    rawOrThrow: async (document: string | DocumentNode, variables?: Variables, operationName?: string) => {
+      const result = await client.raw(document, variables, operationName) as ExecutionResult // eslint-disable-line
+      // todo consolidate
+      if (result.errors && result.errors.length > 0) {
+        throw new Errors.ContextualAggregateError(
+          `One or more errors in the execution result.`,
+          {},
+          result.errors,
+        )
+      }
+      return result
     },
     document: (documentObject: DocumentObject) => {
       const run = async (operationName: string) => {
