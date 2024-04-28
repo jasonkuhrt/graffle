@@ -8,8 +8,9 @@ export const toGraphQLDirective = (directive: DirectiveLike) => {
 }
 
 export const toGraphQLDirectiveArgs = (args: object) => {
-  return Object.entries(args).filter(([_, v]) => v !== undefined).map(([k, v]) => {
+  return Object.entries(args).filter(([_, v]) => v !== undefined).map(([k, clientValue]) => {
     // todo can directives receive custom scalars?
-    return `${k}: ${JSON.stringify(v)}`
+    const value = JSON.stringify(clientValue)
+    return `${k}: ${value}`
   }).join(`, `)
 }
