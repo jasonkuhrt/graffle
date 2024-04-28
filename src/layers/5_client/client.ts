@@ -1,6 +1,5 @@
 import type { ExecutionResult } from 'graphql'
 import { type DocumentNode, execute, graphql, type GraphQLSchema } from 'graphql'
-import type { ExcludeUndefined } from 'type-fest/source/required-deep.js'
 import request from '../../entrypoints/main.js'
 import { Errors } from '../../lib/errors/__.js'
 import { type RootTypeName, rootTypeNameToOperationName, type Variables } from '../../lib/graphql.js'
@@ -11,6 +10,7 @@ import { readMaybeThunk } from '../1_Schema/core/helpers.js'
 import type { GlobalRegistry } from '../2_generator/globalRegistry.js'
 import { SelectionSet } from '../3_SelectionSet/__.js'
 import type { Context, DocumentObject, GraphQLObjectSelection } from '../3_SelectionSet/encode.js'
+import * as CustomScalars from '../4_ResultSet/customScalars.js'
 import type {
   ApplyInputDefaults,
   Config,
@@ -18,7 +18,6 @@ import type {
   ReturnModeTypeBase,
   ReturnModeTypeSuccessData,
 } from './Config.js'
-import * as CustomScalars from './customScalars.js'
 import type { DocumentFn } from './document.js'
 import { toDocumentString } from './document.js'
 import type { GetRootTypeMethods } from './RootTypeMethods.js'
@@ -74,7 +73,7 @@ export const create = <$Input extends Input>(
   GlobalRegistry.GetSchemaIndexOptionally<$Input['name']>,
   ApplyInputDefaults<{ returnMode: $Input['returnMode'] }>
 > => {
-  const parentInput = input
+  // const parentInput = input
   /**
    * @remarks Without generation the type of returnMode can be `ReturnModeTypeBase` which leads
    * TS to think some errors below are invalid checks because of a non-present member.
@@ -89,13 +88,13 @@ export const create = <$Input extends Input>(
     },
   }
 
-  const runHookable = <$Name extends keyof ExcludeUndefined<Input['hooks']>>(
-    name: $Name,
-    input: Parameters<ExcludeUndefined<Input['hooks']>[$Name]>[0],
-    fn: Parameters<ExcludeUndefined<Input['hooks']>[$Name]>[1],
-  ) => {
-    return parentInput.hooks?.[name](input, fn) ?? fn(input)
-  }
+  // const runHookable = <$Name extends keyof ExcludeUndefined<Input['hooks']>>(
+  //   name: $Name,
+  //   input: Parameters<ExcludeUndefined<Input['hooks']>[$Name]>[0],
+  //   fn: Parameters<ExcludeUndefined<Input['hooks']>[$Name]>[1],
+  // ) => {
+  //   return parentInput.hooks?.[name](input, fn) ?? fn(input)
+  // }
 
   const executeDocumentString = async (
     { document, variables, operationName }: {
@@ -144,23 +143,16 @@ export const create = <$Input extends Input>(
       const rootIndex = input.schemaIndex.Root[rootTypeName]
       if (!rootIndex) throw new Error(`Root type not found: ${rootTypeName}`)
 
-      // todo one encoding pass
-      const selectionEncoded = runHookable(
-        `documentEncode`,
-        // todo rename to rootObject
-        { rootIndex, documentObject: selection },
-        ({ rootIndex, documentObject }) => CustomScalars.encode({ index: rootIndex, documentObject }),
-      )
+      // todo turn inputs into variables
       const documentString = SelectionSet.Print.rootTypeSelectionSet(
         encodeContext,
         rootIndex,
         // @ts-expect-error fixme
-        selectionEncoded[rootTypeNameToOperationName[rootTypeName]],
+        selection[rootTypeNameToOperationName[rootTypeName]],
       )
-      // console.log(documentString)
       // todo variables
       const result = await executeDocumentString({ document: documentString })
-      // if (result.errors && (result.errors.length > 0)) throw new AggregateError(result.errors)
+      // todo rename Result.decode
       const dataDecoded = CustomScalars.decode(rootIndex, result.data)
       return { ...result, data: dataDecoded }
     }
