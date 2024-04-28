@@ -215,7 +215,6 @@ export type ClientIndicator = ClientIndicatorPositive | ClientIndicatorNegative
 export type ClientIndicatorPositive = true | 1
 export type ClientIndicatorNegative = false | 0 | undefined
 
-
 export type OmitNegativeIndicators<$SelectionSet> = {
   [K in keyof $SelectionSet as $SelectionSet[K] extends ClientIndicatorNegative ? never : K]: $SelectionSet[K]
 }
