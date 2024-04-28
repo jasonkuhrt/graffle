@@ -1,10 +1,10 @@
 import { parse, print } from 'graphql'
 import { describe, expect, test } from 'vitest'
-import type { Index } from '../../../../tests/_/schema/generated/Index.js'
-import { $Index as schemaIndex } from '../../../../tests/_/schema/generated/SchemaRuntime.js'
+import type { Index } from '../../../tests/_/schema/generated/Index.js'
+import { $Index as schemaIndex } from '../../../tests/_/schema/generated/SchemaRuntime.js'
 import type { SelectionSet } from './__.js'
-import type { Context } from './toGraphQLDocumentString.js'
-import { rootTypeSelectionSet } from './toGraphQLDocumentString.js'
+import type { Context } from './encode.js'
+import { rootTypeSelectionSet } from './encode.js'
 
 // eslint-disable-next-line
 // @ts-ignore

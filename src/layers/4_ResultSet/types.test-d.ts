@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
 import { expectTypeOf, test } from 'vitest'
-import type { Index } from '../../../../tests/_/schema/generated/Index.js'
-import type * as Schema from '../../../../tests/_/schema/generated/SchemaBuildtime.js'
-import type { SelectionSet } from '../SelectionSet/__.js'
+import type { Index } from '../../../tests/_/schema/generated/Index.js'
+import type * as Schema from '../../../tests/_/schema/generated/SchemaBuildtime.js'
+import type { SelectionSet } from '../3_SelectionSet/__.js'
 import type { ResultSet } from './__.js'
 
 type I = Index

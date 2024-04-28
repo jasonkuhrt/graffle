@@ -1,12 +1,14 @@
 import type { ExecutionResult } from 'graphql'
 import { standardScalarTypeNames } from '../../lib/graphql.js'
-import { mapValues } from '../../lib/prelude.js'
+import { assertArray, mapValues } from '../../lib/prelude.js'
 import type { Object$2, Schema } from '../1_Schema/__.js'
 import { Output } from '../1_Schema/__.js'
 import { readMaybeThunk } from '../1_Schema/core/helpers.js'
-import type { SelectionSet } from '../3_IO/SelectionSet/__.js'
-import type { Args } from '../3_IO/SelectionSet/SelectionSet.js'
-import type { GraphQLObjectSelection } from '../3_IO/SelectionSet/toGraphQLDocumentString.js'
+import type { SelectionSet } from '../3_SelectionSet/__.js'
+import type { GraphQLObjectSelection } from '../3_SelectionSet/encode.js'
+import type { Args } from '../3_SelectionSet/types.js'
+import type { GraphQLObject } from '../4_ResultSet/runtime.js'
+import { assertGraphQLObject } from '../4_ResultSet/runtime.js'
 
 namespace SSValue {
   export type Obj = {
@@ -148,26 +150,4 @@ const decodeCustomScalarValue = (
   }
 
   return fieldValue
-}
-
-// eslint-disable-next-line
-function assertArray(v: unknown): asserts v is unknown[] {
-  if (!Array.isArray(v)) throw new Error(`Expected array. Got: ${String(v)}`)
-}
-
-// eslint-disable-next-line
-function assertObject(v: unknown): asserts v is object {
-  if (v === null || typeof v !== `object`) throw new Error(`Expected object. Got: ${String(v)}`)
-}
-
-// eslint-disable-next-line
-function assertGraphQLObject(v: unknown): asserts v is GraphQLObject {
-  assertObject(v)
-  if (`__typename` in v && typeof v.__typename !== `string`) {
-    throw new Error(`Expected string __typename or undefined. Got: ${String(v.__typename)}`)
-  }
-}
-
-type GraphQLObject = {
-  __typename?: string
 }

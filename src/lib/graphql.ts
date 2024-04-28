@@ -35,6 +35,18 @@ export const RootTypeName = {
   Subscription: `Subscription`,
 } as const
 
+export const operationTypeToRootType = {
+  query: `Query`,
+  mutation: `Mutation`,
+  subscription: `Subscription`,
+} as const
+
+export const rootTypeNameToOperationName = {
+  Query: `query`,
+  Mutation: `mutation`,
+  Subscription: `subscription`,
+} as const
+
 export type RootTypeName = keyof typeof RootTypeName
 
 export const isStandardScalarType = (type: GraphQLScalarType) => {

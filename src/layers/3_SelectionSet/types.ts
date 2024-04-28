@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
-import type { MaybeList, StringNonEmpty, Values } from '../../../lib/prelude.js'
-import type { TSError } from '../../../lib/TSError.js'
+import type { MaybeList, StringNonEmpty, Values } from '../../lib/prelude.js'
+import type { TSError } from '../../lib/TSError.js'
 import type {
   InputFieldsAllNullable,
   OmitNullableFields,
@@ -9,7 +9,7 @@ import type {
   Schema,
   SomeField,
   SomeFields,
-} from '../../1_Schema/__.js'
+} from '../1_Schema/__.js'
 
 export type Query<$Index extends Schema.Index> = Root<$Index, 'Query'>
 
@@ -215,12 +215,6 @@ export type ClientIndicator = ClientIndicatorPositive | ClientIndicatorNegative
 export type ClientIndicatorPositive = true | 1
 export type ClientIndicatorNegative = false | 0 | undefined
 
-/**
- * @see https://regex101.com/r/XfOTMX/1
- * @see http://spec.graphql.org/draft/#sec-Names
- */
-export const aliasPattern = /^(?<actual>[A-z][A-z_0-9]*)_as_(?<alias>[A-z][A-z_0-9]*)$/
-export const fragmentPattern = /^on(?<name>[A-Z][A-z_0-9]*)$/
 
 export type OmitNegativeIndicators<$SelectionSet> = {
   [K in keyof $SelectionSet as $SelectionSet[K] extends ClientIndicatorNegative ? never : K]: $SelectionSet[K]
@@ -235,10 +229,10 @@ export type NoArgsIndicator = ClientIndicator | FieldDirectives
 
 // dprint-ignore
 export type Indicator<$Field extends SomeField> =
-$Field['args'] extends Schema.Args<any>        ?  InputFieldsAllNullable<$Field['args']['fields']> extends true
-                                                    ? ({ $?: Args<$Field['args']> } & FieldDirectives) | ClientIndicator :
-                                                      { $: Args<$Field['args']> } & FieldDirectives :
-                                                  NoArgsIndicator
+  $Field['args'] extends Schema.Args<any>        ?  InputFieldsAllNullable<$Field['args']['fields']> extends true
+                                                      ? ({ $?: Args<$Field['args']> } & FieldDirectives) | ClientIndicator :
+                                                        { $: Args<$Field['args']> } & FieldDirectives :
+                                                    NoArgsIndicator
 
 // dprint-ignore
 export type Args<$Args extends Schema.Args<any>> = ArgFields<$Args['fields']>

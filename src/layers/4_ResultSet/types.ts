@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
 import type { Simplify } from 'type-fest'
-import type { ExcludeNull, GetKeyOr, SimplifyDeep } from '../../../lib/prelude.js'
-import type { TSError } from '../../../lib/TSError.js'
-import type { Schema, SomeField } from '../../1_Schema/__.js'
-import type { PickScalarFields } from '../../1_Schema/Output/Output.js'
-import type { SelectionSet } from '../SelectionSet/__.js'
+import type { ExcludeNull, GetKeyOr, SimplifyDeep } from '../../lib/prelude.js'
+import type { TSError } from '../../lib/TSError.js'
+import type { Schema, SomeField } from '../1_Schema/__.js'
+import type { PickScalarFields } from '../1_Schema/Output/Output.js'
+import type { SelectionSet } from '../3_SelectionSet/__.js'
 
 export type Query<$SelectionSet extends object, $Index extends Schema.Index> = Root<$SelectionSet, $Index, 'Query'>
 
