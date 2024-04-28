@@ -96,7 +96,7 @@ export const create = <$Input extends Input>(
   //   return parentInput.hooks?.[name](input, fn) ?? fn(input)
   // }
 
-  const executeDocumentString = async (
+  const executeGraphQLDocument = async (
     { document, variables, operationName }: {
       document: string | DocumentNode
       variables?: Variables
@@ -151,7 +151,10 @@ export const create = <$Input extends Input>(
         selection[rootTypeNameToOperationName[rootTypeName]],
       )
       // todo variables
-      const result = await executeDocumentString({ document: documentString })
+      const result = await executeGraphQLDocument({ document: documentString })
+      // todo optimize
+      // 1. Generate a map of possible custom scalar paths (tree structure)
+      // 2. When traversing the result, skip keys that are not in the map
       // todo rename Result.decode
       const dataDecoded = CustomScalars.decode(rootIndex, result.data)
       return { ...result, data: dataDecoded }
@@ -290,7 +293,7 @@ export const create = <$Input extends Input>(
   // @ts-expect-error ignoreme
   const client: Client = {
     raw: async (document: string | DocumentNode, variables?: Variables, operationName?: string) => {
-      return await executeDocumentString({ document, variables, operationName })
+      return await executeGraphQLDocument({ document, variables, operationName })
     },
     document: (documentObject: DocumentObject) => {
       const run = async (operationName: string) => {
@@ -311,7 +314,7 @@ export const create = <$Input extends Input>(
         // todo this does not support custom scalars
 
         const documentString = toDocumentString(encodeContext, documentObject)
-        const result = await executeDocumentString({
+        const result = await executeGraphQLDocument({
           document: documentString,
           operationName,
           // todo variables
