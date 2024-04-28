@@ -237,3 +237,11 @@ export type SetProperty<$Obj extends object, $Prop extends keyof $Obj, $Type ext
 export const lowerCaseFirstLetter = (s: string) => {
   return s.charAt(0).toLowerCase() + s.slice(1)
 }
+
+export function assertArray(v: unknown): asserts v is unknown[] {
+  if (!Array.isArray(v)) throw new Error(`Expected array. Got: ${String(v)}`)
+}
+
+export function assertObject(v: unknown): asserts v is object {
+  if (v === null || typeof v !== `object`) throw new Error(`Expected object. Got: ${String(v)}`)
+}

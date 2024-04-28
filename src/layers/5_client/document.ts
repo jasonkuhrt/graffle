@@ -1,10 +1,11 @@
 import type { MergeExclusive, NonEmptyObject } from 'type-fest'
+import { operationTypeToRootType } from '../../lib/graphql.js'
 import type { IsMultipleKeys } from '../../lib/prelude.js'
 import type { TSError } from '../../lib/TSError.js'
 import type { Schema } from '../1_Schema/__.js'
-import type { ResultSet } from '../3_IO/ResultSet/__.js'
-import { SelectionSet } from '../3_IO/SelectionSet/__.js'
-import type { Context, DocumentObject } from '../3_IO/SelectionSet/toGraphQLDocumentString.js'
+import { SelectionSet } from '../3_SelectionSet/__.js'
+import type { Context, DocumentObject } from '../3_SelectionSet/encode.js'
+import type { ResultSet } from '../4_ResultSet/__.js'
 import type { AugmentRootTypeSelectionWithTypename, Config, OrThrowifyConfig, ReturnModeRootType } from './Config.js'
 
 // dprint-ignore
@@ -91,15 +92,3 @@ type GetRootType<$Selection extends object> =
   $Selection extends {query:any}    ? 'Query' : 
   $Selection extends {mutation:any} ? 'Mutation' :
   never
-
-export const operationTypeToRootType = {
-  query: `Query`,
-  mutation: `Mutation`,
-  subscription: `Subscription`,
-} as const
-
-export const rootTypeNameToOperationName = {
-  Query: `query`,
-  Mutation: `mutation`,
-  Subscription: `subscription`,
-} as const

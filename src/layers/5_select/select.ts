@@ -1,7 +1,7 @@
 import type { RootTypeName } from '../../lib/graphql.js'
 import type { Exact } from '../../lib/prelude.js'
 import type { Schema } from '../1_Schema/__.js'
-import type { SelectionSet } from '../3_IO/SelectionSet/__.js'
+import type { SelectionSet } from '../3_SelectionSet/__.js'
 
 // dprint-ignore
 type TypeSelectionSets<$Index extends Schema.Index> =

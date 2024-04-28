@@ -1,7 +1,7 @@
 import { describe, expect, expectTypeOf, it, test } from 'vitest'
 import type { Index } from '../../../tests/_/schema/schema.js'
 import type * as SchemaQueryOnly from '../../../tests/_/schemaQueryOnly/generated/Index.js'
-import type { SelectionSet } from '../3_IO/SelectionSet/__.js'
+import type { SelectionSet } from '../3_SelectionSet/__.js'
 import { create } from './select.js'
 
 describe(`select`, () => {

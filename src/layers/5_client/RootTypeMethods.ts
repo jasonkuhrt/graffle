@@ -2,8 +2,8 @@ import type { OperationName } from '../../lib/graphql.js'
 import type { Exact } from '../../lib/prelude.js'
 import type { TSError } from '../../lib/TSError.js'
 import type { InputFieldsAllNullable, Schema } from '../1_Schema/__.js'
-import type { ResultSet } from '../3_IO/ResultSet/__.js'
-import type { SelectionSet } from '../3_IO/SelectionSet/__.js'
+import type { SelectionSet } from '../3_SelectionSet/__.js'
+import type { ResultSet } from '../4_ResultSet/__.js'
 import type {
   AugmentRootTypeSelectionWithTypename,
   Config,
