@@ -94,28 +94,27 @@ const resolveDirectives = (fieldValue: FieldValue) => {
 
 const resolveArgValue = (
   context: Context,
-  schemaItemMaybeThunk: Schema.Input.Any,
+  schemaArgTypeMaybeThunk: Schema.Input.Any,
   argValue: ArgValue,
 ): string => {
   if (argValue === null) return String(null) // todo could check if index agrees is nullable.
 
-  const indexArg = readMaybeThunk(schemaItemMaybeThunk)
+  const schemaArgType = readMaybeThunk(schemaArgTypeMaybeThunk)
 
-  switch (indexArg.kind) {
+  switch (schemaArgType.kind) {
     case `nullable`:
-      return resolveArgValue(context, indexArg.type, argValue)
+      return resolveArgValue(context, schemaArgType.type, argValue)
     case `list`: {
       assertArray(argValue)
-      const value = argValue.map(_ => resolveArgValue(context, indexArg.type, _ as ArgValue))
+      const value = argValue.map(_ => resolveArgValue(context, schemaArgType.type, _ as ArgValue))
       return `[${value.join(`, `)}]`
     }
     case `InputObject`: {
       assertObject(argValue)
       const entries = Object.entries(argValue).map(([argName, argValue]) => {
-        // @ts-expect-error fixme
-        const indexArg = indexArgs.fields[argName] // eslint-disable-line
-        if (!indexArg) throw new Error(`Arg not found: ${argName}`)
-        return [argName, resolveArgValue(context, indexArg, argValue)]
+        const schemaArgField = schemaArgType.fields[argName] as Schema.Input.Field | undefined
+        if (!schemaArgField) throw new Error(`Arg not found: ${argName}`)
+        return [argName, resolveArgValue(context, schemaArgField.type, argValue)]
       })
       return `{ ${entries.map(([k, v]) => `${k!}: ${v!}`).join(`, `)} }`
     }
@@ -124,10 +123,10 @@ const resolveArgValue = (
     }
     case `Scalar`: {
       // @ts-expect-error fixme
-      return indexArg.codec.encode(argValue)
+      return JSON.stringify(schemaArgType.codec.encode(argValue))
     }
     default:
-      throw new Error(`Unsupported arg kind: ${JSON.stringify(indexArg)}`)
+      throw new Error(`Unsupported arg kind: ${JSON.stringify(schemaArgType)}`)
   }
 }
 
@@ -144,11 +143,11 @@ const resolveArgs = (context: Context, schemaField: Schema.SomeField, ss: Indica
   if (argEntries.length === 0) return ``
 
   return `(${
-    argEntries.map(([argName, v]) => {
-      const schemaArg = schemaArgs.fields[argName] as Schema.Input.Any | undefined // eslint-disable-line
-      if (!schemaArg) throw new Error(`Arg ${argName} not found in schema field`)
-      const valueEncoded = resolveArgValue(context, schemaArg, v)
-      return `${argName}: ${valueEncoded}`
+    argEntries.map(([argFieldName, v]) => {
+      const schemaArgField = schemaArgs.fields[argFieldName] as Schema.Input.Any | undefined // eslint-disable-line
+      if (!schemaArgField) throw new Error(`Arg field ${argFieldName} not found in schema.`)
+      const valueEncoded = resolveArgValue(context, schemaArgField, v)
+      return `${argFieldName}: ${valueEncoded}`
     }).join(`, `)
   })`
 }

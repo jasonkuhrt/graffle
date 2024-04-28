@@ -669,6 +669,180 @@ exports[`args > Query 4`] = `
 "
 `;
 
+exports[`args > custom scalars > Query > arg field 1`] = `
+"
+{
+  "dateArg": {
+    "$": {
+      "date": "1970-01-01T00:00:00.000Z"
+    }
+  }
+}
+--------------
+{
+  dateArg(date: "1970-01-01T00:00:00.000Z")
+}
+"
+`;
+
+exports[`args > custom scalars > Query > arg field in list (null) 1`] = `
+"
+{
+  "dateArgList": {
+    "$": {
+      "date": null
+    }
+  }
+}
+--------------
+{
+  dateArgList(date: null)
+}
+"
+`;
+
+exports[`args > custom scalars > Query > arg field in list 1`] = `
+"
+{
+  "dateArgList": {
+    "$": {
+      "date": [
+        "1970-01-01T00:00:00.000Z",
+        "1970-01-01T00:00:00.001Z"
+      ]
+    }
+  }
+}
+--------------
+{
+  dateArgList(date: ["1970-01-01T00:00:00.000Z", "1970-01-01T00:00:00.001Z"])
+}
+"
+`;
+
+exports[`args > custom scalars > Query > arg field in non-null 1`] = `
+"
+{
+  "dateArgNonNull": {
+    "$": {
+      "date": "1970-01-01T00:00:00.000Z"
+    }
+  }
+}
+--------------
+{
+  dateArgNonNull(date: "1970-01-01T00:00:00.000Z")
+}
+"
+`;
+
+exports[`args > custom scalars > Query > arg field in non-null list (with list) 1`] = `
+"
+{
+  "dateArgNonNullList": {
+    "$": {
+      "date": [
+        "1970-01-01T00:00:00.000Z",
+        "1970-01-01T00:00:00.001Z"
+      ]
+    }
+  }
+}
+--------------
+{
+  dateArgNonNullList(
+    date: ["1970-01-01T00:00:00.000Z", "1970-01-01T00:00:00.001Z"]
+  )
+}
+"
+`;
+
+exports[`args > custom scalars > Query > arg field in non-null list (with null) 1`] = `
+"
+{
+  "dateArgNonNullList": {
+    "$": {
+      "date": [
+        null,
+        "1970-01-01T00:00:00.000Z"
+      ]
+    }
+  }
+}
+--------------
+{
+  dateArgNonNullList(date: [null, "1970-01-01T00:00:00.000Z"])
+}
+"
+`;
+
+exports[`args > custom scalars > Query > arg field in non-null list non-null 1`] = `
+"
+{
+  "dateArgNonNullListNonNull": {
+    "$": {
+      "date": [
+        "1970-01-01T00:00:00.000Z",
+        "1970-01-01T00:00:00.001Z"
+      ]
+    }
+  }
+}
+--------------
+{
+  dateArgNonNullListNonNull(
+    date: ["1970-01-01T00:00:00.000Z", "1970-01-01T00:00:00.001Z"]
+  )
+}
+"
+`;
+
+exports[`args > custom scalars > Query > input object field 1`] = `
+"
+{
+  "dateArgInputObject": {
+    "$": {
+      "input": {
+        "idRequired": "",
+        "dateRequired": "1970-01-01T00:00:00.000Z",
+        "date": "1970-01-01T00:00:00.001Z"
+      }
+    }
+  }
+}
+--------------
+{
+  dateArgInputObject(
+    input: {idRequired: "", dateRequired: "1970-01-01T00:00:00.000Z", date: "1970-01-01T00:00:00.001Z"}
+  )
+}
+"
+`;
+
+exports[`args > custom scalars > Query > nested input object field 1`] = `
+"
+{
+  "InputObjectNested": {
+    "$": {
+      "input": {
+        "InputObject": {
+          "idRequired": "",
+          "dateRequired": "1970-01-01T00:00:00.000Z",
+          "date": "1970-01-01T00:00:00.001Z"
+        }
+      }
+    }
+  }
+}
+--------------
+{
+  InputObjectNested(
+    input: {InputObject: {idRequired: "", dateRequired: "1970-01-01T00:00:00.000Z", date: "1970-01-01T00:00:00.001Z"}}
+  )
+}
+"
+`;
+
 exports[`enum > Query 1`] = `
 "
 {
