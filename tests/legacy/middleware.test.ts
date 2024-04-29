@@ -4,7 +4,7 @@ import { setupMockServer } from './__helpers.js'
 
 const ctx = setupMockServer()
 
-test(`throwing an error in response middleware is not swalled`, async () => {
+test(`throwing an async error in response middleware is awaited`, async () => {
   const client = new GraphQLClient(ctx.url, {
     // eslint-disable-next-line
     responseMiddleware: async () => {

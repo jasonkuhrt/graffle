@@ -92,14 +92,14 @@ export type RequestOptions<V extends Variables = Variables, T = unknown> =
 
 export type ResponseMiddleware = (
   response: GraphQLClientResponse<unknown> | ClientError | Error,
-  request: RequestExtendedInit,
+  request: RequestInitExtended,
 ) => MaybePromise<void>
 
 export type RequestMiddleware<V extends Variables = Variables> = (
-  request: RequestExtendedInit<V>,
-) => RequestExtendedInit | Promise<RequestExtendedInit>
+  request: RequestInitExtended<V>,
+) => RequestInitExtended | Promise<RequestInitExtended>
 
-export type RequestExtendedInit<V extends Variables = Variables> = RequestInit & {
+export type RequestInitExtended<V extends Variables = Variables> = RequestInit & {
   url: string
   operationName?: string
   variables?: V
