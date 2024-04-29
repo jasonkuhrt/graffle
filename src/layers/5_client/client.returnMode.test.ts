@@ -4,7 +4,6 @@ import { db } from '../../../tests/_/db.js'
 import { Graffle } from '../../../tests/_/schema/generated/__.js'
 import { schema } from '../../../tests/_/schema/schema.js'
 import { __typename } from '../1_Schema/_.js'
-import { create } from './client.js'
 
 // dprint-ignore
 describe('default (data)', () => {
