@@ -86,8 +86,6 @@ export type CreatePrefilled = <$Name extends GlobalRegistry.SchemaNames>(name: $
 >
 
 export const createPrefilled: CreatePrefilled = (name, schemaIndex) => {
-  // eslint-disable-next-line
-  // @ts-ignore ID
   return (input) => create({ ...input, name, schemaIndex }) as any
 }
 
