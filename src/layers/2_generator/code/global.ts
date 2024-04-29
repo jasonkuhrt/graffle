@@ -22,11 +22,12 @@ export const generateGlobal = (config: Config) => {
 
   code.push(`
     declare global {
-      interface NamedSchemas {
-        ${config.name}: {
-          index: Index
-          customScalars: {
-            ${
+      export namespace GraphQLRequestTypes {
+        export interface Schemas {
+          ${config.name}: {
+            index: Index
+            customScalars: {
+              ${
     config.typeMapByKind.GraphQLScalarTypeCustom
       .map((_) => {
         return `${_.name}: ${
@@ -34,9 +35,10 @@ export const generateGlobal = (config: Config) => {
         }`
       }).join(`\n`)
   }
-        }
-        featureOptions: {
-          schemaErrors: ${config.options.errorTypeNamePattern ? `true` : `false`}
+          }
+          featureOptions: {
+            schemaErrors: ${config.options.errorTypeNamePattern ? `true` : `false`}
+          }
         }
       }
     }

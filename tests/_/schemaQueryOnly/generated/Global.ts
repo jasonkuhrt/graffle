@@ -1,12 +1,14 @@
 import { Index } from './Index.js'
 
 declare global {
-  interface NamedSchemas {
-    QueryOnly: {
-      index: Index
-      customScalars: {}
-      featureOptions: {
-        schemaErrors: false
+  export namespace GraphQLRequestTypes {
+    export interface Schemas {
+      QueryOnly: {
+        index: Index
+        customScalars: {}
+        featureOptions: {
+          schemaErrors: false
+        }
       }
     }
   }

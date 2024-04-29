@@ -4,7 +4,6 @@ import SchemaBuilder from '@pothos/core'
 import SimpleObjectsPlugin from '@pothos/plugin-simple-objects'
 import { DateTimeISOResolver } from 'graphql-scalars'
 import { db } from '../db.js'
-import type { ID } from './generated/Scalar.js'
 
 const builder = new SchemaBuilder<{
   DefaultFieldNullability: true
@@ -80,10 +79,6 @@ builder.mutationType({
     idNonNull: t.id({ nullable: false, resolve: () => db.id1 }),
   }),
 })
-
-interface Interface {
-  id: ID
-}
 
 const Interface = builder.simpleInterface(`Interface`, {
   fields: t => ({
@@ -422,6 +417,14 @@ builder.queryType({
     result: t.field({
       args: { case: t.arg({ type: ResultCase, required: true }) },
       type: Result,
+      resolve: (_, args) => {
+        return db[args.case]
+      },
+    }),
+    resultNonNull: t.field({
+      args: { case: t.arg({ type: ResultCase, required: true }) },
+      type: Result,
+      nullable: false, // the differenece between null & non-null revealed errors we test for now.
       resolve: (_, args) => {
         return db[args.case]
       },

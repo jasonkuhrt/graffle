@@ -47,6 +47,7 @@ export interface Index {
     rootResultFields: {
       Query: {
         result: 'result'
+        resultNonNull: 'resultNonNull'
       }
       Mutation: {}
       Subscription: {}
