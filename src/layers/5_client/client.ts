@@ -45,6 +45,8 @@ type InputForSchema2<$Name extends GlobalRegistry.SchemaNames> = $Name extends a
     name?: $Name
     schema: URL | string | GraphQLSchema
     headers?: HeadersInit
+    // todo way to hide Relay input pattern of nested input
+    // elideInputKey: true,
     /**
      * Used internally for several functions.
      *
