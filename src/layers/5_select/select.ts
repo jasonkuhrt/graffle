@@ -29,6 +29,8 @@ type TypeSelectionSets<$Index extends Schema.Index> =
 
 type Create = <$Name extends GlobalRegistry.SchemaNames>(
   name: $Name,
+  // eslint-disable-next-line
+  // @ts-ignore passes after generation
 ) => TypeSelectionSets<GlobalRegistry.GetSchemaIndexOrDefault<$Name>>
 
 export const create: Create = (_name) => {

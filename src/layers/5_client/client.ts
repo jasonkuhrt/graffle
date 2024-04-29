@@ -73,17 +73,21 @@ export type Input<$Schema extends GlobalRegistry.SchemaList> = {
 } & InputPrefilled<$Schema>
 
 export type CreatePrefilled = <$Name extends GlobalRegistry.SchemaNames>(name: $Name, schemaIndex: Schema.Index) => <
+  // eslint-disable-next-line
+  // @ts-ignore passes after generation
   $Input extends InputPrefilled<GlobalRegistry.Schemas[$Name]>,
 >(
   input: $Input,
 ) => Client<
+  // eslint-disable-next-line
+  // @ts-ignore passes after generation
   GlobalRegistry.GetSchemaIndexOrDefault<$Name>,
   ApplyInputDefaults<{ returnMode: $Input['returnMode'] }>
 >
 
 export const createPrefilled: CreatePrefilled = (name, schemaIndex) => {
   // @ts-expect-error ID
-  return (input) => create({ ...input, name, schemaIndex })
+  return (input) => create({ ...input, name, schemaIndex }) as any
 }
 
 type Create = <
@@ -91,14 +95,19 @@ type Create = <
 >(
   input: $Input,
 ) => Client<
+  // eslint-disable-next-line
+  // @ts-ignore passes after generation
   GlobalRegistry.GetSchemaIndexOrDefault<$Input['name']>,
   ApplyInputDefaults<{ returnMode: $Input['returnMode'] }>
 >
 
 // export const create = <$Input extends Input>(
 export const create: Create = (
-  input,
+  input_,
 ) => {
+  // eslint-disable-next-line
+  // @ts-ignore passes after generation
+  const input = input_ as Input<any>
   // const parentInput = input
   /**
    * @remarks Without generation the type of returnMode can be `ReturnModeTypeBase` which leads

@@ -32,14 +32,16 @@ export namespace GlobalRegistry {
   export type HasSchemaErrorsViaName<$Name extends SchemaNames> =
     // todo use conditional types?
     // eslint-disable-next-line
-    // @ts-ignore populated after generation
+    // @ts-ignore passes after generation
     GraphQLRequestTypes.Schemas[$Name]['featureOptions']['schemaErrors']
 
   // eslint-disable-next-line
-  // @ts-ignore populated after generation
+  // @ts-ignore passes after generation
   export type GetSchemaIndex<$Name extends SchemaNames> = GraphQLRequestTypes.Schemas[$Name]['index']
 
-  export type SchemaIndexDefault = GetSchemaIndex<'default'>
+  // eslint-disable-next-line
+  // @ts-ignore passes after generation
+  export type SchemaIndexDefault = GetSchemaIndex<DefaultSchemaName>
 
   export type GetSchemaIndexOrDefault<$Name extends SchemaNames | undefined> = $Name extends SchemaNames
     ? GetSchemaIndex<$Name>
