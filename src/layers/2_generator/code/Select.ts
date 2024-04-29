@@ -11,12 +11,16 @@ export const { generate: generateSelect, moduleName: moduleNameSelect } = create
     code.push(`import { SelectionSet, ResultSet } from '${config.libraryPaths.schema}'`)
     code.push(``)
 
-    code.push(title(`Runtime`))
-    code.push(`import { createSelect } from '${config.libraryPaths.client}'`)
-    code.push(`export const Select = createSelect('default')`)
-    code.push(``)
-
-    code.push(typeTitle(config, `Root`))
+    code.push(
+      title(`Runtime`),
+      `import { createSelect } from '${config.libraryPaths.client}'`,
+      `export const Select = createSelect('default')`,
+      ``,
+      title(`Buildtime`),
+      ``,
+      `export namespace Select {`,
+      typeTitle(config, `Root`),
+    )
 
     code.push(...config.typeMapByKind.GraphQLRootType.map((type) => {
       return `export type ${type.name}<$SelectionSet extends SelectionSet.Root<Index, '${type.name}'>> = ResultSet.Root<$SelectionSet, Index, '${type.name}'>\n`
@@ -40,6 +44,8 @@ export const { generate: generateSelect, moduleName: moduleNameSelect } = create
     code.push(...config.typeMapByKind.GraphQLInterfaceType.map((type) => {
       return `export type ${type.name}<$SelectionSet extends SelectionSet.Interface<Index['interfaces']['${type.name}'], Index>> = ResultSet.Interface<$SelectionSet, Index['interfaces']['${type.name}'], Index>\n`
     }))
+
+    code.push(`}`) // namespace Select
 
     return code.join(`\n`)
   },

@@ -8,7 +8,7 @@ export const { generate: generate_, moduleName: moduleName_ } = createCodeGenera
   (_config) => {
     const code: string[] = []
     code.push(
-      `export * as Select from './${moduleNameSelect}.js'`,
+      `export { Select } from './${moduleNameSelect}.js'`,
       `export { isError } from './${moduleNameError}.js'`,
       `export { create } from './${moduleNameClient}.js'`,
     )

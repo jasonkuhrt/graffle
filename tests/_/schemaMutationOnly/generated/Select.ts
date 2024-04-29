@@ -7,26 +7,31 @@ import { Index } from './Index.js'
 import { createSelect } from '../../../../src/entrypoints/alpha/client.js'
 export const Select = createSelect('default')
 
-// Root Types
-// ----------
+// Buildtime
+// ---------
 
-export type Mutation<$SelectionSet extends SelectionSet.Root<Index, 'Mutation'>> = ResultSet.Root<
-  $SelectionSet,
-  Index,
-  'Mutation'
->
+export namespace Select {
+  // Root Types
+  // ----------
 
-// Object Types
-// ------------
+  export type Mutation<$SelectionSet extends SelectionSet.Root<Index, 'Mutation'>> = ResultSet.Root<
+    $SelectionSet,
+    Index,
+    'Mutation'
+  >
 
-// -- None --
+  // Object Types
+  // ------------
 
-// Union Types
-// -----------
+  // -- None --
 
-// -- None --
+  // Union Types
+  // -----------
 
-// Interface Types
-// ---------------
+  // -- None --
 
-// -- None --
+  // Interface Types
+  // ---------------
+
+  // -- None --
+}
