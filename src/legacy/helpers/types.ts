@@ -1,7 +1,7 @@
 import type { TypedDocumentNode } from '@graphql-typed-document-node/core'
 import type { GraphQLError } from 'graphql/error/GraphQLError.js'
 import type { DocumentNode } from 'graphql/language/ast.js'
-import type { MaybeLazy, RemoveIndex } from '../../lib/prelude.js'
+import type { MaybeLazy, MaybePromise, RemoveIndex } from '../../lib/prelude.js'
 import type { ClientError } from '../classes/ClientError.js'
 
 export type Fetch = typeof fetch
@@ -93,7 +93,7 @@ export type RequestOptions<V extends Variables = Variables, T = unknown> =
 export type ResponseMiddleware = (
   response: GraphQLClientResponse<unknown> | ClientError | Error,
   request: RequestExtendedInit,
-) => void
+) => MaybePromise<void>
 
 export type RequestMiddleware<V extends Variables = Variables> = (
   request: RequestExtendedInit<V>,
