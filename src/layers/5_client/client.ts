@@ -33,33 +33,18 @@ export type Client<$Index extends Schema.Index, $Config extends Config> =
     }
   & GetRootTypeMethods<$Config, $Index>
 
-interface HookInputDocumentEncode {
+export interface HookInputDocumentEncode {
   rootIndex: Object$2
   documentObject: GraphQLObjectSelection
 }
 
-type InputForSchema2<$Name extends GlobalRegistry.SchemaNames> = $Name extends any ? {
-    /**
-     * @defaultValue 'default'
-     */
-    name?: $Name
+export type InputPrefilled<$Schema extends GlobalRegistry.SchemaList> = $Schema extends any ? {
     schema: URL | string | GraphQLSchema
     headers?: HeadersInit
     // todo way to hide Relay input pattern of nested input
-    // elideInputKey: true,
-    /**
-     * Used internally for several functions.
-     *
-     * When custom scalars are being used, this runtime schema is used to
-     * encode/decode them before/after your application sends/receives them.
-     *
-     * When using root type field methods, this runtime schema is used to assist how arguments on scalars versus objects
-     * are constructed into the sent GraphQL document.
-     */
-    schemaIndex: Schema.Index
     returnMode?:
       | ReturnModeTypeBase
-      | (GlobalRegistry.HasSchemaErrors<$Name> extends true ? ReturnModeTypeSuccessData : never)
+      | (GlobalRegistry.HasSchemaErrors<$Schema> extends true ? ReturnModeTypeSuccessData : never)
     hooks?: {
       documentEncode: (
         input: HookInputDocumentEncode,
@@ -69,8 +54,40 @@ type InputForSchema2<$Name extends GlobalRegistry.SchemaNames> = $Name extends a
   }
   : never
 
+export type Input<$Schema extends GlobalRegistry.SchemaList> = {
+  /**
+   * @defaultValue 'default'
+   */
+  name?: $Schema['index']['name']
+  // elideInputKey: true,
+  /**
+   * Used internally for several functions.
+   *
+   * When custom scalars are being used, this runtime schema is used to
+   * encode/decode them before/after your application sends/receives them.
+   *
+   * When using root type field methods, this runtime schema is used to assist how arguments on scalars versus objects
+   * are constructed into the sent GraphQL document.
+   */
+  schemaIndex: Schema.Index
+} & InputPrefilled<$Schema>
+
+export type CreatePrefilled = <$Name extends GlobalRegistry.SchemaNames>(name: $Name, schemaIndex: Schema.Index) => <
+  $Input extends InputPrefilled<GlobalRegistry.Schemas[$Name]>,
+>(
+  input: $Input,
+) => Client<
+  GlobalRegistry.GetSchemaIndexOrDefault<$Name>,
+  ApplyInputDefaults<{ returnMode: $Input['returnMode'] }>
+>
+
+export const createPrefilled: CreatePrefilled = (name, schemaIndex) => {
+  // @ts-expect-error ID
+  return (input) => create({ ...input, name, schemaIndex })
+}
+
 type Create = <
-  $Input extends InputForSchema2<GlobalRegistry.SchemaNames>,
+  $Input extends Input<GlobalRegistry.SchemaList>,
 >(
   input: $Input,
 ) => Client<

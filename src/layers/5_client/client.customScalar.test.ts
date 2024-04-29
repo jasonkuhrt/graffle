@@ -1,15 +1,14 @@
 /* eslint-disable */
 import { describe, expect, test } from 'vitest'
 import { db } from '../../../tests/_/db.js'
-import { $Index as schemaIndex } from '../../../tests/_/schema/generated/SchemaRuntime.js'
+import { Graffle } from '../../../tests/_/schema/generated/__.js'
 import { setupMockServer } from '../../../tests/legacy/__helpers.js'
-import { create } from './client.js'
 
 const ctx = setupMockServer()
 const date0Encoded = db.date0.toISOString()
 const date1Encoded = db.date1.toISOString()
 
-const client = () => create({ schema: ctx.url, schemaIndex })
+const client = () => Graffle.create({ schema: ctx.url })
 
 describe(`output`, () => {
   test(`query field`, async () => {

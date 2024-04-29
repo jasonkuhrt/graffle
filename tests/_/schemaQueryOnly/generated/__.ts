@@ -1,1 +1,1 @@
-export * as Graffle from './_.js'
+export * as QueryOnly from './_.js'

@@ -1,26 +1,28 @@
 import { describe, expectTypeOf, test } from 'vitest'
+import { Graffle } from '../../../tests/_/schema/generated/__.js'
 import * as Schema from '../../../tests/_/schema/schema.js'
+import { MutationOnly } from '../../../tests/_/schemaMutationOnly/generated/__.js'
 import * as SchemaMutationOnly from '../../../tests/_/schemaMutationOnly/schema.js'
+import { QueryOnly } from '../../../tests/_/schemaQueryOnly/generated/__.js'
 import * as SchemaQueryOnly from '../../../tests/_/schemaQueryOnly/schema.js'
-import { create } from './client.js'
 
-const client = create({ schema: Schema.schema, schemaIndex: Schema.$Index })
+const graffle = Graffle.create({ schema: Schema.schema })
 
 test(`requires input`, () => {
   // @ts-expect-error missing input
-  client.document()
+  graffle.document()
   // @ts-expect-error empty object
-  client.document({})
+  graffle.document({})
 })
 
 describe(`input`, () => {
   test(`document with one query`, () => {
-    const run = client.document({ foo: { query: { id: true } } }).run
+    const run = graffle.document({ foo: { query: { id: true } } }).run
     expectTypeOf(run).toMatchTypeOf<(...params: ['foo'] | [] | [undefined]) => Promise<any>>()
   })
 
   test(`document with two queries`, () => {
-    const run = client.document({
+    const run = graffle.document({
       foo: { query: { id: true } },
       bar: { query: { id: true } },
     }).run
@@ -28,22 +30,18 @@ describe(`input`, () => {
   })
 
   test(`root operation not available if it is not in schema`, () => {
-    const clientQueryOnly = create({
-      name: `QueryOnly`,
+    const queryOnly = QueryOnly.create({
       schema: SchemaQueryOnly.schema,
-      schemaIndex: SchemaQueryOnly.$Index,
     })
-    clientQueryOnly.document({
+    queryOnly.document({
       foo: { query: { id: true } },
       // @ts-expect-error mutation not in schema
       bar: { mutation: { id: true } },
     })
-    const clientMutationOnly = create({
-      name: `MutationOnly`,
+    const mutationOnly = MutationOnly.create({
       schema: SchemaMutationOnly.schema,
-      schemaIndex: SchemaMutationOnly.$Index,
     })
-    clientMutationOnly.document({
+    mutationOnly.document({
       // @ts-expect-error query not in schema
       foo: { query: { id: true } },
       bar: { mutation: { id: true } },
@@ -54,20 +52,20 @@ describe(`input`, () => {
 describe(`document(...).run()`, () => {
   test(`document with one query`, () => {
     {
-      const result = client.document({ x: { query: { id: true } } }).run()
+      const result = graffle.document({ x: { query: { id: true } } }).run()
       expectTypeOf(result).resolves.toEqualTypeOf<{ id: string | null }>()
     }
     {
-      const result = client.document({ x: { query: { id: true } } }).run(`x`)
+      const result = graffle.document({ x: { query: { id: true } } }).run(`x`)
       expectTypeOf(result).resolves.toEqualTypeOf<{ id: string | null }>()
     }
     {
-      const result = client.document({ x: { query: { id: true } } }).run(undefined)
+      const result = graffle.document({ x: { query: { id: true } } }).run(undefined)
       expectTypeOf(result).resolves.toEqualTypeOf<{ id: string | null }>()
     }
   })
   test(`document with two queries`, () => {
-    const result = client.document({
+    const result = graffle.document({
       foo: { query: { id: true } },
       bar: { query: { id: true } },
     }).run(`foo`)
@@ -78,15 +76,15 @@ describe(`document(...).run()`, () => {
 describe(`document(...).runOrThrow()`, () => {
   describe(`query result field`, () => {
     test(`with __typename`, () => {
-      const result = client.document({ x: { query: { resultNonNull: { __typename: true } } } }).runOrThrow()
+      const result = graffle.document({ x: { query: { resultNonNull: { __typename: true } } } }).runOrThrow()
       expectTypeOf(result).resolves.toEqualTypeOf<{ resultNonNull: { __typename: 'Object1' } }>()
     })
     test(`without __typename`, () => {
-      const result = client.document({ x: { query: { resultNonNull: {} } } }).runOrThrow()
+      const result = graffle.document({ x: { query: { resultNonNull: {} } } }).runOrThrow()
       expectTypeOf(result).resolves.toEqualTypeOf<{ resultNonNull: { __typename: 'Object1' } }>()
     })
     test(`multiple via alias`, () => {
-      const result = client.document({ x: { query: { resultNonNull: {}, resultNonNull_as_x: {} } } }).runOrThrow()
+      const result = graffle.document({ x: { query: { resultNonNull: {}, resultNonNull_as_x: {} } } }).runOrThrow()
       expectTypeOf(result).resolves.toEqualTypeOf<
         { resultNonNull: { __typename: 'Object1' }; x: { __typename: 'Object1' } }
       >()

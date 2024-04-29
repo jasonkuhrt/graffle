@@ -6,6 +6,7 @@ import type { TypeMapByKind } from '../../lib/graphql.js'
 import { getTypeMapByKind } from '../../lib/graphql.js'
 import { generate_ } from './code/_.js'
 import { generate__ } from './code/__.js'
+import { generateClient } from './code/Client.js'
 import { generateError } from './code/Error.js'
 import { generateGlobal } from './code/global.js'
 import { generateIndex } from './code/Index.js'
@@ -74,6 +75,8 @@ export interface Config {
   }
 }
 
+export const defaultName = `default`
+
 export const resolveOptions = (input: Input): Config => {
   const errorTypeNamePattern = input.options?.errorTypeNamePattern ?? null
   const schema = buildSchema(input.schemaSource)
@@ -82,7 +85,7 @@ export const resolveOptions = (input: Input): Config => {
     ? Object.values(typeMapByKind.GraphQLObjectType).filter(_ => _.name.match(errorTypeNamePattern))
     : []
   return {
-    name: input.name ?? `default`,
+    name: input.name ?? defaultName,
     schema,
     error: {
       enabled: Boolean(errorTypeNamePattern),
@@ -125,6 +128,7 @@ export const generateCode = (input: Input) => {
   return [
     generate__,
     generate_,
+    generateClient,
     generateGlobal,
     generateError,
     generateIndex,
