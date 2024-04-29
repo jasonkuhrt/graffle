@@ -1,26 +1,26 @@
-import type { Config } from './generateCode.js'
+import { createCodeGenerator } from '../createCodeGenerator.js'
 import { moduleNameIndex } from './Index.js'
 
-export const moduleNameGlobal = `Global`
+export const { moduleName: moduleNameGlobal, generate: generateGlobal } = createCodeGenerator(
+  `Global`,
+  (config) => {
+    const StandardScalarNamespace = `StandardScalar`
+    const needsDefaultCustomScalarImplementation = config.typeMapByKind.GraphQLScalarTypeCustom.length > 0
+      && !config.options.customScalars
 
-export const generateGlobal = (config: Config) => {
-  const StandardScalarNamespace = `StandardScalar`
-  const needsDefaultCustomScalarImplementation = config.typeMapByKind.GraphQLScalarTypeCustom.length > 0
-    && !config.options.customScalars
+    const code: string[] = []
 
-  const code: string[] = []
-
-  code.push(
-    `import { Index } from './${moduleNameIndex}.js'`,
-  )
-
-  if (config.typeMapByKind.GraphQLScalarTypeCustom.length > 0) {
     code.push(
-      `import type * as CustomScalar from '${config.importPaths.customScalarCodecs}'`,
+      `import { Index } from './${moduleNameIndex}.js'`,
     )
-  }
 
-  code.push(`
+    if (config.typeMapByKind.GraphQLScalarTypeCustom.length > 0) {
+      code.push(
+        `import type * as CustomScalar from '${config.importPaths.customScalarCodecs}'`,
+      )
+    }
+
+    code.push(`
     declare global {
       export namespace GraphQLRequestTypes {
         export interface Schemas {
@@ -28,13 +28,13 @@ export const generateGlobal = (config: Config) => {
             index: Index
             customScalars: {
               ${
-    config.typeMapByKind.GraphQLScalarTypeCustom
-      .map((_) => {
-        return `${_.name}: ${
-          needsDefaultCustomScalarImplementation ? `${StandardScalarNamespace}.String` : `CustomScalar.${_.name}`
-        }`
-      }).join(`\n`)
-  }
+      config.typeMapByKind.GraphQLScalarTypeCustom
+        .map((_) => {
+          return `${_.name}: ${
+            needsDefaultCustomScalarImplementation ? `${StandardScalarNamespace}.String` : `CustomScalar.${_.name}`
+          }`
+        }).join(`\n`)
+    }
           }
           featureOptions: {
             schemaErrors: ${config.options.errorTypeNamePattern ? `true` : `false`}
@@ -45,8 +45,6 @@ export const generateGlobal = (config: Config) => {
   }
   `)
 
-  return {
-    code: code.join(`\n\n`),
-    moduleName: moduleNameGlobal,
-  }
-}
+    return code.join(`\n\n`)
+  },
+)

@@ -26,9 +26,8 @@ import {
   unwrapToNonNull,
 } from '../../../lib/graphql.js'
 import { entries, values } from '../../../lib/prelude.js'
-import type { Config } from './generateCode.js'
-
-export const moduleNameSchemaBuildtime = `SchemaBuildtime`
+import { createCodeGenerator } from '../createCodeGenerator.js'
+import { type Config } from '../generateCode.js'
 
 const namespaceNames = {
   GraphQLEnumType: `Enum`,
@@ -306,34 +305,34 @@ const renderArgs = (config: Config, args: readonly GraphQLArgument[]) => {
 
 // high level
 
-export const generateSchemaBuildtime = (config: Config) => {
-  let code = ``
+export const { generate: generateSchemaBuildtime, moduleName: moduleNameSchemaBuildtime } = createCodeGenerator(
+  `SchemaBuildtime`,
+  (config: Config) => {
+    let code = ``
 
-  code += `import type * as $ from '${config.libraryPaths.schema}'\n`
-  code += `import type * as $Scalar from './Scalar.ts'\n`
-  code += `\n\n`
+    code += `import type * as $ from '${config.libraryPaths.schema}'\n`
+    code += `import type * as $Scalar from './Scalar.ts'\n`
+    code += `\n\n`
 
-  for (const [name, types] of entries(config.typeMapByKind)) {
-    if (name === `GraphQLScalarType`) continue
-    if (name === `GraphQLScalarTypeCustom`) continue
-    if (name === `GraphQLScalarTypeStandard`) continue
+    for (const [name, types] of entries(config.typeMapByKind)) {
+      if (name === `GraphQLScalarType`) continue
+      if (name === `GraphQLScalarTypeCustom`) continue
+      if (name === `GraphQLScalarTypeStandard`) continue
 
-    const namespaceName = name === `GraphQLRootType` ? `Root` : namespaceNames[name]
-    code += Code.commentSectionTitle(namespaceName)
-    code += Code.export$(
-      Code.namespace(
-        namespaceName,
-        types.length === 0
-          ? `// -- no types --\n`
-          : types
-            .map((_) => dispatchToConcreteRenderer(config, _))
-            .join(`\n\n`),
-      ),
-    )
-  }
+      const namespaceName = name === `GraphQLRootType` ? `Root` : namespaceNames[name]
+      code += Code.commentSectionTitle(namespaceName)
+      code += Code.export$(
+        Code.namespace(
+          namespaceName,
+          types.length === 0
+            ? `// -- no types --\n`
+            : types
+              .map((_) => dispatchToConcreteRenderer(config, _))
+              .join(`\n\n`),
+        ),
+      )
+    }
 
-  return {
-    code,
-    moduleName: moduleNameSchemaBuildtime,
-  }
-}
+    return code
+  },
+)

@@ -4,8 +4,8 @@ import _ from 'json-bigint'
 import fs from 'node:fs/promises'
 import * as Path from 'node:path'
 import { fileExists } from '../../lib/prelude.js'
-import type { OptionsInput } from './code/generateCode.js'
-import { generateCode, type Input as GenerateInput } from './code/generateCode.js'
+import type { OptionsInput } from './generateCode.js'
+import { generateCode, type Input as GenerateInput } from './generateCode.js'
 
 export interface Input {
   name?: string

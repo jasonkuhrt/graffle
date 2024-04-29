@@ -1,6 +1,12 @@
 import { ResultSet, SelectionSet } from '../../../../src/entrypoints/alpha/schema.js'
 import { Index } from './Index.js'
 
+// Runtime
+// -------
+
+import { createSelect } from '../../../../src/entrypoints/alpha/client.js'
+export const Select = createSelect('default')
+
 // Root Types
 // ----------
 

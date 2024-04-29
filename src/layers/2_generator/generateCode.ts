@@ -2,15 +2,17 @@ import type { Formatter } from '@dprint/formatter'
 import type { GraphQLObjectType, GraphQLSchema } from 'graphql'
 import { buildSchema } from 'graphql'
 import * as Path from 'node:path'
-import type { TypeMapByKind } from '../../../lib/graphql.js'
-import { getTypeMapByKind } from '../../../lib/graphql.js'
-import { generateError } from './Error.js'
-import { generateGlobal } from './global.js'
-import { generateIndex } from './Index.js'
-import { generateScalar } from './Scalar.js'
-import { generateSchemaBuildtime } from './SchemaBuildtime.js'
-import { generateRuntimeSchema } from './SchemaRuntime.js'
-import { generateSelect } from './Select.js'
+import type { TypeMapByKind } from '../../lib/graphql.js'
+import { getTypeMapByKind } from '../../lib/graphql.js'
+import { generate_ } from './code/_.js'
+import { generate__ } from './code/__.js'
+import { generateError } from './code/Error.js'
+import { generateGlobal } from './code/global.js'
+import { generateIndex } from './code/Index.js'
+import { generateScalar } from './code/Scalar.js'
+import { generateSchemaBuildtime } from './code/SchemaBuildtime.js'
+import { generateRuntimeSchema } from './code/SchemaRuntime.js'
+import { generateSelect } from './code/Select.js'
 
 export interface OptionsInput {
   name?: string
@@ -28,6 +30,7 @@ export interface OptionsInput {
 export interface Input {
   name?: string
   libraryPaths?: {
+    client?: string
     schema?: string
     scalars?: string
   }
@@ -55,6 +58,7 @@ export interface Config {
     enabled: boolean
   }
   libraryPaths: {
+    client: string
     schema: string
     scalars: string
   }
@@ -88,6 +92,7 @@ export const resolveOptions = (input: Input): Config => {
       customScalarCodecs: input.importPaths?.customScalarCodecs ?? Path.join(process.cwd(), `customScalarCodecs.js`),
     },
     libraryPaths: {
+      client: input.libraryPaths?.client ?? `graphql-request/alpha/client`,
       scalars: input.libraryPaths?.scalars ?? `graphql-request/alpha/schema/scalars`,
       schema: input.libraryPaths?.schema ?? `graphql-request/alpha/schema`,
     },
@@ -118,6 +123,8 @@ export const generateCode = (input: Input) => {
   const config = resolveOptions(input)
 
   return [
+    generate__,
+    generate_,
     generateGlobal,
     generateError,
     generateIndex,

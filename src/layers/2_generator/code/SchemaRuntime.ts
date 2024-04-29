@@ -20,42 +20,41 @@ import {
 } from 'graphql'
 import type { AnyClass, AnyGraphQLOutputField } from '../../../lib/graphql.js'
 import { hasMutation, hasQuery, hasSubscription, unwrapToNamed, unwrapToNonNull } from '../../../lib/graphql.js'
-import type { Config } from './generateCode.js'
+import { createCodeGenerator } from '../createCodeGenerator.js'
+import type { Config } from '../generateCode.js'
 import { moduleNameScalar } from './Scalar.js'
 
-export const moduleNameSchemaRuntime = `SchemaRuntime`
+export const { generate: generateRuntimeSchema, moduleName: moduleNameSchemaRuntime } = createCodeGenerator(
+  `SchemaRuntime`,
+  (
+    config,
+  ) => {
+    const code: string[] = []
 
-export const generateRuntimeSchema = (
-  config: Config,
-) => {
-  const code: string[] = []
-
-  code.push(`/* eslint-disable */\n`)
-  code.push(
-    `
+    code.push(`/* eslint-disable */\n`)
+    code.push(
+      `
       import * as $ from '${config.libraryPaths.schema}'
       import * as $Scalar from './${moduleNameScalar}.js'
     `,
-  )
+    )
 
-  code.push(
-    config.typeMapByKind.GraphQLEnumType.map(type => enum$(config, type)).join(`\n`),
-    config.typeMapByKind.GraphQLInputObjectType.map(type => inputObject(config, type)).join(`\n`),
-    config.typeMapByKind.GraphQLObjectType.map(type => object(config, type)).join(`\n`),
-    config.typeMapByKind.GraphQLUnionType.map(type => union(config, type)).join(`\n`),
-    config.typeMapByKind.GraphQLInterfaceType.map(type => interface$(config, type)).join(`\n`),
-    config.typeMapByKind.GraphQLRootType.map(type => object(config, type)).join(`\n`),
-  )
+    code.push(
+      config.typeMapByKind.GraphQLEnumType.map(type => enum$(config, type)).join(`\n`),
+      config.typeMapByKind.GraphQLInputObjectType.map(type => inputObject(config, type)).join(`\n`),
+      config.typeMapByKind.GraphQLObjectType.map(type => object(config, type)).join(`\n`),
+      config.typeMapByKind.GraphQLUnionType.map(type => union(config, type)).join(`\n`),
+      config.typeMapByKind.GraphQLInterfaceType.map(type => interface$(config, type)).join(`\n`),
+      config.typeMapByKind.GraphQLRootType.map(type => object(config, type)).join(`\n`),
+    )
 
-  code.push(
-    index(config),
-  )
+    code.push(
+      index(config),
+    )
 
-  return {
-    code: code.join(`\n`),
-    moduleName: moduleNameSchemaRuntime,
-  }
-}
+    return code.join(`\n`)
+  },
+)
 
 const index = (config: Config) => {
   // todo input objects for decode/encode input object fields

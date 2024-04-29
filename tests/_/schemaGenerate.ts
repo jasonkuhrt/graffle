@@ -2,8 +2,8 @@ import type { GraphQLSchema } from 'graphql'
 import { printSchema } from 'graphql'
 import fs from 'node:fs/promises'
 import { dirname, join } from 'node:path'
-import type { OptionsInput } from '../../src/layers/2_generator/code/generateCode.js'
 import { generateFiles } from '../../src/layers/2_generator/files.js'
+import type { OptionsInput } from '../../src/layers/2_generator/generateCode.js'
 import { schema as schema } from './schema/schema.js'
 import { schema as schemaMutationOnly } from './schemaMutationOnly/schema.js'
 import { schema as schemaQueryOnly } from './schemaQueryOnly/schema.js'
@@ -22,6 +22,7 @@ const generate = async (
     outputDirPath: join(sourceDirPath, `/generated`),
     code: {
       libraryPaths: {
+        client: `../../../../src/entrypoints/alpha/client.js`,
         schema: `../../../../src/entrypoints/alpha/schema.js`,
         scalars: `../../../../src/layers/1_Schema/Hybrid/types/Scalar/Scalar.js`,
       },

@@ -74,7 +74,7 @@ type Create = <
 >(
   input: $Input,
 ) => Client<
-  GlobalRegistry.GetSchemaIndexOptionally<$Input['name']>,
+  GlobalRegistry.GetSchemaIndexOrDefault<$Input['name']>,
   ApplyInputDefaults<{ returnMode: $Input['returnMode'] }>
 >
 
