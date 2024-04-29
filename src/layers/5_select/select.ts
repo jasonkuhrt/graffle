@@ -1,6 +1,7 @@
 import type { RootTypeName } from '../../lib/graphql.js'
 import type { Exact } from '../../lib/prelude.js'
 import type { Schema } from '../1_Schema/__.js'
+import type { GlobalRegistry } from '../2_generator/globalRegistry.js'
 import type { SelectionSet } from '../3_SelectionSet/__.js'
 
 // dprint-ignore
@@ -36,4 +37,4 @@ const idProxy = new Proxy({}, {
 
 // eslint-disable-next-line
 // @ts-ignore generated types
-export const select: TypeSelectionSets<NamedSchemas['default']['index']> = idProxy
+export const select: TypeSelectionSets<GlobalRegistry.Schemas['default']['index']> = idProxy

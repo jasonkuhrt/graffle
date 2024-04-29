@@ -38,7 +38,7 @@ interface HookInputDocumentEncode {
   documentObject: GraphQLObjectSelection
 }
 
-type InputForSchema<$Name extends GlobalRegistry.SchemaNames> = $Name extends any ? {
+type InputForSchema2<$Name extends GlobalRegistry.SchemaNames> = $Name extends any ? {
     /**
      * @defaultValue 'default'
      */
@@ -67,14 +67,19 @@ type InputForSchema<$Name extends GlobalRegistry.SchemaNames> = $Name extends an
   }
   : never
 
-type Input = InputForSchema<GlobalRegistry.SchemaNames>
-
-export const create = <$Input extends Input>(
+type Create = <
+  $Input extends InputForSchema2<GlobalRegistry.SchemaNames>,
+>(
   input: $Input,
-): Client<
+) => Client<
   GlobalRegistry.GetSchemaIndexOptionally<$Input['name']>,
   ApplyInputDefaults<{ returnMode: $Input['returnMode'] }>
-> => {
+>
+
+// export const create = <$Input extends Input>(
+export const create: Create = (
+  input,
+) => {
   // const parentInput = input
   /**
    * @remarks Without generation the type of returnMode can be `ReturnModeTypeBase` which leads

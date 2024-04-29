@@ -2,8 +2,10 @@ import type { TSError } from '../../lib/TSError.js'
 import type { Schema } from '../1_Schema/__.js'
 
 declare global {
-  // todo some kind of distinct prefix
-  interface NamedSchemas {}
+  export namespace GraphQLRequestTypes {
+    interface Schemas {
+    }
+  }
 }
 
 export type GlobalRegistry = Record<string, {
@@ -15,18 +17,19 @@ export type GlobalRegistry = Record<string, {
 }>
 
 export namespace GlobalRegistry {
-  export type Schemas = NamedSchemas
+  export type Schemas = GraphQLRequestTypes.Schemas
 
   export type DefaultSchemaName = 'default'
 
-  export type SchemaNames = keyof NamedSchemas extends never
+  export type SchemaNames = keyof GraphQLRequestTypes.Schemas extends never
     ? TSError<'SchemaNames', 'No schemas have been registered. Did you run graphql-request generate?'>
-    : keyof NamedSchemas
+    : keyof GraphQLRequestTypes.Schemas
 
-  // todo use conditional types?
-  // eslint-disable-next-line
-  // @ts-ignore populated after generation
-  export type HasSchemaErrors<$Name extends SchemaNames> = NamedSchemas[$Name]['featureOptions']['schemaErrors']
+  export type HasSchemaErrors<$Name extends SchemaNames> =
+    // todo use conditional types?
+    // eslint-disable-next-line
+    // @ts-ignore populated after generation
+    GraphQLRequestTypes.Schemas[$Name]['featureOptions']['schemaErrors']
 
   // todo use conditional types?
   // eslint-disable-next-line
@@ -34,8 +37,8 @@ export namespace GlobalRegistry {
   export type GetSchemaIndexOptionally<$Name extends SchemaNames | undefined> = $Name extends SchemaNames
     // eslint-disable-next-line
     // @ts-ignore populated after generation
-    ? NamedSchemas[$Name]['index']
+    ? GraphQLRequestTypes.Schemas[$Name]['index']
     // eslint-disable-next-line
     // @ts-ignore populated after generation
-    : NamedSchemas['default']['index']
+    : GraphQLRequestTypes.Schemas['default']['index']
 }

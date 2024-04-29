@@ -32,7 +32,7 @@ describe('default is data', () => {
 describe('data', () => {
   const client = create({ schema, schemaIndex, returnMode: 'data' })
   test(`document.run`, async () => {
-    expectTypeOf(client.document({ main: { query: { id: true } } }).run()).resolves.toEqualTypeOf<{ id: string | null }>()
+    expectTypeOf(client.document({ x: { query: { id: true } } }).run()).resolves.toEqualTypeOf<{ id: string | null }>()
   })
   test('query.<fieldMethod>', async () => {
     await expectTypeOf(client.query.__typename()).resolves.toEqualTypeOf<'Query'>()
@@ -78,7 +78,8 @@ describe('successData', () => {
     })
     describe('without explicit __typename', () => {
       test('document',async () => {
-        await expectTypeOf(client.document({x:{query:{result:{$:{case:'Object1'}}}}}).run()).resolves.toEqualTypeOf<{result:{__typename: "Object1"} | null}>()
+        const result = client.document({x:{query:{resultNonNull:{$:{case:'Object1'}}}}}).run()
+        await expectTypeOf(result).resolves.toEqualTypeOf<{resultNonNull:{__typename: "Object1"}}>()
       })
       test('query.<fieldMethod>',async () => {
         await expectTypeOf(client.query.result({$:{case:'Object1'}})).resolves.toEqualTypeOf<{__typename: "Object1"} | null>()
