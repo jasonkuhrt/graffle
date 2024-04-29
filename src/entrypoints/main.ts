@@ -29,3 +29,5 @@ export {
   type Variables,
 }
 export default request
+
+export { RequestInitExtended } from '../legacy/helpers/types.js'
