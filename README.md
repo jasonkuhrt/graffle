@@ -105,8 +105,6 @@ await client.request(document)
   - [Custom JSON Serializer](./examples/configuration-request-json-serializer.ts)
   - [Incremental: Set Endpoint](./examples/configuration-incremental-endpoint.ts)
   - [Incremental: Set Request Headers](./examples/configuration-incremental-request-headers.ts)
-- Community:
-  - [GraphQL Code Generator for typed GraphQL Queries](./examples/community-graphql-code-generator.ts)
 - TypeScript:
   - [Use `TypedDocumentNode`](./examples/typescript-typed-document-node.ts)
 - Other:
