@@ -1,175 +1,174 @@
 /* eslint-disable */
 import { describe, expect, test } from 'vitest'
 import { db } from '../../../tests/_/db.js'
-import { $Index as schemaIndex } from '../../../tests/_/schema/generated/SchemaRuntime.js'
+import { Graffle } from '../../../tests/_/schema/generated/__.js'
 import { schema } from '../../../tests/_/schema/schema.js'
 import { __typename } from '../1_Schema/_.js'
-import { create } from './client.js'
 
 // dprint-ignore
 describe('default (data)', () => {
-  const client = create({ schema, schemaIndex })
+  const graffle = Graffle.create({ schema })
   test(`document`, async () => {
-    await expect(client.document({ main: { query: { id: true } } }).run()).resolves.toEqual({ id: db.id })
+    await expect(graffle.document({ main: { query: { id: true } } }).run()).resolves.toEqual({ id: db.id })
   })
   test(`document.runOrThrow`, async () => {
-    await expect(client.document({ main: { query: { id: true } } }).runOrThrow()).resolves.toEqual({ id: db.id })
+    await expect(graffle.document({ main: { query: { id: true } } }).runOrThrow()).resolves.toEqual({ id: db.id })
   })
   test(`document.runOrThrow error`, async () => {
-    await expect(client.document({ main: { query: { error: true } } }).runOrThrow()).rejects.toEqual(db.errorAggregate)
+    await expect(graffle.document({ main: { query: { error: true } } }).runOrThrow()).rejects.toEqual(db.errorAggregate)
   })
   test('raw', async () => {
-    await expect(client.raw('query main {\nid\n}', {}, 'main')).resolves.toEqual({ data: { id: db.id } })
+    await expect(graffle.raw('query main {\nid\n}', {}, 'main')).resolves.toEqual({ data: { id: db.id } })
   })
   test('query.<fieldMethod>', async () => {
-    await expect(client.query.__typename()).resolves.toEqual('Query')
+    await expect(graffle.query.__typename()).resolves.toEqual('Query')
   })
   test('query.<fieldMethod> error', async () => {
-    await expect(client.query.error()).rejects.toMatchObject(db.errorAggregate)
+    await expect(graffle.query.error()).rejects.toMatchObject(db.errorAggregate)
   })
   test('query.<fieldMethod> error orThrow', async () => {
-    await expect(client.query.errorOrThrow()).rejects.toMatchObject(db.errorAggregate)
+    await expect(graffle.query.errorOrThrow()).rejects.toMatchObject(db.errorAggregate)
   })
   test('query.$batch', async () => {
-    await expect(client.query.$batch({ __typename: true, id: true })).resolves.toEqual({ __typename: 'Query', id: db.id })
+    await expect(graffle.query.$batch({ __typename: true, id: true })).resolves.toEqual({ __typename: 'Query', id: db.id })
   })
   test('query.$batchOrThrow error', async () => {
-    await expect(client.query.$batchOrThrow({ error: true })).rejects.toMatchObject(db.errorAggregate)
+    await expect(graffle.query.$batchOrThrow({ error: true })).rejects.toMatchObject(db.errorAggregate)
   })
   test('mutation.<fieldMethod>', async () => {
-    await expect(client.mutation.__typename()).resolves.toEqual('Mutation')
+    await expect(graffle.mutation.__typename()).resolves.toEqual('Mutation')
   })
   test('mutation.$batch', async () => {
-    await expect(client.mutation.$batch({ __typename: true, id: true })).resolves.toEqual({ __typename: 'Mutation', id: db.id })
+    await expect(graffle.mutation.$batch({ __typename: true, id: true })).resolves.toEqual({ __typename: 'Mutation', id: db.id })
   })
 })
 
 // dprint-ignore
 describe('dataAndErrors', () => {
-  const client = create({ schema, schemaIndex, returnMode: 'dataAndErrors' })
+  const graffle = Graffle.create({ schema, returnMode: 'dataAndErrors' })
   test(`document.run`, async () => {
-    await expect(client.document({ main: { query: { id: true } } }).run()).resolves.toEqual({ id: db.id })
+    await expect(graffle.document({ main: { query: { id: true } } }).run()).resolves.toEqual({ id: db.id })
   })
   test(`document.runOrThrow`, async () => {
-    await expect(client.document({ main: { query: { id: true } } }).runOrThrow()).resolves.toEqual({ id: db.id })
+    await expect(graffle.document({ main: { query: { id: true } } }).runOrThrow()).resolves.toEqual({ id: db.id })
   })
   test(`document.runOrThrow error`, async () => {
-    await expect(client.document({ main: { query: { error: true } } }).runOrThrow()).rejects.toEqual(db.errorAggregate)
+    await expect(graffle.document({ main: { query: { error: true } } }).runOrThrow()).rejects.toEqual(db.errorAggregate)
   })
   test('raw', async () => {
-    await expect(client.raw('query main {\nid\n}', {}, 'main')).resolves.toEqual({ data: { id: db.id } })
+    await expect(graffle.raw('query main {\nid\n}', {}, 'main')).resolves.toEqual({ data: { id: db.id } })
   })
   test('query.<fieldMethod>', async () => {
-    await expect(client.query.__typename()).resolves.toEqual('Query')
+    await expect(graffle.query.__typename()).resolves.toEqual('Query')
   })
   test('query.<fieldMethod> error', async () => {
-    await expect(client.query.error()).resolves.toMatchObject(db.errorAggregate)
+    await expect(graffle.query.error()).resolves.toMatchObject(db.errorAggregate)
   })
   test('query.<fieldMethod> error orThrow', async () => {
-    await expect(client.query.errorOrThrow()).rejects.toMatchObject(db.errorAggregate)
+    await expect(graffle.query.errorOrThrow()).rejects.toMatchObject(db.errorAggregate)
   })
   test('query.$batch', async () => {
-    await expect(client.query.$batch({ __typename: true, id: true })).resolves.toEqual({ __typename: 'Query', id: db.id })
+    await expect(graffle.query.$batch({ __typename: true, id: true })).resolves.toEqual({ __typename: 'Query', id: db.id })
   })
   test('query.$batchOrThrow error', async () => {
-    await expect(client.query.$batchOrThrow({ error: true })).rejects.toMatchObject(db.errorAggregate)
+    await expect(graffle.query.$batchOrThrow({ error: true })).rejects.toMatchObject(db.errorAggregate)
   })
   test('mutation.<fieldMethod>', async () => {
-    await expect(client.mutation.__typename()).resolves.toEqual('Mutation')
+    await expect(graffle.mutation.__typename()).resolves.toEqual('Mutation')
   })
   test('mutation.$batch', async () => {
-    await expect(client.mutation.$batch({ __typename: true, id: true })).resolves.toEqual({ __typename: 'Mutation', id: db.id })
+    await expect(graffle.mutation.$batch({ __typename: true, id: true })).resolves.toEqual({ __typename: 'Mutation', id: db.id })
   })
 })
 
 // dprint-ignore
 describe('successData', () => {
-  const client = create({ schema, schemaIndex, returnMode: 'successData' })
+  const graffle = Graffle.create({ schema, returnMode: 'successData' })
   test(`document.run`, async () => {
-    expect(client.document({ x: { query: { id: true } } }).run()).resolves.toEqual({ id: db.id })
+    expect(graffle.document({ x: { query: { id: true } } }).run()).resolves.toEqual({ id: db.id })
   })
   test(`document.runOrThrow`, async () => {
-    expect(client.document({ main: { query: { id: true } } }).runOrThrow()).resolves.toEqual({ id: db.id })
+    expect(graffle.document({ main: { query: { id: true } } }).runOrThrow()).resolves.toEqual({ id: db.id })
   })
   test('query.<fieldMethod>', async () => {
-    await expect(client.query.__typename()).resolves.toEqual('Query')
+    await expect(graffle.query.__typename()).resolves.toEqual('Query')
   })
   test('query.$batch', async () => {
-    await expect(client.query.$batch({ __typename: true, id: true })).resolves.toEqual({ __typename: 'Query', id: db.id })
+    await expect(graffle.query.$batch({ __typename: true, id: true })).resolves.toEqual({ __typename: 'Query', id: db.id })
   })
   describe('result field', () => {
     test('document.run',async () => {
-      await expect(client.document({x:{query:{result:{$:{case:'Object1'},__typename:true}}}}).run()).resolves.toEqual({result:{__typename: "Object1"}})
+      await expect(graffle.document({x:{query:{result:{$:{case:'Object1'},__typename:true}}}}).run()).resolves.toEqual({result:{__typename: "Object1"}})
     })
     test('query.<fieldMethod>', async () => {
-      await expect(client.query.result({$:{case:'Object1'},__typename:true})).resolves.toEqual({ __typename: "Object1" })
+      await expect(graffle.query.result({$:{case:'Object1'},__typename:true})).resolves.toEqual({ __typename: "Object1" })
     })
     test('query.$batch', async () => {
-      await expect(client.query.$batch({ result:{$:{case:'Object1'},__typename:true} })).resolves.toEqual({result:{__typename: "Object1"}})
+      await expect(graffle.query.$batch({ result:{$:{case:'Object1'},__typename:true} })).resolves.toEqual({result:{__typename: "Object1"}})
     })
     describe('without explicit __typename', () => {
       test('document', async () => {
-        await expect(client.document({x:{query:{result:{$:{case:'Object1'}}}}}).run()).resolves.toEqual({result:{__typename: "Object1"}})
+        await expect(graffle.document({x:{query:{result:{$:{case:'Object1'}}}}}).run()).resolves.toEqual({result:{__typename: "Object1"}})
       })
       test('query.<fieldMethod>', async () => {
-        await expect(client.query.result({$:{case:'Object1'}})).resolves.toEqual({__typename: "Object1"})
+        await expect(graffle.query.result({$:{case:'Object1'}})).resolves.toEqual({__typename: "Object1"})
       })
       test('query.$batch', async () => {
-        await expect(client.query.$batch({ result:{$:{case:'Object1'}} })).resolves.toEqual({result:{__typename: "Object1"}})
+        await expect(graffle.query.$batch({ result:{$:{case:'Object1'}} })).resolves.toEqual({result:{__typename: "Object1"}})
       })
     })
     describe('throws', async () => {
       test('document', async () => {
-        await expect(client.document({x:{query:{result:{$:{case:'ErrorOne'}}}}}).run()).rejects.toEqual(db.ErrorOneError)
+        await expect(graffle.document({x:{query:{result:{$:{case:'ErrorOne'}}}}}).run()).rejects.toEqual(db.ErrorOneError)
       })
       test('query.<fieldMethod>', async () => {
-        await expect(client.query.result({$:{case:'ErrorOne'}})).rejects.toEqual(db.ErrorOneError)
+        await expect(graffle.query.result({$:{case:'ErrorOne'}})).rejects.toEqual(db.ErrorOneError)
       })
       test('query.$batch', async () => {
-        await expect(client.query.$batch({ result:{$:{case:'ErrorOne'}} })).rejects.toEqual(db.ErrorOneError)
+        await expect(graffle.query.$batch({ result:{$:{case:'ErrorOne'}} })).rejects.toEqual(db.ErrorOneError)
       })
       // todo result twice, using aliases, check that aggregate error is thrown
     })
   })
   test(`raw`, async () => {
-    expect(client.raw('query main {\nid\n}', {}, 'main')).resolves.toEqual({data:{id:db.id}})
+    expect(graffle.raw('query main {\nid\n}', {}, 'main')).resolves.toEqual({data:{id:db.id}})
   })
 })
 
 // dprint-ignore
 describe('graphql', () => {
-  const client = create({ schema, schemaIndex, returnMode: 'graphql' })
+  const graffle = Graffle.create({ schema, returnMode: 'graphql' })
   test(`document.run`, async () => {
-    await expect(client.document({ main: { query: { id: true } } }).run()).resolves.toEqual({ data: { id: db.id } }) // dprint-ignore
+    await expect(graffle.document({ main: { query: { id: true } } }).run()).resolves.toEqual({ data: { id: db.id } }) // dprint-ignore
   })
   test(`document.runOrThrow`, async () => {
-    await expect(client.document({ main: { query: { id: true } } }).runOrThrow()).resolves.toEqual({data:{ id: db.id }})
+    await expect(graffle.document({ main: { query: { id: true } } }).runOrThrow()).resolves.toEqual({data:{ id: db.id }})
   })
   test(`document.runOrThrow error`, async () => {
-    await expect(client.document({ main: { query: { error: true } } }).runOrThrow()).rejects.toEqual(db.errorAggregate)
+    await expect(graffle.document({ main: { query: { error: true } } }).runOrThrow()).rejects.toEqual(db.errorAggregate)
   })
   test('raw', async () => {
-    await expect(client.raw('query main {\nid\n}', {}, 'main')).resolves.toEqual({ data: { id: db.id } })
+    await expect(graffle.raw('query main {\nid\n}', {}, 'main')).resolves.toEqual({ data: { id: db.id } })
   })
   test('query.<fieldMethod>', async () => {
-    await expect(client.query.__typename()).resolves.toEqual({ data: { __typename: 'Query' } })
+    await expect(graffle.query.__typename()).resolves.toEqual({ data: { __typename: 'Query' } })
   })
   test('query.<fieldMethod> error', async () => {
-    await expect(client.query.error()).resolves.toMatchObject({ errors:db.errorAggregate['errors'] })
+    await expect(graffle.query.error()).resolves.toMatchObject({ errors:db.errorAggregate['errors'] })
   })
   test('query.<fieldMethod> orThrow error', async () => {
-    await expect(client.query.errorOrThrow()).rejects.toMatchObject(db.errorAggregate)
+    await expect(graffle.query.errorOrThrow()).rejects.toMatchObject(db.errorAggregate)
   })
   test('query.$batch', async () => {
-    await expect(client.query.$batch({ __typename: true, id: true })).resolves.toEqual({ data: { __typename: 'Query', id: db.id } })
+    await expect(graffle.query.$batch({ __typename: true, id: true })).resolves.toEqual({ data: { __typename: 'Query', id: db.id } })
   })
   test('query.$batchOrThrow error', async () => {
-    await expect(client.query.$batchOrThrow({ error: true })).rejects.toMatchObject(db.errorAggregate)
+    await expect(graffle.query.$batchOrThrow({ error: true })).rejects.toMatchObject(db.errorAggregate)
   })
   test('mutation.<fieldMethod>', async () => {
-    await expect(client.mutation.__typename()).resolves.toEqual({ data: { __typename: 'Mutation' } })
+    await expect(graffle.mutation.__typename()).resolves.toEqual({ data: { __typename: 'Mutation' } })
   })
   test('mutation.$batch', async () => {
-    await expect(client.mutation.$batch({ __typename: true, id: true })).resolves.toEqual({ data: { __typename: 'Mutation', id: db.id } })
+    await expect(graffle.mutation.$batch({ __typename: true, id: true })).resolves.toEqual({ data: { __typename: 'Mutation', id: db.id } })
   })
 })

@@ -249,3 +249,5 @@ export function assertObject(v: unknown): asserts v is object {
 export type StringKeyof<T> = keyof T & string
 
 export type MaybePromise<T> = T | Promise<T>
+
+export const capitalizeFirstLetter = (string: string) => string.charAt(0).toUpperCase() + string.slice(1)

@@ -74,7 +74,7 @@ export type CreateSelectionTypename<$Config extends Config, $Index extends Schem
 
 // dprint-ignore
 export type IsNeedSelectionTypename<$Config extends Config, $Index extends Schema.Index> =
-  $Config['returnMode'] extends 'successData' ?   GlobalRegistry.HasSchemaErrors<$Index['name']> extends true ?   true :
+  $Config['returnMode'] extends 'successData' ?   GlobalRegistry.HasSchemaErrorsViaName<$Index['name']> extends true ?   true :
                                                                                                                   false :
                                                   false
 

@@ -1,22 +1,17 @@
 import { test } from 'vitest'
-import { $Index } from '../../../tests/_/schema/generated/SchemaRuntime.js'
+import { Graffle } from '../../../tests/_/schema/generated/__.js'
 import { schema } from '../../../tests/_/schema/schema.js'
-import { create } from './client.js'
+import { QueryOnly } from '../../../tests/_/schemaQueryOnly/generated/__.js'
 
 test(`works`, () => {
-  create({ schemaIndex: $Index, schema, name: `QueryOnly`, returnMode: `graphql` })
-  create({ schemaIndex: $Index, schema, name: `QueryOnly`, returnMode: `data` })
-  create({ schemaIndex: $Index, schema, name: `QueryOnly`, returnMode: `dataAndErrors` })
+  Graffle.create({ schema, returnMode: `graphql` })
+  Graffle.create({ schema, returnMode: `data` })
+  Graffle.create({ schema, returnMode: `dataAndErrors` })
+  Graffle.create({ schema, returnMode: `successData` })
+
+  QueryOnly.create({ schema, returnMode: `graphql` })
+  QueryOnly.create({ schema, returnMode: `data` })
+  QueryOnly.create({ schema, returnMode: `dataAndErrors` })
   // @ts-expect-error bad returnMode
-  create({ schemaIndex: $Index, schema, name: `QueryOnly`, returnMode: `successData` })
-
-  create({ schemaIndex: $Index, schema, name: `default`, returnMode: `graphql` })
-  create({ schemaIndex: $Index, schema, name: `default`, returnMode: `data` })
-  create({ schemaIndex: $Index, schema, name: `default`, returnMode: `dataAndErrors` })
-  create({ schemaIndex: $Index, schema, name: `default`, returnMode: `successData` })
-
-  create({ schemaIndex: $Index, schema, returnMode: `graphql` })
-  create({ schemaIndex: $Index, schema, returnMode: `data` })
-  create({ schemaIndex: $Index, schema, returnMode: `dataAndErrors` })
-  create({ schemaIndex: $Index, schema, returnMode: `successData` })
+  QueryOnly.create({ schema, name: `QueryOnly`, returnMode: `successData` })
 })

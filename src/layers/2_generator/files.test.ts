@@ -3,6 +3,15 @@ import { expect, test } from 'vitest'
 
 test(`schema2`, async () => {
   expect(
+    await readFile(`./tests/_/schema/generated/Client.ts`, `utf8`),
+  ).toMatchSnapshot()
+  expect(
+    await readFile(`./tests/_/schema/generated/__.ts`, `utf8`),
+  ).toMatchSnapshot()
+  expect(
+    await readFile(`./tests/_/schema/generated/_.ts`, `utf8`),
+  ).toMatchSnapshot()
+  expect(
     await readFile(`./tests/_/schema/generated/Error.ts`, `utf8`),
   ).toMatchSnapshot()
   expect(

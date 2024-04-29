@@ -27,7 +27,13 @@ type TypeSelectionSets<$Index extends Schema.Index> =
 				$SelectionSet
 	}
 
-export const create = <$Index extends Schema.Index>(): TypeSelectionSets<$Index> => {
+type Create = <$Name extends GlobalRegistry.SchemaNames>(
+  name: $Name,
+  // eslint-disable-next-line
+  // @ts-ignore passes after generation
+) => TypeSelectionSets<GlobalRegistry.GetSchemaIndexOrDefault<$Name>>
+
+export const create: Create = (_name) => {
   return idProxy as any
 }
 
@@ -37,4 +43,4 @@ const idProxy = new Proxy({}, {
 
 // eslint-disable-next-line
 // @ts-ignore generated types
-export const select: TypeSelectionSets<GlobalRegistry.Schemas['default']['index']> = idProxy
+export const select: TypeSelectionSets<GlobalRegistry.SchemaIndexDefault> = idProxy

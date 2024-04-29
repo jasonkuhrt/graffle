@@ -1,11 +1,11 @@
 import { describe, expect, expectTypeOf, it, test } from 'vitest'
 import type { Index } from '../../../tests/_/schema/schema.js'
-import type * as SchemaQueryOnly from '../../../tests/_/schemaQueryOnly/generated/Index.js'
 import type { SelectionSet } from '../3_SelectionSet/__.js'
 import { create } from './select.js'
 
 describe(`select`, () => {
-  const select = create<Index>()
+  const select = create(`default`)
+
   it(`returns the input for any method name`, () => {
     const s = select as any // eslint-disable-line
     expect(s.anything(1)).toEqual(1) // eslint-disable-line
@@ -20,7 +20,7 @@ describe(`select`, () => {
 })
 
 describe(`create`, () => {
-  const select = create<SchemaQueryOnly.Index>()
+  const select = create(`QueryOnly`)
   test(`does not have root types if not in schema`, () => {
     // fine
     select.Query
