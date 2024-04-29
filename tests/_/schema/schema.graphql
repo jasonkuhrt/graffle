@@ -147,6 +147,7 @@ type Query {
   objectNonNull: Object1!
   objectWithArgs(boolean: Boolean, float: Float, id: ID, int: Int, string: String): Object1
   result(case: Case!): Result
+  resultNonNull(case: Case): Result!
   string: String
   stringWithArgEnum(ABCEnum: ABCEnum): String
   stringWithArgInputObject(input: InputObject): String

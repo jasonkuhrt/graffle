@@ -116,6 +116,12 @@ export namespace Root {
         case: Enum.Case
       }>
     >
+    resultNonNull: $.Field<
+      Union.Result,
+      $.Args<{
+        case: $.Input.Nullable<Enum.Case>
+      }>
+    >
     string: $.Field<$.Output.Nullable<$Scalar.String>, null>
     stringWithArgEnum: $.Field<
       $.Output.Nullable<$Scalar.String>,

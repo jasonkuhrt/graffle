@@ -23,7 +23,7 @@ const generate = async (
     code: {
       libraryPaths: {
         schema: `../../../../src/entrypoints/alpha/schema.js`,
-        scalars: `../../../../src/Schema/Hybrid/types/Scalar/Scalar.js`,
+        scalars: `../../../../src/layers/1_Schema/Hybrid/types/Scalar/Scalar.js`,
       },
     },
     name: input.name,

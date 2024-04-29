@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
+import type { GlobalRegistry } from '../../../../2_generator/globalRegistry.js'
 import type { Codec } from './codec.js'
 import { nativeScalarCodecs } from './nativeScalarCodecs.js'
 
@@ -58,6 +59,12 @@ export const Scalars = {
 }
 
 // todo this mixes scalars from different schemas
-export type Any = String | Int | Boolean | ID | Float | Values<NamedSchemas[keyof NamedSchemas]['customScalars']>
+export type Any =
+  | String
+  | Int
+  | Boolean
+  | ID
+  | Float
+  | Values<GlobalRegistry.Schemas[keyof GlobalRegistry.Schemas]['customScalars']>
 
 type Values<T> = T extends any ? keyof T extends never ? never : T[keyof T] : never

@@ -71,3 +71,27 @@ test(`document with one mutation and one query`, async () => {
   await expect(run(`foo`)).resolves.toEqual({ id: db.id1 })
   await expect(run(`bar`)).resolves.toEqual({ idNonNull: db.id1 })
 })
+
+describe(`document(...).runOrThrow()`, () => {
+  describe(`query result field`, () => {
+    test(`with __typename`, async () => {
+      const result = client.document({ x: { query: { resultNonNull: { $: { case: `ErrorOne` }, __typename: true } } } })
+        .runOrThrow()
+      await expect(result).rejects.toMatchInlineSnapshot(`[Error: Failure on field resultNonNull: ErrorOne]`)
+    })
+    test(`without __typename`, async () => {
+      const result = client.document({ x: { query: { resultNonNull: { $: { case: `ErrorOne` } } } } }).runOrThrow()
+      await expect(result).rejects.toMatchInlineSnapshot(
+        `[Error: Failure on field resultNonNull: ErrorOne]`,
+      )
+    })
+    test(`multiple via alias`, async () => {
+      const result = client.document({
+        x: { query: { resultNonNull: { $: { case: `ErrorOne` } }, resultNonNull_as_x: { $: { case: `ErrorOne` } } } },
+      }).runOrThrow()
+      await expect(result).rejects.toMatchInlineSnapshot(
+        `[ContextualAggregateError: Two or more schema errors in the execution result.]`,
+      )
+    })
+  })
+})

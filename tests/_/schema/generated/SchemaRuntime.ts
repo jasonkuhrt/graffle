@@ -172,6 +172,7 @@ export const Query = $.Object$(`Query`, {
     }),
   ),
   result: $.field($.Output.Nullable(() => Result), $.Args({ case: Case })),
+  resultNonNull: $.field(() => Result, $.Args({ case: $.Input.Nullable(Case) })),
   string: $.field($.Output.Nullable($Scalar.String)),
   stringWithArgEnum: $.field($.Output.Nullable($Scalar.String), $.Args({ ABCEnum: $.Input.Nullable(ABCEnum) })),
   stringWithArgInputObject: $.field(
@@ -247,6 +248,7 @@ export const $Index = {
     rootResultFields: {
       Query: {
         result: 'result' as const,
+        resultNonNull: 'resultNonNull' as const,
       },
       Mutation: {},
       Subscription: {},
