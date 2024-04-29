@@ -1,8 +1,9 @@
 import type { ExecutionResult } from 'graphql'
 import type { GraphQLExecutionResultError } from '../../lib/graphql.js'
-import type { SetProperty } from '../../lib/prelude.js'
+import type { SetProperty, StringKeyof } from '../../lib/prelude.js'
 import type { Schema } from '../1_Schema/__.js'
 import type { GlobalRegistry } from '../2_generator/globalRegistry.js'
+import type { SelectionSet } from '../3_SelectionSet/__.js'
 
 export type ReturnModeType =
   | ReturnModeTypeGraphQL
@@ -76,14 +77,22 @@ export type IsNeedSelectionTypename<$Config extends Config, $Index extends Schem
   $Config['returnMode'] extends 'successData' ?   GlobalRegistry.HasSchemaErrors<$Index['name']> extends true ?   true :
                                                                                                                   false :
                                                   false
+
 export type AugmentRootTypeSelectionWithTypename<
   $Config extends Config,
   $Index extends Schema.Index,
   $RootTypeName extends Schema.RootTypeName,
   $Selection extends object,
 > = IsNeedSelectionTypename<$Config, $Index> extends true ? {
-    [$Key in keyof $Selection]:
+    [$Key in StringKeyof<$Selection>]:
       & $Selection[$Key]
-      & ($Key extends keyof $Index['error']['rootResultFields'][$RootTypeName] ? TypenameSelection : {}) // eslint-disable-line
+      & (IsRootFieldNameAResultField<$Index, $RootTypeName, $Key> extends true ? TypenameSelection : {}) // eslint-disable-line
   }
   : $Selection
+
+type IsRootFieldNameAResultField<
+  $Index extends Schema.Index,
+  $RootTypeName extends Schema.RootTypeName,
+  $FieldName extends string,
+> = SelectionSet.AliasNameOrigin<$FieldName> extends keyof $Index['error']['rootResultFields'][$RootTypeName] ? true
+  : false

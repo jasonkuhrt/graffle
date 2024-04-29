@@ -245,3 +245,5 @@ export function assertArray(v: unknown): asserts v is unknown[] {
 export function assertObject(v: unknown): asserts v is object {
   if (v === null || typeof v !== `object`) throw new Error(`Expected object. Got: ${String(v)}`)
 }
+
+export type StringKeyof<T> = keyof T & string

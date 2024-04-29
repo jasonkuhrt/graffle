@@ -171,6 +171,9 @@ export type ParseAliasExpression<E> =
 
 export type AliasNameOrigin<N> = ParseAliasExpression<N> extends Alias<infer O, any> ? O : N
 
+/**
+ * Resolve the target of an alias or if is not an alias just pass through the name.
+ */
 export type AliasNameTarget<N> = ParseAliasExpression<N> extends Alias<any, infer T> ? T : N
 
 export type ResolveAliasTargets<SelectionSet> = {

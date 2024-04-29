@@ -552,7 +552,7 @@ exports[`alias > Query 1`] = `
 }
 --------------
 {
-  id: x
+  x: id
 }
 "
 `;
@@ -565,8 +565,8 @@ exports[`alias > Query 2`] = `
 }
 --------------
 {
-  id: x
-  id: id2
+  x: id
+  id2: id
 }
 "
 `;
@@ -580,7 +580,7 @@ exports[`alias > Query 3`] = `
 }
 --------------
 {
-  id: x @skip(if: true)
+  x: id @skip(if: true)
 }
 "
 `;
@@ -595,7 +595,7 @@ exports[`alias > Query 4`] = `
 }
 --------------
 {
-  object: x @skip(if: true) {
+  x: object @skip(if: true) {
     id
   }
 }

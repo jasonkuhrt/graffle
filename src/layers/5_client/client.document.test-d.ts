@@ -51,26 +51,45 @@ describe(`input`, () => {
   })
 })
 
-describe(`output`, () => {
-  test(`document with one query`, async () => {
+describe(`document(...).run()`, () => {
+  test(`document with one query`, () => {
     {
-      const result = await client.document({ foo: { query: { id: true } } }).run()
-      expectTypeOf(result).toEqualTypeOf<{ id: string | null }>()
+      const result = client.document({ x: { query: { id: true } } }).run()
+      expectTypeOf(result).resolves.toEqualTypeOf<{ id: string | null }>()
     }
     {
-      const result = await client.document({ foo: { query: { id: true } } }).run(`foo`)
-      expectTypeOf(result).toEqualTypeOf<{ id: string | null }>()
+      const result = client.document({ x: { query: { id: true } } }).run(`x`)
+      expectTypeOf(result).resolves.toEqualTypeOf<{ id: string | null }>()
     }
     {
-      const result = await client.document({ foo: { query: { id: true } } }).run(undefined)
-      expectTypeOf(result).toEqualTypeOf<{ id: string | null }>()
+      const result = client.document({ x: { query: { id: true } } }).run(undefined)
+      expectTypeOf(result).resolves.toEqualTypeOf<{ id: string | null }>()
     }
   })
-  test(`document with two queries`, async () => {
-    const result = await client.document({
+  test(`document with two queries`, () => {
+    const result = client.document({
       foo: { query: { id: true } },
       bar: { query: { id: true } },
     }).run(`foo`)
-    expectTypeOf(result).toEqualTypeOf<{ id: string | null }>()
+    expectTypeOf(result).resolves.toEqualTypeOf<{ id: string | null }>()
+  })
+})
+
+describe(`document(...).runOrThrow()`, () => {
+  describe(`query result field`, () => {
+    test(`with __typename`, () => {
+      const result = client.document({ x: { query: { resultNonNull: { __typename: true } } } }).runOrThrow()
+      expectTypeOf(result).resolves.toEqualTypeOf<{ resultNonNull: { __typename: 'Object1' } }>()
+    })
+    test(`without __typename`, () => {
+      const result = client.document({ x: { query: { resultNonNull: {} } } }).runOrThrow()
+      expectTypeOf(result).resolves.toEqualTypeOf<{ resultNonNull: { __typename: 'Object1' } }>()
+    })
+    test(`multiple via alias`, () => {
+      const result = client.document({ x: { query: { resultNonNull: {}, resultNonNull_as_x: {} } } }).runOrThrow()
+      expectTypeOf(result).resolves.toEqualTypeOf<
+        { resultNonNull: { __typename: 'Object1' }; x: { __typename: 'Object1' } }
+      >()
+    })
   })
 })

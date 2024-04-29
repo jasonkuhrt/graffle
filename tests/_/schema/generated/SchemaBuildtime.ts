@@ -119,7 +119,7 @@ export namespace Root {
     resultNonNull: $.Field<
       Union.Result,
       $.Args<{
-        case: Enum.Case
+        case: $.Input.Nullable<Enum.Case>
       }>
     >
     string: $.Field<$.Output.Nullable<$Scalar.String>, null>

@@ -203,6 +203,9 @@ export const resolveObjectLikeFieldValue = (
         const fieldName = parseClientFieldName(clientFieldName)
         const schemaField = schemaItem.fields[fieldName.actual]
         if (!schemaField) throw new Error(`Field ${clientFieldName} not found in schema object`)
+        /**
+         * Inject __typename field for result fields that are missing it.
+         */
         // dprint-ignore
         if (rootTypeName && context.config.returnMode === `successData` && context.schemaIndex.error.rootResultFields[rootTypeName][fieldName.actual]) {
           (ss as Record<string, boolean>)[`__typename`] = true

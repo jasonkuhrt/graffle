@@ -23,7 +23,8 @@ export const parseClientFieldName = (field: string): FieldName => {
 
 export const toGraphQLFieldName = (fieldName: FieldName) => {
   if (fieldName.alias) {
-    return `${fieldName.actual}: ${fieldName.alias}`
+    // todo test coverage for this, discovered broken, not tested
+    return `${fieldName.alias}: ${fieldName.actual}`
   } else {
     return fieldName.actual
   }

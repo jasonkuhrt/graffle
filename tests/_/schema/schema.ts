@@ -422,11 +422,11 @@ builder.queryType({
       },
     }),
     resultNonNull: t.field({
-      args: { case: t.arg({ type: ResultCase, required: true }) },
+      args: { case: t.arg({ type: ResultCase, required: false }) },
       type: Result,
-      nullable: false, // the differenece between null & non-null revealed errors we test for now.
+      nullable: false,
       resolve: (_, args) => {
-        return db[args.case]
+        return args.case ? db[args.case] : db.Object1
       },
     }),
   }),

@@ -186,60 +186,12 @@ export const create: Create = (
         },
       } as GraphQLObjectSelection
       const result = await rootObjectExecutors[rootTypeName](documentObject)
-      const resultHandled = handleReturn(result)
+      const resultHandled = handleReturn(input.schemaIndex, result, returnMode)
       if (resultHandled instanceof Error) return resultHandled
       return returnMode === `data` || returnMode === `dataAndErrors` || returnMode === `successData`
         // @ts-expect-error make this type safe?
         ? resultHandled[key]
         : resultHandled
-    }
-  }
-
-  const handleReturn = (result: ExecutionResult) => {
-    switch (returnMode) {
-      case `dataAndErrors`:
-      case `successData`:
-      case `data`: {
-        if (result.errors && result.errors.length > 0) {
-          const error = new Errors.ContextualAggregateError(
-            `One or more errors in the execution result.`,
-            {},
-            result.errors,
-          )
-          if (returnMode === `data` || returnMode === `successData`) throw error
-          return error
-        }
-        if (returnMode === `successData`) {
-          if (!isPlainObject(result.data)) throw new Error(`Expected data to be an object.`)
-          const schemaErrors = Object.entries(result.data).map(([rootFieldName, rootFieldValue]) => {
-            // todo do not hardcode root type
-            const isResultField = Boolean(input.schemaIndex.error.rootResultFields.Query[rootFieldName])
-            if (!isResultField) return null
-            if (!isPlainObject(rootFieldValue)) return new Error(`Expected result field to be an object.`)
-            const __typename = rootFieldValue[`__typename`]
-            if (typeof __typename !== `string`) throw new Error(`Expected __typename to be selected and a string.`)
-            const isErrorObject = Boolean(
-              input.schemaIndex.error.objectsTypename[__typename],
-            )
-            if (!isErrorObject) return null
-            // todo extract message
-            return new Error(`Failure on field ${rootFieldName}: ${__typename}`)
-          }).filter((_): _ is Error => _ !== null)
-          if (schemaErrors.length === 1) throw schemaErrors[0]!
-          if (schemaErrors.length > 0) {
-            const error = new Errors.ContextualAggregateError(
-              `One or more schema errors in the execution result.`,
-              {},
-              schemaErrors,
-            )
-            throw error
-          }
-        }
-        return result.data
-      }
-      default: {
-        return result
-      }
     }
   }
 
@@ -262,7 +214,7 @@ export const create: Create = (
             const resultRaw = await rootObjectExecutors[rootTypeName]({
               [rootTypeNameToOperationName[rootTypeName]]: selectionSetOrIndicator,
             })
-            const result = handleReturn(resultRaw)
+            const result = handleReturn(input.schemaIndex, resultRaw, returnMode)
             if (isOrThrow && result instanceof Error) throw result
             // todo consolidate
             // @ts-expect-error fixme
@@ -338,19 +290,26 @@ export const create: Create = (
           operationName,
           // todo variables
         })
-        return handleReturn(result)
+        return handleReturn(input.schemaIndex, result, returnMode)
       }
       return {
         run,
         runOrThrow: async (operationName: string) => {
-          const result = await run(operationName)
-          if (result instanceof Error) throw result
-          // @ts-expect-error fixme
-          if (returnMode === `graphql` && result.errors && result.errors.length > 0) {
-            // @ts-expect-error fixme
-            throw new Errors.ContextualAggregateError(`One or more errors in the execution result.`, {}, result.errors)
-          }
-          return result
+          const documentString = toDocumentString({
+            ...encodeContext,
+            config: {
+              ...encodeContext.config,
+              returnMode: `successData`,
+            },
+          }, documentObject)
+          const result = await executeGraphQLDocument({
+            document: documentString,
+            operationName,
+            // todo variables
+          })
+          // todo refactor...
+          const resultReturn = handleReturn(input.schemaIndex, result, `successData`)
+          return returnMode === `graphql` ? result : resultReturn
         },
       }
     },
@@ -361,4 +320,56 @@ export const create: Create = (
   }
 
   return client
+}
+
+const handleReturn = (schemaIndex: Schema.Index, result: ExecutionResult, returnMode: ReturnModeType) => {
+  switch (returnMode) {
+    case `dataAndErrors`:
+    case `successData`:
+    case `data`: {
+      if (result.errors && result.errors.length > 0) {
+        const error = new Errors.ContextualAggregateError(
+          `One or more errors in the execution result.`,
+          {},
+          result.errors,
+        )
+        if (returnMode === `data` || returnMode === `successData`) throw error
+        return error
+      }
+      if (returnMode === `successData`) {
+        if (!isPlainObject(result.data)) throw new Error(`Expected data to be an object.`)
+        const schemaErrors = Object.entries(result.data).map(([rootFieldName, rootFieldValue]) => {
+          // todo this check would be nice but it doesn't account for aliases right now. To achieve this we would
+          // need to have the selection set available to use and then do a costly analysis for all fields that were aliases.
+          // So costly that we would probably instead want to create an index of them on the initial encoding step and
+          // then make available down stream. Also, note, here, the hardcoding of Query, needs to be any root type.
+          // const isResultField = Boolean(schemaIndex.error.rootResultFields.Query[rootFieldName])
+          // if (!isResultField) return null
+          // if (!isPlainObject(rootFieldValue)) return new Error(`Expected result field to be an object.`)
+          if (!isPlainObject(rootFieldValue)) return null
+          const __typename = rootFieldValue[`__typename`]
+          if (typeof __typename !== `string`) throw new Error(`Expected __typename to be selected and a string.`)
+          const isErrorObject = Boolean(
+            schemaIndex.error.objectsTypename[__typename],
+          )
+          if (!isErrorObject) return null
+          // todo extract message
+          return new Error(`Failure on field ${rootFieldName}: ${__typename}`)
+        }).filter((_): _ is Error => _ !== null)
+        if (schemaErrors.length === 1) throw schemaErrors[0]!
+        if (schemaErrors.length > 0) {
+          const error = new Errors.ContextualAggregateError(
+            `Two or more schema errors in the execution result.`,
+            {},
+            schemaErrors,
+          )
+          throw error
+        }
+      }
+      return result.data
+    }
+    default: {
+      return result
+    }
+  }
 }
