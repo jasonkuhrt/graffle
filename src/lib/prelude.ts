@@ -247,3 +247,5 @@ export function assertObject(v: unknown): asserts v is object {
 }
 
 export type StringKeyof<T> = keyof T & string
+
+export type MaybePromise<T> = T | Promise<T>
