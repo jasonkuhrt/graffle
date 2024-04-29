@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
-import { GlobalRegistry } from '../../../../2_generator/globalRegistry.js'
+import type { GlobalRegistry } from '../../../../2_generator/globalRegistry.js'
 import type { Codec } from './codec.js'
 import { nativeScalarCodecs } from './nativeScalarCodecs.js'
 
