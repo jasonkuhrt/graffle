@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@dprint/formatter':
-        specifier: ^0.2.1
-        version: 0.2.1
+        specifier: ^0.3.0
+        version: 0.3.0
       '@dprint/typescript':
         specifier: ^0.90.4
         version: 0.90.4
@@ -204,8 +204,8 @@ packages:
     cpu: [x64]
     os: [darwin]
 
-  '@dprint/formatter@0.2.1':
-    resolution: {integrity: sha512-GCzgRt2o4mhZLy8L47k2A+q9EMG/jWhzZebE29EqKsxmjDrSfv2VisEj/Q+39OOf04jTkEfB/TRO+IZSyxHdYg==}
+  '@dprint/formatter@0.3.0':
+    resolution: {integrity: sha512-N9fxCxbaBOrDkteSOzaCqwWjso5iAe+WJPsHC021JfHNj2ThInPNEF13ORDKta3llq5D1TlclODCvOvipH7bWQ==}
 
   '@dprint/linux-arm64-glibc@0.45.1':
     resolution: {integrity: sha512-lJ7s/pOQWRJ0mstjZQnVyX2/3QRXZ9cpFHJDZ7e81Y8QSn/iqxTrnK0DPgxUrDG8hYKQmWQdQLU4sP5DKBz0Jg==}
@@ -3249,7 +3249,7 @@ snapshots:
   '@dprint/darwin-x64@0.45.1':
     optional: true
 
-  '@dprint/formatter@0.2.1': {}
+  '@dprint/formatter@0.3.0': {}
 
   '@dprint/linux-arm64-glibc@0.45.1':
     optional: true
