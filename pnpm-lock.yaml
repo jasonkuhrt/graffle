@@ -50,7 +50,7 @@ importers:
         version: 1.0.4
       '@types/node':
         specifier: ^20.12.7
-        version: 20.12.9
+        version: 20.12.10
       '@typescript-eslint/eslint-plugin':
         specifier: ^7.8.0
         version: 7.8.0(@typescript-eslint/parser@7.8.0(eslint@9.2.0)(typescript@5.4.5))(eslint@9.2.0)(typescript@5.4.5)
@@ -128,7 +128,7 @@ importers:
         version: 7.8.0(eslint@9.2.0)(typescript@5.4.5)
       vitest:
         specifier: ^1.5.2
-        version: 1.6.0(@types/node@20.12.9)(happy-dom@14.7.1)
+        version: 1.6.0(@types/node@20.12.10)(happy-dom@14.7.1)
 
 packages:
 
@@ -790,8 +790,8 @@ packages:
   '@types/node@10.17.60':
     resolution: {integrity: sha512-F0KIgDJfy2nA3zMLmWGKxcH2ZVEtCZXHHdOQs2gSaQ27+lNeEfGxzkIw90aXswATX7AZ33tahPbzy6KAfUreVw==}
 
-  '@types/node@20.12.9':
-    resolution: {integrity: sha512-o93r47yu04MHumPBCFg0bMPBMNgtMg3jzbhl7e68z50+BMHmRMGDJv13eBlUgOdc9i/uoJXGMGYLtJV4ReTXEg==}
+  '@types/node@20.12.10':
+    resolution: {integrity: sha512-Eem5pH9pmWBHoGAT8Dr5fdc5rYA+4NAovdM4EktRPVAAiJhmWWfQrA0cFhAbOsQdSfIHjAud6YdkbL69+zSKjw==}
 
   '@types/parse-git-config@3.0.4':
     resolution: {integrity: sha512-jz5eGdk9lBgAd4rMbXTP7MRG7AsGQ8DrXsRumDcXDLClHcpKluislylPVMP/qp90J/LlIrrPZRZIQUflHfrDnQ==}
@@ -3783,21 +3783,21 @@ snapshots:
 
   '@types/accepts@1.3.7':
     dependencies:
-      '@types/node': 20.12.9
+      '@types/node': 20.12.10
 
   '@types/body-parser@1.19.2':
     dependencies:
       '@types/connect': 3.4.38
-      '@types/node': 20.12.9
+      '@types/node': 20.12.10
 
   '@types/body-parser@1.19.5':
     dependencies:
       '@types/connect': 3.4.38
-      '@types/node': 20.12.9
+      '@types/node': 20.12.10
 
   '@types/connect@3.4.38':
     dependencies:
-      '@types/node': 20.12.9
+      '@types/node': 20.12.10
 
   '@types/cors@2.8.12': {}
 
@@ -3820,13 +3820,13 @@ snapshots:
 
   '@types/express-serve-static-core@4.17.31':
     dependencies:
-      '@types/node': 20.12.9
+      '@types/node': 20.12.10
       '@types/qs': 6.9.15
       '@types/range-parser': 1.2.7
 
   '@types/express-serve-static-core@4.19.0':
     dependencies:
-      '@types/node': 20.12.9
+      '@types/node': 20.12.10
       '@types/qs': 6.9.15
       '@types/range-parser': 1.2.7
       '@types/send': 0.17.4
@@ -3865,7 +3865,7 @@ snapshots:
 
   '@types/node@10.17.60': {}
 
-  '@types/node@20.12.9':
+  '@types/node@20.12.10':
     dependencies:
       undici-types: 5.26.5
 
@@ -3873,7 +3873,7 @@ snapshots:
 
   '@types/parse-github-url@1.0.3':
     dependencies:
-      '@types/node': 20.12.9
+      '@types/node': 20.12.10
 
   '@types/qs@6.9.15': {}
 
@@ -3884,12 +3884,12 @@ snapshots:
   '@types/send@0.17.4':
     dependencies:
       '@types/mime': 1.3.5
-      '@types/node': 20.12.9
+      '@types/node': 20.12.10
 
   '@types/serve-static@1.15.7':
     dependencies:
       '@types/http-errors': 2.0.4
-      '@types/node': 20.12.9
+      '@types/node': 20.12.10
       '@types/send': 0.17.4
 
   '@types/unist@2.0.10': {}
@@ -6501,13 +6501,13 @@ snapshots:
       unist-util-stringify-position: 2.0.3
       vfile-message: 2.0.4
 
-  vite-node@1.6.0(@types/node@20.12.9):
+  vite-node@1.6.0(@types/node@20.12.10):
     dependencies:
       cac: 6.7.14
       debug: 4.3.4
       pathe: 1.1.2
       picocolors: 1.0.0
-      vite: 5.2.11(@types/node@20.12.9)
+      vite: 5.2.11(@types/node@20.12.10)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -6518,16 +6518,16 @@ snapshots:
       - supports-color
       - terser
 
-  vite@5.2.11(@types/node@20.12.9):
+  vite@5.2.11(@types/node@20.12.10):
     dependencies:
       esbuild: 0.20.2
       postcss: 8.4.38
       rollup: 4.17.2
     optionalDependencies:
-      '@types/node': 20.12.9
+      '@types/node': 20.12.10
       fsevents: 2.3.3
 
-  vitest@1.6.0(@types/node@20.12.9)(happy-dom@14.7.1):
+  vitest@1.6.0(@types/node@20.12.10)(happy-dom@14.7.1):
     dependencies:
       '@vitest/expect': 1.6.0
       '@vitest/runner': 1.6.0
@@ -6546,11 +6546,11 @@ snapshots:
       strip-literal: 2.1.0
       tinybench: 2.8.0
       tinypool: 0.8.4
-      vite: 5.2.11(@types/node@20.12.9)
-      vite-node: 1.6.0(@types/node@20.12.9)
+      vite: 5.2.11(@types/node@20.12.10)
+      vite-node: 1.6.0(@types/node@20.12.10)
       why-is-node-running: 2.2.2
     optionalDependencies:
-      '@types/node': 20.12.9
+      '@types/node': 20.12.10
       happy-dom: 14.7.1
     transitivePeerDependencies:
       - less
