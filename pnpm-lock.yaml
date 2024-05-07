@@ -119,7 +119,7 @@ importers:
         version: 4.9.3
       type-fest:
         specifier: ^4.18.0
-        version: 4.18.1
+        version: 4.18.2
       typescript:
         specifier: ^5.4.5
         version: 5.4.5
@@ -2904,8 +2904,8 @@ packages:
     resolution: {integrity: sha512-0fr/mIH1dlO+x7TlcMy+bIDqKPsw/70tVyeHW787goQjhmqaZe10uwLujubK9q9Lg6Fiho1KUKDYz0Z7k7g5/g==}
     engines: {node: '>=4'}
 
-  type-fest@4.18.1:
-    resolution: {integrity: sha512-qXhgeNsX15bM63h5aapNFcQid9jRF/l3ojDoDFmekDQEUufZ9U4ErVt6SjDxnHp48Ltrw616R8yNc3giJ3KvVQ==}
+  type-fest@4.18.2:
+    resolution: {integrity: sha512-+suCYpfJLAe4OXS6+PPXjW3urOS4IoP9waSiLuXfLgqZODKw/aWwASvzqE886wA0kQgGy0mIWyhd87VpqIy6Xg==}
     engines: {node: '>=16'}
 
   type-is@1.6.18:
@@ -3473,7 +3473,7 @@ snapshots:
       string-length: 6.0.0
       strip-ansi: 7.1.0
       ts-toolbelt: 9.6.0
-      type-fest: 4.18.1
+      type-fest: 4.18.2
       zod: 3.23.6
 
   '@molt/types@0.2.0':
@@ -6355,7 +6355,7 @@ snapshots:
 
   type-detect@4.0.8: {}
 
-  type-fest@4.18.1: {}
+  type-fest@4.18.2: {}
 
   type-is@1.6.18:
     dependencies:
