@@ -6,9 +6,9 @@ import type { RequestDocument } from './types.js'
  * instead of the entire package (greater than 500KiB) where tree-shaking is not supported.
  * @see https://github.com/jasonkuhrt/graphql-request/pull/543
  */
-import { type DocumentNode, OperationTypeNode } from 'graphql/language/ast.js'
-import { parse } from 'graphql/language/parser.js'
-import { print } from 'graphql/language/printer.js'
+import { type DocumentNode, OperationTypeNode } from 'graphql'
+import { parse } from 'graphql'
+import { print } from 'graphql'
 
 /**
  * helpers

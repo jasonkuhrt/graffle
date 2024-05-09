@@ -1,6 +1,6 @@
 import type { TypedDocumentNode } from '@graphql-typed-document-node/core'
-import type { GraphQLError } from 'graphql/error/GraphQLError.js'
-import type { DocumentNode } from 'graphql/language/ast.js'
+import type { GraphQLError } from 'graphql'
+import type { DocumentNode } from 'graphql'
 import type { MaybeLazy, MaybePromise, RemoveIndex } from '../../lib/prelude.js'
 import type { ClientError } from '../classes/ClientError.js'
 

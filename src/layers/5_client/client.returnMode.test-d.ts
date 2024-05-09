@@ -1,6 +1,6 @@
 /* eslint-disable */
 import { ExecutionResult } from 'graphql'
-import { ObjMap } from 'graphql/jsutils/ObjMap.js'
+import { type ObjMap } from 'graphql/jsutils/ObjMap.js'
 import { describe } from 'node:test'
 import { expectTypeOf, test } from 'vitest'
 import { Graffle } from '../../../tests/_/schema/generated/__.js'

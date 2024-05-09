@@ -6,7 +6,7 @@ import { isPlainObject } from '../../lib/prelude.js'
  * instead of the entire package (greater than 500KiB) where tree-shaking is not supported.
  * @see https://github.com/jasonkuhrt/graphql-request/pull/543
  */
-import type { OperationDefinitionNode } from 'graphql/language/ast.js'
+import type { OperationDefinitionNode } from 'graphql'
 
 /**
  * Clean a GraphQL document to send it via a GET query

@@ -11,7 +11,7 @@ import {
   isListType,
   isNonNullType,
 } from 'graphql'
-import type { ObjMap } from 'graphql/jsutils/ObjMap.js'
+import type { ObjMap } from 'graphql'
 import type { Errors } from './errors/__.js'
 
 export type TypeMapByKind =
