@@ -4,8 +4,7 @@
   "packageManager": "pnpm@9.1.0",
   "type": "module",
   "bin": {
-    "graphql-request": "./build/cli/generate.js",
-    "gr": "./build/cli/generate.js"
+    "graffle": "./build/cli/generate.js"
   },
   "exports": {
     ".": {
