@@ -114,9 +114,9 @@ type Create = <
   input: $Input,
 ) =>
   Client<
+    // eslint-disable-next-line
+    // @ts-ignore passes after generation
     $Input['schemaIndex'] extends Schema.Index
-      // eslint-disable-next-line
-      // @ts-ignore passes after generation
       ? GlobalRegistry.GetSchemaIndexOrDefault<$Input['name']>
       : null,
     ApplyInputDefaults<{ returnMode: $Input['returnMode'] }>
