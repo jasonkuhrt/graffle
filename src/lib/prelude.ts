@@ -1,3 +1,5 @@
+import type { ConditionalSimplifyDeep } from 'type-fest/source/conditional-simplify.js'
+
 /* eslint-disable */
 export type RemoveIndex<T> = {
   [K in keyof T as string extends K ? never : number extends K ? never : K]: T[K]
@@ -180,22 +182,7 @@ export type Values<T> = T[keyof T]
 
 export type GetKeyOr<T, Key, Or> = Key extends keyof T ? T[Key] : Or
 
-import type { ConditionalSimplifyDeep } from 'type-fest/source/conditional-simplify.js'
-
 export type SimplifyDeep<T> = ConditionalSimplifyDeep<T, Function | Iterable<unknown> | Date, object>
-
-import fs from 'node:fs/promises'
-
-export const fileExists = async (path: string) => {
-  return Boolean(
-    await fs.stat(path).catch((_: unknown) => {
-      const error = errorFromMaybeError(_)
-      return `code` in error && typeof error.code === `string` && error.code === `ENOENT`
-        ? null
-        : Promise.reject(error)
-    }),
-  )
-}
 
 export type As<T, U> = U extends T ? U : never
 

@@ -3,9 +3,9 @@ import { getPath } from '@dprint/typescript'
 import _ from 'json-bigint'
 import fs from 'node:fs/promises'
 import * as Path from 'node:path'
-import { fileExists } from '../../lib/prelude.js'
 import type { OptionsInput } from './generateCode.js'
 import { generateCode, type Input as GenerateInput } from './generateCode.js'
+import { fileExists } from './prelude.js'
 
 export interface Input {
   name?: string
