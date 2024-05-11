@@ -117,6 +117,8 @@ type Create = <
     // eslint-disable-next-line
     // @ts-ignore passes after generation
     $Input['schemaIndex'] extends Schema.Index
+       // v-- TypeScript does not understand this type satisfies the Index constraint.
+       // v   It does after generation.
       ? GlobalRegistry.GetSchemaIndexOrDefault<$Input['name']>
       : null,
     ApplyInputDefaults<{ returnMode: $Input['returnMode'] }>
