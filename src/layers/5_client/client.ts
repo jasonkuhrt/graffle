@@ -5,7 +5,6 @@ import { Errors } from '../../lib/errors/__.js'
 import type { SomeExecutionResultWithoutErrors } from '../../lib/graphql.js'
 import { type RootTypeName, rootTypeNameToOperationName, type Variables } from '../../lib/graphql.js'
 import { isPlainObject } from '../../lib/prelude.js'
-import type { Object$2 } from '../1_Schema/__.js'
 import { Schema } from '../1_Schema/__.js'
 import { readMaybeThunk } from '../1_Schema/core/helpers.js'
 import type { GlobalRegistry } from '../2_generator/globalRegistry.js'
@@ -24,53 +23,41 @@ import { toDocumentString } from './document.js'
 import type { GetRootTypeMethods } from './RootTypeMethods.js'
 
 // dprint-ignore
-export type Client<$Index extends Schema.Index, $Config extends Config> =
+export type Client<$Index extends Schema.Index | null, $Config extends Config> =
+  & ClientRaw<$Config>
+  & (
+      $Index extends Schema.Index
+      ? ClientTyped<$Index, $Config>
+      : {} // eslint-disable-line
+    )
+
+type ClientRaw<_$Config extends Config> = {
+  raw: (document: string | DocumentNode, variables?: Variables, operationName?: string) => Promise<ExecutionResult>
+  rawOrThrow: (
+    document: string | DocumentNode,
+    variables?: Variables,
+    operationName?: string,
+  ) => Promise<SomeExecutionResultWithoutErrors>
+}
+
+export type ClientTyped<$Index extends Schema.Index, $Config extends Config> =
   & {
-      // todo test raw
-      raw: (document: string | DocumentNode, variables?:Variables, operationName?:string) => Promise<ExecutionResult>
-      rawOrThrow: (document: string | DocumentNode, variables?:Variables, operationName?:string) => Promise<SomeExecutionResultWithoutErrors>
-      document: DocumentFn<$Config, $Index>
-    }
+    document: DocumentFn<$Config, $Index>
+  }
   & GetRootTypeMethods<$Config, $Index>
 
-export interface HookInputDocumentEncode {
-  rootIndex: Object$2
-  documentObject: GraphQLObjectSelection
+export type InputRaw = {
+  schema: URL | string | GraphQLSchema
+  // todo condition on if schema is NOT GraphQLSchema
+  headers?: HeadersInit
 }
 
 export type InputPrefilled<$Schema extends GlobalRegistry.SchemaList> = $Schema extends any ? {
-    schema: URL | string | GraphQLSchema
-    headers?: HeadersInit
-    // todo way to hide Relay input pattern of nested input
     returnMode?:
       | ReturnModeTypeBase
       | (GlobalRegistry.HasSchemaErrors<$Schema> extends true ? ReturnModeTypeSuccessData : never)
-    hooks?: {
-      documentEncode: (
-        input: HookInputDocumentEncode,
-        fn: (input: HookInputDocumentEncode) => GraphQLObjectSelection,
-      ) => GraphQLObjectSelection
-    }
-  }
+  } & InputRaw
   : never
-
-export type Input<$Schema extends GlobalRegistry.SchemaList> = {
-  /**
-   * @defaultValue 'default'
-   */
-  name?: $Schema['index']['name']
-  // elideInputKey: true,
-  /**
-   * Used internally for several functions.
-   *
-   * When custom scalars are being used, this runtime schema is used to
-   * encode/decode them before/after your application sends/receives them.
-   *
-   * When using root type field methods, this runtime schema is used to assist how arguments on scalars versus objects
-   * are constructed into the sent GraphQL document.
-   */
-  schemaIndex: Schema.Index
-} & InputPrefilled<$Schema>
 
 export type CreatePrefilled = <$Name extends GlobalRegistry.SchemaNames>(name: $Name, schemaIndex: Schema.Index) => <
   // eslint-disable-next-line
@@ -91,25 +78,58 @@ export const createPrefilled: CreatePrefilled = (name, schemaIndex) => {
   return (input) => create({ ...input, name, schemaIndex }) as any
 }
 
+export type Input<$Schema extends GlobalRegistry.SchemaList> = {
+  /**
+   * Used internally.
+   *
+   * When custom scalars are being used, this runtime schema is used to
+   * encode/decode them before/after your application sends/receives them.
+   *
+   * When using root type field methods, this runtime schema is used to assist how arguments on scalars versus objects
+   * are constructed into the sent GraphQL document.
+   */
+  readonly schemaIndex?: Schema.Index | null
+  /**
+   * The schema to use.
+   *
+   * TODO why don't we infer this from the runtime schemaIndex?
+   *
+   * @defaultValue 'default'
+   */
+  name?: $Schema['index']['name']
+  // todo way to hide Relay input pattern of nested input
+  // elideInputKey: true,
+} & InputPrefilled<$Schema>
+
+// type Create = <
+//   $Input extends Input<GlobalRegistry.SchemaList>,
+// >(
+//   input: $Input,
+// ) => $Input['schemaIndex']
+
+// dprint-ignore
 type Create = <
   $Input extends Input<GlobalRegistry.SchemaList>,
 >(
   input: $Input,
-) => Client<
-  // eslint-disable-next-line
-  // @ts-ignore passes after generation
-  GlobalRegistry.GetSchemaIndexOrDefault<$Input['name']>,
-  ApplyInputDefaults<{ returnMode: $Input['returnMode'] }>
->
+) =>
+  Client<
+    // eslint-disable-next-line
+    // @ts-ignore passes after generation
+    $Input['schemaIndex'] extends Schema.Index
+       // v-- TypeScript does not understand this type satisfies the Index constraint.
+       // v   It does after generation.
+      ? GlobalRegistry.GetSchemaIndexOrDefault<$Input['name']>
+      : null,
+    ApplyInputDefaults<{ returnMode: $Input['returnMode'] }>
+  >
 
-// export const create = <$Input extends Input>(
 export const create: Create = (
   input_,
 ) => {
   // eslint-disable-next-line
   // @ts-ignore passes after generation
-  const input = input_ as Input<any>
-  // const parentInput = input
+  const input = input_ as Readonly<Input<any>>
   /**
    * @remarks Without generation the type of returnMode can be `ReturnModeTypeBase` which leads
    * TS to think some errors below are invalid checks because of a non-present member.
@@ -117,20 +137,6 @@ export const create: Create = (
    * so we force cast it as such.
    */
   const returnMode = input.returnMode ?? `data` as ReturnModeType
-  const encodeContext: Context = {
-    schemaIndex: input.schemaIndex,
-    config: {
-      returnMode,
-    },
-  }
-
-  // const runHookable = <$Name extends keyof ExcludeUndefined<Input['hooks']>>(
-  //   name: $Name,
-  //   input: Parameters<ExcludeUndefined<Input['hooks']>[$Name]>[0],
-  //   fn: Parameters<ExcludeUndefined<Input['hooks']>[$Name]>[1],
-  // ) => {
-  //   return parentInput.hooks?.[name](input, fn) ?? fn(input)
-  // }
 
   const executeGraphQLDocument = async (
     { document, variables, operationName }: {
@@ -175,13 +181,14 @@ export const create: Create = (
   }
 
   const executeRootType =
-    (rootTypeName: RootTypeName) => async (selection: GraphQLObjectSelection): Promise<ExecutionResult> => {
-      const rootIndex = input.schemaIndex.Root[rootTypeName]
+    (context: Context, rootTypeName: RootTypeName) =>
+    async (selection: GraphQLObjectSelection): Promise<ExecutionResult> => {
+      const rootIndex = context.schemaIndex.Root[rootTypeName]
       if (!rootIndex) throw new Error(`Root type not found: ${rootTypeName}`)
 
       // todo turn inputs into variables
       const documentString = SelectionSet.Print.rootTypeSelectionSet(
-        encodeContext,
+        context,
         rootIndex,
         // @ts-expect-error fixme
         selection[rootTypeNameToOperationName[rootTypeName]],
@@ -196,7 +203,7 @@ export const create: Create = (
       return { ...result, data: dataDecoded }
     }
 
-  const executeRootTypeField = (rootTypeName: RootTypeName, key: string) => {
+  const executeRootTypeField = (context: Context, rootTypeName: RootTypeName, key: string) => {
     return async (argsOrSelectionSet?: object) => {
       const type = readMaybeThunk(
         // eslint-disable-next-line
@@ -206,7 +213,7 @@ export const create: Create = (
       if (!type) throw new Error(`${rootTypeName} field not found: ${String(key)}`) // eslint-disable-line
       // @ts-expect-error fixme
       const isSchemaScalarOrTypeName = type.kind === `Scalar` || type.kind === `typename` // todo fix type here, its valid
-      const isSchemaHasArgs = Boolean(input.schemaIndex.Root[rootTypeName]?.fields[key]?.args)
+      const isSchemaHasArgs = Boolean(context.schemaIndex.Root[rootTypeName]?.fields[key]?.args)
       const documentObject = {
         [rootTypeNameToOperationName[rootTypeName]]: {
           [key]: isSchemaScalarOrTypeName
@@ -214,8 +221,8 @@ export const create: Create = (
             : argsOrSelectionSet,
         },
       } as GraphQLObjectSelection
-      const result = await rootObjectExecutors[rootTypeName](documentObject)
-      const resultHandled = handleReturn(input.schemaIndex, result, returnMode)
+      const result = await executeRootType(context, rootTypeName)(documentObject)
+      const resultHandled = handleReturn(context.schemaIndex, result, returnMode)
       if (resultHandled instanceof Error) return resultHandled
       return returnMode === `data` || returnMode === `dataAndErrors` || returnMode === `successData`
         // @ts-expect-error make this type safe?
@@ -224,13 +231,7 @@ export const create: Create = (
     }
   }
 
-  const rootObjectExecutors = {
-    Mutation: executeRootType(`Mutation`),
-    Query: executeRootType(`Query`),
-    Subscription: executeRootType(`Subscription`),
-  }
-
-  const createRootTypeMethods = (rootTypeName: RootTypeName) =>
+  const createRootTypeMethods = (context: Context, rootTypeName: RootTypeName) =>
     new Proxy({}, {
       get: (_, key) => {
         if (typeof key === `symbol`) throw new Error(`Symbols not supported.`)
@@ -240,10 +241,10 @@ export const create: Create = (
 
         if (key.startsWith(`$batch`)) {
           return async (selectionSetOrIndicator: GraphQLObjectSelection) => {
-            const resultRaw = await rootObjectExecutors[rootTypeName]({
+            const resultRaw = await executeRootType(context, rootTypeName)({
               [rootTypeNameToOperationName[rootTypeName]]: selectionSetOrIndicator,
             })
-            const result = handleReturn(input.schemaIndex, resultRaw, returnMode)
+            const result = handleReturn(context.schemaIndex, resultRaw, returnMode)
             if (isOrThrow && result instanceof Error) throw result
             // todo consolidate
             // @ts-expect-error fixme
@@ -260,7 +261,7 @@ export const create: Create = (
         } else {
           const fieldName = isOrThrow ? key.slice(0, -7) : key
           return async (argsOrSelectionSet?: object) => {
-            const result = await executeRootTypeField(rootTypeName, fieldName)(argsOrSelectionSet) // eslint-disable-line
+            const result = await executeRootTypeField(context, rootTypeName, fieldName)(argsOrSelectionSet) // eslint-disable-line
             if (isOrThrow && result instanceof Error) throw result
             // todo consolidate
             // eslint-disable-next-line
@@ -295,57 +296,70 @@ export const create: Create = (
       }
       return result
     },
-    document: (documentObject: DocumentObject) => {
-      const run = async (operationName: string) => {
-        // 1. if returnMode is successData OR using orThrow
-        // 2. for each root type key
-        // 3. filter to only result fields
-        // 4. inject __typename selection
-        // if (returnMode === 'successData') {
-        //   Object.values(documentObject).forEach((rootTypeSelection) => {
-        //     Object.entries(rootTypeSelection).forEach(([fieldExpression, fieldValue]) => {
-        //       if (fieldExpression === 'result') {
-        //         // @ts-expect-error fixme
-        //         fieldValue.__typename = true
-        //       }
-        //     })
-        //   })
-        // }
-        // todo this does not support custom scalars
+  }
 
-        const documentString = toDocumentString(encodeContext, documentObject)
-        const result = await executeGraphQLDocument({
-          document: documentString,
-          operationName,
-          // todo variables
-        })
-        return handleReturn(input.schemaIndex, result, returnMode)
-      }
-      return {
-        run,
-        runOrThrow: async (operationName: string) => {
-          const documentString = toDocumentString({
-            ...encodeContext,
-            config: {
-              ...encodeContext.config,
-              returnMode: `successData`,
-            },
-          }, documentObject)
+  if (input.schemaIndex) {
+    const schemaIndex = input.schemaIndex
+    const context: Context = {
+      schemaIndex,
+      config: {
+        returnMode,
+      },
+    }
+
+    Object.assign(client, {
+      document: (documentObject: DocumentObject) => {
+        const run = async (operationName: string) => {
+          // 1. if returnMode is successData OR using orThrow
+          // 2. for each root type key
+          // 3. filter to only result fields
+          // 4. inject __typename selection
+          // if (returnMode === 'successData') {
+          //   Object.values(documentObject).forEach((rootTypeSelection) => {
+          //     Object.entries(rootTypeSelection).forEach(([fieldExpression, fieldValue]) => {
+          //       if (fieldExpression === 'result') {
+          //         // @ts-expect-error fixme
+          //         fieldValue.__typename = true
+          //       }
+          //     })
+          //   })
+          // }
+          // todo this does not support custom scalars
+
+          const documentString = toDocumentString(context, documentObject)
           const result = await executeGraphQLDocument({
             document: documentString,
             operationName,
             // todo variables
           })
-          // todo refactor...
-          const resultReturn = handleReturn(input.schemaIndex, result, `successData`)
-          return returnMode === `graphql` ? result : resultReturn
-        },
-      }
-    },
-    query: createRootTypeMethods(`Query`),
-    mutation: createRootTypeMethods(`Mutation`),
-    // todo
-    // subscription: async () => {},
+          return handleReturn(schemaIndex, result, returnMode)
+        }
+        return {
+          run,
+          runOrThrow: async (operationName: string) => {
+            const documentString = toDocumentString({
+              ...context,
+              config: {
+                ...context.config,
+                returnMode: `successData`,
+              },
+            }, documentObject)
+            const result = await executeGraphQLDocument({
+              document: documentString,
+              operationName,
+              // todo variables
+            })
+            // todo refactor...
+            const resultReturn = handleReturn(schemaIndex, result, `successData`)
+            return returnMode === `graphql` ? result : resultReturn
+          },
+        }
+      },
+      query: createRootTypeMethods(context, `Query`),
+      mutation: createRootTypeMethods(context, `Mutation`),
+      // todo
+      // subscription: async () => {},
+    })
   }
 
   return client
