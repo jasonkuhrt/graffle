@@ -46,13 +46,6 @@ export interface Context {
   schemaIndex: Schema.Index
   config: {
     returnMode: ReturnModeType
-    // typeHooks: {
-    //   /**
-    //    * Control encoding for custom scalars
-    //    * found in inputs.
-    //    */
-    //   customScalar: (v: Schema.Scalar.Scalar) => Schema.Scalar.StandardScalarRuntimeTypes
-    // }
   }
 }
 
