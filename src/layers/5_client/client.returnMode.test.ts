@@ -18,7 +18,7 @@ describe('default (data)', () => {
     await expect(graffle.document({ main: { query: { error: true } } }).runOrThrow()).rejects.toEqual(db.errorAggregate)
   })
   test('raw', async () => {
-    await expect(graffle.raw('query main {\nid\n}', {}, 'main')).resolves.toEqual({ data: { id: db.id } })
+    await expect(graffle.raw({ document: 'query main {\nid\n}', operationName: 'main' })).resolves.toEqual({ data: { id: db.id } })
   })
   test('query.<fieldMethod>', async () => {
     await expect(graffle.query.__typename()).resolves.toEqual('Query')
@@ -56,7 +56,7 @@ describe('dataAndErrors', () => {
     await expect(graffle.document({ main: { query: { error: true } } }).runOrThrow()).rejects.toEqual(db.errorAggregate)
   })
   test('raw', async () => {
-    await expect(graffle.raw('query main {\nid\n}', {}, 'main')).resolves.toEqual({ data: { id: db.id } })
+    await expect(graffle.raw({ document: 'query main {\nid\n}', operationName: 'main' })).resolves.toEqual({ data: { id: db.id } })
   })
   test('query.<fieldMethod>', async () => {
     await expect(graffle.query.__typename()).resolves.toEqual('Query')
@@ -131,7 +131,7 @@ describe('successData', () => {
     })
   })
   test(`raw`, async () => {
-    expect(graffle.raw('query main {\nid\n}', {}, 'main')).resolves.toEqual({data:{id:db.id}})
+    expect(graffle.raw({ document: 'query main {\nid\n}', operationName: 'main' })).resolves.toEqual({data:{id:db.id}})
   })
 })
 
@@ -148,7 +148,7 @@ describe('graphql', () => {
     await expect(graffle.document({ main: { query: { error: true } } }).runOrThrow()).rejects.toEqual(db.errorAggregate)
   })
   test('raw', async () => {
-    await expect(graffle.raw('query main {\nid\n}', {}, 'main')).resolves.toEqual({ data: { id: db.id } })
+    await expect(graffle.raw({ document: 'query main {\nid\n}', operationName: 'main' })).resolves.toEqual({ data: { id: db.id } })
   })
   test('query.<fieldMethod>', async () => {
     await expect(graffle.query.__typename()).resolves.toEqual({ data: { __typename: 'Query' } })

@@ -23,7 +23,7 @@ describe('default is data', () => {
     await expectTypeOf(graffle.query.result({$:{case:'Object1'},__typename:true})).resolves.toEqualTypeOf<{__typename: "Object1"} | {__typename: "ErrorOne"} | {__typename: "ErrorTwo"} | null>()
   })
   test(`raw`, async () => {
-    expectTypeOf(graffle.raw('query main {\nid\n}', {}, 'main')).resolves.toEqualTypeOf<ExecutionResult>()
+    expectTypeOf(graffle.raw({ document:'query main {\nid\n}', operationName: 'main' })).resolves.toEqualTypeOf<ExecutionResult>()
   })
 })
 
@@ -46,7 +46,7 @@ describe('data', () => {
     await expectTypeOf(graffle.query.resultOrThrow({$:{case:'Object1'},__typename:true})).resolves.toEqualTypeOf<{__typename: "Object1"} | null>()
   })
   test(`raw`, async () => {
-    expectTypeOf(graffle.raw('query main {\nid\n}', {}, 'main')).resolves.toEqualTypeOf<ExecutionResult>()
+    expectTypeOf(graffle.raw({ document:'query main {\nid\n}', operationName: 'main' })).resolves.toEqualTypeOf<ExecutionResult>()
   })
 })
 
@@ -89,7 +89,7 @@ describe('successData', () => {
     })
   })
   test(`raw`, async () => {
-    expectTypeOf(graffle.raw('query main {\nid\n}', {}, 'main')).resolves.toEqualTypeOf<ExecutionResult>()
+    expectTypeOf(graffle.raw({ document: 'query main {\nid\n}', operationName: 'main' })).resolves.toEqualTypeOf<ExecutionResult>()
   })
 })
 
@@ -112,7 +112,7 @@ describe('dataAndErrors', () => {
     await expectTypeOf(graffle.query.result({$:{case:'Object1'},__typename:true})).resolves.toEqualTypeOf<{__typename: "Object1"} | {__typename: "ErrorOne"} | {__typename: "ErrorTwo"} | null | GraphQLExecutionResultError>()
   })
   test(`raw`, async () => {
-    expectTypeOf(graffle.raw('query main {\nid\n}', {}, 'main')).resolves.toEqualTypeOf<ExecutionResult>()
+    expectTypeOf(graffle.raw({ document: 'query main {\nid\n}', operationName: 'main' })).resolves.toEqualTypeOf<ExecutionResult>()
   })
 })
 
@@ -141,7 +141,7 @@ describe('graphql', () => {
     await expectTypeOf(graffle.query.result({$:{case:'Object1'},__typename:true})).resolves.toEqualTypeOf<ExecutionResult<{result:{__typename: "Object1"} | {__typename: "ErrorOne"} | {__typename: "ErrorTwo"} | null}>>()
   })
   test(`raw`, async () => {
-    expectTypeOf(graffle.raw('query main {\nid\n}', {}, 'main')).resolves.toEqualTypeOf<ExecutionResult>()
+    expectTypeOf(graffle.raw({ document: 'query main {\nid\n}', operationName: 'main' })).resolves.toEqualTypeOf<ExecutionResult>()
   })
 })
 

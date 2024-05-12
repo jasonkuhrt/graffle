@@ -1,10 +1,11 @@
 import type { ExecutionResult } from 'graphql'
-import { type DocumentNode, execute, graphql, type GraphQLSchema } from 'graphql'
-import request from '../../entrypoints/main.js'
 import { Errors } from '../../lib/errors/__.js'
 import type { SomeExecutionResultWithoutErrors } from '../../lib/graphql.js'
-import { type RootTypeName, rootTypeNameToOperationName, type Variables } from '../../lib/graphql.js'
+import { type RootTypeName, rootTypeNameToOperationName } from '../../lib/graphql.js'
 import { isPlainObject } from '../../lib/prelude.js'
+import type { SchemaInput } from '../0_functions/requestOrExecute.js'
+import { requestOrExecute } from '../0_functions/requestOrExecute.js'
+import type { Input as RequestOrExecuteInput } from '../0_functions/requestOrExecute.js'
 import { Schema } from '../1_Schema/__.js'
 import { readMaybeThunk } from '../1_Schema/core/helpers.js'
 import type { GlobalRegistry } from '../2_generator/globalRegistry.js'
@@ -22,6 +23,14 @@ import type { DocumentFn } from './document.js'
 import { toDocumentString } from './document.js'
 import type { GetRootTypeMethods } from './RootTypeMethods.js'
 
+type RawInput = Omit<RequestOrExecuteInput, 'schema'>
+
+// todo no config needed?
+export type ClientRaw<_$Config extends Config> = {
+  raw: (input: RawInput) => Promise<ExecutionResult>
+  rawOrThrow: (input: RawInput) => Promise<SomeExecutionResultWithoutErrors>
+}
+
 // dprint-ignore
 export type Client<$Index extends Schema.Index | null, $Config extends Config> =
   & ClientRaw<$Config>
@@ -31,15 +40,6 @@ export type Client<$Index extends Schema.Index | null, $Config extends Config> =
       : {} // eslint-disable-line
     )
 
-type ClientRaw<_$Config extends Config> = {
-  raw: (document: string | DocumentNode, variables?: Variables, operationName?: string) => Promise<ExecutionResult>
-  rawOrThrow: (
-    document: string | DocumentNode,
-    variables?: Variables,
-    operationName?: string,
-  ) => Promise<SomeExecutionResultWithoutErrors>
-}
-
 export type ClientTyped<$Index extends Schema.Index, $Config extends Config> =
   & {
     document: DocumentFn<$Config, $Index>
@@ -47,7 +47,7 @@ export type ClientTyped<$Index extends Schema.Index, $Config extends Config> =
   & GetRootTypeMethods<$Config, $Index>
 
 export type InputRaw = {
-  schema: URL | string | GraphQLSchema
+  schema: SchemaInput
   // todo condition on if schema is NOT GraphQLSchema
   headers?: HeadersInit
 }
@@ -138,48 +138,6 @@ export const create: Create = (
    */
   const returnMode = input.returnMode ?? `data` as ReturnModeType
 
-  const executeGraphQLDocument = async (
-    { document, variables, operationName }: {
-      document: string | DocumentNode
-      variables?: Variables
-      operationName?: string
-    },
-  ): Promise<ExecutionResult> => {
-    let result: ExecutionResult
-    if (input.schema instanceof URL || typeof input.schema === `string`) {
-      // todo return errors too
-      const data: ExecutionResult['data'] = await request({
-        url: new URL(input.schema).href, // todo allow relative urls - what does fetch in node do?
-        requestHeaders: input.headers,
-        document,
-        variables,
-        // todo use operationName
-      })
-      result = { data }
-    } else {
-      if (typeof document === `string`) {
-        result = await graphql({
-          schema: input.schema,
-          source: document,
-          // contextValue: createContextValue(), // todo
-          variableValues: variables,
-          operationName,
-        })
-      } else if (typeof document === `object`) {
-        result = await execute({
-          schema: input.schema,
-          document,
-          // contextValue: createContextValue(), // todo
-          variableValues: variables,
-          operationName,
-        })
-      } else {
-        throw new Error(`Unsupported GraphQL document type: ${String(document)}`)
-      }
-    }
-    return result
-  }
-
   const executeRootType =
     (context: Context, rootTypeName: RootTypeName) =>
     async (selection: GraphQLObjectSelection): Promise<ExecutionResult> => {
@@ -194,7 +152,7 @@ export const create: Create = (
         selection[rootTypeNameToOperationName[rootTypeName]],
       )
       // todo variables
-      const result = await executeGraphQLDocument({ document: documentString })
+      const result = await requestOrExecute({ schema: input.schema, document: documentString })
       // todo optimize
       // 1. Generate a map of possible custom scalar paths (tree structure)
       // 2. When traversing the result, skip keys that are not in the map
@@ -281,11 +239,19 @@ export const create: Create = (
 
   // @ts-expect-error ignoreme
   const client: Client = {
-    raw: async (document: string | DocumentNode, variables?: Variables, operationName?: string) => {
-      return await executeGraphQLDocument({ document, variables, operationName })
+    raw: async (input2: RawInput) => {
+      return await requestOrExecute({
+        ...input2,
+        schema: input.schema,
+      })
     },
-    rawOrThrow: async (document: string | DocumentNode, variables?: Variables, operationName?: string) => {
-      const result = await client.raw(document, variables, operationName) as ExecutionResult // eslint-disable-line
+    rawOrThrow: async (
+      input2: RawInput,
+    ) => {
+      const result = await requestOrExecute({
+        ...input2,
+        schema: input.schema,
+      })
       // todo consolidate
       if (result.errors && result.errors.length > 0) {
         throw new Errors.ContextualAggregateError(
@@ -327,13 +293,15 @@ export const create: Create = (
           // todo this does not support custom scalars
 
           const documentString = toDocumentString(context, documentObject)
-          const result = await executeGraphQLDocument({
+          const result = await requestOrExecute({
+            schema: input.schema,
             document: documentString,
             operationName,
             // todo variables
           })
           return handleReturn(schemaIndex, result, returnMode)
         }
+
         return {
           run,
           runOrThrow: async (operationName: string) => {
@@ -344,7 +312,8 @@ export const create: Create = (
                 returnMode: `successData`,
               },
             }, documentObject)
-            const result = await executeGraphQLDocument({
+            const result = await requestOrExecute({
+              schema: input.schema,
               document: documentString,
               operationName,
               // todo variables
@@ -365,7 +334,11 @@ export const create: Create = (
   return client
 }
 
-const handleReturn = (schemaIndex: Schema.Index, result: ExecutionResult, returnMode: ReturnModeType) => {
+const handleReturn = (
+  schemaIndex: Schema.Index,
+  result: ExecutionResult,
+  returnMode: ReturnModeType,
+) => {
   switch (returnMode) {
     case `dataAndErrors`:
     case `successData`:
