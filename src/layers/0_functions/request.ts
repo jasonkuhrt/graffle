@@ -39,7 +39,9 @@ export const request = async (input: Input): Promise<ExecutionResult> => {
   if (!response.ok) {
     throw new Error(`Request to GraphQL endpoint failed. (Status: ${String(response.status)})`)
   }
+
   const json = await response.json() as object
   const result = parseExecutionResult(json)
+
   return result
 }
