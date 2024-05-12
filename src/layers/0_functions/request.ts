@@ -28,7 +28,7 @@ export const request = async (input: Input): Promise<ExecutionResult> => {
   const requestObject = new Request(input.url, {
     method: `POST`,
     headers: new Headers({
-      'content-type': CONTENT_TYPE_GQL,
+      'accept': CONTENT_TYPE_GQL,
       ...Object.fromEntries(new Headers(input.headers).entries()),
     }),
     body: bodyEncoded,
