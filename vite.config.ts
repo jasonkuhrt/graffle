@@ -4,9 +4,6 @@ import { defineConfig } from 'vitest/config'
 export default defineConfig({
   resolve: {
     alias: {
-      'graphql/language/ast.js': 'graphql/language/ast.js',
-      'graphql/language/parser.js': 'graphql/language/parser.js',
-      'graphql/language/printer.js': 'graphql/language/printer.js',
       graphql: 'graphql/index.js',
     },
   },
