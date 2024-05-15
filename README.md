@@ -1,6 +1,6 @@
 # graphql-request
 
-Minimal GraphQL client supporting Node and browsers for scripts or simple apps
+Minimal GraphQL client supporting Node and browsers for scripts or simple apps.
 
 ![GitHub Action](https://github.com/jasonkuhrt/graphql-request/workflows/trunk/badge.svg) [![npm version](https://badge.fury.io/js/graphql-request.svg)](https://badge.fury.io/js/graphql-request)
 
@@ -9,6 +9,7 @@ Minimal GraphQL client supporting Node and browsers for scripts or simple apps
 
 - [Highlights](#highlights)
 - [Install](#install)
+  - [TypeScript Setup](#typescript-setup)
 - [Quick Start](#quick-start)
 - [Examples](#examples)
 - [Node Version Support](#node-version-support)
@@ -34,13 +35,17 @@ Minimal GraphQL client supporting Node and browsers for scripts or simple apps
 - [Pure ESM package](https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c)
 - First class TypeScript support
   - Including `TypedDocumentNode`
-- Isomorphic (works in both Nodejs and Browsers)
+- Isomorphic (works in both Node and Browsers)
 
 ## Install
 
 ```sh
 npm add graphql-request graphql
 ```
+
+#### TypeScript Setup
+
+This package uses [`package.exports`](https://www.typescriptlang.org/docs/handbook/modules/reference.html#packagejson-exports). Therefore if you are a TypeScript user you must also have your `tsconfig.json` `moduleResolution` set to [`bundler`](https://www.typescriptlang.org/docs/handbook/modules/reference.html#bundler) or [`node16`/`nodenext`](https://www.typescriptlang.org/docs/handbook/modules/reference.html#node16-nodenext-1).
 
 ## Quick Start
 
