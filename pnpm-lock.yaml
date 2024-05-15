@@ -53,7 +53,7 @@ importers:
         version: 20.12.12
       '@typescript-eslint/eslint-plugin':
         specifier: ^7.8.0
-        version: 7.8.0(@typescript-eslint/parser@7.9.0(eslint@9.2.0)(typescript@5.4.5))(eslint@9.2.0)(typescript@5.4.5)
+        version: 7.9.0(@typescript-eslint/parser@7.9.0(eslint@9.2.0)(typescript@5.4.5))(eslint@9.2.0)(typescript@5.4.5)
       '@typescript-eslint/parser':
         specifier: ^7.8.0
         version: 7.9.0(eslint@9.2.0)(typescript@5.4.5)
@@ -74,7 +74,7 @@ importers:
         version: 9.2.0
       eslint-config-prisma:
         specifier: ^0.6.0
-        version: 0.6.0(@typescript-eslint/eslint-plugin@7.8.0(@typescript-eslint/parser@7.9.0(eslint@9.2.0)(typescript@5.4.5))(eslint@9.2.0)(typescript@5.4.5))(@typescript-eslint/parser@7.9.0(eslint@9.2.0)(typescript@5.4.5))(eslint-plugin-deprecation@2.0.0(eslint@9.2.0)(typescript@5.4.5))(eslint-plugin-only-warn@1.1.0)(eslint-plugin-prefer-arrow@1.2.3(eslint@9.2.0))(eslint-plugin-tsdoc@0.2.17)(eslint@9.2.0)(typescript@5.4.5)
+        version: 0.6.0(@typescript-eslint/eslint-plugin@7.9.0(@typescript-eslint/parser@7.9.0(eslint@9.2.0)(typescript@5.4.5))(eslint@9.2.0)(typescript@5.4.5))(@typescript-eslint/parser@7.9.0(eslint@9.2.0)(typescript@5.4.5))(eslint-plugin-deprecation@2.0.0(eslint@9.2.0)(typescript@5.4.5))(eslint-plugin-only-warn@1.1.0)(eslint-plugin-prefer-arrow@1.2.3(eslint@9.2.0))(eslint-plugin-tsdoc@0.2.17)(eslint@9.2.0)(typescript@5.4.5)
       eslint-plugin-deprecation:
         specifier: ^2.0.0
         version: 2.0.0(eslint@9.2.0)(typescript@5.4.5)
@@ -4979,12 +4979,12 @@ snapshots:
     dependencies:
       eslint: 9.2.0
 
-  eslint-config-prisma@0.6.0(@typescript-eslint/eslint-plugin@7.8.0(@typescript-eslint/parser@7.9.0(eslint@9.2.0)(typescript@5.4.5))(eslint@9.2.0)(typescript@5.4.5))(@typescript-eslint/parser@7.9.0(eslint@9.2.0)(typescript@5.4.5))(eslint-plugin-deprecation@2.0.0(eslint@9.2.0)(typescript@5.4.5))(eslint-plugin-only-warn@1.1.0)(eslint-plugin-prefer-arrow@1.2.3(eslint@9.2.0))(eslint-plugin-tsdoc@0.2.17)(eslint@9.2.0)(typescript@5.4.5):
+  eslint-config-prisma@0.6.0(@typescript-eslint/eslint-plugin@7.9.0(@typescript-eslint/parser@7.9.0(eslint@9.2.0)(typescript@5.4.5))(eslint@9.2.0)(typescript@5.4.5))(@typescript-eslint/parser@7.9.0(eslint@9.2.0)(typescript@5.4.5))(eslint-plugin-deprecation@2.0.0(eslint@9.2.0)(typescript@5.4.5))(eslint-plugin-only-warn@1.1.0)(eslint-plugin-prefer-arrow@1.2.3(eslint@9.2.0))(eslint-plugin-tsdoc@0.2.17)(eslint@9.2.0)(typescript@5.4.5):
     dependencies:
       '@eslint/js': 9.1.1
       '@types/eslint-config-prettier': 6.11.3
       '@types/eslint__js': 8.42.3
-      '@typescript-eslint/eslint-plugin': 7.8.0(@typescript-eslint/parser@7.9.0(eslint@9.2.0)(typescript@5.4.5))(eslint@9.2.0)(typescript@5.4.5)
+      '@typescript-eslint/eslint-plugin': 7.9.0(@typescript-eslint/parser@7.9.0(eslint@9.2.0)(typescript@5.4.5))(eslint@9.2.0)(typescript@5.4.5)
       '@typescript-eslint/parser': 7.9.0(eslint@9.2.0)(typescript@5.4.5)
       '@typescript-eslint/utils': 7.8.0(eslint@9.2.0)(typescript@5.4.5)
       eslint: 9.2.0
