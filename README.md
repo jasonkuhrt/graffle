@@ -45,7 +45,10 @@ npm add graphql-request graphql
 
 #### TypeScript Setup
 
-This package uses [`package.exports`](https://www.typescriptlang.org/docs/handbook/modules/reference.html#packagejson-exports). Therefore if you are a TypeScript user you must also have your `tsconfig.json` `moduleResolution` set to [`bundler`](https://www.typescriptlang.org/docs/handbook/modules/reference.html#bundler) or [`node16`/`nodenext`](https://www.typescriptlang.org/docs/handbook/modules/reference.html#node16-nodenext-1).
+This package uses [`package.exports`](https://www.typescriptlang.org/docs/handbook/modules/reference.html#packagejson-exports). Therefore if you are a TypeScript user you must:
+
+1. have your `tsconfig.json` `moduleResolution` set to [`"bundler"`](https://www.typescriptlang.org/docs/handbook/modules/reference.html#bundler) or [`"node16"`/`"nodenext"`](https://www.typescriptlang.org/docs/handbook/modules/reference.html#node16-nodenext-1).
+2. Have your `package.json` `type` set to `"module"`.
 
 ## Quick Start
 
