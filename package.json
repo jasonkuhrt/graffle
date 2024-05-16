@@ -62,10 +62,11 @@
     "dev": "rm -rf dist && tsc --watch",
     "format": "pnpm build:docs && dprint fmt",
     "lint": "eslint . --fix",
-    "check": "pnpm check:types && pnpm check:format && pnpm check:lint",
+    "check": "pnpm check:types && pnpm check:format && pnpm check:lint && pnpm check:publint",
     "check:types": "pnpm tsc --noEmit",
     "check:format": "dprint check && pnpm build:docs && git diff --exit-code README.md",
     "check:lint": "eslint . --max-warnings 0",
+    "check:publint": "publint run --strict",
     "prepublishOnly": "pnpm build",
     "build:docs": "doctoc README.md --notitle && dprint fmt README.md",
     "build": "pnpm clean && pnpm tsc --project tsconfig.build.json && chmod +x ./build/cli/generate.js",
@@ -90,6 +91,7 @@
     "graphql": "14 - 16"
   },
   "devDependencies": {
+    "@arethetypeswrong/cli": "^0.15.3",
     "@pothos/core": "^3.41.1",
     "@pothos/plugin-simple-objects": "^3.7.0",
     "@tsconfig/node18": "^18.2.4",
@@ -119,6 +121,7 @@
     "graphql-tag": "^2.12.6",
     "jsdom": "^24.0.0",
     "json-bigint": "^1.0.0",
+    "publint": "^0.2.7",
     "tsx": "^4.7.3",
     "type-fest": "^4.18.0",
     "typescript": "^5.4.5",
