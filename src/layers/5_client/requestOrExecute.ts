@@ -21,7 +21,7 @@ export const requestOrExecute = async (
 
   if (schema instanceof URL || typeof schema === `string`) {
     const extensionsByEntrypoint: Record<HookName, Extension[]> = {
-      send: [],
+      request: [],
     }
 
     for (const c of input.extensions) {
@@ -32,8 +32,8 @@ export const requestOrExecute = async (
       extensionsByEntrypoint[hookName].push(c)
     }
 
-    const initialInputHookSend = { url: schema, ...baseInput }
-    const result = runStack(extensionsByEntrypoint.send, initialInputHookSend)
+    const initialInputHookRequest = { url: schema, ...baseInput }
+    const result = runStack(extensionsByEntrypoint.request, initialInputHookRequest)
     return result
   }
 

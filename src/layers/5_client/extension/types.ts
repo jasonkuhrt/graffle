@@ -5,10 +5,10 @@ export type Hook<$Fn extends SomeAsyncFunction, $Input extends object> = $Fn & {
 
 export type NetworkRequestHook = Hook<NetworkRequest, NetworkRequestInput>
 
-export type Extension = (hooks: { send: NetworkRequestHook }) => Promise<any>
+export type Extension = (hooks: { request: NetworkRequestHook }) => Promise<any>
 
 export const hookNamesEnum = {
-  send: `send`,
+  request: `request`,
 } as const
 
 export const hookNames = Object.values(hookNamesEnum)

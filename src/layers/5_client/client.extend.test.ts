@@ -36,7 +36,7 @@ describe('invalid destructuring cases', () => {
   })
   test('destructuredWithoutEntryHook', async () => {
     // @ts-expect-error
-    const result = await make(async ({ send2 }) => {})
+    const result = await make(async ({ request2 }) => {})
     expect(result).toMatchInlineSnapshot(
       `[ContextualError: Extension must destructure the input object and select an entry hook to use.]`,
     )
@@ -48,7 +48,7 @@ describe('invalid destructuring cases', () => {
   })
   test('multipleParameters', async () => {
     // @ts-expect-error
-    const result = await make(async ({ send }, two) => {})
+    const result = await make(async ({ request }, two) => {})
     expect(result).toMatchInlineSnapshot(
       `[ContextualError: Extension must destructure the input object and select an entry hook to use.]`,
     )
@@ -73,19 +73,18 @@ describe('invalid destructuring cases', () => {
   // multipleDestructuredHookNames
 })
 
+// todo each extension added should copy, not mutate the client
+
 describe(`request`, () => {
   test(`can add header to request`, async ({ fetch }) => {
-    const headers = {
-      'x-foo': 'bar',
-    }
-    const client2 = client.extend(async ({ send }) => {
+    const headers = { 'x-foo': 'bar' }
+    const client2 = client.extend(async ({ request }) => {
+      // todo should be raw input types but rather resolved
       // todo should be URL instance?
-      expectTypeOf(send).toEqualTypeOf<NetworkRequestHook>()
-      expect(send.input).toEqual({ url: 'https://foo', document: `query  { id \n }` })
-      return await send({
-        ...send.input,
-        headers,
-      })
+      expectTypeOf(request).toEqualTypeOf<NetworkRequestHook>()
+      expect(request.input).toEqual({ url: 'https://foo', document: `query  { id \n }` })
+      return await request({ ...request.input, headers })
+      // todo expose fetch hook
     })
     fetch.mockImplementationOnce(async (input: Request) => {
       expect(input.headers.get('x-foo')).toEqual(headers['x-foo'])
@@ -94,3 +93,5 @@ describe(`request`, () => {
     expect(await client2.query.id()).toEqual(db.id)
   })
 })
+
+// todo test a throw from an extension
