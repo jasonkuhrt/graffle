@@ -23,7 +23,7 @@ export const ExtensionEntryHookIssue = {
 
 export type ExtensionEntryHookIssue = typeof ExtensionEntryHookIssue[keyof typeof ExtensionEntryHookIssue]
 
-export const getEntryHook = (extension: Extension): ErrorGraffleExtensionEntryHook | HookName => {
+export const getEntrypoint = (extension: Extension): ErrorGraffleExtensionEntryHook | HookName => {
   const x = analyzeFunction(extension)
   if (x.parameters.length > 1) {
     return new ErrorGraffleExtensionEntryHook({ issue: ExtensionEntryHookIssue.multipleParameters })

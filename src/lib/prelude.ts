@@ -1,3 +1,4 @@
+import { resolve } from 'dns'
 import type { ConditionalSimplifyDeep } from 'type-fest/source/conditional-simplify.js'
 
 /* eslint-disable */
@@ -240,3 +241,22 @@ export type MaybePromise<T> = T | Promise<T>
 export const capitalizeFirstLetter = (string: string) => string.charAt(0).toUpperCase() + string.slice(1)
 
 export type SomeAsyncFunction = (...args: any[]) => Promise<any>
+
+export type Deferred<T> = {
+  promise: Promise<T>
+  resolve: (value: T) => void
+  reject: (error: Error) => void
+}
+export const createDeferred = <$T>(): Deferred<$T> => {
+  let resolve
+  let reject
+  const promise = new Promise(($resolve, $reject) => {
+    resolve = $resolve
+    reject = $reject
+  })
+  return {
+    promise,
+    resolve,
+    reject,
+  }
+}

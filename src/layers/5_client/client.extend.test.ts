@@ -1,12 +1,13 @@
 /* eslint-disable */
-import { describe, expect, expectTypeOf } from 'vitest'
+import { describe, describe, expect, expectTypeOf } from 'vitest'
 import { db } from '../../../tests/_/db.js'
 import { createResponse, test } from '../../../tests/_/helpers.js'
 import { Graffle } from '../../../tests/_/schema/generated/__.js'
-import { ErrorGraffleExtensionEntryHook } from './extension/getEntryHook.js'
+import { ErrorGraffleExtensionEntryHook } from './extension/getEntrypoint.js'
 import { Extension, NetworkRequestHook } from './extension/types.js'
 
 const client = Graffle.create({ schema: 'https://foo', returnMode: 'dataAndErrors' })
+const headers = { 'x-foo': 'bar' }
 
 describe('invalid destructuring cases', () => {
   const make = async (extension: Extension) =>
@@ -75,9 +76,8 @@ describe('invalid destructuring cases', () => {
 
 // todo each extension added should copy, not mutate the client
 
-describe(`request`, () => {
+describe(`entrypoint request`, () => {
   test(`can add header to request`, async ({ fetch }) => {
-    const headers = { 'x-foo': 'bar' }
     const client2 = client.extend(async ({ request }) => {
       // todo should be raw input types but rather resolved
       // todo should be URL instance?
@@ -92,6 +92,19 @@ describe(`request`, () => {
     })
     expect(await client2.query.id()).toEqual(db.id)
   })
+  test.only('can chain into fetch', async () => {
+    const client2 = client.extend(async ({ request }) => {
+      console.log(1)
+      const { fetch } = await request({ ...request.input, headers })
+      console.log(2)
+      console.log(fetch)
+      return await fetch(fetch.input)
+    })
+    expect(await client2.query.id()).toEqual(db.id)
+  })
+})
+
+describe.todo(`entrypoint fetch`, () => {
 })
 
 // todo test a throw from an extension

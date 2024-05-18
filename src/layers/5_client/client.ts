@@ -18,7 +18,7 @@ import type {
 } from './Config.js'
 import type { DocumentFn } from './document.js'
 import { toDocumentString } from './document.js'
-import type { ErrorGraffleExtensionEntryHook } from './extension/getEntryHook.js'
+import type { ErrorGraffleExtensionEntryHook } from './extension/getEntrypoint.js'
 import type { Extension } from './extension/types.js'
 import type { SchemaInput } from './requestOrExecute.js'
 import { requestOrExecute } from './requestOrExecute.js'
