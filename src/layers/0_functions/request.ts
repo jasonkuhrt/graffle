@@ -6,15 +6,17 @@ import type { BaseInput } from './types.js'
 
 export type URLInput = URL | string
 
-interface Input extends BaseInput {
+export interface NetworkRequestInput extends BaseInput {
   url: URLInput
   headers?: HeadersInit
 }
 
+export type NetworkRequest = (input: NetworkRequestInput) => Promise<ExecutionResult>
+
 /**
  * @see https://graphql.github.io/graphql-over-http/draft/
  */
-export const request = async (input: Input): Promise<ExecutionResult> => {
+export const request: NetworkRequest = async (input) => {
   const documentEncoded = typeof input.document === `string` ? input.document : print(input.document)
 
   const body = {

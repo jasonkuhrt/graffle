@@ -3,9 +3,6 @@ import { Errors } from '../../lib/errors/__.js'
 import type { SomeExecutionResultWithoutErrors } from '../../lib/graphql.js'
 import { type RootTypeName, rootTypeNameToOperationName } from '../../lib/graphql.js'
 import { isPlainObject } from '../../lib/prelude.js'
-import type { SchemaInput } from '../0_functions/requestOrExecute.js'
-import { requestOrExecute } from '../0_functions/requestOrExecute.js'
-import type { Input as RequestOrExecuteInput } from '../0_functions/requestOrExecute.js'
 import { Schema } from '../1_Schema/__.js'
 import { readMaybeThunk } from '../1_Schema/core/helpers.js'
 import type { GlobalRegistry } from '../2_generator/globalRegistry.js'
@@ -21,6 +18,11 @@ import type {
 } from './Config.js'
 import type { DocumentFn } from './document.js'
 import { toDocumentString } from './document.js'
+import type { ErrorGraffleExtensionEntryHook } from './extension/getEntryHook.js'
+import type { Extension } from './extension/types.js'
+import type { SchemaInput } from './requestOrExecute.js'
+import { requestOrExecute } from './requestOrExecute.js'
+import type { Input as RequestOrExecuteInput } from './requestOrExecute.js'
 import type { GetRootTypeMethods } from './RootTypeMethods.js'
 
 type RawInput = Omit<RequestOrExecuteInput, 'schema'>
@@ -39,6 +41,9 @@ export type Client<$Index extends Schema.Index | null, $Config extends Config> =
       ? ClientTyped<$Index, $Config>
       : {} // eslint-disable-line
     )
+  & {
+      extend: (extension: Extension) => Client<$Index, $Config>
+    }
 
 export type ClientTyped<$Index extends Schema.Index, $Config extends Config> =
   & {
@@ -126,6 +131,15 @@ type Create = <
 
 export const create: Create = (
   input_,
+) => createInternal(input_, { extensions: [] })
+
+interface State {
+  extensions: Extension[]
+}
+
+export const createInternal = (
+  input_: Input<any>,
+  state: State,
 ) => {
   // eslint-disable-next-line
   // @ts-ignore passes after generation
@@ -140,7 +154,7 @@ export const create: Create = (
 
   const executeRootType =
     (context: Context, rootTypeName: RootTypeName) =>
-    async (selection: GraphQLObjectSelection): Promise<ExecutionResult> => {
+    async (selection: GraphQLObjectSelection): Promise<GraffleExecutionResult> => {
       const rootIndex = context.schemaIndex.Root[rootTypeName]
       if (!rootIndex) throw new Error(`Root type not found: ${rootTypeName}`)
 
@@ -152,7 +166,12 @@ export const create: Create = (
         selection[rootTypeNameToOperationName[rootTypeName]],
       )
       // todo variables
-      const result = await requestOrExecute({ schema: input.schema, document: documentString })
+      const result = await requestOrExecute({
+        schema: input.schema,
+        document: documentString,
+        extensions: state.extensions,
+      })
+      if (result instanceof Error) return result
       // todo optimize
       // 1. Generate a map of possible custom scalar paths (tree structure)
       // 2. When traversing the result, skip keys that are not in the map
@@ -252,6 +271,7 @@ export const create: Create = (
         ...input2,
         schema: input.schema,
       })
+      if (result instanceof Error) throw result
       // todo consolidate
       if (result.errors && result.errors.length > 0) {
         throw new Errors.ContextualAggregateError(
@@ -261,6 +281,9 @@ export const create: Create = (
         )
       }
       return result
+    },
+    extend: (extension: Extension) => {
+      return createInternal(input, { extensions: [...state.extensions, extension] })
     },
   }
 
@@ -297,6 +320,7 @@ export const create: Create = (
             schema: input.schema,
             document: documentString,
             operationName,
+            extensions: state.extensions,
             // todo variables
           })
           return handleReturn(schemaIndex, result, returnMode)
@@ -316,6 +340,7 @@ export const create: Create = (
               schema: input.schema,
               document: documentString,
               operationName,
+              extensions: state.extensions,
               // todo variables
             })
             // todo refactor...
@@ -334,21 +359,23 @@ export const create: Create = (
   return client
 }
 
+type GraffleExecutionResult = ExecutionResult | ErrorGraffleExtensionEntryHook
+
 const handleReturn = (
   schemaIndex: Schema.Index,
-  result: ExecutionResult,
+  result: GraffleExecutionResult,
   returnMode: ReturnModeType,
 ) => {
   switch (returnMode) {
     case `dataAndErrors`:
     case `successData`:
     case `data`: {
-      if (result.errors && result.errors.length > 0) {
-        const error = new Errors.ContextualAggregateError(
+      if (result instanceof Error || (result.errors && result.errors.length > 0)) {
+        const error = result instanceof Error ? result : (new Errors.ContextualAggregateError(
           `One or more errors in the execution result.`,
           {},
-          result.errors,
-        )
+          result.errors!,
+        ))
         if (returnMode === `data` || returnMode === `successData`) throw error
         return error
       }

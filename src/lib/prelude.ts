@@ -238,3 +238,5 @@ export type StringKeyof<T> = keyof T & string
 export type MaybePromise<T> = T | Promise<T>
 
 export const capitalizeFirstLetter = (string: string) => string.charAt(0).toUpperCase() + string.slice(1)
+
+export type SomeAsyncFunction = (...args: any[]) => Promise<any>
