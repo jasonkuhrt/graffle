@@ -104,9 +104,12 @@ const runHook = async <$HookName extends string>(
   return
 }
 
-export type Core<$Hook extends string = string> = {
+export type Core<
+  $Hook extends string = string,
+  $ImplementationsByHook extends Record<$Hook, SomeAsyncFunction> = Record<$Hook, SomeAsyncFunction>,
+> = {
   hookNamesOrderedBySequence: $Hook[]
-  implementationsByHook: Record<$Hook, (input: any) => Promise<any>>
+  implementationsByHook: $ImplementationsByHook
 }
 
 const run = async (
