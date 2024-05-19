@@ -46,17 +46,18 @@ describe(`no extensions`, () => {
 
 describe(`one extension`, () => {
   test(`can return own result`, async () => {
-    const result = await run(async ({ a }) => {
-      const { b } = await a(a.input)
-      await b(b.input)
-      return 0
-    })
-    expect(result).toEqual(0)
+    expect(
+      await run(async ({ a }) => {
+        const { b } = await a(a.input)
+        await b(b.input)
+        return 0
+      }),
+    ).toEqual(0)
   })
-  test(`can short-circuit at start, return input`, () => {
-    expect(run(({ a }) => a.input)).resolves.toEqual(initialInput)
+  test(`can short-circuit at start, return input`, async () => {
+    expect(await run(({ a }) => a.input)).toEqual(initialInput)
   })
-  test(`can short-circuit at start, return own result`, () => {
-    expect(run(() => 0)).resolves.toEqual(0)
+  test(`can short-circuit at start, return own result`, async () => {
+    expect(await run(() => 0)).toEqual(0)
   })
 })

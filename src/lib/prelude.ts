@@ -242,6 +242,8 @@ export const capitalizeFirstLetter = (string: string) => string.charAt(0).toUppe
 
 export type SomeAsyncFunction = (...args: any[]) => Promise<any>
 
+export type SomeMaybeAsyncFunction = (...args: any[]) => MaybePromise<any>
+
 export type Deferred<T> = {
   promise: Promise<T>
   resolve: (value: T) => void
@@ -258,5 +260,11 @@ export const createDeferred = <$T>(): Deferred<$T> => {
     promise,
     resolve,
     reject,
+  }
+}
+
+export const debug = (...args: any[]) => {
+  if (process.env[`DEBUG`]) {
+    console.log(...args)
   }
 }

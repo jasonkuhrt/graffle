@@ -1,11 +1,5 @@
-import type { Deferred, SomeAsyncFunction } from '../prelude.js'
-import { casesExhausted, createDeferred } from '../prelude.js'
-
-const debug = (...args: any[]) => {
-  if (process.env[`DEBUG`]) {
-    console.log(...args)
-  }
-}
+import type { Deferred, SomeAsyncFunction, SomeMaybeAsyncFunction } from '../prelude.js'
+import { casesExhausted, createDeferred, debug } from '../prelude.js'
 
 const withOriginalInput = <$X, $F extends (...args: any[]) => any>(originalInput: $X, fn: $F): $F & { input: $X } => {
   // @ts-expect-error
@@ -17,7 +11,7 @@ const withOriginalInput = <$X, $F extends (...args: any[]) => any>(originalInput
 type Extension = {
   name: string
   body: Deferred<unknown>
-  // todo rename this "next"?
+  // todo rename this "chunk"?
   deferred: Deferred<unknown>
 }
 
@@ -116,7 +110,7 @@ export type Core<$Hook extends string = string> = {
 }
 
 const run = async (
-  { core, initialInput, initialHookStack }: { core: Core; initialInput: any; initialHookStack: Extension[] },
+  { core, initialInput, initialHookStack }: { core: Core; initialInput: unknown; initialHookStack: Extension[] },
 ) => {
   let currentInput = initialInput
   let currentHookStack = initialHookStack
@@ -152,6 +146,7 @@ const run = async (
   }
 
   debug(`ending`)
+
   let currentResult = currentInput
   for (const hook of currentHookStack) {
     debug(`end: ${hook.name}`)
@@ -159,10 +154,12 @@ const run = async (
     currentResult = await hook.body.promise
   }
 
+  debug(`returning`)
+
   return currentResult // last loop result
 }
 
-export type ExtensionInput = SomeAsyncFunction
+export type ExtensionInput = SomeMaybeAsyncFunction
 
 const prepare = (fn: SomeAsyncFunction) => {
   const deferred = createDeferred()
@@ -187,19 +184,3 @@ export const runExtensions = async (
     initialHookStack: extensions.map(prepare),
   })
 }
-
-// // ----- application -----
-
-// const extensionA = ({ request/*START*/ }) => {
-// 	const { fetch }/*B2*/ = await request(request.input)/*A1*/
-// 	const { value }/*D2*/ = await fetch(fetch.input)/*C1*/
-// 	return value/*E1*/
-// }
-
-// const extensionB = ({ request/*A2*/ }) => {
-// 	const { fetch }/*C2*/ = await request(request.input)/*B1*/
-// 	const { value }/*E2*/ = await fetch(fetch.input)/*D1*/
-// 	return value/*END*/
-// }
-
-// runExtensions([extensionA, extensionB])
