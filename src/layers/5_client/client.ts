@@ -1,4 +1,5 @@
 import type { ExecutionResult } from 'graphql'
+import type { ErrorAnywareExtensionEntrypoint } from '../../lib/anyware/getEntrypoint.js'
 import { Errors } from '../../lib/errors/__.js'
 import type { SomeExecutionResultWithoutErrors } from '../../lib/graphql.js'
 import { type RootTypeName, rootTypeNameToOperationName } from '../../lib/graphql.js'
@@ -18,7 +19,6 @@ import type {
 } from './Config.js'
 import type { DocumentFn } from './document.js'
 import { toDocumentString } from './document.js'
-import type { ErrorGraffleExtensionEntryHook } from './extension/getEntrypoint.js'
 import type { Extension } from './extension/types.js'
 import type { SchemaInput } from './requestOrExecute.js'
 import { requestOrExecute } from './requestOrExecute.js'
@@ -359,7 +359,7 @@ export const createInternal = (
   return client
 }
 
-type GraffleExecutionResult = ExecutionResult | ErrorGraffleExtensionEntryHook
+type GraffleExecutionResult = ExecutionResult | ErrorAnywareExtensionEntrypoint
 
 const handleReturn = (
   schemaIndex: Schema.Index,

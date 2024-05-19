@@ -4,8 +4,11 @@ type Parameter = { type: 'name'; value: string } | { type: 'destructured'; names
 
 export const analyzeFunction = (fn: (...args: [...any[]]) => unknown) => {
   const groups = fn.toString().match(functionPattern)?.groups
-  if (groups?.[`body`] === undefined) throw new Error(`Could not extract body from function.`)
-  const body = groups[`body`]
+  if (!groups) throw new Error(`Could not extract groups from function.`)
+
+  const body = groups[`bodyStatement`] ?? groups[`bodyExpression`]
+  if (body === undefined) throw new Error(`Could not extract body from function.`)
+
   const parameters: Parameter[] = []
 
   if (groups[`parameters`]) {
@@ -49,7 +52,13 @@ export const analyzeFunction = (fn: (...args: [...any[]]) => unknown) => {
 /**
  * @see https://regex101.com/r/9kCK86/4
  */
-const functionPattern = /(?:[A-z])?\s*(?:\((?<parameters>.*)\))\s*(?:=>)?\s*{(?<body>.*)(?=})/s
+// const functionPattern = /(?:[A-z])?\s*(?:\((?<parameters>.*)\))\s*(?:=>)?\s*{(?<body>.*)(?=})/s
+
+/**
+ * @see https://regex101.com/r/U0JtfS/1
+ */
+const functionPattern =
+  /^(?:(?<async>async)\s+)?(?:function\s+)?(?:(?<name>[A-z_0-9]+)\s*)?\((?<parameters>[^)]*)\)\s*(?:=>\s*(?<bodyExpression>[^\s{].*)|(?:=>\s*)?{(?<bodyStatement>.*)})$/s
 
 /**
  * @see https://regex101.com/r/tE2dV5/2

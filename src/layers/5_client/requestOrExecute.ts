@@ -1,9 +1,9 @@
 import type { ExecutionResult, GraphQLSchema } from 'graphql'
+import type { ErrorAnywareExtensionEntrypoint } from '../../lib/anyware/getEntrypoint.js'
+import { getEntrypoint } from '../../lib/anyware/getEntrypoint.js'
 import { execute } from '../0_functions/execute.js'
 import type { URLInput } from '../0_functions/request.js'
 import type { BaseInput } from '../0_functions/types.js'
-import type { ErrorGraffleExtensionEntryHook } from './extension/getEntrypoint.js'
-import { getEntrypoint } from './extension/getEntrypoint.js'
 import { runHook } from './extension/runStack.js'
 import { type Extension, getHookName, type HookName, hooksOrderedBySequence, isHook } from './extension/types.js'
 
@@ -20,7 +20,7 @@ type AttachmentRegistry = Record<HookName, any /* todo */>
 
 export const requestOrExecute = async (
   input: Input,
-): Promise<ErrorGraffleExtensionEntryHook | ExecutionResult> => {
+): Promise<ErrorAnywareExtensionEntrypoint | ExecutionResult> => {
   const { schema, extensions: _, ...baseInput } = input
 
   if (schema instanceof URL || typeof schema === `string`) {

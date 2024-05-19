@@ -3,7 +3,7 @@ import { describe, describe, expect, expectTypeOf } from 'vitest'
 import { db } from '../../../tests/_/db.js'
 import { createResponse, test } from '../../../tests/_/helpers.js'
 import { Graffle } from '../../../tests/_/schema/generated/__.js'
-import { ErrorGraffleExtensionEntryHook } from './extension/getEntrypoint.js'
+import { ErrorAnywareExtensionEntrypoint } from '../../lib/anyware/getEntrypoint.js'
 import { Extension, NetworkRequestHook } from './extension/types.js'
 
 const client = Graffle.create({ schema: 'https://foo', returnMode: 'dataAndErrors' })
@@ -11,7 +11,7 @@ const headers = { 'x-foo': 'bar' }
 
 describe('invalid destructuring cases', () => {
   const make = async (extension: Extension) =>
-    (await client.extend(extension).query.id()) as any as ErrorGraffleExtensionEntryHook
+    (await client.extend(extension).query.id()) as any as ErrorAnywareExtensionEntrypoint
 
   test('noParameters', async () => {
     const result = await make(async ({}) => {})
