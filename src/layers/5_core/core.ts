@@ -1,7 +1,7 @@
 import type { DocumentNode, ExecutionResult, GraphQLSchema } from 'graphql'
 import { print } from 'graphql'
 import type { Core } from '../../lib/anyware/main.js'
-import type { StandardScalarVariables } from '../../lib/graphql.js'
+import { rootTypeNameToOperationName, type StandardScalarVariables } from '../../lib/graphql.js'
 import { parseExecutionResult } from '../../lib/graphqlHTTP.js'
 import { CONTENT_TYPE_GQL } from '../../lib/http.js'
 import { casesExhausted } from '../../lib/prelude.js'
@@ -101,6 +101,7 @@ export const create = (): Core<HookSequence, Hooks, ExecutionResult> => {
       encode: (
         input,
       ) => {
+        // console.log(`encode:1`)
         let document: string | DocumentNode
         switch (input.interface) {
           case `raw`: {
@@ -113,7 +114,7 @@ export const create = (): Core<HookSequence, Hooks, ExecutionResult> => {
               input.context,
               getRootIndexOrThrow(input.context, input.rootTypeName),
               // @ts-expect-error fixme
-              selection[rootTypeNameToOperationName[input.rootTypeName]],
+              input.selection[rootTypeNameToOperationName[input.rootTypeName]],
             )
             break
           }
@@ -121,6 +122,7 @@ export const create = (): Core<HookSequence, Hooks, ExecutionResult> => {
             throw casesExhausted(input)
         }
 
+        // console.log(`encode:2`)
         switch (input.transport) {
           case `http`: {
             return {
@@ -145,6 +147,7 @@ export const create = (): Core<HookSequence, Hooks, ExecutionResult> => {
         }
       },
       pack: (input) => {
+        // console.log(`pack:1`)
         const documentPrinted = typeof input.document === `string`
           ? input.document
           : print(input.document)

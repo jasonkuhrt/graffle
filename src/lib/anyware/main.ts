@@ -4,6 +4,7 @@
 // E.g.: NOT              await request(request.input)
 // but instead simply:    await request()
 
+import { ContextualError } from '../errors/ContextualError.js'
 import type {
   Deferred,
   FindValueAfter,
@@ -12,7 +13,7 @@ import type {
   SomeAsyncFunction,
   SomeMaybeAsyncFunction,
 } from '../prelude.js'
-import { casesExhausted, createDeferred, debug } from '../prelude.js'
+import { casesExhausted, createDeferred, debug, errorFromMaybeError } from '../prelude.js'
 import { getEntrypoint } from './getEntrypoint.js'
 
 type HookSequence = readonly [string, ...string[]]
@@ -125,6 +126,7 @@ export type ExtensionInput = SomeMaybeAsyncFunction
 type HookDoneData =
   | { type: 'completed'; result: unknown; nextHookStack: Extension[] }
   | { type: 'shortCircuited'; result: unknown }
+  | { type: 'error'; error: Error; source: 'implementation'; hookName: string }
 
 type HookDoneResolver = (input: HookDoneData) => void
 
@@ -215,12 +217,17 @@ const runHook = async <$HookName extends string>(
   // Run core to get result
 
   const implementation = core.hooks[name]
-  const result = await implementation(originalInput)
+  let result
+  try {
+    result = await implementation(originalInput)
+  } catch (error) {
+    done({ type: `error`, error: errorFromMaybeError(error), source: `implementation`, hookName: name })
+    return
+  }
 
   // Return to root with the next result and hook stack
 
   done({ type: `completed`, result, nextHookStack })
-
   return
 }
 
@@ -252,8 +259,16 @@ const run = async (
         break
       }
       case `shortCircuited`: {
+        debug(`signal: shortCircuited`)
         const { result } = signal
         return result
+      }
+      case `error`: {
+        debug(`signal: error`)
+        // todo constructor error lower in stack for better trace?
+        // todo return?
+        const message = `There was an error in the core implementation of hook "${signal.hookName}".`
+        throw new ContextualError(message, { hookName: signal.hookName }, signal.error)
       }
       default:
         casesExhausted(signal)

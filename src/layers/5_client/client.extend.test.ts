@@ -11,6 +11,10 @@ const headers = { 'x-foo': 'bar' }
 
 describe(`entrypoint request`, () => {
   test(`can add header to request`, async ({ fetch }) => {
+    fetch.mockImplementationOnce(async (input: Request) => {
+      expect(input.headers.get('x-foo')).toEqual(headers['x-foo'])
+      return createResponse({ data: { id: db.id } })
+    })
     const client2 = client.extend(async ({ pack }) => {
       // todo should be raw input types but rather resolved
       // todo should be URL instance?
@@ -19,13 +23,12 @@ describe(`entrypoint request`, () => {
       // expect(exchange.input).toEqual({ url: 'https://foo', document: `query  { id \n }` })
       return await pack({ ...pack.input, headers })
     })
-    fetch.mockImplementationOnce(async (input: Request) => {
-      expect(input.headers.get('x-foo')).toEqual(headers['x-foo'])
-      return createResponse({ data: { id: db.id } })
-    })
     expect(await client2.query.id()).toEqual(db.id)
   })
-  test('can chain into exchange', async () => {
+  test('can chain into exchange', async ({ fetch }) => {
+    fetch.mockImplementationOnce(async (input: Request) => {
+      return createResponse({ data: { id: db.id } })
+    })
     const client2 = client.extend(async ({ pack }) => {
       const { exchange } = await pack({ ...pack.input, headers })
       return await exchange(exchange.input)
@@ -33,8 +36,3 @@ describe(`entrypoint request`, () => {
     expect(await client2.query.id()).toEqual(db.id)
   })
 })
-
-describe.todo(`entrypoint fetch`, () => {
-})
-
-// todo test a throw from an extension

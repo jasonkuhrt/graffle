@@ -1,3 +1,4 @@
+import { stat } from 'fs'
 import { type ExecutionResult, GraphQLSchema } from 'graphql'
 import { Anyware } from '../../lib/anyware/__.js'
 import type { ErrorAnywareExtensionEntrypoint } from '../../lib/anyware/getEntrypoint.js'
@@ -210,9 +211,10 @@ export const createInternal = (
       const result = await Anyware.runWithExtensions({
         core,
         initialInput,
-        extensions: [],
+        extensions: state.extensions,
         options: {},
       })
+
       const resultHandled = handleReturn(context.schemaIndex, result, returnMode)
       if (resultHandled instanceof Error) return resultHandled
       return returnMode === `data` || returnMode === `dataAndErrors` || returnMode === `successData`
