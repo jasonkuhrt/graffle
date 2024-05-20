@@ -39,6 +39,13 @@ type ExtensionHooks<
   [$HookName in $HookSequence[number]]: Hook<$HookSequence, $HookMap, $Result, $HookName>
 }
 
+type CoreInitialInput<$Core extends Core> =
+  $Core[PrivateTypesSymbol]['hookMap'][$Core[PrivateTypesSymbol]['hookSequence'][0]]
+
+const PrivateTypesSymbol = Symbol(`private`)
+
+type PrivateTypesSymbol = typeof PrivateTypesSymbol
+
 const hookSymbol = Symbol(`hook`)
 
 type HookSymbol = typeof hookSymbol
@@ -75,10 +82,15 @@ type HookReturn<
 }
 
 export type Core<
-  $HookSequence extends readonly [string, ...string[]],
+  $HookSequence extends HookSequence = HookSequence,
   $HookMap extends Record<$HookSequence[number], object> = Record<$HookSequence[number], object>,
   $Result = unknown,
 > = {
+  [PrivateTypesSymbol]: {
+    hookSequence: $HookSequence
+    hookMap: $HookMap
+    result: $Result
+  }
   hookNamesOrderedBySequence: $HookSequence
   hooks: {
     [$HookName in $HookSequence[number]]: (
@@ -202,7 +214,7 @@ const runHook = async <$HookName extends string>(
 
   // Run core to get result
 
-  const implementation = core.implementationsByHook[name]
+  const implementation = core.hooks[name]
   const result = await implementation(originalInput)
 
   // Return to root with the next result and hook stack
@@ -279,7 +291,7 @@ const toInternalExtension = (core: Core, config: Config, extension: SomeAsyncFun
       currentChunk.promise.then(appplyBody)
       return {
         name: extension.name,
-        entrypoint: core.hookNamesOrderedBySequence[0]!, // todo non-empty-array datastructure
+        entrypoint: core.hookNamesOrderedBySequence[0], // todo non-empty-array datastructure
         body,
         currentChunk,
       }
@@ -295,7 +307,7 @@ const toInternalExtension = (core: Core, config: Config, extension: SomeAsyncFun
           currentChunk.promise.then(appplyBody)
           return {
             name: extension.name,
-            entrypoint: core.hookNamesOrderedBySequence[0]!, // todo non-empty-array datastructure
+            entrypoint: core.hookNamesOrderedBySequence[0], // todo non-empty-array datastructure
             body,
             currentChunk,
           }
@@ -341,10 +353,10 @@ export type Options = {
   entrypointSelectionMode?: 'optional' | 'required' | 'off'
 }
 
-export const runExtensions = async (
+export const runWithExtensions = async <$Core extends Core>(
   { core, initialInput, extensions, options }: {
-    core: Core
-    initialInput: any
+    core: $Core
+    initialInput: CoreInitialInput<$Core>
     extensions: ExtensionInput[]
     options?: Options
   },

@@ -8,6 +8,7 @@ import { casesExhausted } from '../../lib/prelude.js'
 import { execute } from '../0_functions/execute.js'
 import type { Schema } from '../1_Schema/__.js'
 import { SelectionSet } from '../3_SelectionSet/__.js'
+import type { GraphQLObjectSelection } from '../3_SelectionSet/encode.js'
 import * as Result from '../4_ResultSet/customScalars.js'
 import type {
   ContextInterfaceRaw,
@@ -48,44 +49,52 @@ export const hookSequence = [`encode`, `pack`, `exchange`, `unpack`, `decode`] a
 
 export type HookSequence = typeof hookSequence
 
-export type Hooks = {
-  encode:
-    & InterfaceInput<{}, { document: string | DocumentNode }>
-    & TransportInput<{ schema: string | URL }, { schema: GraphQLSchema }>
-  pack:
-    & {
+export type HookInputEncode =
+  & InterfaceInput<{ selection: GraphQLObjectSelection }, { document: string | DocumentNode }>
+  & TransportInput<{ schema: string | URL }, { schema: GraphQLSchema }>
+
+export type HookInputPack =
+  & {
+    document: string | DocumentNode
+    variables: StandardScalarVariables
+    operationName?: string
+  }
+  & InterfaceInput
+  & TransportInput<{ url: string | URL; headers?: HeadersInit }, { schema: GraphQLSchema }>
+export type ExchangeInputHook =
+  & InterfaceInput
+  & TransportInput<
+    { request: Request },
+    {
+      schema: GraphQLSchema
       document: string | DocumentNode
       variables: StandardScalarVariables
       operationName?: string
     }
-    & InterfaceInput
-    & TransportInput<{ url: string | URL; headers?: HeadersInit }, { schema: GraphQLSchema }>
-  exchange:
-    & InterfaceInput
-    & TransportInput<
-      { request: Request },
-      {
-        schema: GraphQLSchema
-        document: string | DocumentNode
-        variables: StandardScalarVariables
-        operationName?: string
-      }
-    >
-  unpack:
-    & InterfaceInput
-    & TransportInput<
-      { response: Response },
-      {
-        result: ExecutionResult
-      }
-    >
-  decode:
-    & { result: ExecutionResult }
-    & InterfaceInput
-  // todo this depends on the return mode
+  >
+export type HookInputUnpack =
+  & InterfaceInput
+  & TransportInput<
+    { response: Response },
+    {
+      result: ExecutionResult
+    }
+  >
+export type HookInputDecode =
+  & { result: ExecutionResult }
+  & InterfaceInput
+
+export type Hooks = {
+  encode: HookInputEncode
+  pack: HookInputPack
+  exchange: ExchangeInputHook
+  unpack: HookInputUnpack
+  decode: HookInputDecode
 }
 
+// todo does this need to be a constructor?
 export const create = (): Core<HookSequence, Hooks, ExecutionResult> => {
+  // todo Get type passing by having a constructor brand the result
   return {
     hookNamesOrderedBySequence: [`encode`, `pack`, `exchange`, `unpack`, `decode`],
     hooks: {
@@ -236,5 +245,8 @@ export const create = (): Core<HookSequence, Hooks, ExecutionResult> => {
         }
       },
     },
+    // todo expose return handling as part of the pipeline?
+    // would be nice but alone would not yield type safe return handling
+    // still, while figuring the type story out, might be a useful escape hatch for some cases...
   }
 }

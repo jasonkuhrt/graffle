@@ -1,7 +1,6 @@
-import { type ExecutionResult } from 'graphql'
-import type { Anyware } from '../../lib/anyware/__.js'
+import { type ExecutionResult, GraphQLSchema } from 'graphql'
+import { Anyware } from '../../lib/anyware/__.js'
 import type { ErrorAnywareExtensionEntrypoint } from '../../lib/anyware/getEntrypoint.js'
-import { runExtensions } from '../../lib/anyware/main.js'
 import { Errors } from '../../lib/errors/__.js'
 import type { SomeExecutionResultWithoutErrors } from '../../lib/graphql.js'
 import { type RootTypeName, rootTypeNameToOperationName } from '../../lib/graphql.js'
@@ -13,6 +12,7 @@ import { readMaybeThunk } from '../1_Schema/core/helpers.js'
 import type { GlobalRegistry } from '../2_generator/globalRegistry.js'
 import type { Context, DocumentObject, GraphQLObjectSelection } from '../3_SelectionSet/encode.js'
 import { Core } from '../5_core/__.js'
+import type { HookInputEncode } from '../5_core/core.js'
 import type {
   ApplyInputDefaults,
   Config,
@@ -152,6 +152,8 @@ export const createInternal = (
    */
   const returnMode = input.returnMode ?? `data` as ReturnModeType
 
+  const core = Core.create()
+
   // const executeRootType =
   //   (context: Context, rootTypeName: RootTypeName) =>
   //   async (selection: GraphQLObjectSelection): Promise<GraffleExecutionResult> => {
@@ -175,7 +177,42 @@ export const createInternal = (
             : argsOrSelectionSet,
         },
       } as GraphQLObjectSelection
-      const result = await executeRootType(context, rootTypeName)(documentObject)
+
+      const transport = input.schema instanceof GraphQLSchema ? `memory` : `http`
+      const initialInput: HookInputEncode = transport === `http`
+        ? {
+          interface: `typed`,
+          selection: documentObject,
+          context: {
+            config: context.config,
+            transport,
+            interface: `typed`,
+            schemaIndex: context.schemaIndex,
+          },
+          transport,
+          rootTypeName,
+          schema: input.schema as string | URL,
+        }
+        : {
+          interface: `typed`,
+          selection: documentObject,
+          context: {
+            config: context.config,
+            transport,
+            interface: `typed`,
+            schemaIndex: context.schemaIndex,
+          },
+          transport,
+          rootTypeName,
+          schema: input.schema as GraphQLSchema,
+        }
+
+      const result = await Anyware.runWithExtensions({
+        core,
+        initialInput,
+        extensions: [],
+        options: {},
+      })
       const resultHandled = handleReturn(context.schemaIndex, result, returnMode)
       if (resultHandled instanceof Error) return resultHandled
       return returnMode === `data` || returnMode === `dataAndErrors` || returnMode === `successData`
@@ -272,15 +309,6 @@ export const createInternal = (
         returnMode,
       },
     }
-
-    const core = Core.create(context)
-
-    runExtensions({
-      core: core,
-      extensions: [],
-      initialInput: {},
-      options: {},
-    })
 
     Object.assign(client, {
       document: (documentObject: DocumentObject) => {

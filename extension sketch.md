@@ -28,7 +28,7 @@ const getFirstHook = () => hookNamesOrderedBySequence[0]
 const getNextHook = (hookName) => hookNamesOrderedBySequence[hookIndexes[hookName]+1] ?? null
 
 const core = {
-	implementationsByHook: {
+	hooks: {
 		request: (input) => {},
 		fetch: (input) => {},
 	}
@@ -76,7 +76,7 @@ const runHook = ({ core, name, done, originalInput, currentHookStack, nextHookSt
 
 	// Run core to get result
 	
-	const implementation = core.implementationsByHook[name]
+	const implementation = core.hooks[name]
 	const result = await implementation(originalInput)
 
 	// Return to root with the next result and hook stack

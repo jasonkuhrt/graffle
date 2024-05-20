@@ -1,7 +1,7 @@
 import type { Mock } from 'vitest'
 import { describe, expect, test, vi } from 'vitest'
 import type { Core, ExtensionInput, Options } from './main.js'
-import { runExtensions } from './main.js'
+import { runWithExtensions } from './main.js'
 
 type Input = { value: string }
 
@@ -24,7 +24,7 @@ const createCore = (): $Core => {
 const runWithOptions = (options: Options = {}) => async (...extensions: ExtensionInput[]) => {
   core = createCore()
 
-  const result = await runExtensions({
+  const result = await runWithExtensions({
     core,
     initialInput: { value: `initial` },
     extensions,
