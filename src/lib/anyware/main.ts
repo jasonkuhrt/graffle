@@ -1,13 +1,27 @@
-import type { Deferred, SomeAsyncFunction, SomeMaybeAsyncFunction } from '../prelude.js'
+import type {
+  Deferred,
+  FindValueAfter,
+  IsLastValue,
+  MaybePromise,
+  SomeAsyncFunction,
+  SomeMaybeAsyncFunction,
+} from '../prelude.js'
 import { casesExhausted, createDeferred, debug } from '../prelude.js'
 import { getEntrypoint } from './getEntrypoint.js'
 
 export type Core<
-  $Hook extends string = string,
-  $ImplementationsByHook extends Record<$Hook, SomeAsyncFunction> = Record<$Hook, SomeAsyncFunction>,
+  $Hooks extends [string, ...string[]],
+  $HookMap extends Record<$Hooks[number], object> = Record<$Hooks[number], object>,
+  $Result = unknown,
 > = {
-  hookNamesOrderedBySequence: $Hook[]
-  implementationsByHook: $ImplementationsByHook
+  hookNamesOrderedBySequence: $Hooks
+  implementationsByHook: {
+    [$HookName in $Hooks[number]]: (
+      input: $HookMap[$HookName],
+    ) => MaybePromise<
+      IsLastValue<$HookName, $Hooks> extends true ? $Result : $HookMap[FindValueAfter<$HookName, $Hooks>]
+    >
+  }
 }
 
 export type HookName = string
@@ -39,7 +53,7 @@ type HookDoneResolver = (input: HookDoneData) => void
 
 const runHook = async <$HookName extends string>(
   { core, name, done, originalInput, currentHookStack, nextHookStack }: {
-    core: Core<$HookName>
+    core: Core
     name: $HookName
     done: HookDoneResolver
     originalInput: unknown

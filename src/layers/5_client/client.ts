@@ -1,15 +1,18 @@
-import type { ExecutionResult } from 'graphql'
+import { type ExecutionResult } from 'graphql'
 import type { ErrorAnywareExtensionEntrypoint } from '../../lib/anyware/getEntrypoint.js'
+import { runExtensions } from '../../lib/anyware/main.js'
 import { Errors } from '../../lib/errors/__.js'
 import type { SomeExecutionResultWithoutErrors } from '../../lib/graphql.js'
 import { type RootTypeName, rootTypeNameToOperationName } from '../../lib/graphql.js'
 import { isPlainObject } from '../../lib/prelude.js'
+import { requestOrExecute, SchemaInput } from '../0_functions/requestOrExecute.js'
 import { Schema } from '../1_Schema/__.js'
 import { readMaybeThunk } from '../1_Schema/core/helpers.js'
 import type { GlobalRegistry } from '../2_generator/globalRegistry.js'
 import { SelectionSet } from '../3_SelectionSet/__.js'
 import type { Context, DocumentObject, GraphQLObjectSelection } from '../3_SelectionSet/encode.js'
 import * as CustomScalars from '../4_ResultSet/customScalars.js'
+import { Core } from '../5_core/__.js'
 import type {
   ApplyInputDefaults,
   Config,
@@ -19,10 +22,6 @@ import type {
 } from './Config.js'
 import type { DocumentFn } from './document.js'
 import { toDocumentString } from './document.js'
-import type { Extension } from './extension/types.js'
-import type { SchemaInput } from './requestOrExecute.js'
-import { requestOrExecute } from './requestOrExecute.js'
-import type { Input as RequestOrExecuteInput } from './requestOrExecute.js'
 import type { GetRootTypeMethods } from './RootTypeMethods.js'
 
 type RawInput = Omit<RequestOrExecuteInput, 'schema'>
@@ -133,17 +132,18 @@ export const create: Create = (
   input_,
 ) => createInternal(input_, { extensions: [] })
 
-interface State {
-  extensions: Extension[]
+interface CreateState {
+  extensions: Extension[] // todo Graffle extension
 }
 
 export const createInternal = (
   input_: Input<any>,
-  state: State,
+  state: CreateState,
 ) => {
   // eslint-disable-next-line
   // @ts-ignore passes after generation
   const input = input_ as Readonly<Input<any>>
+
   /**
    * @remarks Without generation the type of returnMode can be `ReturnModeTypeBase` which leads
    * TS to think some errors below are invalid checks because of a non-present member.
@@ -152,33 +152,10 @@ export const createInternal = (
    */
   const returnMode = input.returnMode ?? `data` as ReturnModeType
 
-  const executeRootType =
-    (context: Context, rootTypeName: RootTypeName) =>
-    async (selection: GraphQLObjectSelection): Promise<GraffleExecutionResult> => {
-      const rootIndex = context.schemaIndex.Root[rootTypeName]
-      if (!rootIndex) throw new Error(`Root type not found: ${rootTypeName}`)
-
-      // todo turn inputs into variables
-      const documentString = SelectionSet.Print.rootTypeSelectionSet(
-        context,
-        rootIndex,
-        // @ts-expect-error fixme
-        selection[rootTypeNameToOperationName[rootTypeName]],
-      )
-      // todo variables
-      const result = await requestOrExecute({
-        schema: input.schema,
-        document: documentString,
-        extensions: state.extensions,
-      })
-      if (result instanceof Error) return result
-      // todo optimize
-      // 1. Generate a map of possible custom scalar paths (tree structure)
-      // 2. When traversing the result, skip keys that are not in the map
-      // todo rename Result.decode
-      const dataDecoded = CustomScalars.decode(rootIndex, result.data)
-      return { ...result, data: dataDecoded }
-    }
+  // const executeRootType =
+  //   (context: Context, rootTypeName: RootTypeName) =>
+  //   async (selection: GraphQLObjectSelection): Promise<GraffleExecutionResult> => {
+  //   }
 
   const executeRootTypeField = (context: Context, rootTypeName: RootTypeName, key: string) => {
     return async (argsOrSelectionSet?: object) => {
@@ -295,6 +272,15 @@ export const createInternal = (
         returnMode,
       },
     }
+
+    const core = Core.createHttp(context)
+
+    runExtensions({
+      core: core,
+      extensions: [],
+      initialInput: {},
+      options: {},
+    })
 
     Object.assign(client, {
       document: (documentObject: DocumentObject) => {

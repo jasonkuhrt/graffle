@@ -268,3 +268,44 @@ export const debug = (...args: any[]) => {
     console.log(...args)
   }
 }
+
+export type PlusOneUpToTen<n extends number> = n extends 0 ? 1
+  : n extends 1 ? 2
+  : n extends 2 ? 3
+  : n extends 3 ? 4
+  : n extends 4 ? 5
+  : n extends 5 ? 6
+  : n extends 6 ? 7
+  : n extends 7 ? 8
+  : n extends 8 ? 9
+  : n extends 9 ? 10
+  : never
+
+export type MinusOneUpToTen<n extends number> = n extends 10 ? 9
+  : n extends 9 ? 8
+  : n extends 8 ? 7
+  : n extends 7 ? 6
+  : n extends 6 ? 5
+  : n extends 5 ? 4
+  : n extends 4 ? 3
+  : n extends 3 ? 2
+  : n extends 2 ? 1
+  : n extends 1 ? 0
+  : never
+
+export type findIndexForValue<value, list extends [any, ...any[]]> = findIndexForValue_<value, list, 0>
+type findIndexForValue_<value, list extends [any, ...any[]], i extends number> = value extends list[i] ? i
+  : findIndexForValue_<value, list, PlusOneUpToTen<i>>
+
+export type FindValueAfter<value, list extends [any, ...any[]]> = list[PlusOneUpToTen<findIndexForValue<value, list>>]
+
+export type ValueOr<value, orValue> = value extends undefined ? orValue : value
+
+export type FindValueAfterOr<value, list extends [any, ...any[]], orValue> = ValueOr<
+  list[PlusOneUpToTen<findIndexForValue<value, list>>],
+  orValue
+>
+
+export type GetLastValue<T extends [any, ...any[]]> = T[MinusOneUpToTen<T['length']>]
+
+export type IsLastValue<value, list extends [any, ...any[]]> = value extends GetLastValue<list> ? true : false
