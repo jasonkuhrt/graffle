@@ -1,5 +1,5 @@
 import type { MergeExclusive, NonEmptyObject } from 'type-fest'
-import { operationTypeToRootType } from '../../lib/graphql.js'
+import { operationTypeNameToRootTypeName } from '../../lib/graphql.js'
 import type { IsMultipleKeys } from '../../lib/prelude.js'
 import type { TSError } from '../../lib/TSError.js'
 import type { Schema } from '../1_Schema/__.js'
@@ -32,7 +32,7 @@ export const toDocumentString = (
 ) => {
   return Object.entries(document).map(([operationName, operationDocument]) => {
     const operationType = `query` in operationDocument ? `query` : `mutation`
-    const rootType = operationTypeToRootType[operationType]
+    const rootType = operationTypeNameToRootTypeName[operationType]
     const rootTypeDocument = (operationDocument as any)[operationType] as SelectionSet.Print.GraphQLObjectSelection // eslint-disable-line
 
     const schemaRootType = context.schemaIndex[`Root`][rootType]

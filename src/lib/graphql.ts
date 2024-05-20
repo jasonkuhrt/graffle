@@ -36,7 +36,7 @@ export const RootTypeName = {
   Subscription: `Subscription`,
 } as const
 
-export const operationTypeToRootType = {
+export const operationTypeNameToRootTypeName = {
   query: `Query`,
   mutation: `Mutation`,
   subscription: `Subscription`,

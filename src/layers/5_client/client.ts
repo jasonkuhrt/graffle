@@ -3,7 +3,7 @@ import { Anyware } from '../../lib/anyware/__.js'
 import type { ErrorAnywareExtensionEntrypoint } from '../../lib/anyware/getEntrypoint.js'
 import { Errors } from '../../lib/errors/__.js'
 import type { SomeExecutionResultWithoutErrors } from '../../lib/graphql.js'
-import { type RootTypeName, rootTypeNameToOperationName } from '../../lib/graphql.js'
+import { operationTypeNameToRootTypeName, type RootTypeName, rootTypeNameToOperationName } from '../../lib/graphql.js'
 import { isPlainObject } from '../../lib/prelude.js'
 import type { SchemaInput } from '../0_functions/requestOrExecute.js'
 // import { requestOrExecute } from '../0_functions/requestOrExecute.js'
@@ -269,6 +269,8 @@ export const createInternal = (
     })
   }
 
+  // todo rename to config
+  // todo integrate input
   const context: Context = {
     core: Core.create(),
     extensions: state.extensions,
@@ -334,61 +336,34 @@ export const createInternal = (
 
     Object.assign(client, {
       document: (documentObject: DocumentObject) => {
+        const hasMultipleOperations = Object.keys(documentObject).length > 1
+        const processInput = (maybeOperationName: string) => {
+          if (!maybeOperationName && hasMultipleOperations) {
+            throw {
+              errors: [new Error(`Must provide operation name if query contains multiple operations.`)],
+            }
+          }
+          if (maybeOperationName && !(maybeOperationName in documentObject)) {
+            throw {
+              errors: [new Error(`Unknown operation named "${maybeOperationName}".`)],
+            }
+          }
+          const operationName = maybeOperationName ? maybeOperationName : Object.keys(documentObject)[0]!
+          const operationTypeName = Object.keys(documentObject[operationName])[0]
+          const selection = documentObject[operationName][operationTypeName]
+          return {
+            operationTypeName,
+            selection,
+          }
+        }
         return {
-          run: async (operationName: string) => {
-            // 1. if returnMode is successData OR using orThrow
-            // 2. for each root type key
-            // 3. filter to only result fields
-            // 4. inject __typename selection
-            // if (returnMode === 'successData') {
-            //   Object.values(documentObject).forEach((rootTypeSelection) => {
-            //     Object.entries(rootTypeSelection).forEach(([fieldExpression, fieldValue]) => {
-            //       if (fieldExpression === 'result') {
-            //         // @ts-expect-error fixme
-            //         fieldValue.__typename = true
-            //       }
-            //     })
-            //   })
-            // }
-            // todo this does not support custom scalars
-
-            const documentString = toDocumentString(typedContext, documentObject)
-            const result = await run(typedContext, {
-              // todo fix input
-              schema: input.schema,
-              document: documentString,
-              operationName,
-              extensions: typedContext.extensions,
-              // todo variables
-            })
-            return handleReturn(typedContext, result)
+          run: async (maybeOperationName: string) => {
+            const { selection, operationTypeName } = processInput(maybeOperationName)
+            return await client[operationTypeName].$batch(selection)
           },
-          // todo call into non-throwing version
-          runOrThrow: async (operationName: string) => {
-            const documentString = toDocumentString({
-              ...context,
-              config: {
-                ...context.config,
-                returnMode: `successData`,
-              },
-            }, documentObject)
-            const result = await run(typedContext, {
-              // todo fix input
-              schema: input.schema,
-              document: documentString,
-              operationName,
-              extensions: typedContext.extensions,
-              // todo variables
-            })
-            // todo refactor...
-            const resultReturn = handleReturn({
-              ...typedContext,
-              config: {
-                ...typedContext.config,
-                returnMode: `successData`,
-              },
-            }, result)
-            return returnMode === `graphql` ? result : resultReturn
+          runOrThrow: async (maybeOperationName: string) => {
+            const { selection, operationTypeName } = processInput(maybeOperationName)
+            return await client[operationTypeName].$batchOrThrow(selection)
           },
         }
       },
