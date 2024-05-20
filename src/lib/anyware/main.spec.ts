@@ -17,7 +17,7 @@ const createCore = (): $Core => {
 
   return {
     hookNamesOrderedBySequence: [`a`, `b`],
-    implementationsByHook: { a, b },
+    hooks: { a, b },
   }
 }
 
@@ -37,6 +37,72 @@ const run = async (...extensions: ExtensionInput[]) => runWithOptions({})(...ext
 
 let core: $Core
 
+// todo
+// describe('invalid destructuring cases', () => {
+//   const make = async (extension: Extension) =>
+//     (await client.extend(extension).query.id()) as any as ErrorAnywareExtensionEntrypoint
+
+//   test('noParameters', async () => {
+//     const result = await make(async ({}) => {})
+//     expect(result).toMatchInlineSnapshot(
+//       `[ContextualError: Extension must destructure the input object and select an entry hook to use.]`,
+//     )
+//     expect(result.context).toMatchInlineSnapshot(`
+//       {
+//         "issue": "noParameters",
+//       }
+//     `)
+//   })
+//   test('noParameters', async () => {
+//     const result = await make(async () => {})
+//     expect(result).toMatchInlineSnapshot(
+//       `[ContextualError: Extension must destructure the input object and select an entry hook to use.]`,
+//     )
+//     expect(result.context).toMatchInlineSnapshot(`
+//       {
+//         "issue": "noParameters",
+//       }
+//     `)
+//   })
+//   test('destructuredWithoutEntryHook', async () => {
+//     // @ts-expect-error
+//     const result = await make(async ({ request2 }) => {})
+//     expect(result).toMatchInlineSnapshot(
+//       `[ContextualError: Extension must destructure the input object and select an entry hook to use.]`,
+//     )
+//     expect(result.context).toMatchInlineSnapshot(`
+//         {
+//           "issue": "destructuredWithoutEntryHook",
+//         }
+//       `)
+//   })
+//   test('multipleParameters', async () => {
+//     // @ts-expect-error
+//     const result = await make(async ({ request }, two) => {})
+//     expect(result).toMatchInlineSnapshot(
+//       `[ContextualError: Extension must destructure the input object and select an entry hook to use.]`,
+//     )
+//     expect(result.context).toMatchInlineSnapshot(`
+//         {
+//           "issue": "multipleParameters",
+//         }
+//       `)
+//   })
+//   test('notDestructured', async () => {
+//     const result = await make(async (_) => {})
+//     expect(result).toMatchInlineSnapshot(
+//       `[ContextualError: Extension must destructure the input object and select an entry hook to use.]`,
+//     )
+//     expect(result.context).toMatchInlineSnapshot(`
+//         {
+//           "issue": "notDestructured",
+//         }
+//       `)
+//   })
+//   // todo once we have multiple hooks test this case:
+//   // multipleDestructuredHookNames
+// })
+
 describe(`no extensions`, () => {
   test(`passthrough to implementation`, async () => {
     const result = await run()
@@ -53,8 +119,8 @@ describe(`one extension`, () => {
         return 0
       }),
     ).toEqual(0)
-    expect(core.implementationsByHook.a).toHaveBeenCalled()
-    expect(core.implementationsByHook.b).toHaveBeenCalled()
+    expect(core.hooks.a).toHaveBeenCalled()
+    expect(core.hooks.b).toHaveBeenCalled()
   })
   describe(`can short-circuit`, () => {
     test(`at start, return input`, async () => {
@@ -64,8 +130,8 @@ describe(`one extension`, () => {
           return a.input
         }),
       ).toEqual({ value: `initial` })
-      expect(core.implementationsByHook.a).not.toHaveBeenCalled()
-      expect(core.implementationsByHook.b).not.toHaveBeenCalled()
+      expect(core.hooks.a).not.toHaveBeenCalled()
+      expect(core.hooks.b).not.toHaveBeenCalled()
     })
     test(`at start, return own result`, async () => {
       expect(
@@ -74,8 +140,8 @@ describe(`one extension`, () => {
           return 0
         }),
       ).toEqual(0)
-      expect(core.implementationsByHook.a).not.toHaveBeenCalled()
-      expect(core.implementationsByHook.b).not.toHaveBeenCalled()
+      expect(core.hooks.a).not.toHaveBeenCalled()
+      expect(core.hooks.b).not.toHaveBeenCalled()
     })
     test(`after first hook, return own result`, async () => {
       expect(
@@ -84,7 +150,7 @@ describe(`one extension`, () => {
           return b.input.value + `+x`
         }),
       ).toEqual(`initial+a+x`)
-      expect(core.implementationsByHook.b).not.toHaveBeenCalled()
+      expect(core.hooks.b).not.toHaveBeenCalled()
     })
   })
   describe(`can partially apply`, () => {
@@ -120,8 +186,8 @@ describe(`two extensions`, () => {
     const ex2 = vi.fn().mockImplementation(() => 2)
     expect(await run(ex1, ex2)).toEqual(1)
     expect(ex2).not.toHaveBeenCalled()
-    expect(core.implementationsByHook.a).not.toHaveBeenCalled()
-    expect(core.implementationsByHook.b).not.toHaveBeenCalled()
+    expect(core.hooks.a).not.toHaveBeenCalled()
+    expect(core.hooks.b).not.toHaveBeenCalled()
   })
 
   test(`each can adjust first hook then passthrough`, async () => {
@@ -163,8 +229,8 @@ describe(`two extensions`, () => {
     }
     expect(await run(ex1, ex2)).toEqual(2)
     expect(ex1AfterA).toBe(false)
-    expect(core.implementationsByHook.a).not.toHaveBeenCalled()
-    expect(core.implementationsByHook.b).not.toHaveBeenCalled()
+    expect(core.hooks.a).not.toHaveBeenCalled()
+    expect(core.hooks.b).not.toHaveBeenCalled()
   })
   test(`second can short-circuit after hook a`, async () => {
     let ex1AfterB = false
@@ -179,8 +245,8 @@ describe(`two extensions`, () => {
     }
     expect(await run(ex1, ex2)).toEqual(2)
     expect(ex1AfterB).toBe(false)
-    expect(core.implementationsByHook.a).toHaveBeenCalledOnce()
-    expect(core.implementationsByHook.b).not.toHaveBeenCalled()
+    expect(core.hooks.a).toHaveBeenCalledOnce()
+    expect(core.hooks.b).not.toHaveBeenCalled()
   })
 })
 

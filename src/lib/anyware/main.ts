@@ -1,3 +1,9 @@
+// todo allow hooks to have implementation overriden.
+// E.g.: request((input) => {...})
+// todo allow hooks to have passthrough without explicit input passing
+// E.g.: NOT              await request(request.input)
+// but instead simply:    await request()
+
 import type {
   Deferred,
   FindValueAfter,
@@ -9,17 +15,76 @@ import type {
 import { casesExhausted, createDeferred, debug } from '../prelude.js'
 import { getEntrypoint } from './getEntrypoint.js'
 
-export type Core<
-  $Hooks extends [string, ...string[]],
-  $HookMap extends Record<$Hooks[number], object> = Record<$Hooks[number], object>,
+type HookSequence = readonly [string, ...string[]]
+export type Extension2<
+  $HookSequence extends HookSequence,
+  $HookMap extends Record<$HookSequence[number], object> = Record<$HookSequence[number], object>,
+  $Result = unknown,
+> = (
+  hooks: ExtensionHooks<
+    $HookSequence,
+    $HookMap,
+    $Result
+  >,
+) => Promise<
+  | $Result
+  | SomeHookEnvelope
+>
+
+type ExtensionHooks<
+  $HookSequence extends HookSequence,
+  $HookMap extends Record<$HookSequence[number], object> = Record<$HookSequence[number], object>,
   $Result = unknown,
 > = {
-  hookNamesOrderedBySequence: $Hooks
-  implementationsByHook: {
-    [$HookName in $Hooks[number]]: (
+  [$HookName in $HookSequence[number]]: Hook<$HookSequence, $HookMap, $Result, $HookName>
+}
+
+const hookSymbol = Symbol(`hook`)
+
+type HookSymbol = typeof hookSymbol
+
+type SomeHookEnvelope = {
+  [name: string]: SomeHook
+}
+type SomeHook = {
+  [hookSymbol]: HookSymbol
+}
+
+type Hook<
+  $HookSequence extends HookSequence,
+  $HookMap extends Record<$HookSequence[number], object> = Record<$HookSequence[number], object>,
+  $Result = unknown,
+  $Name extends $HookSequence[number] = $HookSequence[number],
+> = (<$$Input extends $HookMap[$Name]>(input: $$Input) => HookReturn<$HookSequence, $HookMap, $Result, $Name>) & {
+  [hookSymbol]: HookSymbol
+  input: $HookMap[$Name]
+}
+
+type HookReturn<
+  $HookSequence extends HookSequence,
+  $HookMap extends Record<$HookSequence[number], object> = Record<$HookSequence[number], object>,
+  $Result = unknown,
+  $Name extends $HookSequence[number] = $HookSequence[number],
+> = IsLastValue<$Name, $HookSequence> extends true ? $Result : {
+  [$NameNext in FindValueAfter<$Name, $HookSequence>]: Hook<
+    $HookSequence,
+    $HookMap,
+    $Result,
+    $NameNext
+  >
+}
+
+export type Core<
+  $HookSequence extends readonly [string, ...string[]],
+  $HookMap extends Record<$HookSequence[number], object> = Record<$HookSequence[number], object>,
+  $Result = unknown,
+> = {
+  hookNamesOrderedBySequence: $HookSequence
+  hooks: {
+    [$HookName in $HookSequence[number]]: (
       input: $HookMap[$HookName],
     ) => MaybePromise<
-      IsLastValue<$HookName, $Hooks> extends true ? $Result : $HookMap[FindValueAfter<$HookName, $Hooks>]
+      IsLastValue<$HookName, $HookSequence> extends true ? $Result : $HookMap[FindValueAfter<$HookName, $HookSequence>]
     >
   }
 }

@@ -1,17 +1,17 @@
 import { type ExecutionResult } from 'graphql'
+import type { Anyware } from '../../lib/anyware/__.js'
 import type { ErrorAnywareExtensionEntrypoint } from '../../lib/anyware/getEntrypoint.js'
 import { runExtensions } from '../../lib/anyware/main.js'
 import { Errors } from '../../lib/errors/__.js'
 import type { SomeExecutionResultWithoutErrors } from '../../lib/graphql.js'
 import { type RootTypeName, rootTypeNameToOperationName } from '../../lib/graphql.js'
 import { isPlainObject } from '../../lib/prelude.js'
-import { requestOrExecute, SchemaInput } from '../0_functions/requestOrExecute.js'
+import type { SchemaInput } from '../0_functions/requestOrExecute.js'
+import { requestOrExecute } from '../0_functions/requestOrExecute.js'
 import { Schema } from '../1_Schema/__.js'
 import { readMaybeThunk } from '../1_Schema/core/helpers.js'
 import type { GlobalRegistry } from '../2_generator/globalRegistry.js'
-import { SelectionSet } from '../3_SelectionSet/__.js'
 import type { Context, DocumentObject, GraphQLObjectSelection } from '../3_SelectionSet/encode.js'
-import * as CustomScalars from '../4_ResultSet/customScalars.js'
 import { Core } from '../5_core/__.js'
 import type {
   ApplyInputDefaults,
@@ -41,7 +41,7 @@ export type Client<$Index extends Schema.Index | null, $Config extends Config> =
       : {} // eslint-disable-line
     )
   & {
-      extend: (extension: Extension) => Client<$Index, $Config>
+      extend: (extension: Anyware.Extension2<Core.HookSequence, Core.Hooks, ExecutionResult>) => Client<$Index, $Config>
     }
 
 export type ClientTyped<$Index extends Schema.Index, $Config extends Config> =
@@ -273,7 +273,7 @@ export const createInternal = (
       },
     }
 
-    const core = Core.createHttp(context)
+    const core = Core.create(context)
 
     runExtensions({
       core: core,

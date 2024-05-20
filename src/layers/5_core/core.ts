@@ -44,7 +44,11 @@ type TransportInput<A = {}, B = {}> =
     transport: TransportMemory
   } & B)
 
-export const createCore = (): Core<[`encode`, `pack`, `exchange`, `unpack`, `decode`], {
+export const hookSequence = [`encode`, `pack`, `exchange`, `unpack`, `decode`] as const
+
+export type HookSequence = typeof hookSequence
+
+export type Hooks = {
   encode:
     & InterfaceInput<{}, { document: string | DocumentNode }>
     & TransportInput<{ schema: string | URL }, { schema: GraphQLSchema }>
@@ -79,10 +83,12 @@ export const createCore = (): Core<[`encode`, `pack`, `exchange`, `unpack`, `dec
     & { result: ExecutionResult }
     & InterfaceInput
   // todo this depends on the return mode
-}, ExecutionResult> => {
+}
+
+export const create = (): Core<HookSequence, Hooks, ExecutionResult> => {
   return {
     hookNamesOrderedBySequence: [`encode`, `pack`, `exchange`, `unpack`, `decode`],
-    implementationsByHook: {
+    hooks: {
       encode: (
         input,
       ) => {

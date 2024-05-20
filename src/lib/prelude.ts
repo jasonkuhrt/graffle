@@ -293,19 +293,20 @@ export type MinusOneUpToTen<n extends number> = n extends 10 ? 9
   : n extends 1 ? 0
   : never
 
-export type findIndexForValue<value, list extends [any, ...any[]]> = findIndexForValue_<value, list, 0>
-type findIndexForValue_<value, list extends [any, ...any[]], i extends number> = value extends list[i] ? i
+export type findIndexForValue<value, list extends readonly [any, ...any[]]> = findIndexForValue_<value, list, 0>
+type findIndexForValue_<value, list extends readonly [any, ...any[]], i extends number> = value extends list[i] ? i
   : findIndexForValue_<value, list, PlusOneUpToTen<i>>
 
-export type FindValueAfter<value, list extends [any, ...any[]]> = list[PlusOneUpToTen<findIndexForValue<value, list>>]
+export type FindValueAfter<value, list extends readonly [any, ...any[]]> =
+  list[PlusOneUpToTen<findIndexForValue<value, list>>]
 
 export type ValueOr<value, orValue> = value extends undefined ? orValue : value
 
-export type FindValueAfterOr<value, list extends [any, ...any[]], orValue> = ValueOr<
+export type FindValueAfterOr<value, list extends readonly [any, ...any[]], orValue> = ValueOr<
   list[PlusOneUpToTen<findIndexForValue<value, list>>],
   orValue
 >
 
-export type GetLastValue<T extends [any, ...any[]]> = T[MinusOneUpToTen<T['length']>]
+export type GetLastValue<T extends readonly [any, ...any[]]> = T[MinusOneUpToTen<T['length']>]
 
-export type IsLastValue<value, list extends [any, ...any[]]> = value extends GetLastValue<list> ? true : false
+export type IsLastValue<value, list extends readonly [any, ...any[]]> = value extends GetLastValue<list> ? true : false
