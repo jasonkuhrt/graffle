@@ -4,6 +4,8 @@
 // E.g.: NOT              await request(request.input)
 // but instead simply:    await request()
 
+import { Errors } from '../errors/__.js'
+import { partitionAndAggregateErrors } from '../errors/ContextualAggregateError.js'
 import { ContextualError } from '../errors/ContextualError.js'
 import type {
   Deferred,
@@ -13,7 +15,8 @@ import type {
   SomeAsyncFunction,
   SomeMaybeAsyncFunction,
 } from '../prelude.js'
-import { casesExhausted, createDeferred, debug, errorFromMaybeError } from '../prelude.js'
+import { casesExhausted, createDeferred, debug, errorFromMaybeError, partitionErrors } from '../prelude.js'
+import type { ErrorAnywareExtensionEntrypoint } from './getEntrypoint.js'
 import { getEntrypoint } from './getEntrypoint.js'
 
 type HookSequence = readonly [string, ...string[]]
@@ -316,8 +319,7 @@ const toInternalExtension = (core: Core, config: Config, extension: SomeAsyncFun
       const entrypoint = getEntrypoint(core.hookNamesOrderedBySequence, extension)
       if (entrypoint instanceof Error) {
         if (config.entrypointSelectionMode === `required`) {
-          // todo return error and make part of types
-          throw entrypoint
+          return entrypoint
         } else {
           currentChunk.promise.then(appplyBody)
           return {
@@ -376,9 +378,18 @@ export const runWithExtensions = async <$Core extends Core>(
     options?: Options
   },
 ) => {
+  const initialHookStackAndErrors = extensions.map(extension =>
+    toInternalExtension(core, resolveOptions(options), extension)
+  )
+  const [initialHookStack, error] = partitionAndAggregateErrors(initialHookStackAndErrors)
+
+  if (error) {
+    return error
+  }
+
   return await run({
     core,
     initialInput,
-    initialHookStack: extensions.map(extension => toInternalExtension(core, resolveOptions(options), extension)),
+    initialHookStack,
   })
 }

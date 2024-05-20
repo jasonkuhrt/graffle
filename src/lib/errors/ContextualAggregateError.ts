@@ -1,3 +1,5 @@
+import type { Include } from '../prelude.js'
+import { partitionErrors } from '../prelude.js'
 import { ContextualError } from './ContextualError.js'
 import type { Cause } from './types.js'
 
@@ -23,4 +25,14 @@ export class ContextualAggregateError<
   ) {
     super(message, context, undefined)
   }
+}
+
+export const partitionAndAggregateErrors = <Results>(
+  results: Results[],
+): [Exclude<Results, Error>[], null | ContextualAggregateError<Include<Results, Error>>] => {
+  const [values, errors] = partitionErrors(results)
+  const error = errors.length > 0
+    ? new ContextualAggregateError(`One or more extensions are invalid.`, {}, errors)
+    : null
+  return [values, error]
 }

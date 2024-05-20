@@ -9,7 +9,7 @@ export class ErrorAnywareExtensionEntrypoint extends ContextualError<
 > {
   // todo add to context: parameters value parsed and raw
   constructor(context: { issue: ExtensionEntryHookIssue }) {
-    super(`Extension must destructure the input object and select an entry hook to use.`, context)
+    super(`Extension must destructure the first parameter passed to it and select exactly one entrypoint.`, context)
   }
 }
 

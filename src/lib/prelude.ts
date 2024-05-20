@@ -1,5 +1,7 @@
 import { resolve } from 'dns'
 import type { ConditionalSimplifyDeep } from 'type-fest/source/conditional-simplify.js'
+import { Errors } from './errors/__.js'
+import type { ContextualAggregateError } from './errors/ContextualAggregateError.js'
 
 /* eslint-disable */
 export type RemoveIndex<T> = {
@@ -310,3 +312,18 @@ export type FindValueAfterOr<value, list extends readonly [any, ...any[]], orVal
 export type GetLastValue<T extends readonly [any, ...any[]]> = T[MinusOneUpToTen<T['length']>]
 
 export type IsLastValue<value, list extends readonly [any, ...any[]]> = value extends GetLastValue<list> ? true : false
+
+export type Include<T, U> = T extends U ? T : never
+
+export const partitionErrors = <T>(array: T[]): [Exclude<T, Error>[], Include<T, Error>[]] => {
+  const errors: Include<T, Error>[] = []
+  const values: Exclude<T, Error>[] = []
+  for (const item of array) {
+    if (item instanceof Error) {
+      errors.push(item as any)
+    } else {
+      values.push(item as any)
+    }
+  }
+  return [values, errors]
+}
