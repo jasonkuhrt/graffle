@@ -1,4 +1,3 @@
-import { stat } from 'fs'
 import { type ExecutionResult, GraphQLSchema } from 'graphql'
 import { Anyware } from '../../lib/anyware/__.js'
 import type { ErrorAnywareExtensionEntrypoint } from '../../lib/anyware/getEntrypoint.js'
@@ -7,13 +6,15 @@ import type { SomeExecutionResultWithoutErrors } from '../../lib/graphql.js'
 import { type RootTypeName, rootTypeNameToOperationName } from '../../lib/graphql.js'
 import { isPlainObject } from '../../lib/prelude.js'
 import type { SchemaInput } from '../0_functions/requestOrExecute.js'
-import { requestOrExecute } from '../0_functions/requestOrExecute.js'
+// import { requestOrExecute } from '../0_functions/requestOrExecute.js'
+import type { Input as RawInput } from '../0_functions/requestOrExecute.js'
 import { Schema } from '../1_Schema/__.js'
 import { readMaybeThunk } from '../1_Schema/core/helpers.js'
 import type { GlobalRegistry } from '../2_generator/globalRegistry.js'
-import type { Context, DocumentObject, GraphQLObjectSelection } from '../3_SelectionSet/encode.js'
+import type { DocumentObject, GraphQLObjectSelection } from '../3_SelectionSet/encode.js'
 import { Core } from '../5_core/__.js'
 import type { HookInputEncode } from '../5_core/core.js'
+import type { InterfaceRaw } from '../5_core/types.js'
 import type {
   ApplyInputDefaults,
   Config,
@@ -25,7 +26,18 @@ import type { DocumentFn } from './document.js'
 import { toDocumentString } from './document.js'
 import type { GetRootTypeMethods } from './RootTypeMethods.js'
 
-type RawInput = Omit<RequestOrExecuteInput, 'schema'>
+export interface Context {
+  core: any // todo
+  extensions: Extension[]
+  schemaIndex?: Schema.Index
+  config: {
+    returnMode: ReturnModeType
+  }
+}
+
+export type TypedContext = Omit<Context, 'schemaIndex'> & {
+  schemaIndex: Schema.Index
+}
 
 // todo no config needed?
 export type ClientRaw<_$Config extends Config> = {
@@ -153,140 +165,149 @@ export const createInternal = (
    */
   const returnMode = input.returnMode ?? `data` as ReturnModeType
 
-  const core = Core.create()
+  const executeRootTypeField = async (
+    context: TypedContext,
+    rootTypeName: RootTypeName,
+    key: string,
+    argsOrSelectionSet?: object,
+  ) => {
+    const type = readMaybeThunk(
+      // eslint-disable-next-line
+      // @ts-ignore excess depth error
+      Schema.Output.unwrapToNamed(readMaybeThunk(input.schemaIndex.Root[rootTypeName]?.fields[key]?.type)),
+    ) as Schema.Output.Named
+    if (!type) throw new Error(`${rootTypeName} field not found: ${String(key)}`) // eslint-disable-line
+    // @ts-expect-error fixme
+    const isSchemaScalarOrTypeName = type.kind === `Scalar` || type.kind === `typename` // todo fix type here, its valid
+    const isSchemaHasArgs = Boolean(context.schemaIndex.Root[rootTypeName]?.fields[key]?.args)
+    const documentObject = {
+      [rootTypeNameToOperationName[rootTypeName]]: {
+        [key]: isSchemaScalarOrTypeName
+          ? isSchemaHasArgs && argsOrSelectionSet ? { $: argsOrSelectionSet } : true
+          : argsOrSelectionSet,
+      },
+    } as GraphQLObjectSelection
+    const result = await executeRootType(context, rootTypeName, documentObject)
+    return context.config.returnMode === `data` || context.config.returnMode === `dataAndErrors`
+        || context.config.returnMode === `successData`
+      // @ts-expect-error
+      ? result[key]
+      : result
+  }
 
-  // const executeRootType =
-  //   (context: Context, rootTypeName: RootTypeName) =>
-  //   async (selection: GraphQLObjectSelection): Promise<GraffleExecutionResult> => {
-  //   }
+  const executeRootType = async (
+    context: TypedContext,
+    rootTypeName: RootTypeName,
+    selectionSet: GraphQLObjectSelection,
+  ) => {
+    const transport = input.schema instanceof GraphQLSchema ? `memory` : `http`
+    const interface_ = `typed`
+    const initialInput = {
+      interface: interface_,
+      selection: selectionSet,
+      context: {
+        config: context.config,
+        transport,
+        interface: interface_,
+        schemaIndex: context.schemaIndex,
+      },
+      transport,
+      rootTypeName,
+      schema: input.schema as string | URL,
+    }
+    const result = await run(context, initialInput)
+    // todo centralize
+    return handleReturn(context, result)
+  }
 
-  const executeRootTypeField = (context: Context, rootTypeName: RootTypeName, key: string) => {
-    return async (argsOrSelectionSet?: object) => {
-      const type = readMaybeThunk(
-        // eslint-disable-next-line
-        // @ts-ignore excess depth error
-        Schema.Output.unwrapToNamed(readMaybeThunk(input.schemaIndex.Root[rootTypeName]?.fields[key]?.type)),
-      ) as Schema.Output.Named
-      if (!type) throw new Error(`${rootTypeName} field not found: ${String(key)}`) // eslint-disable-line
-      // @ts-expect-error fixme
-      const isSchemaScalarOrTypeName = type.kind === `Scalar` || type.kind === `typename` // todo fix type here, its valid
-      const isSchemaHasArgs = Boolean(context.schemaIndex.Root[rootTypeName]?.fields[key]?.args)
-      const documentObject = {
-        [rootTypeNameToOperationName[rootTypeName]]: {
-          [key]: isSchemaScalarOrTypeName
-            ? isSchemaHasArgs && argsOrSelectionSet ? { $: argsOrSelectionSet } : true
-            : argsOrSelectionSet,
-        },
-      } as GraphQLObjectSelection
-
-      const transport = input.schema instanceof GraphQLSchema ? `memory` : `http`
-      const initialInput: HookInputEncode = transport === `http`
-        ? {
-          interface: `typed`,
-          selection: documentObject,
-          context: {
-            config: context.config,
-            transport,
-            interface: `typed`,
-            schemaIndex: context.schemaIndex,
-          },
-          transport,
-          rootTypeName,
-          schema: input.schema as string | URL,
-        }
-        : {
-          interface: `typed`,
-          selection: documentObject,
-          context: {
-            config: context.config,
-            transport,
-            interface: `typed`,
-            schemaIndex: context.schemaIndex,
-          },
-          transport,
-          rootTypeName,
-          schema: input.schema as GraphQLSchema,
-        }
-
-      const result = await Anyware.runWithExtensions({
-        core,
-        initialInput,
-        extensions: state.extensions,
-        options: {},
+  const createRootType = (context: TypedContext, rootTypeName: RootTypeName) => {
+    return async (isOrThrow: boolean, selectionSetOrIndicator: GraphQLObjectSelection) => {
+      const context2 = isOrThrow ? { ...context, config: { ...context.config, returnMode: `successData` } } : context
+      return await executeRootType(context2, rootTypeName, {
+        [rootTypeNameToOperationName[rootTypeName]]: selectionSetOrIndicator,
       })
-
-      const resultHandled = handleReturn(context.schemaIndex, result, returnMode)
-      if (resultHandled instanceof Error) return resultHandled
-      return returnMode === `data` || returnMode === `dataAndErrors` || returnMode === `successData`
-        // @ts-expect-error make this type safe?
-        ? resultHandled[key]
-        : resultHandled
     }
   }
 
-  const createRootTypeMethods = (context: Context, rootTypeName: RootTypeName) =>
-    new Proxy({}, {
+  const createRootTypeField = (context: TypedContext, rootTypeName: RootTypeName) => {
+    return async (isOrThrow: boolean, fieldName: string, argsOrSelectionSet?: object) => {
+      const result = await executeRootTypeField(context, rootTypeName, fieldName, argsOrSelectionSet) // eslint-disable-line
+      // todo all of the following is return processing, could be lifted out & centralized
+      if (isOrThrow && result instanceof Error) throw result
+      // todo consolidate
+      // eslint-disable-next-line
+      if (isOrThrow && returnMode === `graphql` && result.errors.length > 0) {
+        throw new Errors.ContextualAggregateError(
+          `One or more errors in the execution result.`,
+          {},
+          // eslint-disable-next-line
+          result.errors,
+        )
+      }
+      return result
+    }
+  }
+
+  const createRootTypeMethods = (context: TypedContext, rootTypeName: RootTypeName) => {
+    const rootType = createRootType(context, rootTypeName)
+    const rootTypeField = createRootTypeField(context, rootTypeName)
+    return new Proxy({}, {
       get: (_, key) => {
         if (typeof key === `symbol`) throw new Error(`Symbols not supported.`)
 
+        // todo centralize the orthrow handling here rather than into each method
         // todo We need to document that in order for this to 100% work none of the user's root type fields can end with "OrThrow".
         const isOrThrow = key.endsWith(`OrThrow`)
 
         if (key.startsWith(`$batch`)) {
-          return async (selectionSetOrIndicator: GraphQLObjectSelection) => {
-            const resultRaw = await executeRootType(context, rootTypeName)({
-              [rootTypeNameToOperationName[rootTypeName]]: selectionSetOrIndicator,
-            })
-            const result = handleReturn(context.schemaIndex, resultRaw, returnMode)
-            if (isOrThrow && result instanceof Error) throw result
-            // todo consolidate
-            // @ts-expect-error fixme
-            if (isOrThrow && returnMode === `graphql` && result.errors && result.errors.length > 0) {
-              throw new Errors.ContextualAggregateError(
-                `One or more errors in the execution result.`,
-                {},
-                // @ts-expect-error fixme
-                result.errors,
-              )
-            }
-            return result
-          }
+          return (selectionSet) => rootType(isOrThrow, selectionSet)
         } else {
           const fieldName = isOrThrow ? key.slice(0, -7) : key
-          return async (argsOrSelectionSet?: object) => {
-            const result = await executeRootTypeField(context, rootTypeName, fieldName)(argsOrSelectionSet) // eslint-disable-line
-            if (isOrThrow && result instanceof Error) throw result
-            // todo consolidate
-            // eslint-disable-next-line
-            if (isOrThrow && returnMode === `graphql` && result.errors.length > 0) {
-              throw new Errors.ContextualAggregateError(
-                `One or more errors in the execution result.`,
-                {},
-                // eslint-disable-next-line
-                result.errors,
-              )
-            }
-            return result
-          }
+          return (argsOrSelectionSet) => rootTypeField(isOrThrow, fieldName, argsOrSelectionSet)
         }
       },
     })
+  }
+
+  const context: Context = {
+    core: Core.create(),
+    extensions: state.extensions,
+    config: {
+      returnMode,
+    },
+  }
+
+  const run = async (context: Context, initialInput: HookInputEncode) => {
+    return await Anyware.runWithExtensions({
+      core: context.core,
+      initialInput,
+      extensions: context.extensions,
+    })
+  }
 
   // @ts-expect-error ignoreme
   const client: Client = {
     raw: async (input2: RawInput) => {
-      return await requestOrExecute({
-        ...input2,
-        schema: input.schema,
-      })
+      const interface_: InterfaceRaw = `raw`
+      const transport = input.schema instanceof GraphQLSchema ? `memory` : `http`
+      const initialInput: HookInputEncode = {
+        interface: interface_,
+        document: input2.document,
+        context: {
+          // config: context.config,
+          transport,
+          interface: interface_,
+        },
+        transport,
+        schema: input.schema as string | URL,
+      }
+      const result = await run(context, initialInput)
+      return result
     },
     rawOrThrow: async (
       input2: RawInput,
     ) => {
-      const result = await requestOrExecute({
-        ...input2,
-        schema: input.schema,
-      })
+      const result = await client.raw(input2)
       if (result instanceof Error) throw result
       // todo consolidate
       if (result.errors && result.errors.length > 0) {
@@ -298,52 +319,51 @@ export const createInternal = (
       }
       return result
     },
-    extend: (extension: Extension) => {
+    extend: (extension) => {
+      // todo test that adding extensions returns a copy of client
       return createInternal(input, { extensions: [...state.extensions, extension] })
     },
   }
 
+  // todo extract this into constructor "create typed client"
   if (input.schemaIndex) {
-    const schemaIndex = input.schemaIndex
-    const context: Context = {
-      schemaIndex,
-      config: {
-        returnMode,
-      },
+    const typedContext: TypedContext = {
+      ...context,
+      schemaIndex: input.schemaIndex,
     }
 
     Object.assign(client, {
       document: (documentObject: DocumentObject) => {
-        const run = async (operationName: string) => {
-          // 1. if returnMode is successData OR using orThrow
-          // 2. for each root type key
-          // 3. filter to only result fields
-          // 4. inject __typename selection
-          // if (returnMode === 'successData') {
-          //   Object.values(documentObject).forEach((rootTypeSelection) => {
-          //     Object.entries(rootTypeSelection).forEach(([fieldExpression, fieldValue]) => {
-          //       if (fieldExpression === 'result') {
-          //         // @ts-expect-error fixme
-          //         fieldValue.__typename = true
-          //       }
-          //     })
-          //   })
-          // }
-          // todo this does not support custom scalars
-
-          const documentString = toDocumentString(context, documentObject)
-          const result = await requestOrExecute({
-            schema: input.schema,
-            document: documentString,
-            operationName,
-            extensions: state.extensions,
-            // todo variables
-          })
-          return handleReturn(schemaIndex, result, returnMode)
-        }
-
         return {
-          run,
+          run: async (operationName: string) => {
+            // 1. if returnMode is successData OR using orThrow
+            // 2. for each root type key
+            // 3. filter to only result fields
+            // 4. inject __typename selection
+            // if (returnMode === 'successData') {
+            //   Object.values(documentObject).forEach((rootTypeSelection) => {
+            //     Object.entries(rootTypeSelection).forEach(([fieldExpression, fieldValue]) => {
+            //       if (fieldExpression === 'result') {
+            //         // @ts-expect-error fixme
+            //         fieldValue.__typename = true
+            //       }
+            //     })
+            //   })
+            // }
+            // todo this does not support custom scalars
+
+            const documentString = toDocumentString(typedContext, documentObject)
+            const result = await run(typedContext, {
+              // todo fix input
+              schema: input.schema,
+              document: documentString,
+              operationName,
+              extensions: typedContext.extensions,
+              // todo variables
+            })
+            return handleReturn(typedContext, result)
+          },
+          // todo call into non-throwing version
           runOrThrow: async (operationName: string) => {
             const documentString = toDocumentString({
               ...context,
@@ -352,21 +372,28 @@ export const createInternal = (
                 returnMode: `successData`,
               },
             }, documentObject)
-            const result = await requestOrExecute({
+            const result = await run(typedContext, {
+              // todo fix input
               schema: input.schema,
               document: documentString,
               operationName,
-              extensions: state.extensions,
+              extensions: typedContext.extensions,
               // todo variables
             })
             // todo refactor...
-            const resultReturn = handleReturn(schemaIndex, result, `successData`)
+            const resultReturn = handleReturn({
+              ...typedContext,
+              config: {
+                ...typedContext.config,
+                returnMode: `successData`,
+              },
+            }, result)
             return returnMode === `graphql` ? result : resultReturn
           },
         }
       },
-      query: createRootTypeMethods(context, `Query`),
-      mutation: createRootTypeMethods(context, `Mutation`),
+      query: createRootTypeMethods(typedContext, `Query`),
+      mutation: createRootTypeMethods(typedContext, `Mutation`),
       // todo
       // subscription: async () => {},
     })
@@ -378,11 +405,10 @@ export const createInternal = (
 type GraffleExecutionResult = ExecutionResult | ErrorAnywareExtensionEntrypoint
 
 const handleReturn = (
-  schemaIndex: Schema.Index,
+  context: TypedContext,
   result: GraffleExecutionResult,
-  returnMode: ReturnModeType,
 ) => {
-  switch (returnMode) {
+  switch (context.config.returnMode) {
     case `dataAndErrors`:
     case `successData`:
     case `data`: {
@@ -392,10 +418,10 @@ const handleReturn = (
           {},
           result.errors!,
         ))
-        if (returnMode === `data` || returnMode === `successData`) throw error
+        if (context.config.returnMode === `data` || context.config.returnMode === `successData`) throw error
         return error
       }
-      if (returnMode === `successData`) {
+      if (context.config.returnMode === `successData`) {
         if (!isPlainObject(result.data)) throw new Error(`Expected data to be an object.`)
         const schemaErrors = Object.entries(result.data).map(([rootFieldName, rootFieldValue]) => {
           // todo this check would be nice but it doesn't account for aliases right now. To achieve this we would
@@ -409,7 +435,7 @@ const handleReturn = (
           const __typename = rootFieldValue[`__typename`]
           if (typeof __typename !== `string`) throw new Error(`Expected __typename to be selected and a string.`)
           const isErrorObject = Boolean(
-            schemaIndex.error.objectsTypename[__typename],
+            context.schemaIndex.error.objectsTypename[__typename],
           )
           if (!isErrorObject) return null
           // todo extract message
