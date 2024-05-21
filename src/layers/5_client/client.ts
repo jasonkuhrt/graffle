@@ -190,33 +190,43 @@ export const createInternal = (
   const executeRootTypeField = async (
     context: TypedContext,
     rootTypeName: RootTypeName,
-    key: string,
+    rootTypeFieldName: string,
     argsOrSelectionSet?: object,
   ) => {
-    const type = readMaybeThunk(
+    const selectedType = readMaybeThunk(input.schemaIndex.Root[rootTypeName]?.fields[rootTypeFieldName]?.type)
+    const selectedNamedType = readMaybeThunk(
       // eslint-disable-next-line
       // @ts-ignore excess depth error
-      Schema.Output.unwrapToNamed(readMaybeThunk(input.schemaIndex.Root[rootTypeName]?.fields[key]?.type)),
+      Schema.Output.unwrapToNamed(
+        selectedType,
+      ),
     ) as Schema.Output.Named
-    if (!type) throw new Error(`${rootTypeName} field not found: ${String(key)}`) // eslint-disable-line
+    if (!selectedNamedType) throw new Error(`${rootTypeName} field not found: ${String(rootTypeFieldName)}`) // eslint-disable-line
     // @ts-expect-error fixme
-    const isSchemaScalarOrTypeName = type.kind === `Scalar` || type.kind === `typename` // todo fix type here, its valid
-    const isSchemaHasArgs = Boolean(context.schemaIndex.Root[rootTypeName]?.fields[key]?.args)
+    const isSelectedTypeScalarOrTypeName = selectedNamedType.kind === `Scalar` || selectedNamedType.kind === `typename` // todo fix type here, its valid
+    const isFieldHasArgs = Boolean(context.schemaIndex.Root[rootTypeName]?.fields[rootTypeFieldName]?.args)
+    const operationType = rootTypeNameToOperationName[rootTypeName]
+    // We should only need to add __typename for result type fields, but the return handler doesn't yet know how to look beyond a plain object type so we have to add all those cases here.
+    const needsTypenameAdded = context.config.returnMode === `successData`
+      && (selectedNamedType.kind === `Object` || selectedNamedType.kind === `Interface`
+        || selectedNamedType.kind === `Union`)
+    const rootTypeFieldSelectionSet = isSelectedTypeScalarOrTypeName
+      ? isFieldHasArgs && argsOrSelectionSet ? { $: argsOrSelectionSet } : true
+      : needsTypenameAdded
+      ? { ...argsOrSelectionSet, __typename: true }
+      : argsOrSelectionSet
+
     const rootTypeSelectionSet = {
-      [rootTypeNameToOperationName[rootTypeName]]: {
-        [key]: isSchemaScalarOrTypeName
-          ? isSchemaHasArgs && argsOrSelectionSet ? { $: argsOrSelectionSet } : true
-          : argsOrSelectionSet,
+      [operationType]: {
+        [rootTypeFieldName]: rootTypeFieldSelectionSet,
       },
     } as GraphQLObjectSelection
-    console.log(3, context)
     const result = await executeRootType(context, rootTypeName, rootTypeSelectionSet)
-    console.log(result)
     if (result instanceof Error) return result
     return context.config.returnMode === `data` || context.config.returnMode === `dataAndErrors`
         || context.config.returnMode === `successData`
       // @ts-expect-error
-      ? result[key]
+      ? result[rootTypeFieldName]
       : result
   }
 
@@ -372,7 +382,6 @@ const handleReturn = (
     case `dataAndErrors`:
     case `successData`:
     case `data`: {
-      console.log(result)
       if (result instanceof Error || (result.errors && result.errors.length > 0)) {
         const error = result instanceof Error ? result : (new Errors.ContextualAggregateError(
           `One or more errors in the execution result.`,
@@ -397,7 +406,6 @@ const handleReturn = (
           // if (!isPlainObject(rootFieldValue)) return new Error(`Expected result field to be an object.`)
           if (!isPlainObject(rootFieldValue)) return null
           const __typename = rootFieldValue[`__typename`]
-          console.log(1)
           if (typeof __typename !== `string`) throw new Error(`Expected __typename to be selected and a string.`)
           const isErrorObject = Boolean(
             context.schemaIndex.error.objectsTypename[__typename],
