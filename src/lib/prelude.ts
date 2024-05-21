@@ -251,6 +251,7 @@ export type Deferred<T> = {
   resolve: (value: T) => void
   reject: (error: unknown) => void
 }
+
 export const createDeferred = <$T>(): Deferred<$T> => {
   let resolve
   let reject

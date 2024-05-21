@@ -1,9 +1,8 @@
 import { type ExecutionResult, GraphQLSchema } from 'graphql'
 import { Anyware } from '../../lib/anyware/__.js'
-import type { ErrorAnywareExtensionEntrypoint } from '../../lib/anyware/getEntrypoint.js'
 import { Errors } from '../../lib/errors/__.js'
 import type { SomeExecutionResultWithoutErrors } from '../../lib/graphql.js'
-import { type RootTypeName, rootTypeNameToOperationName } from '../../lib/graphql.js'
+import { type RootTypeName } from '../../lib/graphql.js'
 import { isPlainObject } from '../../lib/prelude.js'
 import type { SchemaInput } from '../0_functions/requestOrExecute.js'
 // import { requestOrExecute } from '../0_functions/requestOrExecute.js'
@@ -25,18 +24,26 @@ import type {
 import type { DocumentFn } from './document.js'
 import type { GetRootTypeMethods } from './RootTypeMethods.js'
 
+// todo could list specific errors here
+// Anyware entrypoint
+// Extension
+type GraffleExecutionResult = ExecutionResult | Errors.ContextualError
+
+export type SelectionSetOrIndicator = 0 | 1 | boolean | object
+
+export type SelectionSetOrArgs = object
+
 export interface Context {
-  core: any // todo
-  extensions: Extension[]
-  schemaIndex?: Schema.Index
-  config: {
-    returnMode: ReturnModeType
-  }
+  core: Anyware.Core
+  extensions: Anyware.ExtensionInput[]
+  config: Config
 }
 
-export type TypedContext = Omit<Context, 'schemaIndex'> & {
+export type TypedContext = Context & {
   schemaIndex: Schema.Index
 }
+
+const isTypedContext = (context: Context): context is TypedContext => `schemaIndex` in context
 
 // todo no config needed?
 export type ClientRaw<_$Config extends Config> = {
@@ -145,7 +152,7 @@ export const create: Create = (
 ) => createInternal(input_, { extensions: [] })
 
 interface CreateState {
-  extensions: Extension[] // todo Graffle extension
+  extensions: Anyware.ExtensionInput[]
 }
 
 export const createInternal = (
@@ -173,17 +180,17 @@ export const createInternal = (
     const interface_ = `typed`
     const initialInput = {
       interface: interface_,
+      transport,
       selection: rootTypeSelectionSet,
+      rootTypeName,
+      schema: input.schema,
       context: {
         config: context.config,
         transport,
         interface: interface_,
         schemaIndex: context.schemaIndex,
       },
-      transport,
-      rootTypeName,
-      schema: input.schema as string | URL,
-    }
+    } as HookInputEncode
     return await run(context, initialInput)
   }
 
@@ -193,19 +200,16 @@ export const createInternal = (
     rootTypeFieldName: string,
     argsOrSelectionSet?: object,
   ) => {
-    const selectedType = readMaybeThunk(input.schemaIndex.Root[rootTypeName]?.fields[rootTypeFieldName]?.type)
+    const selectedType = readMaybeThunk(context.schemaIndex.Root[rootTypeName]?.fields[rootTypeFieldName]?.type)
     const selectedNamedType = readMaybeThunk(
       // eslint-disable-next-line
       // @ts-ignore excess depth error
-      Schema.Output.unwrapToNamed(
-        selectedType,
-      ),
+      Schema.Output.unwrapToNamed(selectedType),
     ) as Schema.Output.Named
     if (!selectedNamedType) throw new Error(`${rootTypeName} field not found: ${String(rootTypeFieldName)}`) // eslint-disable-line
     // @ts-expect-error fixme
     const isSelectedTypeScalarOrTypeName = selectedNamedType.kind === `Scalar` || selectedNamedType.kind === `typename` // todo fix type here, its valid
     const isFieldHasArgs = Boolean(context.schemaIndex.Root[rootTypeName]?.fields[rootTypeFieldName]?.args)
-    const operationType = rootTypeNameToOperationName[rootTypeName]
     // We should only need to add __typename for result type fields, but the return handler doesn't yet know how to look beyond a plain object type so we have to add all those cases here.
     const needsTypenameAdded = context.config.returnMode === `successData`
       && (selectedNamedType.kind === `Object` || selectedNamedType.kind === `Interface`
@@ -216,12 +220,9 @@ export const createInternal = (
       ? { ...argsOrSelectionSet, __typename: true }
       : argsOrSelectionSet
 
-    const rootTypeSelectionSet = {
-      [operationType]: {
-        [rootTypeFieldName]: rootTypeFieldSelectionSet,
-      },
-    } as GraphQLObjectSelection
-    const result = await executeRootType(context, rootTypeName, rootTypeSelectionSet)
+    const result = await executeRootType(context, rootTypeName, {
+      [rootTypeFieldName]: rootTypeFieldSelectionSet,
+    } as GraphQLObjectSelection)
     if (result instanceof Error) return result
     return context.config.returnMode === `data` || context.config.returnMode === `dataAndErrors`
         || context.config.returnMode === `successData`
@@ -237,28 +238,22 @@ export const createInternal = (
 
         // todo We need to document that in order for this to 100% work none of the user's root type fields can end with "OrThrow".
         const isOrThrow = key.endsWith(`OrThrow`)
-        const contextWithReturnModeSet = isOrThrow ? applyOrThrowToConfig(context) : context
+        const contextWithReturnModeSet = isOrThrow ? applyOrThrowToContext(context) : context
 
         if (key.startsWith(`$batch`)) {
-          return async (selectionSetOrIndicator) => {
-            const rootTypeSelectionSet = {
-              [rootTypeNameToOperationName[rootTypeName]]: selectionSetOrIndicator,
-            }
-            return await executeRootType(contextWithReturnModeSet, rootTypeName, rootTypeSelectionSet)
-          }
+          return async (selectionSetOrIndicator: SelectionSetOrIndicator) =>
+            executeRootType(contextWithReturnModeSet, rootTypeName, selectionSetOrIndicator as GraphQLObjectSelection)
         } else {
           const fieldName = isOrThrow ? key.slice(0, -7) : key
-          return (argsOrSelectionSet) =>
-            executeRootTypeField(contextWithReturnModeSet, rootTypeName, fieldName, argsOrSelectionSet)
+          return (selectionSetOrArgs: SelectionSetOrArgs) =>
+            executeRootTypeField(contextWithReturnModeSet, rootTypeName, fieldName, selectionSetOrArgs)
         }
       },
     })
   }
 
-  // todo rename to config
-  // todo integrate input
   const context: Context = {
-    core: Core.create(),
+    core: Core.create() as any,
     extensions: state.extensions,
     config: {
       returnMode,
@@ -270,52 +265,38 @@ export const createInternal = (
       core: context.core,
       initialInput,
       extensions: context.extensions,
-    })
+    }) as GraffleExecutionResult
     return handleReturn(context, result)
   }
 
-  const runRaw = async (context: Context, input2: RawInput) => {
+  const runRaw = async (context: Context, rawInput: RawInput) => {
     const interface_: InterfaceRaw = `raw`
     const transport = input.schema instanceof GraphQLSchema ? `memory` : `http`
-    const initialInput: HookInputEncode = {
+    const initialInput = {
       interface: interface_,
-      document: input2.document,
-      context: {
-        // config: context.config,
-        transport,
-        interface: interface_,
-      },
       transport,
-      schema: input.schema as string | URL,
-    }
+      document: rawInput.document,
+      schema: input.schema,
+      context: {
+        config: context.config,
+      },
+    } as HookInputEncode
     return await run(context, initialInput)
   }
 
   // @ts-expect-error ignoreme
   const client: Client = {
-    raw: async (input2: RawInput) => {
-      const contextWithReturnModeSet = {
-        ...context,
-        config: {
-          ...context.config,
-          returnMode: `graphql`,
-        },
-      }
-      return await runRaw(contextWithReturnModeSet, input2)
+    raw: async (rawInput: RawInput) => {
+      const contextWithReturnModeSet = updateContextConfig(context, { returnMode: `graphql` })
+      return await runRaw(contextWithReturnModeSet, rawInput)
     },
     rawOrThrow: async (
-      input2: RawInput,
+      rawInput: RawInput,
     ) => {
-      const contextWithReturnModeSet = {
-        ...context,
-        config: {
-          ...context.config,
-          returnMode: `graphqlSuccess`,
-        },
-      }
-      return await runRaw(contextWithReturnModeSet, input2)
+      const contextWithReturnModeSet = updateContextConfig(context, { returnMode: `graphqlSuccess` })
+      return await runRaw(contextWithReturnModeSet, rawInput)
     },
-    extend: (extension) => {
+    extend: (extension: Anyware.ExtensionInput) => {
       // todo test that adding extensions returns a copy of client
       return createInternal(input, { extensions: [...state.extensions, extension] })
     },
@@ -343,8 +324,12 @@ export const createInternal = (
             }
           }
           const operationName = maybeOperationName ? maybeOperationName : Object.keys(documentObject)[0]!
-          const operationTypeName = Object.keys(documentObject[operationName])[0]
-          const selection = documentObject[operationName][operationTypeName]
+          const rootTypeSelection = documentObject[operationName]
+          if (!rootTypeSelection) throw new Error(`Operation with name ${operationName} not found.`)
+          const operationTypeName = Object.keys(rootTypeSelection)[0]
+          if (!operationTypeName) throw new Error(`Operation has no selection set.`)
+          // @ts-expect-error
+          const selection = rootTypeSelection[operationTypeName]
           return {
             operationTypeName,
             selection,
@@ -371,10 +356,8 @@ export const createInternal = (
   return client
 }
 
-type GraffleExecutionResult = ExecutionResult | ErrorAnywareExtensionEntrypoint
-
 const handleReturn = (
-  context: TypedContext,
+  context: Context,
   result: GraffleExecutionResult,
 ) => {
   switch (context.config.returnMode) {
@@ -394,39 +377,45 @@ const handleReturn = (
         ) throw error
         return error
       }
-      if (context.config.returnMode === `successData`) {
-        if (!isPlainObject(result.data)) throw new Error(`Expected data to be an object.`)
-        const schemaErrors = Object.entries(result.data).map(([rootFieldName, rootFieldValue]) => {
-          // todo this check would be nice but it doesn't account for aliases right now. To achieve this we would
-          // need to have the selection set available to use and then do a costly analysis for all fields that were aliases.
-          // So costly that we would probably instead want to create an index of them on the initial encoding step and
-          // then make available down stream. Also, note, here, the hardcoding of Query, needs to be any root type.
-          // const isResultField = Boolean(schemaIndex.error.rootResultFields.Query[rootFieldName])
-          // if (!isResultField) return null
-          // if (!isPlainObject(rootFieldValue)) return new Error(`Expected result field to be an object.`)
-          if (!isPlainObject(rootFieldValue)) return null
-          const __typename = rootFieldValue[`__typename`]
-          if (typeof __typename !== `string`) throw new Error(`Expected __typename to be selected and a string.`)
-          const isErrorObject = Boolean(
-            context.schemaIndex.error.objectsTypename[__typename],
-          )
-          if (!isErrorObject) return null
-          // todo extract message
-          return new Error(`Failure on field ${rootFieldName}: ${__typename}`)
-        }).filter((_): _ is Error => _ !== null)
-        if (schemaErrors.length === 1) throw schemaErrors[0]!
-        if (schemaErrors.length > 0) {
-          const error = new Errors.ContextualAggregateError(
-            `Two or more schema errors in the execution result.`,
-            {},
-            schemaErrors,
-          )
-          throw error
+
+      if (isTypedContext(context)) {
+        if (context.config.returnMode === `successData`) {
+          if (!isPlainObject(result.data)) throw new Error(`Expected data to be an object.`)
+          const schemaErrors = Object.entries(result.data).map(([rootFieldName, rootFieldValue]) => {
+            // todo this check would be nice but it doesn't account for aliases right now. To achieve this we would
+            // need to have the selection set available to use and then do a costly analysis for all fields that were aliases.
+            // So costly that we would probably instead want to create an index of them on the initial encoding step and
+            // then make available down stream. Also, note, here, the hardcoding of Query, needs to be any root type.
+            // const isResultField = Boolean(schemaIndex.error.rootResultFields.Query[rootFieldName])
+            // if (!isResultField) return null
+            // if (!isPlainObject(rootFieldValue)) return new Error(`Expected result field to be an object.`)
+            if (!isPlainObject(rootFieldValue)) return null
+            const __typename = rootFieldValue[`__typename`]
+            if (typeof __typename !== `string`) throw new Error(`Expected __typename to be selected and a string.`)
+            const isErrorObject = Boolean(
+              context.schemaIndex.error.objectsTypename[__typename],
+            )
+            if (!isErrorObject) return null
+            // todo extract message
+            return new Error(`Failure on field ${rootFieldName}: ${__typename}`)
+          }).filter((_): _ is Error => _ !== null)
+
+          if (schemaErrors.length === 1) throw schemaErrors[0]!
+          if (schemaErrors.length > 0) {
+            const error = new Errors.ContextualAggregateError(
+              `Two or more schema errors in the execution result.`,
+              {},
+              schemaErrors,
+            )
+            throw error
+          }
         }
       }
+
       if (context.config.returnMode === `graphqlSuccess`) {
         return result
       }
+
       return result.data
     }
     default: {
@@ -435,10 +424,14 @@ const handleReturn = (
   }
 }
 
-const applyOrThrowToConfig = <$Context extends Context>(context: $Context): $Context => {
+const applyOrThrowToContext = <$Context extends Context>(context: $Context): $Context => {
   if (context.config.returnMode === `successData` || context.config.returnMode === `graphqlSuccess`) {
     return context
   }
   const newMode = context.config.returnMode === `graphql` ? `graphqlSuccess` : `successData`
-  return { ...context, config: { ...context.config, returnMode: newMode } }
+  return updateContextConfig(context, { returnMode: newMode })
+}
+
+const updateContextConfig = <$Context extends Context>(context: $Context, config: Config): $Context => {
+  return { ...context, config: { ...context.config, ...config } }
 }
