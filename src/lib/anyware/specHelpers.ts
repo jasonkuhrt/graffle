@@ -43,6 +43,6 @@ export const runWithOptions = (options: Options = {}) => async (...extensions: E
   return result
 }
 
-export const run = async (...extensions: ExtensionInput[]) => runWithOptions({})(...extensions)
+export const run = async (...extensions: ExtensionInput<any>[]) => runWithOptions({})(...extensions)
 
 export const oops = new Error(`oops`)

@@ -36,7 +36,7 @@ export const analyzeFunction = (fn: (...args: [...any[]]) => unknown) => {
         case null:
           throw new Error(`Could not determine type of parameter.`)
         default:
-          throw casesExhausted(type)  
+          throw casesExhausted(type)
       }
     })
 

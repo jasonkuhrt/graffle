@@ -44,6 +44,7 @@ describe(`invalid destructuring cases`, () => {
     )
   })
   test(`multipleParameters`, async () => {
+    // @ts-expect-error two parameters is invalid
     const result = await run(async ({ x }, y) => {}) as ContextualAggregateError
     expect({
       result,

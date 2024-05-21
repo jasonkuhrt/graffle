@@ -7,7 +7,7 @@
 import { Errors } from '../errors/__.js'
 import { partitionAndAggregateErrors } from '../errors/ContextualAggregateError.js'
 import { ContextualError } from '../errors/ContextualError.js'
-import type { Deferred, FindValueAfter, IsLastValue, MaybePromise, SomeMaybeAsyncFunction } from '../prelude.js'
+import type { Deferred, FindValueAfter, IsLastValue, MaybePromise } from '../prelude.js'
 import { casesExhausted, createDeferred, debug, errorFromMaybeError } from '../prelude.js'
 import { getEntrypoint } from './getEntrypoint.js'
 
@@ -132,7 +132,7 @@ type Extension = {
   currentChunk: Deferred<unknown>
 }
 
-export type ExtensionInput = SomeMaybeAsyncFunction
+export type ExtensionInput<$Input extends object = object> = (input: $Input) => MaybePromise<unknown>
 
 type HookDoneData =
   | { type: 'completed'; result: unknown; nextHookStack: Extension[] }
@@ -347,7 +347,7 @@ const createPassthrough = (hookName: string) => async (hookEnvelope: SomeHookEnv
   return await hook(hook.input)
 }
 
-const toInternalExtension = (core: Core, config: Config, extension: SomeMaybeAsyncFunction) => {
+const toInternalExtension = (core: Core, config: Config, extension: ExtensionInput) => {
   const currentChunk = createDeferred<SomeHookEnvelope>()
   const body = createDeferred()
   const applyBody = async (input: object) => {
