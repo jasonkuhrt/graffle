@@ -1,5 +1,6 @@
 import { describe, expect, test, vi } from 'vitest'
-import { core, run, runWithOptions } from './specHelpers.js'
+import type { ContextualError } from '../errors/ContextualError.js'
+import { core, oops, run, runWithOptions } from './specHelpers.js'
 
 describe(`no extensions`, () => {
   test(`passthrough to implementation`, async () => {
@@ -148,6 +149,64 @@ describe(`two extensions`, () => {
   })
 })
 
-// todo some tests regarding error handling
-// extension throws an error
-// implementation throws an error
+describe(`errors`, () => {
+  test(`extension that throws a non-error is wrapped in error`, async () => {
+    const result = await run(async ({ a }) => {
+      throw `oops`
+    }) as ContextualError
+    expect({
+      result,
+      context: result.context,
+      cause: result.cause,
+    }).toMatchInlineSnapshot(`
+      {
+        "cause": [Error: oops],
+        "context": {
+          "extensionName": "anonymous",
+          "hookName": "a",
+          "source": "extension",
+        },
+        "result": [ContextualError: There was an error in the extension "anonymous" (use named functions to improve this error message) while running hook "a".],
+      }
+    `)
+  })
+  test(`extension throws asynchronously`, async () => {
+    const result = await run(async ({ a }) => {
+      throw oops
+    }) as ContextualError
+    expect({
+      result,
+      context: result.context,
+      cause: result.cause,
+    }).toMatchInlineSnapshot(`
+      {
+        "cause": [Error: oops],
+        "context": {
+          "extensionName": "anonymous",
+          "hookName": "a",
+          "source": "extension",
+        },
+        "result": [ContextualError: There was an error in the extension "anonymous" (use named functions to improve this error message) while running hook "a".],
+      }
+    `)
+  })
+
+  test(`implementation throws`, async () => {
+    core.hooks.a.mockReset().mockRejectedValueOnce(oops)
+    const result = await run() as ContextualError
+    expect({
+      result,
+      context: result.context,
+      cause: result.cause,
+    }).toMatchInlineSnapshot(`
+      {
+        "cause": [Error: oops],
+        "context": {
+          "hookName": "a",
+          "source": "implementation",
+        },
+        "result": [ContextualError: There was an error in the core implementation of hook "a".],
+      }
+    `)
+  })
+})

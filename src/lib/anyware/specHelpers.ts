@@ -1,10 +1,17 @@
-import { vi } from 'vitest'
+import type { Mock } from 'vitest'
+import { beforeEach, vi } from 'vitest'
 import { type Core, type ExtensionInput, type Options, runWithExtensions } from './main.js'
 
 export type Input = { value: string }
 
-export type $Core = Core
+export type $Core = Core<['a', 'b']> & {
+  hooks: {
+    a: Mock
+    b: Mock
+  }
+}
 
+// @ts-expect-error
 export let core: $Core = null
 
 export const createCore = (): $Core => {
@@ -21,8 +28,11 @@ export const createCore = (): $Core => {
   }
 }
 
-export const runWithOptions = (options: Options = {}) => async (...extensions: ExtensionInput[]) => {
+beforeEach(() => {
   core = createCore()
+})
+
+export const runWithOptions = (options: Options = {}) => async (...extensions: ExtensionInput[]) => {
   const result = await runWithExtensions({
     core,
     initialInput: { value: `initial` },
@@ -33,3 +43,5 @@ export const runWithOptions = (options: Options = {}) => async (...extensions: E
 }
 
 export const run = async (...extensions: ExtensionInput[]) => runWithOptions({})(...extensions)
+
+export const oops = new Error(`oops`)

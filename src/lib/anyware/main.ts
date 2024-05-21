@@ -4,7 +4,6 @@
 // E.g.: NOT              await request(request.input)
 // but instead simply:    await request()
 
-import { Errors } from '../errors/__.js'
 import { partitionAndAggregateErrors } from '../errors/ContextualAggregateError.js'
 import { ContextualError } from '../errors/ContextualError.js'
 import type {
@@ -15,8 +14,7 @@ import type {
   SomeAsyncFunction,
   SomeMaybeAsyncFunction,
 } from '../prelude.js'
-import { casesExhausted, createDeferred, debug, errorFromMaybeError, partitionErrors } from '../prelude.js'
-import type { ErrorAnywareExtensionEntrypoint } from './getEntrypoint.js'
+import { casesExhausted, createDeferred, debug, errorFromMaybeError } from '../prelude.js'
 import { getEntrypoint } from './getEntrypoint.js'
 
 type HookSequence = readonly [string, ...string[]]
@@ -129,7 +127,8 @@ export type ExtensionInput = SomeMaybeAsyncFunction
 type HookDoneData =
   | { type: 'completed'; result: unknown; nextHookStack: Extension[] }
   | { type: 'shortCircuited'; result: unknown }
-  | { type: 'error'; error: Error; source: 'implementation'; hookName: string }
+  | { type: 'error'; hookName: string; source: 'implementation'; error: Error }
+  | { type: 'error'; hookName: string; source: 'extension'; error: Error; extensionName: string }
 
 type HookDoneResolver = (input: HookDoneData) => void
 
@@ -189,29 +188,49 @@ const runHook = async <$HookName extends string>(
     const { branch, result } = await Promise.race([
       hookUsedDeferred.promise.then(result => {
         return { branch: `hook`, result } as const
-      }),
+      }).catch((e: unknown) => ({ branch: `hookError`, result: e } as const)),
       pausedExtension.body.promise.then(result => {
         return { branch: `body`, result } as const
-      }),
+      }).catch((e: unknown) => ({ branch: `bodyError`, result: e } as const)),
     ])
 
     debug(`${name}: ${pausedExtension.name}: branch`, branch)
-    if (branch === `body`) {
-      if (result === envelope) {
-        runHook({
-          core,
-          name,
-          done,
-          originalInput,
-          currentHookStack: nextCurrentHookStack,
-          nextHookStack,
-        })
-      } else {
-        done({ type: `shortCircuited`, result })
+    switch (branch) {
+      case `body`: {
+        if (result === envelope) {
+          runHook({
+            core,
+            name,
+            done,
+            originalInput,
+            currentHookStack: nextCurrentHookStack,
+            nextHookStack,
+          })
+        } else {
+          done({ type: `shortCircuited`, result })
+        }
+        return
       }
+      case `bodyError`: {
+        done({
+          type: `error`,
+          hookName: name,
+          source: `extension`,
+          error: errorFromMaybeError(result),
+          extensionName: pausedExtension.name,
+        })
+        return
+      }
+      case `hookError`:
+        done({ type: `error`, hookName: name, source: `implementation`, error: errorFromMaybeError(result) })
+        return
+      case `hook`: {
+        // do nothing, hook is making the processing continue.
+        return
+      }
+      default:
+        throw casesExhausted(branch)
     }
-
-    return
   }
 
   // Reached bottom of the stack
@@ -224,7 +243,7 @@ const runHook = async <$HookName extends string>(
   try {
     result = await implementation(originalInput)
   } catch (error) {
-    done({ type: `error`, error: errorFromMaybeError(error), source: `implementation`, hookName: name })
+    done({ type: `error`, hookName: name, source: `implementation`, error: errorFromMaybeError(error) })
     return
   }
 
@@ -268,10 +287,23 @@ const run = async (
       }
       case `error`: {
         debug(`signal: error`)
-        // todo constructor error lower in stack for better trace?
-        // todo return?
-        const message = `There was an error in the core implementation of hook "${signal.hookName}".`
-        throw new ContextualError(message, { hookName: signal.hookName }, signal.error)
+        // todo type test for this possible return value
+        switch (signal.source) {
+          case `extension`: {
+            const nameTip = signal.extensionName ? ` (use named functions to improve this error message)` : ``
+            const message =
+              `There was an error in the extension "${signal.extensionName}"${nameTip} while running hook "${signal.hookName}".`
+            return new ContextualError(message, {
+              hookName: signal.hookName,
+              source: signal.source,
+              extensionName: signal.extensionName,
+            }, signal.error)
+          }
+          case `implementation`: {
+            const message = `There was an error in the core implementation of hook "${signal.hookName}".`
+            return new ContextualError(message, { hookName: signal.hookName, source: signal.source }, signal.error)
+          }
+        }
       }
       default:
         casesExhausted(signal)
@@ -299,16 +331,22 @@ const createPassthrough = (hookName: string) => async (hookEnvelope) => {
 const toInternalExtension = (core: Core, config: Config, extension: SomeAsyncFunction) => {
   const currentChunk = createDeferred()
   const body = createDeferred()
-  const appplyBody = async (input) => {
-    const result = await extension(input)
-    body.resolve(result)
+  const applyBody = async (input) => {
+    try {
+      const result = await extension(input)
+      body.resolve(result)
+    } catch (error) {
+      body.reject(error)
+    }
   }
+
+  const extensionName = extension.name || `anonymous`
 
   switch (config.entrypointSelectionMode) {
     case `off`: {
-      currentChunk.promise.then(appplyBody)
+      currentChunk.promise.then(applyBody)
       return {
-        name: extension.name,
+        name: extensionName,
         entrypoint: core.hookNamesOrderedBySequence[0], // todo non-empty-array datastructure
         body,
         currentChunk,
@@ -321,10 +359,10 @@ const toInternalExtension = (core: Core, config: Config, extension: SomeAsyncFun
         if (config.entrypointSelectionMode === `required`) {
           return entrypoint
         } else {
-          currentChunk.promise.then(appplyBody)
+          currentChunk.promise.then(applyBody)
           return {
-            name: extension.name,
-            entrypoint: core.hookNamesOrderedBySequence[0], // todo non-empty-array datastructure
+            name: extensionName,
+            entrypoint: core.hookNamesOrderedBySequence[0], // todo non-empty-array data structure
             body,
             currentChunk,
           }
@@ -342,10 +380,10 @@ const toInternalExtension = (core: Core, config: Config, extension: SomeAsyncFun
       for (const passthrough of passthroughs) {
         currentChunkPromiseChain = currentChunkPromiseChain.then(passthrough)
       }
-      currentChunkPromiseChain.then(appplyBody)
+      currentChunkPromiseChain.then(applyBody)
 
       return {
-        name: extension.name,
+        name: extensionName,
         entrypoint,
         body,
         currentChunk,
