@@ -4,27 +4,35 @@ import type { Schema } from '../1_Schema/__.js'
 
 declare global {
   export namespace GraphQLRequestTypes {
-    interface Schemas {
-    }
-    // This is for type testing
+    interface Schemas {}
+    // This is for manual internal type testing
     interface SchemasAlwaysEmpty {}
   }
 }
 
-export type GlobalRegistry = Record<string, {
+type SomeSchema = {
   index: Schema.Index
   customScalars: Record<string, Schema.Scalar.Scalar>
   featureOptions: {
     schemaErrors: boolean
   }
-}>
+}
+
+type ZeroSchema = {
+  index: { name: never }
+  featureOptions: {
+    schemaErrors: false
+  }
+}
+
+export type GlobalRegistry = Record<string, SomeSchema>
 
 export namespace GlobalRegistry {
-  export type Schemas = GraphQLRequestTypes.Schemas
+  export type Schemas = GraphQLRequestTypes.SchemasAlwaysEmpty
 
   export type IsEmpty = keyof Schemas extends never ? true : false
 
-  export type SchemaList = IsEmpty extends true ? any : Values<Schemas>
+  export type SchemaList = IsEmpty extends true ? ZeroSchema : Values<Schemas>
 
   export type DefaultSchemaName = 'default'
 
