@@ -61,7 +61,7 @@ describe('dataAndErrors', () => {
   test('query.<fieldMethod>', async () => {
     await expect(graffle.query.__typename()).resolves.toEqual('Query')
   })
-  test.only('query.<fieldMethod> error', async () => {
+  test('query.<fieldMethod> error', async () => {
     await expect(graffle.query.error()).resolves.toMatchObject(db.errorAggregate)
   })
   test('query.<fieldMethod> error orThrow', async () => {

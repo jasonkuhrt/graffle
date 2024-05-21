@@ -3,7 +3,7 @@ import { Anyware } from '../../lib/anyware/__.js'
 import type { ErrorAnywareExtensionEntrypoint } from '../../lib/anyware/getEntrypoint.js'
 import { Errors } from '../../lib/errors/__.js'
 import type { SomeExecutionResultWithoutErrors } from '../../lib/graphql.js'
-import { operationTypeNameToRootTypeName, type RootTypeName, rootTypeNameToOperationName } from '../../lib/graphql.js'
+import { type RootTypeName, rootTypeNameToOperationName } from '../../lib/graphql.js'
 import { isPlainObject } from '../../lib/prelude.js'
 import type { SchemaInput } from '../0_functions/requestOrExecute.js'
 // import { requestOrExecute } from '../0_functions/requestOrExecute.js'
@@ -23,7 +23,6 @@ import type {
   ReturnModeTypeSuccessData,
 } from './Config.js'
 import type { DocumentFn } from './document.js'
-import { toDocumentString } from './document.js'
 import type { GetRootTypeMethods } from './RootTypeMethods.js'
 
 export interface Context {
@@ -165,6 +164,29 @@ export const createInternal = (
    */
   const returnMode = input.returnMode ?? `data` as ReturnModeType
 
+  const executeRootType = async (
+    context: TypedContext,
+    rootTypeName: RootTypeName,
+    rootTypeSelectionSet: GraphQLObjectSelection,
+  ) => {
+    const transport = input.schema instanceof GraphQLSchema ? `memory` : `http`
+    const interface_ = `typed`
+    const initialInput = {
+      interface: interface_,
+      selection: rootTypeSelectionSet,
+      context: {
+        config: context.config,
+        transport,
+        interface: interface_,
+        schemaIndex: context.schemaIndex,
+      },
+      transport,
+      rootTypeName,
+      schema: input.schema as string | URL,
+    }
+    return await run(context, initialInput)
+  }
+
   const executeRootTypeField = async (
     context: TypedContext,
     rootTypeName: RootTypeName,
@@ -180,14 +202,15 @@ export const createInternal = (
     // @ts-expect-error fixme
     const isSchemaScalarOrTypeName = type.kind === `Scalar` || type.kind === `typename` // todo fix type here, its valid
     const isSchemaHasArgs = Boolean(context.schemaIndex.Root[rootTypeName]?.fields[key]?.args)
-    const documentObject = {
+    const rootTypeSelectionSet = {
       [rootTypeNameToOperationName[rootTypeName]]: {
         [key]: isSchemaScalarOrTypeName
           ? isSchemaHasArgs && argsOrSelectionSet ? { $: argsOrSelectionSet } : true
           : argsOrSelectionSet,
       },
     } as GraphQLObjectSelection
-    const result = await executeRootType(context, rootTypeName, documentObject)
+    const result = await executeRootType(context, rootTypeName, rootTypeSelectionSet)
+    if (result instanceof Error) return result
     return context.config.returnMode === `data` || context.config.returnMode === `dataAndErrors`
         || context.config.returnMode === `successData`
       // @ts-expect-error
@@ -195,75 +218,26 @@ export const createInternal = (
       : result
   }
 
-  const executeRootType = async (
-    context: TypedContext,
-    rootTypeName: RootTypeName,
-    selectionSet: GraphQLObjectSelection,
-  ) => {
-    const transport = input.schema instanceof GraphQLSchema ? `memory` : `http`
-    const interface_ = `typed`
-    const initialInput = {
-      interface: interface_,
-      selection: selectionSet,
-      context: {
-        config: context.config,
-        transport,
-        interface: interface_,
-        schemaIndex: context.schemaIndex,
-      },
-      transport,
-      rootTypeName,
-      schema: input.schema as string | URL,
-    }
-    const result = await run(context, initialInput)
-    // todo centralize
-    return handleReturn(context, result)
-  }
-
-  const createRootType = (context: TypedContext, rootTypeName: RootTypeName) => {
-    return async (isOrThrow: boolean, selectionSetOrIndicator: GraphQLObjectSelection) => {
-      const context2 = isOrThrow ? { ...context, config: { ...context.config, returnMode: `successData` } } : context
-      return await executeRootType(context2, rootTypeName, {
-        [rootTypeNameToOperationName[rootTypeName]]: selectionSetOrIndicator,
-      })
-    }
-  }
-
-  const createRootTypeField = (context: TypedContext, rootTypeName: RootTypeName) => {
-    return async (isOrThrow: boolean, fieldName: string, argsOrSelectionSet?: object) => {
-      const result = await executeRootTypeField(context, rootTypeName, fieldName, argsOrSelectionSet) // eslint-disable-line
-      // todo all of the following is return processing, could be lifted out & centralized
-      if (isOrThrow && result instanceof Error) throw result
-      // todo consolidate
-      // eslint-disable-next-line
-      if (isOrThrow && returnMode === `graphql` && result.errors.length > 0) {
-        throw new Errors.ContextualAggregateError(
-          `One or more errors in the execution result.`,
-          {},
-          // eslint-disable-next-line
-          result.errors,
-        )
-      }
-      return result
-    }
-  }
-
   const createRootTypeMethods = (context: TypedContext, rootTypeName: RootTypeName) => {
-    const rootType = createRootType(context, rootTypeName)
-    const rootTypeField = createRootTypeField(context, rootTypeName)
     return new Proxy({}, {
       get: (_, key) => {
         if (typeof key === `symbol`) throw new Error(`Symbols not supported.`)
 
-        // todo centralize the orthrow handling here rather than into each method
         // todo We need to document that in order for this to 100% work none of the user's root type fields can end with "OrThrow".
         const isOrThrow = key.endsWith(`OrThrow`)
+        const contextWithReturnModeSet = isOrThrow ? applyOrThrowToConfig(context) : context
 
         if (key.startsWith(`$batch`)) {
-          return (selectionSet) => rootType(isOrThrow, selectionSet)
+          return async (selectionSetOrIndicator) => {
+            const rootTypeSelectionSet = {
+              [rootTypeNameToOperationName[rootTypeName]]: selectionSetOrIndicator,
+            }
+            return await executeRootType(contextWithReturnModeSet, rootTypeName, rootTypeSelectionSet)
+          }
         } else {
           const fieldName = isOrThrow ? key.slice(0, -7) : key
-          return (argsOrSelectionSet) => rootTypeField(isOrThrow, fieldName, argsOrSelectionSet)
+          return (argsOrSelectionSet) =>
+            executeRootTypeField(contextWithReturnModeSet, rootTypeName, fieldName, argsOrSelectionSet)
         }
       },
     })
@@ -280,46 +254,54 @@ export const createInternal = (
   }
 
   const run = async (context: Context, initialInput: HookInputEncode) => {
-    return await Anyware.runWithExtensions({
+    const result = await Anyware.runWithExtensions({
       core: context.core,
       initialInput,
       extensions: context.extensions,
     })
+    return handleReturn(context, result)
+  }
+
+  const runRaw = async (context: Context, input2: RawInput) => {
+    const interface_: InterfaceRaw = `raw`
+    const transport = input.schema instanceof GraphQLSchema ? `memory` : `http`
+    const initialInput: HookInputEncode = {
+      interface: interface_,
+      document: input2.document,
+      context: {
+        // config: context.config,
+        transport,
+        interface: interface_,
+      },
+      transport,
+      schema: input.schema as string | URL,
+    }
+    return await run(context, initialInput)
   }
 
   // @ts-expect-error ignoreme
   const client: Client = {
     raw: async (input2: RawInput) => {
-      const interface_: InterfaceRaw = `raw`
-      const transport = input.schema instanceof GraphQLSchema ? `memory` : `http`
-      const initialInput: HookInputEncode = {
-        interface: interface_,
-        document: input2.document,
-        context: {
-          // config: context.config,
-          transport,
-          interface: interface_,
+      const contextWithReturnModeSet = {
+        ...context,
+        config: {
+          ...context.config,
+          returnMode: `graphql`,
         },
-        transport,
-        schema: input.schema as string | URL,
       }
-      const result = await run(context, initialInput)
-      return result
+      return await runRaw(contextWithReturnModeSet, input2)
     },
     rawOrThrow: async (
       input2: RawInput,
     ) => {
-      const result = await client.raw(input2)
-      if (result instanceof Error) throw result
-      // todo consolidate
-      if (result.errors && result.errors.length > 0) {
-        throw new Errors.ContextualAggregateError(
-          `One or more errors in the execution result.`,
-          {},
-          result.errors,
-        )
+      const contextWithReturnModeSet = {
+        ...context,
+        config: {
+          ...context.config,
+          returnMode: `graphqlSuccess`,
+        },
       }
-      return result
+      return await runRaw(contextWithReturnModeSet, input2)
     },
     extend: (extension) => {
       // todo test that adding extensions returns a copy of client
@@ -384,16 +366,21 @@ const handleReturn = (
   result: GraffleExecutionResult,
 ) => {
   switch (context.config.returnMode) {
+    case `graphqlSuccess`:
     case `dataAndErrors`:
     case `successData`:
     case `data`: {
+      console.log(result)
       if (result instanceof Error || (result.errors && result.errors.length > 0)) {
         const error = result instanceof Error ? result : (new Errors.ContextualAggregateError(
           `One or more errors in the execution result.`,
           {},
           result.errors!,
         ))
-        if (context.config.returnMode === `data` || context.config.returnMode === `successData`) throw error
+        if (
+          context.config.returnMode === `data` || context.config.returnMode === `successData`
+          || context.config.returnMode === `graphqlSuccess`
+        ) throw error
         return error
       }
       if (context.config.returnMode === `successData`) {
@@ -408,6 +395,7 @@ const handleReturn = (
           // if (!isPlainObject(rootFieldValue)) return new Error(`Expected result field to be an object.`)
           if (!isPlainObject(rootFieldValue)) return null
           const __typename = rootFieldValue[`__typename`]
+          console.log(1)
           if (typeof __typename !== `string`) throw new Error(`Expected __typename to be selected and a string.`)
           const isErrorObject = Boolean(
             context.schemaIndex.error.objectsTypename[__typename],
@@ -426,10 +414,21 @@ const handleReturn = (
           throw error
         }
       }
+      if (context.config.returnMode === `graphqlSuccess`) {
+        return result
+      }
       return result.data
     }
     default: {
       return result
     }
   }
+}
+
+const applyOrThrowToConfig = <$Context extends Context>(context: $Context): $Context => {
+  if (context.config.returnMode === `successData` || context.config.returnMode === `graphqlSuccess`) {
+    return context
+  }
+  const newMode = context.config.returnMode === `graphql` ? `graphqlSuccess` : `successData`
+  return { ...context, config: { ...context.config, returnMode: newMode } }
 }

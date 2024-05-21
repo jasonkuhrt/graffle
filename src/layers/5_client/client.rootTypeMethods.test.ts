@@ -37,7 +37,7 @@ describe(`query`, () => {
     await expect(graffle.query.interface({ onObject2ImplementingInterface: { boolean: true } })).resolves.toEqual({})
   })
   describe(`orThrow`, () => {
-    test(`without error`, async () => {
+    test.only(`without error`, async () => {
       await expect(graffle.query.objectWithArgsOrThrow({ $: { id: `x` }, id: true })).resolves.toEqual({ id: `x` })
     })
     test(`with error`, async () => {
