@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import { describe, expect, test, vi } from 'vitest'
 import type { ContextualError } from '../errors/ContextualError.js'
 import { core, oops, run, runWithOptions } from './specHelpers.js'

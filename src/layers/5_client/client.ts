@@ -2,11 +2,10 @@ import { type ExecutionResult, GraphQLSchema } from 'graphql'
 import { Anyware } from '../../lib/anyware/__.js'
 import { Errors } from '../../lib/errors/__.js'
 import type { SomeExecutionResultWithoutErrors } from '../../lib/graphql.js'
-import { type RootTypeName } from '../../lib/graphql.js'
+import { isOperationTypeName, operationTypeNameToRootTypeName, type RootTypeName } from '../../lib/graphql.js'
 import { isPlainObject } from '../../lib/prelude.js'
-import type { SchemaInput } from '../0_functions/requestOrExecute.js'
-// import { requestOrExecute } from '../0_functions/requestOrExecute.js'
-import type { Input as RawInput } from '../0_functions/requestOrExecute.js'
+import type { URLInput } from '../0_functions/request.js'
+import type { BaseInput } from '../0_functions/types.js'
 import { Schema } from '../1_Schema/__.js'
 import { readMaybeThunk } from '../1_Schema/core/helpers.js'
 import type { GlobalRegistry } from '../2_generator/globalRegistry.js'
@@ -23,6 +22,12 @@ import type {
 } from './Config.js'
 import type { DocumentFn } from './document.js'
 import type { GetRootTypeMethods } from './RootTypeMethods.js'
+
+export type SchemaInput = URLInput | GraphQLSchema
+
+export interface RawInput extends BaseInput {
+  schema: SchemaInput
+}
 
 // todo could list specific errors here
 // Anyware entrypoint
@@ -253,7 +258,7 @@ export const createInternal = (
   }
 
   const context: Context = {
-    core: Core.create() as any,
+    core: Core.create() as any, // eslint-disable-line
     extensions: state.extensions,
     config: {
       returnMode,
@@ -312,6 +317,7 @@ export const createInternal = (
     Object.assign(client, {
       document: (documentObject: DocumentObject) => {
         const hasMultipleOperations = Object.keys(documentObject).length > 1
+
         const processInput = (maybeOperationName: string) => {
           if (!maybeOperationName && hasMultipleOperations) {
             throw {
@@ -327,22 +333,27 @@ export const createInternal = (
           const rootTypeSelection = documentObject[operationName]
           if (!rootTypeSelection) throw new Error(`Operation with name ${operationName} not found.`)
           const operationTypeName = Object.keys(rootTypeSelection)[0]
-          if (!operationTypeName) throw new Error(`Operation has no selection set.`)
+          if (!isOperationTypeName(operationTypeName)) throw new Error(`Operation has no selection set.`)
           // @ts-expect-error
-          const selection = rootTypeSelection[operationTypeName]
+          const selection = rootTypeSelection[operationTypeName] as GraphQLObjectSelection
           return {
-            operationTypeName,
+            rootTypeName: operationTypeNameToRootTypeName[operationTypeName],
             selection,
           }
         }
+
         return {
           run: async (maybeOperationName: string) => {
-            const { selection, operationTypeName } = processInput(maybeOperationName)
-            return await client[operationTypeName].$batch(selection)
+            const { selection, rootTypeName } = processInput(maybeOperationName)
+            return await executeRootType(typedContext, rootTypeName, selection)
           },
           runOrThrow: async (maybeOperationName: string) => {
-            const { selection, operationTypeName } = processInput(maybeOperationName)
-            return await client[operationTypeName].$batchOrThrow(selection)
+            const { selection, rootTypeName } = processInput(maybeOperationName)
+            return await executeRootType(
+              applyOrThrowToContext(typedContext),
+              rootTypeName,
+              selection,
+            )
           },
         }
       },

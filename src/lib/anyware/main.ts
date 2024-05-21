@@ -1,4 +1,4 @@
-// todo allow hooks to have implementation overriden.
+// todo allow hooks to have implementation overridden.
 // E.g.: request((input) => {...})
 // todo allow hooks to have passthrough without explicit input passing
 // E.g.: NOT              await request(request.input)
@@ -7,14 +7,7 @@
 import { Errors } from '../errors/__.js'
 import { partitionAndAggregateErrors } from '../errors/ContextualAggregateError.js'
 import { ContextualError } from '../errors/ContextualError.js'
-import type {
-  Deferred,
-  FindValueAfter,
-  IsLastValue,
-  MaybePromise,
-  SomeAsyncFunction,
-  SomeMaybeAsyncFunction,
-} from '../prelude.js'
+import type { Deferred, FindValueAfter, IsLastValue, MaybePromise, SomeMaybeAsyncFunction } from '../prelude.js'
 import { casesExhausted, createDeferred, debug, errorFromMaybeError } from '../prelude.js'
 import { getEntrypoint } from './getEntrypoint.js'
 
@@ -180,7 +173,7 @@ const runHook = async <$HookName extends string>(
       }
       const nextNextHookStack = [...nextHookStack, nextPausedExtension] // tempting to mutate here but simpler to think about as copy.
 
-      runHook({
+      void runHook({
         core,
         name,
         done,
@@ -215,7 +208,7 @@ const runHook = async <$HookName extends string>(
     switch (branch) {
       case `body`: {
         if (result === envelope) {
-          runHook({
+          void runHook({
             core,
             name,
             done,
@@ -282,7 +275,7 @@ const run = async (
   for (const hookName of core.hookNamesOrderedBySequence) {
     debug(`running hook`, hookName)
     const doneDeferred = createDeferred<HookDoneData>()
-    runHook({
+    void runHook({
       core,
       name: hookName,
       done: doneDeferred.resolve,
@@ -323,10 +316,12 @@ const run = async (
             const message = `There was an error in the core implementation of hook "${signal.hookName}".`
             return new ContextualError(message, { hookName: signal.hookName, source: signal.source }, signal.error)
           }
+          default:
+            throw casesExhausted(signal)
         }
       }
       default:
-        casesExhausted(signal)
+        throw casesExhausted(signal)
     }
   }
 
@@ -352,7 +347,7 @@ const createPassthrough = (hookName: string) => async (hookEnvelope: SomeHookEnv
   return await hook(hook.input)
 }
 
-const toInternalExtension = (core: Core, config: Config, extension: SomeAsyncFunction) => {
+const toInternalExtension = (core: Core, config: Config, extension: SomeMaybeAsyncFunction) => {
   const currentChunk = createDeferred<SomeHookEnvelope>()
   const body = createDeferred()
   const applyBody = async (input: object) => {
@@ -402,7 +397,7 @@ const toInternalExtension = (core: Core, config: Config, extension: SomeAsyncFun
       const passthroughs = hooksBeforeEntrypoint.map((hookName) => createPassthrough(hookName))
       let currentChunkPromiseChain = currentChunk.promise
       for (const passthrough of passthroughs) {
-        currentChunkPromiseChain = currentChunkPromiseChain.then(passthrough)
+        currentChunkPromiseChain = currentChunkPromiseChain.then(passthrough) // eslint-disable-line
       }
       void currentChunkPromiseChain.then(applyBody)
 

@@ -1,4 +1,4 @@
-import type { OperationName } from '../../lib/graphql.js'
+import type { OperationTypeName } from '../../lib/graphql.js'
 import type { Exact } from '../../lib/prelude.js'
 import type { TSError } from '../../lib/TSError.js'
 import type { InputFieldsAllNullable, Schema } from '../1_Schema/__.js'
@@ -23,7 +23,7 @@ type RootTypeFieldContext = {
 
 // dprint-ignore
 export type GetRootTypeMethods<$Config extends Config, $Index extends Schema.Index> = {
-	[$OperationName in OperationName as $Index['Root'][Capitalize<$OperationName>] extends null ? never : $OperationName]:
+	[$OperationName in OperationTypeName as $Index['Root'][Capitalize<$OperationName>] extends null ? never : $OperationName]:
 		RootTypeMethods<$Config, $Index, Capitalize<$OperationName>>
 }
 

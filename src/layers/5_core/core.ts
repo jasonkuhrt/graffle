@@ -21,11 +21,13 @@ import type {
 
 const getRootIndexOrThrow = (context: ContextInterfaceTyped, rootTypeName: string) => {
   // @ts-expect-error
+  // eslint-disable-next-line
   const rootIndex = context.schemaIndex.Root[rootTypeName]
   if (!rootIndex) throw new Error(`Root type not found: ${rootTypeName}`)
   return rootIndex
 }
 
+// eslint-disable-next-line
 type InterfaceInput<A = {}, B = {}> =
   | ({
     interface: InterfaceTyped
@@ -37,6 +39,7 @@ type InterfaceInput<A = {}, B = {}> =
     context: ContextInterfaceRaw
   } & B)
 
+// eslint-disable-next-line
 type TransportInput<A = {}, B = {}> =
   | ({
     transport: TransportHttp
@@ -61,6 +64,7 @@ export type HookInputPack =
   }
   & InterfaceInput
   & TransportInput<{ url: string | URL; headers?: HeadersInit }, { schema: GraphQLSchema }>
+
 export type ExchangeInputHook =
   & InterfaceInput
   & TransportInput<
@@ -72,6 +76,7 @@ export type ExchangeInputHook =
       operationName?: string
     }
   >
+
 export type HookInputUnpack =
   & InterfaceInput
   & TransportInput<
@@ -80,6 +85,7 @@ export type HookInputUnpack =
       result: ExecutionResult
     }
   >
+
 export type HookInputDecode =
   & { result: ExecutionResult }
   & InterfaceInput

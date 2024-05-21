@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import { describe, expect, test } from 'vitest'
 import type { ContextualAggregateError } from '../errors/ContextualAggregateError.js'
 import { run } from './specHelpers.js'

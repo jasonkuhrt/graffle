@@ -205,7 +205,7 @@ const buildBody = (params: Input) => {
         variables,
       }))
     default:
-      throw casesExhausted(params.request) // eslint-disable-line
+      throw casesExhausted(params.request)
   }
 }
 
@@ -234,6 +234,6 @@ const buildQueryParams = (params: Input): URLSearchParams => {
       return searchParams
     }
     default:
-      throw casesExhausted(params.request) // eslint-disable-line
+      throw casesExhausted(params.request)
   }
 }

@@ -239,9 +239,9 @@ export type MaybePromise<T> = T | Promise<T>
 
 export const capitalizeFirstLetter = (string: string) => string.charAt(0).toUpperCase() + string.slice(1)
 
-export type SomeAsyncFunction = (...args: any[]) => Promise<any>
+export type SomeAsyncFunction = (...args: unknown[]) => Promise<unknown>
 
-export type SomeMaybeAsyncFunction = (...args: any[]) => MaybePromise<any>
+export type SomeMaybeAsyncFunction = (...args: unknown[]) => MaybePromise<unknown>
 
 export type Deferred<T> = {
   promise: Promise<T>
