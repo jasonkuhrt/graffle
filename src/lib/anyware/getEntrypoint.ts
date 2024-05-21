@@ -24,7 +24,7 @@ export const ExtensionEntryHookIssue = {
 export type ExtensionEntryHookIssue = typeof ExtensionEntryHookIssue[keyof typeof ExtensionEntryHookIssue]
 
 export const getEntrypoint = (
-  hookNames: string[],
+  hookNames: readonly string[],
   extension: ExtensionInput,
 ): ErrorAnywareExtensionEntrypoint | HookName => {
   const x = analyzeFunction(extension)

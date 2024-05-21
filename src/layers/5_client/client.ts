@@ -47,8 +47,8 @@ const isTypedContext = (context: Context): context is TypedContext => `schemaInd
 
 // todo no config needed?
 export type ClientRaw<_$Config extends Config> = {
-  raw: (input: RawInput) => Promise<ExecutionResult>
-  rawOrThrow: (input: RawInput) => Promise<SomeExecutionResultWithoutErrors>
+  raw: (input: Omit<RawInput, 'schema'>) => Promise<ExecutionResult>
+  rawOrThrow: (input: Omit<RawInput, 'schema'>) => Promise<SomeExecutionResultWithoutErrors>
 }
 
 // dprint-ignore

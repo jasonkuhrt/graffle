@@ -1,5 +1,6 @@
 import type { Mock } from 'vitest'
 import { beforeEach, vi } from 'vitest'
+import { Anyware } from './__.js'
 import { type Core, type ExtensionInput, type Options, runWithExtensions } from './main.js'
 
 export type Input = { value: string }
@@ -22,10 +23,10 @@ export const createCore = (): $Core => {
     return { value: input.value + `+b` }
   })
 
-  return {
+  return Anyware.createCore({
     hookNamesOrderedBySequence: [`a`, `b`],
     hooks: { a, b },
-  }
+  }) as $Core
 }
 
 beforeEach(() => {

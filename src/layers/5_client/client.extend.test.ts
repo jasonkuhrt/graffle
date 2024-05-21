@@ -1,8 +1,10 @@
 /* eslint-disable */
+import { ExecutionResult } from 'graphql'
 import { describe, expect } from 'vitest'
 import { db } from '../../../tests/_/db.js'
 import { createResponse, test } from '../../../tests/_/helpers.js'
 import { Graffle } from '../../../tests/_/schema/generated/__.js'
+import { GraphQLExecutionResult } from '../../legacy/lib/graphql.js'
 
 const client = Graffle.create({ schema: 'https://foo', returnMode: 'dataAndErrors' })
 const headers = { 'x-foo': 'bar' }
@@ -26,7 +28,7 @@ describe(`entrypoint request`, () => {
     expect(await client2.query.id()).toEqual(db.id)
   })
   test('can chain into exchange', async ({ fetch }) => {
-    fetch.mockImplementationOnce(async (input: Request) => {
+    fetch.mockImplementationOnce(async () => {
       return createResponse({ data: { id: db.id } })
     })
     const client2 = client.extend(async ({ pack }) => {

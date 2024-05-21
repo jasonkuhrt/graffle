@@ -4,6 +4,7 @@
 // E.g.: NOT              await request(request.input)
 // but instead simply:    await request()
 
+import { Errors } from '../errors/__.js'
 import { partitionAndAggregateErrors } from '../errors/ContextualAggregateError.js'
 import { ContextualError } from '../errors/ContextualError.js'
 import type {
@@ -57,6 +58,14 @@ type SomeHookEnvelope = {
 }
 type SomeHook = {
   [hookSymbol]: HookSymbol
+  // todo the result is unknown, but if we build a EndEnvelope, then we can work with this type more logically and put it here.
+  // E.g. adding `| unknown` would destroy the knowledge of hook envelope case
+  // todo this is not strictly true, it could also be the final result
+  // TODO how do I make this input type object without breaking the final types in e.g. client.extend.test
+  // Ask Pierre
+  // (input: object): SomeHookEnvelope
+  (input: any): any
+  input: object
 }
 
 type Hook<
@@ -81,6 +90,14 @@ type HookReturn<
     $Result,
     $NameNext
   >
+}
+
+export const createCore = <
+  $HookSequence extends HookSequence = HookSequence,
+  $HookMap extends Record<$HookSequence[number], object> = Record<$HookSequence[number], object>,
+  $Result = unknown,
+>(input: Omit<Core<$HookSequence, $HookMap, $Result>, PrivateTypesSymbol>): Core<$HookSequence, $HookMap, $Result> => {
+  return input as any
 }
 
 export type Core<
@@ -239,9 +256,12 @@ const runHook = async <$HookName extends string>(
   // Run core to get result
 
   const implementation = core.hooks[name]
+  if (!implementation) {
+    throw new Errors.ContextualError(`Implementation not found for hook name ${name}`, { hookName: name })
+  }
   let result
   try {
-    result = await implementation(originalInput)
+    result = await implementation(originalInput as any)
   } catch (error) {
     done({ type: `error`, hookName: name, source: `implementation`, error: errorFromMaybeError(error) })
     return
@@ -324,14 +344,18 @@ const run = async (
   return currentResult // last loop result
 }
 
-const createPassthrough = (hookName: string) => async (hookEnvelope) => {
-  return await hookEnvelope[hookName](hookEnvelope[hookName].input)
+const createPassthrough = (hookName: string) => async (hookEnvelope: SomeHookEnvelope) => {
+  const hook = hookEnvelope[hookName]
+  if (!hook) {
+    throw new Errors.ContextualError(`Hook not found in hook envelope`, { hookName })
+  }
+  return await hook(hook.input)
 }
 
 const toInternalExtension = (core: Core, config: Config, extension: SomeAsyncFunction) => {
-  const currentChunk = createDeferred()
+  const currentChunk = createDeferred<SomeHookEnvelope>()
   const body = createDeferred()
-  const applyBody = async (input) => {
+  const applyBody = async (input: object) => {
     try {
       const result = await extension(input)
       body.resolve(result)
@@ -344,10 +368,10 @@ const toInternalExtension = (core: Core, config: Config, extension: SomeAsyncFun
 
   switch (config.entrypointSelectionMode) {
     case `off`: {
-      currentChunk.promise.then(applyBody)
+      void currentChunk.promise.then(applyBody)
       return {
         name: extensionName,
-        entrypoint: core.hookNamesOrderedBySequence[0], // todo non-empty-array datastructure
+        entrypoint: core.hookNamesOrderedBySequence[0], // todo non-empty-array data structure
         body,
         currentChunk,
       }
@@ -359,7 +383,7 @@ const toInternalExtension = (core: Core, config: Config, extension: SomeAsyncFun
         if (config.entrypointSelectionMode === `required`) {
           return entrypoint
         } else {
-          currentChunk.promise.then(applyBody)
+          void currentChunk.promise.then(applyBody)
           return {
             name: extensionName,
             entrypoint: core.hookNamesOrderedBySequence[0], // todo non-empty-array data structure
@@ -380,7 +404,7 @@ const toInternalExtension = (core: Core, config: Config, extension: SomeAsyncFun
       for (const passthrough of passthroughs) {
         currentChunkPromiseChain = currentChunkPromiseChain.then(passthrough)
       }
-      currentChunkPromiseChain.then(applyBody)
+      void currentChunkPromiseChain.then(applyBody)
 
       return {
         name: extensionName,
@@ -428,6 +452,7 @@ export const runWithExtensions = async <$Core extends Core>(
   return await run({
     core,
     initialInput,
+    // @ts-expect-error fixme
     initialHookStack,
   })
 }

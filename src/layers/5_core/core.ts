@@ -1,6 +1,6 @@
 import type { DocumentNode, ExecutionResult, GraphQLSchema } from 'graphql'
 import { print } from 'graphql'
-import type { Core } from '../../lib/anyware/main.js'
+import { Anyware } from '../../lib/anyware/__.js'
 import { type StandardScalarVariables } from '../../lib/graphql.js'
 import { parseExecutionResult } from '../../lib/graphqlHTTP.js'
 import { CONTENT_TYPE_GQL } from '../../lib/http.js'
@@ -29,7 +29,7 @@ const getRootIndexOrThrow = (context: ContextInterfaceTyped, rootTypeName: strin
 type InterfaceInput<A = {}, B = {}> =
   | ({
     interface: InterfaceTyped
-    // context: ContextInterfaceTyped
+    context: ContextInterfaceTyped
     rootTypeName: Schema.RootTypeName
   } & A)
   | ({
@@ -93,9 +93,8 @@ export type Hooks = {
 }
 
 // todo does this need to be a constructor?
-export const create = (): Core<HookSequence, Hooks, ExecutionResult> => {
-  // todo Get type passing by having a constructor brand the result
-  return {
+export const create = () => {
+  return Anyware.createCore<HookSequence, Hooks, ExecutionResult>({
     hookNamesOrderedBySequence: [`encode`, `pack`, `exchange`, `unpack`, `decode`],
     hooks: {
       encode: (
@@ -250,5 +249,5 @@ export const create = (): Core<HookSequence, Hooks, ExecutionResult> => {
     // todo expose return handling as part of the pipeline?
     // would be nice but alone would not yield type safe return handling
     // still, while figuring the type story out, might be a useful escape hatch for some cases...
-  }
+  })
 }

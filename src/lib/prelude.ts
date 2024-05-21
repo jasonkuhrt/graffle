@@ -1,7 +1,4 @@
-import { resolve } from 'dns'
 import type { ConditionalSimplifyDeep } from 'type-fest/source/conditional-simplify.js'
-import { Errors } from './errors/__.js'
-import type { ContextualAggregateError } from './errors/ContextualAggregateError.js'
 
 /* eslint-disable */
 export type RemoveIndex<T> = {
@@ -253,16 +250,18 @@ export type Deferred<T> = {
 }
 
 export const createDeferred = <$T>(): Deferred<$T> => {
-  let resolve
-  let reject
-  const promise = new Promise(($resolve, $reject) => {
+  let resolve: (value: $T) => void
+  let reject: (error: unknown) => void
+
+  const promise = new Promise<$T>(($resolve, $reject) => {
     resolve = $resolve
     reject = $reject
   })
+
   return {
     promise,
-    resolve,
-    reject,
+    resolve: (value) => resolve(value),
+    reject: (error) => reject(error),
   }
 }
 

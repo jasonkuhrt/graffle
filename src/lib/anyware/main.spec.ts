@@ -90,17 +90,17 @@ describe(`two extensions`, () => {
   })
 
   test(`each can adjust first hook then passthrough`, async () => {
-    const ex1 = ({ a }) => a({ value: a.input.value + `+ex1` })
-    const ex2 = ({ a }) => a({ value: a.input.value + `+ex2` })
+    const ex1 = ({ a }: any) => a({ value: a.input.value + `+ex1` })
+    const ex2 = ({ a }: any) => a({ value: a.input.value + `+ex2` })
     expect(await run(ex1, ex2)).toEqual({ value: `initial+ex1+ex2+a+b` })
   })
 
   test(`each can adjust each hook`, async () => {
-    const ex1 = async ({ a }) => {
+    const ex1 = async ({ a }: any) => {
       const { b } = await a({ value: a.input.value + `+ex1` })
       return await b({ value: b.input.value + `+ex1` })
     }
-    const ex2 = async ({ a }) => {
+    const ex2 = async ({ a }: any) => {
       const { b } = await a({ value: a.input.value + `+ex2` })
       return await b({ value: b.input.value + `+ex2` })
     }
@@ -108,22 +108,22 @@ describe(`two extensions`, () => {
   })
 
   test(`second can skip hook a`, async () => {
-    const ex1 = async ({ a }) => {
+    const ex1 = async ({ a }: any) => {
       const { b } = await a({ value: a.input.value + `+ex1` })
       return await b({ value: b.input.value + `+ex1` })
     }
-    const ex2 = async ({ b }) => {
+    const ex2 = async ({ b }: any) => {
       return await b({ value: b.input.value + `+ex2` })
     }
     expect(await run(ex1, ex2)).toEqual({ value: `initial+ex1+a+ex1+ex2+b` })
   })
   test(`second can short-circuit before hook a`, async () => {
     let ex1AfterA = false
-    const ex1 = async ({ a }) => {
+    const ex1 = async ({ a }: any) => {
       const { b } = await a({ value: a.input.value + `+ex1` })
       ex1AfterA = true
     }
-    const ex2 = async ({ a }) => {
+    const ex2 = async ({ a }: any) => {
       return 2
     }
     expect(await run(ex1, ex2)).toEqual(2)
@@ -133,12 +133,12 @@ describe(`two extensions`, () => {
   })
   test(`second can short-circuit after hook a`, async () => {
     let ex1AfterB = false
-    const ex1 = async ({ a }) => {
+    const ex1 = async ({ a }: any) => {
       const { b } = await a({ value: a.input.value + `+ex1` })
       await b({ value: b.input.value + `+ex1` })
       ex1AfterB = true
     }
-    const ex2 = async ({ a }) => {
+    const ex2 = async ({ a }: any) => {
       await a({ value: a.input.value + `+ex2` })
       return 2
     }
