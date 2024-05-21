@@ -209,7 +209,9 @@ export const createInternal = (
           : argsOrSelectionSet,
       },
     } as GraphQLObjectSelection
+    console.log(3, context)
     const result = await executeRootType(context, rootTypeName, rootTypeSelectionSet)
+    console.log(result)
     if (result instanceof Error) return result
     return context.config.returnMode === `data` || context.config.returnMode === `dataAndErrors`
         || context.config.returnMode === `successData`
