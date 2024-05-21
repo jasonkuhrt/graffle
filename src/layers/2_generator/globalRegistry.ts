@@ -6,6 +6,8 @@ declare global {
   export namespace GraphQLRequestTypes {
     interface Schemas {
     }
+    // This is for type testing
+    interface SchemasAlwaysEmpty {}
   }
 }
 
@@ -19,7 +21,10 @@ export type GlobalRegistry = Record<string, {
 
 export namespace GlobalRegistry {
   export type Schemas = GraphQLRequestTypes.Schemas
-  export type SchemaList = Values<Schemas>
+
+  export type IsEmpty = keyof Schemas extends never ? true : false
+
+  export type SchemaList = IsEmpty extends true ? any : Values<Schemas>
 
   export type DefaultSchemaName = 'default'
 
