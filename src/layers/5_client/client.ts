@@ -258,7 +258,7 @@ export const createInternal = (
   }
 
   const context: Context = {
-    core: Core.create() as any, // eslint-disable-line
+    core: Core.create as any, // eslint-disable-line
     extensions: state.extensions,
     config: {
       returnMode,

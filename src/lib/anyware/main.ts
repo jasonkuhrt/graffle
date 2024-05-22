@@ -61,9 +61,11 @@ type SomeHook = {
   input: object
 }
 
+type HookMap<$HookSequence extends HookSequence> = Record<$HookSequence[number], object>
+
 type Hook<
   $HookSequence extends HookSequence,
-  $HookMap extends Record<$HookSequence[number], object> = Record<$HookSequence[number], object>,
+  $HookMap extends HookMap<$HookSequence> = HookMap<$HookSequence>,
   $Result = unknown,
   $Name extends $HookSequence[number] = $HookSequence[number],
 > = (<$$Input extends $HookMap[$Name]>(input: $$Input) => HookReturn<$HookSequence, $HookMap, $Result, $Name>) & {
@@ -73,7 +75,7 @@ type Hook<
 
 type HookReturn<
   $HookSequence extends HookSequence,
-  $HookMap extends Record<$HookSequence[number], object> = Record<$HookSequence[number], object>,
+  $HookMap extends HookMap<$HookSequence> = HookMap<$HookSequence>,
   $Result = unknown,
   $Name extends $HookSequence[number] = $HookSequence[number],
 > = IsLastValue<$Name, $HookSequence> extends true ? $Result : {
@@ -87,7 +89,7 @@ type HookReturn<
 
 export const createCore = <
   $HookSequence extends HookSequence = HookSequence,
-  $HookMap extends Record<$HookSequence[number], object> = Record<$HookSequence[number], object>,
+  $HookMap extends HookMap<$HookSequence> = HookMap<$HookSequence>,
   $Result = unknown,
 >(input: Omit<Core<$HookSequence, $HookMap, $Result>, PrivateTypesSymbol>): Core<$HookSequence, $HookMap, $Result> => {
   return input as any
@@ -95,7 +97,7 @@ export const createCore = <
 
 export type Core<
   $HookSequence extends HookSequence = HookSequence,
-  $HookMap extends Record<$HookSequence[number], object> = Record<$HookSequence[number], object>,
+  $HookMap extends HookMap<$HookSequence> = HookMap<$HookSequence>,
   $Result = unknown,
 > = {
   [PrivateTypesSymbol]: {
