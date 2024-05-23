@@ -64,7 +64,7 @@ export type Client<$Index extends Schema.Index | null, $Config extends Config> =
       : {} // eslint-disable-line
     )
   & {
-      extend: (extension: Anyware.Extension2<Core.HookSequence, Core.Hooks, ExecutionResult>) => Client<$Index, $Config>
+      extend: (extension: Anyware.Extension2<Core>) => Client<$Index, $Config>
     }
 
 export type ClientTyped<$Index extends Schema.Index, $Config extends Config> =

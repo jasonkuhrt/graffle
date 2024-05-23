@@ -12,18 +12,17 @@ import { casesExhausted, createDeferred, debug, errorFromMaybeError } from '../p
 import { getEntrypoint } from './getEntrypoint.js'
 
 type HookSequence = readonly [string, ...string[]]
+
 export type Extension2<
-  $HookSequence extends HookSequence,
-  $HookMap extends Record<$HookSequence[number], object> = Record<$HookSequence[number], object>,
-  $Result = unknown,
+  $Core extends Core = Core,
 > = (
   hooks: ExtensionHooks<
-    $HookSequence,
-    $HookMap,
-    $Result
+    $Core[PrivateTypesSymbol]['hookSequence'],
+    $Core[PrivateTypesSymbol]['hookMap'],
+    $Core[PrivateTypesSymbol]['result']
   >,
 ) => Promise<
-  | $Result
+  | $Core[PrivateTypesSymbol]['result']
   | SomeHookEnvelope
 >
 
@@ -49,7 +48,7 @@ type HookSymbol = typeof hookSymbol
 type SomeHookEnvelope = {
   [name: string]: SomeHook
 }
-type SomeHook = {
+export type SomeHook<fn extends (input: any) => any = (input: any) => any> = fn & {
   [hookSymbol]: HookSymbol
   // todo the result is unknown, but if we build a EndEnvelope, then we can work with this type more logically and put it here.
   // E.g. adding `| unknown` would destroy the knowledge of hook envelope case
@@ -57,8 +56,7 @@ type SomeHook = {
   // TODO how do I make this input type object without breaking the final types in e.g. client.extend.test
   // Ask Pierre
   // (input: object): SomeHookEnvelope
-  (input: any): any
-  input: object
+  input: Parameters<fn>[0]
 }
 
 export type HookMap<$HookSequence extends HookSequence> = Record<
@@ -129,7 +127,8 @@ type Extension = {
   currentChunk: Deferred<unknown>
 }
 
-export type ExtensionInput<$Input extends object = object> = (input: $Input) => MaybePromise<unknown>
+// export type ExtensionInput<$Input extends object = object> = (input: $Input) => MaybePromise<unknown>
+export type ExtensionInput<$Input extends object = any> = (input: $Input) => MaybePromise<unknown>
 
 type HookDoneData =
   | { type: 'completed'; result: unknown; nextHookStack: Extension[] }
@@ -267,7 +266,7 @@ const ResultEnvelopeSymbol = Symbol(`resultEnvelope`)
 
 type ResultEnvelopeSymbol = typeof ResultEnvelopeSymbol
 
-type ResultEnvelop<T> = {
+export type ResultEnvelop<T> = {
   [ResultEnvelopeSymbol]: ResultEnvelopeSymbol
   result: T
 }
@@ -378,7 +377,7 @@ export type Builder<$Core extends Core = Core> = {
   run: (
     { initialInput, extensions, options }: {
       initialInput: CoreInitialInput<$Core>
-      extensions: ExtensionInput[]
+      extensions: Extension2<$Core>[]
       options?: Options
     },
   ) => Promise<$Core[PrivateTypesSymbol]['result'] | Errors.ContextualError>

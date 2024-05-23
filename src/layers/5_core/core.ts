@@ -254,3 +254,5 @@ export const anyware = Anyware.create<HookSequence, Hooks, ExecutionResult>({
   // would be nice but alone would not yield type safe return handling
   // still, while figuring the type story out, might be a useful escape hatch for some cases...
 })
+
+export type Core = (typeof anyware)['core']

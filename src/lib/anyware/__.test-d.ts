@@ -1,10 +1,45 @@
 /* eslint-disable */
 
-import { describe, expect, expectTypeOf, test, vi } from 'vitest'
-import type { ContextualError } from '../errors/ContextualError.js'
+import { expectTypeOf, test } from 'vitest'
+import { Result } from '../../../tests/_/schema/generated/SchemaRuntime.js'
+import { ContextualError } from '../errors/ContextualError.js'
+import { MaybePromise } from '../prelude.js'
 import { Anyware } from './__.js'
-import { anyware, oops, run, runWithOptions } from './specHelpers.js'
+import { ResultEnvelop, SomeHook } from './main.js'
 
-test('types', () => {
-  // expectTypeOf(Anyware.create())
+type InputA = { valueA: string }
+type InputB = { valueB: string }
+type Result = { return: string }
+
+const create = Anyware.create<['a', 'b'], { a: InputA; b: InputB }, Result>
+
+test('create', () => {
+  expectTypeOf(create).toMatchTypeOf<
+    (input: {
+      hookNamesOrderedBySequence: ['a', 'b']
+      hooks: {
+        a: (input: InputA) => InputB
+        b: (input: InputB) => Result
+      }
+    }) => any
+  >()
+})
+
+test('run', () => {
+  type run = ReturnType<typeof create>['run']
+
+  expectTypeOf<run>().toMatchTypeOf<
+    (input: {
+      initialInput: InputA
+      options?: Anyware.Options
+      extensions: ((input: {
+        a: SomeHook<
+          (input: InputA) => MaybePromise<{
+            b: SomeHook<(input: InputB) => MaybePromise<Result>>
+          }>
+        >
+        b: SomeHook<(input: InputB) => MaybePromise<Result>>
+      }) => Promise<Result>)[]
+    }) => Promise<Result | ContextualError>
+  >()
 })
