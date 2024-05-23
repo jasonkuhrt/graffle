@@ -4,6 +4,7 @@ import { Anyware } from './__.js'
 import { type ExtensionInput, type Options } from './main.js'
 
 export type Input = { value: string }
+export const initialInput: Input = { value: `initial` }
 
 // export type $Core = Core<['a', 'b'],Anyware.HookMap<['a','b']>,Input>
 
@@ -40,13 +41,14 @@ beforeEach(() => {
 
 export const runWithOptions = (options: Options = {}) => async (...extensions: ExtensionInput[]) => {
   const result = await anyware.run({
-    initialInput: { value: `initial` },
+    initialInput,
+    // @ts-expect-error fixme
     extensions,
     options,
   })
   return result
 }
 
-export const run = async (...extensions: ExtensionInput<any>[]) => runWithOptions({})(...extensions)
+export const run = async (...extensions: ExtensionInput[]) => runWithOptions({})(...extensions)
 
 export const oops = new Error(`oops`)

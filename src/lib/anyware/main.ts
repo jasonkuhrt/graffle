@@ -1,9 +1,3 @@
-// todo allow hooks to have implementation overridden.
-// E.g.: request((input) => {...})
-// todo allow hooks to have passthrough without explicit input passing
-// E.g.: NOT              await request(request.input)
-// but instead simply:    await request()
-
 import { Errors } from '../errors/__.js'
 import { partitionAndAggregateErrors } from '../errors/ContextualAggregateError.js'
 import { ContextualError } from '../errors/ContextualError.js'
@@ -69,7 +63,7 @@ type Hook<
   $HookMap extends HookMap<$HookSequence> = HookMap<$HookSequence>,
   $Result = unknown,
   $Name extends $HookSequence[number] = $HookSequence[number],
-> = (<$$Input extends $HookMap[$Name]>(input: $$Input) => HookReturn<$HookSequence, $HookMap, $Result, $Name>) & {
+> = (<$$Input extends $HookMap[$Name]>(input?: $$Input) => HookReturn<$HookSequence, $HookMap, $Result, $Name>) & {
   [hookSymbol]: HookSymbol
   input: $HookMap[$Name]
 }
@@ -158,7 +152,8 @@ const runHook = async <$HookName extends string>(
 
     debug(`${name}: extension ${pausedExtension.name}`)
     // The extension is responsible for calling the next hook.
-    const hook = createHook(originalInput, (nextOriginalInput) => {
+    // If no input is passed that means use the original input.
+    const hook = createHook(originalInput, (maybeNextOriginalInput?: object) => {
       // Once called, the extension is paused again and we continue down the current hook stack.
       hookUsedDeferred.resolve(true)
 
@@ -173,7 +168,7 @@ const runHook = async <$HookName extends string>(
         core,
         name,
         done,
-        originalInput: nextOriginalInput,
+        originalInput: maybeNextOriginalInput ?? originalInput,
         currentHookStack: nextCurrentHookStack,
         nextHookStack: nextNextHookStack,
       })

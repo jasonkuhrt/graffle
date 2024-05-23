@@ -34,11 +34,11 @@ test('run', () => {
       options?: Anyware.Options
       extensions: ((input: {
         a: SomeHook<
-          (input: InputA) => MaybePromise<{
-            b: SomeHook<(input: InputB) => MaybePromise<Result>>
+          (input?: InputA) => MaybePromise<{
+            b: SomeHook<(input?: InputB) => MaybePromise<Result>>
           }>
         >
-        b: SomeHook<(input: InputB) => MaybePromise<Result>>
+        b: SomeHook<(input?: InputB) => MaybePromise<Result>>
       }) => Promise<Result>)[]
     }) => Promise<Result | ContextualError>
   >()

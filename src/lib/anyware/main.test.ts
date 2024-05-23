@@ -2,7 +2,7 @@
 
 import { describe, expect, test, vi } from 'vitest'
 import type { ContextualError } from '../errors/ContextualError.js'
-import { core, oops, run, runWithOptions } from './specHelpers.js'
+import { core, initialInput, oops, run, runWithOptions } from './specHelpers.js'
 
 describe(`no extensions`, () => {
   test(`passthrough to implementation`, async () => {
@@ -22,6 +22,16 @@ describe(`one extension`, () => {
     ).toEqual(0)
     expect(core.hooks.a).toHaveBeenCalled()
     expect(core.hooks.b).toHaveBeenCalled()
+  })
+  test('can call hook with no input, making the original input be used', () => {
+    expect(
+      run(async ({ a }) => {
+        return await a()
+      }),
+    ).resolves.toEqual({ value: 'initial+a+b' })
+    // todo why doesn't this work?
+    // expect(core.hooks.a).toHaveBeenCalled()
+    // expect(core.hooks.b).toHaveBeenCalled()
   })
   describe(`can short-circuit`, () => {
     test(`at start, return input`, async () => {

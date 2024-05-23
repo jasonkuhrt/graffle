@@ -39,7 +39,7 @@ export type SelectionSetOrIndicator = 0 | 1 | boolean | object
 export type SelectionSetOrArgs = object
 
 export interface Context {
-  extensions: Anyware.ExtensionInput[]
+  extensions: Anyware.Extension2<Core.Core>[]
   config: Config
 }
 
@@ -64,7 +64,7 @@ export type Client<$Index extends Schema.Index | null, $Config extends Config> =
       : {} // eslint-disable-line
     )
   & {
-      extend: (extension: Anyware.Extension2<Core>) => Client<$Index, $Config>
+      extend: (extension: Anyware.Extension2<Core.Core>) => Client<$Index, $Config>
     }
 
 export type ClientTyped<$Index extends Schema.Index, $Config extends Config> =
@@ -128,12 +128,6 @@ export type Input<$Schema extends GlobalRegistry.SchemaList> = {
   // elideInputKey: true,
 } & InputPrefilled<$Schema>
 
-// type Create = <
-//   $Input extends Input<GlobalRegistry.SchemaList>,
-// >(
-//   input: $Input,
-// ) => $Input['schemaIndex']
-
 // dprint-ignore
 type Create = <
   $Input extends Input<GlobalRegistry.SchemaList>,
@@ -156,7 +150,7 @@ export const create: Create = (
 ) => createInternal(input_, { extensions: [] })
 
 interface CreateState {
-  extensions: Anyware.ExtensionInput[]
+  extensions: Anyware.Extension2<Core.Core>[]
 }
 
 export const createInternal = (
@@ -298,7 +292,7 @@ export const createInternal = (
       const contextWithReturnModeSet = updateContextConfig(context, { returnMode: `graphqlSuccess` })
       return await runRaw(contextWithReturnModeSet, rawInput)
     },
-    extend: (extension: Anyware.ExtensionInput) => {
+    extend: (extension: Anyware.Extension2<Core.Core>) => {
       // todo test that adding extensions returns a copy of client
       return createInternal(input, { extensions: [...state.extensions, extension] })
     },
