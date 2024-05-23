@@ -98,7 +98,7 @@ export type Hooks = {
   decode: HookInputDecode
 }
 
-export const create = Anyware.createCore<HookSequence, Hooks, ExecutionResult>({
+export const anyware = Anyware.create<HookSequence, Hooks, ExecutionResult>({
   hookNamesOrderedBySequence,
   hooks: {
     encode: (

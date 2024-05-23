@@ -1,5 +1,5 @@
 import { type ExecutionResult, GraphQLSchema } from 'graphql'
-import { Anyware } from '../../lib/anyware/__.js'
+import type { Anyware } from '../../lib/anyware/__.js'
 import { Errors } from '../../lib/errors/__.js'
 import type { SomeExecutionResultWithoutErrors } from '../../lib/graphql.js'
 import { isOperationTypeName, operationTypeNameToRootTypeName, type RootTypeName } from '../../lib/graphql.js'
@@ -11,7 +11,7 @@ import { readMaybeThunk } from '../1_Schema/core/helpers.js'
 import type { GlobalRegistry } from '../2_generator/globalRegistry.js'
 import type { DocumentObject, GraphQLObjectSelection } from '../3_SelectionSet/encode.js'
 import { Core } from '../5_core/__.js'
-import type { HookInputEncode } from '../5_core/core.js'
+import { type HookInputEncode } from '../5_core/core.js'
 import type { InterfaceRaw } from '../5_core/types.js'
 import type {
   ApplyInputDefaults,
@@ -39,7 +39,6 @@ export type SelectionSetOrIndicator = 0 | 1 | boolean | object
 export type SelectionSetOrArgs = object
 
 export interface Context {
-  core: Anyware.Core
   extensions: Anyware.ExtensionInput[]
   config: Config
 }
@@ -258,7 +257,6 @@ export const createInternal = (
   }
 
   const context: Context = {
-    core: Core.create as any, // eslint-disable-line
     extensions: state.extensions,
     config: {
       returnMode,
@@ -266,8 +264,7 @@ export const createInternal = (
   }
 
   const run = async (context: Context, initialInput: HookInputEncode) => {
-    const result = await Anyware.runWithExtensions({
-      core: context.core,
+    const result = await Core.anyware.run({
       initialInput,
       extensions: context.extensions,
     }) as GraffleExecutionResult

@@ -8,7 +8,7 @@ import type { Cause, Context } from './types.js'
 export class ContextualError<
   $Name extends string = string,
   $Context extends Context = object,
-  $Cause extends Cause | undefined = undefined,
+  $Cause extends Cause | undefined = Cause | undefined,
 > extends Error {
   override name: $Name = `ContextualError` as $Name
   constructor(
@@ -19,5 +19,3 @@ export class ContextualError<
     super(message, cause)
   }
 }
-
-export type SomeContextualError = ContextualError<string, object, Cause | undefined>

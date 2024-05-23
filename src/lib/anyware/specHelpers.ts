@@ -1,21 +1,20 @@
 import type { Mock } from 'vitest'
 import { beforeEach, vi } from 'vitest'
 import { Anyware } from './__.js'
-import { type Core, type ExtensionInput, type Options, runWithExtensions } from './main.js'
+import { type ExtensionInput, type Options } from './main.js'
 
 export type Input = { value: string }
 
-export type $Core = Core<['a', 'b']> & {
+// export type $Core = Core<['a', 'b'],Anyware.HookMap<['a','b']>,Input>
+
+type $Core = ReturnType<typeof createAnyware> & {
   hooks: {
     a: Mock
     b: Mock
   }
 }
 
-// @ts-expect-error
-export let core: $Core = null
-
-export const createCore = (): $Core => {
+export const createAnyware = () => {
   const a = vi.fn().mockImplementation((input: Input) => {
     return { value: input.value + `+a` }
   })
@@ -23,19 +22,24 @@ export const createCore = (): $Core => {
     return { value: input.value + `+b` }
   })
 
-  return Anyware.createCore({
+  return Anyware.create<['a', 'b'], Anyware.HookMap<['a', 'b']>, Input>({
     hookNamesOrderedBySequence: [`a`, `b`],
     hooks: { a, b },
-  }) as $Core
+  })
 }
 
+// @ts-expect-error
+export let anyware: Anyware.Builder<$Core> = null
+export let core: $Core
+
 beforeEach(() => {
-  core = createCore()
+  // @ts-expect-error mock types not tracked by Anyware
+  anyware = createAnyware()
+  core = anyware.core
 })
 
 export const runWithOptions = (options: Options = {}) => async (...extensions: ExtensionInput[]) => {
-  const result = await runWithExtensions({
-    core,
+  const result = await anyware.run({
     initialInput: { value: `initial` },
     extensions,
     options,

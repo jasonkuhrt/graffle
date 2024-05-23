@@ -61,7 +61,10 @@ type SomeHook = {
   input: object
 }
 
-type HookMap<$HookSequence extends HookSequence> = Record<$HookSequence[number], object>
+export type HookMap<$HookSequence extends HookSequence> = Record<
+  $HookSequence[number],
+  any /* object <- type error but more accurate */
+>
 
 type Hook<
   $HookSequence extends HookSequence,
@@ -85,14 +88,6 @@ type HookReturn<
     $Result,
     $NameNext
   >
-}
-
-export const createCore = <
-  $HookSequence extends HookSequence = HookSequence,
-  $HookMap extends HookMap<$HookSequence> = HookMap<$HookSequence>,
-  $Result = unknown,
->(input: Omit<Core<$HookSequence, $HookMap, $Result>, PrivateTypesSymbol>): Core<$HookSequence, $HookMap, $Result> => {
-  return input as any
 }
 
 export type Core<
@@ -268,9 +263,23 @@ const runHook = async <$HookName extends string>(
   return
 }
 
+const ResultEnvelopeSymbol = Symbol(`resultEnvelope`)
+
+type ResultEnvelopeSymbol = typeof ResultEnvelopeSymbol
+
+type ResultEnvelop<T> = {
+  [ResultEnvelopeSymbol]: ResultEnvelopeSymbol
+  result: T
+}
+
+const createResultEnvelope = <T>(result: T): ResultEnvelop<T> => ({
+  [ResultEnvelopeSymbol]: ResultEnvelopeSymbol,
+  result,
+})
+
 const run = async (
   { core, initialInput, initialHookStack }: { core: Core; initialInput: unknown; initialHookStack: Extension[] },
-) => {
+): Promise<ResultEnvelop<Core[PrivateTypesSymbol]['result']> | ContextualError> => {
   let currentInput = initialInput
   let currentHookStack = initialHookStack
 
@@ -298,7 +307,7 @@ const run = async (
       case `shortCircuited`: {
         debug(`signal: shortCircuited`)
         const { result } = signal
-        return result
+        return createResultEnvelope(result)
       }
       case `error`: {
         debug(`signal: error`)
@@ -338,7 +347,7 @@ const run = async (
 
   debug(`returning`)
 
-  return currentResult // last loop result
+  return createResultEnvelope(currentResult) // last loop result
 }
 
 const createPassthrough = (hookName: string) => async (hookEnvelope: SomeHookEnvelope) => {
@@ -347,6 +356,71 @@ const createPassthrough = (hookName: string) => async (hookEnvelope: SomeHookEnv
     throw new Errors.ContextualError(`Hook not found in hook envelope`, { hookName })
   }
   return await hook(hook.input)
+}
+
+type Config = Required<Options>
+
+const resolveOptions = (options?: Options): Config => {
+  return {
+    entrypointSelectionMode: options?.entrypointSelectionMode ?? `required`,
+  }
+}
+
+export type Options = {
+  /**
+   * @defaultValue `true`
+   */
+  entrypointSelectionMode?: 'optional' | 'required' | 'off'
+}
+
+export type Builder<$Core extends Core = Core> = {
+  core: $Core
+  run: (
+    { initialInput, extensions, options }: {
+      initialInput: CoreInitialInput<$Core>
+      extensions: ExtensionInput[]
+      options?: Options
+    },
+  ) => Promise<$Core[PrivateTypesSymbol]['result'] | Errors.ContextualError>
+}
+
+export const create = <
+  $HookSequence extends HookSequence = HookSequence,
+  $HookMap extends HookMap<$HookSequence> = HookMap<$HookSequence>,
+  $Result = unknown,
+>(
+  coreInput: Omit<Core<$HookSequence, $HookMap, $Result>, PrivateTypesSymbol>,
+): Builder<Core<$HookSequence, $HookMap, $Result>> => {
+  type $Core = Core<$HookSequence, $HookMap, $Result>
+
+  const core = coreInput as any as $Core
+
+  const builder: Builder<$Core> = {
+    core,
+    run: async (input) => {
+      const { initialInput, extensions, options } = input
+      const initialHookStackAndErrors = extensions.map(extension =>
+        toInternalExtension(core, resolveOptions(options), extension)
+      )
+      const [initialHookStack, error] = partitionAndAggregateErrors(initialHookStackAndErrors)
+
+      if (error) {
+        return error
+      }
+
+      const result = await run({
+        core,
+        initialInput,
+        // @ts-expect-error fixme
+        initialHookStack,
+      })
+      if (result instanceof Error) return result
+
+      return result.result as any
+    },
+  }
+
+  return builder
 }
 
 const toInternalExtension = (core: Core, config: Config, extension: ExtensionInput) => {
@@ -413,43 +487,4 @@ const toInternalExtension = (core: Core, config: Config, extension: ExtensionInp
     default:
       throw casesExhausted(config.entrypointSelectionMode)
   }
-}
-
-type Config = Required<Options>
-const resolveOptions = (options?: Options): Config => {
-  return {
-    entrypointSelectionMode: options?.entrypointSelectionMode ?? `required`,
-  }
-}
-
-export type Options = {
-  /**
-   * @defaultValue `true`
-   */
-  entrypointSelectionMode?: 'optional' | 'required' | 'off'
-}
-
-export const runWithExtensions = async <$Core extends Core>(
-  { core, initialInput, extensions, options }: {
-    core: $Core
-    initialInput: CoreInitialInput<$Core>
-    extensions: ExtensionInput[]
-    options?: Options
-  },
-) => {
-  const initialHookStackAndErrors = extensions.map(extension =>
-    toInternalExtension(core, resolveOptions(options), extension)
-  )
-  const [initialHookStack, error] = partitionAndAggregateErrors(initialHookStackAndErrors)
-
-  if (error) {
-    return error
-  }
-
-  return await run({
-    core,
-    initialInput,
-    // @ts-expect-error fixme
-    initialHookStack,
-  })
 }
