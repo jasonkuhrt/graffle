@@ -51,12 +51,12 @@ export interface Context {
 
 export const rootTypeSelectionSet = (
   context: Context,
-  schemaObject: Schema.Object$2,
-  ss: GraphQLObjectSelection,
+  objectDef: Schema.Object$2,
+  selectionSet: GraphQLObjectSelection,
   operationName: string = ``,
 ) => {
-  const operationTypeName = lowerCaseFirstLetter(schemaObject.fields.__typename.type.type)
-  return `${operationTypeName} ${operationName} { ${resolveObjectLikeFieldValue(context, schemaObject, ss)} }`
+  const operationTypeName = lowerCaseFirstLetter(objectDef.fields.__typename.type.type)
+  return `${operationTypeName} ${operationName} { ${resolveObjectLikeFieldValue(context, objectDef, selectionSet)} }`
 }
 
 const resolveDirectives = (fieldValue: FieldValue) => {

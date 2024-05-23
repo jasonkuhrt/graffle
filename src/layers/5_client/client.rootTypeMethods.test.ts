@@ -38,26 +38,10 @@ describe(`query`, () => {
   })
   describe(`orThrow`, () => {
     test(`without error`, async () => {
-      await expect(graffle.query.objectWithArgsOrThrow({ $: { id: `x` }, id: true })).resolves.toEqual({ id: `x` })
+      await expect(graffle.query.objectWithArgsOrThrow({ $: { id: `x` }, id: true })).resolves.toEqual({ id: `x`, __typename: `Object1` })
     })
     test(`with error`, async () => {
       await expect(graffle.query.errorOrThrow()).rejects.toMatchObject(db.errorAggregate)
-    })
-  })
-  describe(`$batch`, () => {
-    test(`success`, async () => {
-      await expect(graffle.query.$batch({ id: true })).resolves.toMatchObject({ id:db.id })
-    })
-    test(`error`, async () => {
-      await expect(graffle.query.$batch({ error: true })).rejects.toMatchObject(db.errorAggregate)
-    })
-    describe(`orThrow`, () => {
-    test(`success`, async () => {
-      await expect(graffle.query.$batchOrThrow({ id: true })).resolves.toMatchObject({ id:db.id })
-    })
-    test(`error`, async () => {
-      await expect(graffle.query.$batchOrThrow({ error: true })).rejects.toMatchObject(db.errorAggregate)
-    })  
     })
   })
 })

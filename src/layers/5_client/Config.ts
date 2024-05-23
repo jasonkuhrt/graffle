@@ -7,11 +7,18 @@ import type { SelectionSet } from '../3_SelectionSet/__.js'
 
 export type ReturnModeType =
   | ReturnModeTypeGraphQL
+  | ReturnModeTypeGraphQLSuccess
   | ReturnModeTypeSuccessData
   | ReturnModeTypeData
   | ReturnModeTypeDataAndErrors
 
-export type ReturnModeTypeBase = ReturnModeTypeGraphQL | ReturnModeTypeDataAndErrors | ReturnModeTypeData
+export type ReturnModeTypeBase =
+  | ReturnModeTypeGraphQLSuccess
+  | ReturnModeTypeGraphQL
+  | ReturnModeTypeDataAndErrors
+  | ReturnModeTypeData
+
+export type ReturnModeTypeGraphQLSuccess = 'graphqlSuccess'
 
 export type ReturnModeTypeGraphQL = 'graphql'
 
@@ -19,6 +26,7 @@ export type ReturnModeTypeData = 'data'
 
 export type ReturnModeTypeDataAndErrors = 'dataAndErrors'
 
+// todo rename to dataSuccess
 export type ReturnModeTypeSuccessData = 'successData'
 
 export type OptionsInput = {

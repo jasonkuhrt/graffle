@@ -1,5 +1,6 @@
+import type { Include } from '../prelude.js'
+import { partitionErrors } from '../prelude.js'
 import { ContextualError } from './ContextualError.js'
-import type { Cause } from './types.js'
 
 /**
  * Aggregation Error enhanced with a context object and types members.
@@ -7,11 +8,7 @@ import type { Cause } from './types.js'
  * The library also exports a serializer you can use.
  */
 export class ContextualAggregateError<
-  $Errors extends Error | ContextualError<string, object, Cause | undefined> = ContextualError<
-    string,
-    object,
-    Cause | undefined
-  >,
+  $Errors extends Error | ContextualError = ContextualError,
   $Name extends string = `ContextualAggregateError`,
   $Context extends object = object,
 > extends ContextualError<$Name, $Context> {
@@ -23,4 +20,14 @@ export class ContextualAggregateError<
   ) {
     super(message, context, undefined)
   }
+}
+
+export const partitionAndAggregateErrors = <Results>(
+  results: Results[],
+): [Exclude<Results, Error>[], null | ContextualAggregateError<Include<Results, Error>>] => {
+  const [values, errors] = partitionErrors(results)
+  const error = errors.length > 0
+    ? new ContextualAggregateError(`One or more extensions are invalid.`, {}, errors)
+    : null
+  return [values, error]
 }

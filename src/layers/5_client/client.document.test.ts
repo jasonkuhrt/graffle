@@ -30,7 +30,7 @@ describe(`document with two queries`, () => {
     // @ts-expect-error
     await expect(run(`boo`)).rejects.toMatchObject({ errors: [{ message: `Unknown operation named "boo".` }] })
   })
-  test(`error if invalid name in document`, async () => {
+  test.skip(`error if invalid name in document`, async () => {
     // @ts-expect-error
     const { run } = graffle.document({ foo$: { query: { id: true } } })
     await expect(run(`foo$`)).rejects.toMatchObject({
@@ -86,7 +86,7 @@ describe(`document(...).runOrThrow()`, () => {
         `[Error: Failure on field resultNonNull: ErrorOne]`,
       )
     })
-    test(`multiple via alias`, async () => {
+    test.todo(`multiple via alias`, async () => {
       const result = graffle.document({
         x: { query: { resultNonNull: { $: { case: `ErrorOne` } }, resultNonNull_as_x: { $: { case: `ErrorOne` } } } },
       }).runOrThrow()

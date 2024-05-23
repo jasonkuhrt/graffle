@@ -238,3 +238,92 @@ export type StringKeyof<T> = keyof T & string
 export type MaybePromise<T> = T | Promise<T>
 
 export const capitalizeFirstLetter = (string: string) => string.charAt(0).toUpperCase() + string.slice(1)
+
+export type SomeAsyncFunction = (...args: unknown[]) => Promise<unknown>
+
+export type SomeMaybeAsyncFunction = (...args: unknown[]) => MaybePromise<unknown>
+
+export type Deferred<T> = {
+  promise: Promise<T>
+  resolve: (value: T) => void
+  reject: (error: unknown) => void
+}
+
+export const createDeferred = <$T>(): Deferred<$T> => {
+  let resolve: (value: $T) => void
+  let reject: (error: unknown) => void
+
+  const promise = new Promise<$T>(($resolve, $reject) => {
+    resolve = $resolve
+    reject = $reject
+  })
+
+  return {
+    promise,
+    resolve: (value) => resolve(value),
+    reject: (error) => reject(error),
+  }
+}
+
+export const debug = (...args: any[]) => {
+  if (process.env[`DEBUG`]) {
+    console.log(...args)
+  }
+}
+
+export type PlusOneUpToTen<n extends number> = n extends 0 ? 1
+  : n extends 1 ? 2
+  : n extends 2 ? 3
+  : n extends 3 ? 4
+  : n extends 4 ? 5
+  : n extends 5 ? 6
+  : n extends 6 ? 7
+  : n extends 7 ? 8
+  : n extends 8 ? 9
+  : n extends 9 ? 10
+  : never
+
+export type MinusOneUpToTen<n extends number> = n extends 10 ? 9
+  : n extends 9 ? 8
+  : n extends 8 ? 7
+  : n extends 7 ? 6
+  : n extends 6 ? 5
+  : n extends 5 ? 4
+  : n extends 4 ? 3
+  : n extends 3 ? 2
+  : n extends 2 ? 1
+  : n extends 1 ? 0
+  : never
+
+export type findIndexForValue<value, list extends readonly [any, ...any[]]> = findIndexForValue_<value, list, 0>
+type findIndexForValue_<value, list extends readonly [any, ...any[]], i extends number> = value extends list[i] ? i
+  : findIndexForValue_<value, list, PlusOneUpToTen<i>>
+
+export type FindValueAfter<value, list extends readonly [any, ...any[]]> =
+  list[PlusOneUpToTen<findIndexForValue<value, list>>]
+
+export type ValueOr<value, orValue> = value extends undefined ? orValue : value
+
+export type FindValueAfterOr<value, list extends readonly [any, ...any[]], orValue> = ValueOr<
+  list[PlusOneUpToTen<findIndexForValue<value, list>>],
+  orValue
+>
+
+export type GetLastValue<T extends readonly [any, ...any[]]> = T[MinusOneUpToTen<T['length']>]
+
+export type IsLastValue<value, list extends readonly [any, ...any[]]> = value extends GetLastValue<list> ? true : false
+
+export type Include<T, U> = T extends U ? T : never
+
+export const partitionErrors = <T>(array: T[]): [Exclude<T, Error>[], Include<T, Error>[]] => {
+  const errors: Include<T, Error>[] = []
+  const values: Exclude<T, Error>[] = []
+  for (const item of array) {
+    if (item instanceof Error) {
+      errors.push(item as any)
+    } else {
+      values.push(item as any)
+    }
+  }
+  return [values, errors]
+}

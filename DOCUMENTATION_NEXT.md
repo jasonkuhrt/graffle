@@ -16,9 +16,31 @@ You can change the output of client methods by configuring its return mode. This
 
 The only client method that is not affected by return mode is `raw` which will _always_ return a standard GraphQL result type.
 
+Here is a summary table of the modes:
+
+| Mode             | Throw Sources (no type safety)                                                              | Returns (type safe)                                                                          |
+| ---------------- | ------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `graphql`        | Extensions, Fetch                                                                           | `GraphQLExecutionResult`                                                                     |
+| `graphqlSuccess` | Extensions, Fetch, GraphQLExecutionResult.errors                                            | `GraphQLExecutionResult` with `.errors` always missing.                                      |
+| `data` (default) | Extensions, Fetch, GraphQLExecutionResult.errors                                            | `GraphQLExecutionResult.data`                                                                |
+| `dataSuccess`    | Extensions, Fetch, GraphQLExecutionResult.errors, GraphQLExecutionResult.data Schema Errors | `GraphQLExecutionResult.data` without any schema errors                                      |
+| `dataAndErrors`  |                                                                                             | `GraphQLExecutionResult.data`, errors from: Extensions, Fetch, GraphQLExecutionResult.errors |
+
 ## `graphql`
 
 Return the standard graphql execution output.
+
+## `graphqlSuccess`
+
+Return the standard graphql execution output. However, if there would be any errors then they're thrown as an `AggregateError`.
+This mode acts like you were using [`OrThrow`](#orthrow) method variants all the time.
+
+## `dataSuccess`
+
+Return just the data excluding [schema errors](#schema-errors). Errors are thrown as an `AggregateError`.
+This mode acts like you were using [`OrThrow`](#orthrow) method variants all the time.
+
+This mode is only available when using [schema errors](#schema-errors).
 
 ## `data`
 
@@ -26,15 +48,9 @@ Return just the data including [schema errors](#schema-errors) (if using). Other
 
 **This mode is the default.**
 
-## `successData`
-
-Return just the data excluding [schema errors](#schema-errors). Errors are thrown as an `AggregateError`. This mode acts like you were using [`OrThrow`](#orthrow) method variants all the time.
-
-This mode is only available when using [schema errors](#schema-errors).
-
 ## `dataAndErrors`
 
-Return data and errors. This is the most type-safe mode. It never throws.
+Return a union type of data and errors. This is the most type-safe mode. It never throws.
 
 # Schema Errors
 

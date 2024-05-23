@@ -10,4 +10,7 @@ export default tsEslint.config({
       tsconfigRootDir: import.meta.dirname,
     },
   },
+  rules: {
+    ['@typescript-eslint/only-throw-error']: 'off',
+  },
 })

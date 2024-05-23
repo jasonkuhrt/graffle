@@ -6,7 +6,7 @@ interface Input extends BaseInput {
   schema: GraphQLSchema
 }
 
-export const execute = async (input: Input): Promise<ExecutionResult<any>> => {
+export const execute = async (input: Input): Promise<ExecutionResult> => {
   switch (typeof input.document) {
     case `string`: {
       return await graphql({

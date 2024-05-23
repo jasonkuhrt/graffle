@@ -36,7 +36,7 @@ export const RootTypeName = {
   Subscription: `Subscription`,
 } as const
 
-export const operationTypeToRootType = {
+export const operationTypeNameToRootTypeName = {
   query: `Query`,
   mutation: `Mutation`,
   subscription: `Subscription`,
@@ -249,7 +249,10 @@ export type StandardScalarVariables = {
 
 export type GraphQLExecutionResultError = Errors.ContextualAggregateError<GraphQLError>
 
-export type OperationName = 'query' | 'mutation'
+export type OperationTypeName = 'query' | 'mutation'
+
+export const isOperationTypeName = (value: unknown): value is OperationTypeName =>
+  value === `query` || value === `mutation`
 
 export interface SomeExecutionResultWithoutErrors<
   TData = ObjMap<unknown>,
