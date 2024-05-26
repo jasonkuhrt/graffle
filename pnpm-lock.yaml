@@ -113,7 +113,7 @@ importers:
         version: 2.12.6(graphql@16.8.1)
       jsdom:
         specifier: ^24.0.0
-        version: 24.0.0
+        version: 24.1.0
       json-bigint:
         specifier: ^1.0.0
         version: 1.0.0
@@ -134,7 +134,7 @@ importers:
         version: 7.10.0(eslint@9.3.0)(typescript@5.4.5)
       vitest:
         specifier: ^1.5.2
-        version: 1.6.0(@types/node@20.12.12)(happy-dom@14.10.1)(jsdom@24.0.0)
+        version: 1.6.0(@types/node@20.12.12)(happy-dom@14.10.1)(jsdom@24.1.0)
 
 packages:
 
@@ -1914,10 +1914,12 @@ packages:
 
   glob@7.2.3:
     resolution: {integrity: sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==}
+    deprecated: Glob versions prior to v9 are no longer supported
 
   glob@8.1.0:
     resolution: {integrity: sha512-r8hpEjiQEYlF2QU0df3dS+nxxSIreXQS1qRhMJM0Q5NDdR386C7jb7Hwwod8Fgiuex+k0GFjgft18yvxm5XoCQ==}
     engines: {node: '>=12'}
+    deprecated: Glob versions prior to v9 are no longer supported
 
   globals@14.0.0:
     resolution: {integrity: sha512-oahGvuMGQlPw/ivIYBjVSrWAfWLBeku5tpPE2fOPLi+WHffIWbuh2tCjhyQhTBPMf5E9jDEH4FOmTYgYwbKwtQ==}
@@ -2230,8 +2232,8 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
 
-  jsdom@24.0.0:
-    resolution: {integrity: sha512-UDS2NayCvmXSXVP6mpTj+73JnNQadZlr9N68189xib2tx5Mls7swlTNao26IoHv46BZJFvXygyRtyXd1feAk1A==}
+  jsdom@24.1.0:
+    resolution: {integrity: sha512-6gpM7pRXCwIOKxX47cgOyvyQDN/Eh0f1MeKySBV2xGdKtqJBLj8P25eY3EVCWo2mglDDzozR2r2MW4T+JiNUZA==}
     engines: {node: '>=18'}
     peerDependencies:
       canvas: ^2.11.2
@@ -2538,8 +2540,8 @@ packages:
     resolution: {integrity: sha512-ppwTtiJZq0O/ai0z7yfudtBpWIoxM8yE6nHi1X47eFR2EWORqfbu6CnPlNsjeN683eT0qG6H/Pyf9fCcvjnnnQ==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
 
-  nwsapi@2.2.9:
-    resolution: {integrity: sha512-2f3F0SEEer8bBu0dsNCFF50N0cTThV1nWFYcEYFZttdW0lDAoybv9cQoK7X7/68Z89S7FoRrVjP1LPX4XRf9vg==}
+  nwsapi@2.2.10:
+    resolution: {integrity: sha512-QK0sRs7MKv0tKe1+5uZIQk/C8XGza4DAnztJG8iD+TpJIORARrCxczA738awHrZoHeTjSSoHqao2teO0dC/gFQ==}
 
   oauth-sign@0.9.0:
     resolution: {integrity: sha512-fexhUFFPTGV8ybAtSIGbV6gOkSv8UtRbDBnAyLQw4QPKkgNlsH2ByPGtMUqdWkos6YCRmAqViwgZrJc/mRDzZQ==}
@@ -2851,6 +2853,7 @@ packages:
 
   rimraf@2.7.1:
     resolution: {integrity: sha512-uWjbaKIK3T1OSVptzX7Nl6PvQ3qAGtKEtVRjRuazjfL3Bx5eI409VZSqgND+4UNnmzLVdPj9FqFJNPqBZFve4w==}
+    deprecated: Rimraf versions prior to v4 are no longer supported
     hasBin: true
 
   rollup@4.17.2:
@@ -2860,6 +2863,9 @@ packages:
 
   rrweb-cssom@0.6.0:
     resolution: {integrity: sha512-APM0Gt1KoXBz0iIkkdB/kfvGOwC4UuJFeG/c+yV7wSc7q96cG/kJ0HiYCnzivD9SB53cLV1MlHFNfOuPaadYSw==}
+
+  rrweb-cssom@0.7.0:
+    resolution: {integrity: sha512-KlSv0pm9kgQSRxXEMgtivPJ4h826YHsuob8pSHcfSZsSXGtvpEAie8S0AnXuObEJ7nhikOb4ahwxDm0H2yW17g==}
 
   run-parallel@1.2.0:
     resolution: {integrity: sha512-5l4VyZR86LZ/lDxZTR6jqL8AFE2S0IFLMP26AbjsLVADxHdhB/c0GUsH+y39UfCi3dzz8OlQuPmnaJOMoDHQBA==}
@@ -5900,7 +5906,7 @@ snapshots:
 
   jsdoctypeparser@9.0.0: {}
 
-  jsdom@24.0.0:
+  jsdom@24.1.0:
     dependencies:
       cssstyle: 4.0.1
       data-urls: 5.0.0
@@ -5910,9 +5916,9 @@ snapshots:
       http-proxy-agent: 7.0.2
       https-proxy-agent: 7.0.4
       is-potential-custom-element-name: 1.0.1
-      nwsapi: 2.2.9
+      nwsapi: 2.2.10
       parse5: 7.1.2
-      rrweb-cssom: 0.6.0
+      rrweb-cssom: 0.7.0
       saxes: 6.0.0
       symbol-tree: 3.2.4
       tough-cookie: 4.1.4
@@ -6267,7 +6273,7 @@ snapshots:
     dependencies:
       path-key: 4.0.0
 
-  nwsapi@2.2.9: {}
+  nwsapi@2.2.10: {}
 
   oauth-sign@0.9.0: {}
 
@@ -6606,6 +6612,8 @@ snapshots:
       fsevents: 2.3.3
 
   rrweb-cssom@0.6.0: {}
+
+  rrweb-cssom@0.7.0: {}
 
   run-parallel@1.2.0:
     dependencies:
@@ -7106,7 +7114,7 @@ snapshots:
       '@types/node': 20.12.12
       fsevents: 2.3.3
 
-  vitest@1.6.0(@types/node@20.12.12)(happy-dom@14.10.1)(jsdom@24.0.0):
+  vitest@1.6.0(@types/node@20.12.12)(happy-dom@14.10.1)(jsdom@24.1.0):
     dependencies:
       '@vitest/expect': 1.6.0
       '@vitest/runner': 1.6.0
@@ -7131,7 +7139,7 @@ snapshots:
     optionalDependencies:
       '@types/node': 20.12.12
       happy-dom: 14.10.1
-      jsdom: 24.0.0
+      jsdom: 24.1.0
     transitivePeerDependencies:
       - less
       - lightningcss
