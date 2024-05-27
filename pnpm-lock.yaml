@@ -22,7 +22,7 @@ importers:
         version: 0.9.0
       dprint:
         specifier: ^0.46.0
-        version: 0.46.0
+        version: 0.46.1
       zod:
         specifier: ^3.23.5
         version: 3.23.8
@@ -216,44 +216,44 @@ packages:
     resolution: {integrity: sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==}
     engines: {node: '>=0.1.90'}
 
-  '@dprint/darwin-arm64@0.46.0':
-    resolution: {integrity: sha512-amWNjJnss6F0fcf0SwtbfuGltyC4Y3HC3mjiN+FB+gscY76T7AgXfLoRSGuqIgls+7iqt2lcgFB+C+9gw8dxow==}
+  '@dprint/darwin-arm64@0.46.1':
+    resolution: {integrity: sha512-dycE/uE++NGKYhKwSOrm1EculcD48GM12A1BF0f3Q2OW1ZNUqvlui/99lrohjPulJaIYX/QZQJ4hzTnaa6EDUA==}
     cpu: [arm64]
     os: [darwin]
 
-  '@dprint/darwin-x64@0.46.0':
-    resolution: {integrity: sha512-VuBsDWnSGK3pVpDK/dbDw10Q5CpaHWcfmw39lBZqcBd4jkW9E4ytkT3/UmrRkkgfu8UuYxkRv81S1xGD7OTsog==}
+  '@dprint/darwin-x64@0.46.1':
+    resolution: {integrity: sha512-q4Q8TQj51OU+SXhHCzP6jxUtwyCR6Vsmla7yyJVZKryA5l2WUqsSPimkq7Tt4K6ciDficTNxi5aaN/DMXBND2w==}
     cpu: [x64]
     os: [darwin]
 
   '@dprint/formatter@0.3.0':
     resolution: {integrity: sha512-N9fxCxbaBOrDkteSOzaCqwWjso5iAe+WJPsHC021JfHNj2ThInPNEF13ORDKta3llq5D1TlclODCvOvipH7bWQ==}
 
-  '@dprint/linux-arm64-glibc@0.46.0':
-    resolution: {integrity: sha512-yMB0QSxMhXf9J7M1m57S6WurQPUciahmY3Sf++wiiLwRpPGNdwAIcw9asIRwTG1lmaiQQ8gdTiFEO+JRHp0Q6w==}
+  '@dprint/linux-arm64-glibc@0.46.1':
+    resolution: {integrity: sha512-kT6UHU8nN516nfk42IpxvQ9yRHg+lVcWyaGU6Pk/Wn0t/9UDqS2SWXfNNYFvq3A+IVsOAEY6ZvD40D1uXey0Pg==}
     cpu: [arm64]
     os: [linux]
 
-  '@dprint/linux-arm64-musl@0.46.0':
-    resolution: {integrity: sha512-1XOr2sq1DTYBpYPTaY0owSadSiiHVHP4eeICenp76qVb9XCTPDp84QM+l/xZMXjKry2Njmi9P9NYPd/fn3DwEg==}
+  '@dprint/linux-arm64-musl@0.46.1':
+    resolution: {integrity: sha512-Qo71XzmL7GWEKPKKTFDf27WUO8mO+eXEvKY4gRiFuV2lOPw0VCfadc4iqlTCPj8Wp9qIKK7z/NgQXkVjPMbx5Q==}
     cpu: [arm64]
     os: [linux]
 
-  '@dprint/linux-x64-glibc@0.46.0':
-    resolution: {integrity: sha512-zY9oLBAz/I5dl3nk4hhAWLeHIKiAeL3Hck1VY2g/GArIckEDuhVJzfyCI+mS5+LfTKrnC0Z+UJ9iMUGfLi8PgQ==}
+  '@dprint/linux-x64-glibc@0.46.1':
+    resolution: {integrity: sha512-ZDgJaCTY8Cb9F2FUlBgpN++stVamGKvy7MfdkKvvahAdkCQvba7kJg91aLGHNhDilDTo1IPgLcXLEP4xPhXMyA==}
     cpu: [x64]
     os: [linux]
 
-  '@dprint/linux-x64-musl@0.46.0':
-    resolution: {integrity: sha512-6BNk/hH8OBME3zPewQfmyYS/iHBh+YY2OKFP4SrYBpunbhRBCRRDwLSBddrzlwq4Ku1vIhZukR9c0AsRLGdSCA==}
+  '@dprint/linux-x64-musl@0.46.1':
+    resolution: {integrity: sha512-6I+ubsGL89k9Vezo6AwWoLDHMoyGdBiHvVvfopF3GwDW1y4jRFXqSeVt3IGoeNa2PXZBEzhGzgiNl1YFFjao/A==}
     cpu: [x64]
     os: [linux]
 
   '@dprint/typescript@0.90.5':
     resolution: {integrity: sha512-/1aP6saonFvJyQN3l2is6eTOec3GnLGyW+opid/eDm8pnlhwzYl8A9p36pI6WO5jLl/a9Ghod+LWpvSOuXFGUw==}
 
-  '@dprint/win32-x64@0.46.0':
-    resolution: {integrity: sha512-21r+obZZbsw6qgaRjz6ddLTsNM/vIxGd84YafeuraCJOhJ+8uzts4IPXL6x28sTF0HWy/sjqxjBZEJUt7u/VaA==}
+  '@dprint/win32-x64@0.46.1':
+    resolution: {integrity: sha512-ugdhmL3Lo9n6Si/7eBtj1Rgo3Hbmf+9G0JxsWvuZBRA7Y+Xa9vtxbU4XqpUfG8rict5wR3b0i2X0iexVUgMYxA==}
     cpu: [x64]
     os: [win32]
 
@@ -1453,8 +1453,8 @@ packages:
   domutils@2.8.0:
     resolution: {integrity: sha512-w96Cjofp72M5IIhpjgobBimYEfoPjx1Vx0BSX9P30WBdZW2WIKU0T1Bd0kz2eNZ9ikjKgHbEyKx8BB6H1L3h3A==}
 
-  dprint@0.46.0:
-    resolution: {integrity: sha512-hyc2j79E6ySz58x02vKd/U2byvErquW6M5teKi43vAXRkzR/ef66yM7tg42dyXMsr3ACY8eUzx08lZcHVIa8KQ==}
+  dprint@0.46.1:
+    resolution: {integrity: sha512-OdILoUitGxbykCYcTijUOtY7bD4kNoSSzm4kHd5sYNh6f64P8Zfcr+e/Dh4oEn89wHIl10TTrrUs7ny5MELKkQ==}
     hasBin: true
 
   dripip@0.10.0:
@@ -1914,10 +1914,12 @@ packages:
 
   glob@7.2.3:
     resolution: {integrity: sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==}
+    deprecated: Glob versions prior to v9 are no longer supported
 
   glob@8.1.0:
     resolution: {integrity: sha512-r8hpEjiQEYlF2QU0df3dS+nxxSIreXQS1qRhMJM0Q5NDdR386C7jb7Hwwod8Fgiuex+k0GFjgft18yvxm5XoCQ==}
     engines: {node: '>=12'}
+    deprecated: Glob versions prior to v9 are no longer supported
 
   globals@14.0.0:
     resolution: {integrity: sha512-oahGvuMGQlPw/ivIYBjVSrWAfWLBeku5tpPE2fOPLi+WHffIWbuh2tCjhyQhTBPMf5E9jDEH4FOmTYgYwbKwtQ==}
@@ -2851,6 +2853,7 @@ packages:
 
   rimraf@2.7.1:
     resolution: {integrity: sha512-uWjbaKIK3T1OSVptzX7Nl6PvQ3qAGtKEtVRjRuazjfL3Bx5eI409VZSqgND+4UNnmzLVdPj9FqFJNPqBZFve4w==}
+    deprecated: Rimraf versions prior to v4 are no longer supported
     hasBin: true
 
   rollup@4.17.2:
@@ -3566,29 +3569,29 @@ snapshots:
   '@colors/colors@1.5.0':
     optional: true
 
-  '@dprint/darwin-arm64@0.46.0':
+  '@dprint/darwin-arm64@0.46.1':
     optional: true
 
-  '@dprint/darwin-x64@0.46.0':
+  '@dprint/darwin-x64@0.46.1':
     optional: true
 
   '@dprint/formatter@0.3.0': {}
 
-  '@dprint/linux-arm64-glibc@0.46.0':
+  '@dprint/linux-arm64-glibc@0.46.1':
     optional: true
 
-  '@dprint/linux-arm64-musl@0.46.0':
+  '@dprint/linux-arm64-musl@0.46.1':
     optional: true
 
-  '@dprint/linux-x64-glibc@0.46.0':
+  '@dprint/linux-x64-glibc@0.46.1':
     optional: true
 
-  '@dprint/linux-x64-musl@0.46.0':
+  '@dprint/linux-x64-musl@0.46.1':
     optional: true
 
   '@dprint/typescript@0.90.5': {}
 
-  '@dprint/win32-x64@0.46.0':
+  '@dprint/win32-x64@0.46.1':
     optional: true
 
   '@es-joy/jsdoccomment@0.4.4':
@@ -4945,15 +4948,15 @@ snapshots:
       domelementtype: 2.3.0
       domhandler: 4.3.1
 
-  dprint@0.46.0:
+  dprint@0.46.1:
     optionalDependencies:
-      '@dprint/darwin-arm64': 0.46.0
-      '@dprint/darwin-x64': 0.46.0
-      '@dprint/linux-arm64-glibc': 0.46.0
-      '@dprint/linux-arm64-musl': 0.46.0
-      '@dprint/linux-x64-glibc': 0.46.0
-      '@dprint/linux-x64-musl': 0.46.0
-      '@dprint/win32-x64': 0.46.0
+      '@dprint/darwin-arm64': 0.46.1
+      '@dprint/darwin-x64': 0.46.1
+      '@dprint/linux-arm64-glibc': 0.46.1
+      '@dprint/linux-arm64-musl': 0.46.1
+      '@dprint/linux-x64-glibc': 0.46.1
+      '@dprint/linux-x64-musl': 0.46.1
+      '@dprint/win32-x64': 0.46.1
 
   dripip@0.10.0:
     dependencies:
