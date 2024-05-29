@@ -112,7 +112,7 @@
     "eslint-plugin-only-warn": "^1.1.0",
     "eslint-plugin-prefer-arrow": "^1.2.3",
     "eslint-plugin-simple-import-sort": "^12.1.0",
-    "eslint-plugin-tsdoc": "^0.2.17",
+    "eslint-plugin-tsdoc": "^0.3.0",
     "eslint-typescript": "^1.1.0",
     "express": "^4.19.2",
     "get-port": "^7.1.0",
