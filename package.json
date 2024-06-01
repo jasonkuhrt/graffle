@@ -108,7 +108,7 @@
     "dripip": "^0.10.0",
     "eslint": "^9.1.1",
     "eslint-config-prisma": "^0.6.0",
-    "eslint-plugin-deprecation": "^2.0.0",
+    "eslint-plugin-deprecation": "^3.0.0",
     "eslint-plugin-only-warn": "^1.1.0",
     "eslint-plugin-prefer-arrow": "^1.2.3",
     "eslint-plugin-simple-import-sort": "^12.1.0",
