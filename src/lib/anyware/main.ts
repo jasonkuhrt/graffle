@@ -132,6 +132,19 @@ type HookDoneData =
 
 type HookDoneResolver = (input: HookDoneData) => void
 
+// const runHookErroring = async <$HookName extends string>(
+//   { core, error, name, done, originalInput, currentHookStack, nextHookStack }: {
+//     core: Core
+//     error: Error
+//     name: $HookName
+//     done: HookDoneResolver
+//     originalInput: unknown
+//     currentHookStack: Extension[]
+//     nextHookStack: Extension[]
+//   },
+// ) => {
+// }
+
 const runHook = async <$HookName extends string>(
   { core, name, done, originalInput, currentHookStack, nextHookStack }: {
     core: Core
@@ -149,31 +162,69 @@ const runHook = async <$HookName extends string>(
 
   if (pausedExtension) {
     const hookUsedDeferred = createDeferred()
+    let previousAttemptErrored = false
 
-    debug(`${name}: extension ${pausedExtension.name}`)
+    debug(`${name}: ${pausedExtension.name}: start`)
     // The extension is responsible for calling the next hook.
     // If no input is passed that means use the original input.
     const hook = createHook(originalInput, (maybeNextOriginalInput?: object) => {
       // Once called, the extension is paused again and we continue down the current hook stack.
-      hookUsedDeferred.resolve(true)
-
       debug(`${name}: ${pausedExtension.name}: pause`)
+
       const nextPausedExtension: Extension = {
         ...pausedExtension,
         currentChunk: createDeferred(),
       }
       const nextNextHookStack = [...nextHookStack, nextPausedExtension] // tempting to mutate here but simpler to think about as copy.
 
-      void runHook({
-        core,
-        name,
-        done,
-        originalInput: maybeNextOriginalInput ?? originalInput,
-        currentHookStack: nextCurrentHookStack,
-        nextHookStack: nextNextHookStack,
-      })
+      if (hookUsedDeferred.isResolved()) {
+        if (previousAttemptErrored) {
+          const d = createDeferred()
+          debug(`${name}: ${pausedExtension.name}: retry`)
+          void runHook({
+            core,
+            name,
+            done,
+            originalInput: maybeNextOriginalInput ?? originalInput,
+            // currentHookStack,
+            currentHookStack: [{
+              ...pausedExtension,
+              currentChunk: d,
+            }, ...nextCurrentHookStack],
+            nextHookStack: nextNextHookStack,
+          })
+          // automate/forward the retry
+          void d.promise.then(envelope => envelope[name](maybeNextOriginalInput ?? originalInput))
+          return nextPausedExtension.currentChunk.promise
+        } else {
+          throw new ContextualError(
+            `You already invoked hook "${name}". Hooks can only be invoked multiple times if the previous attempt failed.`,
+            {
+              hookName: name,
+            },
+          )
+        }
+      } else {
+        hookUsedDeferred.resolve(true)
 
-      return nextPausedExtension.currentChunk.promise
+        void runHook({
+          core,
+          name,
+          done,
+          originalInput: maybeNextOriginalInput ?? originalInput,
+          currentHookStack: nextCurrentHookStack,
+          nextHookStack: nextNextHookStack,
+        })
+
+        return nextPausedExtension.currentChunk.promise.then(_ => {
+          // console.log({ _ })
+          if (_ instanceof Error) {
+            console.log(`chunk resolved with error`)
+            previousAttemptErrored = true
+          }
+          return _
+        })
+      }
     })
 
     // The extension is resumed. It is responsible for calling the next hook.
@@ -190,6 +241,7 @@ const runHook = async <$HookName extends string>(
       hookUsedDeferred.promise.then(result => {
         return { branch: `hook`, result } as const
       }).catch((e: unknown) => ({ branch: `hookError`, result: e } as const)),
+      // rename branch to "extension"
       pausedExtension.body.promise.then(result => {
         return { branch: `body`, result } as const
       }).catch((e: unknown) => ({ branch: `bodyError`, result: e } as const)),
@@ -223,6 +275,7 @@ const runHook = async <$HookName extends string>(
         return
       }
       case `hookError`:
+        // todo rename source to "hook"
         done({ type: `error`, hookName: name, source: `implementation`, error: errorFromMaybeError(result) })
         return
       case `hook`: {
@@ -238,6 +291,7 @@ const runHook = async <$HookName extends string>(
   // ---------------------------
 
   // Run core to get result
+  debug(`${name}: run core`)
 
   const implementation = core.hooks[name]
   if (!implementation) {
@@ -247,7 +301,13 @@ const runHook = async <$HookName extends string>(
   try {
     result = await implementation(originalInput as any)
   } catch (error) {
-    done({ type: `error`, hookName: name, source: `implementation`, error: errorFromMaybeError(error) })
+    if (nextHookStack.length) {
+      debug(`${name}: hook error`)
+      // send back up the stack
+      nextHookStack[0]?.currentChunk.resolve(error)
+    } else {
+      done({ type: `error`, hookName: name, source: `implementation`, error: errorFromMaybeError(error) })
+    }
     return
   }
 

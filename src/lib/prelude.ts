@@ -245,11 +245,13 @@ export type SomeMaybeAsyncFunction = (...args: unknown[]) => MaybePromise<unknow
 
 export type Deferred<T> = {
   promise: Promise<T>
+  isResolved: () => boolean
   resolve: (value: T) => void
   reject: (error: unknown) => void
 }
 
 export const createDeferred = <$T>(): Deferred<$T> => {
+  let isResolved = false
   let resolve: (value: $T) => void
   let reject: (error: unknown) => void
 
@@ -260,7 +262,11 @@ export const createDeferred = <$T>(): Deferred<$T> => {
 
   return {
     promise,
-    resolve: (value) => resolve(value),
+    isResolved: () => isResolved,
+    resolve: (value) => {
+      isResolved = true
+      resolve(value)
+    },
     reject: (error) => reject(error),
   }
 }

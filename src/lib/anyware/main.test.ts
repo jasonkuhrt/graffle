@@ -203,7 +203,7 @@ describe(`errors`, () => {
     `)
   })
 
-  test(`implementation throws`, async () => {
+  test(`if implementation fails, without extensions, result is the error`, async () => {
     core.hooks.a.mockReset().mockRejectedValueOnce(oops)
     const result = await run() as ContextualError
     expect({
@@ -220,5 +220,29 @@ describe(`errors`, () => {
         "result": [ContextualError: There was an error in the core implementation of hook "a".],
       }
     `)
+  })
+  test('calling a hook twice leads to clear error', async () => {
+    const result = await run(async ({ a }) => {
+      a()
+      a()
+    }) as ContextualError
+    const cause = result.cause as ContextualError
+    expect(cause.message).toMatchInlineSnapshot(
+      `"You already invoked hook "a". Hooks can only be invoked multiple times if the previous attempt failed."`,
+    )
+    expect(cause.context).toEqual({ hookName: 'a' })
+  })
+  test('if implementation fails, hook results in an error', async () => {
+    core.hooks.a.mockReset().mockRejectedValueOnce(oops).mockResolvedValueOnce(1)
+    const result = await run(async ({ a }) => {
+      console.log('pre result1')
+      const result1 = await a()
+      expect(result1).toEqual(oops)
+      const result2 = await a()
+      expect(typeof result2.b).toEqual('function')
+      expect(result2.b.input).toEqual(1)
+      return result2.b.input
+    })
+    expect(result).toEqual(1)
   })
 })
