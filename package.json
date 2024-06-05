@@ -81,11 +81,11 @@
   },
   "dependencies": {
     "@dprint/formatter": "^0.3.0",
-    "@dprint/typescript": "^0.91.0",
+    "@dprint/typescript": "^0.91.1",
     "@graphql-typed-document-node/core": "^3.2.0",
     "@molt/command": "^0.9.0",
-    "dprint": "^0.46.0",
-    "zod": "^3.23.5"
+    "dprint": "^0.46.1",
+    "zod": "^3.23.8"
   },
   "peerDependencies": {
     "graphql": "14 - 16"
@@ -99,16 +99,16 @@
     "@types/body-parser": "^1.19.5",
     "@types/express": "^4.17.21",
     "@types/json-bigint": "^1.0.4",
-    "@types/node": "^20.12.7",
-    "@typescript-eslint/eslint-plugin": "^7.8.0",
-    "@typescript-eslint/parser": "^7.8.0",
+    "@types/node": "^20.14.1",
+    "@typescript-eslint/eslint-plugin": "^7.12.0",
+    "@typescript-eslint/parser": "^7.12.0",
     "apollo-server-express": "^3.13.0",
     "body-parser": "^1.20.2",
     "doctoc": "^2.2.1",
     "dripip": "^0.10.0",
-    "eslint": "^9.1.1",
+    "eslint": "^9.4.0",
     "eslint-config-prisma": "^0.6.0",
-    "eslint-plugin-deprecation": "^2.0.0",
+    "eslint-plugin-deprecation": "^3.0.0",
     "eslint-plugin-only-warn": "^1.1.0",
     "eslint-plugin-prefer-arrow": "^1.2.3",
     "eslint-plugin-simple-import-sort": "^12.1.0",
@@ -119,13 +119,13 @@
     "graphql": "^16.8.1",
     "graphql-scalars": "^1.23.0",
     "graphql-tag": "^2.12.6",
-    "jsdom": "^24.0.0",
+    "jsdom": "^24.1.0",
     "json-bigint": "^1.0.0",
-    "publint": "^0.2.7",
-    "tsx": "^4.7.3",
-    "type-fest": "^4.18.0",
+    "publint": "^0.2.8",
+    "tsx": "^4.11.2",
+    "type-fest": "^4.19.0",
     "typescript": "^5.4.5",
-    "typescript-eslint": "^7.8.0",
-    "vitest": "^1.5.2"
+    "typescript-eslint": "^7.12.0",
+    "vitest": "^1.6.0"
   }
 }
