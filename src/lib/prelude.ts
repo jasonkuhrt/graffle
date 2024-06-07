@@ -277,6 +277,10 @@ export const debug = (...args: any[]) => {
   }
 }
 
+export const debugSub = (...args: any[]) => (...subArgs: any[]) => {
+  debug(...args, ...subArgs)
+}
+
 export type PlusOneUpToTen<n extends number> = n extends 0 ? 1
   : n extends 1 ? 2
   : n extends 2 ? 3

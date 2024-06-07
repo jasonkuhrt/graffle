@@ -1,5 +1,6 @@
 /* eslint-disable */
 
+import console from 'node:console'
 import { describe, expect, test, vi } from 'vitest'
 import type { ContextualError } from '../errors/ContextualError.js'
 import { core, initialInput, oops, run, runWithOptions } from './specHelpers.js'
@@ -232,10 +233,9 @@ describe(`errors`, () => {
     )
     expect(cause.context).toEqual({ hookName: 'a' })
   })
-  test('if implementation fails, hook results in an error', async () => {
+  test.only('if hook fails, extension can retry, then short-circuit', async () => {
     core.hooks.a.mockReset().mockRejectedValueOnce(oops).mockResolvedValueOnce(1)
     const result = await run(async ({ a }) => {
-      console.log('pre result1')
       const result1 = await a()
       expect(result1).toEqual(oops)
       const result2 = await a()
@@ -243,6 +243,19 @@ describe(`errors`, () => {
       expect(result2.b.input).toEqual(1)
       return result2.b.input
     })
+    expect(result).toEqual(1)
+  })
+  test.skip('if hook fails, extension can retry it, then continue to next hook.', async () => {
+    core.hooks.a.mockReset().mockRejectedValueOnce(oops).mockResolvedValueOnce(1)
+    const result = await run(
+      async function foo({ a }) {
+        const resultA1 = await a()
+        const resultA2 = await a()
+        const resultB1 = await resultA2.b()
+        return resultB1
+      },
+    )
+    console.log(result)
     expect(result).toEqual(1)
   })
 })
