@@ -8,13 +8,19 @@ import { runPipeline } from './runPipeline.js'
 
 type HookSequence = readonly [string, ...string[]]
 
+type ExtensionOptions = {
+  retrying: boolean
+}
+
 export type Extension2<
   $Core extends Core = Core,
+  $Options extends ExtensionOptions = ExtensionOptions,
 > = (
   hooks: ExtensionHooks<
     $Core[PrivateTypesSymbol]['hookSequence'],
     $Core[PrivateTypesSymbol]['hookMap'],
-    $Core[PrivateTypesSymbol]['result']
+    $Core[PrivateTypesSymbol]['result'],
+    $Options
   >,
 ) => Promise<
   | $Core[PrivateTypesSymbol]['result']
@@ -25,8 +31,9 @@ type ExtensionHooks<
   $HookSequence extends HookSequence,
   $HookMap extends Record<$HookSequence[number], object> = Record<$HookSequence[number], object>,
   $Result = unknown,
+  $Options extends ExtensionOptions = ExtensionOptions,
 > = {
-  [$HookName in $HookSequence[number]]: Hook<$HookSequence, $HookMap, $Result, $HookName>
+  [$HookName in $HookSequence[number]]: Hook<$HookSequence, $HookMap, $Result, $HookName, $Options>
 }
 
 type CoreInitialInput<$Core extends Core> =
@@ -65,24 +72,32 @@ type Hook<
   $HookMap extends HookMap<$HookSequence> = HookMap<$HookSequence>,
   $Result = unknown,
   $Name extends $HookSequence[number] = $HookSequence[number],
-> = (<$$Input extends $HookMap[$Name]>(input?: $$Input) => HookReturn<$HookSequence, $HookMap, $Result, $Name>) & {
-  [hookSymbol]: HookSymbol
-  input: $HookMap[$Name]
-}
+  $Options extends ExtensionOptions = ExtensionOptions,
+> =
+  & (<$$Input extends $HookMap[$Name]>(
+    input?: $$Input,
+  ) => HookReturn<$HookSequence, $HookMap, $Result, $Name, $Options>)
+  & {
+    [hookSymbol]: HookSymbol
+    input: $HookMap[$Name]
+  }
 
 type HookReturn<
   $HookSequence extends HookSequence,
   $HookMap extends HookMap<$HookSequence> = HookMap<$HookSequence>,
   $Result = unknown,
   $Name extends $HookSequence[number] = $HookSequence[number],
-> = IsLastValue<$Name, $HookSequence> extends true ? $Result : {
-  [$NameNext in FindValueAfter<$Name, $HookSequence>]: Hook<
-    $HookSequence,
-    $HookMap,
-    $Result,
-    $NameNext
-  >
-}
+  $Options extends ExtensionOptions = ExtensionOptions,
+> =
+  | ($Options['retrying'] extends true ? Error : never)
+  | (IsLastValue<$Name, $HookSequence> extends true ? $Result : {
+    [$NameNext in FindValueAfter<$Name, $HookSequence>]: Hook<
+      $HookSequence,
+      $HookMap,
+      $Result,
+      $NameNext
+    >
+  })
 
 export type Core<
   $HookSequence extends HookSequence = HookSequence,
@@ -188,6 +203,7 @@ export type Builder<$Core extends Core = Core> = {
     { initialInput, extensions, options }: {
       initialInput: CoreInitialInput<$Core>
       extensions: Extension2<$Core>[]
+      retryingExtension?: Extension2<$Core, { retrying: true }>
       options?: Options
     },
   ) => Promise<$Core[PrivateTypesSymbol]['result'] | Errors.ContextualError>
@@ -207,8 +223,9 @@ export const create = <
   const builder: Builder<$Core> = {
     core,
     run: async (input) => {
-      const { initialInput, extensions, options } = input
-      const initialHookStackAndErrors = extensions.map(extension =>
+      const { initialInput, extensions, options, retryingExtension } = input
+      const extensions_ = retryingExtension ? [...extensions, createRetryingExtension(retryingExtension)] : extensions
+      const initialHookStackAndErrors = extensions_.map(extension =>
         toInternalExtension(core, resolveOptions(options), extension)
       )
       const [initialHookStack, error] = partitionAndAggregateErrors(initialHookStackAndErrors)
