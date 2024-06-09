@@ -122,7 +122,7 @@ importers:
         version: 0.2.8
       tsx:
         specifier: ^4.11.2
-        version: 4.13.3
+        version: 4.14.1
       type-fest:
         specifier: ^4.19.0
         version: 4.20.0
@@ -3066,8 +3066,8 @@ packages:
     peerDependencies:
       typescript: '>=2.8.0 || >= 3.2.0-dev || >= 3.3.0-dev || >= 3.4.0-dev || >= 3.5.0-dev || >= 3.6.0-dev || >= 3.6.0-beta || >= 3.7.0-dev || >= 3.7.0-beta'
 
-  tsx@4.13.3:
-    resolution: {integrity: sha512-FTAJJLQCMiIbt78kD5qhLjHIR5NOQDKC63wcdelWRDBE+d1xSrXYhXq4DzejnC2tGhFZHpDy2Ika0Ugf7sK8gA==}
+  tsx@4.14.1:
+    resolution: {integrity: sha512-GU8pPJq8DdxcJDSK6Bc64c2jW8zBK2hb0jzwHZDfjapbwu6AqvFnAElnzZ17Xb9TH5a/j6/sicTCVYF+eO/cmA==}
     engines: {node: '>=18.0.0'}
     hasBin: true
 
@@ -6751,7 +6751,7 @@ snapshots:
       tslib: 1.14.1
       typescript: 4.4.3
 
-  tsx@4.13.3:
+  tsx@4.14.1:
     dependencies:
       esbuild: 0.20.2
       get-tsconfig: 4.7.5
