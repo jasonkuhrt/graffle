@@ -1,21 +1,39 @@
 import { Errors } from '../errors/__.js'
+import type { Deferred } from '../prelude.js'
 import { casesExhausted, createDeferred, debug, debugSub, errorFromMaybeError } from '../prelude.js'
-import type { Core, Extension } from './main.js'
+import type { Core, Extension, ResultEnvelop, SomeHookEnvelope } from './main.js'
 
-type HookDoneResolver = (input: HookDoneData) => void
+type HookDoneResolver = (input: HookResult) => void
 
-export type HookDoneData =
-  | { type: 'completed'; result: unknown; nextExtensionsStack: Extension[] }
+export type HookResultErrorAsync = Deferred<HookResultErrorExtension>
+
+export type HookResult =
+  | { type: 'completed'; result: unknown; nextExtensionsStack: readonly Extension[] }
   | { type: 'shortCircuited'; result: unknown }
-  | { type: 'error'; hookName: string; source: 'implementation'; error: Error }
-  | { type: 'error'; hookName: string; source: 'extension'; error: Error; extensionName: string }
+  | { type: 'error'; hookName: string; source: 'user'; error: Errors.ContextualError; extensionName: string }
+  | HookResultErrorImplementation
+  | HookResultErrorExtension
+
+export type HookResultErrorExtension = {
+  type: 'error'
+  hookName: string
+  source: 'extension'
+  error: Error
+  extensionName: string
+}
+
+export type HookResultErrorImplementation = {
+  type: 'error'
+  hookName: string
+  source: 'implementation'
+  error: Error
+}
 
 type Input = {
   core: Core
   name: string
   done: HookDoneResolver
   originalInput: unknown
-  isRetry?: boolean
   /**
    * The extensions that are at this hook awaiting.
    */
@@ -28,16 +46,33 @@ type Input = {
    * that short-circuit the pipeline or enter passthrough mode).
    */
   nextExtensionsStack: readonly Extension[]
+  asyncErrorDeferred: HookResultErrorAsync
 }
 
+const createExecutableChunk = <$Extension extends Extension>(extension: $Extension) => ({
+  ...extension,
+  currentChunk: createDeferred<SomeHookEnvelope | ($Extension['retrying'] extends true ? Error : never)>(),
+})
+
 export const runHook = async (
-  { core, name, done, originalInput, extensionsStack, nextExtensionsStack, isRetry }: Input,
+  { core, name, done, originalInput, extensionsStack, nextExtensionsStack, asyncErrorDeferred }: Input,
 ) => {
   const debugHook = debugSub(`hook ${name}:`)
 
   debugHook(`advance to next extension`)
 
   const [extension, ...extensionsStackRest] = extensionsStack
+  const isLastExtension = extensionsStackRest.length === 0
+  if (!isLastExtension && extension?.retrying) {
+    done({
+      type: `error`,
+      source: `user`,
+      extensionName: extension.name, // must be defined because is NOT last extension
+      hookName: name,
+      // dprint-ignore
+      error: new Errors.ContextualError(`Only the last extension can retry hooks.`, { extensionsAfter: extensionsStackRest.map(_=>({ name: _.name })) }),
+    })
+  }
 
   /**
    * If extension is defined then that means there
@@ -49,74 +84,77 @@ export const runHook = async (
   if (extension) {
     const debugExtension = debugSub(`hook ${name}: extension ${extension.name}:`)
     const hookInvokedDeferred = createDeferred()
-    let previousAttemptErrored = false
 
     debugExtension(`start`)
-    // The extension is responsible for calling the next hook.
-    // If no input is passed that means use the original input.
-    const hook = createHook(originalInput, (maybeNextOriginalInput?: object) => {
-      // Once called, the extension is paused again and we continue down the current hook stack.
-      debugExtension(`extension runs this hook from envelope`)
+    let hookFailed = false
+    const hook = createHook(originalInput, (extensionInput) => {
+      debugExtension(`extension calls this hook`)
 
-      const inputResolved = maybeNextOriginalInput ?? originalInput
+      const inputResolved = extensionInput ?? originalInput
 
+      // [1]
+      // Never resolve this hook call, the extension is in an invalid state and should not continue executing.
+      // While it is possible the extension could continue by not await this hook at least if they are awaiting
+      // it and so have code depending on its result it will never run.
       if (hookInvokedDeferred.isResolved()) {
-        if (previousAttemptErrored) {
-          const d = createDeferred()
-          const extensionRetry = {
-            ...extension,
-            currentChunk: d,
-          }
-          // automate/forward the retry
-          void d.promise.then(envelope => envelope[name](maybeNextOriginalInput ?? originalInput))
-          const currentHookStack = [extensionRetry, ...extensionsStackRest]
-
-          const extensionWithNextChunk: Extension = {
-            ...extension,
-            currentChunk: createDeferred(),
-          }
-          const nextNextHookStack = [...nextExtensionsStack, extensionWithNextChunk] // tempting to mutate here but simpler to think about as copy.
-          // debug(1, nextHookStack)
-          debug(`${name}: ${extension.name}: execute branch: retry`)
+        if (!extension.retrying) {
+          asyncErrorDeferred.resolve({
+            type: `error`,
+            source: `extension`,
+            extensionName: extension.name,
+            hookName: name,
+            error: new Errors.ContextualError(`Only a retrying extension can retry hooks.`, {
+              hookName: name,
+              extensionsAfter: extensionsStackRest.map(_ => ({ name: _.name })),
+            }),
+          })
+          return createDeferred().promise // [1]
+        } else if (!hookFailed) {
+          asyncErrorDeferred.resolve({
+            type: `error`,
+            source: `extension`,
+            extensionName: extension.name,
+            hookName: name,
+            error: new Errors.ContextualError(
+              `Only after failure can a hook be called again by a retrying extension.`,
+              {
+                hookName: name,
+                extensionName: extension.name,
+              },
+            ),
+          })
+          return createDeferred().promise // [1]
+        } else {
+          debugExtension(`execute branch: retry`)
+          const extensionRetry = createExecutableChunk(extension)
           void runHook({
             core,
             name,
             done,
-            originalInput: inputResolved,
-            extensionsStack,
-            nextExtensionsStack: nextNextHookStack,
-            // isRetry: true,
+            originalInput,
+            asyncErrorDeferred,
+            extensionsStack: [extensionRetry],
+            nextExtensionsStack,
           })
-          return // extensionWithNextChunk.currentChunk.promise
-        } else {
-          throw new Errors.ContextualError(
-            `You already invoked hook "${name}". Hooks can only be invoked multiple times if the previous attempt failed.`,
-            {
-              hookName: name,
-            },
-          )
+          return extensionRetry.currentChunk.promise.then(async (envelope) => {
+            const envelop_ = envelope as SomeHookEnvelope // todo ... better way?
+            const hook = envelop_[name]
+            if (!hook) throw new Error(`Hook not found in envelope: ${name}`)
+            const result = await hook(extensionInput ?? originalInput) as Promise<
+              SomeHookEnvelope | Error | ResultEnvelop
+            >
+            return result
+          })
         }
       } else {
-        let extensionWithNextChunk: Extension
-        let nextNextHookStack: Extension[]
-        if (isRetry) {
-          nextNextHookStack = nextExtensionsStack
-          extensionWithNextChunk = nextNextHookStack[nextNextHookStack.length - 1]!
-          debug(`is-retry`)
-        } else {
-          extensionWithNextChunk = {
-            ...extension,
-            currentChunk: createDeferred(),
-          }
-          nextNextHookStack = [...nextExtensionsStack, extensionWithNextChunk] // tempting to mutate here but simpler to think about as copy.
-        }
-
+        const extensionWithNextChunk = createExecutableChunk(extension)
+        const nextNextHookStack = [...nextExtensionsStack, extensionWithNextChunk] // tempting to mutate here but simpler to think about as copy.
         hookInvokedDeferred.resolve(true)
-
         void runHook({
           core,
           name,
           done,
+          asyncErrorDeferred,
           originalInput: inputResolved,
           extensionsStack: extensionsStackRest,
           nextExtensionsStack: nextNextHookStack,
@@ -125,7 +163,7 @@ export const runHook = async (
         return extensionWithNextChunk.currentChunk.promise.then(_ => {
           if (_ instanceof Error) {
             debugExtension(`received hook error`)
-            previousAttemptErrored = true
+            hookFailed = true
           }
           return _
         })
@@ -134,8 +172,9 @@ export const runHook = async (
 
     // The extension is resumed. It is responsible for calling the next hook.
 
-    debug(`${name}: ${extension.name}: advance with envelope`)
-    const envelope = {
+    debugExtension(`advance with envelope`)
+    // @ts-expect-error fixme
+    const envelope: SomeHookEnvelope = {
       [name]: hook,
     }
     extension.currentChunk.resolve(envelope)
@@ -144,6 +183,7 @@ export const runHook = async (
     // If the extension returns the hook envelope, it wants the rest of the pipeline
     // to pass through it.
     // If the extension returns a non-hook-envelope value, it wants to short-circuit the pipeline.
+    debugHook(`start race between extension returning or invoking next hook`)
     const { branch, result } = await Promise.race([
       hookInvokedDeferred.promise.then(result => {
         return { branch: `hookInvoked`, result } as const
@@ -156,7 +196,7 @@ export const runHook = async (
 
     switch (branch) {
       case `hookInvoked`: {
-        debug(`hookInvoked`)
+        debugExtension(`invoked next hook (or retrying extension got error pushed through)`)
         // do nothing, hook is making the processing continue.
         return
       }
@@ -168,6 +208,7 @@ export const runHook = async (
             name,
             done,
             originalInput,
+            asyncErrorDeferred,
             extensionsStack: extensionsStackRest,
             nextExtensionsStack,
           })
@@ -207,10 +248,10 @@ export const runHook = async (
     try {
       result = await implementation(originalInput as any)
     } catch (error) {
-      if (nextExtensionsStack.length) {
-        debugHook(`implementation error`)
-        // send back up the stack
-        nextExtensionsStack[nextExtensionsStack.length - 1]!.currentChunk.resolve(error)
+      debugHook(`implementation error`)
+      const lastExtension = nextExtensionsStack[nextExtensionsStack.length - 1]
+      if (lastExtension && lastExtension.retrying) {
+        lastExtension.currentChunk.resolve(errorFromMaybeError(error))
       } else {
         done({ type: `error`, hookName: name, source: `implementation`, error: errorFromMaybeError(error) })
       }
@@ -221,11 +262,11 @@ export const runHook = async (
 
     debugHook(`completed`)
 
-    done({ type: `completed`, result, nextExtensionsStack })
+    done({ type: `completed`, result, nextExtensionsStack: nextExtensionsStack })
   }
 }
 
-const createHook = <$X, $F extends (...args: any[]) => any>(
+const createHook = <$X, $F extends (input?: object) => any>(
   originalInput: $X,
   fn: $F,
 ): $F & { input: $X } => {

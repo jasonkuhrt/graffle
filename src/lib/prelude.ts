@@ -250,7 +250,7 @@ export type Deferred<T> = {
   reject: (error: unknown) => void
 }
 
-export const createDeferred = <$T>(): Deferred<$T> => {
+export const createDeferred = <$T>(options?: { strict?: boolean }): Deferred<$T> => {
   let isResolved = false
   let resolve: (value: $T) => void
   let reject: (error: unknown) => void
@@ -265,6 +265,9 @@ export const createDeferred = <$T>(): Deferred<$T> => {
     isResolved: () => isResolved,
     resolve: (value) => {
       isResolved = true
+      if (options?.strict && isResolved) {
+        throw new Error(`Deferred is already resolved. Attempted to resolve with: ${JSON.stringify(value)}`)
+      }
       resolve(value)
     },
     reject: (error) => reject(error),

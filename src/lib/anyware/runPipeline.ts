@@ -1,19 +1,21 @@
 import type { Errors } from '../errors/__.js'
 import { ContextualError } from '../errors/ContextualError.js'
 import { casesExhausted, createDeferred, debug } from '../prelude.js'
-import type { Core, Extension, PrivateTypesSymbol, ResultEnvelop } from './main.js'
+import { defaultFunctionName } from './lib.js'
+import type { Core, Extension, ResultEnvelop } from './main.js'
 import { createResultEnvelope } from './main.js'
-import type { HookDoneData } from './runHook.js'
+import type { HookResult, HookResultErrorAsync } from './runHook.js'
 import { runHook } from './runHook.js'
 
 export const runPipeline = async (
-  { core, hookNamesOrderedBySequence, originalInput, extensionsStack }: {
+  { core, hookNamesOrderedBySequence, originalInput, extensionsStack, asyncErrorDeferred }: {
     core: Core
     hookNamesOrderedBySequence: readonly string[]
     originalInput: unknown
     extensionsStack: readonly Extension[]
+    asyncErrorDeferred: HookResultErrorAsync
   },
-): Promise<ResultEnvelop<Core[PrivateTypesSymbol]['result']> | Errors.ContextualError> => {
+): Promise<ResultEnvelop | Errors.ContextualError> => {
   const [hookName, ...hookNamesRest] = hookNamesOrderedBySequence
 
   if (!hookName) {
@@ -25,18 +27,21 @@ export const runPipeline = async (
 
   debug(`hook ${hookName}: start`)
 
-  const doneDeferred = createDeferred<HookDoneData>()
+  const done = createDeferred<HookResult>({ strict: false })
 
   void runHook({
     core,
     name: hookName,
-    done: doneDeferred.resolve,
+    done: done.resolve,
     originalInput,
     extensionsStack,
+    asyncErrorDeferred,
     nextExtensionsStack: [],
   })
 
-  const signal = await doneDeferred.promise
+  const signal = await Promise.race(
+    [done.promise, asyncErrorDeferred.promise],
+  )
 
   switch (signal.type) {
     case `completed`: {
@@ -46,6 +51,7 @@ export const runPipeline = async (
         hookNamesOrderedBySequence: hookNamesRest,
         originalInput: result,
         extensionsStack: nextExtensionsStack,
+        asyncErrorDeferred,
       })
     }
     case `shortCircuited`: {
@@ -55,12 +61,17 @@ export const runPipeline = async (
     }
     case `error`: {
       debug(`signal: error`)
+      const wasAsync = asyncErrorDeferred.isResolved()
       // todo type test for this possible return value
       switch (signal.source) {
         case `extension`: {
-          const nameTip = signal.extensionName ? ` (use named functions to improve this error message)` : ``
-          const message =
-            `There was an error in the extension "${signal.extensionName}"${nameTip} while running hook "${signal.hookName}".`
+          // todo test these 2 branches explicitly
+          const nameTip = signal.extensionName === defaultFunctionName
+            ? ` (use named functions to improve this error message)`
+            : ``
+          const message = wasAsync
+            ? `There was an error in the extension "${signal.extensionName}"${nameTip}.`
+            : `There was an error in the extension "${signal.extensionName}"${nameTip} while running hook "${signal.hookName}".`
           return new ContextualError(message, {
             hookName: signal.hookName,
             source: signal.source,
@@ -70,6 +81,9 @@ export const runPipeline = async (
         case `implementation`: {
           const message = `There was an error in the core implementation of hook "${signal.hookName}".`
           return new ContextualError(message, { hookName: signal.hookName, source: signal.source }, signal.error)
+        }
+        case `user`: {
+          return signal.error
         }
         default:
           throw casesExhausted(signal)
@@ -88,83 +102,10 @@ const runPipelineEnd = async ({
   if (!extension) return result
 
   debug(`extension ${extension.name}: end`)
-  extension.currentChunk.resolve(result)
+  extension.currentChunk.resolve(result as any)
   const nextResult = await extension.body.promise
   return await runPipelineEnd({
     extensionsStack: extensionsRest,
     result: nextResult,
   })
 }
-
-// const runPipelineOld = async (
-//   { core, initialInput, initialHookStack }: { core: Core; initialInput: unknown; initialHookStack: Extension[] },
-// ): Promise<ResultEnvelop<Core[PrivateTypesSymbol]['result']> | ContextualError> => {
-//   let currentInput = initialInput
-//   let currentHookStack = initialHookStack
-
-//   for (const hookName of core.hookNamesOrderedBySequence) {
-//     debug(`hook ${hookName}: start`)
-//     const doneDeferred = createDeferred<HookDoneData>()
-//     void runHook({
-//       core,
-//       name: hookName,
-//       done: doneDeferred.resolve,
-//       originalInput: currentInput,
-//       extensionsStack: currentHookStack,
-//       nextExtensionsStack: [],
-//     })
-
-//     const signal = await doneDeferred.promise
-
-//     switch (signal.type) {
-//       case `completed`: {
-//         const { result, nextExtensionsStack } = signal
-//         currentInput = result
-//         currentHookStack = nextExtensionsStack
-//         break
-//       }
-//       case `shortCircuited`: {
-//         debug(`signal: shortCircuited`)
-//         const { result } = signal
-//         return createResultEnvelope(result)
-//       }
-//       case `error`: {
-//         debug(`signal: error`)
-//         // todo type test for this possible return value
-//         switch (signal.source) {
-//           case `extension`: {
-//             const nameTip = signal.extensionName ? ` (use named functions to improve this error message)` : ``
-//             const message =
-//               `There was an error in the extension "${signal.extensionName}"${nameTip} while running hook "${signal.hookName}".`
-//             return new ContextualError(message, {
-//               hookName: signal.hookName,
-//               source: signal.source,
-//               extensionName: signal.extensionName,
-//             }, signal.error)
-//           }
-//           case `implementation`: {
-//             const message = `There was an error in the core implementation of hook "${signal.hookName}".`
-//             return new ContextualError(message, { hookName: signal.hookName, source: signal.source }, signal.error)
-//           }
-//           default:
-//             throw casesExhausted(signal)
-//         }
-//       }
-//       default:
-//         throw casesExhausted(signal)
-//     }
-//   }
-
-//   debug(`pipeline: ending`)
-
-//   let currentResult = currentInput
-//   for (const extension of currentHookStack) {
-//     debug(`extension ${extension.name}: end`)
-//     extension.currentChunk.resolve(currentResult)
-//     currentResult = await extension.body.promise
-//   }
-
-//   debug(`pipeline: returning`)
-
-//   return createResultEnvelope(currentResult) // last loop result
-// }

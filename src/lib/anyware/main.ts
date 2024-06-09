@@ -3,6 +3,7 @@ import { partitionAndAggregateErrors } from '../errors/ContextualAggregateError.
 import type { Deferred, FindValueAfter, IsLastValue, MaybePromise } from '../prelude.js'
 import { casesExhausted, createDeferred } from '../prelude.js'
 import { getEntrypoint } from './getEntrypoint.js'
+import type { HookResultErrorExtension } from './runHook.js'
 import { runPipeline } from './runPipeline.js'
 
 type HookSequence = readonly [string, ...string[]]
@@ -39,9 +40,10 @@ const hookSymbol = Symbol(`hook`)
 
 type HookSymbol = typeof hookSymbol
 
-type SomeHookEnvelope = {
+export type SomeHookEnvelope = {
   [name: string]: SomeHook
 }
+
 export type SomeHook<fn extends (input: any) => any = (input: any) => any> = fn & {
   [hookSymbol]: HookSymbol
   // todo the result is unknown, but if we build a EndEnvelope, then we can work with this type more logically and put it here.
@@ -104,21 +106,50 @@ export type Core<
 
 export type HookName = string
 
-export type Extension = {
+export type Extension = NonRetryingExtension | RetryingExtension
+
+export type NonRetryingExtension = {
+  retrying: false
   name: string
   entrypoint: string
   body: Deferred<unknown>
-  currentChunk: Deferred<unknown>
+  currentChunk: Deferred<SomeHookEnvelope /* | unknown (result) */>
+}
+
+export type RetryingExtension = {
+  retrying: true
+  name: string
+  entrypoint: string
+  body: Deferred<unknown>
+  currentChunk: Deferred<SomeHookEnvelope | Error /* | unknown (result) */>
+}
+
+export const createRetryingExtension = (extension: NonRetryingExtensionInput): RetryingExtensionInput => {
+  return {
+    retrying: true,
+    run: extension,
+  }
 }
 
 // export type ExtensionInput<$Input extends object = object> = (input: $Input) => MaybePromise<unknown>
-export type ExtensionInput<$Input extends object = any> = (input: $Input) => MaybePromise<unknown>
+export type ExtensionInput<$Input extends object = any> =
+  | NonRetryingExtensionInput<$Input>
+  | RetryingExtensionInput<$Input>
+
+export type NonRetryingExtensionInput<$Input extends object = any> = (
+  input: $Input,
+) => MaybePromise<unknown>
+
+export type RetryingExtensionInput<$Input extends object = any> = {
+  retrying: boolean
+  run: (input: $Input) => MaybePromise<unknown>
+}
 
 const ResultEnvelopeSymbol = Symbol(`resultEnvelope`)
 
 type ResultEnvelopeSymbol = typeof ResultEnvelopeSymbol
 
-export type ResultEnvelop<T> = {
+export type ResultEnvelop<T = unknown> = {
   [ResultEnvelopeSymbol]: ResultEnvelopeSymbol
   result: T
 }
@@ -181,17 +212,16 @@ export const create = <
         toInternalExtension(core, resolveOptions(options), extension)
       )
       const [initialHookStack, error] = partitionAndAggregateErrors(initialHookStackAndErrors)
+      if (error) return error
 
-      if (error) {
-        return error
-      }
-
+      const asyncErrorDeferred = createDeferred<HookResultErrorExtension>({ strict: false })
       const result = await runPipeline({
         core,
         hookNamesOrderedBySequence: core.hookNamesOrderedBySequence,
         originalInput: initialInput,
         // @ts-expect-error fixme
         extensionsStack: initialHookStack,
+        asyncErrorDeferred,
       })
       if (result instanceof Error) return result
 
@@ -205,16 +235,18 @@ export const create = <
 const toInternalExtension = (core: Core, config: Config, extension: ExtensionInput) => {
   const currentChunk = createDeferred<SomeHookEnvelope>()
   const body = createDeferred()
+  const extensionRun = typeof extension === `function` ? extension : extension.run
+  const retrying = typeof extension === `function` ? false : extension.retrying
   const applyBody = async (input: object) => {
     try {
-      const result = await extension(input)
+      const result = await extensionRun(input)
       body.resolve(result)
     } catch (error) {
       body.reject(error)
     }
   }
 
-  const extensionName = extension.name || `anonymous`
+  const extensionName = extensionRun.name || `anonymous`
 
   switch (config.entrypointSelectionMode) {
     case `off`: {
@@ -228,7 +260,7 @@ const toInternalExtension = (core: Core, config: Config, extension: ExtensionInp
     }
     case `optional`:
     case `required`: {
-      const entrypoint = getEntrypoint(core.hookNamesOrderedBySequence, extension)
+      const entrypoint = getEntrypoint(core.hookNamesOrderedBySequence, extensionRun)
       if (entrypoint instanceof Error) {
         if (config.entrypointSelectionMode === `required`) {
           return entrypoint
@@ -257,6 +289,7 @@ const toInternalExtension = (core: Core, config: Config, extension: ExtensionInp
       void currentChunkPromiseChain.then(applyBody)
 
       return {
+        retrying,
         name: extensionName,
         entrypoint,
         body,

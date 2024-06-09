@@ -1,9 +1,10 @@
 /* eslint-disable */
 
-import console from 'node:console'
 import { describe, expect, test, vi } from 'vitest'
+import { Errors } from '../errors/__.js'
 import type { ContextualError } from '../errors/ContextualError.js'
-import { core, initialInput, oops, run, runWithOptions } from './specHelpers.js'
+import { createRetryingExtension } from './main.js'
+import { core, oops, run, runWithOptions } from './specHelpers.js'
 
 describe(`no extensions`, () => {
   test(`passthrough to implementation`, async () => {
@@ -223,39 +224,87 @@ describe(`errors`, () => {
     `)
   })
   test('calling a hook twice leads to clear error', async () => {
+    let neverRan = true
     const result = await run(async ({ a }) => {
-      a()
-      a()
+      await a()
+      await a()
+      neverRan = false
     }) as ContextualError
+    expect(neverRan).toBe(true)
     const cause = result.cause as ContextualError
     expect(cause.message).toMatchInlineSnapshot(
-      `"You already invoked hook "a". Hooks can only be invoked multiple times if the previous attempt failed."`,
+      `"Only a retrying extension can retry hooks."`,
     )
-    expect(cause.context).toEqual({ hookName: 'a' })
+    expect(cause.context).toMatchInlineSnapshot(`
+      {
+        "extensionsAfter": [],
+        "hookName": "a",
+      }
+    `)
   })
-  test.only('if hook fails, extension can retry, then short-circuit', async () => {
+})
+
+describe('retrying extension', () => {
+  test('if hook fails, extension can retry, then short-circuit', async () => {
     core.hooks.a.mockReset().mockRejectedValueOnce(oops).mockResolvedValueOnce(1)
-    const result = await run(async ({ a }) => {
+    const result = await run(createRetryingExtension(async function foo({ a }) {
       const result1 = await a()
       expect(result1).toEqual(oops)
       const result2 = await a()
       expect(typeof result2.b).toEqual('function')
       expect(result2.b.input).toEqual(1)
       return result2.b.input
-    })
+    }))
     expect(result).toEqual(1)
   })
-  test.skip('if hook fails, extension can retry it, then continue to next hook.', async () => {
-    core.hooks.a.mockReset().mockRejectedValueOnce(oops).mockResolvedValueOnce(1)
-    const result = await run(
-      async function foo({ a }) {
-        const resultA1 = await a()
-        const resultA2 = await a()
-        const resultB1 = await resultA2.b()
-        return resultB1
-      },
-    )
-    console.log(result)
-    expect(result).toEqual(1)
+
+  describe('errors', () => {
+    test('not last extension', async () => {
+      const result = await run(
+        createRetryingExtension(async function foo({ a }) {
+          return a()
+        }),
+        async function bar({ a }) {
+          return a()
+        },
+      )
+      expect(result).toMatchInlineSnapshot(`[ContextualError: Only the last extension can retry hooks.]`)
+      expect((result as Errors.ContextualError).context).toMatchInlineSnapshot(`
+        {
+          "extensionsAfter": [
+            {
+              "name": "bar",
+            },
+          ],
+        }
+      `)
+    })
+    test('call hook twice even though it succeeded the first time', async () => {
+      let neverRan = true
+      const result = await run(
+        createRetryingExtension(async function foo({ a }) {
+          const result1 = await a()
+          expect('b' in result1).toBe(true)
+          await a() // <-- Extension bug here under test.
+          neverRan = false
+        }),
+      )
+      expect(neverRan).toBe(true)
+      expect(result).toMatchInlineSnapshot(
+        `[ContextualError: There was an error in the extension "foo".]`,
+      )
+      expect((result as Errors.ContextualError).context).toMatchInlineSnapshot(
+        `
+        {
+          "extensionName": "foo",
+          "hookName": "a",
+          "source": "extension",
+        }
+      `,
+      )
+      expect((result as Errors.ContextualError).cause).toMatchInlineSnapshot(
+        `[ContextualError: Only after failure can a hook be called again by a retrying extension.]`,
+      )
+    })
   })
 })
