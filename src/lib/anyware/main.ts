@@ -1,19 +1,26 @@
 import { Errors } from '../errors/__.js'
 import { partitionAndAggregateErrors } from '../errors/ContextualAggregateError.js'
-import { ContextualError } from '../errors/ContextualError.js'
 import type { Deferred, FindValueAfter, IsLastValue, MaybePromise } from '../prelude.js'
-import { casesExhausted, createDeferred, debug, errorFromMaybeError } from '../prelude.js'
+import { casesExhausted, createDeferred } from '../prelude.js'
 import { getEntrypoint } from './getEntrypoint.js'
+import type { HookResultErrorExtension } from './runHook.js'
+import { runPipeline } from './runPipeline.js'
 
 type HookSequence = readonly [string, ...string[]]
 
+type ExtensionOptions = {
+  retrying: boolean
+}
+
 export type Extension2<
   $Core extends Core = Core,
+  $Options extends ExtensionOptions = ExtensionOptions,
 > = (
   hooks: ExtensionHooks<
     $Core[PrivateTypesSymbol]['hookSequence'],
     $Core[PrivateTypesSymbol]['hookMap'],
-    $Core[PrivateTypesSymbol]['result']
+    $Core[PrivateTypesSymbol]['result'],
+    $Options
   >,
 ) => Promise<
   | $Core[PrivateTypesSymbol]['result']
@@ -24,8 +31,9 @@ type ExtensionHooks<
   $HookSequence extends HookSequence,
   $HookMap extends Record<$HookSequence[number], object> = Record<$HookSequence[number], object>,
   $Result = unknown,
+  $Options extends ExtensionOptions = ExtensionOptions,
 > = {
-  [$HookName in $HookSequence[number]]: Hook<$HookSequence, $HookMap, $Result, $HookName>
+  [$HookName in $HookSequence[number]]: Hook<$HookSequence, $HookMap, $Result, $HookName, $Options>
 }
 
 type CoreInitialInput<$Core extends Core> =
@@ -33,15 +41,16 @@ type CoreInitialInput<$Core extends Core> =
 
 const PrivateTypesSymbol = Symbol(`private`)
 
-type PrivateTypesSymbol = typeof PrivateTypesSymbol
+export type PrivateTypesSymbol = typeof PrivateTypesSymbol
 
 const hookSymbol = Symbol(`hook`)
 
 type HookSymbol = typeof hookSymbol
 
-type SomeHookEnvelope = {
+export type SomeHookEnvelope = {
   [name: string]: SomeHook
 }
+
 export type SomeHook<fn extends (input: any) => any = (input: any) => any> = fn & {
   [hookSymbol]: HookSymbol
   // todo the result is unknown, but if we build a EndEnvelope, then we can work with this type more logically and put it here.
@@ -63,24 +72,32 @@ type Hook<
   $HookMap extends HookMap<$HookSequence> = HookMap<$HookSequence>,
   $Result = unknown,
   $Name extends $HookSequence[number] = $HookSequence[number],
-> = (<$$Input extends $HookMap[$Name]>(input?: $$Input) => HookReturn<$HookSequence, $HookMap, $Result, $Name>) & {
-  [hookSymbol]: HookSymbol
-  input: $HookMap[$Name]
-}
+  $Options extends ExtensionOptions = ExtensionOptions,
+> =
+  & (<$$Input extends $HookMap[$Name]>(
+    input?: $$Input,
+  ) => HookReturn<$HookSequence, $HookMap, $Result, $Name, $Options>)
+  & {
+    [hookSymbol]: HookSymbol
+    input: $HookMap[$Name]
+  }
 
 type HookReturn<
   $HookSequence extends HookSequence,
   $HookMap extends HookMap<$HookSequence> = HookMap<$HookSequence>,
   $Result = unknown,
   $Name extends $HookSequence[number] = $HookSequence[number],
-> = IsLastValue<$Name, $HookSequence> extends true ? $Result : {
-  [$NameNext in FindValueAfter<$Name, $HookSequence>]: Hook<
-    $HookSequence,
-    $HookMap,
-    $Result,
-    $NameNext
-  >
-}
+  $Options extends ExtensionOptions = ExtensionOptions,
+> =
+  | ($Options['retrying'] extends true ? Error : never)
+  | (IsLastValue<$Name, $HookSequence> extends true ? $Result : {
+    [$NameNext in FindValueAfter<$Name, $HookSequence>]: Hook<
+      $HookSequence,
+      $HookMap,
+      $Result,
+      $NameNext
+    >
+  })
 
 export type Core<
   $HookSequence extends HookSequence = HookSequence,
@@ -104,245 +121,58 @@ export type Core<
 
 export type HookName = string
 
-const createHook = <$X, $F extends (...args: any[]) => any>(
-  originalInput: $X,
-  fn: $F,
-): $F & { input: $X } => {
-  // @ts-expect-error
-  fn.input = originalInput
-  // @ts-expect-error
-  return fn
-}
+export type Extension = NonRetryingExtension | RetryingExtension
 
-type Extension = {
+export type NonRetryingExtension = {
+  retrying: false
   name: string
   entrypoint: string
   body: Deferred<unknown>
-  currentChunk: Deferred<unknown>
+  currentChunk: Deferred<SomeHookEnvelope /* | unknown (result) */>
+}
+
+export type RetryingExtension = {
+  retrying: true
+  name: string
+  entrypoint: string
+  body: Deferred<unknown>
+  currentChunk: Deferred<SomeHookEnvelope | Error /* | unknown (result) */>
+}
+
+export const createRetryingExtension = (extension: NonRetryingExtensionInput): RetryingExtensionInput => {
+  return {
+    retrying: true,
+    run: extension,
+  }
 }
 
 // export type ExtensionInput<$Input extends object = object> = (input: $Input) => MaybePromise<unknown>
-export type ExtensionInput<$Input extends object = any> = (input: $Input) => MaybePromise<unknown>
+export type ExtensionInput<$Input extends object = any> =
+  | NonRetryingExtensionInput<$Input>
+  | RetryingExtensionInput<$Input>
 
-type HookDoneData =
-  | { type: 'completed'; result: unknown; nextHookStack: Extension[] }
-  | { type: 'shortCircuited'; result: unknown }
-  | { type: 'error'; hookName: string; source: 'implementation'; error: Error }
-  | { type: 'error'; hookName: string; source: 'extension'; error: Error; extensionName: string }
+export type NonRetryingExtensionInput<$Input extends object = any> = (
+  input: $Input,
+) => MaybePromise<unknown>
 
-type HookDoneResolver = (input: HookDoneData) => void
-
-const runHook = async <$HookName extends string>(
-  { core, name, done, originalInput, currentHookStack, nextHookStack }: {
-    core: Core
-    name: $HookName
-    done: HookDoneResolver
-    originalInput: unknown
-    currentHookStack: Extension[]
-    nextHookStack: Extension[]
-  },
-) => {
-  const [pausedExtension, ...nextCurrentHookStack] = currentHookStack
-
-  // Going down the stack
-  // --------------------
-
-  if (pausedExtension) {
-    const hookUsedDeferred = createDeferred()
-
-    debug(`${name}: extension ${pausedExtension.name}`)
-    // The extension is responsible for calling the next hook.
-    // If no input is passed that means use the original input.
-    const hook = createHook(originalInput, (maybeNextOriginalInput?: object) => {
-      // Once called, the extension is paused again and we continue down the current hook stack.
-      hookUsedDeferred.resolve(true)
-
-      debug(`${name}: ${pausedExtension.name}: pause`)
-      const nextPausedExtension: Extension = {
-        ...pausedExtension,
-        currentChunk: createDeferred(),
-      }
-      const nextNextHookStack = [...nextHookStack, nextPausedExtension] // tempting to mutate here but simpler to think about as copy.
-
-      void runHook({
-        core,
-        name,
-        done,
-        originalInput: maybeNextOriginalInput ?? originalInput,
-        currentHookStack: nextCurrentHookStack,
-        nextHookStack: nextNextHookStack,
-      })
-
-      return nextPausedExtension.currentChunk.promise
-    })
-
-    // The extension is resumed. It is responsible for calling the next hook.
-
-    debug(`${name}: ${pausedExtension.name}: resume`)
-    const envelope = { [name]: hook }
-    pausedExtension.currentChunk.resolve(envelope)
-
-    // If the extension does not return, it wants to tap into more hooks.
-    // If the extension returns the hook envelope, it wants the rest of the pipeline
-    // to pass through it.
-    // If the extension returns a non-hook-envelope value, it wants to short-circuit the pipeline.
-    const { branch, result } = await Promise.race([
-      hookUsedDeferred.promise.then(result => {
-        return { branch: `hook`, result } as const
-      }).catch((e: unknown) => ({ branch: `hookError`, result: e } as const)),
-      pausedExtension.body.promise.then(result => {
-        return { branch: `body`, result } as const
-      }).catch((e: unknown) => ({ branch: `bodyError`, result: e } as const)),
-    ])
-
-    debug(`${name}: ${pausedExtension.name}: branch`, branch)
-    switch (branch) {
-      case `body`: {
-        if (result === envelope) {
-          void runHook({
-            core,
-            name,
-            done,
-            originalInput,
-            currentHookStack: nextCurrentHookStack,
-            nextHookStack,
-          })
-        } else {
-          done({ type: `shortCircuited`, result })
-        }
-        return
-      }
-      case `bodyError`: {
-        done({
-          type: `error`,
-          hookName: name,
-          source: `extension`,
-          error: errorFromMaybeError(result),
-          extensionName: pausedExtension.name,
-        })
-        return
-      }
-      case `hookError`:
-        done({ type: `error`, hookName: name, source: `implementation`, error: errorFromMaybeError(result) })
-        return
-      case `hook`: {
-        // do nothing, hook is making the processing continue.
-        return
-      }
-      default:
-        throw casesExhausted(branch)
-    }
-  }
-
-  // Reached bottom of the stack
-  // ---------------------------
-
-  // Run core to get result
-
-  const implementation = core.hooks[name]
-  if (!implementation) {
-    throw new Errors.ContextualError(`Implementation not found for hook name ${name}`, { hookName: name })
-  }
-  let result
-  try {
-    result = await implementation(originalInput as any)
-  } catch (error) {
-    done({ type: `error`, hookName: name, source: `implementation`, error: errorFromMaybeError(error) })
-    return
-  }
-
-  // Return to root with the next result and hook stack
-
-  done({ type: `completed`, result, nextHookStack })
-  return
+export type RetryingExtensionInput<$Input extends object = any> = {
+  retrying: boolean
+  run: (input: $Input) => MaybePromise<unknown>
 }
 
 const ResultEnvelopeSymbol = Symbol(`resultEnvelope`)
 
 type ResultEnvelopeSymbol = typeof ResultEnvelopeSymbol
 
-export type ResultEnvelop<T> = {
+export type ResultEnvelop<T = unknown> = {
   [ResultEnvelopeSymbol]: ResultEnvelopeSymbol
   result: T
 }
 
-const createResultEnvelope = <T>(result: T): ResultEnvelop<T> => ({
+export const createResultEnvelope = <T>(result: T): ResultEnvelop<T> => ({
   [ResultEnvelopeSymbol]: ResultEnvelopeSymbol,
   result,
 })
-
-const run = async (
-  { core, initialInput, initialHookStack }: { core: Core; initialInput: unknown; initialHookStack: Extension[] },
-): Promise<ResultEnvelop<Core[PrivateTypesSymbol]['result']> | ContextualError> => {
-  let currentInput = initialInput
-  let currentHookStack = initialHookStack
-
-  for (const hookName of core.hookNamesOrderedBySequence) {
-    debug(`running hook`, hookName)
-    const doneDeferred = createDeferred<HookDoneData>()
-    void runHook({
-      core,
-      name: hookName,
-      done: doneDeferred.resolve,
-      originalInput: currentInput,
-      currentHookStack,
-      nextHookStack: [],
-    })
-
-    const signal = await doneDeferred.promise
-
-    switch (signal.type) {
-      case `completed`: {
-        const { result, nextHookStack } = signal
-        currentInput = result
-        currentHookStack = nextHookStack
-        break
-      }
-      case `shortCircuited`: {
-        debug(`signal: shortCircuited`)
-        const { result } = signal
-        return createResultEnvelope(result)
-      }
-      case `error`: {
-        debug(`signal: error`)
-        // todo type test for this possible return value
-        switch (signal.source) {
-          case `extension`: {
-            const nameTip = signal.extensionName ? ` (use named functions to improve this error message)` : ``
-            const message =
-              `There was an error in the extension "${signal.extensionName}"${nameTip} while running hook "${signal.hookName}".`
-            return new ContextualError(message, {
-              hookName: signal.hookName,
-              source: signal.source,
-              extensionName: signal.extensionName,
-            }, signal.error)
-          }
-          case `implementation`: {
-            const message = `There was an error in the core implementation of hook "${signal.hookName}".`
-            return new ContextualError(message, { hookName: signal.hookName, source: signal.source }, signal.error)
-          }
-          default:
-            throw casesExhausted(signal)
-        }
-      }
-      default:
-        throw casesExhausted(signal)
-    }
-  }
-
-  debug(`ending`)
-
-  let currentResult = currentInput
-  for (const hook of currentHookStack) {
-    debug(`end: ${hook.name}`)
-    hook.currentChunk.resolve(currentResult)
-    currentResult = await hook.body.promise
-  }
-
-  debug(`returning`)
-
-  return createResultEnvelope(currentResult) // last loop result
-}
 
 const createPassthrough = (hookName: string) => async (hookEnvelope: SomeHookEnvelope) => {
   const hook = hookEnvelope[hookName]
@@ -373,6 +203,7 @@ export type Builder<$Core extends Core = Core> = {
     { initialInput, extensions, options }: {
       initialInput: CoreInitialInput<$Core>
       extensions: Extension2<$Core>[]
+      retryingExtension?: Extension2<$Core, { retrying: true }>
       options?: Options
     },
   ) => Promise<$Core[PrivateTypesSymbol]['result'] | Errors.ContextualError>
@@ -392,21 +223,22 @@ export const create = <
   const builder: Builder<$Core> = {
     core,
     run: async (input) => {
-      const { initialInput, extensions, options } = input
-      const initialHookStackAndErrors = extensions.map(extension =>
+      const { initialInput, extensions, options, retryingExtension } = input
+      const extensions_ = retryingExtension ? [...extensions, createRetryingExtension(retryingExtension)] : extensions
+      const initialHookStackAndErrors = extensions_.map(extension =>
         toInternalExtension(core, resolveOptions(options), extension)
       )
       const [initialHookStack, error] = partitionAndAggregateErrors(initialHookStackAndErrors)
+      if (error) return error
 
-      if (error) {
-        return error
-      }
-
-      const result = await run({
+      const asyncErrorDeferred = createDeferred<HookResultErrorExtension>({ strict: false })
+      const result = await runPipeline({
         core,
-        initialInput,
+        hookNamesOrderedBySequence: core.hookNamesOrderedBySequence,
+        originalInput: initialInput,
         // @ts-expect-error fixme
-        initialHookStack,
+        extensionsStack: initialHookStack,
+        asyncErrorDeferred,
       })
       if (result instanceof Error) return result
 
@@ -420,16 +252,18 @@ export const create = <
 const toInternalExtension = (core: Core, config: Config, extension: ExtensionInput) => {
   const currentChunk = createDeferred<SomeHookEnvelope>()
   const body = createDeferred()
+  const extensionRun = typeof extension === `function` ? extension : extension.run
+  const retrying = typeof extension === `function` ? false : extension.retrying
   const applyBody = async (input: object) => {
     try {
-      const result = await extension(input)
+      const result = await extensionRun(input)
       body.resolve(result)
     } catch (error) {
       body.reject(error)
     }
   }
 
-  const extensionName = extension.name || `anonymous`
+  const extensionName = extensionRun.name || `anonymous`
 
   switch (config.entrypointSelectionMode) {
     case `off`: {
@@ -443,7 +277,7 @@ const toInternalExtension = (core: Core, config: Config, extension: ExtensionInp
     }
     case `optional`:
     case `required`: {
-      const entrypoint = getEntrypoint(core.hookNamesOrderedBySequence, extension)
+      const entrypoint = getEntrypoint(core.hookNamesOrderedBySequence, extensionRun)
       if (entrypoint instanceof Error) {
         if (config.entrypointSelectionMode === `required`) {
           return entrypoint
@@ -472,6 +306,7 @@ const toInternalExtension = (core: Core, config: Config, extension: ExtensionInp
       void currentChunkPromiseChain.then(applyBody)
 
       return {
+        retrying,
         name: extensionName,
         entrypoint,
         body,

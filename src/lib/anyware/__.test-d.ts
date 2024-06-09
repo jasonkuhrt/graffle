@@ -1,5 +1,6 @@
 /* eslint-disable */
 
+import { run } from 'node:test'
 import { expectTypeOf, test } from 'vitest'
 import { Result } from '../../../tests/_/schema/generated/SchemaRuntime.js'
 import { ContextualError } from '../errors/ContextualError.js'
@@ -32,6 +33,16 @@ test('run', () => {
     (input: {
       initialInput: InputA
       options?: Anyware.Options
+      retryingExtension?: (input: {
+        a: SomeHook<
+          (input?: InputA) => MaybePromise<
+            Error | {
+              b: SomeHook<(input?: InputB) => MaybePromise<Error | Result>>
+            }
+          >
+        >
+        b: SomeHook<(input?: InputB) => MaybePromise<Error | Result>>
+      }) => Promise<Result>
       extensions: ((input: {
         a: SomeHook<
           (input?: InputA) => MaybePromise<{

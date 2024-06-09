@@ -1,7 +1,7 @@
 // import type { Extension, HookName } from '../../layers/5_client/extension/types.js'
 import { analyzeFunction } from '../analyzeFunction.js'
 import { ContextualError } from '../errors/ContextualError.js'
-import type { ExtensionInput, HookName } from './main.js'
+import type { HookName, NonRetryingExtensionInput } from './main.js'
 
 export class ErrorAnywareExtensionEntrypoint extends ContextualError<
   'ErrorGraffleExtensionEntryHook',
@@ -25,7 +25,7 @@ export type ExtensionEntryHookIssue = typeof ExtensionEntryHookIssue[keyof typeo
 
 export const getEntrypoint = (
   hookNames: readonly string[],
-  extension: ExtensionInput,
+  extension: NonRetryingExtensionInput,
 ): ErrorAnywareExtensionEntrypoint | HookName => {
   const x = analyzeFunction(extension)
   if (x.parameters.length > 1) {

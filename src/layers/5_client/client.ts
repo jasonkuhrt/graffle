@@ -39,6 +39,7 @@ export type SelectionSetOrIndicator = 0 | 1 | boolean | object
 export type SelectionSetOrArgs = object
 
 export interface Context {
+  retry: undefined | Anyware.Extension2<Core.Core, { retrying: true }>
   extensions: Anyware.Extension2<Core.Core>[]
   config: Config
 }
@@ -65,6 +66,7 @@ export type Client<$Index extends Schema.Index | null, $Config extends Config> =
     )
   & {
       extend: (extension: Anyware.Extension2<Core.Core>) => Client<$Index, $Config>
+      retry: (extension: Anyware.Extension2<Core.Core, { retrying: true }>) => Client<$Index, $Config>
     }
 
 export type ClientTyped<$Index extends Schema.Index, $Config extends Config> =
@@ -147,9 +149,10 @@ type Create = <
 
 export const create: Create = (
   input_,
-) => createInternal(input_, { extensions: [] })
+) => createInternal(input_, { extensions: [], retry: undefined })
 
 interface CreateState {
+  retry?: Anyware.Extension2<Core.Core, { retrying: true }>
   extensions: Anyware.Extension2<Core.Core>[]
 }
 
@@ -251,6 +254,7 @@ export const createInternal = (
   }
 
   const context: Context = {
+    retry: state.retry,
     extensions: state.extensions,
     config: {
       returnMode,
@@ -260,6 +264,7 @@ export const createInternal = (
   const run = async (context: Context, initialInput: HookInputEncode) => {
     const result = await Core.anyware.run({
       initialInput,
+      retryingExtension: context.retry,
       extensions: context.extensions,
     }) as GraffleExecutionResult
     return handleReturn(context, result)
@@ -295,6 +300,9 @@ export const createInternal = (
     extend: (extension: Anyware.Extension2<Core.Core>) => {
       // todo test that adding extensions returns a copy of client
       return createInternal(input, { extensions: [...state.extensions, extension] })
+    },
+    retry: (extension: Anyware.Extension2<Core.Core, { retrying: true }>) => {
+      return createInternal(input, { ...state, retry: extension })
     },
   }
 

@@ -245,11 +245,13 @@ export type SomeMaybeAsyncFunction = (...args: unknown[]) => MaybePromise<unknow
 
 export type Deferred<T> = {
   promise: Promise<T>
+  isResolved: () => boolean
   resolve: (value: T) => void
   reject: (error: unknown) => void
 }
 
-export const createDeferred = <$T>(): Deferred<$T> => {
+export const createDeferred = <$T>(options?: { strict?: boolean }): Deferred<$T> => {
+  let isResolved = false
   let resolve: (value: $T) => void
   let reject: (error: unknown) => void
 
@@ -260,7 +262,14 @@ export const createDeferred = <$T>(): Deferred<$T> => {
 
   return {
     promise,
-    resolve: (value) => resolve(value),
+    isResolved: () => isResolved,
+    resolve: (value) => {
+      isResolved = true
+      if (options?.strict && isResolved) {
+        throw new Error(`Deferred is already resolved. Attempted to resolve with: ${JSON.stringify(value)}`)
+      }
+      resolve(value)
+    },
     reject: (error) => reject(error),
   }
 }
@@ -269,6 +278,10 @@ export const debug = (...args: any[]) => {
   if (process.env[`DEBUG`]) {
     console.log(...args)
   }
+}
+
+export const debugSub = (...args: any[]) => (...subArgs: any[]) => {
+  debug(...args, ...subArgs)
 }
 
 export type PlusOneUpToTen<n extends number> = n extends 0 ? 1
