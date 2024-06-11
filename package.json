@@ -80,15 +80,26 @@
     "release:pr": "dripip pr"
   },
   "dependencies": {
-    "@dprint/formatter": "^0.3.0",
-    "@dprint/typescript": "^0.91.1",
     "@graphql-typed-document-node/core": "^3.2.0",
     "@molt/command": "^0.9.0",
-    "dprint": "^0.46.2",
     "zod": "^3.23.8"
   },
   "peerDependencies": {
-    "graphql": "14 - 16"
+    "graphql": "14 - 16",
+    "dprint": "^0.46.2",
+    "@dprint/formatter": "^0.3.0",
+    "@dprint/typescript": "^0.91.1"
+  },
+  "peerDependenciesMeta": {
+    "dprint": {
+      "optional": true
+    },
+    "@dprint/formatter": {
+      "optional": true
+    },
+    "@dprint/typescript": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.15.3",

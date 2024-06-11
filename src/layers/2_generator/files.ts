@@ -1,5 +1,4 @@
-import { createFromBuffer } from '@dprint/formatter'
-import { getPath } from '@dprint/typescript'
+import type { Formatter } from '@dprint/formatter'
 import _ from 'json-bigint'
 import fs from 'node:fs/promises'
 import * as Path from 'node:path'
@@ -18,6 +17,16 @@ export interface Input {
   errorTypeNamePattern?: OptionsInput['errorTypeNamePattern']
 }
 
+const getTypeScriptFormatter = async (): Promise<Formatter | undefined> => {
+  try {
+    const { createFromBuffer } = await import(`@dprint/formatter`)
+    const { getPath } = await import(`@dprint/typescript`)
+    return createFromBuffer(await fs.readFile(getPath()))
+  } catch (error) {
+    return undefined
+  }
+}
+
 export const generateFiles = async (input: Input) => {
   const sourceDirPath = input.sourceDirPath ?? process.cwd()
   const schemaPath = input.schemaPath ?? Path.join(sourceDirPath, `schema.graphql`)
@@ -31,7 +40,7 @@ export const generateFiles = async (input: Input) => {
     customScalarCodecsFilePath.replace(/\.ts$/, `.js`),
   )
   const customScalarCodecsPathExists = await fileExists(customScalarCodecsFilePath)
-  const typeScriptFormatter = (input.format ?? true) ? createFromBuffer(await fs.readFile(getPath())) : undefined
+  const typeScriptFormatter = (input.format ?? true) ? await getTypeScriptFormatter() : undefined
 
   const codes = generateCode({
     name: input.name,
