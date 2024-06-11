@@ -12,7 +12,6 @@ Minimal GraphQL client supporting Node and browsers for scripts or simple apps.
   - [TypeScript Setup](#typescript-setup)
 - [Quick Start](#quick-start)
 - [Examples](#examples)
-- [Usage Trend](#usage-trend)
 - [Node Version Support](#node-version-support)
 - [Reference](#reference)
   - [Configuration](#configuration)
@@ -26,6 +25,9 @@ Minimal GraphQL client supporting Node and browsers for scripts or simple apps.
   - [Why do I have to install `graphql`?](#why-do-i-have-to-install-graphql)
   - [Do I need to wrap my GraphQL documents inside the `gql` template exported by `graphql-request`?](#do-i-need-to-wrap-my-graphql-documents-inside-the-gql-template-exported-by-graphql-request)
   - [What sets `graphql-request` apart from other clients like Apollo, Relay, etc.?](#what-sets-graphql-request-apart-from-other-clients-like-apollo-relay-etc)
+- [Project Stats](#project-stats)
+  - [Package Installs](#package-installs)
+  - [Repo Beats](#repo-beats)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -120,12 +122,6 @@ await client.request(document)
   - [Middleware](./examples/other-middleware.ts)
   - [Error Handling](./examples/other-error-handling.ts)
 
-## Usage Trend
-
-[Usage Trend of graphql-request](https://npm-compare.com/graphql-request/#timeRange=THREE_YEARS)
-
-![image](https://github.com/jasonkuhrt/graphql-request/assets/3455798/8d27c215-f20f-46f9-b38d-61f41d14882f)
-
 ## Node Version Support
 
 We only (officially) support [versions of Nodejs](https://github.com/nodejs/Release#release-schedule) of the following status:
@@ -204,3 +200,15 @@ No. It is there for convenience so that you can get the tooling support like aut
 `graphql-request` is the most minimal and simplest to use GraphQL client. It's perfect for small scripts or simple apps.
 
 Compared to GraphQL clients like Apollo or Relay, `graphql-request` doesn't have a built-in cache and has no integrations for frontend frameworks. The goal is to keep the package and API as minimal as possible.
+
+## Project Stats
+
+### Package Installs
+
+<a href="https://npm-compare.com/graphql-request#timeRange=FIVE_YEARS" target="_blank">
+  <img src="https://npm-compare.com/img/npm-trend/FIVE_YEARS/graphql-request.png" width="100%" alt="NPM Usage Trend of graphql-request" />
+</a>
+
+### Repo Beats
+
+![Alt](https://repobeats.axiom.co/api/embed/aeb7beaee43b190e90868357c5a2898f517fb63e.svg "Repobeats analytics image")
