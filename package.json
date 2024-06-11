@@ -84,7 +84,7 @@
     "@dprint/typescript": "^0.91.1",
     "@graphql-typed-document-node/core": "^3.2.0",
     "@molt/command": "^0.9.0",
-    "dprint": "^0.46.1",
+    "dprint": "^0.46.2",
     "zod": "^3.23.8"
   },
   "peerDependencies": {
@@ -99,9 +99,9 @@
     "@types/body-parser": "^1.19.5",
     "@types/express": "^4.17.21",
     "@types/json-bigint": "^1.0.4",
-    "@types/node": "^20.14.1",
-    "@typescript-eslint/eslint-plugin": "^7.12.0",
-    "@typescript-eslint/parser": "^7.12.0",
+    "@types/node": "^20.14.2",
+    "@typescript-eslint/eslint-plugin": "^7.13.0",
+    "@typescript-eslint/parser": "^7.13.0",
     "apollo-server-express": "^3.13.0",
     "body-parser": "^1.20.2",
     "doctoc": "^2.2.1",
@@ -122,10 +122,10 @@
     "jsdom": "^24.1.0",
     "json-bigint": "^1.0.0",
     "publint": "^0.2.8",
-    "tsx": "^4.11.2",
-    "type-fest": "^4.19.0",
+    "tsx": "^4.15.2",
+    "type-fest": "^4.20.0",
     "typescript": "^5.4.5",
-    "typescript-eslint": "^7.12.0",
+    "typescript-eslint": "^7.13.0",
     "vitest": "^1.6.0"
   }
 }
