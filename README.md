@@ -119,6 +119,12 @@ await client.request(document)
   - [Middleware](./examples/other-middleware.ts)
   - [Error Handling](./examples/other-error-handling.ts)
 
+## Usage Trend
+
+[Usage Trend of graphql-request](https://npm-compare.com/graphql-request/#timeRange=THREE_YEARS)
+
+![image](https://github.com/jasonkuhrt/graphql-request/assets/3455798/8d27c215-f20f-46f9-b38d-61f41d14882f)
+
 ## Node Version Support
 
 We only (officially) support [versions of Nodejs](https://github.com/nodejs/Release#release-schedule) of the following status:
