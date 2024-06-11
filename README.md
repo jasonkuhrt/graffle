@@ -12,6 +12,7 @@ Minimal GraphQL client supporting Node and browsers for scripts or simple apps.
   - [TypeScript Setup](#typescript-setup)
 - [Quick Start](#quick-start)
 - [Examples](#examples)
+- [Usage Trend](#usage-trend)
 - [Node Version Support](#node-version-support)
 - [Reference](#reference)
   - [Configuration](#configuration)
