@@ -13,6 +13,21 @@ describe(`document with two queries`, () => {
     bar: { query: { idNonNull: true } },
   })
 
+  graffle.extend(async ({ exchange }) => {
+    if (exchange.input.transport !== `http`) return exchange()
+    // @ts-expect-error Nextjs
+    exchange.input.request.next = { revalidate: 60, tags: [`menu`] }
+    return exchange({
+      ...exchange.input,
+      request: {
+        ...exchange.input.request,
+      },
+    })
+  }).document({
+    foo: { query: { id: true } },
+    bar: { query: { idNonNull: true } },
+  })
+
   test(`works`, async () => {
     const { run } = withTwo
     await expect(run(`foo`)).resolves.toEqual({ id: db.id1 })
