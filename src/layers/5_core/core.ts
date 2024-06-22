@@ -2,6 +2,7 @@ import type { DocumentNode, ExecutionResult, GraphQLSchema } from 'graphql'
 import { print } from 'graphql'
 import { Anyware } from '../../lib/anyware/__.js'
 import { type StandardScalarVariables } from '../../lib/graphql.js'
+import type { ExecutionInput } from '../../lib/graphqlHTTP.js'
 import { parseExecutionResult } from '../../lib/graphqlHTTP.js'
 import { CONTENT_TYPE_GQL } from '../../lib/http.js'
 import { casesExhausted } from '../../lib/prelude.js'
@@ -65,10 +66,35 @@ export type HookInputPack =
   & InterfaceInput
   & TransportInput<{ url: string | URL; headers?: HeadersInit }, { schema: GraphQLSchema }>
 
+type RequestInput<$Body> = {
+  url: string | URL
+  method:
+    | 'get'
+    | 'post'
+    | 'put'
+    | 'delete'
+    | 'patch'
+    | 'head'
+    | 'options'
+    | 'trace'
+    | 'GET'
+    | 'POST'
+    | 'PUT'
+    | 'DELETE'
+    | 'PATCH'
+    | 'HEAD'
+    | 'OPTIONS'
+    | 'TRACE'
+  headers?: HeadersInit
+  body: $Body
+}
+
 export type ExchangeInputHook =
   & InterfaceInput
   & TransportInput<
-    { request: Request },
+    {
+      request: RequestInput<ExecutionInput>
+    },
     {
       schema: GraphQLSchema
       document: string | DocumentNode
@@ -162,16 +188,15 @@ export const anyware = Anyware.create<HookSequence, Hooks, ExecutionResult>({
             operationName: input.operationName,
           }
 
-          const bodyEncoded = JSON.stringify(body)
-
-          const requestConfig = new Request(input.url, {
+          const requestConfig: RequestInput<ExecutionInput> = {
+            url: input.url,
             method: `POST`,
             headers: new Headers({
               'accept': CONTENT_TYPE_GQL,
               ...Object.fromEntries(new Headers(input.headers).entries()),
             }),
-            body: bodyEncoded,
-          })
+            body,
+          }
 
           return {
             ...input,
@@ -190,7 +215,13 @@ export const anyware = Anyware.create<HookSequence, Hooks, ExecutionResult>({
     exchange: async (input) => {
       switch (input.transport) {
         case `http`: {
-          const response = await fetch(input.request)
+          const response = await fetch(
+            new Request(input.request.url, {
+              method: input.request.method,
+              headers: input.request.headers,
+              body: JSON.stringify(input.request.body),
+            }),
+          )
           return {
             ...input,
             response,

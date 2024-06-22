@@ -1,6 +1,13 @@
 import type { GraphQLFormattedError } from 'graphql'
 import { type ExecutionResult, GraphQLError } from 'graphql'
+import type { StandardScalarVariables } from './graphql.js'
 import { isPlainObject } from './prelude.js'
+
+export type ExecutionInput = {
+  query: string
+  variables: StandardScalarVariables
+  operationName?: string
+}
 
 export const parseExecutionResult = (result: unknown): ExecutionResult => {
   if (typeof result !== `object` || result === null) {
