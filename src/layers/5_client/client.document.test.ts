@@ -13,6 +13,8 @@ describe(`document with two queries`, () => {
     bar: { query: { idNonNull: true } },
   })
 
+  // todo allow sync extensions
+  // eslint-disable-next-line
   graffle.extend(async ({ exchange }) => {
     if (exchange.input.transport !== `http`) return exchange()
     // @ts-expect-error Nextjs
