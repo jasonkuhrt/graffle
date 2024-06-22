@@ -15,12 +15,11 @@ export const decode = <$Data extends ExecutionResult['data']>(index: Schema.Obje
 
     const type = readMaybeThunk(indexField.type)
     const typeWithoutNonNull = Output.unwrapNullable(type) as Output.Named | Output.List<any>
-    const v2 = decodeCustomScalarValue(typeWithoutNonNull, v as any) // eslint-disable-line
+    const v2 = decodeCustomScalarValue(typeWithoutNonNull, v as any)
     return v2
   }) as $Data
 }
 
-// @ts-expect-error fixme
 const decodeCustomScalarValue = (
   indexType: Output.Any,
   fieldValue: string | boolean | null | number | GraphQLObject | GraphQLObject[],
@@ -32,7 +31,7 @@ const decodeCustomScalarValue = (
 
   if (typeWithoutNonNull.kind === `list`) {
     assertArray(fieldValue)
-    return fieldValue.map((v2: any) => {
+    return fieldValue.map((v2: any): any => {
       return decodeCustomScalarValue(typeWithoutNonNull.type, v2)
     })
   }
