@@ -16,7 +16,7 @@ describe(`entrypoint request`, () => {
       expect(input.headers.get('x-foo')).toEqual(headers['x-foo'])
       return createResponse({ data: { id: db.id } })
     })
-    const client2 = client.extend(async ({ pack }) => {
+    const client2 = client.use(async ({ pack }) => {
       // todo should be raw input types but rather resolved
       // todo should be URL instance?
       // todo these input type tests should be moved down to Anyware
@@ -30,7 +30,7 @@ describe(`entrypoint request`, () => {
     fetch.mockImplementationOnce(async () => {
       return createResponse({ data: { id: db.id } })
     })
-    const client2 = client.extend(async ({ pack }) => {
+    const client2 = client.use(async ({ pack }) => {
       const { exchange } = await pack({ ...pack.input, headers })
       return await exchange(exchange.input)
     })

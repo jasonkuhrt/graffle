@@ -11,7 +11,7 @@ import { readMaybeThunk } from '../1_Schema/core/helpers.js'
 import type { GlobalRegistry } from '../2_generator/globalRegistry.js'
 import type { DocumentObject, GraphQLObjectSelection } from '../3_SelectionSet/encode.js'
 import { Core } from '../5_core/__.js'
-import { type HookInputEncode } from '../5_core/core.js'
+import { type HookDefEncode } from '../5_core/core.js'
 import type { InterfaceRaw } from '../5_core/types.js'
 import type {
   ApplyInputDefaults,
@@ -40,7 +40,7 @@ export type SelectionSetOrArgs = object
 
 export interface Context {
   retry: undefined | Anyware.Extension2<Core.Core, { retrying: true }>
-  extensions: Anyware.Extension2<Core.Core>[]
+  extensions: Extension[]
   config: Config
 }
 
@@ -56,6 +56,11 @@ export type ClientRaw<_$Config extends Config> = {
   rawOrThrow: (input: Omit<RawInput, 'schema'>) => Promise<SomeExecutionResultWithoutErrors>
 }
 
+export type Extension = {
+  name: string
+  anyware?: Anyware.Extension2<Core.Core>
+}
+
 // dprint-ignore
 export type Client<$Index extends Schema.Index | null, $Config extends Config> =
   & ClientRaw<$Config>
@@ -65,7 +70,7 @@ export type Client<$Index extends Schema.Index | null, $Config extends Config> =
       : {} // eslint-disable-line
     )
   & {
-      extend: (extension: Anyware.Extension2<Core.Core>) => Client<$Index, $Config>
+      use: (extension: Extension) => Client<$Index, $Config>
       retry: (extension: Anyware.Extension2<Core.Core, { retrying: true }>) => Client<$Index, $Config>
     }
 
@@ -153,7 +158,7 @@ export const create: Create = (
 
 interface CreateState {
   retry?: Anyware.Extension2<Core.Core, { retrying: true }>
-  extensions: Anyware.Extension2<Core.Core>[]
+  extensions: Extension[]
 }
 
 export const createInternal = (
@@ -191,7 +196,7 @@ export const createInternal = (
         interface: interface_,
         schemaIndex: context.schemaIndex,
       },
-    } as HookInputEncode
+    } as HookDefEncode['input']
     return await run(context, initialInput)
   }
 
@@ -261,11 +266,11 @@ export const createInternal = (
     },
   }
 
-  const run = async (context: Context, initialInput: HookInputEncode) => {
+  const run = async (context: Context, initialInput: HookDefEncode['input']) => {
     const result = await Core.anyware.run({
       initialInput,
       retryingExtension: context.retry,
-      extensions: context.extensions,
+      extensions: context.extensions.filter(_ => _.anyware !== undefined).map(_ => _.anyware!),
     }) as GraffleExecutionResult
     return handleReturn(context, result)
   }
@@ -281,7 +286,8 @@ export const createInternal = (
       context: {
         config: context.config,
       },
-    } as HookInputEncode
+      variables: rawInput.variables,
+    } as HookDefEncode['input']
     return await run(context, initialInput)
   }
 
@@ -297,7 +303,7 @@ export const createInternal = (
       const contextWithReturnModeSet = updateContextConfig(context, { returnMode: `graphqlSuccess` })
       return await runRaw(contextWithReturnModeSet, rawInput)
     },
-    extend: (extension: Anyware.Extension2<Core.Core>) => {
+    use: (extension: Extension) => {
       // todo test that adding extensions returns a copy of client
       return createInternal(input, { extensions: [...state.extensions, extension] })
     },
