@@ -318,7 +318,7 @@ describe('slots', () => {
   })
   test('extension can provide own function to slot on just one of a set of hooks', async () => {
     const result = await run(async ({ a }) => {
-      return a({ slots: { append: () => 'x' } })
+      return a({ using: { append: () => 'x' } })
     })
     expect(core.hooks.a.slots.append).not.toBeCalled()
     expect(core.hooks.b.slots.append.mock.calls[0]).toMatchObject(['b'])

@@ -96,7 +96,7 @@ export const runHook = async (
       const inputResolved = extensionInput?.input ?? originalInput
       const customSlotsResolved = {
         ...customSlots,
-        ...extensionInput?.slots,
+        ...extensionInput?.using,
       }
 
       // [1]
@@ -281,7 +281,7 @@ export const runHook = async (
   }
 }
 
-const createHook = <$X, $F extends (input?: { input?: object; slots?: Slots }) => any>(
+const createHook = <$X, $F extends (input?: HookInput) => any>(
   originalInput: $X,
   fn: $F,
 ): $F & { input: $X } => {
@@ -289,4 +289,9 @@ const createHook = <$X, $F extends (input?: { input?: object; slots?: Slots }) =
   fn.input = originalInput
   // @ts-expect-error
   return fn
+}
+
+type HookInput = {
+  input?: object
+  using?: Slots
 }
