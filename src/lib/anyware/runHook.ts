@@ -29,11 +29,14 @@ export type HookResultErrorImplementation = {
   error: Error
 }
 
+type Slots = Record<string, SomeFunction>
+
 type Input = {
   core: Core
   name: string
   done: HookDoneResolver
   originalInput: unknown
+  customSlots: Slots
   /**
    * The extensions that are at this hook awaiting.
    */
@@ -55,7 +58,7 @@ const createExecutableChunk = <$Extension extends Extension>(extension: $Extensi
 })
 
 export const runHook = async (
-  { core, name, done, originalInput, extensionsStack, nextExtensionsStack, asyncErrorDeferred }: Input,
+  { core, name, done, originalInput, extensionsStack, nextExtensionsStack, asyncErrorDeferred, customSlots }: Input,
 ) => {
   const debugHook = debugSub(`hook ${name}:`)
 
@@ -91,6 +94,10 @@ export const runHook = async (
       debugExtension(`extension calls this hook`, extensionInput)
 
       const inputResolved = extensionInput?.input ?? originalInput
+      const customSlotsResolved = {
+        ...customSlots,
+        ...extensionInput?.slots,
+      }
 
       // [1]
       // Never resolve this hook call, the extension is in an invalid state and should not continue executing.
@@ -135,6 +142,7 @@ export const runHook = async (
             asyncErrorDeferred,
             extensionsStack: [extensionRetry],
             nextExtensionsStack,
+            customSlots: customSlotsResolved,
           })
           return extensionRetry.currentChunk.promise.then(async (envelope) => {
             const envelop_ = envelope as SomeHookEnvelope // todo ... better way?
@@ -159,6 +167,7 @@ export const runHook = async (
           originalInput: inputResolved,
           extensionsStack: extensionsStackRest,
           nextExtensionsStack: nextNextHookStack,
+          customSlots: customSlotsResolved,
         })
 
         return extensionWithNextChunk.currentChunk.promise.then(_ => {
@@ -212,6 +221,7 @@ export const runHook = async (
             asyncErrorDeferred,
             extensionsStack: extensionsStackRest,
             nextExtensionsStack,
+            customSlots,
           })
         } else {
           done({ type: `shortCircuited`, result })
@@ -220,7 +230,6 @@ export const runHook = async (
       }
       case `extensionThrew`: {
         debugExtension(`extension threw`)
-        console.error(result)
         done({
           type: `error`,
           hookName: name,
@@ -248,7 +257,11 @@ export const runHook = async (
 
     let result
     try {
-      result = await implementation.run(originalInput as any)
+      const slotsResolved = {
+        ...implementation.slots,
+        ...customSlots,
+      }
+      result = await implementation.run({ input: originalInput as any, slots: slotsResolved })
     } catch (error) {
       debugHook(`implementation error`)
       const lastExtension = nextExtensionsStack[nextExtensionsStack.length - 1]
@@ -268,7 +281,7 @@ export const runHook = async (
   }
 }
 
-const createHook = <$X, $F extends (input?: { input?: object; slots?: Record<string, SomeFunction> }) => any>(
+const createHook = <$X, $F extends (input?: { input?: object; slots?: Slots }) => any>(
   originalInput: $X,
   fn: $F,
 ): $F & { input: $X } => {

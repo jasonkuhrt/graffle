@@ -3,29 +3,51 @@ import { beforeEach, vi } from 'vitest'
 import { Anyware } from './__.js'
 import { type ExtensionInput, type Options } from './main.js'
 
-export type Input = { value: string }
-export const initialInput: Input = { value: `initial` }
+export type Input = {
+  input: { value: string }
+  slots: { append: (hookName: string) => string }
+}
+
+export const initialInput: Input['input'] = { value: `initial` }
 
 // export type $Core = Core<['a', 'b'],Anyware.HookMap<['a','b']>,Input>
 
 type $Core = ReturnType<typeof createAnyware> & {
   hooks: {
-    a: { run: Mock; slots: {} } // eslint-disable-line
-    b: { run: Mock; slots: {} } // eslint-disable-line
+    a: {
+      run: Mock
+      slots: {
+        append: Mock<[hookName: string], string>
+      }
+    }
+    b: {
+      run: Mock
+      slots: {
+        append: Mock<[hookName: string], string>
+      }
+    }
   }
 }
 
 export const createAnyware = () => {
   const a = {
-    slots: {},
-    run: vi.fn().mockImplementation((input: Input) => {
-      return { value: input.value + `+a` }
+    slots: {
+      append: vi.fn().mockImplementation((hookName: string) => {
+        return hookName
+      }),
+    },
+    run: vi.fn().mockImplementation(({ input, slots }: Input) => {
+      return { value: input.value + `+` + slots.append(`a`) }
     }),
   }
   const b = {
-    slots: {},
-    run: vi.fn().mockImplementation((input: Input) => {
-      return { value: input.value + `+b` }
+    slots: {
+      append: vi.fn().mockImplementation((hookName: string) => {
+        return hookName
+      }),
+    },
+    run: vi.fn().mockImplementation(({ input, slots }: Input) => {
+      return { value: input.value + `+` + slots.append(`b`) }
     }),
   }
 

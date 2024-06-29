@@ -303,7 +303,10 @@ export const createInternal = (
       const contextWithReturnModeSet = updateContextConfig(context, { returnMode: `graphqlSuccess` })
       return await runRaw(contextWithReturnModeSet, rawInput)
     },
-    use: (extension: Extension) => {
+    use: (extensionOrAnyware: Extension | Anyware.Extension2<Core.Core>) => {
+      const extension = typeof extensionOrAnyware === `function`
+        ? { anyware: extensionOrAnyware, name: extensionOrAnyware.name }
+        : extensionOrAnyware
       // todo test that adding extensions returns a copy of client
       return createInternal(input, { extensions: [...state.extensions, extension] })
     },

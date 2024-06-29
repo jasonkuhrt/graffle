@@ -22,6 +22,7 @@ describe(`one extension`, () => {
         return 0
       }),
     ).toEqual(0)
+    expect(core.hooks.a.run.mock.calls[0]).toMatchObject([{ input: { value: `initial` } }])
     expect(core.hooks.a.run).toHaveBeenCalled()
     expect(core.hooks.b.run).toHaveBeenCalled()
   })
@@ -307,4 +308,22 @@ describe('retrying extension', () => {
       )
     })
   })
+})
+
+describe('slots', () => {
+  test('have defaults that are called by default', async () => {
+    await run()
+    expect(core.hooks.a.slots.append.mock.calls[0]).toMatchObject(['a'])
+    expect(core.hooks.b.slots.append.mock.calls[0]).toMatchObject(['b'])
+  })
+  test('extension can provide own function to slot on just one of a set of hooks', async () => {
+    const result = await run(async ({ a }) => {
+      return a({ slots: { append: () => 'x' } })
+    })
+    expect(core.hooks.a.slots.append).not.toBeCalled()
+    expect(core.hooks.b.slots.append.mock.calls[0]).toMatchObject(['b'])
+    expect(result).toEqual({ value: 'initial+x+b' })
+  })
+  // todo hook with two slots
+  // todo two extensions, each using the slot (later one should win)
 })

@@ -222,7 +222,7 @@ const createPassthrough = (hookName: string) => async (hookEnvelope: SomeHookEnv
   if (!hook) {
     throw new Errors.ContextualError(`Hook not found in hook envelope`, { hookName })
   }
-  return await hook({ input: hook.input })
+  return await hook({ input: hook.input, slots: hook.slots })
 }
 
 type Config = Required<Options>
@@ -272,8 +272,7 @@ export const create = <
 
   const builder: Builder<$Core> = {
     core,
-    run: async (input) => {
-      const { initialInput, extensions, options, retryingExtension } = input
+    run: async ({ initialInput, extensions, options, retryingExtension }) => {
       const extensions_ = retryingExtension ? [...extensions, createRetryingExtension(retryingExtension)] : extensions
       const initialHookStackAndErrors = extensions_.map(extension =>
         toInternalExtension(core, resolveOptions(options), extension)
