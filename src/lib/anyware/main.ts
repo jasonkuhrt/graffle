@@ -306,7 +306,7 @@ const toInternalExtension = (core: Core, config: Config, extension: ExtensionInp
   const retrying = typeof extension === `function` ? false : extension.retrying
   const applyBody = async (input: object) => {
     try {
-      const result = await extensionRun({ input })
+      const result = await extensionRun(input)
       body.resolve(result)
     } catch (error) {
       body.reject(error)

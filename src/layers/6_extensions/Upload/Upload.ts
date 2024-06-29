@@ -9,8 +9,7 @@ import extractFiles from './extractFiles.js'
 export const Upload = createExtension({
   name: `Upload`,
   anyware: async ({ encode }) => {
-    // todo encode is async, fixme.
-    return await encode({
+    const { pack } = await encode({
       using: {
         body: (input) => {
           if (!(input.variables && isUsingUploadScalar(input.variables))) return
@@ -25,6 +24,19 @@ export const Upload = createExtension({
         },
       },
     })
+
+    // const { exchange } = await pack()
+    // if (exchange.input.transport !== `http`) return exchange()
+
+    // return await exchange({
+    //   input: {
+    //     ...exchange.input,
+    //     request: {
+    //       ...exchange.input.request,
+    //       headers: {},
+    //     },
+    //   },
+    // })
   },
 })
 

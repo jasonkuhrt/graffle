@@ -1,6 +1,6 @@
 import { Errors } from '../errors/__.js'
-import type { Deferred } from '../prelude.js'
-import { casesExhausted, createDeferred, debug, debugSub, errorFromMaybeError } from '../prelude.js'
+import type { Deferred, SomeFunction } from '../prelude.js'
+import { casesExhausted, createDeferred, debugSub, errorFromMaybeError } from '../prelude.js'
 import type { Core, Extension, ResultEnvelop, SomeHookEnvelope } from './main.js'
 
 type HookDoneResolver = (input: HookResult) => void
@@ -88,9 +88,9 @@ export const runHook = async (
     debugExtension(`start`)
     let hookFailed = false
     const hook = createHook(originalInput, (extensionInput) => {
-      debugExtension(`extension calls this hook`)
+      debugExtension(`extension calls this hook`, extensionInput)
 
-      const inputResolved = extensionInput ?? originalInput
+      const inputResolved = extensionInput?.input ?? originalInput
 
       // [1]
       // Never resolve this hook call, the extension is in an invalid state and should not continue executing.
@@ -140,7 +140,8 @@ export const runHook = async (
             const envelop_ = envelope as SomeHookEnvelope // todo ... better way?
             const hook = envelop_[name]
             if (!hook) throw new Error(`Hook not found in envelope: ${name}`)
-            const result = await hook(extensionInput ?? originalInput) as Promise<
+            // todo use inputResolved ?
+            const result = await hook({ ...extensionInput, input: extensionInput?.input ?? originalInput }) as Promise<
               SomeHookEnvelope | Error | ResultEnvelop
             >
             return result
@@ -201,7 +202,7 @@ export const runHook = async (
         return
       }
       case `extensionReturned`: {
-        debug(`${name}: ${extension.name}: extension returned`)
+        debugExtension(`extension returned`)
         if (result === envelope) {
           void runHook({
             core,
@@ -218,7 +219,8 @@ export const runHook = async (
         return
       }
       case `extensionThrew`: {
-        debug(`${name}: ${extension.name}: extension threw`)
+        debugExtension(`extension threw`)
+        console.error(result)
         done({
           type: `error`,
           hookName: name,
@@ -229,7 +231,7 @@ export const runHook = async (
         return
       }
       case `hookInvokedButThrew`:
-        debug(`${name}: ${extension.name}: hook error`)
+        debugExtension(`hook error`)
         // todo rename source to "hook"
         done({ type: `error`, hookName: name, source: `implementation`, error: errorFromMaybeError(result) })
         return
@@ -246,7 +248,7 @@ export const runHook = async (
 
     let result
     try {
-      result = await implementation(originalInput as any)
+      result = await implementation.run(originalInput as any)
     } catch (error) {
       debugHook(`implementation error`)
       const lastExtension = nextExtensionsStack[nextExtensionsStack.length - 1]
@@ -266,7 +268,7 @@ export const runHook = async (
   }
 }
 
-const createHook = <$X, $F extends (input?: object) => any>(
+const createHook = <$X, $F extends (input?: { input?: object; slots?: Record<string, SomeFunction> }) => any>(
   originalInput: $X,
   fn: $F,
 ): $F & { input: $X } => {

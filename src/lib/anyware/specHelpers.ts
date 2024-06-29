@@ -10,18 +10,24 @@ export const initialInput: Input = { value: `initial` }
 
 type $Core = ReturnType<typeof createAnyware> & {
   hooks: {
-    a: Mock
-    b: Mock
+    a: { run: Mock; slots: {} } // eslint-disable-line
+    b: { run: Mock; slots: {} } // eslint-disable-line
   }
 }
 
 export const createAnyware = () => {
-  const a = vi.fn().mockImplementation((input: Input) => {
-    return { value: input.value + `+a` }
-  })
-  const b = vi.fn().mockImplementation((input: Input) => {
-    return { value: input.value + `+b` }
-  })
+  const a = {
+    slots: {},
+    run: vi.fn().mockImplementation((input: Input) => {
+      return { value: input.value + `+a` }
+    }),
+  }
+  const b = {
+    slots: {},
+    run: vi.fn().mockImplementation((input: Input) => {
+      return { value: input.value + `+b` }
+    }),
+  }
 
   return Anyware.create<['a', 'b'], Anyware.HookMap<['a', 'b']>, Input>({
     hookNamesOrderedBySequence: [`a`, `b`],
