@@ -51,12 +51,14 @@ export type SomeHookEnvelope = {
   [name: string]: SomeHook
 }
 
-export type SomeHook<fn extends (input: { input: any }) => any = (input: { input: any }) => any> = fn & {
+export type SomeHook<
+  fn extends (input?: { input?: any; using?: any }) => any = (input?: { input?: any; using?: any }) => any,
+> = fn & {
   [hookSymbol]: HookSymbol
   // todo the result is unknown, but if we build a EndEnvelope, then we can work with this type more logically and put it here.
   // E.g. adding `| unknown` would destroy the knowledge of hook envelope case
   // todo this is not strictly true, it could also be the final result
-  input: Parameters<fn>[0]['input']
+  input: Exclude<Parameters<fn>[0], undefined>['input']
 }
 
 export type HookMap<$HookSequence extends HookSequence> = Record<
@@ -78,7 +80,7 @@ type Hook<
   & (<$$Input extends $HookMap[$Name]['input']>(
     input?: {
       input?: $$Input
-    } & (keyof $HookMap[$Name]['slots'] extends never ? {} : { using?: SlotInputify<$HookMap[$Name]['slots']> }),
+    } & (keyof $HookMap[$Name]['slots'] extends never ? {} : { using?: SlotInputify<$HookMap[$Name]['slots']> }), // eslint-disable-line
   ) => HookReturn<$HookSequence, $HookMap, $Result, $Name, $Options>)
   & {
     [hookSymbol]: HookSymbol
@@ -86,7 +88,7 @@ type Hook<
   }
 
 type SlotInputify<$Slots extends Record<string, (...args: any) => any>> = {
-  [K in keyof $Slots]: SlotInput<$Slots[K]>
+  [K in keyof $Slots]?: SlotInput<$Slots[K]>
 }
 
 type SlotInput<F extends (...args: any) => any> = (...args: Parameters<F>) => ReturnType<F> | undefined
@@ -222,7 +224,7 @@ const createPassthrough = (hookName: string) => async (hookEnvelope: SomeHookEnv
   if (!hook) {
     throw new Errors.ContextualError(`Hook not found in hook envelope`, { hookName })
   }
-  return await hook({ input: hook.input, slots: hook.slots })
+  return await hook({ input: hook.input }) // eslint-disable-line
 }
 
 type Config = Required<Options>

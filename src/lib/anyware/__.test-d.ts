@@ -82,18 +82,20 @@ describe('withSlots', () => {
       (input: {
         initialInput: InputA
         options?: Anyware.Options
+        extensions: ((input: {
+          a: SomeHook<
+            (
+              input?: { input?: InputA; using?: { x?: (x: boolean) => number | undefined } },
+            ) => MaybePromise<Error | Result>
+          >
+        }) => Promise<Result>)[]
         retryingExtension?: (input: {
           a: SomeHook<
-            (input?: { input?: InputA; using: { x?: (x: boolean) => number | undefined } }) => MaybePromise<
+            (input?: { input?: InputA; using?: { x?: (x: boolean) => number | undefined } }) => MaybePromise<
               Error | Result
             >
           >
         }) => Promise<Result>
-        extensions: ((input: {
-          a: SomeHook<
-            (input?: { input?: InputA }) => MaybePromise<Error | Result>
-          >
-        }) => Promise<Result>)[]
       }) => Promise<Result | ContextualError>
     >()
   })

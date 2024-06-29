@@ -14,15 +14,17 @@ describe(`document with two queries`, () => {
   })
 
   // todo allow sync extensions
-  // eslint-disable-next-line
+
   graffle.use(async ({ exchange }) => {
     if (exchange.input.transport !== `http`) return exchange()
     // @ts-expect-error Nextjs
     exchange.input.request.next = { revalidate: 60, tags: [`menu`] }
     return exchange({
-      ...exchange.input,
-      request: {
-        ...exchange.input.request,
+      input: {
+        ...exchange.input,
+        request: {
+          ...exchange.input.request,
+        },
       },
     })
   }).document({

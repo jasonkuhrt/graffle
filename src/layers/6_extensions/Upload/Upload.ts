@@ -9,7 +9,7 @@ import extractFiles from './extractFiles.js'
 export const Upload = createExtension({
   name: `Upload`,
   anyware: async ({ encode }) => {
-    const { pack } = await encode({
+    return await encode({
       using: {
         body: (input) => {
           if (!(input.variables && isUsingUploadScalar(input.variables))) return
@@ -24,19 +24,6 @@ export const Upload = createExtension({
         },
       },
     })
-
-    // const { exchange } = await pack()
-    // if (exchange.input.transport !== `http`) return exchange()
-
-    // return await exchange({
-    //   input: {
-    //     ...exchange.input,
-    //     request: {
-    //       ...exchange.input.request,
-    //       headers: {},
-    //     },
-    //   },
-    // })
   },
 })
 
@@ -47,7 +34,6 @@ const createUploadBody = (input: ExecutionInput): FormData => {
     ``,
   )
   const operationJSON = JSON.stringify(clone)
-  console.log(clone, files)
 
   if (files.size === 0) throw new Error(`Not an upload request.`)
 
@@ -64,7 +50,7 @@ const createUploadBody = (input: ExecutionInput): FormData => {
 
   i = 0
   for (const file of files.keys()) {
-    form.append(`${++i}`, file)
+    form.append(String(++i), file)
   }
 
   return form

@@ -264,8 +264,15 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
     unpack: async ({ input }) => {
       switch (input.transport) {
         case `http`: {
+          // todo if response is missing header of content length then .json() hangs forever.
+          // todo firstly consider a timeout, secondly, if response is malformed, then don't even run .json()
+          // console.log(input.response.headers)
+          // console.log(await input.response.json().then(console.log).catch(console.error))
+          // console.log(2)
           const json = await input.response.json() as object
+          // console.log(2)
           const result = parseExecutionResult(json)
+          // console.log(10)
           return {
             ...input,
             result,

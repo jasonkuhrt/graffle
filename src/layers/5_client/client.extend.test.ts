@@ -32,7 +32,7 @@ describe(`entrypoint request`, () => {
     })
     const client2 = client.use(async ({ pack }) => {
       const { exchange } = await pack({ input: { ...pack.input, headers } })
-      return await exchange(exchange.input)
+      return await exchange({ input: exchange.input })
     })
     expect(await client2.query.id()).toEqual(db.id)
   })

@@ -58,7 +58,10 @@ import isPlainObject from 'is-plain-obj'
  * | `file1` | `["prefix.a", "prefix.b.0"]` |
  * | `file2` | `["prefix.b.1"]`             |
  */
-export default function extractFiles(value: any, isExtractable: any, path = ``) {
+export default function extractFiles(value: any, isExtractable: any, path = ``): {
+  clone: object
+  files: Map<string, string[]>
+} {
   if (!arguments.length) throw new TypeError(`Argument 1 \`value\` is required.`)
 
   if (typeof isExtractable !== `function`) {

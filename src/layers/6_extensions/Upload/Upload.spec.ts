@@ -1,3 +1,4 @@
+import getPort from 'get-port'
 import { processRequest } from 'graphql-upload-minimal'
 import type { Server } from 'http'
 import { createServer } from 'http'
@@ -9,8 +10,9 @@ import { execute } from '../../0_functions/execute.js'
 import { Upload } from './Upload.js'
 
 let server: Server
+let port: number
 
-beforeAll(() => {
+beforeAll(async () => {
   // eslint-disable-next-line
   server = createServer(async (request, response) => {
     const body = await processRequest(request, response)
@@ -21,20 +23,33 @@ beforeAll(() => {
       variables: body.variables as StandardScalarVariables,
       operationName: body.operationName ?? undefined,
     })
+    response.setHeader(`Content-Type`, `application/json`)
+    response.setHeader(`content-length`, JSON.stringify(result).length.toString())
     response.write(JSON.stringify(result))
     response.statusCode = 200
     response.statusMessage = `OK`
   })
-  server.listen(3000)
+  port = await getPort({ port: [3000, 3001, 3002, 3003, 3004] })
+  server.listen(port)
+  await new Promise((resolve) =>
+    server.once(`listening`, () => {
+      resolve(undefined)
+    })
+  )
 })
 
 afterAll(async () => {
-  await new Promise((resolve) => server.close(resolve))
+  await new Promise((resolve) => {
+    server.close(resolve)
+    setImmediate(() => {
+      server.emit(`close`)
+    })
+  })
 })
 
 test(`upload`, async () => {
   const graffle = Graffle.create({
-    schema: new URL(`http://localhost:3000`),
+    schema: new URL(`http://localhost:${String(port)}`),
   }).use(Upload)
 
   const result = await graffle.raw({

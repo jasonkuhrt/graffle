@@ -70,7 +70,7 @@ export type Client<$Index extends Schema.Index | null, $Config extends Config> =
       : {} // eslint-disable-line
     )
   & {
-      use: (extension: Extension) => Client<$Index, $Config>
+      use: (extension: Extension | Anyware.Extension2<Core.Core>) => Client<$Index, $Config>
       retry: (extension: Anyware.Extension2<Core.Core, { retrying: true }>) => Client<$Index, $Config>
     }
 
