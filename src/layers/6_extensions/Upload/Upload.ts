@@ -56,6 +56,6 @@ const createUploadBody = (input: ExecutionInput): FormData => {
   return form
 }
 
-const isUsingUploadScalar = (variables: StandardScalarVariables) => {
+const isUsingUploadScalar = (_variables: StandardScalarVariables) => {
   return true // todo
 }

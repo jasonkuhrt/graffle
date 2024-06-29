@@ -258,10 +258,10 @@ export const runHook = async (
     let result
     try {
       const slotsResolved = {
-        ...implementation.slots,
+        ...implementation.slots as Slots, // todo is this cast needed, can we Slots type the property?
         ...customSlots,
       }
-      result = await implementation.run({ input: originalInput as any, slots: slotsResolved })
+      result = await implementation.run({ input: originalInput, slots: slotsResolved })
     } catch (error) {
       debugHook(`implementation error`)
       const lastExtension = nextExtensionsStack[nextExtensionsStack.length - 1]
