@@ -18,12 +18,13 @@ describe(`one extension`, () => {
     expect(
       await run(async ({ a }) => {
         const { b } = await a(a.input)
-        await b(b.input)
+        await b({ input: b.input })
         return 0
       }),
     ).toEqual(0)
-    expect(core.hooks.a).toHaveBeenCalled()
-    expect(core.hooks.b).toHaveBeenCalled()
+    expect(core.hooks.a.run.mock.calls[0]).toMatchObject([{ input: { value: `initial` } }])
+    expect(core.hooks.a.run).toHaveBeenCalled()
+    expect(core.hooks.b.run).toHaveBeenCalled()
   })
   test('can call hook with no input, making the original input be used', () => {
     expect(
@@ -43,8 +44,8 @@ describe(`one extension`, () => {
           return a.input
         }),
       ).toEqual({ value: `initial` })
-      expect(core.hooks.a).not.toHaveBeenCalled()
-      expect(core.hooks.b).not.toHaveBeenCalled()
+      expect(core.hooks.a.run).not.toHaveBeenCalled()
+      expect(core.hooks.b.run).not.toHaveBeenCalled()
     })
     test(`at start, return own result`, async () => {
       expect(
@@ -53,38 +54,38 @@ describe(`one extension`, () => {
           return 0
         }),
       ).toEqual(0)
-      expect(core.hooks.a).not.toHaveBeenCalled()
-      expect(core.hooks.b).not.toHaveBeenCalled()
+      expect(core.hooks.a.run).not.toHaveBeenCalled()
+      expect(core.hooks.b.run).not.toHaveBeenCalled()
     })
     test(`after first hook, return own result`, async () => {
       expect(
         await run(async ({ a }) => {
-          const { b } = await a(a.input)
+          const { b } = await a({ input: a.input })
           return b.input.value + `+x`
         }),
       ).toEqual(`initial+a+x`)
-      expect(core.hooks.b).not.toHaveBeenCalled()
+      expect(core.hooks.b.run).not.toHaveBeenCalled()
     })
   })
   describe(`can partially apply`, () => {
     test(`only first hook`, async () => {
       expect(
         await run(async ({ a }) => {
-          return await a({ value: a.input.value + `+ext` })
+          return await a({ input: { value: a.input.value + `+ext` } })
         }),
       ).toEqual({ value: `initial+ext+a+b` })
     })
     test(`only second hook`, async () => {
       expect(
         await run(async ({ b }) => {
-          return await b({ value: b.input.value + `+ext` })
+          return await b({ input: { value: b.input.value + `+ext` } })
         }),
       ).toEqual({ value: `initial+a+ext+b` })
     })
     test(`only second hook + end`, async () => {
       expect(
         await run(async ({ b }) => {
-          const result = await b({ value: b.input.value + `+ext` })
+          const result = await b({ input: { value: b.input.value + `+ext` } })
           return result.value + `+end`
         }),
       ).toEqual(`initial+a+ext+b+end`)
@@ -99,35 +100,35 @@ describe(`two extensions`, () => {
     const ex2 = vi.fn().mockImplementation(() => 2)
     expect(await run(ex1, ex2)).toEqual(1)
     expect(ex2).not.toHaveBeenCalled()
-    expect(core.hooks.a).not.toHaveBeenCalled()
-    expect(core.hooks.b).not.toHaveBeenCalled()
+    expect(core.hooks.a.run).not.toHaveBeenCalled()
+    expect(core.hooks.b.run).not.toHaveBeenCalled()
   })
 
   test(`each can adjust first hook then passthrough`, async () => {
-    const ex1 = ({ a }: any) => a({ value: a.input.value + `+ex1` })
-    const ex2 = ({ a }: any) => a({ value: a.input.value + `+ex2` })
+    const ex1 = ({ a }: any) => a({ input: { value: a.input.value + `+ex1` } })
+    const ex2 = ({ a }: any) => a({ input: { value: a.input.value + `+ex2` } })
     expect(await run(ex1, ex2)).toEqual({ value: `initial+ex1+ex2+a+b` })
   })
 
   test(`each can adjust each hook`, async () => {
     const ex1 = async ({ a }: any) => {
-      const { b } = await a({ value: a.input.value + `+ex1` })
-      return await b({ value: b.input.value + `+ex1` })
+      const { b } = await a({ input: { value: a.input.value + `+ex1` } })
+      return await b({ input: { value: b.input.value + `+ex1` } })
     }
     const ex2 = async ({ a }: any) => {
-      const { b } = await a({ value: a.input.value + `+ex2` })
-      return await b({ value: b.input.value + `+ex2` })
+      const { b } = await a({ input: { value: a.input.value + `+ex2` } })
+      return await b({ input: { value: b.input.value + `+ex2` } })
     }
     expect(await run(ex1, ex2)).toEqual({ value: `initial+ex1+ex2+a+ex1+ex2+b` })
   })
 
   test(`second can skip hook a`, async () => {
     const ex1 = async ({ a }: any) => {
-      const { b } = await a({ value: a.input.value + `+ex1` })
-      return await b({ value: b.input.value + `+ex1` })
+      const { b } = await a({ input: { value: a.input.value + `+ex1` } })
+      return await b({ input: { value: b.input.value + `+ex1` } })
     }
     const ex2 = async ({ b }: any) => {
-      return await b({ value: b.input.value + `+ex2` })
+      return await b({ input: { value: b.input.value + `+ex2` } })
     }
     expect(await run(ex1, ex2)).toEqual({ value: `initial+ex1+a+ex1+ex2+b` })
   })
@@ -142,13 +143,13 @@ describe(`two extensions`, () => {
     }
     expect(await run(ex1, ex2)).toEqual(2)
     expect(ex1AfterA).toBe(false)
-    expect(core.hooks.a).not.toHaveBeenCalled()
-    expect(core.hooks.b).not.toHaveBeenCalled()
+    expect(core.hooks.a.run).not.toHaveBeenCalled()
+    expect(core.hooks.b.run).not.toHaveBeenCalled()
   })
   test(`second can short-circuit after hook a`, async () => {
     let ex1AfterB = false
     const ex1 = async ({ a }: any) => {
-      const { b } = await a({ value: a.input.value + `+ex1` })
+      const { b } = await a({ input: { value: a.input.value + `+ex1` } })
       await b({ value: b.input.value + `+ex1` })
       ex1AfterB = true
     }
@@ -158,8 +159,8 @@ describe(`two extensions`, () => {
     }
     expect(await run(ex1, ex2)).toEqual(2)
     expect(ex1AfterB).toBe(false)
-    expect(core.hooks.a).toHaveBeenCalledOnce()
-    expect(core.hooks.b).not.toHaveBeenCalled()
+    expect(core.hooks.a.run).toHaveBeenCalledOnce()
+    expect(core.hooks.b.run).not.toHaveBeenCalled()
   })
 })
 
@@ -206,7 +207,7 @@ describe(`errors`, () => {
   })
 
   test(`if implementation fails, without extensions, result is the error`, async () => {
-    core.hooks.a.mockReset().mockRejectedValueOnce(oops)
+    core.hooks.a.run.mockReset().mockRejectedValueOnce(oops)
     const result = await run() as ContextualError
     expect({
       result,
@@ -246,7 +247,7 @@ describe(`errors`, () => {
 
 describe('retrying extension', () => {
   test('if hook fails, extension can retry, then short-circuit', async () => {
-    core.hooks.a.mockReset().mockRejectedValueOnce(oops).mockResolvedValueOnce(1)
+    core.hooks.a.run.mockReset().mockRejectedValueOnce(oops).mockResolvedValueOnce(1)
     const result = await run(createRetryingExtension(async function foo({ a }) {
       const result1 = await a()
       expect(result1).toEqual(oops)
@@ -306,5 +307,37 @@ describe('retrying extension', () => {
         `[ContextualError: Only after failure can a hook be called again by a retrying extension.]`,
       )
     })
+  })
+})
+
+describe('slots', () => {
+  test('have defaults that are called by default', async () => {
+    await run()
+    expect(core.hooks.a.slots.append.mock.calls[0]).toMatchObject(['a'])
+    expect(core.hooks.b.slots.append.mock.calls[0]).toMatchObject(['b'])
+  })
+  test('extension can provide own function to slot on just one of a set of hooks', async () => {
+    const result = await run(async ({ a }) => {
+      return a({ using: { append: () => 'x' } })
+    })
+    expect(core.hooks.a.slots.append).not.toBeCalled()
+    expect(core.hooks.b.slots.append.mock.calls[0]).toMatchObject(['b'])
+    expect(result).toEqual({ value: 'initial+x+b' })
+  })
+  test('extension can provide own functions to slots on multiple of a set of hooks', async () => {
+    const result = await run(async ({ a }) => {
+      return a({ using: { append: () => 'x', appendExtra: () => '+x2' } })
+    })
+    expect(result).toEqual({ value: 'initial+x+x2+b' })
+  })
+  // todo hook with two slots
+  test('two extensions can each provide own function to same slot on just one of a set of hooks, and the later one wins', async () => {
+    const result = await run(async ({ a }) => {
+      const { b } = await a({ using: { append: () => 'x' } })
+      return b({ using: { append: () => 'y' } })
+    })
+    expect(core.hooks.a.slots.append).not.toBeCalled()
+    expect(core.hooks.b.slots.append).not.toBeCalled()
+    expect(result).toEqual({ value: 'initial+x+y' })
   })
 })

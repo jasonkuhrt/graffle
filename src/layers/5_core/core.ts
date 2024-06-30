@@ -52,145 +52,194 @@ export const hookNamesOrderedBySequence = [`encode`, `pack`, `exchange`, `unpack
 
 export type HookSequence = typeof hookNamesOrderedBySequence
 
-export type HookInputEncode =
-  & InterfaceInput<{ selection: GraphQLObjectSelection }, { document: string | DocumentNode }>
-  & TransportInput<{ schema: string | URL }, { schema: GraphQLSchema }>
-
-export type HookInputPack =
-  & {
-    document: string | DocumentNode
-    variables: StandardScalarVariables
-    operationName?: string
+export type HookDefEncode = {
+  input:
+    & InterfaceInput<
+      { selection: GraphQLObjectSelection },
+      { document: string | DocumentNode; variables?: StandardScalarVariables }
+    >
+    & TransportInput<{ schema: string | URL }, { schema: GraphQLSchema }>
+  slots: {
+    body: (
+      input: { query: string; variables?: StandardScalarVariables; operationName?: string },
+    ) => BodyInit
   }
-  & InterfaceInput
-  & TransportInput<{ url: string | URL; headers?: HeadersInit }, { schema: GraphQLSchema }>
-
-export type ExchangeInputHook =
-  & InterfaceInput
-  & TransportInput<
-    { request: Request },
-    {
-      schema: GraphQLSchema
-      document: string | DocumentNode
-      variables: StandardScalarVariables
-      operationName?: string
-    }
-  >
-
-export type HookInputUnpack =
-  & InterfaceInput
-  & TransportInput<
-    { response: Response },
-    {
-      result: ExecutionResult
-    }
-  >
-
-export type HookInputDecode =
-  & { result: ExecutionResult }
-  & InterfaceInput
-
-export type Hooks = {
-  encode: HookInputEncode
-  pack: HookInputPack
-  exchange: ExchangeInputHook
-  unpack: HookInputUnpack
-  decode: HookInputDecode
 }
 
-export const anyware = Anyware.create<HookSequence, Hooks, ExecutionResult>({
+export type HookDefPack = {
+  input:
+    & InterfaceInput
+    & TransportInput<
+      { url: string | URL; headers?: HeadersInit; body: BodyInit },
+      {
+        schema: GraphQLSchema
+        query: string
+        variables?: StandardScalarVariables
+        operationName?: string
+      }
+    >
+}
+
+type RequestInput = {
+  url: string | URL
+  method:
+    | 'get'
+    | 'post'
+    | 'put'
+    | 'delete'
+    | 'patch'
+    | 'head'
+    | 'options'
+    | 'trace'
+    | 'GET'
+    | 'POST'
+    | 'PUT'
+    | 'DELETE'
+    | 'PATCH'
+    | 'HEAD'
+    | 'OPTIONS'
+    | 'TRACE'
+  headers?: HeadersInit
+  body: BodyInit
+}
+
+export type HookDefExchange = {
+  input:
+    & InterfaceInput
+    & TransportInput<
+      {
+        request: RequestInput
+      },
+      {
+        schema: GraphQLSchema
+        query: string | DocumentNode
+        variables?: StandardScalarVariables
+        operationName?: string
+      }
+    >
+}
+
+export type HookDefUnpack = {
+  input:
+    & InterfaceInput
+    & TransportInput<
+      { response: Response },
+      {
+        result: ExecutionResult
+      }
+    >
+}
+
+export type HookDefDecode = {
+  input:
+    & { result: ExecutionResult }
+    & InterfaceInput
+}
+
+export type HookMap = {
+  encode: HookDefEncode
+  pack: HookDefPack
+  exchange: HookDefExchange
+  unpack: HookDefUnpack
+  decode: HookDefDecode
+}
+
+export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
   hookNamesOrderedBySequence,
   hooks: {
-    encode: (
-      input,
-    ) => {
-      // console.log(`encode:1`)
-      let document: string | DocumentNode
-      switch (input.interface) {
-        case `raw`: {
-          document = input.document
-          break
-        }
-        case `typed`: {
-          // todo turn inputs into variables
-          document = SelectionSet.Print.rootTypeSelectionSet(
-            input.context,
-            getRootIndexOrThrow(input.context, input.rootTypeName),
-            input.selection,
-          )
-          break
-        }
-        default:
-          throw casesExhausted(input)
-      }
-
-      // console.log(`encode:2`)
-      switch (input.transport) {
-        case `http`: {
-          return {
-            ...input,
-            transport: input.transport,
-            url: input.schema,
-            document,
-            variables: {},
-            // operationName: '',
-          }
-        }
-        case `memory`: {
-          return {
-            ...input,
-            transport: input.transport,
-            schema: input.schema,
-            document,
-            variables: {},
-            // operationName: '',
-          }
-        }
-      }
-    },
-    pack: (input) => {
-      // console.log(`pack:1`)
-      const documentPrinted = typeof input.document === `string`
-        ? input.document
-        : print(input.document)
-
-      switch (input.transport) {
-        case `http`: {
-          const body = {
-            query: documentPrinted,
+    encode: {
+      slots: {
+        body: (input) => {
+          return JSON.stringify({
+            query: input.query,
             variables: input.variables,
             operationName: input.operationName,
-          }
-
-          const bodyEncoded = JSON.stringify(body)
-
-          const requestConfig = new Request(input.url, {
-            method: `POST`,
-            headers: new Headers({
-              'accept': CONTENT_TYPE_GQL,
-              ...Object.fromEntries(new Headers(input.headers).entries()),
-            }),
-            body: bodyEncoded,
           })
+        },
+      },
+      run: ({ input, slots }) => {
+        let document: string
+        let variables: StandardScalarVariables | undefined = undefined
 
-          return {
-            ...input,
-            request: requestConfig,
+        switch (input.interface) {
+          case `raw`: {
+            const documentPrinted = typeof input.document === `string`
+              ? input.document
+              : print(input.document)
+            document = documentPrinted
+            variables = input.variables
+            break
+          }
+          case `typed`: {
+            // todo turn inputs into variables
+            variables = undefined
+            document = SelectionSet.Print.rootTypeSelectionSet(
+              input.context,
+              getRootIndexOrThrow(input.context, input.rootTypeName),
+              input.selection,
+            )
+            break
+          }
+          default:
+            throw casesExhausted(input)
+        }
+
+        switch (input.transport) {
+          case `http`: {
+            return {
+              ...input,
+              url: input.schema,
+              body: slots.body({
+                query: document,
+                variables,
+                operationName: `todo`,
+              }),
+            }
+          }
+          case `memory`: {
+            return {
+              ...input,
+              schema: input.schema,
+              query: document,
+              variables,
+              // operationName: '',
+            }
           }
         }
+      },
+    },
+    pack: ({ input }) => {
+      switch (input.transport) {
         case `memory`: {
+          return input
+        }
+        case `http`: {
+          const headers = new Headers(input.headers)
+          headers.append(`accept`, CONTENT_TYPE_GQL)
           return {
             ...input,
+            request: {
+              url: input.url,
+              body: input.body, // JSON.stringify({ query, variables, operationName }),
+              method: `POST`,
+              headers,
+            },
           }
         }
         default:
           throw casesExhausted(input)
       }
     },
-    exchange: async (input) => {
+    exchange: async ({ input }) => {
       switch (input.transport) {
         case `http`: {
-          const response = await fetch(input.request)
+          const response = await fetch(
+            new Request(input.request.url, {
+              method: input.request.method,
+              headers: input.request.headers,
+              body: input.request.body,
+            }),
+          )
           return {
             ...input,
             response,
@@ -199,7 +248,7 @@ export const anyware = Anyware.create<HookSequence, Hooks, ExecutionResult>({
         case `memory`: {
           const result = await execute({
             schema: input.schema,
-            document: input.document,
+            document: input.query,
             variables: input.variables,
             operationName: input.operationName,
           })
@@ -212,9 +261,12 @@ export const anyware = Anyware.create<HookSequence, Hooks, ExecutionResult>({
           throw casesExhausted(input)
       }
     },
-    unpack: async (input) => {
+    unpack: async ({ input }) => {
       switch (input.transport) {
         case `http`: {
+          // todo 1 if response is missing header of content length then .json() hangs forever.
+          // todo 1 firstly consider a timeout, secondly, if response is malformed, then don't even run .json()
+          // todo 2 if response is e.g. 404 with no json body, then an error is thrown because json parse cannot work, not gracefully handled here
           const json = await input.response.json() as object
           const result = parseExecutionResult(json)
           return {
@@ -232,7 +284,7 @@ export const anyware = Anyware.create<HookSequence, Hooks, ExecutionResult>({
           throw casesExhausted(input)
       }
     },
-    decode: (input) => {
+    decode: ({ input }) => {
       switch (input.interface) {
         // todo this depends on the return mode
         case `raw`: {

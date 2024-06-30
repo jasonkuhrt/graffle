@@ -29,7 +29,7 @@ export type Extension2<
 
 type ExtensionHooks<
   $HookSequence extends HookSequence,
-  $HookMap extends Record<$HookSequence[number], object> = Record<$HookSequence[number], object>,
+  $HookMap extends Record<$HookSequence[number], HookDef> = Record<$HookSequence[number], HookDef>,
   $Result = unknown,
   $Options extends ExtensionOptions = ExtensionOptions,
 > = {
@@ -37,7 +37,7 @@ type ExtensionHooks<
 }
 
 type CoreInitialInput<$Core extends Core> =
-  $Core[PrivateTypesSymbol]['hookMap'][$Core[PrivateTypesSymbol]['hookSequence'][0]]
+  $Core[PrivateTypesSymbol]['hookMap'][$Core[PrivateTypesSymbol]['hookSequence'][0]]['input']
 
 const PrivateTypesSymbol = Symbol(`private`)
 
@@ -51,21 +51,24 @@ export type SomeHookEnvelope = {
   [name: string]: SomeHook
 }
 
-export type SomeHook<fn extends (input: any) => any = (input: any) => any> = fn & {
+export type SomeHook<
+  fn extends (input?: { input?: any; using?: any }) => any = (input?: { input?: any; using?: any }) => any,
+> = fn & {
   [hookSymbol]: HookSymbol
   // todo the result is unknown, but if we build a EndEnvelope, then we can work with this type more logically and put it here.
   // E.g. adding `| unknown` would destroy the knowledge of hook envelope case
   // todo this is not strictly true, it could also be the final result
-  // TODO how do I make this input type object without breaking the final types in e.g. client.extend.test
-  // Ask Pierre
-  // (input: object): SomeHookEnvelope
-  input: Parameters<fn>[0]
+  input: Exclude<Parameters<fn>[0], undefined>['input']
 }
 
 export type HookMap<$HookSequence extends HookSequence> = Record<
   $HookSequence[number],
-  any /* object <- type error but more accurate */
+  HookDef
 >
+export type HookDef = {
+  input: any /* object <- type error but more accurate */
+  slots?: any /* object <- type error but more accurate */
+}
 
 type Hook<
   $HookSequence extends HookSequence,
@@ -74,13 +77,21 @@ type Hook<
   $Name extends $HookSequence[number] = $HookSequence[number],
   $Options extends ExtensionOptions = ExtensionOptions,
 > =
-  & (<$$Input extends $HookMap[$Name]>(
-    input?: $$Input,
+  & (<$$Input extends $HookMap[$Name]['input']>(
+    input?: {
+      input?: $$Input
+    } & (keyof $HookMap[$Name]['slots'] extends never ? {} : { using?: SlotInputify<$HookMap[$Name]['slots']> }), // eslint-disable-line
   ) => HookReturn<$HookSequence, $HookMap, $Result, $Name, $Options>)
   & {
     [hookSymbol]: HookSymbol
-    input: $HookMap[$Name]
+    input: $HookMap[$Name]['input']
   }
+
+type SlotInputify<$Slots extends Record<string, (...args: any) => any>> = {
+  [K in keyof $Slots]?: SlotInput<$Slots[K]>
+}
+
+type SlotInput<F extends (...args: any) => any> = (...args: Parameters<F>) => ReturnType<F> | undefined
 
 type HookReturn<
   $HookSequence extends HookSequence,
@@ -88,7 +99,7 @@ type HookReturn<
   $Result = unknown,
   $Name extends $HookSequence[number] = $HookSequence[number],
   $Options extends ExtensionOptions = ExtensionOptions,
-> =
+> = Promise<
   | ($Options['retrying'] extends true ? Error : never)
   | (IsLastValue<$Name, $HookSequence> extends true ? $Result : {
     [$NameNext in FindValueAfter<$Name, $HookSequence>]: Hook<
@@ -98,6 +109,7 @@ type HookReturn<
       $NameNext
     >
   })
+>
 
 export type Core<
   $HookSequence extends HookSequence = HookSequence,
@@ -111,11 +123,44 @@ export type Core<
   }
   hookNamesOrderedBySequence: $HookSequence
   hooks: {
-    [$HookName in $HookSequence[number]]: (
-      input: $HookMap[$HookName],
-    ) => MaybePromise<
-      IsLastValue<$HookName, $HookSequence> extends true ? $Result : $HookMap[FindValueAfter<$HookName, $HookSequence>]
-    >
+    [$HookName in $HookSequence[number]]: {
+      slots: $HookMap[$HookName]['slots']
+      run: (input: {
+        input: $HookMap[$HookName]['input']
+        slots: $HookMap[$HookName]['slots']
+      }) => MaybePromise<
+        IsLastValue<$HookName, $HookSequence> extends true ? $Result
+          : $HookMap[FindValueAfter<$HookName, $HookSequence>]
+      >
+    }
+  }
+}
+
+export type CoreInput<
+  $HookSequence extends HookSequence = HookSequence,
+  $HookMap extends HookMap<$HookSequence> = HookMap<$HookSequence>,
+  $Result = unknown,
+> = {
+  hookNamesOrderedBySequence: $HookSequence
+  hooks: {
+    [$HookName in $HookSequence[number]]: keyof $HookMap[$HookName]['slots'] extends never ? (input: {
+        input: $HookMap[$HookName]['input']
+        slots: $HookMap[$HookName]['slots']
+      }
+      ) => MaybePromise<
+        IsLastValue<$HookName, $HookSequence> extends true ? $Result
+          : $HookMap[FindValueAfter<$HookName, $HookSequence>]['input']
+      >
+      : {
+        slots: $HookMap[$HookName]['slots']
+        run: (input: {
+          input: $HookMap[$HookName]['input']
+          slots: $HookMap[$HookName]['slots']
+        }) => MaybePromise<
+          IsLastValue<$HookName, $HookSequence> extends true ? $Result
+            : $HookMap[FindValueAfter<$HookName, $HookSequence>]['input']
+        >
+      }
   }
 }
 
@@ -179,7 +224,7 @@ const createPassthrough = (hookName: string) => async (hookEnvelope: SomeHookEnv
   if (!hook) {
     throw new Errors.ContextualError(`Hook not found in hook envelope`, { hookName })
   }
-  return await hook(hook.input)
+  return await hook({ input: hook.input }) // eslint-disable-line
 }
 
 type Config = Required<Options>
@@ -214,16 +259,22 @@ export const create = <
   $HookMap extends HookMap<$HookSequence> = HookMap<$HookSequence>,
   $Result = unknown,
 >(
-  coreInput: Omit<Core<$HookSequence, $HookMap, $Result>, PrivateTypesSymbol>,
+  coreInput: CoreInput<$HookSequence, $HookMap, $Result>,
 ): Builder<Core<$HookSequence, $HookMap, $Result>> => {
   type $Core = Core<$HookSequence, $HookMap, $Result>
 
-  const core = coreInput as any as $Core
+  const core = {
+    ...coreInput,
+    hooks: Object.fromEntries(
+      Object.entries(coreInput.hooks).map(([k, v]) => {
+        return [k, typeof v === `function` ? { slots: {}, run: v } : v]
+      }),
+    ),
+  } as any as $Core
 
   const builder: Builder<$Core> = {
     core,
-    run: async (input) => {
-      const { initialInput, extensions, options, retryingExtension } = input
+    run: async ({ initialInput, extensions, options, retryingExtension }) => {
       const extensions_ = retryingExtension ? [...extensions, createRetryingExtension(retryingExtension)] : extensions
       const initialHookStackAndErrors = extensions_.map(extension =>
         toInternalExtension(core, resolveOptions(options), extension)

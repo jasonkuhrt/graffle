@@ -36,6 +36,7 @@ export const runPipeline = async (
     originalInput,
     extensionsStack,
     asyncErrorDeferred,
+    customSlots: {},
     nextExtensionsStack: [],
   })
 

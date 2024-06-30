@@ -16,13 +16,13 @@ describe(`entrypoint request`, () => {
       expect(input.headers.get('x-foo')).toEqual(headers['x-foo'])
       return createResponse({ data: { id: db.id } })
     })
-    const client2 = client.extend(async ({ pack }) => {
+    const client2 = client.use(async ({ pack }) => {
       // todo should be raw input types but rather resolved
       // todo should be URL instance?
       // todo these input type tests should be moved down to Anyware
       // expectTypeOf(exchange).toEqualTypeOf<NetworkRequestHook>()
       // expect(exchange.input).toEqual({ url: 'https://foo', document: `query  { id \n }` })
-      return await pack({ ...pack.input, headers })
+      return await pack({ input: { ...pack.input, headers } })
     })
     expect(await client2.query.id()).toEqual(db.id)
   })
@@ -30,9 +30,9 @@ describe(`entrypoint request`, () => {
     fetch.mockImplementationOnce(async () => {
       return createResponse({ data: { id: db.id } })
     })
-    const client2 = client.extend(async ({ pack }) => {
-      const { exchange } = await pack({ ...pack.input, headers })
-      return await exchange(exchange.input)
+    const client2 = client.use(async ({ pack }) => {
+      const { exchange } = await pack({ input: { ...pack.input, headers } })
+      return await exchange({ input: exchange.input })
     })
     expect(await client2.query.id()).toEqual(db.id)
   })

@@ -48,7 +48,7 @@ test(`Query`, () => {
   assertType<Q>({ objectNonNull: { id: true } })
   // @ts-expect-error excess property check
   assertType<Q>({ id2: true })
-  // @ts-expect-error excess property check
+  // @ts-expect-error no a2
   assertType<Q>({ object: { a2: true } })
 
   // Union
