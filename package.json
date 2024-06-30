@@ -86,7 +86,7 @@
     "zod": "^3.23.8"
   },
   "peerDependencies": {
-    "@dprint/formatter": "^0.3.0",
+    "@dprint/formatter": "^0.3.0 || ^0.4.0",
     "@dprint/typescript": "^0.91.1",
     "dprint": "^0.46.2",
     "graphql": "14 - 16"
