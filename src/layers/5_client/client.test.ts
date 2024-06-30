@@ -1,5 +1,7 @@
-import { describe, expect, test } from 'vitest'
+import { describe, expect } from 'vitest'
+import { createResponse, test } from '../../../tests/_/helpers.js'
 import { Graffle } from '../../entrypoints/alpha/main.js'
+import { CONTENT_TYPE_GQL, CONTENT_TYPE_JSON } from '../../lib/http.js'
 
 describe(`without schemaIndex only raw is available`, () => {
   const schema = new URL(`https://foo.io/api/graphql`)
@@ -19,5 +21,17 @@ describe(`without schemaIndex only raw is available`, () => {
   test(`available methods`, () => {
     expect(graffle.raw).toBeTypeOf(`function`)
     expect(graffle.rawOrThrow).toBeTypeOf(`function`)
+  })
+})
+
+describe(`interface`, () => {
+  describe(`http`, () => {
+    test(`sends well formed request`, async ({ fetch, graffle }) => {
+      fetch.mockImplementationOnce(() => createResponse({ data: { greetings: `Hello World` } }))
+      await graffle.raw({ document: `query { greetings }` })
+      const request = fetch.mock.calls[0][0] as Request // eslint-disable-line
+      expect(request.headers.get(`content-type`)).toEqual(CONTENT_TYPE_JSON)
+      expect(request.headers.get(`accept`)).toEqual(CONTENT_TYPE_GQL)
+    })
   })
 })
