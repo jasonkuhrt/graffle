@@ -57,5 +57,5 @@ const createUploadBody = (input: ExecutionInput): FormData => {
 }
 
 const isUsingUploadScalar = (_variables: StandardScalarVariables) => {
-  return true // todo
+  return Object.values(_variables).some(_ => _ instanceof Blob)
 }

@@ -132,6 +132,7 @@
     "graphql-scalars": "^1.23.0",
     "graphql-tag": "^2.12.6",
     "graphql-upload-minimal": "^1.6.1",
+    "graphql-yoga": "^5.5.0",
     "jsdom": "^24.1.0",
     "json-bigint": "^1.0.0",
     "publint": "^0.2.8",
