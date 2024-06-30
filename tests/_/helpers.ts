@@ -7,7 +7,11 @@ export const createResponse = (body: object) =>
 
 interface Fixtures {
   fetch: Mock
+  graffle: Client<any, any>
 }
+
+import { Graffle } from '../../src/entrypoints/alpha/main.js'
+import type { Client } from '../../src/layers/5_client/client.js'
 
 export const test = testBase.extend<Fixtures>({
   // @ts-expect-error https://github.com/vitest-dev/vitest/discussions/5710
@@ -19,5 +23,12 @@ export const test = testBase.extend<Fixtures>({
     // eslint-disable-next-line
     await use(fetchMock)
     globalThis.fetch = fetch
+  },
+  graffle: async ({ fetch }, use) => {
+    const graffle = Graffle.create({ schema: new URL(`https://foo.io/api/graphql`) })
+      .use(async ({ exchange }) => {
+        return exchange({ using: { fetch } })
+      })
+    await use(graffle)
   },
 })

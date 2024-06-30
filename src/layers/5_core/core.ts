@@ -3,7 +3,7 @@ import { print } from 'graphql'
 import { Anyware } from '../../lib/anyware/__.js'
 import { type StandardScalarVariables } from '../../lib/graphql.js'
 import { parseExecutionResult } from '../../lib/graphqlHTTP.js'
-import { CONTENT_TYPE_GQL } from '../../lib/http.js'
+import { CONTENT_TYPE_GQL, CONTENT_TYPE_JSON } from '../../lib/http.js'
 import { casesExhausted } from '../../lib/prelude.js'
 import { execute } from '../0_functions/execute.js'
 import type { Schema } from '../1_Schema/__.js'
@@ -104,6 +104,9 @@ type RequestInput = {
 }
 
 export type HookDefExchange = {
+  slots: {
+    fetch: typeof fetch
+  }
   input:
     & InterfaceInput
     & TransportInput<
@@ -186,14 +189,16 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
 
         switch (input.transport) {
           case `http`: {
+            const body = slots.body({
+              query: document,
+              variables,
+              operationName: `todo`,
+            })
+
             return {
               ...input,
               url: input.schema,
-              body: slots.body({
-                query: document,
-                variables,
-                operationName: `todo`,
-              }),
+              body,
             }
           }
           case `memory`: {
@@ -215,12 +220,19 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
         }
         case `http`: {
           const headers = new Headers(input.headers)
-          headers.append(`accept`, CONTENT_TYPE_GQL)
+          // @see https://graphql.github.io/graphql-over-http/draft/#sec-Accept
+          headers.set(`accept`, CONTENT_TYPE_GQL)
+          // @see https://graphql.github.io/graphql-over-http/draft/#sec-POST
+          // todo if body is something else, say upload extension turns it into a FormData, then fetch will automatically set the content-type header.
+          // ... however we should not rely on that behavior, and instead error here if there is no content type header and we cannot infer it here?
+          if (typeof input.body === `string`) {
+            headers.set(`content-type`, CONTENT_TYPE_JSON)
+          }
           return {
             ...input,
             request: {
               url: input.url,
-              body: input.body, // JSON.stringify({ query, variables, operationName }),
+              body: input.body,
               method: `POST`,
               headers,
             },
@@ -230,36 +242,43 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
           throw casesExhausted(input)
       }
     },
-    exchange: async ({ input }) => {
-      switch (input.transport) {
-        case `http`: {
-          const response = await fetch(
-            new Request(input.request.url, {
-              method: input.request.method,
-              headers: input.request.headers,
-              body: input.request.body,
-            }),
-          )
-          return {
-            ...input,
-            response,
+    exchange: {
+      slots: {
+        fetch: (request) => {
+          return fetch(request)
+        },
+      },
+      run: async ({ input, slots }) => {
+        switch (input.transport) {
+          case `http`: {
+            const response = await slots.fetch(
+              new Request(input.request.url, {
+                method: input.request.method,
+                headers: input.request.headers,
+                body: input.request.body,
+              }),
+            )
+            return {
+              ...input,
+              response,
+            }
           }
-        }
-        case `memory`: {
-          const result = await execute({
-            schema: input.schema,
-            document: input.query,
-            variables: input.variables,
-            operationName: input.operationName,
-          })
-          return {
-            ...input,
-            result,
+          case `memory`: {
+            const result = await execute({
+              schema: input.schema,
+              document: input.query,
+              variables: input.variables,
+              operationName: input.operationName,
+            })
+            return {
+              ...input,
+              result,
+            }
           }
+          default:
+            throw casesExhausted(input)
         }
-        default:
-          throw casesExhausted(input)
-      }
+      },
     },
     unpack: async ({ input }) => {
       switch (input.transport) {
