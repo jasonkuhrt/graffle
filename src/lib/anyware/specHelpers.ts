@@ -5,7 +5,7 @@ import { type ExtensionInput, type Options } from './main.js'
 
 export type Input = {
   input: { value: string }
-  slots: { append: (hookName: string) => string }
+  slots: { append: (hookName: string) => string; appendExtra: (hookName: string) => string }
 }
 
 export const initialInput: Input['input'] = { value: `initial` }
@@ -18,12 +18,14 @@ type $Core = ReturnType<typeof createAnyware> & {
       run: Mock
       slots: {
         append: Mock<[hookName: string], string>
+        appendExtra: Mock<[hookName: string], string>
       }
     }
     b: {
       run: Mock
       slots: {
         append: Mock<[hookName: string], string>
+        appendExtra: Mock<[hookName: string], string>
       }
     }
   }
@@ -35,9 +37,13 @@ export const createAnyware = () => {
       append: vi.fn().mockImplementation((hookName: string) => {
         return hookName
       }),
+      appendExtra: vi.fn().mockImplementation(() => {
+        return ``
+      }),
     },
     run: vi.fn().mockImplementation(({ input, slots }: Input) => {
-      return { value: input.value + `+` + slots.append(`a`) }
+      const extra = slots.appendExtra(`a`)
+      return { value: input.value + `+` + slots.append(`a`) + extra }
     }),
   }
   const b = {
@@ -45,9 +51,13 @@ export const createAnyware = () => {
       append: vi.fn().mockImplementation((hookName: string) => {
         return hookName
       }),
+      appendExtra: vi.fn().mockImplementation(() => {
+        return ``
+      }),
     },
     run: vi.fn().mockImplementation(({ input, slots }: Input) => {
-      return { value: input.value + `+` + slots.append(`b`) }
+      const extra = slots.appendExtra(`b`)
+      return { value: input.value + `+` + slots.append(`b`) + extra }
     }),
   }
 

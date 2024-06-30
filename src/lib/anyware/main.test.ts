@@ -324,6 +324,20 @@ describe('slots', () => {
     expect(core.hooks.b.slots.append.mock.calls[0]).toMatchObject(['b'])
     expect(result).toEqual({ value: 'initial+x+b' })
   })
+  test('extension can provide own functions to slots on multiple of a set of hooks', async () => {
+    const result = await run(async ({ a }) => {
+      return a({ using: { append: () => 'x', appendExtra: () => '+x2' } })
+    })
+    expect(result).toEqual({ value: 'initial+x+x2+b' })
+  })
   // todo hook with two slots
-  // todo two extensions, each using the slot (later one should win)
+  test('two extensions can each provide own function to same slot on just one of a set of hooks, and the later one wins', async () => {
+    const result = await run(async ({ a }) => {
+      const { b } = await a({ using: { append: () => 'x' } })
+      return b({ using: { append: () => 'y' } })
+    })
+    expect(core.hooks.a.slots.append).not.toBeCalled()
+    expect(core.hooks.b.slots.append).not.toBeCalled()
+    expect(result).toEqual({ value: 'initial+x+y' })
+  })
 })
