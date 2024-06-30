@@ -1,3 +1,6 @@
+// todo in order to test jsdom, we need to boot the server in a separate process
+// @vitest-environment node
+
 import getPort from 'get-port'
 import type { Server } from 'node:http'
 import { createServer } from 'node:http'
