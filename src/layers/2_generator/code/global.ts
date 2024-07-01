@@ -11,7 +11,7 @@ export const { moduleName: moduleNameGlobal, generate: generateGlobal } = create
     const code: string[] = []
 
     code.push(
-      `import { Index } from './${moduleNameIndex}.js'`,
+      `import type { Index } from './${moduleNameIndex}.js'`,
     )
 
     if (config.typeMapByKind.GraphQLScalarTypeCustom.length > 0) {

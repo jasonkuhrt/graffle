@@ -7,8 +7,8 @@ export const { generate: generateSelect, moduleName: moduleNameSelect } = create
   (config) => {
     const code: string[] = []
 
-    code.push(`import { Index } from './${moduleNameIndex}.js'`)
-    code.push(`import { SelectionSet, ResultSet } from '${config.libraryPaths.schema}'`)
+    code.push(`import type { Index } from './${moduleNameIndex}.js'`)
+    code.push(`import type { SelectionSet, ResultSet } from '${config.libraryPaths.schema}'`)
     code.push(``)
 
     code.push(
