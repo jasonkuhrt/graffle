@@ -1,16 +1,16 @@
-import { codec } from './codec.js'
+import { createCodec } from './codec.js'
 
-export const nativeScalarCodecs = {
-  String: codec<string, string>({
-    encode: (value) => value,
-    decode: (value) => value,
+export const JavaScriptScalarCodecs = {
+  String: createCodec({
+    encode: (value: string) => value,
+    decode: (value: string) => value,
   }),
-  Number: codec<number, number>({
-    encode: (value) => value,
-    decode: (value) => value,
+  Number: createCodec({
+    encode: (value: number) => value,
+    decode: (value: number) => value,
   }),
-  Boolean: codec<boolean, boolean>({
-    encode: (value) => value,
-    decode: (value) => value,
+  Boolean: createCodec({
+    encode: (value: boolean) => value,
+    decode: (value: boolean) => value,
   }),
 }

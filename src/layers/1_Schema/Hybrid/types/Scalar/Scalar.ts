@@ -2,15 +2,27 @@
 
 import type { GlobalRegistry } from '../../../../2_generator/globalRegistry.js'
 import type { Codec } from './codec.js'
-import { nativeScalarCodecs } from './nativeScalarCodecs.js'
+import { JavaScriptScalarCodecs } from './nativeScalarCodecs.js'
 
-export { nativeScalarCodecs } from './nativeScalarCodecs.js'
+export { JavaScriptScalarCodecs } from './nativeScalarCodecs.js'
 
 export const ScalarKind = `Scalar`
 
 export type ScalarKind = typeof ScalarKind
 
 export type StandardScalarRuntimeTypes = boolean | number | string
+
+export const create = <$Name extends string, $Decoded, $Encoded extends StandardScalarRuntimeTypes>(
+  name: $Name,
+  codec: {
+    encode: (value: $Decoded) => $Encoded
+    decode: (value: $Encoded) => $Decoded
+  },
+): Scalar<$Name, $Decoded, $Encoded> => ({
+  kind: ScalarKind,
+  name: name,
+  codec: codec as any, // eslint-disable-line
+})
 
 export const scalar = <$Name extends string, $Codec extends Codec<any, any>>(
   name: $Name,
@@ -23,22 +35,23 @@ export const scalar = <$Name extends string, $Codec extends Codec<any, any>>(
 
 export interface Scalar<
   $Name extends string = string,
-  $Codec extends Codec = Codec,
+  $Decoded = unknown,
+  $Encoded extends StandardScalarRuntimeTypes = StandardScalarRuntimeTypes,
 > {
   kind: ScalarKind
   name: $Name
-  codec: $Codec
+  codec: Codec<$Decoded, $Encoded>
 }
 
-export const String = scalar(`String`, nativeScalarCodecs.String)
+export const String = create(`String`, JavaScriptScalarCodecs.String)
 
-export const ID = scalar(`ID`, nativeScalarCodecs.String)
+export const ID = create(`ID`, JavaScriptScalarCodecs.String)
 
-export const Int = scalar(`Int`, nativeScalarCodecs.Number)
+export const Int = create(`Int`, JavaScriptScalarCodecs.Number)
 
-export const Float = scalar(`Float`, nativeScalarCodecs.Number)
+export const Float = create(`Float`, JavaScriptScalarCodecs.Number)
 
-export const Boolean = scalar(`Boolean`, nativeScalarCodecs.Boolean)
+export const Boolean = create(`Boolean`, JavaScriptScalarCodecs.Boolean)
 
 export type ID = typeof ID
 
