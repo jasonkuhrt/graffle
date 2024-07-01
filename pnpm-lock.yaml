@@ -21,7 +21,7 @@ importers:
         specifier: ^0.9.0
         version: 0.9.0
       dprint:
-        specifier: ^0.46.2
+        specifier: ^0.46.2 || ^0.47.0
         version: 0.46.2
       is-plain-obj:
         specifier: ^4.1.0

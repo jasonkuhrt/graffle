@@ -88,7 +88,7 @@
   "peerDependencies": {
     "@dprint/formatter": "^0.3.0 || ^0.4.0",
     "@dprint/typescript": "^0.91.1",
-    "dprint": "^0.46.2",
+    "dprint": "^0.46.2 || ^0.47.0",
     "graphql": "14 - 16"
   },
   "peerDependenciesMeta": {
