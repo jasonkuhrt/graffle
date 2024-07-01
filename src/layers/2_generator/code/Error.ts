@@ -11,14 +11,14 @@ export const { generate: generateError, moduleName: moduleNameError } = createCo
     )
 
     code.push(`
-    const ErrorObjectsTypeNameSelectedEnum = {
-      ${config.error.objects.map(_ => `${_.name}: { __typename: '${_.name}' }`).join(`,\n`)}
-    } as ${config.error.objects.length > 0 ? `const` : `Record<string,ObjectWithTypeName>`}
+      const ErrorObjectsTypeNameSelectedEnum = {
+        ${config.error.objects.map(_ => `${_.name}: { __typename: '${_.name}' }`).join(`,\n`)}
+      } as ${config.error.objects.length > 0 ? `const` : `Record<string,ObjectWithTypeName>`}
 
-    const ErrorObjectsTypeNameSelected = Object.values(ErrorObjectsTypeNameSelectedEnum)
+      const ErrorObjectsTypeNameSelected = Object.values(ErrorObjectsTypeNameSelectedEnum)
 
-    type ErrorObjectsTypeNameSelected = (typeof ErrorObjectsTypeNameSelected)[number]
-  `)
+      type ErrorObjectsTypeNameSelected = (typeof ErrorObjectsTypeNameSelected)[number]
+    `)
 
     code.push(
       `export const isError = <$Value>(value:$Value): value is Include<$Value, ErrorObjectsTypeNameSelected> =>  {

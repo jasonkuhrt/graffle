@@ -1,5 +1,5 @@
-import { ResultSet, SelectionSet } from '../../../../src/entrypoints/alpha/schema.js'
-import { Index } from './Index.js'
+import type { ResultSet, SelectionSet } from '../../../../src/entrypoints/alpha/schema.js'
+import type { Index } from './Index.js'
 
 // Runtime
 // -------
