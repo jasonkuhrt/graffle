@@ -1,9 +1,8 @@
-import { Scalar } from '../../src/layers/1_Schema/__.js'
-import type { Codec } from '../../src/layers/1_Schema/Hybrid/types/Scalar/codec.js'
+import { Graffle } from '../../src/entrypoints/alpha/main.js'
 
-export const Date = Scalar.scalar<'Date', Codec<globalThis.Date, string>>(`Date`, {
-  encode: value => value.toISOString(),
-  decode: value => new globalThis.Date(value),
+export const Date = Graffle.Scalars.create(`Date`, {
+  encode: (value: globalThis.Date) => value.toISOString(),
+  decode: (value: string) => new globalThis.Date(value),
 })
 
 export type Date = typeof Date
