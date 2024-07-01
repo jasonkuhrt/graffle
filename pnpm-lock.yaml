@@ -9,7 +9,7 @@ importers:
   .:
     dependencies:
       '@dprint/formatter':
-        specifier: ^0.3.0
+        specifier: ^0.3.0 || ^0.4.0
         version: 0.3.0
       '@dprint/typescript':
         specifier: ^0.91.1
