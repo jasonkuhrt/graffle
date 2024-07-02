@@ -92,7 +92,7 @@ importers:
         version: 1.2.3(eslint@9.6.0)
       eslint-plugin-simple-import-sort:
         specifier: ^12.1.0
-        version: 12.1.0(eslint@9.6.0)
+        version: 12.1.1(eslint@9.6.0)
       eslint-plugin-tsdoc:
         specifier: ^0.3.0
         version: 0.3.0
@@ -1686,8 +1686,8 @@ packages:
     resolution: {integrity: sha512-VoM09vT7bfA7D+upt+FjeBO5eHIJQBUWki1aPvB+vbNiHS3+oGIJGIeyBtKQTME6UPXXy3vV07OL1tHd3ANuDw==}
     engines: {node: '>=6'}
 
-  eslint-plugin-simple-import-sort@12.1.0:
-    resolution: {integrity: sha512-Y2fqAfC11TcG/WP3TrI1Gi3p3nc8XJyEOJYHyEPEGI/UAgNx6akxxlX74p7SbAQdLcgASKhj8M0GKvH3vq/+ig==}
+  eslint-plugin-simple-import-sort@12.1.1:
+    resolution: {integrity: sha512-6nuzu4xwQtE3332Uz0to+TxDQYRLTKRESSc2hefVT48Zc8JthmN23Gx9lnYhu0FtkRSL1oxny3kJ2aveVhmOVA==}
     peerDependencies:
       eslint: '>=5.0.0'
 
@@ -5341,7 +5341,7 @@ snapshots:
 
   eslint-plugin-promise@4.2.1: {}
 
-  eslint-plugin-simple-import-sort@12.1.0(eslint@9.6.0):
+  eslint-plugin-simple-import-sort@12.1.1(eslint@9.6.0):
     dependencies:
       eslint: 9.6.0
 
