@@ -19,8 +19,8 @@ describe(`without schemaIndex only raw is available`, () => {
   })
 
   test(`available methods`, () => {
-    expect(graffle.raw).toBeTypeOf(`function`)
-    expect(graffle.rawOrThrow).toBeTypeOf(`function`)
+    expect(graffle.raw).toBeTypeOf(`function`) // eslint-disable-line
+    expect(graffle.rawOrThrow).toBeTypeOf(`function`) // eslint-disable-line
   })
 })
 

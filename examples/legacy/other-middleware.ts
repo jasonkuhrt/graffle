@@ -2,8 +2,8 @@
  * It's possible to use a middleware to pre-process any request or handle raw response.
  */
 
-import type { RequestMiddleware, ResponseMiddleware } from '../src/entrypoints/main.js'
-import { GraphQLClient } from '../src/entrypoints/main.js'
+import type { RequestMiddleware, ResponseMiddleware } from '../../src/entrypoints/main.js'
+import { GraphQLClient } from '../../src/entrypoints/main.js'
 
 const endpoint = `https://api.spacex.land/graphql/`
 

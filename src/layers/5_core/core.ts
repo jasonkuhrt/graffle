@@ -28,25 +28,25 @@ const getRootIndexOrThrow = (context: ContextInterfaceTyped, rootTypeName: strin
 }
 
 // eslint-disable-next-line
-type InterfaceInput<A = {}, B = {}> =
+type InterfaceInput<TypedProperties = {}, RawProperties = {}> =
   | ({
     interface: InterfaceTyped
     context: ContextInterfaceTyped
     rootTypeName: Schema.RootTypeName
-  } & A)
+  } & TypedProperties)
   | ({
     interface: InterfaceRaw
     context: ContextInterfaceRaw
-  } & B)
+  } & RawProperties)
 
 // eslint-disable-next-line
-type TransportInput<A = {}, B = {}> =
+type TransportInput<HttpProperties = {}, MemoryProperties = {}> =
   | ({
     transport: TransportHttp
-  } & A)
+  } & HttpProperties)
   | ({
     transport: TransportMemory
-  } & B)
+  } & MemoryProperties)
 
 export const hookNamesOrderedBySequence = [`encode`, `pack`, `exchange`, `unpack`, `decode`] as const
 
@@ -56,7 +56,7 @@ export type HookDefEncode = {
   input:
     & InterfaceInput<
       { selection: GraphQLObjectSelection },
-      { document: string | DocumentNode; variables?: StandardScalarVariables }
+      { document: string | DocumentNode; variables?: StandardScalarVariables; operationName?: string }
     >
     & TransportInput<{ schema: string | URL }, { schema: GraphQLSchema }>
   slots: {
@@ -163,6 +163,7 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
       run: ({ input, slots }) => {
         let document: string
         let variables: StandardScalarVariables | undefined = undefined
+        let operationName: string | undefined = undefined
 
         switch (input.interface) {
           case `raw`: {
@@ -171,6 +172,7 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
               : print(input.document)
             document = documentPrinted
             variables = input.variables
+            operationName = input.operationName
             break
           }
           case `typed`: {
@@ -192,7 +194,7 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
             const body = slots.body({
               query: document,
               variables,
-              operationName: `todo`,
+              operationName,
             })
 
             return {
@@ -207,7 +209,7 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
               schema: input.schema,
               query: document,
               variables,
-              // operationName: '',
+              operationName,
             }
           }
         }
