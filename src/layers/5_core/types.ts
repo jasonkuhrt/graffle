@@ -1,5 +1,5 @@
 import type { Schema } from '../1_Schema/__.js'
-import type { Config } from '../5_client/Config.js'
+import type { Config } from '../6_client/Config.js'
 
 export type Transport = TransportMemory | TransportHttp
 

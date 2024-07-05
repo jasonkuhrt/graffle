@@ -11,7 +11,7 @@ interface Fixtures {
 }
 
 import { Graffle } from '../../src/entrypoints/alpha/main.js'
-import type { Client } from '../../src/layers/5_client/client.js'
+import type { Client } from '../../src/layers/6_client/client.js'
 
 export const test = testBase.extend<Fixtures>({
   // @ts-expect-error https://github.com/vitest-dev/vitest/discussions/5710

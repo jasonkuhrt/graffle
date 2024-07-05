@@ -10,7 +10,7 @@ import { Graffle } from '../../../entrypoints/alpha/main.js'
 import { Upload } from './Upload.js'
 
 import { createYoga } from 'graphql-yoga'
-import type { Client } from '../../5_client/client.js'
+import type { Client } from '../../6_client/client.js'
 
 let server: Server
 let port: number
