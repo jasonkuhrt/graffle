@@ -1,9 +1,15 @@
-import { Graffle } from '../src/entrypoints/alpha/__Graffle.js'
+import { gql, Graffle } from '../src/entrypoints/alpha/main.js'
 
-const request = Graffle.create({ schema: `https://countries.trevorblades.com/graphql` }).rawOrThrow
+const request = Graffle.create({ schema: `https://countries.trevorblades.com/graphql` }).rawOrThrow // eslint-disable-line
 
-const result = await request(
-  `
+// todo typed document node
+// interface Data {
+//   countries: { name }[]
+// }
+// const { data } = await request<Data>(
+
+const { data } = await request(
+  gql`
 		{
 			countries {
 				name
@@ -12,4 +18,4 @@ const result = await request(
 	`,
 )
 
-console.log(result.data)
+console.log(data)

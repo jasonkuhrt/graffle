@@ -101,26 +101,26 @@ await client.request(document)
 ## Examples
 
 - Request:
-  - [Authentication via HTTP header](./examples/request-authentication-via-http-header.ts)
-  - [Method GET](./examples/request-method-get.ts)
-  - [Cancellation](./examples/request-cancellation.ts)
-  - [Headers Per Request (static)](./examples/request-headers-static-per-request.ts)
-  - [Headers Per Request (dynamic)](./examples/request-headers-dynamic-per-request.ts)
-  - [Handle Raw Response](./examples/request-handle-raw-response.ts)
+  - [Authentication via HTTP header](./examples/legacy/request-authentication-via-http-header.ts)
+  - [Method GET](./examples/legacy/request-method-get.ts)
+  - [Cancellation](./examples/legacy/request-cancellation.ts)
+  - [Headers Per Request (static)](./examples/legacy/request-headers-static-per-request.ts)
+  - [Headers Per Request (dynamic)](./examples/legacy/request-headers-dynamic-per-request.ts)
+  - [Handle Raw Response](./examples/legacy/request-handle-raw-response.ts)
 - GraphQL:
-  - [Document Variables](./examples/graphql-document-variables.ts)
-  - [Mutation](./examples/graphql-mutations.ts)
-  - [Batching Requests](./examples/graphql-batching-requests.ts)
+  - [Document Variables](./examples/legacy/graphql-document-variables.ts)
+  - [Mutation](./examples/legacy/graphql-mutations.ts)
+  - [Batching Requests](./examples/legacy/graphql-batching-requests.ts)
 - Configuration:
-  - [Fetch: Passing Options](./examples/configuration-fetch-options.ts)
-  - [Custom JSON Serializer](./examples/configuration-request-json-serializer.ts)
-  - [Incremental: Set Endpoint](./examples/configuration-incremental-endpoint.ts)
-  - [Incremental: Set Request Headers](./examples/configuration-incremental-request-headers.ts)
+  - [Fetch: Passing Options](./examples/legacy/configuration-fetch-options.ts)
+  - [Custom JSON Serializer](./examples/legacy/configuration-request-json-serializer.ts)
+  - [Incremental: Set Endpoint](./examples/legacy/configuration-incremental-endpoint.ts)
+  - [Incremental: Set Request Headers](./examples/legacy/configuration-incremental-request-headers.ts)
 - TypeScript:
-  - [Use `TypedDocumentNode`](./examples/typescript-typed-document-node.ts)
+  - [Use `TypedDocumentNode`](./examples/legacy/typescript-typed-document-node.ts)
 - Other:
-  - [Middleware](./examples/other-middleware.ts)
-  - [Error Handling](./examples/other-error-handling.ts)
+  - [Middleware](./examples/legacy/other-middleware.ts)
+  - [Error Handling](./examples/legacy/other-error-handling.ts)
 
 ## Node Version Support
 
@@ -136,7 +136,7 @@ Any issue that exists solely for an unsupported version of Nodejs will be reject
 
 ## Reference
 
-⚠️ This reference is incomplete. Check out the [examples](./examples/) for more reference material.
+⚠️ This reference is incomplete. Check out the [examples](./examples/legacy/) for more reference material.
 
 ### Configuration
 
