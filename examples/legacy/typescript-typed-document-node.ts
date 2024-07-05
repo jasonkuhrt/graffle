@@ -1,6 +1,6 @@
 import type { TypedDocumentNode } from '@graphql-typed-document-node/core'
 import { parse } from 'graphql'
-import { gql, GraphQLClient, request } from '../src/entrypoints/main.js'
+import { gql, GraphQLClient, request } from '../../src/entrypoints/main.js'
 
 {
   const endpoint = `https://graphql-yoga.com/api/graphql`

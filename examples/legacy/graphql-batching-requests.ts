@@ -2,7 +2,7 @@
  * It is possible with `graphql-request` to use batching via the `batchRequests()` function.
  * @see https://github.com/graphql/graphql-over-http/blob/main/rfcs/Batching.md
  */
-import { batchRequests, gql } from '../src/entrypoints/main.js'
+import { batchRequests, gql } from '../../src/entrypoints/main.js'
 
 const endpoint = `https://api.spacex.land/graphql/`
 

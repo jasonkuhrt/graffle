@@ -3,7 +3,7 @@
  * To do that, pass a function that returns the headers to the `headers` property when creating a new `GraphQLClient`.
  */
 
-import { gql, GraphQLClient } from '../src/entrypoints/main.js'
+import { gql, GraphQLClient } from '../../src/entrypoints/main.js'
 
 const client = new GraphQLClient(`https://some-api`, {
   headers: () => ({ 'X-Sent-At-Time': Date.now().toString() }),

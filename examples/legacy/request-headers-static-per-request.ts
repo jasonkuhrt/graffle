@@ -2,7 +2,7 @@
  * It is possible to pass custom headers for each request. `request()` and `rawRequest()` accept a header object as the third parameter
  */
 
-import { gql, GraphQLClient } from '../src/entrypoints/main.js'
+import { gql, GraphQLClient } from '../../src/entrypoints/main.js'
 
 const endpoint = `https://api.graph.cool/simple/v1/cixos23120m0n0173veiiwrjr`
 

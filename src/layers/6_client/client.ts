@@ -25,10 +25,6 @@ import type { GetRootTypeMethods } from './RootTypeMethods.js'
 
 export type SchemaInput = URLInput | GraphQLSchema
 
-export interface RawInput extends BaseInput {
-  schema: SchemaInput
-}
-
 // todo could list specific errors here
 // Anyware entrypoint
 // Extension
@@ -50,10 +46,29 @@ export type TypedContext = Context & {
 
 const isTypedContext = (context: Context): context is TypedContext => `schemaIndex` in context
 
+interface RawInput extends BaseInput {}
+
+type RawParameters =
+  | [RawInput]
+  | [
+    document: RawInput['document'],
+    options?: Omit<RawInput, 'document'>,
+  ]
+
 // todo no config needed?
 export type ClientRaw<_$Config extends Config> = {
-  raw: (input: Omit<RawInput, 'schema'>) => Promise<ExecutionResult>
-  rawOrThrow: (input: Omit<RawInput, 'schema'>) => Promise<SomeExecutionResultWithoutErrors>
+  raw(input: RawInput): Promise<ExecutionResult>
+  // todo test this overload
+  raw(
+    document: RawInput['document'],
+    options?: Omit<RawInput, 'document'>,
+  ): Promise<ExecutionResult>
+
+  rawOrThrow(input: RawInput): Promise<SomeExecutionResultWithoutErrors>
+  rawOrThrow(
+    document: RawInput['document'],
+    options?: Omit<RawInput, 'document'>,
+  ): Promise<SomeExecutionResultWithoutErrors>
 }
 
 export type Extension = {
@@ -287,22 +302,31 @@ export const createInternal = (
         config: context.config,
       },
       variables: rawInput.variables,
+      operationName: rawInput.operationName,
     } as HookDefEncode['input']
     return await run(context, initialInput)
   }
 
+  const resolveRawParameters = (parameters: RawParameters) => {
+    return parameters.length === 2
+      ? { document: parameters[0], ...parameters[1] }
+      : typeof parameters[0] === `string` || `kind` in parameters[0]
+      ? { document: parameters[0], ...parameters[1] }
+      : parameters[0]
+  }
   // @ts-expect-error ignoreme
   const client: Client = {
-    raw: async (rawInput: RawInput) => {
+    raw: async (...args: RawParameters) => {
+      const input = resolveRawParameters(args)
       const contextWithReturnModeSet = updateContextConfig(context, { returnMode: `graphql` })
-      return await runRaw(contextWithReturnModeSet, rawInput)
+      return await runRaw(contextWithReturnModeSet, input)
     },
-    rawOrThrow: async (
-      rawInput: RawInput,
-    ) => {
+    rawOrThrow: async (...args: RawParameters) => {
+      const input = resolveRawParameters(args)
       const contextWithReturnModeSet = updateContextConfig(context, { returnMode: `graphqlSuccess` })
-      return await runRaw(contextWithReturnModeSet, rawInput)
+      return await runRaw(contextWithReturnModeSet, input)
     },
+    // todo $use
     use: (extensionOrAnyware: Extension | Anyware.Extension2<Core.Core>) => {
       const extension = typeof extensionOrAnyware === `function`
         ? { anyware: extensionOrAnyware, name: extensionOrAnyware.name }
