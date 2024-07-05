@@ -8,7 +8,7 @@ import type { SelectionSet } from '../3_SelectionSet/__.js'
 export type ReturnModeType =
   | ReturnModeTypeGraphQL
   | ReturnModeTypeGraphQLSuccess
-  | ReturnModeTypeSuccessData
+  | ReturnModeTypeDataSuccess
   | ReturnModeTypeData
   | ReturnModeTypeDataAndErrors
 
@@ -26,8 +26,7 @@ export type ReturnModeTypeData = 'data'
 
 export type ReturnModeTypeDataAndErrors = 'dataAndErrors'
 
-// todo rename to dataSuccess
-export type ReturnModeTypeSuccessData = 'successData'
+export type ReturnModeTypeDataSuccess = 'dataSuccess'
 
 export type OptionsInput = {
   returnMode: ReturnModeType | undefined
@@ -50,14 +49,14 @@ export type ApplyInputDefaults<Input extends OptionsInput> = {
 export type ReturnModeRootType<$Config extends Config, $Index extends Schema.Index, $Data extends object> =
   $Config['returnMode'] extends 'graphql'     ? ExecutionResult<$Data> :
   $Config['returnMode'] extends 'data'        ? $Data :
-  $Config['returnMode'] extends 'successData' ? { [$Key in keyof $Data]: ExcludeSchemaErrors<$Index, $Data[$Key]> }  :
+  $Config['returnMode'] extends 'dataSuccess' ? { [$Key in keyof $Data]: ExcludeSchemaErrors<$Index, $Data[$Key]> }  :
                                                 $Data | GraphQLExecutionResultError
 
 // dprint-ignore
 export type ReturnModeRootField<$Config extends Config, $Index extends Schema.Index, $Data, $DataRaw = undefined> =
   $Config['returnMode'] extends 'graphql'     ? ExecutionResult<$DataRaw extends undefined ? $Data : $DataRaw> :
   $Config['returnMode'] extends 'data'        ? $Data :
-  $Config['returnMode'] extends 'successData' ? ExcludeSchemaErrors<$Index, $Data> :
+  $Config['returnMode'] extends 'dataSuccess' ? ExcludeSchemaErrors<$Index, $Data> :
                                                 $Data | GraphQLExecutionResultError
 
 export type ExcludeSchemaErrors<$Index extends Schema.Index, $Data> = Exclude<
@@ -66,12 +65,12 @@ export type ExcludeSchemaErrors<$Index extends Schema.Index, $Data> = Exclude<
 >
 
 export type OrThrowifyConfig<$Config extends Config> = $Config['returnMode'] extends 'graphql' ? $Config
-  : SetProperty<$Config, 'returnMode', 'successData'>
+  : SetProperty<$Config, 'returnMode', 'dataSuccess'>
 
 /**
  * We inject __typename select when:
  * 1. using schema errors
- * 2. using return mode successData
+ * 2. using return mode dataSuccess
  */
 
 type TypenameSelection = { __typename: true }
@@ -82,7 +81,7 @@ export type CreateSelectionTypename<$Config extends Config, $Index extends Schem
 
 // dprint-ignore
 export type IsNeedSelectionTypename<$Config extends Config, $Index extends Schema.Index> =
-  $Config['returnMode'] extends 'successData' ?   GlobalRegistry.HasSchemaErrorsViaName<$Index['name']> extends true ?   true :
+  $Config['returnMode'] extends 'dataSuccess' ?   GlobalRegistry.HasSchemaErrorsViaName<$Index['name']> extends true ?   true :
                                                                                                                   false :
                                                   false
 

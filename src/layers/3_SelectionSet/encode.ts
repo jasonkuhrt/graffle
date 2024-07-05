@@ -200,7 +200,7 @@ export const resolveObjectLikeFieldValue = (
          * Inject __typename field for result fields that are missing it.
          */
         // dprint-ignore
-        if (rootTypeName && context.config.returnMode === `successData` && context.schemaIndex.error.rootResultFields[rootTypeName][fieldName.actual]) {
+        if (rootTypeName && context.config.returnMode === `dataSuccess` && context.schemaIndex.error.rootResultFields[rootTypeName][fieldName.actual]) {
           (ss as Record<string, boolean>)[`__typename`] = true
         }
         return `${toGraphQLFieldName(fieldName)} ${resolveFieldValue(context, schemaField, ss)}`

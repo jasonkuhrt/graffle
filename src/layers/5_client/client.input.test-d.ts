@@ -7,11 +7,11 @@ test(`works`, () => {
   Graffle.create({ schema, returnMode: `graphql` })
   Graffle.create({ schema, returnMode: `data` })
   Graffle.create({ schema, returnMode: `dataAndErrors` })
-  Graffle.create({ schema, returnMode: `successData` })
+  Graffle.create({ schema, returnMode: `dataSuccess` })
 
   QueryOnly.create({ schema, returnMode: `graphql` })
   QueryOnly.create({ schema, returnMode: `data` })
   QueryOnly.create({ schema, returnMode: `dataAndErrors` })
   // @ts-expect-error bad returnMode
-  QueryOnly.create({ schema, name: `QueryOnly`, returnMode: `successData` })
+  QueryOnly.create({ schema, name: `QueryOnly`, returnMode: `dataSuccess` })
 })

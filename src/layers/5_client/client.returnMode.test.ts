@@ -82,8 +82,8 @@ describe('dataAndErrors', () => {
 })
 
 // dprint-ignore
-describe('successData', () => {
-  const graffle = Graffle.create({ schema, returnMode: 'successData' })
+describe('dataSuccess', () => {
+  const graffle = Graffle.create({ schema, returnMode: 'dataSuccess' })
   test(`document.run`, async () => {
     expect(graffle.document({ x: { query: { id: true } } }).run()).resolves.toEqual({ id: db.id })
   })

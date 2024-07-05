@@ -18,7 +18,7 @@ import type {
   Config,
   ReturnModeType,
   ReturnModeTypeBase,
-  ReturnModeTypeSuccessData,
+  ReturnModeTypeDataSuccess,
 } from './Config.js'
 import type { DocumentFn } from './document.js'
 import type { GetRootTypeMethods } from './RootTypeMethods.js'
@@ -89,7 +89,7 @@ export type InputRaw = {
 export type InputPrefilled<$Schema extends GlobalRegistry.SchemaList> = $Schema extends any ? {
     returnMode?:
       | ReturnModeTypeBase
-      | (GlobalRegistry.HasSchemaErrors<$Schema> extends true ? ReturnModeTypeSuccessData : never)
+      | (GlobalRegistry.HasSchemaErrors<$Schema> extends true ? ReturnModeTypeDataSuccess : never)
   } & InputRaw
   : never
 
@@ -217,7 +217,7 @@ export const createInternal = (
     const isSelectedTypeScalarOrTypeName = selectedNamedType.kind === `Scalar` || selectedNamedType.kind === `typename` // todo fix type here, its valid
     const isFieldHasArgs = Boolean(context.schemaIndex.Root[rootTypeName]?.fields[rootTypeFieldName]?.args)
     // We should only need to add __typename for result type fields, but the return handler doesn't yet know how to look beyond a plain object type so we have to add all those cases here.
-    const needsTypenameAdded = context.config.returnMode === `successData`
+    const needsTypenameAdded = context.config.returnMode === `dataSuccess`
       && (selectedNamedType.kind === `Object` || selectedNamedType.kind === `Interface`
         || selectedNamedType.kind === `Union`)
     const rootTypeFieldSelectionSet = isSelectedTypeScalarOrTypeName
@@ -231,7 +231,7 @@ export const createInternal = (
     } as GraphQLObjectSelection)
     if (result instanceof Error) return result
     return context.config.returnMode === `data` || context.config.returnMode === `dataAndErrors`
-        || context.config.returnMode === `successData`
+        || context.config.returnMode === `dataSuccess`
       // @ts-expect-error
       ? result[rootTypeFieldName]
       : result
@@ -382,7 +382,7 @@ const handleReturn = (
   switch (context.config.returnMode) {
     case `graphqlSuccess`:
     case `dataAndErrors`:
-    case `successData`:
+    case `dataSuccess`:
     case `data`: {
       if (result instanceof Error || (result.errors && result.errors.length > 0)) {
         const error = result instanceof Error ? result : (new Errors.ContextualAggregateError(
@@ -391,14 +391,14 @@ const handleReturn = (
           result.errors!,
         ))
         if (
-          context.config.returnMode === `data` || context.config.returnMode === `successData`
+          context.config.returnMode === `data` || context.config.returnMode === `dataSuccess`
           || context.config.returnMode === `graphqlSuccess`
         ) throw error
         return error
       }
 
       if (isTypedContext(context)) {
-        if (context.config.returnMode === `successData`) {
+        if (context.config.returnMode === `dataSuccess`) {
           if (!isPlainObject(result.data)) throw new Error(`Expected data to be an object.`)
           const schemaErrors = Object.entries(result.data).map(([rootFieldName, rootFieldValue]) => {
             // todo this check would be nice but it doesn't account for aliases right now. To achieve this we would
@@ -444,10 +444,10 @@ const handleReturn = (
 }
 
 const applyOrThrowToContext = <$Context extends Context>(context: $Context): $Context => {
-  if (context.config.returnMode === `successData` || context.config.returnMode === `graphqlSuccess`) {
+  if (context.config.returnMode === `dataSuccess` || context.config.returnMode === `graphqlSuccess`) {
     return context
   }
-  const newMode = context.config.returnMode === `graphql` ? `graphqlSuccess` : `successData`
+  const newMode = context.config.returnMode === `graphql` ? `graphqlSuccess` : `dataSuccess`
   return updateContextConfig(context, { returnMode: newMode })
 }
 
