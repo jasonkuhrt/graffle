@@ -8,7 +8,10 @@ import { oops } from '../../lib/anyware/specHelpers.js'
 const client = Graffle.create({ schema: 'https://foo', returnMode: 'dataAndErrors' })
 const headers = { 'x-foo': 'bar' }
 
-// todo each extension added should copy, not mutate the client
+test('using an extension returns a copy of the client', () => {
+  const client2 = client.use(async () => {})
+  expect(client2 !== client).toBe(true)
+})
 
 describe(`entrypoint pack`, () => {
   test(`can add header`, async ({ fetch }) => {
