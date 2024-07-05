@@ -51,8 +51,8 @@ describe('data', () => {
 })
 
 // dprint-ignore
-describe('successData', () => {
-  const graffle = Graffle.create({ schema, returnMode: 'successData' })
+describe('dataSuccess', () => {
+  const graffle = Graffle.create({ schema, returnMode: 'dataSuccess' })
   test(`document.run`, async () => {
     expectTypeOf(graffle.document({ x: { query: { id: true } } }).run()).resolves.toEqualTypeOf<{ id: string | null }>()
   })
