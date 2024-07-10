@@ -104,7 +104,7 @@
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.16.0",
-    "@pothos/core": "^3.41.2",
+    "@pothos/core": "^4.0.0",
     "@pothos/plugin-simple-objects": "^3.7.1",
     "@tsconfig/node18": "^18.2.4",
     "@tsconfig/strictest": "^2.0.5",
