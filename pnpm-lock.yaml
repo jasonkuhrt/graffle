@@ -37,8 +37,8 @@ importers:
         specifier: ^3.41.2
         version: 3.41.2(graphql@16.9.0)
       '@pothos/plugin-simple-objects':
-        specifier: ^3.7.1
-        version: 3.7.1(@pothos/core@3.41.2(graphql@16.9.0))(graphql@16.9.0)
+        specifier: ^4.0.0
+        version: 4.0.0(@pothos/core@3.41.2(graphql@16.9.0))(graphql@16.9.0)
       '@tsconfig/node18':
         specifier: ^18.2.4
         version: 18.2.4
@@ -666,11 +666,11 @@ packages:
     peerDependencies:
       graphql: '>=15.1.0'
 
-  '@pothos/plugin-simple-objects@3.7.1':
-    resolution: {integrity: sha512-641qxavEa4GJGIYfZuhOdlUy6MjQ/z0gWS5x4pSU72GIJFPSyMAFjHI8O413TzmMf4SpDGWPq0S6UNNXcrGCBQ==}
+  '@pothos/plugin-simple-objects@4.0.0':
+    resolution: {integrity: sha512-KltRKWnmnh94qFBgiOtZXScQexNVa8NXrL6OS0m3UWuugv2NgJJcNDwWnz7eT6kuWIskFOXu1JKefr0ilKy7QQ==}
     peerDependencies:
-      '@pothos/core': '*'
-      graphql: '>=15.1.0'
+      '@pothos/core': 4.0.0
+      graphql: ^16.8.1
 
   '@protobufjs/aspromise@1.1.2':
     resolution: {integrity: sha512-j+gKExEuLmKwvz3OgROXtrJ2UG2x8Ch2YZUxahh+s1F2HZ+wAceUNLkvy6zKCPVRkU++ZWQrdxsUeQXmcg4uoQ==}
@@ -4185,7 +4185,7 @@ snapshots:
     dependencies:
       graphql: 16.9.0
 
-  '@pothos/plugin-simple-objects@3.7.1(@pothos/core@3.41.2(graphql@16.9.0))(graphql@16.9.0)':
+  '@pothos/plugin-simple-objects@4.0.0(@pothos/core@3.41.2(graphql@16.9.0))(graphql@16.9.0)':
     dependencies:
       '@pothos/core': 3.41.2(graphql@16.9.0)
       graphql: 16.9.0
