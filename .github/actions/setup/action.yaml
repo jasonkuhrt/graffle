@@ -4,7 +4,7 @@ inputs:
   node-version:
     description: Version of Node to use.
     required: false
-    default: 18.x
+    default: 22.x
   install-deps:
     description: Should deps be installed?
     required: false
