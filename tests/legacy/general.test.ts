@@ -1,6 +1,7 @@
 import { gql } from 'graphql-tag'
 import type { Mock } from 'vitest'
 import { beforeEach, describe, expect, it, test, vitest } from 'vitest'
+import type { RequestMiddleware, ResponseMiddleware } from '../../src/entrypoints/main.js'
 import { GraphQLClient, rawRequest, request } from '../../src/entrypoints/main.js'
 import { errors, setupMockServer } from './__helpers.js'
 
@@ -54,8 +55,8 @@ test(`basic error with raw request`, async () => {
 
 describe(`middleware`, () => {
   let client: GraphQLClient
-  let requestMiddleware: Mock
-  let responseMiddleware: Mock
+  let requestMiddleware: Mock<RequestMiddleware>
+  let responseMiddleware: Mock<ResponseMiddleware>
 
   describe(`successful requests`, () => {
     beforeEach(() => {
@@ -116,8 +117,7 @@ describe(`middleware`, () => {
         })
         expect(responseMiddleware).toBeCalledTimes(1)
 
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const [_, res] = responseMiddleware.mock.calls[0]
+        const [_, res] = responseMiddleware.mock.calls[0]!
         expect(res).toMatchObject({
           operationName: `x`,
           url: ctx.url,
@@ -130,8 +130,7 @@ describe(`middleware`, () => {
         })
         expect(responseMiddleware).toBeCalledTimes(1)
 
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const [_, res] = responseMiddleware.mock.calls[0]
+        const [_, res] = responseMiddleware.mock.calls[0]!
         expect(res).toMatchObject({
           operationName: `x`,
           url: ctx.url,
@@ -148,8 +147,7 @@ describe(`middleware`, () => {
         ])
         expect(responseMiddleware).toBeCalledTimes(1)
 
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const [_, res] = responseMiddleware.mock.calls[0]
+        const [_, res] = responseMiddleware.mock.calls[0]!
         expect(res).toMatchObject({
           operationName: undefined,
           url: ctx.url,

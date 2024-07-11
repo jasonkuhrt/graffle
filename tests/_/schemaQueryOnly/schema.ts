@@ -1,11 +1,7 @@
 import SchemaBuilder from '@pothos/core'
 import { db } from '../db.js'
 
-const builder = new SchemaBuilder<{
-  DefaultFieldNullability: true
-}>({
-  defaultFieldNullability: true,
-})
+const builder = new SchemaBuilder({})
 
 builder.queryType({
   fields: t => ({

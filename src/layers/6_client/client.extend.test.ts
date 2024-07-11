@@ -15,7 +15,7 @@ test('using an extension returns a copy of the client', () => {
 
 describe(`entrypoint pack`, () => {
   test(`can add header`, async ({ fetch }) => {
-    fetch.mockImplementationOnce(async (input: Request) => {
+    fetch.mockImplementationOnce(async (input) => {
       expect(input.headers.get('x-foo')).toEqual(headers['x-foo'])
       return createResponse({ data: { id: db.id } })
     })
