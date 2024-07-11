@@ -6,7 +6,6 @@ import { DateTimeISOResolver } from 'graphql-scalars'
 import { db } from '../db.js'
 
 const builder = new SchemaBuilder<{
-  DefaultFieldNullability: true
   Scalars: {
     Date: {
       Input: Date
@@ -14,7 +13,6 @@ const builder = new SchemaBuilder<{
     }
   }
 }>({
-  defaultFieldNullability: true,
   plugins: [SimpleObjectsPlugin],
 })
 

@@ -10,22 +10,20 @@ export type Input = {
 
 export const initialInput: Input['input'] = { value: `initial` }
 
-// export type $Core = Core<['a', 'b'],Anyware.HookMap<['a','b']>,Input>
-
 type $Core = ReturnType<typeof createAnyware> & {
   hooks: {
     a: {
       run: Mock
       slots: {
-        append: Mock<[hookName: string], string>
-        appendExtra: Mock<[hookName: string], string>
+        append: Mock<(hookName: string) => string>
+        appendExtra: Mock<(hookName: string) => string>
       }
     }
     b: {
       run: Mock
       slots: {
-        append: Mock<[hookName: string], string>
-        appendExtra: Mock<[hookName: string], string>
+        append: Mock<(hookName: string) => string>
+        appendExtra: Mock<(hookName: string) => string>
       }
     }
   }

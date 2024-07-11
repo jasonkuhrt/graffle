@@ -97,7 +97,7 @@ export type ResponseMiddleware = (
 
 export type RequestMiddleware<V extends Variables = Variables> = (
   request: RequestInitExtended<V>,
-) => RequestInitExtended | Promise<RequestInitExtended>
+) => MaybePromise<RequestInitExtended>
 
 export type RequestInitExtended<V extends Variables = Variables> = RequestInit & {
   url: string
