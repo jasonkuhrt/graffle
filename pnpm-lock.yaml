@@ -39,9 +39,9 @@ importers:
       '@pothos/plugin-simple-objects':
         specifier: ^4.0.1
         version: 4.0.1(@pothos/core@4.0.0(graphql@16.9.0))(graphql@16.9.0)
-      '@tsconfig/node18':
-        specifier: ^18.2.4
-        version: 18.2.4
+      '@tsconfig/node20':
+        specifier: ^20.1.4
+        version: 20.1.4
       '@tsconfig/strictest':
         specifier: ^2.0.5
         version: 2.0.5
@@ -671,8 +671,8 @@ packages:
   '@textlint/markdown-to-ast@12.6.1':
     resolution: {integrity: sha512-T0HO+VrU9VbLRiEx/kH4+gwGMHNMIGkp0Pok+p0I33saOOLyhfGvwOKQgvt2qkxzQEV2L5MtGB8EnW4r5d3CqQ==}
 
-  '@tsconfig/node18@18.2.4':
-    resolution: {integrity: sha512-5xxU8vVs9/FNcvm3gE07fPbn9tl6tqGGWA9tSlwsUEkBxtRnTsNmwrV8gasZ9F/EobaSv9+nu8AxUKccw77JpQ==}
+  '@tsconfig/node20@20.1.4':
+    resolution: {integrity: sha512-sqgsT69YFeLWf5NtJ4Xq/xAF8p4ZQHlmGW74Nu2tD4+g5fAsposc4ZfaaPixVu4y01BEiDCWLRDCvDM5JOsRxg==}
 
   '@tsconfig/strictest@2.0.5':
     resolution: {integrity: sha512-ec4tjL2Rr0pkZ5hww65c+EEPYwxOi4Ryv+0MtjeaSQRJyq322Q27eOQiFbuNgw2hpL4hB1/W/HBGk3VKS43osg==}
@@ -3626,7 +3626,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@tsconfig/node18@18.2.4': {}
+  '@tsconfig/node20@20.1.4': {}
 
   '@tsconfig/strictest@2.0.5': {}
 
