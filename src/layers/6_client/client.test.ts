@@ -29,9 +29,9 @@ describe(`interface`, () => {
     test(`sends well formed request`, async ({ fetch, graffle }) => {
       fetch.mockImplementationOnce(() => Promise.resolve(createResponse({ data: { greetings: `Hello World` } })))
       await graffle.raw({ document: `query { greetings }` })
-      const request = fetch.mock.calls[0]![0] as Request
-      expect(request.headers.get(`content-type`)).toEqual(CONTENT_TYPE_JSON)
-      expect(request.headers.get(`accept`)).toEqual(CONTENT_TYPE_GQL)
+      const request = fetch.mock.calls[0]?.[0]
+      expect(request?.headers.get(`content-type`)).toEqual(CONTENT_TYPE_JSON)
+      expect(request?.headers.get(`accept`)).toEqual(CONTENT_TYPE_GQL)
     })
   })
 })
