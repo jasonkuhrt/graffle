@@ -12,7 +12,7 @@ test(`typed-document-node code should TS compile with variables`, async () => {
   const query: TypedDocumentNode<{ echo: string }, { str: string }> = parse(gql`
     query greetings($str: String!) {
       echo(str: $echo)
-    }
+    }>
   `)
 
   // variables are mandatory here!
