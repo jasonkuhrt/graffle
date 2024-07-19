@@ -1,10 +1,9 @@
 import type { ExecutionResult } from 'graphql'
 import type { GraphQLExecutionResultError } from '../../../lib/graphql.js'
-import type { SetProperty, StringKeyof } from '../../../lib/prelude.js'
+import type { ConfigManager, StringKeyof } from '../../../lib/prelude.js'
 import type { Schema } from '../../1_Schema/__.js'
 import type { GlobalRegistry } from '../../2_generator/globalRegistry.js'
 import type { SelectionSet } from '../../3_SelectionSet/__.js'
-import type { Transport } from '../../5_core/types.js'
 
 export type OutputChannel = 'throw' | 'return'
 
@@ -90,24 +89,27 @@ export type ApplyInputDefaults<$Input extends OptionsInput> = {
     : Exclude<$Input[Key], undefined>
 }
 
-type ConfigGetOutputErrorChannel<$Config extends Config, $Channel extends OutputChannelConfig | false> =
+type ConfigResolveOutputErrorChannel<$Config extends Config, $Channel extends OutputChannelConfig | false> =
   $Channel extends 'default' ? $Config['output']['defaults']['errorChannel']
-    : $Channel extends false ? never
+    : $Channel extends false ? false
     : $Channel
 
+// dprint-ignore
 type ConfigGetOutputEnvelopeErrorChannel<$Config extends Config, $ErrorCategory extends ErrorCategory> =
-  $Config['output']['envelope']['errors'][$ErrorCategory] extends true ? never
-    : ConfigGetOutputErrorChannel<$Config, $Config['output']['errors'][$ErrorCategory]>
+  $Config['output']['envelope']['errors'][$ErrorCategory] extends true
+    ? false
+    : ConfigResolveOutputErrorChannel<$Config, $Config['output']['errors'][$ErrorCategory]>
 
 // dprint-ignore
-type ConfigGetOutputErrorReturns<$Config extends Config> = $Config['output']['envelope']['enabled'] extends true ? (
-    | (ConfigGetOutputEnvelopeErrorChannel<$Config, 'execution'>  extends 'throw' ? never : GraphQLExecutionResultError)
-    | (ConfigGetOutputEnvelopeErrorChannel<$Config, 'other'>      extends 'throw' ? never : Error)
-  )
-  : (
-    | (ConfigGetOutputErrorChannel<$Config, $Config['output']['errors']['execution']> extends 'throw' ? never : GraphQLExecutionResultError)
-    | (ConfigGetOutputErrorChannel<$Config, $Config['output']['errors']['other']>     extends 'throw' ? never : Error)
-  )
+type ConfigGetOutputError<$Config extends Config, $ErrorCategory extends ErrorCategory> =
+  $Config['output']['envelope']['enabled'] extends true
+    ? ConfigGetOutputEnvelopeErrorChannel<$Config, $ErrorCategory>
+    : ConfigResolveOutputErrorChannel<$Config, $Config['output']['errors'][$ErrorCategory]>
+
+// dprint-ignore
+type ConfigGetOutputErrorReturns<$Config extends Config> =
+  | (ConfigGetOutputError<$Config,'execution'>  extends 'return' ? GraphQLExecutionResultError  : never)
+  | (ConfigGetOutputError<$Config,'other'>      extends 'return' ? Error                        : never)
 
 // dprint-ignore
 export type OutputRootType<$Config extends Config, $Index extends Schema.Index, $Data extends object> =
@@ -132,8 +134,11 @@ export type ExcludeSchemaErrors<$Index extends Schema.Index, $Data> = Exclude<
   $Index['error']['objectsTypename'][keyof $Index['error']['objectsTypename']]
 >
 
-export type OrThrowifyConfig<$Config extends Config> = $Config['returnMode'] extends 'graphql' ? $Config
-  : SetProperty<$Config, 'returnMode', 'dataSuccess'>
+// todo this changed, check tests, add new tests as needed.
+// dprint-ignore
+export type OrThrowifyConfig<$Config extends Config> =
+
+    ConfigManager.Set<$Config, ['output', 'errors'], { other:'throw', execution:'throw', schema:'throw' }>
 
 /**
  * We inject __typename select when:
@@ -149,9 +154,11 @@ export type CreateSelectionTypename<$Config extends Config, $Index extends Schem
 
 // dprint-ignore
 export type IsNeedSelectionTypename<$Config extends Config, $Index extends Schema.Index> =
-  $Config['returnMode'] extends 'dataSuccess' ?   GlobalRegistry.HasSchemaErrorsViaName<$Index['name']> extends true ?   true :
-                                                                                                                  false :
-                                                  false
+  ConfigGetOutputError<$Config, 'schema'> extends 'throw'
+    ? GlobalRegistry.HasSchemaErrorsViaName<$Index['name']> extends true
+      ? true
+      : false
+    : false
 
 export type AugmentRootTypeSelectionWithTypename<
   $Config extends Config,

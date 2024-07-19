@@ -31,17 +31,34 @@ export type Input<$Schema extends GlobalRegistry.SchemaList> = {
 
 export type InputRaw<$Schema extends GlobalRegistry.SchemaList> = {
   schema: URLInput
+  /**
+   * Headers to send with the request.
+   */
   headers?: HeadersInit
+  /**
+   * Configure output behavior, such as if errors should be returned or thrown.
+   */
   output?: OutputInput<{ schemaErrors: GlobalRegistry.HasSchemaErrors<$Schema>; transport: 'http' }>
 } | {
   schema: GraphQLSchema
   headers?: never
+  /**
+   * Configure output behavior, such as if errors should be returned or thrown.
+   */
   output?: OutputInput<{ schemaErrors: GlobalRegistry.HasSchemaErrors<$Schema>; transport: 'memory' }>
 }
 
 export type OutputInput<Options extends { transport: Transport; schemaErrors: boolean }> =
   & {
+    /**
+     * Defaults for certain aspects of output behavior.
+     */
     defaults?: {
+      /**
+       * The default error channel to use.
+       *
+       * @defaultValue `'throw'`
+       */
       errorChannel?: OutputChannel
     }
     /**
@@ -57,8 +74,17 @@ export type OutputInput<Options extends { transport: Transport; schemaErrors: bo
         other?: boolean
       }
     }
+    /**
+     * Granular control of how to output errors by category.
+     */
     errors?: {
+      /**
+       * Execution errors. These are errors you would traditionally see in the GraphQL execution result `'errors'` field.
+       */
       execution?: OutputChannelConfig
+      /**
+       * Other errors include things like network errors thrown by fetch (when using HTTP transport), errors thrown from extensions, etc.
+       */
       other?: OutputChannelConfig
     }
   }
