@@ -4,7 +4,8 @@ import type { Anyware } from '../../lib/anyware/__.js'
 import { Errors } from '../../lib/errors/__.js'
 import type { SomeExecutionResultWithoutErrors } from '../../lib/graphql.js'
 import { isOperationTypeName, operationTypeNameToRootTypeName, type RootTypeName } from '../../lib/graphql.js'
-import { Exact, isPlainObject } from '../../lib/prelude.js'
+import type { Exact } from '../../lib/prelude.js'
+import { isPlainObject } from '../../lib/prelude.js'
 import type { URLInput } from '../0_functions/request.js'
 import type { BaseInput } from '../0_functions/types.js'
 import { Schema } from '../1_Schema/__.js'
@@ -14,16 +15,10 @@ import type { DocumentObject, GraphQLObjectSelection } from '../3_SelectionSet/e
 import { Core } from '../5_core/__.js'
 import { type HookDefEncode } from '../5_core/core.js'
 import type { InterfaceRaw } from '../5_core/types.js'
-import type {
-  ApplyInputDefaults,
-  Config,
-  OutputInput,
-  ReturnModeType,
-  ReturnModeTypeBase,
-  ReturnModeTypeDataSuccess,
-} from './Config.js'
 import type { DocumentFn } from './document.js'
 import type { GetRootTypeMethods } from './RootTypeMethods.js'
+import type { ApplyInputDefaults, Config, ReturnModeType } from './Settings/Config.js'
+import type { Input, InputPrefilled, InputToConfig } from './Settings/Input.js'
 
 export type SchemaInput = URLInput | GraphQLSchema
 
@@ -97,29 +92,19 @@ export type ClientTyped<$Index extends Schema.Index, $Config extends Config> =
   }
   & GetRootTypeMethods<$Config, $Index>
 
-export type InputRaw<$Schema extends GlobalRegistry.SchemaList> = {
-  schema: URLInput
-  // headers?: HeadersInit
-  output?: OutputInput<{ schemaErrors: GlobalRegistry.HasSchemaErrors<$Schema>; transport: 'http' }>
-} | {
-  schema: GraphQLSchema
-  output?: OutputInput<{ schemaErrors: GlobalRegistry.HasSchemaErrors<$Schema>; transport: 'memory' }>
-}
-
-export type InputPrefilled<$Schema extends GlobalRegistry.SchemaList> = $Schema extends any ? (InputRaw<$Schema>)
-  : never
-
 export type CreatePrefilled = <$Name extends GlobalRegistry.SchemaNames>(name: $Name, schemaIndex: Schema.Index) => <
   // eslint-disable-next-line
   // @ts-ignore passes after generation
   $Input extends InputPrefilled<GlobalRegistry.Schemas[$Name]>,
 >(
   input: Exact<$Input, InputPrefilled<GlobalRegistry.Schemas[$Name]>>,
-) => Client<
+) => // InputToConfig<$Input>
+// InputToConfig<$Input>['output']['envelope']
+Client<
   // eslint-disable-next-line
   // @ts-ignore passes after generation
   GlobalRegistry.GetSchemaIndexOrDefault<$Name>,
-  ApplyInputDefaults<{ returnMode: $Input['returnMode'] }>
+  InputToConfig<$Input>
 >
 
 export const createPrefilled: CreatePrefilled = (name, schemaIndex) => {
@@ -128,45 +113,22 @@ export const createPrefilled: CreatePrefilled = (name, schemaIndex) => {
   return (input) => create({ ...input, name, schemaIndex }) as any
 }
 
-export type Input<$Schema extends GlobalRegistry.SchemaList> = {
-  /**
-   * Used internally.
-   *
-   * When custom scalars are being used, this runtime schema is used to
-   * encode/decode them before/after your application sends/receives them.
-   *
-   * When using root type field methods, this runtime schema is used to assist how arguments on scalars versus objects
-   * are constructed into the sent GraphQL document.
-   */
-  readonly schemaIndex?: Schema.Index | null
-  /**
-   * The schema to use.
-   *
-   * TODO why don't we infer this from the runtime schemaIndex?
-   *
-   * @defaultValue 'default'
-   */
-  name?: $Schema['index']['name']
-  // todo way to hide Relay input pattern of nested input
-  // elideInputKey: true,
-} & InputPrefilled<$Schema>
-
 // dprint-ignore
 type Create = <
   $Input extends Input<GlobalRegistry.SchemaList>,
 >(
   input: $Input,
 ) =>
-  Client<
-    // eslint-disable-next-line
-    // @ts-ignore passes after generation
-    $Input['schemaIndex'] extends Schema.Index
-       // v-- TypeScript does not understand this type satisfies the Index constraint.
-       // v   It does after generation.
-      ? GlobalRegistry.GetSchemaIndexOrDefault<$Input['name']>
-      : null,
-    ApplyInputDefaults<{ returnMode: $Input['returnMode'] }>
-  >
+Client<
+  // eslint-disable-next-line
+  // @ts-ignore passes after generation
+  $Input['schemaIndex'] extends Schema.Index
+     // v-- TypeScript does not understand this type satisfies the Index constraint.
+     // v   It does after generation.
+    ? GlobalRegistry.GetSchemaIndexOrDefault<$Input['name']>
+    : null,
+  InputToConfig<$Input>
+>
 
 export const create: Create = (
   input_,

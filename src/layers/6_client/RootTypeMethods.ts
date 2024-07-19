@@ -9,9 +9,9 @@ import type {
   Config,
   CreateSelectionTypename,
   OrThrowifyConfig,
-  ReturnModeRootField,
-  ReturnModeRootType,
-} from './Config.js'
+  OutputRootField,
+  OutputRootType,
+} from './Settings/Config.js'
 
 type RootTypeFieldContext = {
   Config: Config
@@ -61,7 +61,7 @@ export type RootTypeMethods<$Config extends Config, $Index extends Schema.Index,
 // dprint-ignore
 type RootMethod<$Config extends Config, $Index extends Schema.Index, $RootTypeName extends Schema.RootTypeName> =
   <$SelectionSet extends object>(selectionSet: Exact<$SelectionSet, SelectionSet.Root<$Index, $RootTypeName>>) =>
-    Promise<ReturnModeRootType<$Config, $Index, ResultSet.Root<AugmentRootTypeSelectionWithTypename<$Config,$Index,$RootTypeName,$SelectionSet>, $Index, $RootTypeName>>>
+    Promise<OutputRootType<$Config, $Index, ResultSet.Root<AugmentRootTypeSelectionWithTypename<$Config,$Index,$RootTypeName,$SelectionSet>, $Index, $RootTypeName>>>
 
 // dprint-ignore
 type RootTypeFieldMethod<$Context extends RootTypeFieldContext> =
@@ -88,4 +88,4 @@ type ScalarFieldMethod<$Context extends RootTypeFieldContext> =
                                                                   (() => Promise<ReturnModeForFieldMethod<$Context, ResultSet.Field<true, $Context['Field'], $Context['Index']>>>)
 // dprint-ignore
 type ReturnModeForFieldMethod<$Context extends RootTypeFieldContext, $Data> =
-  ReturnModeRootField<$Context['Config'], $Context['Index'], $Data, { [k in $Context['RootTypeFieldName']] : $Data }>
+  OutputRootField<$Context['Config'], $Context['Index'], $Data, { [k in $Context['RootTypeFieldName']] : $Data }>

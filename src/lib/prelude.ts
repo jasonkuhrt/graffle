@@ -340,3 +340,21 @@ export const partitionErrors = <T>(array: T[]): [Exclude<T, Error>[], Include<T,
   }
   return [values, errors]
 }
+
+export namespace ConfigManager {
+  type Path = [...string[]]
+
+  export type ReadOrDefault<$Obj, $Path extends Path, $Default> = OrDefault<Read<$Obj, $Path>, $Default>
+
+  export type OrDefault<$Value, $Default> = $Value extends undefined ? $Default : $Value
+
+  // dprint-ignore
+  export type Read<$Value, $Path extends [...string[]]> =
+		$Value extends undefined ? undefined
+  : $Path extends [infer P1, ...infer PN extends string[]] ?
+			$Value extends object ?	P1 extends keyof $Value ? Read<$Value[P1], PN> : undefined
+														: undefined
+  : $Value
+}
+
+// type AsBoolean<T> = T extends boolean ? T : never
