@@ -4,6 +4,26 @@ import type { SetProperty, StringKeyof } from '../../lib/prelude.js'
 import type { Schema } from '../1_Schema/__.js'
 import type { GlobalRegistry } from '../2_generator/globalRegistry.js'
 import type { SelectionSet } from '../3_SelectionSet/__.js'
+import type { Transport } from '../5_core/types.js'
+
+export type OutputInput<Options extends { transport: Transport; schemaErrors: boolean }> =
+  & {
+    extensions?: true
+    throw?: {
+      executionErrors?: true
+      otherErrors?: true
+    }
+  }
+  & (Options['transport'] extends 'http' ? {
+      response?: boolean
+    }
+    : {}) // eslint-disable-line
+  & (Options['schemaErrors'] extends true ? {
+      throw?: {
+        schemaErrors?: boolean
+      }
+    }
+    : {}) // eslint-disable-line
 
 export type ReturnModeType =
   | ReturnModeTypeGraphQL

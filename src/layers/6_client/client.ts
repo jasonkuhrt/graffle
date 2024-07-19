@@ -1,9 +1,10 @@
 import { type ExecutionResult, GraphQLSchema } from 'graphql'
+import { schema } from '../../../tests/_/schema/schema.js'
 import type { Anyware } from '../../lib/anyware/__.js'
 import { Errors } from '../../lib/errors/__.js'
 import type { SomeExecutionResultWithoutErrors } from '../../lib/graphql.js'
 import { isOperationTypeName, operationTypeNameToRootTypeName, type RootTypeName } from '../../lib/graphql.js'
-import { isPlainObject } from '../../lib/prelude.js'
+import { Exact, isPlainObject } from '../../lib/prelude.js'
 import type { URLInput } from '../0_functions/request.js'
 import type { BaseInput } from '../0_functions/types.js'
 import { Schema } from '../1_Schema/__.js'
@@ -16,6 +17,7 @@ import type { InterfaceRaw } from '../5_core/types.js'
 import type {
   ApplyInputDefaults,
   Config,
+  OutputInput,
   ReturnModeType,
   ReturnModeTypeBase,
   ReturnModeTypeDataSuccess,
@@ -95,17 +97,16 @@ export type ClientTyped<$Index extends Schema.Index, $Config extends Config> =
   }
   & GetRootTypeMethods<$Config, $Index>
 
-export type InputRaw = {
-  schema: SchemaInput
-  // todo condition on if schema is NOT GraphQLSchema
-  headers?: HeadersInit
+export type InputRaw<$Schema extends GlobalRegistry.SchemaList> = {
+  schema: URLInput
+  // headers?: HeadersInit
+  output?: OutputInput<{ schemaErrors: GlobalRegistry.HasSchemaErrors<$Schema>; transport: 'http' }>
+} | {
+  schema: GraphQLSchema
+  output?: OutputInput<{ schemaErrors: GlobalRegistry.HasSchemaErrors<$Schema>; transport: 'memory' }>
 }
 
-export type InputPrefilled<$Schema extends GlobalRegistry.SchemaList> = $Schema extends any ? {
-    returnMode?:
-      | ReturnModeTypeBase
-      | (GlobalRegistry.HasSchemaErrors<$Schema> extends true ? ReturnModeTypeDataSuccess : never)
-  } & InputRaw
+export type InputPrefilled<$Schema extends GlobalRegistry.SchemaList> = $Schema extends any ? (InputRaw<$Schema>)
   : never
 
 export type CreatePrefilled = <$Name extends GlobalRegistry.SchemaNames>(name: $Name, schemaIndex: Schema.Index) => <
@@ -113,7 +114,7 @@ export type CreatePrefilled = <$Name extends GlobalRegistry.SchemaNames>(name: $
   // @ts-ignore passes after generation
   $Input extends InputPrefilled<GlobalRegistry.Schemas[$Name]>,
 >(
-  input: $Input,
+  input: Exact<$Input, InputPrefilled<GlobalRegistry.Schemas[$Name]>>,
 ) => Client<
   // eslint-disable-next-line
   // @ts-ignore passes after generation

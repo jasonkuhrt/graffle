@@ -2,9 +2,21 @@
 
 # Return Mode
 
-GraphQL execution has this general pattern:
+GraphQL execution from the `graphql` package has this general pattern:
 
 ```ts
+Graffle.create({
+  output: {
+    response: true,
+    extensions: true,
+    throw: {
+      schemaErrors: true,
+      executionErrors: true,
+      otherErrors: true,
+    },
+  },
+})
+
 interface GraphQLExecutionResult {
   data?: object
   errors?: GraphQLError[]
@@ -18,13 +30,13 @@ The only client method that is not affected by return mode is `raw` which will _
 
 Here is a summary table of the modes:
 
-| Mode             | Throw Sources (no type safety)                                                              | Returns (type safe)                                                                          |
-| ---------------- | ------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
-| `graphql`        | Extensions, Fetch                                                                           | `GraphQLExecutionResult`                                                                     |
-| `graphqlSuccess` | Extensions, Fetch, GraphQLExecutionResult.errors                                            | `GraphQLExecutionResult` with `.errors` always missing.                                      |
-| `data` (default) | Extensions, Fetch, GraphQLExecutionResult.errors                                            | `GraphQLExecutionResult.data`                                                                |
-| `dataSuccess`    | Extensions, Fetch, GraphQLExecutionResult.errors, GraphQLExecutionResult.data Schema Errors | `GraphQLExecutionResult.data` without any schema errors                                      |
-| `dataAndErrors`  |                                                                                             | `GraphQLExecutionResult.data`, errors from: Extensions, Fetch, GraphQLExecutionResult.errors |
+| Mode             | Throw Sources (no type safety)                                                                                 | Returns (type safe)                                                                                  |
+| ---------------- | -------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `graphql`        | 1. Extensions<br>2. Fetch                                                                                      | 1. `GraphQLExecutionResult`                                                                          |
+| `graphqlSuccess` | 1. Extensions<br>2. Fetch<br>3. GraphQLExecutionResult.errors                                                  | 1. `GraphQLExecutionResult` without `.errors`                                                        |
+| `data` (default) | 1. Extensions<br>2. Fetch<br>3. GraphQLExecutionResult.errors                                                  | 1. `GraphQLExecutionResult.data`                                                                     |
+| `dataSuccess`    | 1. Extensions<br>2. Fetch<br>3. GraphQLExecutionResult.errors<br> 4. GraphQLExecutionResult.data Schema Errors | `GraphQLExecutionResult.data` without schema errors                                                  |
+| `dataAndErrors`  |                                                                                                                | 1. `GraphQLExecutionResult.data`<br>2. Errors from: Extensions, Fetch, GraphQLExecutionResult.errors |
 
 ## `graphql`
 
