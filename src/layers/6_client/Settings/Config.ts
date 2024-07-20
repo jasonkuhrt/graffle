@@ -113,7 +113,9 @@ type ConfigGetOutputErrorReturns<$Config extends Config> =
 
 // dprint-ignore
 export type OutputRootType<$Config extends Config, $Index extends Schema.Index, $Data extends object> =
-  $Config['output']['envelope']['enabled'] extends true     ? ExecutionResult<$Data | ConfigGetOutputErrorReturns<$Config>> : $Data | ConfigGetOutputErrorReturns<$Config>
+  $Config['output']['envelope']['enabled'] extends true
+    ? ExecutionResult<$Data | ConfigGetOutputErrorReturns<$Config>>
+    : $Data | ConfigGetOutputErrorReturns<$Config>
 // $Config['returnMode'] extends 'data'        ? $Data :
 // $Config['returnMode'] extends 'dataSuccess' ? { [$Key in keyof $Data]: ExcludeSchemaErrors<$Index, $Data[$Key]> }  :
 //                                               $Data | GraphQLExecutionResultError
@@ -122,7 +124,12 @@ export type OutputRootType<$Config extends Config, $Index extends Schema.Index, 
 export type OutputRootField<$Config extends Config, $Index extends Schema.Index, $Data, $DataRaw = undefined> =
   $Config['output']['envelope']['enabled'] extends true
     ? ExecutionResult<($DataRaw extends undefined ? $Data : $DataRaw)> | ConfigGetOutputErrorReturns<$Config>
-    :                 ($Data) | ConfigGetOutputErrorReturns<$Config>
+    :                   | (
+                            $Config['output']['errors']['schema'] extends 'throw'
+                              ? ExcludeSchemaErrors<$Index, $Data>
+                              : $Data
+                          )
+                        | ConfigGetOutputErrorReturns<$Config>
 
 // $Config['returnMode'] extends 'graphql'     ? ExecutionResult<$DataRaw extends undefined ? $Data : $DataRaw> :
 // $Config['returnMode'] extends 'data'        ? $Data :

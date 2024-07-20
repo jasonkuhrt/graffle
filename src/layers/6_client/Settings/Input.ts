@@ -114,13 +114,13 @@ export type InputToConfig<$Input extends Input<any>> = {
       errors: {
         execution: ConfigManager.ReadOrDefault<$Input, ['output','envelope','errors','execution'], true>
         other: ConfigManager.ReadOrDefault<$Input, ['output','envelope','errors','other'], false> 
-        schema: false // todo
+        schema: ConfigManager.ReadOrDefault<$Input, ['output','envelope','errors','schema'], false>
       }
     }
     errors: {
       execution: ConfigManager.ReadOrDefault<$Input,['output', 'errors', 'execution'], 'default'>
       other: ConfigManager.ReadOrDefault<$Input,['output', 'errors', 'other'], 'default'>
-      schema: false // todo
+      schema: ConfigManager.ReadOrDefault<$Input,['output', 'errors', 'schema'], false>
     }
   }
 }
