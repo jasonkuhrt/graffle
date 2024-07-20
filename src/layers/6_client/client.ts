@@ -403,6 +403,7 @@ const handleReturn = (
             )
             if (!isErrorObject) return null
             // todo extract message
+            // todo allow mapping error instances to schema errors
             return new Error(`Failure on field ${rootFieldName}: ${__typename}`)
           }).filter((_): _ is Error => _ !== null)
 

@@ -149,8 +149,6 @@ describe('defaults.errorChannel: "return"', () => {
   })
 })
 
-// todo tests with schema errors
-
 describe('.errors.schema', () => {
   describe('throw', () => {
     const g = C({ schema, output: { errors: { schema: 'throw' } } })
@@ -158,6 +156,10 @@ describe('.errors.schema', () => {
       expectTypeOf(g.query.resultNonNull(resultFieldSelect)).resolves.toEqualTypeOf<{ __typename: 'Object1' }>()
     })
   })
-  // todo
-  describe.todo('return', () => {})
+  describe.todo('return', () => {
+    const g = C({ schema, output: { errors: { schema: 'return' } } })
+    test('query.<resultFieldMethod>', () => {
+      expectTypeOf(g.query.resultNonNull(resultFieldSelect)).resolves.toEqualTypeOf<{ __typename: 'Object1' } | Error>()
+    })
+  })
 })

@@ -108,8 +108,9 @@ type ConfigGetOutputError<$Config extends Config, $ErrorCategory extends ErrorCa
 
 // dprint-ignore
 type ConfigGetOutputErrorReturns<$Config extends Config> =
-  | (ConfigGetOutputError<$Config,'execution'>  extends 'return' ? GraphQLExecutionResultError  : never)
-  | (ConfigGetOutputError<$Config,'other'>      extends 'return' ? Error                        : never)
+  | (ConfigGetOutputError<$Config, 'execution'>  extends 'return'  ? GraphQLExecutionResultError  : never)
+  | (ConfigGetOutputError<$Config, 'other'>      extends 'return'  ? Error                        : never)
+  | (ConfigGetOutputError<$Config, 'schema'>      extends 'return' ? Error                        : never)
 
 // dprint-ignore
 export type OutputRootType<$Config extends Config, $Index extends Schema.Index, $Data extends object> =
@@ -123,13 +124,13 @@ export type OutputRootType<$Config extends Config, $Index extends Schema.Index, 
 // dprint-ignore
 export type OutputRootField<$Config extends Config, $Index extends Schema.Index, $Data, $DataRaw = undefined> =
   $Config['output']['envelope']['enabled'] extends true
-    ? ExecutionResult<($DataRaw extends undefined ? $Data : $DataRaw)> | ConfigGetOutputErrorReturns<$Config>
-    :                   | (
-                            $Config['output']['errors']['schema'] extends 'throw'
-                              ? ExcludeSchemaErrors<$Index, $Data>
-                              : $Data
-                          )
+    ? ExecutionResult<StripSchemaErrorsFromDataIfEnabled<$Config, $Index, $DataRaw extends undefined ? $Data : $DataRaw>> | ConfigGetOutputErrorReturns<$Config>
+    :                   | StripSchemaErrorsFromDataIfEnabled<$Config, $Index, $Data>
                         | ConfigGetOutputErrorReturns<$Config>
+
+type StripSchemaErrorsFromDataIfEnabled<$Config extends Config, $Index extends Schema.Index, $Data> =
+  $Config['output']['errors']['schema'] extends false ? $Data
+    : ExcludeSchemaErrors<$Index, $Data>
 
 // $Config['returnMode'] extends 'graphql'     ? ExecutionResult<$DataRaw extends undefined ? $Data : $DataRaw> :
 // $Config['returnMode'] extends 'data'        ? $Data :
