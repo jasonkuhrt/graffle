@@ -1,3 +1,4 @@
+import type { Simplify } from 'type-fest'
 import type { ConditionalSimplifyDeep } from 'type-fest/source/conditional-simplify.js'
 
 /* eslint-disable */
@@ -356,15 +357,27 @@ export namespace ConfigManager {
     & Omit<$Obj, $Prop>
     & { [_ in $Prop]: $Type }
 
-  export type Set<$Obj extends object, $Path extends Path, $Value> = Set_<$Obj, $Path, $Value>
+  // dprint-ignore
+  export type Set<$Obj extends object, $Path extends Path, $Value> =
+    Simplify<
+      $Path extends []
+        ? $Value extends object
+          ? $Obj & $Value
+          : never
+        : Set_<$Obj, $Path, $Value>
+    >
 
   // dprint-ignore
   export type Set_<$ObjOrValue, $Path extends Path, $Value> =
-    $Path extends [infer $P1 extends string, ...infer $PN extends string[]] ?
-      $P1 extends keyof $ObjOrValue
-          ? Omit<$ObjOrValue, $P1> & { [_ in $P1]: Set_<$ObjOrValue[$P1], $PN, $Value> }
-          : `Error: Cannot set value at path in object. Path property "${$P1}" does not exist in object.`
-      : $Value
+    Simplify<
+      $Path extends [infer $P1 extends string, ...infer $PN extends string[]] ?
+        $P1 extends keyof $ObjOrValue
+            ? Omit<$ObjOrValue, $P1> & { [_ in $P1]: Set_<$ObjOrValue[$P1], $PN, $Value> }
+            // If we use a nice error display here (like the following comment) it will mess with the result type in variable cases.
+             // `Error: Cannot set value at path in object. Path property "${$P1}" does not exist in object.`
+            : never
+        : $Value
+    >
 }
 
 // type AsBoolean<T> = T extends boolean ? T : never

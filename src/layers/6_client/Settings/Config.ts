@@ -1,4 +1,5 @@
 import type { ExecutionResult } from 'graphql'
+import type { Simplify } from 'type-fest'
 import type { GraphQLExecutionResultError } from '../../../lib/graphql.js'
 import type { ConfigManager, StringKeyof } from '../../../lib/prelude.js'
 import type { Schema } from '../../1_Schema/__.js'
@@ -90,21 +91,24 @@ export type ApplyInputDefaults<$Input extends OptionsInput> = {
 }
 
 // dprint-ignore
-export type OutputRootType<$Config extends Config, $Index extends Schema.Index, $Data extends object> =
-  $Config['output']['envelope']['enabled'] extends true
-    ? ExecutionResult<$Data | IfConfiguredGetOutputErrorReturns<$Config>>
-    : $Data | IfConfiguredGetOutputErrorReturns<$Config>
+export type ResolveOutputReturnRootType<$Config extends Config, $Index extends Schema.Index, $Data extends object> =
+ | IfConfiguredGetOutputErrorReturns<$Config>
+ | (
+      $Config['output']['envelope']['enabled'] extends true
+        ? ExecutionResult<IfConfiguredStripSchemaErrorsFromDataRootField<$Config, $Index, $Data>>
+        : Simplify<IfConfiguredStripSchemaErrorsFromDataRootType<$Config, $Index, $Data>>
+   )
 
 // dprint-ignore
-export type OutputRootField<$Config extends Config, $Index extends Schema.Index, $Data, $DataRaw = undefined> =
+export type ResolveOutputReturnRootField<$Config extends Config, $Index extends Schema.Index, $Data, $DataRaw = undefined> =
+  | IfConfiguredGetOutputErrorReturns<$Config>
   | (
       $Config['output']['envelope']['enabled'] extends true
         // todo: a typed execution result that allows for additional error types.
         // currently it is always graphql execution error however envelope configuration can put more errors into that.
         ? ExecutionResult<IfConfiguredStripSchemaErrorsFromDataRootType<$Config, $Index, $DataRaw extends undefined ? $Data : $DataRaw>>
-        : IfConfiguredStripSchemaErrorsFromDataRootField<$Config, $Index, $Data>
+        : Simplify<IfConfiguredStripSchemaErrorsFromDataRootField<$Config, $Index, $Data>>
     )
-  | IfConfiguredGetOutputErrorReturns<$Config>
 
 type ConfigResolveOutputErrorChannel<$Config extends Config, $Channel extends OutputChannelConfig | false> =
   $Channel extends 'default' ? $Config['output']['defaults']['errorChannel']
@@ -139,16 +143,17 @@ type IfConfiguredStripSchemaErrorsFromDataRootField<$Config extends Config, $Ind
     ? $Data
     : ExcludeSchemaErrors<$Index, $Data>
 
-export type ExcludeSchemaErrors<$Index extends Schema.Index, $Data> = Exclude<
-  $Data,
-  $Index['error']['objectsTypename'][keyof $Index['error']['objectsTypename']]
->
+// dprint-ignore
+export type ExcludeSchemaErrors<$Index extends Schema.Index, $Data> =
+  Exclude<
+    $Data,
+    $Index['error']['objectsTypename'][keyof $Index['error']['objectsTypename']]
+  >
 
 // todo this changed, check tests, add new tests as needed.
 // dprint-ignore
 export type OrThrowifyConfig<$Config extends Config> =
-
-    ConfigManager.Set<$Config, ['output', 'errors'], { other:'throw', execution:'throw', schema:'throw' }>
+  ConfigManager.Set<$Config, ['output', 'errors'], { other: 'throw', execution: 'throw', schema: 'throw' }>
 
 /**
  * We inject __typename select when:

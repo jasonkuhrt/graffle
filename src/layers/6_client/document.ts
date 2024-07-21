@@ -10,7 +10,7 @@ import type {
   AugmentRootTypeSelectionWithTypename,
   Config,
   OrThrowifyConfig,
-  OutputRootType,
+  ResolveOutputReturnRootType,
 } from './Settings/Config.js'
 
 // dprint-ignore
@@ -21,13 +21,16 @@ export type DocumentFn<$Config extends Config, $Index extends Schema.Index> =
       $Name extends keyof $Document & string,
       $Params extends (IsMultipleKeys<$Document> extends true ? [name: $Name] : ([] | [name: $Name | undefined])),
     >(...params: $Params) => Promise<
-      OutputRootType<$Config, $Index, ResultSet.Root<GetRootTypeSelection<$Config,$Index,$Document[$Name]>, $Index, GetRootType<$Document[$Name]>>>
+      ResolveOutputReturnRootType<$Config, $Index, ResultSet.Root<GetRootTypeSelection<$Config,$Index,$Document[$Name]>, $Index, GetRootType<$Document[$Name]>>>
     >
     runOrThrow: <
       $Name extends keyof $Document & string,
       $Params extends (IsMultipleKeys<$Document> extends true ? [name: $Name] : ([] | [name: $Name | undefined])),
     >(...params: $Params) => Promise<
-      OutputRootType<OrThrowifyConfig<$Config>, $Index, ResultSet.Root<GetRootTypeSelection<OrThrowifyConfig<$Config>, $Index, $Document[$Name]>, $Index, GetRootType<$Document[$Name]>>>
+      ResolveOutputReturnRootType<
+        OrThrowifyConfig<$Config>,
+        $Index,
+        ResultSet.Root<GetRootTypeSelection<OrThrowifyConfig<$Config>, $Index, $Document[$Name]>, $Index, GetRootType<$Document[$Name]>>>
     >
   }
 

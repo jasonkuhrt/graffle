@@ -1,5 +1,4 @@
 import { type ExecutionResult, GraphQLSchema } from 'graphql'
-import { schema } from '../../../tests/_/schema/schema.js'
 import type { Anyware } from '../../lib/anyware/__.js'
 import { Errors } from '../../lib/errors/__.js'
 import type { SomeExecutionResultWithoutErrors } from '../../lib/graphql.js'
@@ -17,7 +16,7 @@ import { type HookDefEncode } from '../5_core/core.js'
 import type { InterfaceRaw } from '../5_core/types.js'
 import type { DocumentFn } from './document.js'
 import type { GetRootTypeMethods } from './RootTypeMethods.js'
-import type { ApplyInputDefaults, Config, ReturnModeType } from './Settings/Config.js'
+import type { Config, ReturnModeType } from './Settings/Config.js'
 import type { Input, InputPrefilled, InputToConfig } from './Settings/Input.js'
 
 export type SchemaInput = URLInput | GraphQLSchema
