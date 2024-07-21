@@ -89,6 +89,23 @@ export type ApplyInputDefaults<$Input extends OptionsInput> = {
     : Exclude<$Input[Key], undefined>
 }
 
+// dprint-ignore
+export type OutputRootType<$Config extends Config, $Index extends Schema.Index, $Data extends object> =
+  $Config['output']['envelope']['enabled'] extends true
+    ? ExecutionResult<$Data | IfConfiguredGetOutputErrorReturns<$Config>>
+    : $Data | IfConfiguredGetOutputErrorReturns<$Config>
+
+// dprint-ignore
+export type OutputRootField<$Config extends Config, $Index extends Schema.Index, $Data, $DataRaw = undefined> =
+  | (
+      $Config['output']['envelope']['enabled'] extends true
+        // todo: a typed execution result that allows for additional error types.
+        // currently it is always graphql execution error however envelope configuration can put more errors into that.
+        ? ExecutionResult<IfConfiguredStripSchemaErrorsFromDataRootType<$Config, $Index, $DataRaw extends undefined ? $Data : $DataRaw>>
+        : IfConfiguredStripSchemaErrorsFromDataRootField<$Config, $Index, $Data>
+    )
+  | IfConfiguredGetOutputErrorReturns<$Config>
+
 type ConfigResolveOutputErrorChannel<$Config extends Config, $Channel extends OutputChannelConfig | false> =
   $Channel extends 'default' ? $Config['output']['defaults']['errorChannel']
     : $Channel extends false ? false
@@ -107,35 +124,20 @@ type ConfigGetOutputError<$Config extends Config, $ErrorCategory extends ErrorCa
     : ConfigResolveOutputErrorChannel<$Config, $Config['output']['errors'][$ErrorCategory]>
 
 // dprint-ignore
-type ConfigGetOutputErrorReturns<$Config extends Config> =
+type IfConfiguredGetOutputErrorReturns<$Config extends Config> =
   | (ConfigGetOutputError<$Config, 'execution'>  extends 'return'  ? GraphQLExecutionResultError  : never)
   | (ConfigGetOutputError<$Config, 'other'>      extends 'return'  ? Error                        : never)
   | (ConfigGetOutputError<$Config, 'schema'>      extends 'return' ? Error                        : never)
 
 // dprint-ignore
-export type OutputRootType<$Config extends Config, $Index extends Schema.Index, $Data extends object> =
-  $Config['output']['envelope']['enabled'] extends true
-    ? ExecutionResult<$Data | ConfigGetOutputErrorReturns<$Config>>
-    : $Data | ConfigGetOutputErrorReturns<$Config>
-// $Config['returnMode'] extends 'data'        ? $Data :
-// $Config['returnMode'] extends 'dataSuccess' ? { [$Key in keyof $Data]: ExcludeSchemaErrors<$Index, $Data[$Key]> }  :
-//                                               $Data | GraphQLExecutionResultError
+type IfConfiguredStripSchemaErrorsFromDataRootType<$Config extends Config, $Index extends Schema.Index, $Data> =
+  { [$RootFieldName in keyof $Data]: IfConfiguredStripSchemaErrorsFromDataRootField<$Config, $Index, $Data[$RootFieldName]> }
 
 // dprint-ignore
-export type OutputRootField<$Config extends Config, $Index extends Schema.Index, $Data, $DataRaw = undefined> =
-  $Config['output']['envelope']['enabled'] extends true
-    ? ExecutionResult<StripSchemaErrorsFromDataIfEnabled<$Config, $Index, $DataRaw extends undefined ? $Data : $DataRaw>> | ConfigGetOutputErrorReturns<$Config>
-    :                   | StripSchemaErrorsFromDataIfEnabled<$Config, $Index, $Data>
-                        | ConfigGetOutputErrorReturns<$Config>
-
-type StripSchemaErrorsFromDataIfEnabled<$Config extends Config, $Index extends Schema.Index, $Data> =
-  $Config['output']['errors']['schema'] extends false ? $Data
+type IfConfiguredStripSchemaErrorsFromDataRootField<$Config extends Config, $Index extends Schema.Index, $Data> =
+  $Config['output']['errors']['schema'] extends false
+    ? $Data
     : ExcludeSchemaErrors<$Index, $Data>
-
-// $Config['returnMode'] extends 'graphql'     ? ExecutionResult<$DataRaw extends undefined ? $Data : $DataRaw> :
-// $Config['returnMode'] extends 'data'        ? $Data :
-// $Config['returnMode'] extends 'dataSuccess' ? ExcludeSchemaErrors<$Index, $Data> :
-//                                               $Data | GraphQLExecutionResultError
 
 export type ExcludeSchemaErrors<$Index extends Schema.Index, $Data> = Exclude<
   $Data,

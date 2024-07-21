@@ -156,10 +156,19 @@ describe('.errors.schema', () => {
       expectTypeOf(g.query.resultNonNull(resultFieldSelect)).resolves.toEqualTypeOf<{ __typename: 'Object1' }>()
     })
   })
-  describe.todo('return', () => {
+  describe('return', () => {
     const g = C({ schema, output: { errors: { schema: 'return' } } })
     test('query.<resultFieldMethod>', () => {
       expectTypeOf(g.query.resultNonNull(resultFieldSelect)).resolves.toEqualTypeOf<{ __typename: 'Object1' } | Error>()
+    })
+  })
+  describe('envelope.schema', () => {
+    const g = C({ schema, output: { envelope: { errors: { schema: true } }, errors: { schema: 'return' } } })
+    test('query.<resultFieldMethod>', () => {
+      // todo: once we have execution result with type variable errors, then enahnce this test to assert that the result errors come through in the errors field.
+      expectTypeOf(g.query.resultNonNull(resultFieldSelect)).resolves.toEqualTypeOf<
+        ExecutionResult<{ resultNonNull: { __typename: 'Object1' } }>
+      >()
     })
   })
 })

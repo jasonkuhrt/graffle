@@ -93,6 +93,11 @@ export type OutputInput<Options extends { transport: Transport; schemaErrors: bo
   //   }
   //   : {}) // eslint-disable-line
   & (Options['schemaErrors'] extends true ? {
+      envelope?: {
+        errors?: {
+          schema?: boolean
+        }
+      }
       errors?: {
         schema?: false | OutputChannelConfig
       }
