@@ -16,7 +16,7 @@ import { type HookDefEncode } from '../5_core/core.js'
 import type { InterfaceRaw } from '../5_core/types.js'
 import type { DocumentFn } from './document.js'
 import type { GetRootTypeMethods } from './RootTypeMethods.js'
-import type { Config } from './Settings/Config.js'
+import { type Config, graphqlOutput, graphqlOutputThrowing } from './Settings/Config.js'
 import { type Input, type InputPrefilled, type InputToConfig, inputToConfig } from './Settings/Input.js'
 
 export type SchemaInput = URLInput | GraphQLSchema
@@ -194,7 +194,7 @@ export const createInternal = (
     const isSelectedTypeScalarOrTypeName = selectedNamedType.kind === `Scalar` || selectedNamedType.kind === `typename` // todo fix type here, its valid
     const isFieldHasArgs = Boolean(context.schemaIndex.Root[rootTypeName]?.fields[rootTypeFieldName]?.args)
     // We should only need to add __typename for result type fields, but the return handler doesn't yet know how to look beyond a plain object type so we have to add all those cases here.
-    const needsTypenameAdded = context.config.returnMode === `dataSuccess`
+    const needsTypenameAdded = context.config.output.errors.schema !== false
       && (selectedNamedType.kind === `Object` || selectedNamedType.kind === `Interface`
         || selectedNamedType.kind === `Union`)
     const rootTypeFieldSelectionSet = isSelectedTypeScalarOrTypeName
@@ -278,13 +278,13 @@ export const createInternal = (
   const client: Client = {
     raw: async (...args: RawParameters) => {
       const input = resolveRawParameters(args)
-      const contextWithReturnModeSet = updateContextConfig(context, { returnMode: `graphql` })
-      return await runRaw(contextWithReturnModeSet, input)
+      const contextWithOutputSet = updateContextConfig(context, { output: graphqlOutput })
+      return await runRaw(contextWithOutputSet, input)
     },
     rawOrThrow: async (...args: RawParameters) => {
       const input = resolveRawParameters(args)
-      const contextWithReturnModeSet = updateContextConfig(context, { returnMode: `graphqlSuccess` })
-      return await runRaw(contextWithReturnModeSet, input)
+      const contextWithOutputSet = updateContextConfig(context, { output: graphqlOutputThrowing })
+      return await runRaw(contextWithOutputSet, input)
     },
     // todo $use
     use: (extensionOrAnyware: Extension | Anyware.Extension2<Core.Core>) => {

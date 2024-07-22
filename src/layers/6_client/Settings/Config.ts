@@ -12,6 +12,22 @@ export type OutputChannelConfig = 'throw' | 'return' | 'default'
 
 export type ErrorCategory = 'execution' | 'other' | 'schema'
 
+export const graphqlOutput: OutputConfig = {
+  defaults: { errorChannel: `throw` },
+  envelope: { enabled: true, errors: { execution: true, other: false, schema: false } },
+  errors: { execution: `default`, other: `default`, schema: false },
+}
+export const graphqlOutputThrowing: OutputConfig = {
+  ...graphqlOutput,
+  envelope: {
+    ...graphqlOutput.envelope,
+    errors: {
+      ...graphqlOutput.envelope.errors,
+      execution: false,
+    },
+  },
+}
+
 export type OutputConfig = {
   defaults: {
     errorChannel: OutputChannel
