@@ -12,20 +12,25 @@ export type OutputChannelConfig = 'throw' | 'return' | 'default'
 
 export type ErrorCategory = 'execution' | 'other' | 'schema'
 
-export const graphqlOutput: OutputConfig = {
+export const traditionalGraphqlOutput: OutputConfig = {
   defaults: { errorChannel: `throw` },
   envelope: { enabled: true, errors: { execution: true, other: false, schema: false } },
   errors: { execution: `default`, other: `default`, schema: false },
 }
-export const graphqlOutputThrowing: OutputConfig = {
-  ...graphqlOutput,
+export const traditionalGraphqlOutputThrowing: OutputConfig = {
+  ...traditionalGraphqlOutput,
   envelope: {
-    ...graphqlOutput.envelope,
+    ...traditionalGraphqlOutput.envelope,
     errors: {
-      ...graphqlOutput.envelope.errors,
+      ...traditionalGraphqlOutput.envelope.errors,
       execution: false,
     },
   },
+}
+
+export const isTraditionalGraphQLOutput = (config: Config) => {
+  return config.output.envelope.enabled && config.output.envelope.errors.execution
+    && !config.output.envelope.errors.other && !config.output.envelope.errors.schema
 }
 
 export type OutputConfig = {

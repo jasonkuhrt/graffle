@@ -16,7 +16,12 @@ import { type HookDefEncode } from '../5_core/core.js'
 import type { InterfaceRaw } from '../5_core/types.js'
 import type { DocumentFn } from './document.js'
 import type { GetRootTypeMethods } from './RootTypeMethods.js'
-import { type Config, graphqlOutput, graphqlOutputThrowing } from './Settings/Config.js'
+import {
+  type Config,
+  isTraditionalGraphQLOutput,
+  traditionalGraphqlOutput,
+  traditionalGraphqlOutputThrowing,
+} from './Settings/Config.js'
 import { type Input, type InputPrefilled, type InputToConfig, inputToConfig } from './Settings/Input.js'
 
 export type SchemaInput = URLInput | GraphQLSchema
@@ -207,11 +212,11 @@ export const createInternal = (
       [rootTypeFieldName]: rootTypeFieldSelectionSet,
     } as GraphQLObjectSelection)
     if (result instanceof Error) return result
-    return context.config.returnMode === `data` || context.config.returnMode === `dataAndErrors`
-        || context.config.returnMode === `dataSuccess`
+
+    return context.config.output.envelope.enabled
+      ? result
       // @ts-expect-error
-      ? result[rootTypeFieldName]
-      : result
+      : result[rootTypeFieldName]
   }
 
   const createRootTypeMethods = (context: TypedContext, rootTypeName: RootTypeName) => {
@@ -247,7 +252,7 @@ export const createInternal = (
       retryingExtension: context.retry,
       extensions: context.extensions.filter(_ => _.anyware !== undefined).map(_ => _.anyware!),
     }) as GraffleExecutionResult
-    return handleReturn(context, result)
+    return handleOutput(context, result)
   }
 
   const runRaw = async (context: Context, rawInput: RawInput) => {
@@ -278,12 +283,12 @@ export const createInternal = (
   const client: Client = {
     raw: async (...args: RawParameters) => {
       const input = resolveRawParameters(args)
-      const contextWithOutputSet = updateContextConfig(context, { output: graphqlOutput })
+      const contextWithOutputSet = updateContextConfig(context, { output: traditionalGraphqlOutput })
       return await runRaw(contextWithOutputSet, input)
     },
     rawOrThrow: async (...args: RawParameters) => {
       const input = resolveRawParameters(args)
-      const contextWithOutputSet = updateContextConfig(context, { output: graphqlOutputThrowing })
+      const contextWithOutputSet = updateContextConfig(context, { output: traditionalGraphqlOutputThrowing })
       return await runRaw(contextWithOutputSet, input)
     },
     // todo $use
@@ -359,72 +364,101 @@ export const createInternal = (
   return client
 }
 
-const handleReturn = (
+const handleOutput = (
   context: Context,
   result: GraffleExecutionResult,
 ) => {
-  switch (context.config.returnMode) {
-    case `graphqlSuccess`:
-    case `dataAndErrors`:
-    case `dataSuccess`:
-    case `data`: {
-      if (result instanceof Error || (result.errors && result.errors.length > 0)) {
-        const error = result instanceof Error ? result : (new Errors.ContextualAggregateError(
-          `One or more errors in the execution result.`,
-          {},
-          result.errors!,
-        ))
-        if (
-          context.config.returnMode === `data` || context.config.returnMode === `dataSuccess`
-          || context.config.returnMode === `graphqlSuccess`
-        ) throw error
-        return error
-      }
+  if (isTraditionalGraphQLOutput(context.config)) return result
 
-      if (isTypedContext(context)) {
-        if (context.config.returnMode === `dataSuccess`) {
-          if (!isPlainObject(result.data)) throw new Error(`Expected data to be an object.`)
-          const schemaErrors = Object.entries(result.data).map(([rootFieldName, rootFieldValue]) => {
-            // todo this check would be nice but it doesn't account for aliases right now. To achieve this we would
-            // need to have the selection set available to use and then do a costly analysis for all fields that were aliases.
-            // So costly that we would probably instead want to create an index of them on the initial encoding step and
-            // then make available down stream. Also, note, here, the hardcoding of Query, needs to be any root type.
-            // const isResultField = Boolean(schemaIndex.error.rootResultFields.Query[rootFieldName])
-            // if (!isResultField) return null
-            // if (!isPlainObject(rootFieldValue)) return new Error(`Expected result field to be an object.`)
-            if (!isPlainObject(rootFieldValue)) return null
-            const __typename = rootFieldValue[`__typename`]
-            if (typeof __typename !== `string`) throw new Error(`Expected __typename to be selected and a string.`)
-            const isErrorObject = Boolean(
-              context.schemaIndex.error.objectsTypename[__typename],
-            )
-            if (!isErrorObject) return null
-            // todo extract message
-            // todo allow mapping error instances to schema errors
-            return new Error(`Failure on field ${rootFieldName}: ${__typename}`)
-          }).filter((_): _ is Error => _ !== null)
+  const c = context.config.output
 
-          if (schemaErrors.length === 1) throw schemaErrors[0]!
-          if (schemaErrors.length > 0) {
-            const error = new Errors.ContextualAggregateError(
-              `Two or more schema errors in the execution result.`,
-              {},
-              schemaErrors,
-            )
-            throw error
+  const isEnvelope = c.envelope.enabled
+  const isThrowOther =
+    (c.errors.other === `throw` || (c.errors.other === `default` && c.defaults.errorChannel === `throw`))
+    && (!c.envelope.enabled || !c.envelope.errors.other)
+  const isReturnOther =
+    (c.errors.other === `return` || (c.errors.other === `default` && c.defaults.errorChannel === `return`))
+    && (!c.envelope.enabled || !c.envelope.errors.other)
+
+  const isThrowExecution =
+    (c.errors.execution === `throw` || (c.errors.execution === `default` && c.defaults.errorChannel === `throw`))
+    && (!c.envelope.enabled || !c.envelope.errors.execution)
+
+  const isReturnExecution =
+    (c.errors.execution === `return` || (c.errors.execution === `default` && c.defaults.errorChannel === `return`))
+    && (!c.envelope.enabled || !c.envelope.errors.execution)
+
+  const isThrowSchema = c.errors.schema === `throw`
+    || (c.errors.schema === `default` && c.defaults.errorChannel === `throw`)
+
+  const isReturnSchema = c.errors.schema === `return`
+    || (c.errors.schema === `default` && c.defaults.errorChannel === `return`)
+
+  if (result instanceof Error) {
+    if (isThrowOther) throw result
+    if (isReturnOther) return result
+    // todo not a graphql execution error class instance
+    return isEnvelope ? { errors: [result] } : result
+  }
+
+  if (result.errors && result.errors.length > 0) {
+    const error = new Errors.ContextualAggregateError(
+      `One or more errors in the execution result.`,
+      {},
+      result.errors,
+    )
+    if (isThrowExecution) throw error
+    if (isReturnExecution) return error
+    return isEnvelope ? result : error
+  }
+
+  {
+    if (isTypedContext(context)) {
+      if (c.errors.schema !== false) {
+        if (!isPlainObject(result.data)) throw new Error(`Expected data to be an object.`)
+        const schemaErrors = Object.entries(result.data).map(([rootFieldName, rootFieldValue]) => {
+          // todo this check would be nice but it doesn't account for aliases right now. To achieve this we would
+          // need to have the selection set available to use and then do a costly analysis for all fields that were aliases.
+          // So costly that we would probably instead want to create an index of them on the initial encoding step and
+          // then make available down stream. Also, note, here, the hardcoding of Query, needs to be any root type.
+          // const isResultField = Boolean(schemaIndex.error.rootResultFields.Query[rootFieldName])
+          // if (!isResultField) return null
+          // if (!isPlainObject(rootFieldValue)) return new Error(`Expected result field to be an object.`)
+          if (!isPlainObject(rootFieldValue)) return null
+          const __typename = rootFieldValue[`__typename`]
+          if (typeof __typename !== `string`) throw new Error(`Expected __typename to be selected and a string.`)
+          const isErrorObject = Boolean(
+            context.schemaIndex.error.objectsTypename[__typename],
+          )
+          if (!isErrorObject) return null
+          // todo extract message
+          // todo allow mapping error instances to schema errors
+          return new Error(`Failure on field ${rootFieldName}: ${__typename}`)
+        }).filter((_): _ is Error => _ !== null)
+
+        const error = (schemaErrors.length === 1)
+          ? schemaErrors[0]!
+          : schemaErrors.length > 0
+          ? new Errors.ContextualAggregateError(
+            `Two or more schema errors in the execution result.`,
+            {},
+            schemaErrors,
+          )
+          : null
+        if (error) {
+          if (isThrowSchema) throw error
+          if (isReturnSchema) {
+            return isEnvelope ? { ...result, errors: [...result.errors, error] } : error
           }
         }
       }
-
-      if (context.config.returnMode === `graphqlSuccess`) {
-        return result
-      }
-
-      return result.data
     }
-    default: {
+
+    if (isEnvelope) {
       return result
     }
+
+    return result.data
   }
 }
 
