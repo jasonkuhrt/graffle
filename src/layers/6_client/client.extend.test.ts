@@ -5,7 +5,7 @@ import { createResponse, test } from '../../../tests/_/helpers.js'
 import { Graffle } from '../../../tests/_/schema/generated/__.js'
 import { oops } from '../../lib/anyware/specHelpers.js'
 
-const client = Graffle.create({ schema: 'https://foo', returnMode: 'dataAndErrors' })
+const client = Graffle.create({ schema: 'https://foo', output: { defaults: { errorChannel: 'return' } } })
 const headers = { 'x-foo': 'bar' }
 
 test('using an extension returns a copy of the client', () => {

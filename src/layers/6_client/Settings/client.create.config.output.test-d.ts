@@ -73,7 +73,10 @@ describe('.envelope', () => {
       expectTypeOf(g.query.__typename()).resolves.toEqualTypeOf<FieldMethodResultEnabled>()
     })
     test('query.<resultFieldMethod>', () => {
-      const x = g.query.resultNonNull(resultFieldSelect)
+      expectTypeOf(g.query.resultNonNull(resultFieldSelect)).resolves.toEqualTypeOf<ResultFieldMethodResultEnabled>()
+    })
+    test('query.$batch', () => {
+      const x = g.query.$batch({ __typename: true, id: true })
       expectTypeOf(g.query.resultNonNull(resultFieldSelect)).resolves.toEqualTypeOf<ResultFieldMethodResultEnabled>()
     })
   })
