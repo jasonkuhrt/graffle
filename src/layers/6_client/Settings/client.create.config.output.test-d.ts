@@ -40,6 +40,7 @@ describe('default is errors thrown, no envelope, no schema errors', async () => 
   expectTypeOf(result2).toEqualTypeOf<'Query'>()
 })
 
+// dprint-ignore
 describe('.envelope', () => {
   type FieldMethodResultDisabled = 'Query'
   type FieldMethodResultEnabled = ExecutionResult<{ __typename: FieldMethodResultDisabled }>
@@ -56,7 +57,6 @@ describe('.envelope', () => {
   // todo reference to Graffle client
   // const fieldMethod = <$Graffle extends {query:{__typename:()=>Promise<any>}}>(g: $Graffle) => g.query.__typename()
 
-  // dprint-ignore
   describe('false disables it ', () => {
     const g = C({ schema, output: { envelope: false } })
 
@@ -65,6 +65,9 @@ describe('.envelope', () => {
     })
     test('query.<resultFieldMethod>', () => {
       expectTypeOf(g.query.resultNonNull(resultFieldSelect)).resolves.toEqualTypeOf<ResultFieldMethodResultDisabled>()
+    })
+    test('query.$batch', () => {
+      expectTypeOf(g.query.$batch({ __typename: true, idNonNull: true })).resolves.toEqualTypeOf<{ __typename: 'Query'; idNonNull: string }>()
     })
   })
   describe('true enables it', () => {
@@ -76,8 +79,7 @@ describe('.envelope', () => {
       expectTypeOf(g.query.resultNonNull(resultFieldSelect)).resolves.toEqualTypeOf<ResultFieldMethodResultEnabled>()
     })
     test('query.$batch', () => {
-      const x = g.query.$batch({ __typename: true, id: true })
-      expectTypeOf(g.query.resultNonNull(resultFieldSelect)).resolves.toEqualTypeOf<ResultFieldMethodResultEnabled>()
+      expectTypeOf(g.query.$batch({ __typename: true, idNonNull: true })).resolves.toEqualTypeOf<ExecutionResult<{ __typename: 'Query'; idNonNull: string }>>()
     })
   })
   test('object enables it', async () => {

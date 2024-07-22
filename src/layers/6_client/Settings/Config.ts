@@ -31,6 +31,25 @@ export type OutputConfig = {
   }
 }
 
+export const outputConfigDefault: OutputConfigDefault = {
+  defaults: {
+    errorChannel: `throw`,
+  },
+  envelope: {
+    enabled: false,
+    errors: {
+      execution: true,
+      other: false,
+      schema: false,
+    },
+  },
+  errors: {
+    execution: `default`,
+    other: `default`,
+    schema: false,
+  },
+}
+
 export type OutputConfigDefault = {
   defaults: {
     errorChannel: 'throw'

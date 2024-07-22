@@ -16,8 +16,8 @@ import { type HookDefEncode } from '../5_core/core.js'
 import type { InterfaceRaw } from '../5_core/types.js'
 import type { DocumentFn } from './document.js'
 import type { GetRootTypeMethods } from './RootTypeMethods.js'
-import type { Config, ReturnModeType } from './Settings/Config.js'
-import type { Input, InputPrefilled, InputToConfig } from './Settings/Input.js'
+import type { Config } from './Settings/Config.js'
+import { type Input, type InputPrefilled, type InputToConfig, inputToConfig } from './Settings/Input.js'
 
 export type SchemaInput = URLInput | GraphQLSchema
 
@@ -152,7 +152,7 @@ export const createInternal = (
    * However our implementation here needs to be generic and support all return modes
    * so we force cast it as such.
    */
-  const returnMode = input.returnMode ?? `data` as ReturnModeType
+  // const returnMode = input.returnMode ?? `data` as ReturnModeType
 
   const executeRootType = async (
     context: TypedContext,
@@ -238,9 +238,7 @@ export const createInternal = (
   const context: Context = {
     retry: state.retry,
     extensions: state.extensions,
-    config: {
-      returnMode,
-    },
+    config: inputToConfig(input),
   }
 
   const run = async (context: Context, initialInput: HookDefEncode['input']) => {

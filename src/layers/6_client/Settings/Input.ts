@@ -4,7 +4,18 @@ import type { URLInput } from '../../0_functions/request.js'
 import type { Schema } from '../../1_Schema/__.js'
 import type { GlobalRegistry } from '../../2_generator/globalRegistry.js'
 import type { Transport } from '../../5_core/types.js'
-import type { OutputChannel, OutputChannelConfig } from './Config.js'
+import { type OutputChannel, type OutputChannelConfig, outputConfigDefault } from './Config.js'
+
+export type InputOutputEnvelopeLonghand = {
+  /**
+   * @defaultValue `true`
+   */
+  enabled?: boolean
+  errors?: {
+    execution?: boolean
+    other?: boolean
+  }
+}
 
 export type Input<$Schema extends GlobalRegistry.SchemaList> = {
   /**
@@ -64,16 +75,7 @@ export type OutputInput<Options extends { transport: Transport; schemaErrors: bo
     /**
      * @defaultValue `false`
      */
-    envelope?: boolean | {
-      /**
-       * @defaultValue `true`
-       */
-      enabled?: boolean
-      errors?: {
-        execution?: boolean
-        other?: boolean
-      }
-    }
+    envelope?: boolean | InputOutputEnvelopeLonghand
     /**
      * Granular control of how to output errors by category.
      */
@@ -127,6 +129,44 @@ export type InputToConfig<$Input extends Input<any>> = {
       other: ConfigManager.ReadOrDefault<$Input,['output', 'errors', 'other'], 'default'>
       schema: ConfigManager.ReadOrDefault<$Input,['output', 'errors', 'schema'], false>
     }
+  }
+}
+
+export const inputToConfig = <T extends Input<any>>(input: T): InputToConfig<T> => {
+  const envelopeLonghand: InputOutputEnvelopeLonghand | undefined = typeof input.output?.envelope === `object`
+    ? { enabled: true, ...input.output.envelope }
+    : typeof input.output?.envelope === `boolean`
+    ? { enabled: input.output.envelope }
+    : undefined
+  return {
+    output: {
+      defaults: {
+        // @ts-expect-error conditional type
+        errorChannel: input.output?.defaults?.errorChannel ?? outputConfigDefault.defaults.errorChannel,
+      },
+      envelope: {
+        // @ts-expect-error conditional type
+        enabled: envelopeLonghand?.enabled ?? outputConfigDefault.envelope.enabled,
+        errors: {
+          // @ts-expect-error conditional type
+          execution: envelopeLonghand?.errors?.execution ?? outputConfigDefault.envelope.errors.execution,
+          // @ts-expect-error conditional type
+          other: envelopeLonghand?.errors?.other ?? outputConfigDefault.envelope.errors.other,
+          // @ts-expect-error conditional type
+          // eslint-disable-next-line
+          schema: envelopeLonghand?.errors?.schema ?? outputConfigDefault.envelope.errors.schema,
+        },
+      },
+      errors: {
+        // @ts-expect-error conditional type
+        execution: input.output?.errors?.execution ?? outputConfigDefault.errors.execution,
+        // @ts-expect-error conditional type
+        other: input.output?.errors?.other ?? outputConfigDefault.errors.other,
+        // @ts-expect-error conditional type
+        // eslint-disable-next-line
+        schema: input.output?.errors?.schema ?? outputConfigDefault.errors.schema,
+      },
+    },
   }
 }
 
