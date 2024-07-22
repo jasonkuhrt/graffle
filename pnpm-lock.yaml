@@ -113,7 +113,7 @@ importers:
         version: 5.6.1(graphql@16.9.0)
       jsdom:
         specifier: ^24.1.0
-        version: 24.1.0
+        version: 24.1.1
       json-bigint:
         specifier: ^1.0.0
         version: 1.0.0
@@ -134,7 +134,7 @@ importers:
         version: 7.16.1(eslint@9.7.0)(typescript@5.5.3)
       vitest:
         specifier: ^2.0.3
-        version: 2.0.3(@types/node@20.14.11)(happy-dom@14.12.3)(jsdom@24.1.0)
+        version: 2.0.3(@types/node@20.14.11)(happy-dom@14.12.3)(jsdom@24.1.1)
 
 packages:
 
@@ -1984,8 +1984,8 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
 
-  jsdom@24.1.0:
-    resolution: {integrity: sha512-6gpM7pRXCwIOKxX47cgOyvyQDN/Eh0f1MeKySBV2xGdKtqJBLj8P25eY3EVCWo2mglDDzozR2r2MW4T+JiNUZA==}
+  jsdom@24.1.1:
+    resolution: {integrity: sha512-5O1wWV99Jhq4DV7rCLIoZ/UIhyQeDR7wHVyZAHAshbrvZsLs+Xzz7gtwnlJTJDjleiTKh54F4dXrX70vJQTyJQ==}
     engines: {node: '>=18'}
     peerDependencies:
       canvas: ^2.11.2
@@ -5157,7 +5157,7 @@ snapshots:
 
   jsdoctypeparser@9.0.0: {}
 
-  jsdom@24.1.0:
+  jsdom@24.1.1:
     dependencies:
       cssstyle: 4.0.1
       data-urls: 5.0.0
@@ -6217,7 +6217,7 @@ snapshots:
       '@types/node': 20.14.11
       fsevents: 2.3.3
 
-  vitest@2.0.3(@types/node@20.14.11)(happy-dom@14.12.3)(jsdom@24.1.0):
+  vitest@2.0.3(@types/node@20.14.11)(happy-dom@14.12.3)(jsdom@24.1.1):
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@vitest/expect': 2.0.3
@@ -6241,7 +6241,7 @@ snapshots:
     optionalDependencies:
       '@types/node': 20.14.11
       happy-dom: 14.12.3
-      jsdom: 24.1.0
+      jsdom: 24.1.1
     transitivePeerDependencies:
       - less
       - lightningcss
