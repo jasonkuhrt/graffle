@@ -5,6 +5,7 @@ import { expectTypeOf, test } from 'vitest'
 import { Graffle } from '../../../../tests/_/schema/generated/__.js'
 import { schema } from '../../../../tests/_/schema/schema.js'
 import { GraphQLExecutionResultError } from '../../../lib/graphql.js'
+import { SimplifyDeep } from '../../../lib/prelude.js'
 
 const C = Graffle.create
 
@@ -70,9 +71,9 @@ describe('.envelope', () => {
       expectTypeOf(g.query.$batch({ __typename: true, idNonNull: true })).resolves.toEqualTypeOf<{ __typename: 'Query'; idNonNull: string }>()
     })
   })
-  describe('true enables it', () => {
+  describe('true enables it',  () => {
     const g = Graffle.create({ schema, output: { envelope: true } })
-    test('query.<fieldMethod>', () => {
+    test('query.<fieldMethod>', async() => {
       expectTypeOf(g.query.__typename()).resolves.toEqualTypeOf<FieldMethodResultEnabled>()
     })
     test('query.<resultFieldMethod>', () => {

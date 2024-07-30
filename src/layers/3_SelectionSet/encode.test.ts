@@ -3,6 +3,7 @@ import { describe, expect, test } from 'vitest'
 import { db } from '../../../tests/_/db.js'
 import type { Index } from '../../../tests/_/schema/generated/Index.js'
 import { $Index as schemaIndex } from '../../../tests/_/schema/generated/SchemaRuntime.js'
+import { outputConfigDefault } from '../6_client/Settings/Config.js'
 import type { SelectionSet } from './__.js'
 import type { Context } from './encode.js'
 import { rootTypeSelectionSet } from './encode.js'
@@ -21,7 +22,7 @@ const testEachArgs = [
     ]
   ) => {
     const [description, ss] = args.length === 1 ? [undefined, args[0]] : args
-    const context: Context = { schemaIndex, config: { returnMode: `data` } }
+    const context: Context = { schemaIndex, config: { output: outputConfigDefault } }
     const graphqlDocumentString = rootTypeSelectionSet(context, schemaIndex[`Root`][`Query`], ss as any)
     // Should parse, ensures is syntactically valid graphql document.
     const document = parse(graphqlDocumentString)

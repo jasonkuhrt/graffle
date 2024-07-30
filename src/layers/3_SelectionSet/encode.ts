@@ -2,7 +2,7 @@ import { RootTypeName } from '../../lib/graphql.js'
 import { assertArray, assertObject, lowerCaseFirstLetter } from '../../lib/prelude.js'
 import { Schema } from '../1_Schema/__.js'
 import { readMaybeThunk } from '../1_Schema/core/helpers.js'
-import type { ReturnModeType } from '../6_client/Settings/Config.js'
+import type { Config } from '../6_client/Settings/Config.js'
 import type { SelectionSet } from './__.js'
 import { isSelectFieldName } from './helpers.js'
 import { parseClientDirectiveDefer } from './runtime/directives/defer.js'
@@ -44,9 +44,7 @@ type FieldValue = SS | Indicator
 
 export interface Context {
   schemaIndex: Schema.Index
-  config: {
-    returnMode: ReturnModeType
-  }
+  config: Config
 }
 
 export const rootTypeSelectionSet = (
@@ -200,7 +198,7 @@ export const resolveObjectLikeFieldValue = (
          * Inject __typename field for result fields that are missing it.
          */
         // dprint-ignore
-        if (rootTypeName && context.config.returnMode === `dataSuccess` && context.schemaIndex.error.rootResultFields[rootTypeName][fieldName.actual]) {
+        if (rootTypeName && context.config.output.errors.schema !== false && context.schemaIndex.error.rootResultFields[rootTypeName][fieldName.actual]) {
           (ss as Record<string, boolean>)[`__typename`] = true
         }
         return `${toGraphQLFieldName(fieldName)} ${resolveFieldValue(context, schemaField, ss)}`

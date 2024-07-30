@@ -19,6 +19,7 @@ import type { GetRootTypeMethods } from './RootTypeMethods.js'
 import {
   type Config,
   isTraditionalGraphQLOutput,
+  readConfigErrorCategoryOutputChannel,
   traditionalGraphqlOutput,
   traditionalGraphqlOutputThrowing,
 } from './Settings/Config.js'
@@ -373,26 +374,22 @@ const handleOutput = (
   const c = context.config.output
 
   const isEnvelope = c.envelope.enabled
-  const isThrowOther =
-    (c.errors.other === `throw` || (c.errors.other === `default` && c.defaults.errorChannel === `throw`))
-    && (!c.envelope.enabled || !c.envelope.errors.other)
-  const isReturnOther =
-    (c.errors.other === `return` || (c.errors.other === `default` && c.defaults.errorChannel === `return`))
+
+  const isThrowOther = readConfigErrorCategoryOutputChannel(context.config, `other`) === `throw`
     && (!c.envelope.enabled || !c.envelope.errors.other)
 
-  const isThrowExecution =
-    (c.errors.execution === `throw` || (c.errors.execution === `default` && c.defaults.errorChannel === `throw`))
+  const isReturnOther = readConfigErrorCategoryOutputChannel(context.config, `other`) === `return`
+    && (!c.envelope.enabled || !c.envelope.errors.other)
+
+  const isThrowExecution = readConfigErrorCategoryOutputChannel(context.config, `execution`) === `throw`
     && (!c.envelope.enabled || !c.envelope.errors.execution)
 
-  const isReturnExecution =
-    (c.errors.execution === `return` || (c.errors.execution === `default` && c.defaults.errorChannel === `return`))
+  const isReturnExecution = readConfigErrorCategoryOutputChannel(context.config, `execution`) === `return`
     && (!c.envelope.enabled || !c.envelope.errors.execution)
 
-  const isThrowSchema = c.errors.schema === `throw`
-    || (c.errors.schema === `default` && c.defaults.errorChannel === `throw`)
+  const isThrowSchema = readConfigErrorCategoryOutputChannel(context.config, `schema`) === `throw`
 
-  const isReturnSchema = c.errors.schema === `return`
-    || (c.errors.schema === `default` && c.defaults.errorChannel === `return`)
+  const isReturnSchema = readConfigErrorCategoryOutputChannel(context.config, `schema`) === `return`
 
   if (result instanceof Error) {
     if (isThrowOther) throw result
@@ -448,7 +445,7 @@ const handleOutput = (
         if (error) {
           if (isThrowSchema) throw error
           if (isReturnSchema) {
-            return isEnvelope ? { ...result, errors: [...result.errors, error] } : error
+            return isEnvelope ? { ...result, errors: [...result.errors ?? [], error] } : error
           }
         }
       }
@@ -463,11 +460,43 @@ const handleOutput = (
 }
 
 const applyOrThrowToContext = <$Context extends Context>(context: $Context): $Context => {
-  if (context.config.returnMode === `dataSuccess` || context.config.returnMode === `graphqlSuccess`) {
-    return context
+  if (isConfigOrThrowSemantics(context.config)) return context
+  return updateContextConfig(context, {
+    output: {
+      ...context.config.output,
+      errors: {
+        execution: `throw`,
+        other: `throw`,
+        schema: context.config.output.errors.schema === false ? false : `throw`,
+      },
+      envelope: {
+        ...context.config.output.envelope,
+        errors: {
+          execution: false,
+          other: false,
+          schema: false,
+        },
+      },
+    },
+  })
+}
+
+const isConfigOrThrowSemantics = (config: Config): boolean => {
+  const isAllCategoriesThrowOrDisabled = readConfigErrorCategoryOutputChannel(config, `execution`) === `throw`
+    && readConfigErrorCategoryOutputChannel(config, `other`) === `throw`
+    && (readConfigErrorCategoryOutputChannel(config, `schema`) === `throw`
+      || readConfigErrorCategoryOutputChannel(config, `schema`) === false)
+
+  if (!isAllCategoriesThrowOrDisabled) return false
+
+  if (
+    config.output.envelope.enabled
+    && Object.values(config.output.envelope.errors.execution).filter(_ => _ === true).length > 0
+  ) {
+    return false
   }
-  const newMode = context.config.returnMode === `graphql` ? `graphqlSuccess` : `dataSuccess`
-  return updateContextConfig(context, { returnMode: newMode })
+
+  return true
 }
 
 const updateContextConfig = <$Context extends Context>(context: $Context, config: Config): $Context => {

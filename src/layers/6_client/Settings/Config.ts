@@ -12,6 +12,16 @@ export type OutputChannelConfig = 'throw' | 'return' | 'default'
 
 export type ErrorCategory = 'execution' | 'other' | 'schema'
 
+export const readConfigErrorCategoryOutputChannel = (
+  config: Config,
+  errorCategory: ErrorCategory,
+): OutputChannel | false => {
+  if (config.output.errors[errorCategory] === `default`) {
+    return config.output.defaults.errorChannel
+  }
+  return config.output.errors[errorCategory]
+}
+
 export const traditionalGraphqlOutput: OutputConfig = {
   defaults: { errorChannel: `throw` },
   envelope: { enabled: true, errors: { execution: true, other: false, schema: false } },
@@ -90,12 +100,12 @@ export type OutputConfigDefault = {
   }
 }
 
-export type ReturnModeType =
-  | ReturnModeTypeGraphQL
-  | ReturnModeTypeGraphQLSuccess
-  | ReturnModeTypeDataSuccess
-  | ReturnModeTypeData
-  | ReturnModeTypeDataAndErrors
+// export type ReturnModeType =
+//   | ReturnModeTypeGraphQL
+//   | ReturnModeTypeGraphQLSuccess
+//   | ReturnModeTypeDataSuccess
+//   | ReturnModeTypeData
+//   | ReturnModeTypeDataAndErrors
 
 export type ReturnModeTypeBase =
   | ReturnModeTypeGraphQLSuccess
@@ -113,9 +123,9 @@ export type ReturnModeTypeDataAndErrors = 'dataAndErrors'
 
 export type ReturnModeTypeDataSuccess = 'dataSuccess'
 
-export type OptionsInput = {
-  returnMode: ReturnModeType | undefined
-}
+// export type OptionsInput = {
+//   returnMode: ReturnModeType | undefined
+// }
 
 export type OptionsInputDefaults = {
   returnMode: 'data'
@@ -125,10 +135,10 @@ export type Config = {
   output: OutputConfig
 }
 
-export type ApplyInputDefaults<$Input extends OptionsInput> = {
-  [Key in keyof OptionsInputDefaults]: undefined extends $Input[Key] ? OptionsInputDefaults[Key]
-    : Exclude<$Input[Key], undefined>
-}
+// export type ApplyInputDefaults<$Input extends OptionsInput> = {
+//   [Key in keyof OptionsInputDefaults]: undefined extends $Input[Key] ? OptionsInputDefaults[Key]
+//     : Exclude<$Input[Key], undefined>
+// }
 
 // dprint-ignore
 export type ResolveOutputReturnRootType<$Config extends Config, $Index extends Schema.Index, $Data extends object> =
