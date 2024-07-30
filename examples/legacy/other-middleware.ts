@@ -15,12 +15,12 @@ const getAccessToken = () => Promise.resolve(`some special token here`)
    */
 
   const requestMiddleware: RequestMiddleware = async (request) => {
+    const headers = new Headers(request.headers)
+    headers.set(`x-auth-token`, await getAccessToken())
+
     return {
       ...request,
-      headers: {
-        ...request.headers,
-        'x-auth-token': await getAccessToken(),
-      },
+      headers,
     }
   }
 
@@ -33,9 +33,13 @@ const getAccessToken = () => Promise.resolve(`some special token here`)
 
   const requestMiddleware: RequestMiddleware = async (request) => {
     const token = await getAccessToken()
+
+    const headers = new Headers(request.headers)
+    headers.set(`x-auth-token`, token)
+
     return {
       ...request,
-      headers: { ...request.headers, 'x-auth-token': token },
+      headers,
     }
   }
 
