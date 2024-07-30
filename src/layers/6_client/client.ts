@@ -202,7 +202,9 @@ export const createInternal = (
     const isSelectedTypeScalarOrTypeName = selectedNamedType.kind === `Scalar` || selectedNamedType.kind === `typename` // todo fix type here, its valid
     const isFieldHasArgs = Boolean(context.schemaIndex.Root[rootTypeName]?.fields[rootTypeFieldName]?.args)
     // We should only need to add __typename for result type fields, but the return handler doesn't yet know how to look beyond a plain object type so we have to add all those cases here.
-    const needsTypenameAdded = context.config.output.errors.schema !== false
+    // todo we could look at the root type fields that have result types and compare to the incoming query for match?
+    const isHasSchemaErrors = Object.values(context.schemaIndex.error.objects).length > 0
+    const needsTypenameAdded = isHasSchemaErrors && context.config.output.errors.schema !== false
       && (selectedNamedType.kind === `Object` || selectedNamedType.kind === `Interface`
         || selectedNamedType.kind === `Union`)
     const rootTypeFieldSelectionSet = isSelectedTypeScalarOrTypeName
@@ -463,13 +465,14 @@ const handleOutput = (
 
 const applyOrThrowToContext = <$Context extends Context>(context: $Context): $Context => {
   if (isConfigOrThrowSemantics(context.config)) return context
+
   return updateContextConfig(context, {
     output: {
       ...context.config.output,
       errors: {
         execution: `throw`,
         other: `throw`,
-        schema: context.config.output.errors.schema === false ? false : `throw`,
+        schema: `throw`,
       },
       envelope: {
         ...context.config.output.envelope,
@@ -487,7 +490,7 @@ const isConfigOrThrowSemantics = (config: Config): boolean => {
   const isAllCategoriesThrowOrDisabled = readConfigErrorCategoryOutputChannel(config, `execution`) === `throw`
     && readConfigErrorCategoryOutputChannel(config, `other`) === `throw`
     && (readConfigErrorCategoryOutputChannel(config, `schema`) === `throw`
-      || readConfigErrorCategoryOutputChannel(config, `schema`) === false)
+      || readConfigErrorCategoryOutputChannel(config, `schema`) === `throw`) // todo: or false and not using schema errors
 
   if (!isAllCategoriesThrowOrDisabled) return false
 
