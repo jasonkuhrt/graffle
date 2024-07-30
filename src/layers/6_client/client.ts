@@ -231,7 +231,7 @@ export const createInternal = (
 
         // todo We need to document that in order for this to 100% work none of the user's root type fields can end with "OrThrow".
         const isOrThrow = key.endsWith(`OrThrow`)
-        const contextWithReturnModeSet = isOrThrow ? applyOrThrowToContext(context) : context
+        const contextWithReturnModeSet = isOrThrow ? contextConfigSetOrThrow(context) : context
 
         if (key.startsWith(`$batch`)) {
           return async (selectionSetOrIndicator: SelectionSetOrIndicator) =>
@@ -352,7 +352,7 @@ export const createInternal = (
           runOrThrow: async (maybeOperationName: string) => {
             const { selection, rootTypeName } = processInput(maybeOperationName)
             return await executeRootType(
-              applyOrThrowToContext(typedContext),
+              contextConfigSetOrThrow(typedContext),
               rootTypeName,
               selection,
             )
@@ -463,8 +463,8 @@ const handleOutput = (
   }
 }
 
-const applyOrThrowToContext = <$Context extends Context>(context: $Context): $Context => {
-  if (isConfigOrThrowSemantics(context.config)) return context
+const contextConfigSetOrThrow = <$Context extends Context>(context: $Context): $Context => {
+  if (isContextConfigOrThrowSemantics(context)) return context
 
   return updateContextConfig(context, {
     output: {
@@ -486,7 +486,7 @@ const applyOrThrowToContext = <$Context extends Context>(context: $Context): $Co
   })
 }
 
-const isConfigOrThrowSemantics = (config: Config): boolean => {
+const isContextConfigOrThrowSemantics = ({ config }: Context): boolean => {
   const isAllCategoriesThrowOrDisabled = readConfigErrorCategoryOutputChannel(config, `execution`) === `throw`
     && readConfigErrorCategoryOutputChannel(config, `other`) === `throw`
     && (readConfigErrorCategoryOutputChannel(config, `schema`) === `throw`
