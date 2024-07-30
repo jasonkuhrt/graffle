@@ -38,7 +38,7 @@ export const traditionalGraphqlOutputThrowing: OutputConfig = {
   },
 }
 
-export const isTraditionalGraphQLOutput = (config: Config) => {
+export const isContextConfigTraditionalGraphQLOutput = (config: Config) => {
   return config.output.envelope.enabled && config.output.envelope.errors.execution
     && !config.output.envelope.errors.other && !config.output.envelope.errors.schema
 }

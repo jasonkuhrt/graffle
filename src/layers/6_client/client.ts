@@ -18,7 +18,7 @@ import type { DocumentFn } from './document.js'
 import type { GetRootTypeMethods } from './RootTypeMethods.js'
 import {
   type Config,
-  isTraditionalGraphQLOutput,
+  isContextConfigTraditionalGraphQLOutput,
   readConfigErrorCategoryOutputChannel,
   traditionalGraphqlOutput,
   traditionalGraphqlOutputThrowing,
@@ -30,7 +30,14 @@ export type SchemaInput = URLInput | GraphQLSchema
 // todo could list specific errors here
 // Anyware entrypoint
 // Extension
-type GraffleExecutionResult = ExecutionResult | Errors.ContextualError
+type GraffleExecutionResult =
+  | (ExecutionResult & {
+    /**
+     * If transport was HTTP, then the raw response is available here.
+     */
+    response?: Response
+  })
+  | Errors.ContextualError
 
 export type SelectionSetOrIndicator = 0 | 1 | boolean | object
 
@@ -373,7 +380,7 @@ const handleOutput = (
   context: Context,
   result: GraffleExecutionResult,
 ) => {
-  if (isTraditionalGraphQLOutput(context.config)) return result
+  if (isContextConfigTraditionalGraphQLOutput(context.config)) return result
 
   const c = context.config.output
 

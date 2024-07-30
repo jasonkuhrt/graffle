@@ -60,6 +60,9 @@ export type HookDefEncode = {
     >
     & TransportInput<{ schema: string | URL }, { schema: GraphQLSchema }>
   slots: {
+    /**
+     * Create the value that will be used as the HTTP body for the sent GraphQL request.
+     */
     body: (
       input: { query: string; variables?: StandardScalarVariables; operationName?: string },
     ) => BodyInit
@@ -137,6 +140,9 @@ export type HookDefDecode = {
   input:
     & { result: ExecutionResult }
     & InterfaceInput
+    & TransportInput<
+      { response: Response }
+    >
 }
 
 export type HookMap = {
@@ -309,14 +315,36 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
       switch (input.interface) {
         // todo this depends on the return mode
         case `raw`: {
-          return input.result
+          switch (input.transport) {
+            case `http`: {
+              return {
+                ...input.result,
+                response: input.response,
+              }
+            }
+            case `memory`: {
+              return input.result
+            }
+            default:
+              throw casesExhausted(input)
+          }
         }
         case `typed`: {
           // todo optimize
           // 1. Generate a map of possible custom scalar paths (tree structure)
           // 2. When traversing the result, skip keys that are not in the map
           const dataDecoded = Result.decode(getRootIndexOrThrow(input.context, input.rootTypeName), input.result.data)
-          return { ...input.result, data: dataDecoded }
+          // console.log(8, Object.keys({ ...input.result, data: dataDecoded }))
+          switch (input.transport) {
+            case `memory`: {
+              return { ...input.result, data: dataDecoded }
+            }
+            case `http`: {
+              return { ...input.result, data: dataDecoded, response: input.response }
+            }
+            default:
+              throw casesExhausted(input)
+          }
         }
         default:
           throw casesExhausted(input)

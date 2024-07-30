@@ -25,6 +25,7 @@ export const test = testBase.extend<Fixtures>({
   },
   graffle: async ({ fetch }, use) => {
     const graffle = Graffle.create({ schema: new URL(`https://foo.io/api/graphql`) })
+      // todo why is this needed if we are mutating global fetch?
       .use(async ({ exchange }) => {
         return exchange({ using: { fetch: fetch as typeof globalThis.fetch } })
       })

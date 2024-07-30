@@ -116,6 +116,7 @@
     "@typescript-eslint/parser": "^7.18.0",
     "doctoc": "^2.2.1",
     "dripip": "^0.10.0",
+    "es-toolkit": "^1.13.1",
     "eslint": "^9.8.0",
     "eslint-config-prisma": "^0.6.0",
     "eslint-plugin-deprecation": "^3.0.0",

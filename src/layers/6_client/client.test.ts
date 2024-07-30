@@ -1,10 +1,12 @@
-import { describe, expect } from 'vitest'
+import { describe, expect, expectTypeOf } from 'vitest'
 import { createResponse, test } from '../../../tests/_/helpers.js'
+import { Graffle as Graffle2 } from '../../../tests/_/schema/generated/__.js'
 import { Graffle } from '../../entrypoints/alpha/main.js'
 import { CONTENT_TYPE_GQL, CONTENT_TYPE_JSON } from '../../lib/http.js'
 
+const schema = new URL(`https://foo.io/api/graphql`)
+
 describe(`without schemaIndex only raw is available`, () => {
-  const schema = new URL(`https://foo.io/api/graphql`)
   const graffle = Graffle.create({ schema })
 
   test(`unavailable methods`, () => {
@@ -33,5 +35,17 @@ describe(`interface`, () => {
       expect(request?.headers.get(`content-type`)).toEqual(CONTENT_TYPE_JSON)
       expect(request?.headers.get(`accept`)).toEqual(CONTENT_TYPE_GQL)
     })
+  })
+})
+
+describe(`output`, () => {
+  test(`when using envelope and transport is http, response property is available`, async ({ fetch }) => {
+    fetch.mockImplementationOnce(() => Promise.resolve(createResponse({ data: { id: `123` } })))
+    const graffle = Graffle2.create({ schema: new URL(`https://foo.io/api/graphql`), output: { envelope: true } })
+    const result = await graffle.query.id()
+    expectTypeOf(result.response).toEqualTypeOf<Response>()
+    expect(result.response.status).toEqual(200)
+    // sanity check
+    expect(result.data).toEqual({ 'id': `123` })
   })
 })

@@ -1,6 +1,7 @@
 // todo in order to test jsdom, we need to boot the server in a separate process
 // @vitest-environment node
 
+import { omit } from 'es-toolkit'
 import getPort from 'get-port'
 import type { Server } from 'node:http'
 import { createServer } from 'node:http'
@@ -54,7 +55,7 @@ test(`upload`, async () => {
       blob: new Blob([`Hello World`], { type: `text/plain` }) as any, // eslint-disable-line
     },
   })
-  expect(result).toMatchInlineSnapshot(`
+  expect(omit(result, [`response`])).toMatchInlineSnapshot(`
     {
       "data": {
         "readTextFile": "Hello World",
