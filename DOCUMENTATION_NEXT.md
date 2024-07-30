@@ -1,22 +1,10 @@
 # GraphQL Request Documentation
 
-# Return Mode
+# Output
 
 GraphQL execution from the `graphql` package has this general pattern:
 
 ```ts
-Graffle.create({
-  output: {
-    response: true,
-    extensions: true,
-    throw: {
-      schemaErrors: true,
-      executionErrors: true,
-      otherErrors: true,
-    },
-  },
-})
-
 interface GraphQLExecutionResult {
   data?: object
   errors?: GraphQLError[]
@@ -24,7 +12,27 @@ interface GraphQLExecutionResult {
 }
 ```
 
-You can change the output of client methods by configuring its return mode. This allows you to tailor the client better to your specific use-case.
+```ts
+Graffle.create({
+  output: {
+    throw: {
+      schema: true,
+      execution: true,
+      other: true,
+    },
+  },
+})
+```
+
+You can configure this output in multiple ways:
+
+1. Return the data directly without an envelope.
+1. Return an envelope with data in a `data` field. Gain access to other fields like `errors`, `extensions`, `response` (if using HTTP transport).
+1. If using an envelope, place all or some categories of errors into an `errors` field.
+1. Return all or some categories of errors (return type becomes a union).
+1. Throw all or some categories of errors.
+
+. This allows you to tailor the client better to your specific use-case.
 
 The only client method that is not affected by return mode is `raw` which will _always_ return a standard GraphQL result type.
 
