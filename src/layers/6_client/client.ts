@@ -102,6 +102,8 @@ export type CreatePrefilled = <$Name extends GlobalRegistry.SchemaNames>(name: $
   // @ts-ignore passes after generation
   $Input extends InputPrefilled<GlobalRegistry.Schemas[$Name]>,
 >(
+  // eslint-disable-next-line
+  // @ts-ignore passes after generation
   input: Exact<$Input, InputPrefilled<GlobalRegistry.Schemas[$Name]>>,
 ) => // InputToConfig<$Input>
 // InputToConfig<$Input>['output']['envelope']
