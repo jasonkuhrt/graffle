@@ -16,8 +16,7 @@ import { type HookDefEncode } from '../5_core/core.js'
 import type { InterfaceRaw } from '../5_core/types.js'
 import type { DocumentFn } from './document.js'
 import type { GetRootTypeMethods } from './RootTypeMethods.js'
-import type {
-  Envelope} from './Settings/Config.js';
+import type { Envelope } from './Settings/Config.js'
 import {
   type Config,
   isContextConfigTraditionalGraphQLOutput,
