@@ -6,6 +6,7 @@ import { Graffle } from '../../../../tests/_/schema/generated/__.js'
 import { schema } from '../../../../tests/_/schema/schema.js'
 import { GraphQLExecutionResultError } from '../../../lib/graphql.js'
 import { SimplifyDeep } from '../../../lib/prelude.js'
+import { EnvelopeTransportMemory } from './Config.js'
 
 const C = Graffle.create
 
@@ -170,10 +171,10 @@ describe('.errors.schema', () => {
   })
   describe('envelope.schema', () => {
     const g = C({ schema, output: { envelope: { errors: { schema: true } }, errors: { schema: 'return' } } })
-    test('query.<resultFieldMethod>', () => {
+    test('query.<resultFieldMethod>', async () => {
       // todo: once we have execution result with type variable errors, then enahnce this test to assert that the result errors come through in the errors field.
       expectTypeOf(g.query.resultNonNull(resultFieldSelect)).resolves.toEqualTypeOf<
-        ExecutionResult<{ resultNonNull: { __typename: 'Object1' } }>
+        EnvelopeTransportMemory<{ resultNonNull: { __typename: 'Object1' } }>
       >()
     })
   })

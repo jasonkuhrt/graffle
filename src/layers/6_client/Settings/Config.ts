@@ -1,10 +1,11 @@
-import type { ExecutionResult } from 'graphql'
+import type { ExecutionResult as GraphQLExecutionResult } from 'graphql'
 import type { Simplify } from 'type-fest'
 import type { GraphQLExecutionResultError } from '../../../lib/graphql.js'
 import type { ConfigManager, StringKeyof } from '../../../lib/prelude.js'
 import type { Schema } from '../../1_Schema/__.js'
 import type { GlobalRegistry } from '../../2_generator/globalRegistry.js'
 import type { SelectionSet } from '../../3_SelectionSet/__.js'
+import type { Transport } from '../../5_core/types.js'
 
 export type OutputChannel = 'throw' | 'return'
 
@@ -100,52 +101,17 @@ export type OutputConfigDefault = {
   }
 }
 
-// export type ReturnModeType =
-//   | ReturnModeTypeGraphQL
-//   | ReturnModeTypeGraphQLSuccess
-//   | ReturnModeTypeDataSuccess
-//   | ReturnModeTypeData
-//   | ReturnModeTypeDataAndErrors
-
-export type ReturnModeTypeBase =
-  | ReturnModeTypeGraphQLSuccess
-  | ReturnModeTypeGraphQL
-  | ReturnModeTypeDataAndErrors
-  | ReturnModeTypeData
-
-export type ReturnModeTypeGraphQLSuccess = 'graphqlSuccess'
-
-export type ReturnModeTypeGraphQL = 'graphql'
-
-export type ReturnModeTypeData = 'data'
-
-export type ReturnModeTypeDataAndErrors = 'dataAndErrors'
-
-export type ReturnModeTypeDataSuccess = 'dataSuccess'
-
-// export type OptionsInput = {
-//   returnMode: ReturnModeType | undefined
-// }
-
-export type OptionsInputDefaults = {
-  returnMode: 'data'
-}
-
 export type Config = {
   output: OutputConfig
+  transport: Transport
 }
 
-// export type ApplyInputDefaults<$Input extends OptionsInput> = {
-//   [Key in keyof OptionsInputDefaults]: undefined extends $Input[Key] ? OptionsInputDefaults[Key]
-//     : Exclude<$Input[Key], undefined>
-// }
-
 // dprint-ignore
-export type ResolveOutputReturnRootType<$Config extends Config, $Index extends Schema.Index, $Data extends object> =
+export type ResolveOutputReturnRootType<$Config extends Config, $Index extends Schema.Index, $Data> =
  | IfConfiguredGetOutputErrorReturns<$Config>
  | (
       $Config['output']['envelope']['enabled'] extends true
-        ? ExecutionResult<IfConfiguredStripSchemaErrorsFromDataRootField<$Config, $Index, $Data>>
+        ? Envelope<$Config, IfConfiguredStripSchemaErrorsFromDataRootType<$Config, $Index, $Data>>
         : Simplify<IfConfiguredStripSchemaErrorsFromDataRootType<$Config, $Index, $Data>>
    )
 
@@ -156,9 +122,30 @@ export type ResolveOutputReturnRootField<$Config extends Config, $Index extends 
       $Config['output']['envelope']['enabled'] extends true
         // todo: a typed execution result that allows for additional error types.
         // currently it is always graphql execution error however envelope configuration can put more errors into that.
-        ? ExecutionResult<IfConfiguredStripSchemaErrorsFromDataRootType<$Config, $Index, $DataRaw extends undefined ? $Data : $DataRaw>>
+        ? Envelope<$Config, $DataRaw extends undefined
+            ? IfConfiguredStripSchemaErrorsFromDataRootField<$Config, $Index, $Data>
+            : IfConfiguredStripSchemaErrorsFromDataRootType<$Config, $Index, $DataRaw>>
         : Simplify<IfConfiguredStripSchemaErrorsFromDataRootField<$Config, $Index, $Data>>
     )
+
+// type ObjMap<T = unknown> = {
+//   [key: string]: T
+// }
+
+// dprint-ignore
+// todo use ObjMap
+export type Envelope<$Config extends Config, $Data = unknown> = 
+  Simplify<
+    $Config['transport'] extends 'http'
+      ? EnvelopeTransportHttp<$Data>
+      : EnvelopeTransportMemory<$Data>
+  >
+
+export type EnvelopeTransportHttp<$Data> = GraphQLExecutionResult<$Data> & {
+  response: Response
+}
+
+export type EnvelopeTransportMemory<$Data> = GraphQLExecutionResult<$Data>
 
 type ConfigResolveOutputErrorChannel<$Config extends Config, $Channel extends OutputChannelConfig | false> =
   $Channel extends 'default' ? $Config['output']['defaults']['errorChannel']
@@ -181,7 +168,7 @@ type ConfigGetOutputError<$Config extends Config, $ErrorCategory extends ErrorCa
 type IfConfiguredGetOutputErrorReturns<$Config extends Config> =
   | (ConfigGetOutputError<$Config, 'execution'>  extends 'return'  ? GraphQLExecutionResultError  : never)
   | (ConfigGetOutputError<$Config, 'other'>      extends 'return'  ? Error                        : never)
-  | (ConfigGetOutputError<$Config, 'schema'>      extends 'return' ? Error                        : never)
+  | (ConfigGetOutputError<$Config, 'schema'>     extends 'return'  ? Error                        : never)
 
 // dprint-ignore
 type IfConfiguredStripSchemaErrorsFromDataRootType<$Config extends Config, $Index extends Schema.Index, $Data> =

@@ -22,7 +22,7 @@ const testEachArgs = [
     ]
   ) => {
     const [description, ss] = args.length === 1 ? [undefined, args[0]] : args
-    const context: Context = { schemaIndex, config: { output: outputConfigDefault } }
+    const context: Context = { schemaIndex, config: { output: outputConfigDefault, transport: `memory` } }
     const graphqlDocumentString = rootTypeSelectionSet(context, schemaIndex[`Root`][`Query`], ss as any)
     // Should parse, ensures is syntactically valid graphql document.
     const document = parse(graphqlDocumentString)

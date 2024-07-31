@@ -16,6 +16,8 @@ import { type HookDefEncode } from '../5_core/core.js'
 import type { InterfaceRaw } from '../5_core/types.js'
 import type { DocumentFn } from './document.js'
 import type { GetRootTypeMethods } from './RootTypeMethods.js'
+import type {
+  Envelope} from './Settings/Config.js';
 import {
   type Config,
   isContextConfigTraditionalGraphQLOutput,
@@ -65,8 +67,8 @@ type RawParameters =
   ]
 
 // todo no config needed?
-export type ClientRaw<_$Config extends Config> = {
-  raw(input: RawInput): Promise<ExecutionResult>
+export type ClientRaw<$Config extends Config> = {
+  raw(input: RawInput): Promise<Envelope<$Config>>
   // todo test this overload
   raw(
     document: RawInput['document'],
@@ -104,6 +106,7 @@ export type ClientTyped<$Index extends Schema.Index, $Config extends Config> =
   }
   & GetRootTypeMethods<$Config, $Index>
 
+// dprint-ignore
 export type CreatePrefilled = <$Name extends GlobalRegistry.SchemaNames>(name: $Name, schemaIndex: Schema.Index) => <
   // eslint-disable-next-line
   // @ts-ignore passes after generation
@@ -112,8 +115,7 @@ export type CreatePrefilled = <$Name extends GlobalRegistry.SchemaNames>(name: $
   // eslint-disable-next-line
   // @ts-ignore passes after generation
   input: Exact<$Input, InputPrefilled<GlobalRegistry.Schemas[$Name]>>,
-) => // InputToConfig<$Input>
-// InputToConfig<$Input>['output']['envelope']
+) =>
 Client<
   // eslint-disable-next-line
   // @ts-ignore passes after generation
@@ -295,12 +297,15 @@ export const createInternal = (
   const client: Client = {
     raw: async (...args: RawParameters) => {
       const input = resolveRawParameters(args)
-      const contextWithOutputSet = updateContextConfig(context, { output: traditionalGraphqlOutput })
+      const contextWithOutputSet = updateContextConfig(context, { ...context.config, output: traditionalGraphqlOutput })
       return await runRaw(contextWithOutputSet, input)
     },
     rawOrThrow: async (...args: RawParameters) => {
       const input = resolveRawParameters(args)
-      const contextWithOutputSet = updateContextConfig(context, { output: traditionalGraphqlOutputThrowing })
+      const contextWithOutputSet = updateContextConfig(context, {
+        ...context.config,
+        output: traditionalGraphqlOutputThrowing,
+      })
       return await runRaw(contextWithOutputSet, input)
     },
     // todo $use
@@ -474,6 +479,7 @@ const contextConfigSetOrThrow = <$Context extends Context>(context: $Context): $
   if (isContextConfigOrThrowSemantics(context)) return context
 
   return updateContextConfig(context, {
+    ...context.config,
     output: {
       ...context.config.output,
       errors: {

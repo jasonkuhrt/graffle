@@ -12,10 +12,11 @@ import { Upload } from './Upload.js'
 
 import { createYoga } from 'graphql-yoga'
 import type { Client } from '../../6_client/client.js'
+import type { OutputConfigDefault } from '../../6_client/Settings/Config.js'
 
 let server: Server
 let port: number
-let graffle: Client<any, any>
+let graffle: Client<any, { transport: 'http'; output: OutputConfigDefault }>
 
 beforeAll(async () => {
   const yoga = createYoga({ schema })

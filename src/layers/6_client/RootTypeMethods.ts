@@ -27,12 +27,15 @@ export type GetRootTypeMethods<$Config extends Config, $Index extends Schema.Ind
 		RootTypeMethods<$Config, $Index, Capitalize<$OperationName>>
 }
 
+// type x = OrThrowifyConfig<{ output: OutputConfigDefault; transport: 'http' }>
+
 // dprint-ignore
 export type RootTypeMethods<$Config extends Config, $Index extends Schema.Index, $RootTypeName extends Schema.RootTypeName> =
   $Index['Root'][$RootTypeName] extends Schema.Object$2 ?
   (
   & {
       $batch: RootMethod<$Config, $Index, $RootTypeName>
+      // @ts-expect-error fixme
       $batchOrThrow: RootMethod<OrThrowifyConfig<$Config>, $Index, $RootTypeName>
     }
   & {
@@ -47,6 +50,7 @@ export type RootTypeMethods<$Config extends Config, $Index extends Schema.Index,
     }
     & {
       [$RootTypeFieldName in keyof $Index['Root'][$RootTypeName]['fields'] & string as `${$RootTypeFieldName}OrThrow`]:
+      // @ts-expect-error fixme
         RootTypeFieldMethod<{
           Config: OrThrowifyConfig<$Config>,
           Index: $Index,

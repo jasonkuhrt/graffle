@@ -28,8 +28,10 @@ export type DocumentFn<$Config extends Config, $Index extends Schema.Index> =
       $Params extends (IsMultipleKeys<$Document> extends true ? [name: $Name] : ([] | [name: $Name | undefined])),
     >(...params: $Params) => Promise<
       ResolveOutputReturnRootType<
+        // @ts-expect-error fixme
         OrThrowifyConfig<$Config>,
         $Index,
+        // @ts-expect-error fixme
         ResultSet.Root<GetRootTypeSelection<OrThrowifyConfig<$Config>, $Index, $Document[$Name]>, $Index, GetRootType<$Document[$Name]>>>
     >
   }

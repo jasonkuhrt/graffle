@@ -3,7 +3,8 @@ import type { ConfigManager } from '../../../lib/prelude.js'
 import type { URLInput } from '../../0_functions/request.js'
 import type { Schema } from '../../1_Schema/__.js'
 import type { GlobalRegistry } from '../../2_generator/globalRegistry.js'
-import type { Transport } from '../../5_core/types.js'
+import type { TransportHttp, TransportMemory } from '../../5_core/types.js'
+import { Transport } from '../../5_core/types.js'
 import { type OutputChannel, type OutputChannelConfig, outputConfigDefault } from './Config.js'
 
 export type InputOutputEnvelopeLonghand = {
@@ -108,6 +109,7 @@ export type OutputInput<Options extends { transport: Transport; schemaErrors: bo
 
 // dprint-ignore
 export type InputToConfig<$Input extends Input<any>> = {
+  transport: InferTransport<$Input>
   output: {
     defaults: {
       errorChannel: ConfigManager.ReadOrDefault<$Input, ['output', 'defaults', 'errorChannel'], 'throw'>
@@ -139,6 +141,7 @@ export const inputToConfig = <T extends Input<any>>(input: T): InputToConfig<T> 
     ? { enabled: input.output.envelope }
     : undefined
   return {
+    transport: inferTransport(input),
     output: {
       defaults: {
         // @ts-expect-error conditional type
@@ -168,6 +171,13 @@ export const inputToConfig = <T extends Input<any>>(input: T): InputToConfig<T> 
       },
     },
   }
+}
+
+type InferTransport<$Input extends Input<any>> = $Input['schema'] extends URLInput ? TransportHttp : TransportMemory
+
+const inferTransport = <T extends Input<any>>(input: T): InferTransport<T> => {
+  // @ts-expect-error conditional type
+  return input.schema instanceof URL || typeof input.schema === `string` ? Transport.http : Transport.memory
 }
 
 export type InputPrefilled<$Schema extends GlobalRegistry.SchemaList> = $Schema extends any ? (InputRaw<$Schema>)

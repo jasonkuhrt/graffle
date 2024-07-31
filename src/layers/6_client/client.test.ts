@@ -1,13 +1,14 @@
 import { describe, expect, expectTypeOf } from 'vitest'
 import { createResponse, test } from '../../../tests/_/helpers.js'
 import { Graffle as Graffle2 } from '../../../tests/_/schema/generated/__.js'
+import { schema } from '../../../tests/_/schema/schema.js'
 import { Graffle } from '../../entrypoints/alpha/main.js'
 import { CONTENT_TYPE_GQL, CONTENT_TYPE_JSON } from '../../lib/http.js'
 
-const schema = new URL(`https://foo.io/api/graphql`)
+const schemaUrl = new URL(`https://foo.io/api/graphql`)
 
 describe(`without schemaIndex only raw is available`, () => {
-  const graffle = Graffle.create({ schema })
+  const graffle = Graffle.create({ schema: schemaUrl })
 
   test(`unavailable methods`, () => {
     // @ts-expect-error
@@ -40,12 +41,22 @@ describe(`interface`, () => {
 
 describe(`output`, () => {
   test(`when using envelope and transport is http, response property is available`, async ({ fetch }) => {
-    fetch.mockImplementationOnce(() => Promise.resolve(createResponse({ data: { id: `123` } })))
-    const graffle = Graffle2.create({ schema: new URL(`https://foo.io/api/graphql`), output: { envelope: true } })
+    fetch.mockImplementationOnce(() => Promise.resolve(createResponse({ data: { id: `abc` } })))
+    const graffle = Graffle2.create({ schema: schemaUrl, output: { envelope: true } })
     const result = await graffle.query.id()
     expectTypeOf(result.response).toEqualTypeOf<Response>()
     expect(result.response.status).toEqual(200)
     // sanity check
-    expect(result.data).toEqual({ 'id': `123` })
+    expect(result.data).toEqual({ 'id': `abc` })
+  })
+  test(`when using envelope and transport is memory, response property is NOT available`, async () => {
+    const graffle = Graffle2.create({ schema, output: { envelope: true } })
+    const result = await graffle.query.id()
+    // @ts-expect-error not present
+    expectTypeOf(result.response).toEqualTypeOf<Response>()
+    // @ts-expect-error not present
+    expect(result.response).toEqual(undefined)
+    // sanity check
+    expect(result.data).toEqual({ 'id': `abc` })
   })
 })
