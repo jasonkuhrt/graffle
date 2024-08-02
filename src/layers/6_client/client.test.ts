@@ -1,11 +1,14 @@
-import { describe, expect } from 'vitest'
+import { describe, expect, expectTypeOf } from 'vitest'
 import { createResponse, test } from '../../../tests/_/helpers.js'
+import { Graffle as Graffle2 } from '../../../tests/_/schema/generated/__.js'
+import { schema } from '../../../tests/_/schema/schema.js'
 import { Graffle } from '../../entrypoints/alpha/main.js'
 import { CONTENT_TYPE_GQL, CONTENT_TYPE_JSON } from '../../lib/http.js'
 
+const schemaUrl = new URL(`https://foo.io/api/graphql`)
+
 describe(`without schemaIndex only raw is available`, () => {
-  const schema = new URL(`https://foo.io/api/graphql`)
-  const graffle = Graffle.create({ schema })
+  const graffle = Graffle.create({ schema: schemaUrl })
 
   test(`unavailable methods`, () => {
     // @ts-expect-error
@@ -33,5 +36,27 @@ describe(`interface`, () => {
       expect(request?.headers.get(`content-type`)).toEqual(CONTENT_TYPE_JSON)
       expect(request?.headers.get(`accept`)).toEqual(CONTENT_TYPE_GQL)
     })
+  })
+})
+
+describe(`output`, () => {
+  test(`when using envelope and transport is http, response property is available`, async ({ fetch }) => {
+    fetch.mockImplementationOnce(() => Promise.resolve(createResponse({ data: { id: `abc` } })))
+    const graffle = Graffle2.create({ schema: schemaUrl, output: { envelope: true } })
+    const result = await graffle.query.id()
+    expectTypeOf(result.response).toEqualTypeOf<Response>()
+    expect(result.response.status).toEqual(200)
+    // sanity check
+    expect(result.data).toEqual({ 'id': `abc` })
+  })
+  test(`when using envelope and transport is memory, response property is NOT available`, async () => {
+    const graffle = Graffle2.create({ schema, output: { envelope: true } })
+    const result = await graffle.query.id()
+    // @ts-expect-error not present
+    expectTypeOf(result.response).toEqualTypeOf<Response>()
+    // @ts-expect-error not present
+    expect(result.response).toEqual(undefined)
+    // sanity check
+    expect(result.data).toEqual({ 'id': `abc` })
   })
 })

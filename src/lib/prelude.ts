@@ -1,3 +1,4 @@
+import type { Simplify } from 'type-fest'
 import type { ConditionalSimplifyDeep } from 'type-fest/source/conditional-simplify.js'
 
 /* eslint-disable */
@@ -217,10 +218,6 @@ export const mapValues = <
   ) as Record<keyof $Obj, ReturnType<$Fn>>
 }
 
-export type SetProperty<$Obj extends object, $Prop extends keyof $Obj, $Type extends $Obj[$Prop]> =
-  & Omit<$Obj, $Prop>
-  & { [_ in $Prop]: $Type }
-
 export const lowerCaseFirstLetter = (s: string) => {
   return s.charAt(0).toLowerCase() + s.slice(1)
 }
@@ -340,3 +337,47 @@ export const partitionErrors = <T>(array: T[]): [Exclude<T, Error>[], Include<T,
   }
   return [values, errors]
 }
+
+export namespace ConfigManager {
+  type Path = [...string[]]
+
+  export type ReadOrDefault<$Obj, $Path extends Path, $Default> = OrDefault<Read<$Obj, $Path>, $Default>
+
+  export type OrDefault<$Value, $Default> = $Value extends undefined ? $Default : $Value
+
+  // dprint-ignore
+  export type Read<$Value, $Path extends [...string[]]> =
+		$Value extends undefined ? undefined
+  : $Path extends [infer P1 extends string, ...infer PN extends string[]] ?
+			$Value extends object ?	P1 extends keyof $Value ? Read<$Value[P1], PN> : undefined
+														: undefined
+  : $Value
+
+  export type SetProperty<$Obj extends object, $Prop extends keyof $Obj, $Type extends $Obj[$Prop]> =
+    & Omit<$Obj, $Prop>
+    & { [_ in $Prop]: $Type }
+
+  // dprint-ignore
+  export type Set<$Obj extends object, $Path extends Path, $Value> =
+    Simplify<
+      $Path extends []
+        ? $Value extends object
+          ? $Obj & $Value
+          : never
+        : Set_<$Obj, $Path, $Value>
+    >
+
+  // dprint-ignore
+  export type Set_<$ObjOrValue, $Path extends Path, $Value> =
+    Simplify<
+      $Path extends [infer $P1 extends string, ...infer $PN extends string[]] ?
+        $P1 extends keyof $ObjOrValue
+            ? Omit<$ObjOrValue, $P1> & { [_ in $P1]: Set_<$ObjOrValue[$P1], $PN, $Value> }
+            // If we use a nice error display here (like the following comment) it will mess with the result type in variable cases.
+             // `Error: Cannot set value at path in object. Path property "${$P1}" does not exist in object.`
+            : never
+        : $Value
+    >
+}
+
+// type AsBoolean<T> = T extends boolean ? T : never

@@ -9,9 +9,9 @@ import type {
   Config,
   CreateSelectionTypename,
   OrThrowifyConfig,
-  ReturnModeRootField,
-  ReturnModeRootType,
-} from './Config.js'
+  ResolveOutputReturnRootField,
+  ResolveOutputReturnRootType,
+} from './Settings/Config.js'
 
 type RootTypeFieldContext = {
   Config: Config
@@ -27,12 +27,15 @@ export type GetRootTypeMethods<$Config extends Config, $Index extends Schema.Ind
 		RootTypeMethods<$Config, $Index, Capitalize<$OperationName>>
 }
 
+// type x = OrThrowifyConfig<{ output: OutputConfigDefault; transport: 'http' }>
+
 // dprint-ignore
 export type RootTypeMethods<$Config extends Config, $Index extends Schema.Index, $RootTypeName extends Schema.RootTypeName> =
   $Index['Root'][$RootTypeName] extends Schema.Object$2 ?
   (
   & {
       $batch: RootMethod<$Config, $Index, $RootTypeName>
+      // @ts-expect-error fixme
       $batchOrThrow: RootMethod<OrThrowifyConfig<$Config>, $Index, $RootTypeName>
     }
   & {
@@ -47,6 +50,7 @@ export type RootTypeMethods<$Config extends Config, $Index extends Schema.Index,
     }
     & {
       [$RootTypeFieldName in keyof $Index['Root'][$RootTypeName]['fields'] & string as `${$RootTypeFieldName}OrThrow`]:
+      // @ts-expect-error fixme
         RootTypeFieldMethod<{
           Config: OrThrowifyConfig<$Config>,
           Index: $Index,
@@ -61,7 +65,7 @@ export type RootTypeMethods<$Config extends Config, $Index extends Schema.Index,
 // dprint-ignore
 type RootMethod<$Config extends Config, $Index extends Schema.Index, $RootTypeName extends Schema.RootTypeName> =
   <$SelectionSet extends object>(selectionSet: Exact<$SelectionSet, SelectionSet.Root<$Index, $RootTypeName>>) =>
-    Promise<ReturnModeRootType<$Config, $Index, ResultSet.Root<AugmentRootTypeSelectionWithTypename<$Config,$Index,$RootTypeName,$SelectionSet>, $Index, $RootTypeName>>>
+    Promise<ResolveOutputReturnRootType<$Config, $Index, ResultSet.Root<AugmentRootTypeSelectionWithTypename<$Config,$Index,$RootTypeName,$SelectionSet>, $Index, $RootTypeName>>>
 
 // dprint-ignore
 type RootTypeFieldMethod<$Context extends RootTypeFieldContext> =
@@ -88,4 +92,4 @@ type ScalarFieldMethod<$Context extends RootTypeFieldContext> =
                                                                   (() => Promise<ReturnModeForFieldMethod<$Context, ResultSet.Field<true, $Context['Field'], $Context['Index']>>>)
 // dprint-ignore
 type ReturnModeForFieldMethod<$Context extends RootTypeFieldContext, $Data> =
-  ReturnModeRootField<$Context['Config'], $Context['Index'], $Data, { [k in $Context['RootTypeFieldName']] : $Data }>
+  ResolveOutputReturnRootField<$Context['Config'], $Context['Index'], $Data, { [k in $Context['RootTypeFieldName']] : $Data }>

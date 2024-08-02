@@ -1,6 +1,7 @@
 // todo in order to test jsdom, we need to boot the server in a separate process
 // @vitest-environment node
 
+import { omit } from 'es-toolkit'
 import getPort from 'get-port'
 import type { Server } from 'node:http'
 import { createServer } from 'node:http'
@@ -11,10 +12,11 @@ import { Upload } from './Upload.js'
 
 import { createYoga } from 'graphql-yoga'
 import type { Client } from '../../6_client/client.js'
+import type { OutputConfigDefault } from '../../6_client/Settings/Config.js'
 
 let server: Server
 let port: number
-let graffle: Client<any, any>
+let graffle: Client<any, { transport: 'http'; output: OutputConfigDefault }>
 
 beforeAll(async () => {
   const yoga = createYoga({ schema })
@@ -54,7 +56,7 @@ test(`upload`, async () => {
       blob: new Blob([`Hello World`], { type: `text/plain` }) as any, // eslint-disable-line
     },
   })
-  expect(result).toMatchInlineSnapshot(`
+  expect(omit(result, [`response`])).toMatchInlineSnapshot(`
     {
       "data": {
         "readTextFile": "Hello World",

@@ -6,7 +6,12 @@ import type { Schema } from '../1_Schema/__.js'
 import { SelectionSet } from '../3_SelectionSet/__.js'
 import type { Context, DocumentObject } from '../3_SelectionSet/encode.js'
 import type { ResultSet } from '../4_ResultSet/__.js'
-import type { AugmentRootTypeSelectionWithTypename, Config, OrThrowifyConfig, ReturnModeRootType } from './Config.js'
+import type {
+  AugmentRootTypeSelectionWithTypename,
+  Config,
+  OrThrowifyConfig,
+  ResolveOutputReturnRootType,
+} from './Settings/Config.js'
 
 // dprint-ignore
 export type DocumentFn<$Config extends Config, $Index extends Schema.Index> =
@@ -16,13 +21,18 @@ export type DocumentFn<$Config extends Config, $Index extends Schema.Index> =
       $Name extends keyof $Document & string,
       $Params extends (IsMultipleKeys<$Document> extends true ? [name: $Name] : ([] | [name: $Name | undefined])),
     >(...params: $Params) => Promise<
-      ReturnModeRootType<$Config, $Index, ResultSet.Root<GetRootTypeSelection<$Config,$Index,$Document[$Name]>, $Index, GetRootType<$Document[$Name]>>>
+      ResolveOutputReturnRootType<$Config, $Index, ResultSet.Root<GetRootTypeSelection<$Config,$Index,$Document[$Name]>, $Index, GetRootType<$Document[$Name]>>>
     >
     runOrThrow: <
       $Name extends keyof $Document & string,
       $Params extends (IsMultipleKeys<$Document> extends true ? [name: $Name] : ([] | [name: $Name | undefined])),
     >(...params: $Params) => Promise<
-      ReturnModeRootType<OrThrowifyConfig<$Config>, $Index, ResultSet.Root<GetRootTypeSelection<OrThrowifyConfig<$Config>, $Index, $Document[$Name]>, $Index, GetRootType<$Document[$Name]>>>
+      ResolveOutputReturnRootType<
+        // @ts-expect-error fixme
+        OrThrowifyConfig<$Config>,
+        $Index,
+        // @ts-expect-error fixme
+        ResultSet.Root<GetRootTypeSelection<OrThrowifyConfig<$Config>, $Index, $Document[$Name]>, $Index, GetRootType<$Document[$Name]>>>
     >
   }
 

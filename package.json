@@ -111,11 +111,12 @@
     "@types/body-parser": "^1.19.5",
     "@types/express": "^4.17.21",
     "@types/json-bigint": "^1.0.4",
-    "@types/node": "^22.0.0",
-    "@typescript-eslint/eslint-plugin": "^7.18.0",
-    "@typescript-eslint/parser": "^7.18.0",
+    "@types/node": "^22.0.2",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
     "doctoc": "^2.2.1",
     "dripip": "^0.10.0",
+    "es-toolkit": "^1.13.1",
     "eslint": "^9.8.0",
     "eslint-config-prisma": "^0.6.0",
     "eslint-plugin-deprecation": "^3.0.0",
@@ -133,10 +134,10 @@
     "jsdom": "^24.1.1",
     "json-bigint": "^1.0.0",
     "publint": "^0.2.9",
-    "tsx": "^4.16.2",
+    "tsx": "^4.16.5",
     "type-fest": "^4.23.0",
     "typescript": "^5.5.4",
-    "typescript-eslint": "^7.18.0",
-    "vitest": "^2.0.4"
+    "typescript-eslint": "^8.0.0",
+    "vitest": "^2.0.5"
   }
 }

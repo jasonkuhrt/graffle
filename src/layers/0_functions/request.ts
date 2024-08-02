@@ -43,6 +43,7 @@ export const request: NetworkRequest = async (input) => {
   }
 
   const json = await response.json() as object
+
   const result = parseExecutionResult(json)
 
   return result
