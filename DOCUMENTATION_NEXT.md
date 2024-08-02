@@ -2,75 +2,114 @@
 
 # Output
 
-GraphQL execution from the `graphql` package has this general pattern:
+The standard GraphQL execution result type in the JavaScript ecosystem (from the `graphql` package) has roughly this type:
 
 ```ts
 interface GraphQLExecutionResult {
   data?: object
   errors?: GraphQLError[]
-  extensions?: []
+  extensions?: unknown[]
 }
 ```
 
+Graffle can return this type but also many other types depending on your configuration. For example:
+
+1. Return the data directly without an envelope.
+1. Return all or some categories of errors (return type becomes a union).
+1. Return an envelope and place all or some categories of errors into the `errors` field.
+1. Throw all or some categories of errors.
+
+Configuration can be done at the constructor level. Method level will also be supported in the future.
+
 ```ts
-Graffle.create({
+// Constructor Level
+
+const graffle = Graffle.create({
   output: {
-    throw: {
-      schema: true,
-      execution: true,
-      other: true,
+    errors: {
+      execution: 'throw',
+      other: 'return',
     },
+  },
+})
+
+// Method Level (planned, not implemented yet)
+
+await graffle.query.foo({}, {
+  output: {
+    envelope: true,
   },
 })
 ```
 
-You can configure this output in multiple ways:
+## Errors
 
-1. Return the data directly without an envelope.
-1. Return an envelope with data in a `data` field. Gain access to other fields like `errors`, `extensions`, `response` (if using HTTP transport).
-1. If using an envelope, place all or some categories of errors into an `errors` field.
-1. Return all or some categories of errors (return type becomes a union).
-1. Throw all or some categories of errors.
+There are three categories of errors:
 
-. This allows you to tailor the client better to your specific use-case.
+1. `execution` – Anything that went wrong during execution. Examples: invalid input given, resolver threw an error.
+2. `schema` – Only present if the [schema errors](#schema-errors) are being used. Any time a result field returns an error type.
+3. `other` – Anything else. Examples: network error during request, extension threw error, your anyware threw an error.
 
-The only client method that is not affected by return mode is `raw` which will _always_ return a standard GraphQL result type.
+You can choose to output error categories in the following ways:
 
-Here is a summary table of the modes:
+1. `throw` – Errors from category will be thrown. There is no type safety with this approach.
+2. `return` – Errors from category will be returned. The return type will thus become a union type.
+3. `default` – Use whatever the default is (you can change the default).
 
-| Mode             | Throw Sources (no type safety)                                                                                 | Returns (type safe)                                                                                  |
-| ---------------- | -------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| `graphql`        | 1. Extensions<br>2. Fetch                                                                                      | 1. `GraphQLExecutionResult`                                                                          |
-| `graphqlSuccess` | 1. Extensions<br>2. Fetch<br>3. GraphQLExecutionResult.errors                                                  | 1. `GraphQLExecutionResult` without `.errors`                                                        |
-| `data` (default) | 1. Extensions<br>2. Fetch<br>3. GraphQLExecutionResult.errors                                                  | 1. `GraphQLExecutionResult.data`                                                                     |
-| `dataSuccess`    | 1. Extensions<br>2. Fetch<br>3. GraphQLExecutionResult.errors<br> 4. GraphQLExecutionResult.data Schema Errors | `GraphQLExecutionResult.data` without schema errors                                                  |
-| `dataAndErrors`  |                                                                                                                | 1. `GraphQLExecutionResult.data`<br>2. Errors from: Extensions, Fetch, GraphQLExecutionResult.errors |
+## Envelope
 
-## `graphql`
+You can choose to use an envelope. When you use an envelope the data will be returned in a `data` property. Additional metadata properties will be exposed:
 
-Return the standard graphql execution output.
+1. `errors` – errors that you have chosen to include in the envelope.
+2. `extensions` – GraphQL execution result extensions.
+3. `response` – Only present if [transport](#link-todo) is `http`. The HTTP response to the request that was sent for the given GraphQL document.
 
-## `graphqlSuccess`
+## Examples
 
-Return the standard graphql execution output. However, if there would be any errors then they're thrown as an `AggregateError`.
-This mode acts like you were using [`OrThrow`](#orthrow) method variants all the time.
+### Standard GraphQL
 
-## `dataSuccess`
+```ts
+const graffle = Graffle.create({
+  output: {
+    envelope: {
+      errors: {
+        execution: true, // Bring execution errors into envelope.
+      },
+    },
+    errors: {
+      other: 'throw',
+    },
+  },
+})
 
-Return just the data excluding [schema errors](#schema-errors). Errors are thrown as an `AggregateError`.
-This mode acts like you were using [`OrThrow`](#orthrow) method variants all the time.
+assertType<{
+  data: {
+    foo: string /* or whatever */
+  }
+  errors: GraphQLError[]
+  extensions: unknown[]
+  response: Response // Non-standard. Present when using HTTP transport.
+}>(await graffle.query.foo())
+```
 
-This mode is only available when using [schema errors](#schema-errors).
+### Full Type Safety
 
-## `data`
+```ts
+const graffle = Graffle.create({
+  output: {
+    defaults: {
+      errorChannel: 'return',
+    },
+    envelope: false,
+  },
+})
 
-Return just the data including [schema errors](#schema-errors) (if using). Other errors are thrown as an `AggregateError`.
-
-**This mode is the default.**
-
-## `dataAndErrors`
-
-Return a union type of data and errors. This is the most type-safe mode. It never throws.
+assertType<
+  | string /* or whatever */
+  | GraphQLError
+  | Error
+>(await graffle.query.foo())
+```
 
 # Schema Errors
 
