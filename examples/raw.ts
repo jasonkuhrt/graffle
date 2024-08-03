@@ -1,6 +1,8 @@
+/* eslint-disable */
+
 import { gql, Graffle } from '../src/entrypoints/alpha/main.js'
 
-const request = Graffle.create({ schema: `https://countries.trevorblades.com/graphql` }).rawOrThrow // eslint-disable-line
+const request = Graffle.create({ schema: `https://countries.trevorblades.com/graphql` }).rawOrThrow
 
 // todo typed document node
 // interface Data {
