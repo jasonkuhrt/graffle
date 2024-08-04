@@ -1,28 +1,22 @@
 /* eslint-disable */
 
-import { gql, Graffle } from '../src/entrypoints/alpha/main.js'
+import { CountriesClient } from './generated-clients/countries/__.js'
 
-const request = Graffle.create({ schema: `https://countries.trevorblades.com/graphql` }).use({
-  name: `CustomFetch`,
-  anyware: async ({ exchange }) => {
-    return await exchange({
-      using: {
-        fetch: async () => {
-          return new Response(JSON.stringify({ data: { countries: [{ name: `USA` }] } }))
+// todo: if used introspection query to get schema, then default schema to that URL.
+const countriesClient = CountriesClient.create({ schema: `https://countries.trevorblades.com/graphql` })
+  .use({
+    name: `CustomFetch`,
+    anyware: async ({ exchange }) => {
+      return await exchange({
+        using: {
+          fetch: async () => {
+            return new Response(JSON.stringify({ data: { countries: [{ name: `USA` }] } }))
+          },
         },
-      },
-    })
-  },
-}).rawOrThrow
+      })
+    },
+  })
 
-const { data } = await request(
-  gql`
-		{
-			countries {
-				name
-			}
-		}	
-	`,
-)
+const countries = await countriesClient.query.countries({ name: true })
 
-console.log(data)
+console.log(countries)

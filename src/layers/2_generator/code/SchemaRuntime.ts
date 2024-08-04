@@ -1,11 +1,14 @@
-import type {
-  GraphQLArgument,
-  GraphQLEnumType,
-  GraphQLInputField,
-  GraphQLInputObjectType,
-  GraphQLInterfaceType,
+import {
+  type GraphQLArgument,
+  type GraphQLEnumType,
+  type GraphQLInputField,
+  type GraphQLInputObjectType,
+  type GraphQLInterfaceType,
+  GraphQLList,
+  GraphQLNonNull,
+  type GraphQLOutputType,
   GraphQLScalarType,
-  GraphQLUnionType,
+  type GraphQLUnionType,
 } from 'graphql'
 import {
   type GraphQLObjectType,
@@ -102,12 +105,15 @@ const index = (config: Config) => {
   `
 }
 
+const commentTsIgnoreCircDep =
+  `// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.`
+
 const union = (_config: Config, type: GraphQLUnionType) => {
   // todo probably need thunks here
   const members = type.getTypes().map(t => t.name).join(`, `)
   return `
-  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-  export const ${type.name} = $.Union(\`${type.name}\`, [${members}])\n`
+    ${commentTsIgnoreCircDep}
+    export const ${type.name} = $.Union(\`${type.name}\`, [${members}])\n`
 }
 
 const interface$ = (config: Config, type: GraphQLInterfaceType) => {
@@ -116,7 +122,9 @@ const interface$ = (config: Config, type: GraphQLInterfaceType) => {
     _.getInterfaces().filter(_ => _.name === type.name).length > 0
   ).map(_ => _.name).join(`,`)
   const fields = Object.values(type.getFields()).map((field) => {
-    return `${field.name}: ${outputField(config, field)}`
+    // todo test case for this directive being present
+    const maybeCommentTsIgnoreCircDep = isScalarTypeDirectOrNested(field.type) ? `` : commentTsIgnoreCircDep + `\n`
+    return `${maybeCommentTsIgnoreCircDep}${field.name}: ${outputField(config, field)}`
   }).join(`,\n`)
   return `export const ${type.name} = $.Interface(\`${type.name}\`, {${fields}}, [${implementors}])`
 }
@@ -130,10 +138,12 @@ const enum$ = (_config: Config, type: GraphQLEnumType) => {
 
 const object = (config: Config, type: GraphQLObjectType) => {
   const fields = Object.values(type.getFields()).map((field) => {
-    return `${field.name}: ${outputField(config, field)}`
+    // todo test case for this directive being present
+    const maybeCommentTsIgnoreCircDep = isScalarTypeDirectOrNested(field.type) ? `` : commentTsIgnoreCircDep + `\n`
+    return `${maybeCommentTsIgnoreCircDep}${field.name}: ${outputField(config, field)}`
   }).join(`,\n`)
   return `
-    // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
+    ${commentTsIgnoreCircDep}
     export const ${type.name} = $.Object$(\`${type.name}\`, {
       ${fields}
     })
@@ -211,4 +221,10 @@ const buildType = (direction: 'input' | 'output', config: Config, node: AnyClass
   }
 
   throw new Error(`Unhandled type: ${String(node)}`)
+}
+
+const isScalarTypeDirectOrNested = (type: GraphQLOutputType): boolean => {
+  return type instanceof GraphQLScalarType
+    || type instanceof GraphQLNonNull && isScalarTypeDirectOrNested(type.ofType)
+    || type instanceof GraphQLList && isScalarTypeDirectOrNested(type.ofType)
 }
