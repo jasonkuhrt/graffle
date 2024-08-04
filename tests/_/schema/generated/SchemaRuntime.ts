@@ -3,6 +3,7 @@
 import * as $ from '../../../../src/entrypoints/alpha/schema.js'
 import * as $Scalar from './Scalar.js'
 
+export const $defaultSchemaUrl = undefined
 export const ABCEnum = $.Enum(`ABCEnum`, [`A`, `B`, `C`])
 export const Case = $.Enum(`Case`, [`ErrorOne`, `ErrorTwo`, `Object1`])
 
@@ -77,11 +78,13 @@ export const Object2ImplementingInterface = $.Object$(`Object2ImplementingInterf
 // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
 export const ObjectNested = $.Object$(`ObjectNested`, {
   id: $.field($.Output.Nullable($Scalar.ID)),
+  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
   object: $.field($.Output.Nullable(() => Object1)),
 })
 
 // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
 export const ObjectUnion = $.Object$(`ObjectUnion`, {
+  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
   fooBarUnion: $.field($.Output.Nullable(() => FooBarUnion)),
 })
 
@@ -126,6 +129,7 @@ export const Mutation = $.Object$(`Mutation`, {
 export const Query = $.Object$(`Query`, {
   InputObjectNested: $.field($.Output.Nullable($Scalar.ID), $.Args({ input: $.Input.Nullable(InputObjectNested) })),
   InputObjectNestedNonNull: $.field($.Output.Nullable($Scalar.ID), $.Args({ input: InputObjectNestedNonNull })),
+  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
   abcEnum: $.field($.Output.Nullable(ABCEnum)),
   date: $.field($.Output.Nullable($Scalar.Date)),
   dateArg: $.field($.Output.Nullable($Scalar.Date), $.Args({ date: $.Input.Nullable($Scalar.Date) })),
@@ -137,17 +141,23 @@ export const Query = $.Object$(`Query`, {
     $.Args({ date: $.Input.List($.Input.Nullable($Scalar.Date)) }),
   ),
   dateArgNonNullListNonNull: $.field($.Output.Nullable($Scalar.Date), $.Args({ date: $.Input.List($Scalar.Date) })),
+  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
   dateInterface1: $.field($.Output.Nullable(() => DateInterface1)),
   dateList: $.field($.Output.Nullable($.Output.List($Scalar.Date))),
   dateListNonNull: $.field($.Output.List($Scalar.Date)),
   dateNonNull: $.field($Scalar.Date),
+  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
   dateObject1: $.field($.Output.Nullable(() => DateObject1)),
+  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
   dateUnion: $.field($.Output.Nullable(() => DateUnion)),
   error: $.field($.Output.Nullable($Scalar.String), $.Args({ case: $.Input.Nullable($Scalar.String) })),
   id: $.field($.Output.Nullable($Scalar.ID)),
   idNonNull: $.field($Scalar.ID),
+  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
   interface: $.field($.Output.Nullable(() => Interface)),
+  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
   interfaceNonNull: $.field(() => Interface),
+  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
   interfaceWithArgs: $.field($.Output.Nullable(() => Interface), $.Args({ id: $Scalar.ID })),
   listInt: $.field($.Output.Nullable($.Output.List($.Output.Nullable($Scalar.Int)))),
   listIntNonNull: $.field($.Output.List($Scalar.Int)),
@@ -155,12 +165,19 @@ export const Query = $.Object$(`Query`, {
     $.Output.Nullable($.Output.List($.Output.Nullable($.Output.List($.Output.Nullable($Scalar.Int))))),
   ),
   listListIntNonNull: $.field($.Output.List($.Output.List($Scalar.Int))),
+  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
   lowerCaseUnion: $.field($.Output.Nullable(() => lowerCaseUnion)),
+  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
   object: $.field($.Output.Nullable(() => Object1)),
+  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
   objectList: $.field($.Output.Nullable($.Output.List(() => Object1))),
+  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
   objectListNonNull: $.field($.Output.List(() => Object1)),
+  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
   objectNested: $.field($.Output.Nullable(() => ObjectNested)),
+  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
   objectNonNull: $.field(() => Object1),
+  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
   objectWithArgs: $.field(
     $.Output.Nullable(() => Object1),
     $.Args({
@@ -171,7 +188,9 @@ export const Query = $.Object$(`Query`, {
       string: $.Input.Nullable($Scalar.String),
     }),
   ),
+  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
   result: $.field($.Output.Nullable(() => Result), $.Args({ case: Case })),
+  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
   resultNonNull: $.field(() => Result, $.Args({ case: $.Input.Nullable(Case) })),
   string: $.field($.Output.Nullable($Scalar.String)),
   stringWithArgEnum: $.field($.Output.Nullable($Scalar.String), $.Args({ ABCEnum: $.Input.Nullable(ABCEnum) })),
@@ -196,10 +215,15 @@ export const Query = $.Object$(`Query`, {
   ),
   stringWithListArgRequired: $.field($.Output.Nullable($Scalar.String), $.Args({ ints: $.Input.List($Scalar.Int) })),
   stringWithRequiredArg: $.field($.Output.Nullable($Scalar.String), $.Args({ string: $Scalar.String })),
+  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
   unionFooBar: $.field($.Output.Nullable(() => FooBarUnion)),
+  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
   unionFooBarNonNull: $.field(() => FooBarUnion),
+  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
   unionFooBarWithArgs: $.field($.Output.Nullable(() => FooBarUnion), $.Args({ id: $.Input.Nullable($Scalar.ID) })),
+  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
   unionObject: $.field($.Output.Nullable(() => ObjectUnion)),
+  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
   unionObjectNonNull: $.field(() => ObjectUnion),
 })
 

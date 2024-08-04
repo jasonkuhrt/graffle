@@ -382,10 +382,16 @@ export namespace ConfigManager {
 
 // type AsBoolean<T> = T extends boolean ? T : never
 
-export const safeParseUrl = (url: string) => {
+export const urlParseSafe = (url: string) => {
   try {
     return new URL(url)
   } catch {
-    return false
+    return null
   }
 }
+
+export type PickRequiredProperties<T extends object> = {
+  [K in keyof T as undefined extends T[K] ? never : K]: T[K]
+}
+
+export type IsSomePropertiesRequired<T extends object> = keyof PickRequiredProperties<T> extends never ? false : true

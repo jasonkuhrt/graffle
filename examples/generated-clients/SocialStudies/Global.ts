@@ -9,6 +9,10 @@ declare global {
         featureOptions: {
           schemaErrors: true
         }
+        /**
+         * https://countries.trevorblades.com/graphql
+         */
+        defaultSchemaUrl: string
       }
     }
   }

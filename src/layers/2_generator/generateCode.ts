@@ -38,6 +38,7 @@ export interface Input {
   importPaths?: {
     customScalarCodecs?: string
   }
+  defaultSchemaUrl?: URL
   /**
    * The GraphQL SDL source code.
    */
@@ -49,6 +50,7 @@ export interface Config {
   name: string
   schema: GraphQLSchema
   typeMapByKind: TypeMapByKind
+  defaultSchemaUrl: URL | null
   rootTypes: {
     Query: GraphQLObjectType | null
     Mutation: GraphQLObjectType | null
@@ -84,8 +86,10 @@ export const resolveOptions = (input: Input): Config => {
   const errorObjects = errorTypeNamePattern
     ? Object.values(typeMapByKind.GraphQLObjectType).filter(_ => _.name.match(errorTypeNamePattern))
     : []
+  const defaultSchemaUrl = input.defaultSchemaUrl ?? null
   return {
     name: input.name ?? defaultName,
+    defaultSchemaUrl,
     schema,
     error: {
       enabled: Boolean(errorTypeNamePattern),

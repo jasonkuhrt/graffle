@@ -9,6 +9,7 @@ declare global {
         featureOptions: {
           schemaErrors: false
         }
+        defaultSchemaUrl: null
       }
     }
   }

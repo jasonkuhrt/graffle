@@ -43,6 +43,12 @@ export const { generate: generateRuntimeSchema, moduleName: moduleNameSchemaRunt
     )
 
     code.push(
+      `export const $defaultSchemaUrl = ${
+        config.defaultSchemaUrl ? `new URL("${config.defaultSchemaUrl.href}")` : `undefined`
+      }`,
+    )
+
+    code.push(
       config.typeMapByKind.GraphQLEnumType.map(type => enum$(config, type)).join(`\n`),
       config.typeMapByKind.GraphQLInputObjectType.map(type => inputObject(config, type)).join(`\n`),
       config.typeMapByKind.GraphQLObjectType.map(type => object(config, type)).join(`\n`),
