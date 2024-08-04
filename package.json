@@ -59,7 +59,7 @@
   "scripts": {
     "graffle": "tsx ./src/cli/generate.ts",
     "gen:test:schema": "tsx tests/_/schemaGenerate.ts",
-    "gen:docs:examples:clients:countries": "pnpm graffle --name countriesClient --schema https://countries.trevorblades.com/graphql --output ./examples/generated-clients/countries --libraryPathClient ../../../src/entrypoints/alpha/client.js --libraryPathSchema ../../../src/entrypoints/alpha/schema.js --libraryPathScalars ../../../src/entrypoints/alpha/scalars.js",
+    "gen:docs:examples:clients:SocialStudies": "pnpm graffle --name SocialStudies --schema https://countries.trevorblades.com/graphql --output ./examples/generated-clients/SocialStudies --libraryPathClient ../../../src/entrypoints/alpha/client.js --libraryPathSchema ../../../src/entrypoints/alpha/schema.js --libraryPathScalars ../../../src/entrypoints/alpha/scalars.js",
     "demo": "tsx src/cli/generateSchema.ts && dprint fmt src/demo.ts",
     "dev": "rm -rf dist && tsc --watch",
     "format": "pnpm build:docs && dprint fmt",

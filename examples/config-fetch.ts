@@ -1,10 +1,8 @@
-/* eslint-disable */
-
-import { CountriesClient } from './generated-clients/countries/__.js'
+import { SocialStudies } from './generated-clients/SocialStudies/__.js'
 
 // todo: if used introspection query to get schema, then default schema to that URL.
 // todo: https://github.com/jasonkuhrt/graphql-request/issues/1015
-const countriesClient = CountriesClient.create({ schema: `https://countries.trevorblades.com/graphql` })
+const socialStudies = SocialStudies.create({ schema: `https://countries.trevorblades.com/graphql` })
   .use({
     name: `CustomFetch`,
     anyware: async ({ exchange }) => {
@@ -18,6 +16,8 @@ const countriesClient = CountriesClient.create({ schema: `https://countries.trev
     },
   })
 
-const countries = await countriesClient.query.countries({ name: true })
+// todo $scalars does not work
+// todo intelisense for $ doesn't work
+const countries = await socialStudies.query.countries({ name: true })
 
 console.log(countries)
