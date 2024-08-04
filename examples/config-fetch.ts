@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { SocialStudies } from './generated-clients/SocialStudies/__.js'
 
 // todo: if used introspection query to get schema, then default schema to that URL.
