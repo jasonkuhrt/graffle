@@ -1,22 +1,12 @@
-/* eslint-disable */
+import { CountriesClient } from './generated-clients/countries/__.js'
 
-import { gql, Graffle } from '../src/entrypoints/alpha/main.js'
-
-const request = Graffle.create({
+const request = CountriesClient.create({
   schema: `https://countries.trevorblades.com/graphql`,
   headers: {
     authorization: `Bearer MY_TOKEN`,
   },
-}).rawOrThrow
+})
 
-const { data } = await request(
-  gql`
-		{
-			countries {
-				name
-			}
-		}	
-	`,
-)
+const continents = await request.query.continents({ name: true })
 
-console.log(data)
+console.log(continents)
