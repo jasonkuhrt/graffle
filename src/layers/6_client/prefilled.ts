@@ -10,6 +10,8 @@ export type CreatePrefilled = <$Name extends GlobalRegistry.SchemaNames>(name: $
 	// @ts-ignore passes after generation
 	$Input extends InputPrefilled<GlobalRegistry.Schemas[$Name]>,
 >(...args:
+	// eslint-disable-next-line
+	// @ts-ignore passes after generation
 	IsSomePropertiesRequired<InputPrefilled<GlobalRegistry.Schemas[$Name]>> extends true
 		// eslint-disable-next-line
 		// @ts-ignore passes after generation
@@ -19,12 +21,9 @@ export type CreatePrefilled = <$Name extends GlobalRegistry.SchemaNames>(name: $
 		// @ts-ignore passes after generation
 		: ([input: Exact<$Input, InputPrefilled<GlobalRegistry.Schemas[$Name]>>] | [])
 ) =>
-Client<
 	// eslint-disable-next-line
 	// @ts-ignore passes after generation
-	GlobalRegistry.GetSchemaIndexOrDefault<$Name>,
-	InputToConfig<$Input>
->
+	Client<GlobalRegistry.GetSchemaIndexOrDefault<$Name>, InputToConfig<$Input>>
 
 /**
  * Create a constructor with some fields prefilled. Fields that can be prefilled are:
