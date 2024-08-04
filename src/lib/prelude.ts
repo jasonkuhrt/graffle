@@ -381,3 +381,11 @@ export namespace ConfigManager {
 }
 
 // type AsBoolean<T> = T extends boolean ? T : never
+
+export const safeParseUrl = (url: string) => {
+  try {
+    return new URL(url)
+  } catch {
+    return false
+  }
+}

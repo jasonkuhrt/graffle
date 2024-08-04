@@ -1,4 +1,5 @@
 import type { Formatter } from '@dprint/formatter'
+import { type GraphQLSchema, printSchema } from 'graphql'
 import _ from 'json-bigint'
 import fs from 'node:fs/promises'
 import * as Path from 'node:path'
@@ -7,14 +8,20 @@ import { generateCode, type Input as GenerateInput } from './generateCode.js'
 import { fileExists } from './prelude.js'
 
 export interface Input {
-  name?: string
   outputDirPath: string
+  name?: string
   code?: Omit<GenerateInput, 'schemaSource' | 'sourceDirPath' | 'options'>
   sourceDirPath?: string
   sourceCustomScalarCodecsFilePath?: string
+  schemaSource?: GraphQLSchema
   schemaPath?: string
   format?: boolean
   errorTypeNamePattern?: OptionsInput['errorTypeNamePattern']
+  libraryPaths?: {
+    client?: string
+    schema?: string
+    scalars?: string
+  }
 }
 
 const getTypeScriptFormatter = async (): Promise<Formatter | undefined> => {
@@ -30,7 +37,7 @@ const getTypeScriptFormatter = async (): Promise<Formatter | undefined> => {
 export const generateFiles = async (input: Input) => {
   const sourceDirPath = input.sourceDirPath ?? process.cwd()
   const schemaPath = input.schemaPath ?? Path.join(sourceDirPath, `schema.graphql`)
-  const schemaSource = await fs.readFile(schemaPath, `utf8`)
+  const schemaSource = input.schemaSource ? printSchema(input.schemaSource) : await fs.readFile(schemaPath, `utf8`)
 
   // todo support other extensions: .tsx,.js,.mjs,.cjs
   const customScalarCodecsFilePath = input.sourceCustomScalarCodecsFilePath
@@ -43,6 +50,9 @@ export const generateFiles = async (input: Input) => {
   const typeScriptFormatter = (input.format ?? true) ? await getTypeScriptFormatter() : undefined
 
   const codes = generateCode({
+    libraryPaths: {
+      ...input.libraryPaths,
+    },
     name: input.name,
     schemaSource,
     importPaths: {

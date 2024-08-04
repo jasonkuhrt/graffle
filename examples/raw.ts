@@ -1,8 +1,6 @@
-/* eslint-disable */
-
 import { gql, Graffle } from '../src/entrypoints/alpha/main.js'
 
-const request = Graffle.create({ schema: `https://countries.trevorblades.com/graphql` }).rawOrThrow
+const graffle = Graffle.create({ schema: `https://countries.trevorblades.com/graphql` })
 
 // todo typed document node
 // interface Data {
@@ -10,7 +8,7 @@ const request = Graffle.create({ schema: `https://countries.trevorblades.com/gra
 // }
 // const { data } = await request<Data>(
 
-const { data } = await request(
+const { data } = await graffle.rawOrThrow(
   gql`
 		{
 			countries {
