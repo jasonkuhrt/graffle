@@ -3,7 +3,6 @@ import type { Anyware } from '../../lib/anyware/__.js'
 import { Errors } from '../../lib/errors/__.js'
 import type { SomeExecutionResultWithoutErrors } from '../../lib/graphql.js'
 import { isOperationTypeName, operationTypeNameToRootTypeName, type RootTypeName } from '../../lib/graphql.js'
-import type { Exact } from '../../lib/prelude.js'
 import { isPlainObject } from '../../lib/prelude.js'
 import type { URLInput } from '../0_functions/request.js'
 import type { BaseInput } from '../0_functions/types.js'
@@ -24,7 +23,7 @@ import {
   traditionalGraphqlOutput,
   traditionalGraphqlOutputThrowing,
 } from './Settings/Config.js'
-import { type Input, type InputPrefilled, type InputToConfig, inputToConfig } from './Settings/Input.js'
+import { type Input, type InputToConfig, inputToConfig } from './Settings/Input.js'
 
 export type SchemaInput = URLInput | GraphQLSchema
 
@@ -104,29 +103,6 @@ export type ClientTyped<$Index extends Schema.Index, $Config extends Config> =
     document: DocumentFn<$Config, $Index>
   }
   & GetRootTypeMethods<$Config, $Index>
-
-// dprint-ignore
-export type CreatePrefilled = <$Name extends GlobalRegistry.SchemaNames>(name: $Name, schemaIndex: Schema.Index) => <
-  // eslint-disable-next-line
-  // @ts-ignore passes after generation
-  $Input extends InputPrefilled<GlobalRegistry.Schemas[$Name]>,
->(
-  // eslint-disable-next-line
-  // @ts-ignore passes after generation
-  input: Exact<$Input, InputPrefilled<GlobalRegistry.Schemas[$Name]>>,
-) =>
-Client<
-  // eslint-disable-next-line
-  // @ts-ignore passes after generation
-  GlobalRegistry.GetSchemaIndexOrDefault<$Name>,
-  InputToConfig<$Input>
->
-
-export const createPrefilled: CreatePrefilled = (name, schemaIndex) => {
-  // eslint-disable-next-line
-  // @ts-ignore passes after generation
-  return (input) => create({ ...input, name, schemaIndex }) as any
-}
 
 // dprint-ignore
 type Create = <

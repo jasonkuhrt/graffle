@@ -5,6 +5,7 @@ import type { Schema } from '../../1_Schema/__.js'
 import type { GlobalRegistry } from '../../2_generator/globalRegistry.js'
 import type { TransportHttp, TransportMemory } from '../../5_core/types.js'
 import { Transport } from '../../5_core/types.js'
+import type { InputPrefilled } from '../prefilled.js'
 import { type OutputChannel, type OutputChannelConfig, outputConfigDefault } from './Config.js'
 
 export type InputOutputEnvelopeLonghand = {
@@ -179,6 +180,3 @@ const inferTransport = <T extends Input<any>>(input: T): InferTransport<T> => {
   // @ts-expect-error conditional type
   return input.schema instanceof URL || typeof input.schema === `string` ? Transport.http : Transport.memory
 }
-
-export type InputPrefilled<$Schema extends GlobalRegistry.SchemaList> = $Schema extends any ? (InputRaw<$Schema>)
-  : never
