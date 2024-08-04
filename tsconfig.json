@@ -26,7 +26,8 @@
     // Other
     "skipLibCheck": true,
     "esModuleInterop": true,
-    "isolatedModules": false
+    "isolatedModules": false,
+    "verbatimModuleSyntax": true
   },
   "include": ["src", "tests", "examples"],
   "exclude": ["build"]

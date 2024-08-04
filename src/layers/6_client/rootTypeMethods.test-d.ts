@@ -2,7 +2,7 @@
 import { expectTypeOf, test } from 'vitest'
 import { Graffle } from '../../../tests/_/schema/generated/__.js'
 import * as Schema from '../../../tests/_/schema/schema.js'
-import { GraphQLExecutionResultError } from '../../lib/graphql.js'
+import { type GraphQLExecutionResultError } from '../../lib/graphql.js'
 
 const graffle = Graffle.create({ schema: Schema.schema })
 

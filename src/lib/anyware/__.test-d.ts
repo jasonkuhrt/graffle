@@ -3,9 +3,9 @@
 import { describe, expectTypeOf, test } from 'vitest'
 import { Result } from '../../../tests/_/schema/generated/SchemaRuntime.js'
 import { ContextualError } from '../errors/ContextualError.js'
-import { MaybePromise } from '../prelude.js'
+import { type MaybePromise } from '../prelude.js'
 import { Anyware } from './__.js'
-import { SomeHook } from './main.js'
+import { type SomeHook } from './main.js'
 
 type InputA = { valueA: string }
 type InputB = { valueB: string }

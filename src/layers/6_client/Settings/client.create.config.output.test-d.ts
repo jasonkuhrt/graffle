@@ -1,12 +1,12 @@
 /* eslint-disable */
-import { ExecutionResult } from 'graphql'
+import { type ExecutionResult } from 'graphql'
 import { describe } from 'node:test'
 import { expectTypeOf, test } from 'vitest'
 import { Graffle } from '../../../../tests/_/schema/generated/__.js'
 import { schema } from '../../../../tests/_/schema/schema.js'
-import { GraphQLExecutionResultError } from '../../../lib/graphql.js'
-import { SimplifyDeep } from '../../../lib/prelude.js'
-import { EnvelopeTransportMemory } from './Config.js'
+import { type GraphQLExecutionResultError } from '../../../lib/graphql.js'
+import { type SimplifyDeep } from '../../../lib/prelude.js'
+import { type EnvelopeTransportMemory } from './Config.js'
 
 const C = Graffle.create
 

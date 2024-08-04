@@ -14,20 +14,20 @@ export { gql } from '../legacy/functions/gql.js'
 export { rawRequest } from '../legacy/functions/rawRequest.js'
 export { analyzeDocument } from '../legacy/helpers/analyzeDocument.js'
 export {
-  BatchRequestDocument,
-  BatchRequestsExtendedOptions,
-  BatchRequestsOptions,
+  type BatchRequestDocument,
+  type BatchRequestsExtendedOptions,
+  type BatchRequestsOptions,
   ClientError,
-  GraphQLResponse,
+  type GraphQLResponse,
   type RawRequestOptions,
   request,
   type RequestDocument,
   type RequestExtendedOptions,
-  RequestMiddleware,
+  type RequestMiddleware,
   type RequestOptions,
-  ResponseMiddleware,
+  type ResponseMiddleware,
   type Variables,
 }
 export default request
 
-export { RequestInitExtended } from '../legacy/helpers/types.js'
+export { type RequestInitExtended } from '../legacy/helpers/types.js'
