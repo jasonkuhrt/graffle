@@ -15,7 +15,12 @@ const args = Command.create().description(`Generate a type safe GraphQL client.`
       `The name of your client. If you are not generating multiple clients you probably do not need this. Otherwise you need to differentiate the clients so that their global type registrations do not conflict. It is possible to leave one client unnamed which will become the default client at the type level (e.g. in configuration etc.)`,
     ),
   )
-  .parameter(`schema`, z.string().min(1).describe(`File path to where your GraphQL schema is.`))
+  .parameter(
+    `schema`,
+    z.string().min(1).describe(
+      `Path to where your GraphQL schema is. If a URL is given it will be introspected. Otherwise assumed to be a file path to your GraphQL SDL file.`,
+    ),
+  )
   .parameter(
     `output`,
     z.string().min(1).describe(
