@@ -1,9 +1,7 @@
 /* eslint-disable */
 import { SocialStudies } from './generated-clients/SocialStudies/__.js'
 
-// todo: if used introspection query to get schema, then default schema to that URL.
-// todo: https://github.com/jasonkuhrt/graphql-request/issues/1015
-const socialStudies = SocialStudies.create({ schema: `https://countries.trevorblades.com/graphql` })
+const socialStudies = SocialStudies.create()
   .use({
     name: `CustomFetch`,
     anyware: async ({ exchange }) => {

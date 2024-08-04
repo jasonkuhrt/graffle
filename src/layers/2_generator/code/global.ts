@@ -20,6 +20,12 @@ export const { moduleName: moduleNameGlobal, generate: generateGlobal } = create
       )
     }
 
+    const defaultSchemaUrlTsDoc = config.defaultSchemaUrl
+      ? `\n/**
+            * ${config.defaultSchemaUrl.href}
+            */`
+      : ``
+
     code.push(`
     declare global {
       export namespace GraphQLRequestTypes {
@@ -38,7 +44,8 @@ export const { moduleName: moduleNameGlobal, generate: generateGlobal } = create
           }
           featureOptions: {
             schemaErrors: ${config.options.errorTypeNamePattern ? `true` : `false`}
-          }
+          }${defaultSchemaUrlTsDoc}
+          defaultSchemaUrl: ${config.defaultSchemaUrl ? `string` : `null`}
         }
       }
     }

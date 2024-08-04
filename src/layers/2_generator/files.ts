@@ -1,8 +1,9 @@
 import type { Formatter } from '@dprint/formatter'
-import { type GraphQLSchema, printSchema } from 'graphql'
+import { buildClientSchema, printSchema } from 'graphql'
 import _ from 'json-bigint'
 import fs from 'node:fs/promises'
 import * as Path from 'node:path'
+import { introspectionQuery } from '../../cli/_helpers.js'
 import type { OptionsInput } from './generateCode.js'
 import { generateCode, type Input as GenerateInput } from './generateCode.js'
 import { fileExists } from './prelude.js'
@@ -11,9 +12,19 @@ export interface Input {
   outputDirPath: string
   name?: string
   code?: Omit<GenerateInput, 'schemaSource' | 'sourceDirPath' | 'options'>
+  defaultSchemaUrl?: URL
+  sourceSchema: {
+    type: 'sdl'
+    /**
+     * Defaults to the source directory if set, otherwise the current working directory.
+     */
+    dirPath?: string
+  } | { type: 'url'; url: URL }
+  /**
+   * Defaults to the current working directory.
+   */
   sourceDirPath?: string
   sourceCustomScalarCodecsFilePath?: string
-  schemaSource?: GraphQLSchema
   schemaPath?: string
   format?: boolean
   errorTypeNamePattern?: OptionsInput['errorTypeNamePattern']
@@ -34,10 +45,23 @@ const getTypeScriptFormatter = async (): Promise<Formatter | undefined> => {
   }
 }
 
+const resolveSourceSchema = async (input: Input) => {
+  if (input.sourceSchema.type === `sdl`) {
+    const sourceDirPath = input.sourceSchema.dirPath ?? input.sourceDirPath ?? process.cwd()
+    const schemaPath = input.schemaPath ?? Path.join(sourceDirPath, `schema.graphql`)
+    const sdl = await fs.readFile(schemaPath, `utf8`)
+    return sdl
+  } else {
+    const data = await introspectionQuery(input.sourceSchema.url)
+    const schema = buildClientSchema(data)
+    const sdl = printSchema(schema)
+    return sdl
+  }
+}
+
 export const generateFiles = async (input: Input) => {
   const sourceDirPath = input.sourceDirPath ?? process.cwd()
-  const schemaPath = input.schemaPath ?? Path.join(sourceDirPath, `schema.graphql`)
-  const schemaSource = input.schemaSource ? printSchema(input.schemaSource) : await fs.readFile(schemaPath, `utf8`)
+  const schemaSource = await resolveSourceSchema(input)
 
   // todo support other extensions: .tsx,.js,.mjs,.cjs
   const customScalarCodecsFilePath = input.sourceCustomScalarCodecsFilePath
@@ -50,6 +74,7 @@ export const generateFiles = async (input: Input) => {
   const typeScriptFormatter = (input.format ?? true) ? await getTypeScriptFormatter() : undefined
 
   const codes = generateCode({
+    defaultSchemaUrl: input.defaultSchemaUrl,
     libraryPaths: {
       ...input.libraryPaths,
     },

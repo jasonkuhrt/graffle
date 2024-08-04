@@ -3,6 +3,8 @@
 import * as $ from '../../../src/entrypoints/alpha/schema.js'
 import * as $Scalar from './Scalar.js'
 
+export const $defaultSchemaUrl = new URL('https://countries.trevorblades.com/graphql')
+
 export const ContinentFilterInput = $.InputObject(`ContinentFilterInput`, {
   code: $.Input.field(() => $.Input.Nullable(StringQueryOperatorInput)),
 })

@@ -42,24 +42,49 @@ export type Input<$Schema extends GlobalRegistry.SchemaList> = {
   // elideInputKey: true,
 } & InputPrefilled<$Schema>
 
-export type InputRaw<$Schema extends GlobalRegistry.SchemaList> = {
-  schema: URLInput
-  /**
-   * Headers to send with each sent request.
-   */
-  headers?: HeadersInit
-  /**
-   * Configure output behavior, such as if errors should be returned or thrown.
-   */
-  output?: OutputInput<{ schemaErrors: GlobalRegistry.HasSchemaErrors<$Schema>; transport: 'http' }>
-} | {
-  schema: GraphQLSchema
-  headers?: never
-  /**
-   * Configure output behavior, such as if errors should be returned or thrown.
-   */
-  output?: OutputInput<{ schemaErrors: GlobalRegistry.HasSchemaErrors<$Schema>; transport: 'memory' }>
-}
+// TODO use code generation to display
+// TODO test that schema is optional when introspection was used to generate client.
+export type InputRaw<$Schema extends GlobalRegistry.SchemaList> =
+  | (
+    & ($Schema['defaultSchemaUrl'] extends null ? {
+        schema: URLInput
+      }
+      : {
+        /**
+         * @defaultValue The introspection URL used to generate this Graffle client.
+         */
+        schema?: URLInput
+      })
+    & {
+      /**
+       * Headers to send with each sent request.
+       */
+      headers?: HeadersInit
+      /**
+       * Configure output behavior, such as if errors should be returned or thrown.
+       */
+      output?: OutputInput<{ schemaErrors: GlobalRegistry.HasSchemaErrors<$Schema>; transport: 'http' }>
+    }
+  )
+  | (
+    & ($Schema['defaultSchemaUrl'] extends null ? {
+        schema: GraphQLSchema
+      }
+      : {
+        /**
+         * TODO this TSDoc is never rendered in VSCode...
+         * @defaultValue The introspection URL used to generate this Graffle client.
+         */
+        schema?: GraphQLSchema
+      })
+    & {
+      headers?: never
+      /**
+       * Configure output behavior, such as if errors should be returned or thrown.
+       */
+      output?: OutputInput<{ schemaErrors: GlobalRegistry.HasSchemaErrors<$Schema>; transport: 'memory' }>
+    }
+  )
 
 export type OutputInput<Options extends { transport: Transport; schemaErrors: boolean }> =
   & {

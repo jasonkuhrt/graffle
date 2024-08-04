@@ -1,12 +1,10 @@
 #!/usr/bin/env node
 
 import { Command } from '@molt/command'
-import { buildClientSchema } from 'graphql'
 import * as Path from 'node:path'
 import { z } from 'zod'
 import { generateFiles } from '../layers/2_generator/files.js'
-import { safeParseUrl } from '../lib/prelude.js'
-import { introspectionQuery } from './_helpers.js'
+import { urlParseSafe } from '../lib/prelude.js'
 
 const args = Command.create().description(`Generate a type safe GraphQL client.`)
   .parameter(
@@ -15,6 +13,8 @@ const args = Command.create().description(`Generate a type safe GraphQL client.`
       `The name of your client. If you are not generating multiple clients you probably do not need this. Otherwise you need to differentiate the clients so that their global type registrations do not conflict. It is possible to leave one client unnamed which will become the default client at the type level (e.g. in configuration etc.)`,
     ),
   )
+  // TODO allow for URL to be read from an environment variable and henceforth referenced that way instead of being hardcoded in the generated client output.
+  // TODO allow explicitly providing URL for code generate even when reading from an SDL file. Allow faster generation times with URL still prefilled in generated client.
   .parameter(
     `schema`,
     z.string().min(1).describe(
@@ -69,42 +69,22 @@ const args = Command.create().description(`Generate a type safe GraphQL client.`
   })
   .parse()
 
-const url = safeParseUrl(args.schema)
+const url = urlParseSafe(args.schema)
 
-if (url) {
-  const data = await introspectionQuery(url)
-  const schemaSource = buildClientSchema(data)
-  await generateFiles({
-    name: args.name,
-    libraryPaths: {
-      client: args.libraryPathClient,
-      schema: args.libraryPathSchema,
-      scalars: args.libraryPathScalars,
-    },
-    schemaSource: schemaSource,
-    outputDirPath: args.output,
-    format: args.format,
-    errorTypeNamePattern: args.schemaErrorType._tag === `schemaErrorTypePattern`
-      ? new RegExp(args.schemaErrorType.value)
-      : args.schemaErrorType.value
-      ? /^Error.+/
-      : undefined,
-  })
-} else {
-  await generateFiles({
-    name: args.name,
-    libraryPaths: {
-      client: args.libraryPathClient,
-      schema: args.libraryPathSchema,
-      scalars: args.libraryPathScalars,
-    },
-    sourceDirPath: Path.dirname(args.schema),
-    outputDirPath: args.output,
-    format: args.format,
-    errorTypeNamePattern: args.schemaErrorType._tag === `schemaErrorTypePattern`
-      ? new RegExp(args.schemaErrorType.value)
-      : args.schemaErrorType.value
-      ? /^Error.+/
-      : undefined,
-  })
-}
+await generateFiles({
+  sourceSchema: url ? { type: `url`, url } : { type: `sdl`, dirPath: Path.dirname(args.schema) },
+  defaultSchemaUrl: url ?? undefined,
+  name: args.name,
+  libraryPaths: {
+    client: args.libraryPathClient,
+    schema: args.libraryPathSchema,
+    scalars: args.libraryPathScalars,
+  },
+  outputDirPath: args.output,
+  format: args.format,
+  errorTypeNamePattern: args.schemaErrorType._tag === `schemaErrorTypePattern`
+    ? new RegExp(args.schemaErrorType.value)
+    : args.schemaErrorType.value
+    ? /^Error.+/
+    : undefined,
+})

@@ -17,6 +17,7 @@ const generate = async (
     printSchema(input.schema),
   )
   await generateFiles({
+    sourceSchema: { type: `sdl` },
     sourceDirPath,
     sourceCustomScalarCodecsFilePath: join(`./tests/_/customScalarCodecs.ts`),
     outputDirPath: join(sourceDirPath, `/generated`),

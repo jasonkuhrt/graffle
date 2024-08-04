@@ -16,6 +16,10 @@ type SomeSchema = {
   featureOptions: {
     schemaErrors: boolean
   }
+  /**
+   * If the code was generated with introspection, the URL used is taken as the default schema URL.
+   */
+  defaultSchemaUrl: string | null
 }
 
 type ZeroSchema = {
@@ -23,6 +27,7 @@ type ZeroSchema = {
   featureOptions: {
     schemaErrors: false
   }
+  defaultSchemaUrl: null
 }
 
 export type GlobalRegistry = Record<string, SomeSchema>
