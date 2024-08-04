@@ -44,7 +44,7 @@ export type Input<$Schema extends GlobalRegistry.SchemaList> = {
 export type InputRaw<$Schema extends GlobalRegistry.SchemaList> = {
   schema: URLInput
   /**
-   * Headers to send with the request.
+   * Headers to send with each sent request.
    */
   headers?: HeadersInit
   /**

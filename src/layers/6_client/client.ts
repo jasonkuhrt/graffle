@@ -183,6 +183,9 @@ export const createInternal = (
       selection: rootTypeSelectionSet,
       rootTypeName,
       schema: input.schema,
+      transportConstructorConfig: {
+        headers: input.headers,
+      },
       context: {
         config: context.config,
         transport,
@@ -274,6 +277,9 @@ export const createInternal = (
     const initialInput = {
       interface: interface_,
       transport,
+      transportConstructorConfig: {
+        headers: input.headers,
+      },
       document: rawInput.document,
       schema: input.schema,
       context: {

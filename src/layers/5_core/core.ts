@@ -3,7 +3,7 @@ import { print } from 'graphql'
 import { Anyware } from '../../lib/anyware/__.js'
 import { type StandardScalarVariables } from '../../lib/graphql.js'
 import { parseExecutionResult } from '../../lib/graphqlHTTP.js'
-import { CONTENT_TYPE_GQL, CONTENT_TYPE_JSON } from '../../lib/http.js'
+import { CONTENT_TYPE_GQL, CONTENT_TYPE_JSON, mergeHeadersInit } from '../../lib/http.js'
 import { casesExhausted } from '../../lib/prelude.js'
 import { execute } from '../0_functions/execute.js'
 import type { Schema } from '../1_Schema/__.js'
@@ -43,6 +43,9 @@ type InterfaceInput<TypedProperties = {}, RawProperties = {}> =
 type TransportInput<HttpProperties = {}, MemoryProperties = {}> =
   | ({
     transport: TransportHttp
+    transportConstructorConfig: {
+      headers?: HeadersInit
+    }
   } & HttpProperties)
   | ({
     transport: TransportMemory
@@ -259,10 +262,14 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
       run: async ({ input, slots }) => {
         switch (input.transport) {
           case `http`: {
+            const headers = mergeHeadersInit(
+              input.transportConstructorConfig.headers ?? {},
+              input.request.headers ?? {},
+            )
             const response = await slots.fetch(
               new Request(input.request.url, {
                 method: input.request.method,
-                headers: input.request.headers,
+                headers,
                 body: input.request.body,
               }),
             )
