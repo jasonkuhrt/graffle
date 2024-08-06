@@ -1,10 +1,11 @@
+import type { DocumentTypeDecoration } from '@graphql-typed-document-node/core'
 import { type ExecutionResult, GraphQLSchema, type TypedQueryDocumentNode } from 'graphql'
 import type { Anyware } from '../../lib/anyware/__.js'
 import { Errors } from '../../lib/errors/__.js'
 import { isOperationTypeName, operationTypeNameToRootTypeName, type RootTypeName } from '../../lib/graphql.js'
 import { isPlainObject } from '../../lib/prelude.js'
 import type { URLInput } from '../0_functions/request.js'
-import type { BaseInput } from '../0_functions/types.js'
+import type { BaseInput, TypedDocumentString } from '../0_functions/types.js'
 import { Schema } from '../1_Schema/__.js'
 import { readMaybeThunk } from '../1_Schema/core/helpers.js'
 import type { GlobalRegistry } from '../2_generator/globalRegistry.js'
@@ -64,9 +65,8 @@ type RawParameters =
 // todo no config needed?
 // dprint-ignore
 export type ClientRaw<$Config extends Config> = {
-  rawString(input: BaseInput<string>): Promise<Envelope<$Config>>
-  rawString(document: BaseInput<string>['document'], options?: Omit<BaseInput<string>, 'document'>): Promise<Envelope<$Config>>
-  rawStringOrThrow(input: BaseInput<string>): Promise<Envelope<$Config, unknown, []>>
+  rawString<$Data, $Variables>(input: BaseInput<TypedDocumentString<$Data, $Variables>>): Promise<Envelope<$Config, $Data>>
+  rawStringOrThrow<$Data, $Variables>(input: BaseInput<TypedDocumentString<$Data, $Variables>>): Promise<Envelope<$Config, $Data, []>>
 
   raw<$Data, $Variables>(input: BaseInput<TypedQueryDocumentNode<$Data, $Variables>>): Promise<Envelope<$Config, $Data>>
   rawOrThrow<$Data, $Variables>(input: BaseInput<TypedQueryDocumentNode<$Data, $Variables>>): Promise<Envelope<$Config, $Data, []>>

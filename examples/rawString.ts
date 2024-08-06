@@ -5,14 +5,16 @@ const graffle = Graffle.create({
   schema: publicGraphQLSchemaEndpoints.SocialStudies,
 })
 
-const result = await graffle.rawString(
-  /* gql */ `
-		{
-			countries {
-				name
-			}
-		}	
-	`,
-)
+const document = /* gql */ `
+	{
+		countries {
+			name
+		}
+	}	
+`
+
+const result = await graffle.rawString({
+  document,
+})
 
 console.log(result.data)
