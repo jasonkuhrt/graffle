@@ -1,5 +1,5 @@
-import type { DocumentNode } from 'graphql'
+import type { TypedQueryDocumentNode } from 'graphql'
 
-export type DocumentInput = DocumentNode | string
+export type DocumentInput<D = any, V = any> = string | TypedQueryDocumentNode<D, V>
 
 export type OperationNameInput = string

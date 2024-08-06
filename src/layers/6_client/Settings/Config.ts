@@ -1,4 +1,4 @@
-import type { ExecutionResult as GraphQLExecutionResult } from 'graphql'
+import type { GraphQLError } from 'graphql'
 import type { Simplify } from 'type-fest'
 import type { GraphQLExecutionResultError } from '../../../lib/graphql.js'
 import type { ConfigManager, StringKeyof } from '../../../lib/prelude.js'
@@ -128,24 +128,38 @@ export type ResolveOutputReturnRootField<$Config extends Config, $Index extends 
         : Simplify<IfConfiguredStripSchemaErrorsFromDataRootField<$Config, $Index, $Data>>
     )
 
-// type ObjMap<T = unknown> = {
-//   [key: string]: T
-// }
-
-// dprint-ignore
-// todo use ObjMap
-export type Envelope<$Config extends Config, $Data = unknown> = 
-  Simplify<
-    $Config['transport'] extends 'http'
-      ? EnvelopeTransportHttp<$Data>
-      : EnvelopeTransportMemory<$Data>
-  >
-
-export type EnvelopeTransportHttp<$Data> = GraphQLExecutionResult<$Data> & {
-  response: Response
+type ObjMap<T = unknown> = {
+  [key: string]: T
 }
 
-export type EnvelopeTransportMemory<$Data> = GraphQLExecutionResult<$Data>
+// dprint-ignore
+// todo use ObjMap for $Data
+export type Envelope<$Config extends Config, $Data = unknown, $Errors extends ReadonlyArray<Error> = ReadonlyArray<GraphQLError>> = 
+  Simplify<
+    & (
+        $Config['transport'] extends 'http'
+        ? EnvelopeTransportHttp<$Data>
+        : EnvelopeTransportMemory<$Data>
+      )
+    & (
+        $Errors extends []
+        ? {} // eslint-disable-line
+        : {
+            errors?: ReadonlyArray<GraphQLError>
+          }
+      )
+    >
+
+export type EnvelopeTransportHttp<$Data> = {
+  data?: $Data | null
+  response: Response
+  extensions?: ObjMap
+}
+
+export type EnvelopeTransportMemory<$Data> = {
+  data?: $Data | null
+  extensions?: ObjMap
+}
 
 type ConfigResolveOutputErrorChannel<$Config extends Config, $Channel extends OutputChannelConfig | false> =
   $Channel extends 'default' ? $Config['output']['defaults']['errorChannel']

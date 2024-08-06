@@ -394,4 +394,4 @@ export type PickRequiredProperties<T extends object> = {
   [K in keyof T as undefined extends T[K] ? never : K]: T[K]
 }
 
-export type IsSomePropertiesRequired<T extends object> = keyof PickRequiredProperties<T> extends never ? false : true
+export type Negate<T extends boolean> = T extends true ? false : true

@@ -1,4 +1,4 @@
-import { SocialStudies } from './generated-clients/SocialStudies/__.js'
+import { SocialStudies } from './$generated-clients/SocialStudies/__.js'
 
 const socialStudies = SocialStudies.create({
   headers: {

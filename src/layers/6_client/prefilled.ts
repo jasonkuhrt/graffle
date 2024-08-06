@@ -1,4 +1,5 @@
-import type { Exact, IsSomePropertiesRequired } from '../../lib/prelude.js'
+import type { HasRequiredKeys } from 'type-fest'
+import type { Exact } from '../../lib/prelude.js'
 import type { Schema } from '../1_Schema/__.js'
 import type { GlobalRegistry } from '../2_generator/globalRegistry.js'
 import { type Client, create } from './client.js'
@@ -12,7 +13,7 @@ export type CreatePrefilled = <$Name extends GlobalRegistry.SchemaNames>(name: $
 >(...args:
 	// eslint-disable-next-line
 	// @ts-ignore passes after generation
-	IsSomePropertiesRequired<InputPrefilled<GlobalRegistry.Schemas[$Name]>> extends true
+	HasRequiredKeys<InputPrefilled<GlobalRegistry.Schemas[$Name]>> extends true
 		// eslint-disable-next-line
 		// @ts-ignore passes after generation
 		? [input: Exact<$Input, InputPrefilled<GlobalRegistry.Schemas[$Name]>>]

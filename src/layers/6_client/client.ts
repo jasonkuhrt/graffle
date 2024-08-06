@@ -1,7 +1,6 @@
-import { type ExecutionResult, GraphQLSchema } from 'graphql'
+import { type ExecutionResult, GraphQLSchema, type TypedQueryDocumentNode } from 'graphql'
 import type { Anyware } from '../../lib/anyware/__.js'
 import { Errors } from '../../lib/errors/__.js'
-import type { SomeExecutionResultWithoutErrors } from '../../lib/graphql.js'
 import { isOperationTypeName, operationTypeNameToRootTypeName, type RootTypeName } from '../../lib/graphql.js'
 import { isPlainObject } from '../../lib/prelude.js'
 import type { URLInput } from '../0_functions/request.js'
@@ -55,29 +54,22 @@ export type TypedContext = Context & {
 
 const isTypedContext = (context: Context): context is TypedContext => `schemaIndex` in context
 
-interface RawInput extends BaseInput {}
-
 type RawParameters =
-  | [RawInput]
+  | [BaseInput]
   | [
-    document: RawInput['document'],
-    options?: Omit<RawInput, 'document'>,
+    document: BaseInput['document'],
+    options?: Omit<BaseInput, 'document'>,
   ]
 
 // todo no config needed?
+// dprint-ignore
 export type ClientRaw<$Config extends Config> = {
-  raw(input: RawInput): Promise<Envelope<$Config>>
-  // todo test this overload
-  raw(
-    document: RawInput['document'],
-    options?: Omit<RawInput, 'document'>,
-  ): Promise<ExecutionResult>
+  rawString(input: BaseInput<string>): Promise<Envelope<$Config>>
+  rawString(document: BaseInput<string>['document'], options?: Omit<BaseInput<string>, 'document'>): Promise<Envelope<$Config>>
+  rawStringOrThrow(input: BaseInput<string>): Promise<Envelope<$Config, unknown, []>>
 
-  rawOrThrow(input: RawInput): Promise<SomeExecutionResultWithoutErrors>
-  rawOrThrow(
-    document: RawInput['document'],
-    options?: Omit<RawInput, 'document'>,
-  ): Promise<SomeExecutionResultWithoutErrors>
+  raw<$Data, $Variables>(input: BaseInput<TypedQueryDocumentNode<$Data, $Variables>>): Promise<Envelope<$Config, $Data>>
+  rawOrThrow<$Data, $Variables>(input: BaseInput<TypedQueryDocumentNode<$Data, $Variables>>): Promise<Envelope<$Config, $Data, []>>
 }
 
 export type Extension = {
@@ -247,7 +239,7 @@ export const createInternal = (
     return handleOutput(context, result)
   }
 
-  const runRaw = async (context: Context, rawInput: RawInput) => {
+  const runRaw = async (context: Context, rawInput: BaseInput) => {
     const interface_: InterfaceRaw = `raw`
     const transport = input.schema instanceof GraphQLSchema ? `memory` : `http`
     const initialInput = {
