@@ -269,6 +269,9 @@ export const createInternal = (
 
   // @ts-expect-error ignoreme
   const client: Client = {
+    internal: {
+      config: context.config,
+    },
     raw: async (...args: RawParameters) => {
       const input = resolveRawParameters(args)
       const contextWithOutputSet = updateContextConfig(context, { ...context.config, output: traditionalGraphqlOutput })
@@ -281,6 +284,14 @@ export const createInternal = (
         output: traditionalGraphqlOutputThrowing,
       })
       return await runRaw(contextWithOutputSet, input)
+    },
+    rawString: async (...args: RawParameters) => {
+      // eslint-disable-next-line
+      return await client.raw(...args)
+    },
+    rawStringOrThrow: async (...args: RawParameters) => {
+      // eslint-disable-next-line
+      return await client.rawOrThrow(...args)
     },
     // todo $use
     use: (extensionOrAnyware: Extension | Anyware.Extension2<Core.Core>) => {
