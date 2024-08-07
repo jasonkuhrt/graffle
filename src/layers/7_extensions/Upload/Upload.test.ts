@@ -46,7 +46,7 @@ afterAll(async () => {
 })
 
 test(`upload`, async () => {
-  const result = await graffle.raw({
+  const result = await graffle.rawString({
     document: `
       mutation ($blob: Upload!) {
         readTextFile(blob: $blob)

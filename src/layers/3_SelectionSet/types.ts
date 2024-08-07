@@ -88,7 +88,7 @@ export type Field_<
   $type extends Schema.Output.Nullable<infer $typeInner>  ? Field_<$typeInner, $Field, $Index, $Options> :
   $type extends Schema.Output.List<infer $typeInner>      ? Field_<$typeInner, $Field, $Index, $Options> :
   $type extends Schema.__typename                         ? NoArgsIndicator :
-  $type extends Schema.Scalar.Any                         ? Indicator<$Field> :
+  $type extends Schema.Scalar.Any                         ? Indicator<$Field> : // eslint-disable
   $type extends Schema.Enum                               ? Indicator<$Field> :
   $type extends Schema.Object$2                           ? Object<$type, $Index> & ($Options['hideDirectives'] extends true ? {} : FieldDirectives) & Arguments<$Field> :
   $type extends Schema.Union                              ? Union<$type, $Index> & Arguments<$Field> :

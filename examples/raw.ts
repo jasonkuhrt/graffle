@@ -1,21 +1,22 @@
 import { gql, Graffle } from '../src/entrypoints/alpha/main.js'
+import { publicGraphQLSchemaEndpoints } from './$helpers.js'
 
-const graffle = Graffle.create({ schema: `https://countries.trevorblades.com/graphql` })
+const graffle = Graffle.create({
+  schema: publicGraphQLSchemaEndpoints.SocialStudies,
+})
 
-// todo typed document node
-// interface Data {
-//   countries: { name }[]
-// }
-// const { data } = await request<Data>(
+const result = await graffle.raw({
+  document: gql`
+    query countries ($filter: [String!]) {
+      countries (filter: { name: { in: $filter } }) {
+        name
+        continent {
+          name
+        }
+      }
+    }
+  `,
+  variables: { filter: [`Canada`, `Germany`, `Japan`] },
+})
 
-const { data } = await graffle.rawOrThrow(
-  gql`
-		{
-			countries {
-				name
-			}
-		}	
-	`,
-)
-
-console.log(data)
+console.log(result.data)

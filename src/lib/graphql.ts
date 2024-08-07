@@ -11,7 +11,6 @@ import {
   isListType,
   isNonNullType,
 } from 'graphql'
-import type { ObjMap } from 'graphql/jsutils/ObjMap.js'
 import type { Errors } from './errors/__.js'
 
 export type TypeMapByKind =
@@ -253,12 +252,3 @@ export type OperationTypeName = 'query' | 'mutation'
 
 export const isOperationTypeName = (value: unknown): value is OperationTypeName =>
   value === `query` || value === `mutation`
-
-export interface SomeExecutionResultWithoutErrors<
-  TData = ObjMap<unknown>,
-  TExtensions = ObjMap<unknown>,
-> {
-  errors?: readonly []
-  data?: TData | null
-  extensions?: TExtensions
-}

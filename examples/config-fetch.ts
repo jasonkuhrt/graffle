@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { SocialStudies } from './generated-clients/SocialStudies/__.js'
+import { SocialStudies } from './$generated-clients/SocialStudies/__.js'
 
 const socialStudies = SocialStudies.create()
   .use({
@@ -17,6 +17,8 @@ const socialStudies = SocialStudies.create()
 
 // todo $scalars does not work
 // todo intelisense for $ doesn't work
-const countries = await socialStudies.query.countries({ name: true })
+const countries = await socialStudies.query.countries({
+  name: true,
+})
 
 console.log(countries)

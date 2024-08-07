@@ -23,7 +23,7 @@ import { gql, GraphQLClient, request } from '../../src/entrypoints/main.js'
 
   const client = new GraphQLClient(endpoint)
 
-  const query: TypedDocumentNode<{ greetings: string }, Record<any, never>> = parse(gql`
+  const query: TypedDocumentNode<{ greetings: string }> = parse(gql`
     query greetings {
       greetings
     }

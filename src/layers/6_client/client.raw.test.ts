@@ -9,13 +9,13 @@ import { createExtension } from '../5_createExtension/createExtension.js'
 const graffle = Graffle.create({ schema })
 
 test(`.rawOrThrow() throws if errors array non-empty`, async () => {
-  await expect(graffle.rawOrThrow({ document: `query {}` })).rejects.toMatchInlineSnapshot(
+  await expect(graffle.rawStringOrThrow({ document: `query {}` })).rejects.toMatchInlineSnapshot(
     `[ContextualAggregateError: One or more errors in the execution result.]`,
   )
 })
 
 test(`.raw() returns errors in array`, async () => {
-  await expect(graffle.raw({ document: `query {}` })).resolves.toMatchInlineSnapshot(`
+  await expect(graffle.rawString({ document: `query {}` })).resolves.toMatchInlineSnapshot(`
     {
       "errors": [
         [GraphQLError: Syntax Error: Expected Name, found "}".],
@@ -26,8 +26,8 @@ test(`.raw() returns errors in array`, async () => {
 
 describe(`memory transport`, () => {
   let input: object | undefined
-  const peakInput = createExtension({
-    name: `peak`,
+  const spyInput = createExtension({
+    name: `spy`,
     anyware: ({ exchange }) => {
       if (exchange.input.transport === `memory`) {
         input = exchange.input
@@ -40,11 +40,11 @@ describe(`memory transport`, () => {
   })
   describe(`operationName`, () => {
     test(`undefined by default`, async () => {
-      await graffle.use(peakInput).raw(`query { id }`)
+      await graffle.use(spyInput).rawString({ document: `query { id }` })
       expect(input).toMatchObject({ operationName: undefined })
     })
     test(`reflects explicit value`, async () => {
-      await graffle.use(peakInput).raw(`query { id }`, { operationName: `foo` })
+      await graffle.use(spyInput).rawString({ document: `query { id }`, operationName: `foo` })
       expect(input).toMatchObject({ operationName: `foo` })
     })
   })

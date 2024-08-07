@@ -1,14 +1,16 @@
 /* eslint-disable */
 import { type ExecutionResult } from 'graphql'
+import type { ObjMap } from 'graphql/jsutils/ObjMap.js'
 import { describe } from 'node:test'
+import type { Simplify } from 'type-fest'
+import type { ConditionalSimplify } from 'type-fest/source/conditional-simplify.js'
 import { expectTypeOf, test } from 'vitest'
 import { Graffle } from '../../../../tests/_/schema/generated/__.js'
 import { schema } from '../../../../tests/_/schema/schema.js'
 import { type GraphQLExecutionResultError } from '../../../lib/graphql.js'
-import { type SimplifyDeep } from '../../../lib/prelude.js'
-import { type EnvelopeTransportMemory } from './Config.js'
+import { type Envelope, type OutputConfigDefault } from './Config.js'
 
-const C = Graffle.create
+const G = Graffle.create
 
 const defaultGraffle = Graffle.create({ schema })
 
@@ -16,7 +18,7 @@ const resultFieldSelect =
   Graffle.Select.Query({ resultNonNull: { $: { case: 'Object1' }, __typename: true } })['resultNonNull']
 
 describe('default is errors thrown, no envelope, no schema errors', async () => {
-  const graffle = C({
+  const graffle = G({
     schema,
     output: {
       defaults: {
@@ -60,7 +62,7 @@ describe('.envelope', () => {
   // const fieldMethod = <$Graffle extends {query:{__typename:()=>Promise<any>}}>(g: $Graffle) => g.query.__typename()
 
   describe('false disables it ', () => {
-    const g = C({ schema, output: { envelope: false } })
+    const g = G({ schema, output: { envelope: false } })
 
     test('query.<fieldMethod>', () => {
       expectTypeOf(g.query.__typename()).resolves.toEqualTypeOf<FieldMethodResultDisabled>()
@@ -101,20 +103,20 @@ describe('.envelope', () => {
   describe('with defaults.errorChannel: "return"', () => {
     describe('.errors', () => {
       test('defaults to execution errors in envelope', () => {
-        const g = C({ schema, output: { defaults: { errorChannel: 'return' }, envelope: true } })
+        const g = G({ schema, output: { defaults: { errorChannel: 'return' }, envelope: true } })
         expectTypeOf(g.query.__typename()).resolves.toEqualTypeOf<ExecutionResult<{ __typename: 'Query' }> | Error>()
       })
-      test('.execution:false restores errors to return', () => {
-        const g = C({
+      test('.execution:false restores errors to return', async () => {
+        const g = G({
           schema,
           output: { defaults: { errorChannel: 'return' }, envelope: { errors: { execution: false } } },
         })
         expectTypeOf(g.query.__typename()).resolves.toEqualTypeOf<
-          ExecutionResult<{ __typename: 'Query' }> | Error | GraphQLExecutionResultError
+          Omit<ExecutionResult<{ __typename: 'Query' }>, 'errors'> | Error | GraphQLExecutionResultError
         >()
       })
       test('.other:true raises them to envelope', () => {
-        const g = C({
+        const g = G({
           schema,
           output: { defaults: { errorChannel: 'return' }, envelope: { errors: { other: true } } },
         })
@@ -122,32 +124,42 @@ describe('.envelope', () => {
       })
     })
   })
+  test('with no errors included, then there are no error fields in the envelope', async () => {
+      const g = G({
+        schema,
+        // todo allow this shorthand
+        // output: { envelope: false },
+        output: { envelope: { errors: { execution:false, other:false, schema:false } } },
+      })
+      const result = await g.query.__typename()
+      expectTypeOf<keyof typeof result>().toEqualTypeOf<'data'|'extensions'> // no errors
+  })
 })
 
 describe('defaults.errorChannel: "return"', () => {
   describe('puts errors into return type', () => {
-    const g = C({ schema, output: { defaults: { errorChannel: 'return' } } })
+    const g = G({ schema, output: { defaults: { errorChannel: 'return' } } })
     test('query.<fieldMethod>', () => {
       expectTypeOf(g.query.__typename()).resolves.toEqualTypeOf<'Query' | Error | GraphQLExecutionResultError>()
     })
   })
   describe('with .errors', () => {
     test('.execution: throw', async () => {
-      const g = C({
+      const g = G({
         schema,
         output: { defaults: { errorChannel: 'return' }, errors: { execution: 'throw' } },
       })
       expectTypeOf(await g.query.__typename()).toEqualTypeOf<'Query' | Error>()
     })
     test('.other: throw', async () => {
-      const g = C({
+      const g = G({
         schema,
         output: { defaults: { errorChannel: 'return' }, errors: { other: 'throw' } },
       })
       expectTypeOf(await g.query.__typename()).toEqualTypeOf<'Query' | GraphQLExecutionResultError>()
     })
     test('.*: throw', async () => {
-      const g = C({
+      const g = G({
         schema,
         output: { defaults: { errorChannel: 'return' }, errors: { other: 'throw', execution: 'throw' } },
       })
@@ -158,23 +170,24 @@ describe('defaults.errorChannel: "return"', () => {
 
 describe('.errors.schema', () => {
   describe('throw', () => {
-    const g = C({ schema, output: { errors: { schema: 'throw' } } })
+    const g = G({ schema, output: { errors: { schema: 'throw' } } })
     test('query.<resultFieldMethod>', () => {
       expectTypeOf(g.query.resultNonNull(resultFieldSelect)).resolves.toEqualTypeOf<{ __typename: 'Object1' }>()
     })
   })
   describe('return', () => {
-    const g = C({ schema, output: { errors: { schema: 'return' } } })
+    const g = G({ schema, output: { errors: { schema: 'return' } } })
     test('query.<resultFieldMethod>', () => {
       expectTypeOf(g.query.resultNonNull(resultFieldSelect)).resolves.toEqualTypeOf<{ __typename: 'Object1' } | Error>()
     })
   })
   describe('envelope.schema', () => {
-    const g = C({ schema, output: { envelope: { errors: { schema: true } }, errors: { schema: 'return' } } })
+    const g = G({ schema, output: { envelope: { errors: { schema: true } }, errors: { schema: 'return' } } })
+    type Config = typeof g.internal.config
     test('query.<resultFieldMethod>', async () => {
-      // todo: once we have execution result with type variable errors, then enahnce this test to assert that the result errors come through in the errors field.
+      // todo: once we have execution result with type variable errors, then enhance this test to assert that the result errors come through in the errors field.
       expectTypeOf(g.query.resultNonNull(resultFieldSelect)).resolves.toEqualTypeOf<
-        EnvelopeTransportMemory<{ resultNonNull: { __typename: 'Object1' } }>
+        Envelope<Config, { resultNonNull: { __typename: 'Object1' } }>
       >()
     })
   })
