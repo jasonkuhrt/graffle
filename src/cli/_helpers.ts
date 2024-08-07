@@ -16,7 +16,7 @@ export const introspectionQuery = async (endpoint: URL): Promise<IntrospectionQu
   })
 
   if (!result.data) {
-    throw new Error('No data returned for introspection query.')
+    throw new Error(`No data returned for introspection query.`)
   }
 
   return result.data

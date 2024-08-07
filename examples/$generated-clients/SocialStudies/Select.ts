@@ -5,7 +5,7 @@ import type { Index } from './Index.js'
 // -------
 
 import { createSelect } from '../../../src/entrypoints/alpha/client.js'
-export const Select = createSelect('default')
+export const Select = createSelect(`default`)
 
 // Buildtime
 // ---------

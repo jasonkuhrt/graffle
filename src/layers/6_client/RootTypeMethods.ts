@@ -1,6 +1,5 @@
-import type { Simplify } from 'type-fest'
 import type { OperationTypeName } from '../../lib/graphql.js'
-import type { Exact, SimplifyDeep } from '../../lib/prelude.js'
+import type { Exact } from '../../lib/prelude.js'
 import type { TSError } from '../../lib/TSError.js'
 import type { InputFieldsAllNullable, Schema } from '../1_Schema/__.js'
 import type { SelectionSet } from '../3_SelectionSet/__.js'

@@ -151,14 +151,14 @@ export type Envelope<$Config extends Config, $Data = unknown, $Errors extends Re
     & (
         $Config['transport'] extends 'http'
         ? { response: Response }
-        : { }
+        : {} // eslint-disable-line
       )
       // todo remove use of errors type variable. Rely only on $Config.
     & (
         $Errors extends []
         ? {} // eslint-disable-line
         : IsEnvelopeWithoutErrors<$Config> extends true
-        ? {}
+        ? {} // eslint-disable-line
         : {
             errors?: ReadonlyArray<GraphQLError>
           }
