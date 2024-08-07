@@ -1,8 +1,3 @@
-// TODO test that when variables are typed, then sender must supply assignable variable data.
-// TODO test that when variables are typed as no variables, then variables input is removed.
-// TODO test that when variables have any required properties, then sender must supply a variables object with them.
-// TODO test that when variables have no required properties, then sender can supply no variables object.
-
 import type { TypedQueryDocumentNode } from 'graphql'
 import { gql, Graffle } from '../src/entrypoints/alpha/main.js'
 import { publicGraphQLSchemaEndpoints } from './$helpers.js'

@@ -26,8 +26,8 @@ test(`.raw() returns errors in array`, async () => {
 
 describe(`memory transport`, () => {
   let input: object | undefined
-  const peakInput = createExtension({
-    name: `peak`,
+  const spyInput = createExtension({
+    name: `spy`,
     anyware: ({ exchange }) => {
       if (exchange.input.transport === `memory`) {
         input = exchange.input
@@ -40,11 +40,11 @@ describe(`memory transport`, () => {
   })
   describe(`operationName`, () => {
     test(`undefined by default`, async () => {
-      await graffle.use(peakInput).rawString({ document: `query { id }` })
+      await graffle.use(spyInput).rawString({ document: `query { id }` })
       expect(input).toMatchObject({ operationName: undefined })
     })
     test(`reflects explicit value`, async () => {
-      await graffle.use(peakInput).rawString({ document: `query { id }`, operationName: `foo` })
+      await graffle.use(spyInput).rawString({ document: `query { id }`, operationName: `foo` })
       expect(input).toMatchObject({ operationName: `foo` })
     })
   })
