@@ -1,9 +1,15 @@
 import type { DocumentTypeDecoration } from '@graphql-typed-document-node/core'
-import type { TypedQueryDocumentNode } from 'graphql'
+import type { DocumentNode, TypedQueryDocumentNode } from 'graphql'
 import type { HasRequiredKeys, IsEmptyObject } from 'type-fest'
 import type { StandardScalarVariables } from '../../lib/graphql.js'
 import type { Negate } from '../../lib/prelude.js'
 import type { DocumentInput, OperationNameInput } from '../6_client/types.js'
+
+export type BaseInput_ = {
+  document: DocumentNode | string
+  operationName?: OperationNameInput
+  variables?: StandardScalarVariables
+}
 
 // dprint-ignore
 export type BaseInput<$Document extends DocumentInput = DocumentInput> =
@@ -12,7 +18,7 @@ export type BaseInput<$Document extends DocumentInput = DocumentInput> =
       operationName?: OperationNameInput
     }
   & (
-    TypedDocumentString<any,any> extends $Document
+    $Document extends TypedDocumentString<any,any>
         ? GetVariablesInputFromString<Exclude<$Document,TypedQueryDocumentNode>>
         : string extends $Document
           ? { variables?: StandardScalarVariables }
@@ -47,6 +53,7 @@ type VariablesOf<$Document extends TypedQueryDocumentNode | TypedDocumentString>
       ? V
       : never
 
+// TODO open issue asking for core library to expose this type.
 export interface TypedDocumentString<TResult = Record<string, any>, TVariables = Record<string, any>>
   extends String, DocumentTypeDecoration<TResult, TVariables> // eslint-disable-line
 {}

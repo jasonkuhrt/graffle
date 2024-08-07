@@ -1,12 +1,13 @@
 import type { GraphQLSchema } from 'graphql'
 import type { ConfigManager } from '../../../lib/prelude.js'
-import type { URLInput } from '../../0_functions/request.js'
 import type { Schema } from '../../1_Schema/__.js'
 import type { GlobalRegistry } from '../../2_generator/globalRegistry.js'
 import type { TransportHttp, TransportMemory } from '../../5_core/types.js'
 import { Transport } from '../../5_core/types.js'
 import type { InputPrefilled } from '../prefilled.js'
 import { type OutputChannel, type OutputChannelConfig, outputConfigDefault } from './Config.js'
+
+export type URLInput = URL | string
 
 export type InputOutputEnvelopeLonghand = {
   /**
@@ -44,46 +45,51 @@ export type Input<$Schema extends GlobalRegistry.SchemaList> = {
 
 // TODO use code generation to display
 // TODO test that schema is optional when introspection was used to generate client.
+// dprint-ignore
 export type InputRaw<$Schema extends GlobalRegistry.SchemaList> =
   | (
-    & ($Schema['defaultSchemaUrl'] extends null ? {
-        schema: URLInput
-      }
-      : {
+      & (
+          $Schema['defaultSchemaUrl'] extends null
+          ? {
+              schema: URLInput
+            }
+          : {
+              /**
+               * @defaultValue The introspection URL used to generate this Graffle client.
+               */
+              schema?: URLInput
+            }
+        )
+      & {
         /**
-         * @defaultValue The introspection URL used to generate this Graffle client.
+         * Headers to send with each sent request.
          */
-        schema?: URLInput
-      })
-    & {
-      /**
-       * Headers to send with each sent request.
-       */
-      headers?: HeadersInit
-      /**
-       * Configure output behavior, such as if errors should be returned or thrown.
-       */
-      output?: OutputInput<{ schemaErrors: GlobalRegistry.HasSchemaErrors<$Schema>; transport: 'http' }>
-    }
-  )
+        headers?: HeadersInit
+        /**
+         * Configure output behavior, such as if errors should be returned or thrown.
+         */
+        output?: OutputInput<{ schemaErrors: GlobalRegistry.HasSchemaErrors<$Schema>; transport: 'http' }>
+      }
+    )
   | (
-    & ($Schema['defaultSchemaUrl'] extends null ? {
-        schema: GraphQLSchema
-      }
-      : {
-        /**
-         * TODO this TSDoc is never rendered in VSCode...
-         * @defaultValue The introspection URL used to generate this Graffle client.
-         */
-        schema?: GraphQLSchema
-      })
+    & (
+        $Schema['defaultSchemaUrl'] extends null
+        ? { schema: GraphQLSchema }
+        : {
+            /**
+             * TODO this TSDoc is never rendered in VSCode...
+             * @defaultValue The introspection URL used to generate this Graffle client.
+             */
+            schema?: GraphQLSchema
+          }
+      )
     & {
-      headers?: never
-      /**
-       * Configure output behavior, such as if errors should be returned or thrown.
-       */
-      output?: OutputInput<{ schemaErrors: GlobalRegistry.HasSchemaErrors<$Schema>; transport: 'memory' }>
-    }
+        headers?: never
+        /**
+         * Configure output behavior, such as if errors should be returned or thrown.
+         */
+        output?: OutputInput<{ schemaErrors: GlobalRegistry.HasSchemaErrors<$Schema>; transport: 'memory' }>
+      }
   )
 
 export type OutputInput<Options extends { transport: Transport; schemaErrors: boolean }> =

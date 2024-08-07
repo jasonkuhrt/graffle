@@ -1,11 +1,9 @@
-import type { DocumentTypeDecoration } from '@graphql-typed-document-node/core'
 import { type ExecutionResult, GraphQLSchema, type TypedQueryDocumentNode } from 'graphql'
 import type { Anyware } from '../../lib/anyware/__.js'
 import { Errors } from '../../lib/errors/__.js'
 import { isOperationTypeName, operationTypeNameToRootTypeName, type RootTypeName } from '../../lib/graphql.js'
 import { isPlainObject } from '../../lib/prelude.js'
-import type { URLInput } from '../0_functions/request.js'
-import type { BaseInput, TypedDocumentString } from '../0_functions/types.js'
+import type { BaseInput, BaseInput_, TypedDocumentString } from '../0_functions/types.js'
 import { Schema } from '../1_Schema/__.js'
 import { readMaybeThunk } from '../1_Schema/core/helpers.js'
 import type { GlobalRegistry } from '../2_generator/globalRegistry.js'
@@ -24,8 +22,6 @@ import {
   traditionalGraphqlOutputThrowing,
 } from './Settings/Config.js'
 import { type Input, type InputToConfig, inputToConfig } from './Settings/Input.js'
-
-export type SchemaInput = URLInput | GraphQLSchema
 
 // todo could list specific errors here
 // Anyware entrypoint
@@ -55,12 +51,19 @@ export type TypedContext = Context & {
 
 const isTypedContext = (context: Context): context is TypedContext => `schemaIndex` in context
 
-type RawParameters =
-  | [BaseInput]
-  | [
-    document: BaseInput['document'],
-    options?: Omit<BaseInput, 'document'>,
-  ]
+type RawParameters = [BaseInput_]
+// | [
+//   document: BaseInput['document'],
+//   options?: Omit<BaseInput, 'document'>,
+// ]
+//
+const resolveRawParameters = (parameters: RawParameters) => {
+  // return parameters.length === 2
+  // ? { document: parameters[0], ...parameters[1] }
+  // return typeof parameters[0] === `string` || `kind` in parameters[0]
+  // ? { document: parameters[0], ...parameters[1] }
+  return parameters[0]
+}
 
 // todo no config needed?
 // dprint-ignore
@@ -79,6 +82,11 @@ export type Extension = {
 
 // dprint-ignore
 export type Client<$Index extends Schema.Index | null, $Config extends Config> =
+  {
+    internal: {
+      config: $Config
+    }
+  }
   & ClientRaw<$Config>
   & (
       $Index extends Schema.Index
@@ -239,7 +247,7 @@ export const createInternal = (
     return handleOutput(context, result)
   }
 
-  const runRaw = async (context: Context, rawInput: BaseInput) => {
+  const runRaw = async (context: Context, rawInput: BaseInput_) => {
     const interface_: InterfaceRaw = `raw`
     const transport = input.schema instanceof GraphQLSchema ? `memory` : `http`
     const initialInput = {
@@ -259,13 +267,6 @@ export const createInternal = (
     return await run(context, initialInput)
   }
 
-  const resolveRawParameters = (parameters: RawParameters) => {
-    return parameters.length === 2
-      ? { document: parameters[0], ...parameters[1] }
-      : typeof parameters[0] === `string` || `kind` in parameters[0]
-      ? { document: parameters[0], ...parameters[1] }
-      : parameters[0]
-  }
   // @ts-expect-error ignoreme
   const client: Client = {
     raw: async (...args: RawParameters) => {

@@ -1,7 +1,7 @@
 import type { GraphQLError } from 'graphql'
 import type { Simplify } from 'type-fest'
 import type { GraphQLExecutionResultError } from '../../../lib/graphql.js'
-import type { ConfigManager, StringKeyof } from '../../../lib/prelude.js'
+import type { ConfigManager, StringKeyof, Values } from '../../../lib/prelude.js'
 import type { Schema } from '../../1_Schema/__.js'
 import type { GlobalRegistry } from '../../2_generator/globalRegistry.js'
 import type { SelectionSet } from '../../3_SelectionSet/__.js'
@@ -108,7 +108,7 @@ export type Config = {
 
 // dprint-ignore
 export type ResolveOutputReturnRootType<$Config extends Config, $Index extends Schema.Index, $Data> =
- | IfConfiguredGetOutputErrorReturns<$Config>
+ | Simplify<IfConfiguredGetOutputErrorReturns<$Config>>
  | (
       $Config['output']['envelope']['enabled'] extends true
         ? Envelope<$Config, IfConfiguredStripSchemaErrorsFromDataRootType<$Config, $Index, $Data>>
@@ -123,8 +123,8 @@ export type ResolveOutputReturnRootField<$Config extends Config, $Index extends 
         // todo: a typed execution result that allows for additional error types.
         // currently it is always graphql execution error however envelope configuration can put more errors into that.
         ? Envelope<$Config, $DataRaw extends undefined
-            ? IfConfiguredStripSchemaErrorsFromDataRootField<$Config, $Index, $Data>
-            : IfConfiguredStripSchemaErrorsFromDataRootType<$Config, $Index, $DataRaw>>
+            ? Simplify<IfConfiguredStripSchemaErrorsFromDataRootField<$Config, $Index, $Data>>
+            : Simplify<IfConfiguredStripSchemaErrorsFromDataRootType<$Config, $Index, $DataRaw>>>
         : Simplify<IfConfiguredStripSchemaErrorsFromDataRootField<$Config, $Index, $Data>>
     )
 
@@ -133,33 +133,37 @@ type ObjMap<T = unknown> = {
 }
 
 // dprint-ignore
+type IsEnvelopeWithoutErrors<$Config extends Config> =
+  $Config['output']['envelope']['enabled'] extends true
+    ? Values<$Config['output']['envelope']['errors']> extends false
+      ? true
+    : false
+  : false
+
+// dprint-ignore
 // todo use ObjMap for $Data
 export type Envelope<$Config extends Config, $Data = unknown, $Errors extends ReadonlyArray<Error> = ReadonlyArray<GraphQLError>> = 
   Simplify<
+    & {
+        data?: $Data | null
+        extensions?: ObjMap
+      }
     & (
         $Config['transport'] extends 'http'
-        ? EnvelopeTransportHttp<$Data>
-        : EnvelopeTransportMemory<$Data>
+        ? { response: Response }
+        : { }
       )
+      // todo remove use of errors type variable. Rely only on $Config.
     & (
         $Errors extends []
         ? {} // eslint-disable-line
+        : IsEnvelopeWithoutErrors<$Config> extends true
+        ? {}
         : {
             errors?: ReadonlyArray<GraphQLError>
           }
       )
     >
-
-export type EnvelopeTransportHttp<$Data> = {
-  data?: $Data | null
-  response: Response
-  extensions?: ObjMap
-}
-
-export type EnvelopeTransportMemory<$Data> = {
-  data?: $Data | null
-  extensions?: ObjMap
-}
 
 type ConfigResolveOutputErrorChannel<$Config extends Config, $Channel extends OutputChannelConfig | false> =
   $Channel extends 'default' ? $Config['output']['defaults']['errorChannel']

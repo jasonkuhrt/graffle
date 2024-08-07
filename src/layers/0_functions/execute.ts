@@ -1,8 +1,8 @@
 import type { ExecutionResult, GraphQLSchema } from 'graphql'
 import { execute as graphqlExecute, graphql } from 'graphql'
-import type { BaseInput } from './types.js'
+import type { BaseInput_ } from './types.js'
 
-interface Input extends BaseInput {
+type Input = BaseInput_ & {
   schema: GraphQLSchema
 }
 

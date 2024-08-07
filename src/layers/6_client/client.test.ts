@@ -32,14 +32,14 @@ describe(`interface`, () => {
     test(`can set headers in constructor`, async ({ fetch }) => {
       fetch.mockImplementationOnce(() => Promise.resolve(createResponse({ data: { id: `abc` } })))
       const graffle = Graffle.create({ schema: endpoint, headers: { 'x-foo': `bar` } })
-      await graffle.raw(`query { id }`)
+      await graffle.rawString({ document: `query { id }` })
       const request = fetch.mock.calls[0]?.[0]
       expect(request?.headers.get(`x-foo`)).toEqual(`bar`)
     })
 
     test(`sends well formed request`, async ({ fetch, graffle }) => {
       fetch.mockImplementationOnce(() => Promise.resolve(createResponse({ data: { greetings: `Hello World` } })))
-      await graffle.raw({ document: `query { greetings }` })
+      await graffle.rawString({ document: `query { greetings }` })
       const request = fetch.mock.calls[0]?.[0]
       expect(request?.headers.get(`content-type`)).toEqual(CONTENT_TYPE_JSON)
       expect(request?.headers.get(`accept`)).toEqual(CONTENT_TYPE_GQL)
