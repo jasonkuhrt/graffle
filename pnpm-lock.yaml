@@ -35,10 +35,10 @@ importers:
         version: 0.16.0
       '@pothos/core':
         specifier: ^4.1.0
-        version: 4.1.0(graphql@16.9.0)
+        version: 4.2.0(graphql@16.9.0)
       '@pothos/plugin-simple-objects':
         specifier: ^4.1.0
-        version: 4.1.0(@pothos/core@4.1.0(graphql@16.9.0))(graphql@16.9.0)
+        version: 4.1.0(@pothos/core@4.2.0(graphql@16.9.0))(graphql@16.9.0)
       '@tsconfig/node20':
         specifier: ^20.1.4
         version: 20.1.4
@@ -570,8 +570,8 @@ packages:
   '@octokit/types@6.41.0':
     resolution: {integrity: sha512-eJ2jbzjdijiL3B4PrSQaSjuF2sPEQPVCPzBvTHJD9Nz+9dw2SGH4K4xeQJ77YfTq5bRQ+bD8wT11JbeDPmxmGg==}
 
-  '@pothos/core@4.1.0':
-    resolution: {integrity: sha512-EH9Gop2r09OUvDzWuIgB4mJhwgCU5R/U9gGRNt5I+ORFyc5EuxG0RLWJiOds6mcwm7DvggMegnTaU88N/M2SJw==}
+  '@pothos/core@4.2.0':
+    resolution: {integrity: sha512-dEoQCaA/pCPg3MhjGCwBF1QRbtOPysXm4nivQQsq6OrOvC7pU+KJNVdBSwpi1ZtTLtd4wg+PCC8Js9GrCyh9sw==}
     peerDependencies:
       graphql: '>=16.6.0'
 
@@ -3624,13 +3624,13 @@ snapshots:
     dependencies:
       '@octokit/openapi-types': 12.11.0
 
-  '@pothos/core@4.1.0(graphql@16.9.0)':
+  '@pothos/core@4.2.0(graphql@16.9.0)':
     dependencies:
       graphql: 16.9.0
 
-  '@pothos/plugin-simple-objects@4.1.0(@pothos/core@4.1.0(graphql@16.9.0))(graphql@16.9.0)':
+  '@pothos/plugin-simple-objects@4.1.0(@pothos/core@4.2.0(graphql@16.9.0))(graphql@16.9.0)':
     dependencies:
-      '@pothos/core': 4.1.0(graphql@16.9.0)
+      '@pothos/core': 4.2.0(graphql@16.9.0)
       graphql: 16.9.0
 
   '@repeaterjs/repeater@3.0.6': {}
