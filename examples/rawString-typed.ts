@@ -19,14 +19,14 @@ type Document = TypedDocumentString<
 >
 
 const document: Document = /* gql */ `
-	query countries ($filter: [String!]) {
-		countries (filter: { name: { in: $filter } }) {
-			name
-			continent {
-				name
-			}
-		}
-	}
+  query countries ($filter: [String!]) {
+    countries (filter: { name: { in: $filter } }) {
+      name
+      continent {
+        name
+      }
+    }
+  }
 `
 
 const result = await graffle.rawString({

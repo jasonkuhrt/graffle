@@ -6,11 +6,11 @@ const graffle = Graffle.create({
 })
 
 const document = /* gql */ `
-	{
-		countries {
-			name
-		}
-	}	
+  {
+    countries {
+      name
+    }
+  }	
 `
 
 const result = await graffle.rawString({
