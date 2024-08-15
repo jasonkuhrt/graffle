@@ -1,4 +1,4 @@
-import type * as $ from '../../../src/entrypoints/graffle/schema.js'
+import type * as $ from 'graphql-request/graffle/schema'
 import type * as $Scalar from './Scalar.ts'
 
 // ------------------------------------------------------------ //

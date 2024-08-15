@@ -14,22 +14,28 @@
         "default": "./build/entrypoints/main.js"
       }
     },
-    "./alpha/client": {
+    "./graffle/main": {
       "import": {
-        "types": "./build/entrypoints/alpha/client.d.ts",
-        "default": "./build/entrypoints/alpha/client.js"
+        "types": "./build/entrypoints/graffle/main.d.ts",
+        "default": "./build/entrypoints/graffle/main.js"
       }
     },
-    "./alpha/schema": {
+    "./graffle/client": {
       "import": {
-        "types": "./build/entrypoints/alpha/schema.d.ts",
-        "default": "./build/entrypoints/alpha/schema.js"
+        "types": "./build/entrypoints/graffle/client.d.ts",
+        "default": "./build/entrypoints/graffle/client.js"
       }
     },
-    "./alpha/schema/scalars": {
+    "./graffle/schema": {
       "import": {
-        "types": "./build/entrypoints/alpha/scalars.d.ts",
-        "default": "./build/entrypoints/alpha/scalars.js"
+        "types": "./build/entrypoints/graffle/schema.d.ts",
+        "default": "./build/entrypoints/graffle/schema.js"
+      }
+    },
+    "./graffle/schema/scalars": {
+      "import": {
+        "types": "./build/entrypoints/graffle/scalars.d.ts",
+        "default": "./build/entrypoints/graffle/scalars.js"
       }
     }
   },
@@ -60,7 +66,7 @@
   "scripts": {
     "graffle": "tsx ./src/cli/generate.ts",
     "gen:test:schema": "tsx tests/_/schemaGenerate.ts",
-    "gen:docs:examples:clients:SocialStudies": "pnpm graffle --name SocialStudies --schema https://countries.trevorblades.com/graphql --output ./examples/generated-clients/SocialStudies --libraryPathClient ../../../src/entrypoints/alpha/client.js --libraryPathSchema ../../../src/entrypoints/alpha/schema.js --libraryPathScalars ../../../src/entrypoints/alpha/scalars.js",
+    "gen:docs:examples:clients:SocialStudies": "pnpm graffle --name SocialStudies --schema https://countries.trevorblades.com/graphql --output ./examples/generated-clients/SocialStudies --libraryPathClient ../../../src/entrypoints/graffle/client.js --libraryPathSchema ../../../src/entrypoints/graffle/schema.js --libraryPathScalars ../../../src/entrypoints/graffle/scalars.js",
     "dev": "rm -rf dist && tsc --watch",
     "format": "pnpm build:docs && dprint fmt",
     "lint": "eslint . --fix",

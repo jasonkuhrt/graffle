@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-import * as $ from '../../../src/entrypoints/graffle/schema.js'
+import * as $ from 'graphql-request/graffle/schema'
 import * as $Scalar from './Scalar.js'
 
 export const $defaultSchemaUrl = new URL('https://countries.trevorblades.com/graphql')
@@ -99,7 +99,7 @@ export const Query = $.Object$(`Query`, {
 })
 
 export const $Index = {
-  name: 'SocialStudies' as const,
+  name: 'graffle' as const,
   Root: {
     Query,
     Mutation: null,

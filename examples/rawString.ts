@@ -1,4 +1,4 @@
-import { Graffle } from '../src/entrypoints/alpha/main.js'
+import { Graffle } from '../src/entrypoints/graffle/main.js'
 import { publicGraphQLSchemaEndpoints } from './$helpers.js'
 
 const graffle = Graffle.create({

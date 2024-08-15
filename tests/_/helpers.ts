@@ -10,7 +10,7 @@ interface Fixtures {
   graffle: Client<any, any>
 }
 
-import { Graffle } from '../../src/entrypoints/alpha/main.js'
+import { Graffle } from '../../src/entrypoints/graffle/main.js'
 import type { Client } from '../../src/layers/6_client/client.js'
 
 export const test = testBase.extend<Fixtures>({

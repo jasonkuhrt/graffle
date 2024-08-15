@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-import * as $ from '../../../../src/entrypoints/alpha/schema.js'
+import * as $ from '../../../../src/entrypoints/graffle/schema.js'
 import * as $Scalar from './Scalar.js'
 
 export const $defaultSchemaUrl = undefined

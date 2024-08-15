@@ -18,3 +18,6 @@ With the depth of context provided by the generated code, Graffle tries to maxim
 4. Type-safe selection helpers term and type level. Build up selections to spread into multiple Graffle callsites. Or specify a function's input type based on a selection.
 
 Take Graffle for a spin, let us know what you think. We hope you have as much fun working with Graffle as we are building it. ❤️
+
+> [!note] Generated Client Icon <span style="font-size:2em;line-height:0;" title="generation required">⩕</span>
+> This icon is used throughout the guides to denote that the content **only applies to the generated client**.

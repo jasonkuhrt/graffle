@@ -23,8 +23,8 @@ const generate = async (
     outputDirPath: join(sourceDirPath, `/generated`),
     code: {
       libraryPaths: {
-        client: `../../../../src/entrypoints/alpha/client.js`,
-        schema: `../../../../src/entrypoints/alpha/schema.js`,
+        client: `../../../../src/entrypoints/graffle/client.js`,
+        schema: `../../../../src/entrypoints/graffle/schema.js`,
         scalars: `../../../../src/layers/1_Schema/Hybrid/types/Scalar/Scalar.js`,
       },
     },

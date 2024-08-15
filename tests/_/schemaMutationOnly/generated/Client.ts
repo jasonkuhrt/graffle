@@ -1,4 +1,4 @@
-import { createPrefilled } from '../../../../src/entrypoints/alpha/client.js'
+import { createPrefilled } from '../../../../src/entrypoints/graffle/client.js'
 
 import { $defaultSchemaUrl, $Index } from './SchemaRuntime.js'
 

@@ -1,5 +1,5 @@
-import { Graffle } from '../src/entrypoints/alpha/main.js'
-// todo from '../src/entrypoints/alpha/utils.js'
+import { Graffle } from '../src/entrypoints/graffle/main.js'
+// todo from '../src/entrypoints/graffle/utils.js'
 import type { TypedDocumentString } from '../src/layers/0_functions/types.js'
 import { publicGraphQLSchemaEndpoints } from './$helpers.js'
 

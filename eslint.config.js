@@ -2,7 +2,7 @@ import configPrisma from 'eslint-config-prisma'
 import tsEslint from 'typescript-eslint'
 
 export default tsEslint.config({
-  ignores: ['**/build/**/*', 'eslint.config.js', 'vite.config.ts', '**/generated/**/*', '**/$generated-clients/**/*'],
+  ignores: ['**/build/**/*', 'eslint.config.js', 'vite.config.ts', '**/generated/**/*', '**/$generated-clients/**/*','**/website/**/*'],
   extends: configPrisma,
   languageOptions: {
     parserOptions: {

@@ -1,5 +1,5 @@
 import type { TypedQueryDocumentNode } from 'graphql'
-import { gql, Graffle } from '../src/entrypoints/alpha/main.js'
+import { gql, Graffle } from '../src/entrypoints/graffle/main.js'
 import { publicGraphQLSchemaEndpoints } from './$helpers.js'
 
 const graffle = Graffle.create({
