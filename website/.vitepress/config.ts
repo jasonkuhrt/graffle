@@ -5,6 +5,11 @@ export default defineConfig({
   title: 'Graffle',
   description: 'Minimalist Progressively Type Safe GraphQL Client For JavaScript.',
   themeConfig: {
+    // @see https://github.com/vuejs/vitepress/issues/4141
+    logo: {
+      light: '/logo-dark.svg',
+      dark: '/logo-light.svg',
+    },
     search: {
       provider: 'local',
     },

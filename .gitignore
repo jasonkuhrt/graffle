@@ -5,5 +5,5 @@ build
 *.log
 coverage
 tsconfig.vitest-temp.json
-.vitepress/dist
-.vitepress/cache
+website/.vitepress/dist
+website/.vitepress/cache
