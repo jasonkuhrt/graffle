@@ -1,4 +1,4 @@
-# `orThrow`
+# Or Throw
 
 You can use `orThrow` method variants to only return the success.
 
