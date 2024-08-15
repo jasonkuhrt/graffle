@@ -57,11 +57,11 @@ export default defineConfig({
             text: 'Getting Started',
             // link: '/overview/getting-started',
             items: [{
-              text: 'With Static Client',
+              text: 'Static Client',
               link: '/overview/getting-started-static',
             }, {
               text:
-                'With Generated Client <span title="Requires generation" style="font-size:1.75em;line-height:0;">⩕</span>',
+                'Generated Client <span title="Requires generation" style="font-size:1.75em;line-height:0;">⩕</span>',
               link: '/overview/getting-started-generated',
             }],
           },

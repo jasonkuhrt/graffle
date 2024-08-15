@@ -20,6 +20,13 @@ pnpm graffle --schema https://countries.trevorblades.com/graphql
 
 You will see a directory named `graffle` has been created in the current working directory.
 
+```
+|
+|- graffle/
+|  |- ...
+|
+```
+
 > [!note] Schema Sources
 > You can use any GraphQL API that has introspection enabled. Alternatively you can also give a file path to a [GraphQL SDL file](https://todo).
 
