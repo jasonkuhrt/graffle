@@ -27,12 +27,16 @@ jobs:
           cache: pnpm
       - name: Setup Pages
         uses: actions/configure-pages@v4
-      - name: Install Dependencies
+      - name: Install Library Dependencies
+        run: pnpm install
+      - name: Build Library
+        run:  pnpm build
+      - name: Install Website Dependencies
         working-directory: website
         run: pnpm install
-      - name: Build
+      - name: Build Website
         working-directory: website
-        run:  pnpm build # or pnpm docs:build / yarn docs:build / bun run docs:build
+        run:  pnpm build
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
