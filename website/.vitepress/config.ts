@@ -6,6 +6,8 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
   title: 'Graffle',
   description: 'Minimalist Progressively Type Safe GraphQL Client For JavaScript.',
+  // TODO, remove before going live.
+  ignoreDeadLinks: true,
   markdown: {
     codeTransformers: [
       transformerTwoslash({

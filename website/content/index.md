@@ -11,7 +11,7 @@ hero:
       link: /overview/introduction
     - theme: alt
       text: Examples
-      link: /examples
+      link: /examples/rawString
 features:
   - title: Opt-in Generation
     details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
