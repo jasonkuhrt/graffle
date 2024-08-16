@@ -5,6 +5,7 @@ import { defineConfig } from 'vitepress'
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   title: 'Graffle',
+  base: '/graphql-request/',
   description: 'Minimalist Progressively Type Safe GraphQL Client For JavaScript.',
   // TODO, remove before going live.
   ignoreDeadLinks: true,
