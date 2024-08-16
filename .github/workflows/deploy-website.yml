@@ -29,10 +29,10 @@ jobs:
         uses: actions/configure-pages@v4
       - name: Install Dependencies
         working-directory: website
-        run: cd website pnpm install
+        run: pnpm install
       - name: Build
         working-directory: website
-        run: cd website pnpm build # or pnpm docs:build / yarn docs:build / bun run docs:build
+        run:  pnpm build # or pnpm docs:build / yarn docs:build / bun run docs:build
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
