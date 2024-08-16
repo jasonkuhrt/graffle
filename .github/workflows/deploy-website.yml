@@ -27,6 +27,10 @@ jobs:
           cache: pnpm
       - name: Setup Pages
         uses: actions/configure-pages@v4
+      # In order to build the website we need to have the library built first.
+      # This is because the Twoslash will depend on the types from Graffle,
+      # which in this setup is coming from a pnpm install targetting the local
+      # library file path.
       - name: Install Library Dependencies
         run: pnpm install
       - name: Build Library
