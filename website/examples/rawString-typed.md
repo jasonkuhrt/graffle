@@ -1,1 +1,0 @@
-<<< @/../examples/rawString-typed.ts

@@ -28,11 +28,12 @@ export default defineConfig({
       }) as any,
     ],
   },
+  srcDir: './content',
   themeConfig: {
     // @see https://github.com/vuejs/vitepress/issues/4141
     logo: {
-      light: '/logo-dark.svg',
-      dark: '/logo-light.svg',
+      light: '/_assets/logo-dark.svg',
+      dark: '/_assets/logo-light.svg',
     },
     search: {
       provider: 'local',
