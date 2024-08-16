@@ -1,0 +1,44 @@
+/* The following styles fix dark theme styling for floating-vue  */
+
+.v-popper--theme-dropdown .v-popper__inner {
+	box-shadow: none;
+	border-radius: 3px;
+}
+
+.dark .v-popper--theme-dropdown .v-popper__inner {
+	background-color: hsl(0, 0%, 8%);
+	border-color: rgb(33, 33, 33);
+}
+
+.dark .v-popper--theme-dropdown .v-popper__arrow-inner {
+	border-bottom-color: hsl(0,0%,8%);
+}
+
+.dark .v-popper--theme-dropdown .v-popper__arrow-outer {
+	/* border-color: black; */
+	border-color: rgb(33, 33, 33);
+}
+
+/* Improve vertical alignment of badges. Mostly noticeable with big titles.*/
+
+.vp-doc h1 > .VPBadge {
+	vertical-align: middle;
+	margin-top: auto;
+	text-transform: uppercase;
+	font-weight: bold;
+	letter-spacing: 0.025em;
+
+}
+
+/* Improve the page outline aside. "On this page" is redundant IMO. */
+
+.VPDocAsideOutline .content {
+	/* Because we can only hide, not remove (none) the title, it appears as an extended top boarder, just remove the border completely to fix that.  */
+	border: none;
+}
+
+.outline-title {
+	/* If we make it display:none then we break the active border indicator alignment. So just visually hide. */
+	opacity: 0;
+	margin-top: -1.6rem;
+}

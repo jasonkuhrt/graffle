@@ -2,7 +2,7 @@ import { describe, expect, expectTypeOf } from 'vitest'
 import { createResponse, test } from '../../../tests/_/helpers.js'
 import { Graffle as Graffle2 } from '../../../tests/_/schema/generated/__.js'
 import { schema } from '../../../tests/_/schema/schema.js'
-import { Graffle } from '../../entrypoints/alpha/main.js'
+import { Graffle } from '../../entrypoints/graffle/main.js'
 import { CONTENT_TYPE_GQL, CONTENT_TYPE_JSON } from '../../lib/http.js'
 
 const endpoint = new URL(`https://foo.io/api/graphql`)

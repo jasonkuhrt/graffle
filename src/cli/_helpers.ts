@@ -1,5 +1,5 @@
 import { getIntrospectionQuery, type IntrospectionQuery } from 'graphql'
-import { Graffle } from '../entrypoints/alpha/__Graffle.js'
+import { Graffle } from '../entrypoints/graffle/__Graffle.js'
 import type { TypedDocumentString } from '../layers/0_functions/types.js'
 
 export const introspectionQuery = async (endpoint: URL): Promise<IntrospectionQuery> => {

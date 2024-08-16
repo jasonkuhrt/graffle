@@ -99,9 +99,9 @@ export const resolveOptions = (input: Input): Config => {
       customScalarCodecs: input.importPaths?.customScalarCodecs ?? Path.join(process.cwd(), `customScalarCodecs.js`),
     },
     libraryPaths: {
-      client: input.libraryPaths?.client ?? `graphql-request/alpha/client`,
-      scalars: input.libraryPaths?.scalars ?? `graphql-request/alpha/schema/scalars`,
-      schema: input.libraryPaths?.schema ?? `graphql-request/alpha/schema`,
+      client: input.libraryPaths?.client ?? `graphql-request/graffle/client`,
+      scalars: input.libraryPaths?.scalars ?? `graphql-request/graffle/schema/scalars`,
+      schema: input.libraryPaths?.schema ?? `graphql-request/graffle/schema`,
     },
     typeMapByKind,
     rootTypes: {

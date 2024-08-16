@@ -1,4 +1,4 @@
-import { Graffle } from '../src/entrypoints/alpha/main.js'
+import { Graffle } from '../src/entrypoints/graffle/main.js'
 import { publicGraphQLSchemaEndpoints } from './$helpers.js'
 
 const graffle = Graffle.create({
@@ -6,11 +6,11 @@ const graffle = Graffle.create({
 })
 
 const document = /* gql */ `
-	{
-		countries {
-			name
-		}
-	}	
+  {
+    countries {
+      name
+    }
+  }	
 `
 
 const result = await graffle.rawString({

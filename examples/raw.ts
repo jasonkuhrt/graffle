@@ -1,5 +1,5 @@
-import { gql, Graffle } from '../src/entrypoints/alpha/main.js'
-import { publicGraphQLSchemaEndpoints } from './$helpers.js'
+import { gql, Graffle } from '../src/entrypoints/graffle/main.js'
+import { publicGraphQLSchemaEndpoints, show } from './$helpers.js'
 
 const graffle = Graffle.create({
   schema: publicGraphQLSchemaEndpoints.SocialStudies,
@@ -19,4 +19,4 @@ const result = await graffle.raw({
   variables: { filter: [`Canada`, `Germany`, `Japan`] },
 })
 
-console.log(result.data)
+show(result.data)

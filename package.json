@@ -1,5 +1,6 @@
 {
   "name": "graphql-request",
+  "description": "Minimalist Progressively Type Safe GraphQL Client For JavaScript.",
   "version": "0.0.0-dripip",
   "packageManager": "pnpm@9.7.0",
   "type": "module",
@@ -13,22 +14,28 @@
         "default": "./build/entrypoints/main.js"
       }
     },
-    "./alpha/client": {
+    "./graffle/main": {
       "import": {
-        "types": "./build/entrypoints/alpha/client.d.ts",
-        "default": "./build/entrypoints/alpha/client.js"
+        "types": "./build/entrypoints/graffle/main.d.ts",
+        "default": "./build/entrypoints/graffle/main.js"
       }
     },
-    "./alpha/schema": {
+    "./graffle/client": {
       "import": {
-        "types": "./build/entrypoints/alpha/schema.d.ts",
-        "default": "./build/entrypoints/alpha/schema.js"
+        "types": "./build/entrypoints/graffle/client.d.ts",
+        "default": "./build/entrypoints/graffle/client.js"
       }
     },
-    "./alpha/schema/scalars": {
+    "./graffle/schema": {
       "import": {
-        "types": "./build/entrypoints/alpha/scalars.d.ts",
-        "default": "./build/entrypoints/alpha/scalars.js"
+        "types": "./build/entrypoints/graffle/schema.d.ts",
+        "default": "./build/entrypoints/graffle/schema.js"
+      }
+    },
+    "./graffle/schema/scalars": {
+      "import": {
+        "types": "./build/entrypoints/graffle/scalars.d.ts",
+        "default": "./build/entrypoints/graffle/scalars.js"
       }
     }
   },
@@ -59,7 +66,7 @@
   "scripts": {
     "graffle": "tsx ./src/cli/generate.ts",
     "gen:test:schema": "tsx tests/_/schemaGenerate.ts",
-    "gen:docs:examples:clients:SocialStudies": "pnpm graffle --name SocialStudies --schema https://countries.trevorblades.com/graphql --output ./examples/generated-clients/SocialStudies --libraryPathClient ../../../src/entrypoints/alpha/client.js --libraryPathSchema ../../../src/entrypoints/alpha/schema.js --libraryPathScalars ../../../src/entrypoints/alpha/scalars.js",
+    "gen:docs:examples:clients:SocialStudies": "pnpm graffle --name SocialStudies --schema https://countries.trevorblades.com/graphql --output ./examples/generated-clients/SocialStudies --libraryPathClient ../../../src/entrypoints/graffle/client.js --libraryPathSchema ../../../src/entrypoints/graffle/schema.js --libraryPathScalars ../../../src/entrypoints/graffle/scalars.js",
     "dev": "rm -rf dist && tsc --watch",
     "format": "pnpm build:docs && dprint fmt",
     "lint": "eslint . --fix",
@@ -105,20 +112,20 @@
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.16.0",
-    "@pothos/core": "^4.1.0",
+    "@pothos/core": "^4.2.0",
     "@pothos/plugin-simple-objects": "^4.1.0",
     "@tsconfig/node20": "^20.1.4",
     "@tsconfig/strictest": "^2.0.5",
     "@types/body-parser": "^1.19.5",
     "@types/express": "^4.17.21",
     "@types/json-bigint": "^1.0.4",
-    "@types/node": "^22.1.0",
-    "@typescript-eslint/eslint-plugin": "^8.0.1",
-    "@typescript-eslint/parser": "^8.0.1",
+    "@types/node": "^22.4.0",
+    "@typescript-eslint/eslint-plugin": "^8.1.0",
+    "@typescript-eslint/parser": "^8.1.0",
     "doctoc": "^2.2.1",
     "dripip": "^0.10.0",
-    "es-toolkit": "^1.13.1",
-    "eslint": "^9.8.0",
+    "es-toolkit": "^1.16.0",
+    "eslint": "^9.9.0",
     "eslint-config-prisma": "^0.6.0",
     "eslint-plugin-deprecation": "^3.0.0",
     "eslint-plugin-only-warn": "^1.1.0",
@@ -131,14 +138,14 @@
     "graphql-scalars": "^1.23.0",
     "graphql-tag": "^2.12.6",
     "graphql-upload-minimal": "^1.6.1",
-    "graphql-yoga": "^5.6.3",
+    "graphql-yoga": "^5.7.0",
     "jsdom": "^24.1.1",
     "json-bigint": "^1.0.0",
-    "publint": "^0.2.9",
-    "tsx": "^4.16.5",
-    "type-fest": "^4.23.0",
+    "publint": "^0.2.10",
+    "tsx": "^4.17.0",
+    "type-fest": "^4.24.0",
     "typescript": "^5.5.4",
-    "typescript-eslint": "^8.0.1",
+    "typescript-eslint": "^8.1.0",
     "vitest": "^2.0.5"
   }
 }

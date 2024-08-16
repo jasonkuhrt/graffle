@@ -1,4 +1,4 @@
-import { Graffle } from '../../src/entrypoints/alpha/main.js'
+import { Graffle } from '../../src/entrypoints/graffle/main.js'
 
 export const Date = Graffle.Scalars.create(`Date`, {
   encode: (value: globalThis.Date) => value.toISOString(),
