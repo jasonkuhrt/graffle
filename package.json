@@ -119,9 +119,9 @@
     "@types/body-parser": "^1.19.5",
     "@types/express": "^4.17.21",
     "@types/json-bigint": "^1.0.4",
-    "@types/node": "^22.4.0",
-    "@typescript-eslint/eslint-plugin": "^8.1.0",
-    "@typescript-eslint/parser": "^8.1.0",
+    "@types/node": "^22.4.1",
+    "@typescript-eslint/eslint-plugin": "^8.2.0",
+    "@typescript-eslint/parser": "^8.2.0",
     "doctoc": "^2.2.1",
     "dripip": "^0.10.0",
     "es-toolkit": "^1.16.0",
@@ -143,9 +143,9 @@
     "json-bigint": "^1.0.0",
     "publint": "^0.2.10",
     "tsx": "^4.17.0",
-    "type-fest": "^4.24.0",
+    "type-fest": "^4.25.0",
     "typescript": "^5.5.4",
-    "typescript-eslint": "^8.1.0",
+    "typescript-eslint": "^8.2.0",
     "vitest": "^2.0.5"
   }
 }
