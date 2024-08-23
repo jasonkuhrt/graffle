@@ -1,9 +1,13 @@
+---
+aside: false
+---
+
+```ts twoslash
 import type { TypedQueryDocumentNode } from 'graphql'
-import { gql, Graffle } from '../src/entrypoints/graffle/main.js'
-import { publicGraphQLSchemaEndpoints, show } from './$helpers.js'
+import { gql, Graffle } from 'graphql-request/graffle/main'
 
 const graffle = Graffle.create({
-  schema: publicGraphQLSchemaEndpoints.SocialStudies,
+  schema: `https://countries.trevorblades.com/graphql`,
 })
 
 /*************************************** Variation 1 ***************************************
@@ -15,7 +19,10 @@ const graffle = Graffle.create({
  */
 
 {
-  const document = gql<{ countries: { name: string; continent: { name: string } }[] }, { filter: string[] }>`
+  const document = gql<
+    { countries: { name: string; continent: { name: string } }[] },
+    { filter: string[] }
+  >`
     query countries ($filter: [String!]) {
       countries (filter: { name: { in: $filter } }) {
         name
@@ -26,9 +33,12 @@ const graffle = Graffle.create({
     }
   `
 
-  const result = await graffle.raw({ document, variables: { filter: [`Canada`, `Germany`, `Japan`] } })
+  const result = await graffle.raw({
+    document,
+    variables: { filter: [`Canada`, `Germany`, `Japan`] },
+  })
 
-  show(result.data?.countries)
+  console.log(result.data?.countries)
 }
 
 /*************************************** Variation 2 ***************************************
@@ -56,7 +66,11 @@ const graffle = Graffle.create({
     }
   `
 
-  const result = await graffle.raw({ document, variables: { filter: [`Canada`, `Germany`, `Japan`] } })
+  const result = await graffle.raw({
+    document,
+    variables: { filter: [`Canada`, `Germany`, `Japan`] },
+  })
 
-  show(result.data?.countries)
+  console.log(result.data?.countries)
 }
+```

@@ -1,6 +1,11 @@
-/* eslint-disable */
-import { SocialStudies } from './$generated-clients/SocialStudies/__.js'
-import { show } from './$helpers.js'
+---
+aside: false
+---
+
+```ts twoslash
+import './graffle/Global.js'
+// ---cut---
+import { Graffle as SocialStudies } from './graffle/__.js'
 
 const socialStudies = SocialStudies.create()
   .use({
@@ -9,7 +14,11 @@ const socialStudies = SocialStudies.create()
       return await exchange({
         using: {
           fetch: async () => {
-            return new Response(JSON.stringify({ data: { countries: [{ name: `Canada Mocked!` }] } }))
+            return new Response(
+              JSON.stringify({
+                data: { countries: [{ name: `Canada Mocked!` }] },
+              }),
+            )
           },
         },
       })
@@ -22,4 +31,6 @@ const countries = await socialStudies.query.countries({
   name: true,
 })
 
-show(countries)
+console.log(countries)
+//          ^?
+```

@@ -1,4 +1,5 @@
 import { SocialStudies } from './$generated-clients/SocialStudies/__.js'
+import { show } from './$helpers.js'
 
 const socialStudies = SocialStudies.create({
   headers: {
@@ -8,4 +9,4 @@ const socialStudies = SocialStudies.create({
 
 const continents = await socialStudies.query.continents({ name: true })
 
-console.log(continents)
+show(continents)

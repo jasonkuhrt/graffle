@@ -1,6 +1,11 @@
-/* eslint-disable */
-import { SocialStudies } from './$generated-clients/SocialStudies/__.js'
-import { show } from './$helpers.js'
+---
+aside: false
+---
+
+```ts twoslash
+import './graffle/Global.js'
+// ---cut---
+import { Graffle as SocialStudies } from './graffle/__.js'
 
 const socialStudies = SocialStudies.create()
 
@@ -10,4 +15,6 @@ const countries = await socialStudies.query.countries({
   continent: { name: true },
 })
 
-show(countries)
+console.log(countries)
+//          ^?
+```
