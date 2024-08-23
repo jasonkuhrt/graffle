@@ -8,7 +8,7 @@ export default tsEslint.config({
     'vite.config.ts',
     '**/generated/**/*',
     '**/$generated-clients/**/*',
-    '**/website/**/*'
+    '**/website/**/*',
   ],
   extends: configPrisma,
   languageOptions: {
