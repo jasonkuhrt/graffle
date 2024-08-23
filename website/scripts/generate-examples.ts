@@ -1,26 +1,9 @@
-import { globby } from 'globby'
 import * as FS from 'node:fs/promises'
-import * as Path from 'node:path'
 import { type DefaultTheme } from 'vitepress'
 import { publicGraphQLSchemaEndpoints } from '../../examples/$helpers.js'
+import { File, readFiles } from '../../scripts/lib/readFiles.js'
 
 const toTitle = (name: string) => name.split('-').map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
-
-interface File {
-  content: string
-  name: string
-  path: string
-}
-
-const filePaths = await globby('../examples/*.ts', { ignore: ['../examples/$*'] })
-const files = await Promise.all(filePaths.map(async (path): Promise<File> => {
-  const content = await FS.readFile(path, 'utf-8')
-  return {
-    content,
-    name: Path.basename(path, '.ts'),
-    path,
-  }
-}))
 
 /**
  * Define Transformers
@@ -111,6 +94,11 @@ ${file.content.trim()}
     content: newContent,
   }
 }
+
+const files = await readFiles({
+  pattern: `../examples/*.ts`,
+  options: { ignore: [`../examples/$*`] },
+})
 
 const filesTransformed = files
   .map(transformOther)
