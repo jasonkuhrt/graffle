@@ -7,7 +7,8 @@ const files = await readFiles({
 })
 
 await Promise.all(files.map(async (file) => {
-  const code = `import { execaCommand } from 'execa'
+  const code = `// @vitest-environment node
+import { execaCommand } from 'execa'
 import stripAnsi from 'strip-ansi'
 import { expect, test } from 'vitest'
 

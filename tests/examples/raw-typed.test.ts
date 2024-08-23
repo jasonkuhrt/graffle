@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { execaCommand } from 'execa'
 import stripAnsi from 'strip-ansi'
 import { expect, test } from 'vitest'
