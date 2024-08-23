@@ -1,7 +1,7 @@
 import { Graffle } from '../src/entrypoints/graffle/main.js'
 // todo from '../src/entrypoints/graffle/utils.js'
 import type { TypedDocumentString } from '../src/layers/0_functions/types.js'
-import { publicGraphQLSchemaEndpoints } from './$helpers.js'
+import { publicGraphQLSchemaEndpoints, show } from './$helpers.js'
 
 const graffle = Graffle.create({
   schema: publicGraphQLSchemaEndpoints.SocialStudies,
@@ -34,4 +34,4 @@ const result = await graffle.rawString({
   variables: { filter: [`Canada`, `Germany`, `Japan`] },
 })
 
-console.log(result.data?.countries)
+show(result.data?.countries)

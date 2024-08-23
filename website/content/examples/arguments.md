@@ -1,6 +1,11 @@
+---
+aside: false
+---
+
 ```ts twoslash
-/* eslint-disable */
-import { SocialStudies } from './$generated-clients/SocialStudies/__.js'
+import './graffle/Global.js'
+// ---cut---
+import { Graffle as SocialStudies } from './graffle/__.js'
 
 const socialStudies = SocialStudies.create()
 

@@ -8,10 +8,10 @@ hero:
   actions:
     - theme: brand
       text: Guides 
-      link: /overview/introduction
+      link: /guides/overview/introduction
     - theme: alt
       text: Examples
-      link: /examples/rawString
+      link: /examples/arguments
 features:
   - title: Opt-in Generation
     details: Lorem ipsum dolor sit amet, consectetur adipiscing elit

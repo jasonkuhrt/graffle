@@ -1,6 +1,7 @@
 import { transformerTwoslash } from '@shikijs/vitepress-twoslash'
 import { ModuleKind, ModuleResolutionKind } from 'typescript'
 import { defineConfig } from 'vitepress'
+import { sidebarExamples } from './configExamples'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -45,106 +46,101 @@ export default defineConfig({
       prev: false,
     },
     aside: 'left',
-    // https://vitepress.dev/reference/default-theme-config
-    // nav: [
-    //   { text: 'Home', link: '/' },
-    //   { text: 'Examples', link: '/markdown-examples' },
-    // ],
-    sidebar: [
-      {
-        text: 'Overview',
-        collapsed: false,
-        items: [
-          { text: 'Introduction', link: '/overview/introduction' },
-          {
-            text: 'Getting Started',
-            // link: '/overview/getting-started',
-            items: [{
-              text: 'Static Client',
-              link: '/overview/getting-started-static',
-            }, {
-              text:
-                'Generated Client <span title="Requires generation" style="font-size:1.75em;line-height:0;">⩕</span>',
-              link: '/overview/getting-started-generated',
-            }],
-          },
-          {
-            text: 'Generation <span title="Requires generation" style="font-size:1.75em;line-height:0;">⩕</span>',
-            link: '/overview/generation',
-          },
-        ],
-      },
-      {
-        text: 'Configuration',
-        collapsed: false,
-        items: [
-          { text: 'Transports', link: '/configuration/transports' },
-          { text: 'Output', link: '/configuration/output' },
-          { text: 'Request', link: '/configuration/request' },
-          { text: 'Anyware', link: '/configuration/anyware' },
-        ],
-      },
-      {
-        text: 'Methods',
-        collapsed: false,
-        items: [
-          { text: 'Raw', link: '/methods/raw' },
-          { text: 'Or Throw', link: '/methods/or-throw' },
-          {
-            text: 'Document <span title="Requires generation" style="font-size:1.75em;line-height:0;">⩕</span>',
-            link: '/methods/document',
-          },
-          {
-            text: 'Batch <span title="Requires generation" style="font-size:1.75em;line-height:0;">⩕</span>',
-            link: '/methods/batch',
-          },
-          {
-            text: 'Root Fields <span title="Requires generation" style="font-size:1.75em;line-height:0;">⩕</span>',
-            link: '/methods/root-fields',
-          },
-        ],
-      },
-      {
-        text: 'GQL Feature Mapping <span title="Requires generation" style="font-size:1.75em;line-height:0;">⩕</span>',
-        collapsed: false,
-        items: [
-          { text: 'Arguments', link: '/graphql-feature-mapping/arguments' },
-          { text: 'Aliases', link: '/graphql-feature-mapping/aliases' },
-          { text: 'Enums', link: '/graphql-feature-mapping/enums' },
-          { text: 'Interfaces', link: '/graphql-feature-mapping/interfaces' },
-          { text: 'Unions', link: '/graphql-feature-mapping/unions' },
-          { text: 'Directives', link: '/graphql-feature-mapping/directives' },
-          { text: 'Custom Scalars', link: '/graphql-feature-mapping/custom-scalars' },
-          { text: 'Selection Groups', link: '/graphql-feature-mapping/selection-groups' },
-        ],
-      },
-      {
-        text: 'Misc <span title="Requires generation" style="font-size:1.75em;line-height:0;">⩕</span>',
-        collapsed: false,
-        items: [
-          { text: 'Schema Errors', link: '/misc/schema-errors' },
-          { text: 'Select', link: '/misc/select' },
-          { text: 'Extension Authoring', link: '/misc/extension-authoring' },
-        ],
-      },
-      {
-        text: 'Extensions',
-        collapsed: false,
-        items: [
-          { text: 'File Upload', link: '/extensions/file-upload' },
-          { text: 'OTEL', link: '/extensions/otel' },
-          { text: 'Or Throw', link: '/extensions/or-throw' },
-        ],
-      },
-      {
-        text: 'Examples',
-        collapsed: false,
-        items: [
-          { text: '.rawString', link: '/examples/rawString' },
-          { text: '.rawString Typed', link: '/examples/rawString-typed' },
-        ],
-      },
+    nav: [
+      { text: 'Guides', link: '/guides/overview/introduction' },
+      { text: 'Examples', link: sidebarExamples[0].link ?? '/' },
     ],
+    sidebar: {
+      '/examples/': sidebarExamples,
+      '/guides/': [
+        {
+          text: 'Overview',
+          collapsed: false,
+          items: [
+            { text: 'Introduction', link: '/guides/overview/introduction' },
+            {
+              text: 'Getting Started',
+              // link: '/overview/getting-started',
+              items: [{
+                text: 'Static Client',
+                link: '/guides/overview/getting-started-static',
+              }, {
+                text:
+                  'Generated Client <span title="Requires generation" style="font-size:1.75em;line-height:0;">⩕</span>',
+                link: '/guides/overview/getting-started-generated',
+              }],
+            },
+            {
+              text: 'Generation <span title="Requires generation" style="font-size:1.75em;line-height:0;">⩕</span>',
+              link: '/guides/overview/generation',
+            },
+          ],
+        },
+        {
+          text: 'Configuration',
+          collapsed: false,
+          items: [
+            { text: 'Transports', link: '/guides/configuration/transports' },
+            { text: 'Output', link: '/guides/configuration/output' },
+            { text: 'Request', link: '/guides/configuration/request' },
+            { text: 'Anyware', link: '/guides/configuration/anyware' },
+          ],
+        },
+        {
+          text: 'Methods',
+          collapsed: false,
+          items: [
+            { text: 'Raw', link: '/methods/raw' },
+            { text: 'Or Throw', link: '/guides/methods/or-throw' },
+            {
+              text: 'Document <span title="Requires generation" style="font-size:1.75em;line-height:0;">⩕</span>',
+              link: '/guides/methods/document',
+            },
+            {
+              text: 'Batch <span title="Requires generation" style="font-size:1.75em;line-height:0;">⩕</span>',
+              link: '/guides/methods/batch',
+            },
+            {
+              text: 'Root Fields <span title="Requires generation" style="font-size:1.75em;line-height:0;">⩕</span>',
+              link: '/guides/methods/root-fields',
+            },
+          ],
+        },
+        {
+          text:
+            'GQL Feature Mapping <span title="Requires generation" style="font-size:1.75em;line-height:0;">⩕</span>',
+          collapsed: false,
+          items: [
+            { text: 'Arguments', link: '/guides/graphql-feature-mapping/arguments' },
+            { text: 'Aliases', link: '/guides/graphql-feature-mapping/aliases' },
+            { text: 'Enums', link: '/guides/graphql-feature-mapping/enums' },
+            { text: 'Interfaces', link: '/guides/graphql-feature-mapping/interfaces' },
+            { text: 'Unions', link: '/guides/graphql-feature-mapping/unions' },
+            { text: 'Directives', link: '/guides/graphql-feature-mapping/directives' },
+            { text: 'Custom Scalars', link: '/guides/graphql-feature-mapping/custom-scalars' },
+            { text: 'Selection Groups', link: '/guides/graphql-feature-mapping/selection-groups' },
+          ],
+        },
+        {
+          text: 'Misc <span title="Requires generation" style="font-size:1.75em;line-height:0;">⩕</span>',
+          collapsed: false,
+          items: [
+            { text: 'Schema Errors', link: '/guides/misc/schema-errors' },
+            { text: 'Select', link: '/guides/misc/select' },
+            { text: 'Extension Authoring', link: '/guides/misc/extension-authoring' },
+          ],
+        },
+        {
+          text: 'Extensions',
+          collapsed: false,
+          items: [
+            { text: 'File Upload', link: '/guides/extensions/file-upload' },
+            { text: 'OTEL', link: '/guides/extensions/otel' },
+            { text: 'Or Throw', link: '/guides/extensions/or-throw' },
+          ],
+        },
+      ],
+    },
     socialLinks: [
       { icon: 'github', link: 'https://github.com/jasonkuhrt/graffle' },
     ],

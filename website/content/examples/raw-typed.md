@@ -1,3 +1,7 @@
+---
+aside: false
+---
+
 ```ts twoslash
 import type { TypedQueryDocumentNode } from 'graphql'
 import { gql, Graffle } from 'graphql-request/graffle/main'

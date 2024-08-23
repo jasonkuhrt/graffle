@@ -1,3 +1,7 @@
+---
+aside: false
+---
+
 ```ts twoslash
 import { Graffle } from 'graphql-request/graffle/main'
 // todo from 'graphql-request/graffle/utils'

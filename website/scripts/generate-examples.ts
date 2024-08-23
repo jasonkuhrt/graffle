@@ -1,9 +1,10 @@
-// Read files from examples dir
-
+import { globby } from 'globby'
 import * as FS from 'node:fs/promises'
 import * as Path from 'node:path'
+import { type DefaultTheme } from 'vitepress'
+import { publicGraphQLSchemaEndpoints } from '../../examples/$helpers.js'
 
-import { globby } from 'globby'
+const toTitle = (name: string) => name.split('-').map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
 
 interface File {
   content: string
@@ -21,34 +22,52 @@ const files = await Promise.all(filePaths.map(async (path): Promise<File> => {
   }
 }))
 
-// Transform imports:
-// 1. Inline helpers $helpers, remove import
-// 2. Rewrite ../src/entrypoints/graffle/<x>.js to graphql-request/graffle/<x>
-// 3. Wrap in code block with code types of "ts twoslash"
+/**
+ * Define Transformers
+ * -------------------
+ */
+
+/**
+ * 1. Convert Graffle imports into ones that can read from website project packages.
+ *    These appear correct from point of view of a user who has installed Graffle into their project.
+ */
 
 const transformRewriteGraffleImports = (file: File) => {
-  const newContent = file.content.replace(
-    /from '\.\.\/src\/entrypoints\/graffle\/(.*?).js'/g,
-    "from 'graphql-request/graffle/$1'",
-  ).replace(
-    /\.js$/,
-    '',
-  )
+  const newContent = file.content
+    .replaceAll(
+      /from '\.\.\/src\/entrypoints\/graffle\/(.*?).js'/g,
+      "from 'graphql-request/graffle/$1'",
+    )
+    .replaceAll(
+      /\.js$/g,
+      '',
+    )
+    .replaceAll(
+      `import { SocialStudies } from './$generated-clients/SocialStudies/__.js'`,
+      `import './graffle/Global.js'
+// ---cut---
+import { Graffle as SocialStudies } from './graffle/__.js'`,
+    )
   return {
     ...file,
     content: newContent,
   }
 }
-import { publicGraphQLSchemaEndpoints } from '../../examples/$helpers.js'
 
+/**
+ * 1. Examples in repo use some helper functions. Inline these for presentation on the website.
+ */
 const transformRewriteHelperImports = (file: File) => {
   const consoleLog = 'console.log'
-  const newContent = file.content.replace(/^import.*\$helpers.*$\n/m, '').replace(
-    'publicGraphQLSchemaEndpoints.SocialStudies',
-    `\`${publicGraphQLSchemaEndpoints.SocialStudies}\``,
-  ).replace('show', consoleLog)
-    .replace(
-      /(^console.log.*$)/m,
+  const newContent = file.content
+    .replaceAll(/^import.*\$helpers.*$\n/gm, '')
+    .replaceAll(
+      'publicGraphQLSchemaEndpoints.SocialStudies',
+      `\`${publicGraphQLSchemaEndpoints.SocialStudies}\``,
+    )
+    .replaceAll('show', consoleLog)
+    .replaceAll(
+      /(^console.log.*$)/gm,
       `$1
 //${' '.repeat(consoleLog.length - 1)}^?`,
     )
@@ -59,8 +78,34 @@ const transformRewriteHelperImports = (file: File) => {
   }
 }
 
+/**
+ * 1. Remove eslint directives.
+ */
+const transformOther = (file: File) => {
+  const newContent = file.content.replaceAll(`/* eslint-disable */`, '')
+  return {
+    ...file,
+    content: newContent,
+  }
+}
+
+/**
+ * 1. Disable outline aside. Usually empty and provides for wider
+ *    code blocks that sometimes have long lines (granted,
+ *    not ideal on mobile but better on desktop).
+ * 2. Add twoslash code block.
+ */
 const transformMarkdown = (file: File) => {
-  const newContent = `\`\`\`ts twoslash\n${file.content.trim()}\n\`\`\`\n`
+  const newContent = `
+---
+aside: false
+---
+
+\`\`\`ts twoslash
+${file.content.trim()}
+\`\`\`
+`.trim()
+
   return {
     ...file,
     content: newContent,
@@ -68,12 +113,32 @@ const transformMarkdown = (file: File) => {
 }
 
 const filesTransformed = files
+  .map(transformOther)
   .map(transformRewriteGraffleImports)
   .map(transformRewriteHelperImports)
+  .map(transformOther)
   .map(transformMarkdown)
 
 await Promise.all(filesTransformed.map(async (file) => {
   await FS.writeFile(`./content/examples/${file.name}.md`, file.content)
 }))
 
-// console.log(filesTransformed)
+/**
+ * Update Examples Sidebar
+ * -----------------------
+ */
+
+const sidebarExamples: DefaultTheme.SidebarItem[] = filesTransformed.map(file => {
+  return {
+    text: toTitle(file.name),
+    link: `/examples/${file.name}`,
+  }
+})
+
+const code = `
+	import { DefaultTheme } from 'vitepress'
+
+	export const sidebarExamples:DefaultTheme.SidebarItem[] = ${JSON.stringify(sidebarExamples, null, 2)}
+`
+
+await FS.writeFile('.vitepress/configExamples.ts', code)

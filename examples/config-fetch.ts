@@ -1,5 +1,6 @@
 /* eslint-disable */
 import { SocialStudies } from './$generated-clients/SocialStudies/__.js'
+import { show } from './$helpers.js'
 
 const socialStudies = SocialStudies.create()
   .use({
@@ -21,4 +22,4 @@ const countries = await socialStudies.query.countries({
   name: true,
 })
 
-console.log(countries)
+show(countries)

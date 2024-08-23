@@ -1,6 +1,6 @@
 import type { TypedQueryDocumentNode } from 'graphql'
 import { gql, Graffle } from '../src/entrypoints/graffle/main.js'
-import { publicGraphQLSchemaEndpoints } from './$helpers.js'
+import { publicGraphQLSchemaEndpoints, show } from './$helpers.js'
 
 const graffle = Graffle.create({
   schema: publicGraphQLSchemaEndpoints.SocialStudies,
@@ -28,7 +28,7 @@ const graffle = Graffle.create({
 
   const result = await graffle.raw({ document, variables: { filter: [`Canada`, `Germany`, `Japan`] } })
 
-  console.log(result.data?.countries)
+  show(result.data?.countries)
 }
 
 /*************************************** Variation 2 ***************************************
@@ -58,5 +58,5 @@ const graffle = Graffle.create({
 
   const result = await graffle.raw({ document, variables: { filter: [`Canada`, `Germany`, `Japan`] } })
 
-  console.log(result.data?.countries)
+  show(result.data?.countries)
 }

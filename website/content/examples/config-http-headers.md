@@ -1,5 +1,11 @@
+---
+aside: false
+---
+
 ```ts twoslash
-import { SocialStudies } from './$generated-clients/SocialStudies/__.js'
+import './graffle/Global.js'
+// ---cut---
+import { Graffle as SocialStudies } from './graffle/__.js'
 
 const socialStudies = SocialStudies.create({
   headers: {
