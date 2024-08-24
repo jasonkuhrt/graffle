@@ -2,6 +2,8 @@
 aside: false
 ---
 
+# RawString Typed
+
 ```ts twoslash
 import { Graffle } from 'graphql-request/graffle/main'
 // todo from 'graphql-request/graffle/utils'
@@ -40,4 +42,14 @@ const result = await graffle.rawString({
 
 console.log(result.data?.countries)
 //          ^?
+```
+
+#### Output
+
+```json
+[
+  { name: 'Canada', continent: { name: 'North America' } },
+  { name: 'Germany', continent: { name: 'Europe' } },
+  { name: 'Japan', continent: { name: 'Asia' } }
+]
 ```

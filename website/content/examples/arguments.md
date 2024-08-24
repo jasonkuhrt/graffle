@@ -2,6 +2,8 @@
 aside: false
 ---
 
+# Arguments
+
 ```ts twoslash
 import './graffle/Global.js'
 // ---cut---
@@ -17,4 +19,14 @@ const countries = await socialStudies.query.countries({
 
 console.log(countries)
 //          ^?
+```
+
+#### Output
+
+```json
+[
+  { name: 'Canada', continent: { name: 'North America' } },
+  { name: 'Germany', continent: { name: 'Europe' } },
+  { name: 'Japan', continent: { name: 'Asia' } }
+]
 ```

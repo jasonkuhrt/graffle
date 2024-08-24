@@ -2,6 +2,8 @@
 aside: false
 ---
 
+# Config Fetch
+
 ```ts twoslash
 import './graffle/Global.js'
 // ---cut---
@@ -14,11 +16,7 @@ const socialStudies = SocialStudies.create()
       return await exchange({
         using: {
           fetch: async () => {
-            return new Response(
-              JSON.stringify({
-                data: { countries: [{ name: `Canada Mocked!` }] },
-              }),
-            )
+            return new Response(JSON.stringify({ data: { countries: [{ name: `Canada Mocked!` }] } }))
           },
         },
       })
@@ -33,4 +31,10 @@ const countries = await socialStudies.query.countries({
 
 console.log(countries)
 //          ^?
+```
+
+#### Output
+
+```json
+[ { name: 'Canada Mocked!' } ]
 ```

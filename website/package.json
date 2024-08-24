@@ -12,6 +12,7 @@
   "dependencies": {
     "@shikijs/twoslash": "^1.13.0",
     "@shikijs/vitepress-twoslash": "^1.13.0",
+    "es-toolkit": "^1.16.0",
     "floating-vue": "^5.2.2",
     "globby": "^14.0.2",
     "graphql-request": "file:..",

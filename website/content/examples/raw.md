@@ -2,6 +2,8 @@
 aside: false
 ---
 
+# Raw
+
 ```ts twoslash
 import { gql, Graffle } from 'graphql-request/graffle/main'
 
@@ -25,4 +27,16 @@ const result = await graffle.raw({
 
 console.log(result.data)
 //          ^?
+```
+
+#### Output
+
+```json
+{
+  countries: [
+    { name: 'Canada', continent: { name: 'North America' } },
+    { name: 'Germany', continent: { name: 'Europe' } },
+    { name: 'Japan', continent: { name: 'Asia' } }
+  ]
+}
 ```

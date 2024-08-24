@@ -14,6 +14,9 @@ importers:
       '@shikijs/vitepress-twoslash':
         specifier: ^1.13.0
         version: 1.13.0(typescript@5.5.4)
+      es-toolkit:
+        specifier: ^1.16.0
+        version: 1.16.0
       floating-vue:
         specifier: ^5.2.2
         version: 5.2.2(vue@3.4.37(typescript@5.5.4))
@@ -773,6 +776,9 @@ packages:
   entities@5.0.0:
     resolution: {integrity: sha512-BeJFvFRJddxobhvEdm5GqHzRV/X+ACeuw0/BuuxsCh1EUZcAIz8+kYmBp/LrQuloy6K1f3a0M7+IhmZ7QnkISA==}
     engines: {node: '>=0.12'}
+
+  es-toolkit@1.16.0:
+    resolution: {integrity: sha512-eNJh3zF1KmAHRYd1D8rFi1cMFMCjrC6tumBfwuuZdSur97mED/ifyeBoGzxS11L4owCMx3XSmWTo6oxJQkdGng==}
 
   esbuild@0.21.5:
     resolution: {integrity: sha512-mg3OPMV4hXywwpoDxu3Qda5xCKQi+vCTZq8S9J/EpkhB2HzKXq4SNFZE3+NK93JYxc8VMSep+lOUSC/RVKaBqw==}
@@ -1912,6 +1918,8 @@ snapshots:
       dequal: 2.0.3
 
   entities@5.0.0: {}
+
+  es-toolkit@1.16.0: {}
 
   esbuild@0.21.5:
     optionalDependencies:
