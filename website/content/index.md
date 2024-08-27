@@ -14,15 +14,17 @@ hero:
       link: /examples/arguments
 features:
   - title: Opt-in Generation
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+    details: Begin with a traditional static library and seamlessly transition to a more powerful generated one when you want.
   - title: Extensible
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+    # TODO Ability for extensions to add methods.
+    details: Powerful type-safe extension system. Intercept and manipulate inputs, outputs, and core with hooks; Add new methods; And more.
   - title: In-Memory Schemas Too
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+    details: Not just a great way to query GraphQL APIs. Execute documents against in memory schemas just as easily with nearly the same interface.
+    # TODO support for subscription type.
   - title: Schema Tailored Methods<br/><span style="opacity:0.25;">( gen )</span>
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+    details: Range of methods to suit your input needs ranging from creating whole documents to selecting on exactly one Query Mutation or Subscription field.
   - title: Schema Errors<br/><span style="opacity:0.25;">( gen )</span>
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+    details: First class support for schemas that have modelled errors into their design. Result Fields can be made to throw on errors or automatically map to error classes.
   - title: Type Safe Results <em>Inferred</em><br/><span style="opacity:0.25;">( gen )</span>
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+    details: All results are automatically type safe based on your document structure. Correct inference for all GraphQL features supported including selection sets, directives, fragments, interfaces, and unions.
 ---
