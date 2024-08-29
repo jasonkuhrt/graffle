@@ -7,3 +7,7 @@ export const publicGraphQLSchemaEndpoints = {
 export const show = (value: unknown) => {
   console.log(inspect(value, { depth: null, colors: true }))
 }
+
+export const showJson = (value: unknown) => {
+  console.log(JSON.stringify(value))
+}

@@ -1,14 +1,16 @@
-import { zip, zipWith } from 'es-toolkit'
 import * as FS from 'node:fs/promises'
 import { type DefaultTheme } from 'vitepress'
 import { publicGraphQLSchemaEndpoints } from '../../examples/$helpers.js'
 import { File, readFiles } from '../../scripts/lib/readFiles.js'
 
-const toTitle = (name: string) => name.split('-').map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
+const toTitle = (name: string) => name.split('-').map(titlizeWord).join(' ').split('_').map(titlizeWord).join(' ')
+
+const titlizeWord = (word: string) => word.charAt(0).toUpperCase() + word.slice(1)
 
 interface Example {
   file: File
   output: File
+  isUsingJsonOutput: boolean
 }
 
 /**
@@ -58,6 +60,7 @@ const transformRewriteHelperImports = (example: Example) => {
       'publicGraphQLSchemaEndpoints.SocialStudies',
       `\`${publicGraphQLSchemaEndpoints.SocialStudies}\``,
     )
+    .replaceAll('showJson', consoleLog)
     .replaceAll('show', consoleLog)
     .replaceAll(
       /(^console.log.*$)/gm,
@@ -139,6 +142,7 @@ const examples = exampleFiles.map(example => {
   return {
     file: example,
     output,
+    isUsingJsonOutput: example.content.includes('showJson'),
   }
 })
 

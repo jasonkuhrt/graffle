@@ -25,6 +25,6 @@ features:
     details: Range of methods to suit your input needs ranging from creating whole documents to selecting on exactly one Query Mutation or Subscription field.
   - title: Schema Errors<br/><span style="opacity:0.25;">( gen )</span>
     details: First class support for schemas that have modelled errors into their design. Result Fields can be made to throw on errors or automatically map to error classes.
-  - title: Type Safe Results <em>Inferred</em><br/><span style="opacity:0.25;">( gen )</span>
-    details: All results are automatically type safe based on your document structure. Correct inference for all GraphQL features supported including selection sets, directives, fragments, interfaces, and unions.
+  - title: Type Safe Results <br/><span style="opacity:0.25;">( gen )</span>
+    details: All result types are automatically inferred based on your document structure across all GraphQL features including selection sets, directives, fragments, interfaces, and unions.
 ---
