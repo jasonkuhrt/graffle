@@ -31,5 +31,5 @@ console.log(result)
 #### Output
 
 ```json
-{"data":{"foo":"bar"}}
+{ "data": { "foo": "bar" } }
 ```

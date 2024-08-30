@@ -16,7 +16,11 @@ const socialStudies = SocialStudies.create()
       return await exchange({
         using: {
           fetch: async () => {
-            return new Response(JSON.stringify({ data: { countries: [{ name: `Canada Mocked!` }] } }))
+            return new Response(
+              JSON.stringify({
+                data: { countries: [{ name: `Canada Mocked!` }] },
+              }),
+            )
           },
         },
       })
@@ -36,5 +40,5 @@ console.log(countries)
 #### Output
 
 ```json
-[ { name: 'Canada Mocked!' } ]
+[{ "name": "Canada Mocked!" }]
 ```

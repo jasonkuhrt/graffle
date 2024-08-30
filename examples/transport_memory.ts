@@ -1,3 +1,7 @@
+/**
+ * tags: transport-memory
+ */
+
 import { GraphQLObjectType, GraphQLSchema, GraphQLString } from 'graphql'
 import { Graffle } from '../src/entrypoints/graffle/main.js'
 import { showJson } from './$helpers.js'

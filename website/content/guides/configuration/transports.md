@@ -4,7 +4,7 @@ Graffle has the concept of "transports". A transport is how the document reaches
 
 ## `http`
 
-The `http` transport implements the ["GraphQL Over HTTP" specification](https://github.com/graphql/graphql-over-http). This transport is used when you instantiate Graffle with a URL (or string) type for the schema:
+The `http` transport implements the ["GraphQL Over HTTP" specification](https://github.com/graphql/graphql-over-http). This transport is used when you instantiate Graffle with a `URL` (or `string`) type for `schema`:
 
 ::: code-group
 

@@ -10,6 +10,8 @@ import type { Schema } from '../1_Schema/__.js'
 import { SelectionSet } from '../3_SelectionSet/__.js'
 import type { GraphQLObjectSelection } from '../3_SelectionSet/encode.js'
 import * as Result from '../4_ResultSet/customScalars.js'
+import type { GraffleExecutionResultVar } from '../6_client/client.js'
+import type { Config } from '../6_client/Settings/Config.js'
 import type {
   ContextInterfaceRaw,
   ContextInterfaceTyped,
@@ -39,29 +41,38 @@ type InterfaceInput<TypedProperties = {}, RawProperties = {}> =
     context: ContextInterfaceRaw
   } & RawProperties)
 
+// dprint-ignore
 // eslint-disable-next-line
-type TransportInput<HttpProperties = {}, MemoryProperties = {}> =
-  | ({
-    transport: TransportHttp
-    transportConstructorConfig: {
-      headers?: HeadersInit
-    }
-  } & HttpProperties)
-  | ({
-    transport: TransportMemory
-  } & MemoryProperties)
+type TransportInput<$Config extends Config, $HttpProperties = {}, $MemoryProperties = {}> =
+  | (
+      TransportHttp extends $Config['transport']
+        ? ({
+            transport: TransportHttp
+            transportConstructorConfig: {
+              headers?: HeadersInit
+            }
+          } & $HttpProperties)
+        : never
+    )
+  | (
+      TransportMemory extends $Config['transport']
+        ? ({
+          transport: TransportMemory
+        } & $MemoryProperties)
+        : never
+    )
 
 export const hookNamesOrderedBySequence = [`encode`, `pack`, `exchange`, `unpack`, `decode`] as const
 
 export type HookSequence = typeof hookNamesOrderedBySequence
 
-export type HookDefEncode = {
+export type HookDefEncode<$Config extends Config> = {
   input:
     & InterfaceInput<
       { selection: GraphQLObjectSelection },
       { document: string | DocumentNode; variables?: StandardScalarVariables; operationName?: string }
     >
-    & TransportInput<{ schema: string | URL }, { schema: GraphQLSchema }>
+    & TransportInput<$Config, { schema: string | URL }, { schema: GraphQLSchema }>
   slots: {
     /**
      * Create the value that will be used as the HTTP body for the sent GraphQL request.
@@ -72,21 +83,18 @@ export type HookDefEncode = {
   }
 }
 
-export type HookDefPack = {
+export type HookDefPack<$Config extends Config> = {
   input:
     & InterfaceInput
-    & TransportInput<
-      { url: string | URL; headers?: HeadersInit; body: BodyInit },
-      {
-        schema: GraphQLSchema
-        query: string
-        variables?: StandardScalarVariables
-        operationName?: string
-      }
-    >
+    & TransportInput<$Config, { url: string | URL; headers?: HeadersInit; body: BodyInit }, {
+      schema: GraphQLSchema
+      query: string
+      variables?: StandardScalarVariables
+      operationName?: string
+    }>
 }
 
-type RequestInput = {
+export type RequestInput = {
   url: string | URL
   method:
     | 'get'
@@ -109,51 +117,43 @@ type RequestInput = {
   body: BodyInit
 }
 
-export type HookDefExchange = {
+export type HookDefExchange<$Config extends Config> = {
   slots: {
     fetch: typeof fetch
   }
   input:
     & InterfaceInput
-    & TransportInput<
-      {
-        request: RequestInput
-      },
-      {
-        schema: GraphQLSchema
-        query: string | DocumentNode
-        variables?: StandardScalarVariables
-        operationName?: string
-      }
-    >
+    & TransportInput<$Config, {
+      request: RequestInput
+    }, {
+      schema: GraphQLSchema
+      query: string | DocumentNode
+      variables?: StandardScalarVariables
+      operationName?: string
+    }>
 }
 
-export type HookDefUnpack = {
+export type HookDefUnpack<$Config extends Config> = {
   input:
     & InterfaceInput
-    & TransportInput<
-      { response: Response },
-      {
-        result: ExecutionResult
-      }
-    >
+    & TransportInput<$Config, { response: Response }, {
+      result: ExecutionResult
+    }>
 }
 
-export type HookDefDecode = {
+export type HookDefDecode<$Config extends Config> = {
   input:
     & { result: ExecutionResult }
     & InterfaceInput
-    & TransportInput<
-      { response: Response }
-    >
+    & TransportInput<$Config, { response: Response }>
 }
 
-export type HookMap = {
-  encode: HookDefEncode
-  pack: HookDefPack
-  exchange: HookDefExchange
-  unpack: HookDefUnpack
-  decode: HookDefDecode
+export type HookMap<$Config extends Config = Config> = {
+  encode: HookDefEncode<$Config>
+  pack: HookDefPack<$Config>
+  exchange: HookDefExchange<$Config>
+  unpack: HookDefUnpack<$Config>
+  decode: HookDefDecode<$Config>
 }
 
 export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
@@ -230,7 +230,11 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
           return input
         }
         case `http`: {
-          const headers = new Headers(input.headers)
+          // TODO thrown error here is swallowed in examples.
+          const headers = mergeHeadersInit(
+            input.transportConstructorConfig.headers ?? {},
+            input.headers ?? {},
+          )
           // @see https://graphql.github.io/graphql-over-http/draft/#sec-Accept
           headers.set(`accept`, CONTENT_TYPE_GQL)
           // @see https://graphql.github.io/graphql-over-http/draft/#sec-POST
@@ -262,14 +266,10 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
       run: async ({ input, slots }) => {
         switch (input.transport) {
           case `http`: {
-            const headers = mergeHeadersInit(
-              input.transportConstructorConfig.headers ?? {},
-              input.request.headers ?? {},
-            )
             const response = await slots.fetch(
               new Request(input.request.url, {
                 method: input.request.method,
-                headers,
+                headers: input.request.headers,
                 body: input.request.body,
               }),
             )
@@ -363,4 +363,8 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
   // still, while figuring the type story out, might be a useful escape hatch for some cases...
 })
 
-export type Core = (typeof anyware)['core']
+export type Core<$Config extends Config = Config> = Anyware.Core<
+  HookSequence,
+  HookMap<$Config>,
+  GraffleExecutionResultVar<$Config>
+>

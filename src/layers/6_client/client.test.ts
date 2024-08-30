@@ -4,6 +4,8 @@ import { Graffle as Graffle2 } from '../../../tests/_/schema/generated/__.js'
 import { schema } from '../../../tests/_/schema/schema.js'
 import { Graffle } from '../../entrypoints/graffle/main.js'
 import { CONTENT_TYPE_GQL, CONTENT_TYPE_JSON } from '../../lib/http.js'
+import type { RequestInput } from '../5_core/core.js'
+import { Transport } from '../5_core/types.js'
 
 const endpoint = new URL(`https://foo.io/api/graphql`)
 
@@ -27,8 +29,29 @@ describe(`without schemaIndex only raw is available`, () => {
   })
 })
 
-describe(`interface`, () => {
+describe(`transport`, () => {
   describe(`http`, () => {
+    test(`anyware hooks are typed to http transport`, () => {
+      Graffle.create({ schema: endpoint }).use(async ({ encode }) => {
+        expectTypeOf(encode.input.transport).toEqualTypeOf(Transport.http)
+        const { pack } = await encode()
+        expectTypeOf(pack.input.transport).toEqualTypeOf(Transport.http)
+        const { exchange } = await pack()
+        expectTypeOf(exchange.input.transport).toEqualTypeOf(Transport.http)
+        expectTypeOf(exchange.input.request).toEqualTypeOf<RequestInput>()
+        const { unpack } = await exchange()
+        expectTypeOf(unpack.input.transport).toEqualTypeOf(Transport.http)
+        expectTypeOf(unpack.input.response).toEqualTypeOf<Response>()
+        const { decode } = await unpack()
+        expectTypeOf(decode.input.transport).toEqualTypeOf(Transport.http)
+        expectTypeOf(decode.input.response).toEqualTypeOf<Response>()
+        const result = await decode()
+        if (!(result instanceof Error)) {
+          expectTypeOf(result.response).toEqualTypeOf<Response>()
+        }
+        return result
+      })
+    })
     test(`can set headers in constructor`, async ({ fetch }) => {
       fetch.mockImplementationOnce(() => Promise.resolve(createResponse({ data: { id: `abc` } })))
       const graffle = Graffle.create({ schema: endpoint, headers: { 'x-foo': `bar` } })
@@ -46,6 +69,31 @@ describe(`interface`, () => {
     })
   })
   describe(`memory`, () => {
+    test(`anyware hooks are typed to memory transport`, () => {
+      Graffle.create({ schema }).use(async ({ encode }) => {
+        expectTypeOf(encode.input.transport).toEqualTypeOf(Transport.memory)
+        const { pack } = await encode()
+        expectTypeOf(pack.input.transport).toEqualTypeOf(Transport.memory)
+        const { exchange } = await pack()
+        expectTypeOf(exchange.input.transport).toEqualTypeOf(Transport.memory)
+        // @ts-expect-error any
+        exchange.input.request
+        const { unpack } = await exchange()
+        expectTypeOf(unpack.input.transport).toEqualTypeOf(Transport.memory)
+        // @ts-expect-error any
+        unpack.input.response
+        const { decode } = await unpack()
+        expectTypeOf(decode.input.transport).toEqualTypeOf(Transport.memory)
+        // @ts-expect-error any
+        decode.input.response
+        const result = await decode()
+        if (!(result instanceof Error)) {
+          // @ts-expect-error any
+          result.response
+        }
+        return result
+      })
+    })
     test(`cannot set headers in constructor`, () => {
       // todo: This error is poor for the user. It refers to schema not being a URL. The better message would be that headers is not allowed with memory transport.
       // @ts-expect-error headers not allowed with GraphQL schema

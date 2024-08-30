@@ -21,7 +21,10 @@ const graffle = Graffle.create({
  */
 
 {
-  const document = gql<{ countries: { name: string; continent: { name: string } }[] }, { filter: string[] }>`
+  const document = gql<
+    { countries: { name: string; continent: { name: string } }[] },
+    { filter: string[] }
+  >`
     query countries ($filter: [String!]) {
       countries (filter: { name: { in: $filter } }) {
         name
@@ -32,7 +35,10 @@ const graffle = Graffle.create({
     }
   `
 
-  const result = await graffle.raw({ document, variables: { filter: [`Canada`, `Germany`, `Japan`] } })
+  const result = await graffle.raw({
+    document,
+    variables: { filter: [`Canada`, `Germany`, `Japan`] },
+  })
 
   console.log(result.data?.countries)
 }
@@ -62,7 +68,10 @@ const graffle = Graffle.create({
     }
   `
 
-  const result = await graffle.raw({ document, variables: { filter: [`Canada`, `Germany`, `Japan`] } })
+  const result = await graffle.raw({
+    document,
+    variables: { filter: [`Canada`, `Germany`, `Japan`] },
+  })
 
   console.log(result.data?.countries)
 }
