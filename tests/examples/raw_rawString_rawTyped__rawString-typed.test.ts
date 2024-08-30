@@ -14,5 +14,7 @@ test(`raw_rawString_rawTyped__rawString-typed`, async () => {
   // Examples should output their data results.
   const exampleResult = stripAnsi(result.stdout)
   const nodeMajor = process.version.match(/v(\d+)/)[1]
-  await expect(exampleResult).toMatchFileSnapshot(`../.././examples/raw_rawString_rawTyped__rawString-typed.output.node-${nodeMajor}.txt`)
+  await expect(exampleResult).toMatchFileSnapshot(
+    `../.././examples/raw_rawString_rawTyped__rawString-typed.output.node-${nodeMajor}.txt`,
+  )
 })
