@@ -13,5 +13,6 @@ test(`raw_rawString__rawString`, async () => {
   expect(result.exitCode).toBe(0)
   // Examples should output their data results.
   const exampleResult = stripAnsi(result.stdout)
-  await expect(exampleResult).toMatchFileSnapshot(`../.././examples/raw_rawString__rawString.output.txt`)
+  const nodeMajor = process.version.match(/v(\d+)/)[1]
+  await expect(exampleResult).toMatchFileSnapshot(`../.././examples/raw_rawString__rawString.output.node-${nodeMajor}.txt`)
 })

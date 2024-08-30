@@ -1,0 +1,5 @@
+Headers {
+  authorization: 'Bearer MY_TOKEN',
+  accept: 'application/graphql-response+json',
+  'content-type': 'application/json'
+}
