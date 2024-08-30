@@ -2,14 +2,13 @@
 aside: false
 ---
 
-# Config Fetch
+# Transport Http Fetch
 
 ```ts twoslash
-import './graffle/Global.js'
-// ---cut---
-import { Graffle as SocialStudies } from './graffle/__.js'
+import { Graffle } from 'graphql-request/graffle/main'
 
-const socialStudies = SocialStudies.create()
+const graffle = Graffle
+  .create({ schema: `https://countries.trevorblades.com/graphql` })
   .use({
     name: `CustomFetch`,
     anyware: async ({ exchange }) => {
@@ -23,18 +22,20 @@ const socialStudies = SocialStudies.create()
     },
   })
 
-// todo $scalars does not work
-// todo intelisense for $ doesn't work
-const countries = await socialStudies.query.countries({
-  name: true,
-})
+const countries = await graffle.rawString({ document: `{ countries { name } }` })
 
-console.log(countries)
+console.log(countries.data)
 //          ^?
 ```
 
 #### Output
 
-```txt
-[ { name: 'Canada Mocked!' } ]
+```json
+{
+  "countries": [
+    {
+      "name": "Canada Mocked!"
+    }
+  ]
+}
 ```

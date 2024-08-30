@@ -111,7 +111,7 @@ ${example.file.content.trim()}
 
 #### Output
 
-\`\`\`json
+\`\`\`${example.isUsingJsonOutput ? 'json' : 'txt'}
 ${example.output.content.trim()}
 \`\`\`
 

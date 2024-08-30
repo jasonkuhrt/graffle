@@ -1,36 +1,37 @@
-import { DefaultTheme } from 'vitepress'
 
-export const sidebarExamples: DefaultTheme.SidebarItem[] = [
+	import { DefaultTheme } from 'vitepress'
+
+	export const sidebarExamples:DefaultTheme.SidebarItem[] = [
   {
-    'text': 'Arguments',
-    'link': '/examples/arguments',
+    "text": "Arguments",
+    "link": "/examples/arguments"
   },
   {
-    'text': 'Config Fetch',
-    'link': '/examples/config-fetch',
+    "text": "Raw Typed",
+    "link": "/examples/raw-typed"
   },
   {
-    'text': 'Config Http Headers',
-    'link': '/examples/config-http-headers',
+    "text": "Raw",
+    "link": "/examples/raw"
   },
   {
-    'text': 'Raw Typed',
-    'link': '/examples/raw-typed',
+    "text": "RawString Typed",
+    "link": "/examples/rawString-typed"
   },
   {
-    'text': 'Raw',
-    'link': '/examples/raw',
+    "text": "RawString",
+    "link": "/examples/rawString"
   },
   {
-    'text': 'RawString Typed',
-    'link': '/examples/rawString-typed',
+    "text": "Transport Http Fetch",
+    "link": "/examples/transport_http_fetch"
   },
   {
-    'text': 'RawString',
-    'link': '/examples/rawString',
+    "text": "Transport Http Headers",
+    "link": "/examples/transport_http_headers"
   },
   {
-    'text': 'Transport Memory',
-    'link': '/examples/transport_memory',
-  },
+    "text": "Transport Memory",
+    "link": "/examples/transport_memory"
+  }
 ]

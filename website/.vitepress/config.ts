@@ -77,6 +77,14 @@ export default defineConfig({
           ],
         },
         {
+          text: 'Transports',
+          collapsed: false,
+          items: [
+            { text: 'HTTP', link: '/guides/transports/http' },
+            { text: 'Memory', link: '/guides/transports/memory' },
+          ],
+        },
+        {
           text: 'Configuration',
           collapsed: false,
           items: [

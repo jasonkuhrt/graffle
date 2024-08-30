@@ -46,10 +46,10 @@ console.log(result.data?.countries)
 
 #### Output
 
-```json
+```txt
 [
-  { "name": "Canada", "continent": { "name": "North America" } },
-  { "name": "Germany", "continent": { "name": "Europe" } },
-  { "name": "Japan", "continent": { "name": "Asia" } }
+  { name: 'Canada', continent: { name: 'North America' } },
+  { name: 'Germany', continent: { name: 'Europe' } },
+  { name: 'Japan', continent: { name: 'Asia' } }
 ]
 ```

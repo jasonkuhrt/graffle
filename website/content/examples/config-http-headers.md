@@ -25,12 +25,26 @@ console.log(continents)
 
 ```json
 [
-  { "name": "Africa" },
-  { "name": "Antarctica" },
-  { "name": "Asia" },
-  { "name": "Europe" },
-  { "name": "North America" },
-  { "name": "Oceania" },
-  { "name": "South America" }
+  {
+    "name": "Africa"
+  },
+  {
+    "name": "Antarctica"
+  },
+  {
+    "name": "Asia"
+  },
+  {
+    "name": "Europe"
+  },
+  {
+    "name": "North America"
+  },
+  {
+    "name": "Oceania"
+  },
+  {
+    "name": "South America"
+  }
 ]
 ```

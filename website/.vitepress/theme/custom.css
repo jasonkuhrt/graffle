@@ -42,3 +42,21 @@
 	opacity: 0;
 	margin-top: -1.6rem;
 }
+
+.VPContent h6 {
+	opacity: 0.6;
+	font-size: 0.6rem;
+	text-transform: uppercase;
+	font-weight: 900;	
+}
+
+.VPContent h6 a {
+	opacity: 0.6;
+	font-size: 0.6rem;
+	text-transform: uppercase;
+	font-weight: 900;	
+}
+
+.VPContent h6 a:hover {
+	opacity: 1;
+}
