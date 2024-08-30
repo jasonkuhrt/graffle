@@ -7,31 +7,31 @@
     "link": "/examples/arguments"
   },
   {
-    "text": "Raw Typed",
-    "link": "/examples/raw-typed"
-  },
-  {
     "text": "Raw",
     "link": "/examples/raw"
-  },
-  {
-    "text": "RawString Typed",
-    "link": "/examples/rawString-typed"
   },
   {
     "text": "RawString",
     "link": "/examples/rawString"
   },
   {
+    "text": "RawString Typed",
+    "link": "/examples/rawString-typed"
+  },
+  {
+    "text": "Raw Typed",
+    "link": "/examples/raw-typed"
+  },
+  {
     "text": "Transport Http Fetch",
-    "link": "/examples/transport_http_fetch"
+    "link": "/examples/transport-http_fetch"
   },
   {
     "text": "Transport Http Headers",
-    "link": "/examples/transport_http_headers"
+    "link": "/examples/transport-http_headers"
   },
   {
     "text": "Transport Memory",
-    "link": "/examples/transport_memory"
+    "link": "/examples/transport-memory"
   }
 ]

@@ -1,16 +1,63 @@
 import * as FS from 'node:fs/promises'
 import { type DefaultTheme } from 'vitepress'
 import { publicGraphQLSchemaEndpoints } from '../../examples/$helpers.js'
+import { deleteFiles } from '../../scripts/lib/deleteFiles.js'
 import { File, readFiles } from '../../scripts/lib/readFiles.js'
+
+const computeCombinations = (arr: string[]): string[][] => {
+  const result: string[][] = []
+
+  const generateCombinations = (currentCombination: string[], index: number) => {
+    if (index === arr.length) {
+      result.push([...currentCombination])
+      return
+    }
+
+    // Include the current element
+    generateCombinations([...currentCombination, arr[index]!], index + 1)
+
+    // Exclude the current element
+    generateCombinations(currentCombination, index + 1)
+  }
+
+  generateCombinations([], 0)
+
+  return result
+}
 
 const toTitle = (name: string) => name.split('-').map(titlizeWord).join(' ').split('_').map(titlizeWord).join(' ')
 
 const titlizeWord = (word: string) => word.charAt(0).toUpperCase() + word.slice(1)
 
+const extractExpressionTitle = (example: Example) => {
+  const [tagsExpression, maybeTitle] = example.file.name.split('__')
+  return maybeTitle ?? tagsExpression ?? 'impossible'
+}
+
+const titlizeExample = (example: Example) => {
+  const titleExpression = extractExpressionTitle(example)
+  return toTitle(titleExpression)
+}
+
+type Tag = string
+
+const parseTags = (fileName: string) => {
+  const [tagsExpression] = fileName.split('__')
+  if (!tagsExpression) return []
+  const tags = tagsExpression.split('_')
+  return tags
+}
+
 interface Example {
   file: File
+  fileName: {
+    canonical: string
+    tags: string
+    title: string | null
+  }
   output: File
   isUsingJsonOutput: boolean
+  tags: Tag[]
 }
 
 /**
@@ -103,7 +150,7 @@ const transformMarkdown = (example: Example) => {
 aside: false
 ---
 
-# ${toTitle(example.file.name)}
+# ${titlizeExample(example)}
 
 \`\`\`ts twoslash
 ${example.file.content.trim()}
@@ -139,10 +186,17 @@ const examples = exampleFiles.map(example => {
   const output = outputFiles.find(file => file.name === `${example.name}.output.txt`)
   if (!output) throw new Error(`Could not find output file for ${example.name}`)
 
+  const [tagsExpression, titleExpression] = example.name.split('__')
   return {
     file: example,
+    fileName: {
+      canonical: titleExpression ?? tagsExpression ?? 'impossible',
+      tags: tagsExpression ?? 'impossible',
+      title: titleExpression ?? null,
+    },
     output,
     isUsingJsonOutput: example.content.includes('showJson'),
+    tags: parseTags(example.name),
   }
 })
 
@@ -153,8 +207,16 @@ const examplesTransformed = examples
   .map(transformOther)
   .map(transformMarkdown)
 
+/**
+ * Write Example Pages
+ * -------------------
+ */
+
+// Delete all existing to handle case of renaming or deleting examples.
+await deleteFiles({ pattern: `./content/examples/*.md` })
+
 await Promise.all(examplesTransformed.map(async (example) => {
-  await FS.writeFile(`./content/examples/${example.file.name}.md`, example.file.content)
+  await FS.writeFile(`./content/examples/${example.fileName.canonical}.md`, example.file.content)
 }))
 
 /**
@@ -164,8 +226,8 @@ await Promise.all(examplesTransformed.map(async (example) => {
 
 const sidebarExamples: DefaultTheme.SidebarItem[] = examplesTransformed.map(example => {
   return {
-    text: toTitle(example.file.name),
-    link: `/examples/${example.file.name}`,
+    text: titlizeExample(example),
+    link: `/examples/${example.fileName.canonical}`,
   }
 })
 
@@ -176,3 +238,37 @@ const code = `
 `
 
 await FS.writeFile('.vitepress/configExamples.ts', code)
+
+/**
+ * Write Example Links Page Partials
+ * ---------------------------------
+ */
+// todo
+
+// Delete all existing to handle case of renaming or deleting examples.
+await deleteFiles({ pattern: `./content/guides/_example_links/*.md` })
+
+const groups = examplesTransformed.reduce((groups, example) => {
+  const combinations = computeCombinations(example.tags).filter(_ => {
+    return _.length > 0
+  })
+  const combinationNames = combinations.map(combo => combo.join('_'))
+  for (const combo of combinationNames) {
+    if (!groups[combo]) {
+      groups[combo] = [example]
+    } else {
+      groups[combo].push(example)
+    }
+  }
+  return groups
+}, {} as Record<string, Example[]>)
+
+await Promise.all(
+  Object.entries(groups).map(async ([groupName, examples]) => {
+    const codeLinks = examples.map(example => {
+      return `[${titlizeExample(example)}](../../examples/${example.fileName.canonical}.md)`
+    }).join(' / ')
+    const code = `###### Examples -> ${codeLinks}`
+    await FS.writeFile(`./content/guides/_example_links/${groupName}.md`, code)
+  }),
+)

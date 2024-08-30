@@ -8,10 +8,10 @@ import { execaCommand } from 'execa'
 import stripAnsi from 'strip-ansi'
 import { expect, test } from 'vitest'
 
-test(`transport_http_fetch`, async () => {
-  const result = await execaCommand(`pnpm tsx ./examples/transport_http_fetch.ts`)
+test(`transport-memory`, async () => {
+  const result = await execaCommand(`pnpm tsx ./examples/transport-memory.ts`)
   expect(result.exitCode).toBe(0)
   // Examples should output their data results.
   const exampleResult = stripAnsi(result.stdout)
-  await expect(exampleResult).toMatchFileSnapshot(`../.././examples/transport_http_fetch.output.txt`)
+  await expect(exampleResult).toMatchFileSnapshot(`../.././examples/transport-memory.output.txt`)
 })

@@ -2,7 +2,7 @@
 
 Graffle has the concept of "transports". A transport is how the request reaches the GraphQL schema for execution. This section is about the "http" transport.
 
-<!--@include: @/guides/_example_links/transport_http.md-->
+<!--@include: @/guides/_example_links/transport-http.md-->
 
 ## Overview
 
@@ -26,7 +26,7 @@ Graffle.create({
 
 ## Headers
 
-<!--@include: @guides/_example_links/transport_http_headers.md-->
+<!--@include: @guides/_example_links/transport-http_headers.md-->
 
 When using this transport, you may also input [`HeadersInit`](https://developer.mozilla.org/en-US/docs/Web/API/Headers/Headers#init) into [`$with`](/todo).
 

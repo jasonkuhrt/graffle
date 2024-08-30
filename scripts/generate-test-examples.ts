@@ -1,5 +1,9 @@
 import * as FS from 'node:fs/promises'
+import { deleteFiles } from './lib/deleteFiles.js'
 import { readFiles } from './lib/readFiles.js'
+
+// Handle case of renaming or deleting examples.
+await deleteFiles({ pattern: `./tests/examples/*.test.ts` })
 
 const files = await readFiles({
   pattern: `./examples/*.ts`,
