@@ -1,9 +1,5 @@
-HeadersList {
-  cookies: null,
-  [Symbol(headers map)]: Map(3) {
-    'authorization' => { name: 'authorization', value: 'Bearer MY_TOKEN' },
-    'accept' => { name: 'accept', value: 'application/graphql-response+json' },
-    'content-type' => { name: 'content-type', value: 'application/json' }
-  },
-  [Symbol(headers map sorted)]: null
+Headers {
+  authorization: 'Bearer MY_TOKEN',
+  accept: 'application/graphql-response+json',
+  'content-type': 'application/json'
 }

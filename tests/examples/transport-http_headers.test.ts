@@ -14,5 +14,7 @@ test(`transport-http_headers`, async () => {
   // Examples should output their data results.
   const exampleResult = stripAnsi(result.stdout)
   const nodeMajor = process.version.match(/v(\d+)/)?.[1] ?? `unknown`
-  await expect(exampleResult).toMatchFileSnapshot(`../.././examples/transport-http_headers.output.node-${nodeMajor}.txt`)
+  await expect(exampleResult).toMatchFileSnapshot(
+    `../.././examples/transport-http_headers.output.node-${nodeMajor}.txt`,
+  )
 })
