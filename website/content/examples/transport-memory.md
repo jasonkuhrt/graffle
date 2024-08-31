@@ -5,10 +5,6 @@ aside: false
 # Transport Memory
 
 ```ts twoslash
-/**
- * tags: transport-memory
- */
-
 import { GraphQLObjectType, GraphQLSchema, GraphQLString } from 'graphql'
 import { Graffle } from 'graphql-request/graffle/main'
 
