@@ -179,11 +179,11 @@ const exampleFiles = await readFiles({
 })
 
 const outputFiles = await readFiles({
-  pattern: `../examples/*.output.node-22.txt`,
+  pattern: `../examples/*.output.txt`,
 })
 
 const examples = exampleFiles.map(example => {
-  const output = outputFiles.find(file => file.name === `${example.name}.output.node-22.txt`)
+  const output = outputFiles.find(file => file.name === `${example.name}.output.txt`)
   if (!output) throw new Error(`Could not find output file for ${example.name}`)
 
   const [tagsExpression, titleExpression] = example.name.split('__')

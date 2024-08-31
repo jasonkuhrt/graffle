@@ -13,8 +13,7 @@ test(`raw_rawString__rawString`, async () => {
   expect(result.exitCode).toBe(0)
   // Examples should output their data results.
   const exampleResult = stripAnsi(result.stdout)
-  const nodeMajor = process.version.match(/v(\d+)/)?.[1] ?? `unknown`
-  await expect(exampleResult).toMatchFileSnapshot(
-    `../.././examples/raw_rawString__rawString.output.node-${nodeMajor}.txt`,
-  )
+  // If ever outputs vary by Node version, you can use this to snapshot by Node version.
+  // const nodeMajor = process.version.match(/v(\d+)/)?.[1] ?? `unknown`
+  await expect(exampleResult).toMatchFileSnapshot(`../.././examples/raw_rawString__rawString.output.txt`)
 })

@@ -13,6 +13,7 @@ test(`transport-http_fetch`, async () => {
   expect(result.exitCode).toBe(0)
   // Examples should output their data results.
   const exampleResult = stripAnsi(result.stdout)
-  const nodeMajor = process.version.match(/v(\d+)/)?.[1] ?? `unknown`
-  await expect(exampleResult).toMatchFileSnapshot(`../.././examples/transport-http_fetch.output.node-${nodeMajor}.txt`)
+  // If ever outputs vary by Node version, you can use this to snapshot by Node version.
+  // const nodeMajor = process.version.match(/v(\d+)/)?.[1] ?? `unknown`
+  await expect(exampleResult).toMatchFileSnapshot(`../.././examples/transport-http_fetch.output.txt`)
 })
