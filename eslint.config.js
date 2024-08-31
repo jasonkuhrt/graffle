@@ -9,6 +9,7 @@ export default tsEslint.config({
     '**/generated/**/*',
     '**/$generated-clients/**/*',
     '**/website/**/*',
+    '**/website/.vitepress/**/*',
   ],
   extends: configPrisma,
   languageOptions: {

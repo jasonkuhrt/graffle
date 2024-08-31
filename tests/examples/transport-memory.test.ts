@@ -8,10 +8,12 @@ import { execaCommand } from 'execa'
 import stripAnsi from 'strip-ansi'
 import { expect, test } from 'vitest'
 
-test(`transport_memory`, async () => {
-  const result = await execaCommand(`pnpm tsx ./examples/transport_memory.ts`)
+test(`transport-memory`, async () => {
+  const result = await execaCommand(`pnpm tsx ./examples/transport-memory.ts`)
   expect(result.exitCode).toBe(0)
   // Examples should output their data results.
   const exampleResult = stripAnsi(result.stdout)
-  await expect(exampleResult).toMatchFileSnapshot(`../.././examples/transport_memory.output.txt`)
+  // If ever outputs vary by Node version, you can use this to snapshot by Node version.
+  // const nodeMajor = process.version.match(/v(\d+)/)?.[1] ?? `unknown`
+  await expect(exampleResult).toMatchFileSnapshot(`../.././examples/transport-memory.output.txt`)
 })

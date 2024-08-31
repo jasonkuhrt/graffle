@@ -9,5 +9,5 @@ export const show = (value: unknown) => {
 }
 
 export const showJson = (value: unknown) => {
-  console.log(JSON.stringify(value))
+  console.log(JSON.stringify(value, null, 2))
 }

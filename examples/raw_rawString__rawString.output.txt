@@ -1,35 +1,3 @@
----
-aside: false
----
-
-# RawString
-
-```ts twoslash
-import { Graffle } from 'graphql-request/graffle/main'
-
-const graffle = Graffle.create({
-  schema: `https://countries.trevorblades.com/graphql`,
-})
-
-const document = /* gql */ `
-  {
-    countries {
-      name
-    }
-  }	
-`
-
-const result = await graffle.rawString({
-  document,
-})
-
-console.log(result.data)
-//          ^?
-```
-
-#### Output
-
-```txt
 {
   countries: [
     { name: 'Andorra' },
@@ -135,4 +103,3 @@ console.log(result.data)
     ... 150 more items
   ]
 }
-```

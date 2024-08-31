@@ -31,7 +31,7 @@ console.log(result.data)
 
 #### Output
 
-```json
+```txt
 {
   countries: [
     { name: 'Canada', continent: { name: 'North America' } },

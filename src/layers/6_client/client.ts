@@ -10,7 +10,7 @@ import type { GlobalRegistry } from '../2_generator/globalRegistry.js'
 import type { DocumentObject, GraphQLObjectSelection } from '../3_SelectionSet/encode.js'
 import { Core } from '../5_core/__.js'
 import { type HookDefEncode } from '../5_core/core.js'
-import type { InterfaceRaw } from '../5_core/types.js'
+import type { InterfaceRaw, TransportHttp } from '../5_core/types.js'
 import type { DocumentFn } from './document.js'
 import type { GetRootTypeMethods } from './RootTypeMethods.js'
 import type { Envelope } from './Settings/Config.js'
@@ -33,6 +33,25 @@ type GraffleExecutionResult =
      */
     response?: Response
   })
+  | Errors.ContextualError
+
+export type GraffleExecutionResultVar<$Config extends Config> =
+  | (
+    & ExecutionResult
+    & ($Config['transport'] extends TransportHttp ? {
+        /**
+         * If transport was HTTP, then the raw response is available here.
+         */
+        response: Response
+      }
+      : TransportHttp extends $Config['transport'] ? {
+          /**
+           * If transport was HTTP, then the raw response is available here.
+           */
+          response?: Response
+        }
+      : {}) // eslint-disable-line
+  )
   | Errors.ContextualError
 
 export type SelectionSetOrIndicator = 0 | 1 | boolean | object
@@ -94,7 +113,7 @@ export type Client<$Index extends Schema.Index | null, $Config extends Config> =
       : {} // eslint-disable-line
     )
   & {
-      use: (extension: Extension | Anyware.Extension2<Core.Core>) => Client<$Index, $Config>
+      use: (extension: Extension | Anyware.Extension2<Core.Core<$Config>>) => Client<$Index, $Config>
       retry: (extension: Anyware.Extension2<Core.Core, { retrying: true }>) => Client<$Index, $Config>
     }
 
@@ -168,7 +187,7 @@ export const createInternal = (
         interface: interface_,
         schemaIndex: context.schemaIndex,
       },
-    } as HookDefEncode['input']
+    } as HookDefEncode<Config>['input']
     return await run(context, initialInput)
   }
 
@@ -238,11 +257,11 @@ export const createInternal = (
     config: inputToConfig(input),
   }
 
-  const run = async (context: Context, initialInput: HookDefEncode['input']) => {
+  const run = async (context: Context, initialInput: HookDefEncode<Config>['input']) => {
     const result = await Core.anyware.run({
       initialInput,
-      retryingExtension: context.retry,
-      extensions: context.extensions.filter(_ => _.anyware !== undefined).map(_ => _.anyware!),
+      retryingExtension: context.retry as any, // eslint-disable-line
+      extensions: context.extensions.filter(_ => _.anyware !== undefined).map(_ => _.anyware!) as any, // eslint-disable-line
     }) as GraffleExecutionResult
     return handleOutput(context, result)
   }
@@ -263,7 +282,7 @@ export const createInternal = (
       },
       variables: rawInput.variables,
       operationName: rawInput.operationName,
-    } as HookDefEncode['input']
+    } as HookDefEncode<Config>['input']
     return await run(context, initialInput)
   }
 

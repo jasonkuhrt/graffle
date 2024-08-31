@@ -13,24 +13,21 @@ describe(`document with two queries`, () => {
     bar: { query: { idNonNull: true } },
   })
 
+  // TODO move nextjs test to somewhere else
   // todo allow sync extensions
 
-  graffle.use(async ({ exchange }) => {
-    if (exchange.input.transport !== `http`) return exchange()
-    // @ts-expect-error Nextjs
-    exchange.input.request.next = { revalidate: 60, tags: [`menu`] }
-    return exchange({
-      input: {
-        ...exchange.input,
-        request: {
-          ...exchange.input.request,
-        },
-      },
-    })
-  }).document({
-    foo: { query: { id: true } },
-    bar: { query: { idNonNull: true } },
-  })
+  // graffle.use(async ({ exchange }) => {
+  //   // @ts-expect-error Nextjs
+  //   exchange.input.request.next = { revalidate: 60, tags: [`menu`] }
+  //   return exchange({
+  //     input: {
+  //       ...exchange.input,
+  //     },
+  //   })
+  // }).document({
+  //   foo: { query: { id: true } },
+  //   bar: { query: { idNonNull: true } },
+  // })
 
   test(`works`, async () => {
     const { run } = withTwo

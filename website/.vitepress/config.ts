@@ -48,7 +48,7 @@ export default defineConfig({
     aside: 'left',
     nav: [
       { text: 'Guides', link: '/guides/overview/introduction' },
-      { text: 'Examples', link: sidebarExamples[0].link ?? '/' },
+      { text: 'Examples', link: '/examples/raw' },
     ],
     sidebar: {
       '/examples/': sidebarExamples,
@@ -74,6 +74,14 @@ export default defineConfig({
               text: 'Generation <span title="Requires generation" style="font-size:1.75em;line-height:0;">⩕</span>',
               link: '/guides/overview/generation',
             },
+          ],
+        },
+        {
+          text: 'Transports',
+          collapsed: false,
+          items: [
+            { text: 'HTTP', link: '/guides/transports/http' },
+            { text: 'Memory', link: '/guides/transports/memory' },
           ],
         },
         {

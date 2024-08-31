@@ -1,5 +1,9 @@
 import * as FS from 'node:fs/promises'
+import { deleteFiles } from './lib/deleteFiles.js'
 import { readFiles } from './lib/readFiles.js'
+
+// Handle case of renaming or deleting examples.
+await deleteFiles({ pattern: `./tests/examples/*.test.ts` })
 
 const files = await readFiles({
   pattern: `./examples/*.ts`,
@@ -22,6 +26,8 @@ test(\`${file.name}\`, async () => {
   expect(result.exitCode).toBe(0)
   // Examples should output their data results.
   const exampleResult = stripAnsi(result.stdout)
+  // If ever outputs vary by Node version, you can use this to snapshot by Node version.
+  // const nodeMajor = process.version.match(/v(\\d+)/)?.[1] ?? \`unknown\`
   await expect(exampleResult).toMatchFileSnapshot(\`../../${file.path.dir}/${file.name}.output.txt\`)
 })
 `
