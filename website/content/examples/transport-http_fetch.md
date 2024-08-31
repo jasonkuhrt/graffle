@@ -15,14 +15,20 @@ const graffle = Graffle
       return await exchange({
         using: {
           fetch: async () => {
-            return new Response(JSON.stringify({ data: { countries: [{ name: `Canada Mocked!` }] } }))
+            return new Response(
+              JSON.stringify({
+                data: { countries: [{ name: `Canada Mocked!` }] },
+              }),
+            )
           },
         },
       })
     },
   })
 
-const countries = await graffle.rawString({ document: `{ countries { name } }` })
+const countries = await graffle.rawString({
+  document: `{ countries { name } }`,
+})
 
 console.log(countries.data)
 //          ^?
