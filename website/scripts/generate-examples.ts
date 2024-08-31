@@ -1,3 +1,4 @@
+import { groupBy } from 'es-toolkit'
 import * as FS from 'node:fs/promises'
 import { type DefaultTheme } from 'vitepress'
 import { publicGraphQLSchemaEndpoints } from '../../examples/$helpers.js'
@@ -29,14 +30,17 @@ const toTitle = (name: string) => name.split('-').map(titlizeWord).join(' ').spl
 
 const titlizeWord = (word: string) => word.charAt(0).toUpperCase() + word.slice(1)
 
-const extractExpressionTitle = (example: Example) => {
-  const [tagsExpression, maybeTitle] = example.file.name.split('__')
-  return maybeTitle ?? tagsExpression ?? 'impossible'
-}
-
-const titlizeExample = (example: Example) => {
-  const titleExpression = extractExpressionTitle(example)
-  return toTitle(titleExpression)
+const parseFileName = (fileName: string): Example['fileName'] => {
+  const [group, fileNameWithoutGroup] = fileName.includes('|') ? fileName.split('|') : [null, fileName]
+  const [tagsExpression, titleExpression] = fileNameWithoutGroup.split('__')
+  const canonicalTitleExpression = titleExpression ?? tagsExpression ?? 'impossible'
+  return {
+    canonical: (group ? `${group}-` : '') + canonicalTitleExpression,
+    canonicalTitle: toTitle(canonicalTitleExpression),
+    tags: tagsExpression ?? 'impossible',
+    title: titleExpression ?? null,
+    group,
+  }
 }
 
 type Tag = string
@@ -52,8 +56,10 @@ interface Example {
   file: File
   fileName: {
     canonical: string
+    canonicalTitle: string
     tags: string
     title: string | null
+    group: null | string
   }
   output: File
   isUsingJsonOutput: boolean
@@ -150,7 +156,7 @@ const transformMarkdown = (example: Example) => {
 aside: false
 ---
 
-# ${titlizeExample(example)}
+# ${example.fileName.canonicalTitle}
 
 \`\`\`ts twoslash
 ${example.file.content.trim()}
@@ -186,14 +192,9 @@ const examples = exampleFiles.map(example => {
   const output = outputFiles.find(file => file.name === `${example.name}.output.txt`)
   if (!output) throw new Error(`Could not find output file for ${example.name}`)
 
-  const [tagsExpression, titleExpression] = example.name.split('__')
   return {
     file: example,
-    fileName: {
-      canonical: titleExpression ?? tagsExpression ?? 'impossible',
-      tags: tagsExpression ?? 'impossible',
-      title: titleExpression ?? null,
-    },
+    fileName: parseFileName(example.name),
     output,
     isUsingJsonOutput: example.content.includes('showJson'),
     tags: parseTags(example.name),
@@ -224,20 +225,34 @@ await Promise.all(examplesTransformed.map(async (example) => {
  * -----------------------
  */
 
-const sidebarExamples: DefaultTheme.SidebarItem[] = examplesTransformed.map(example => {
-  return {
-    text: titlizeExample(example),
-    link: `/examples/${example.fileName.canonical}`,
-  }
-})
+{
+  const groups = groupBy(examplesTransformed, example => example.fileName.group ?? 'ungrouped')
+  const sidebarExamples = Object.entries(groups).flatMap(
+    ([groupName, example]): DefaultTheme.SidebarItem[] => {
+      if (groupName === 'ungrouped') {
+        return example.map(example => ({
+          text: example.fileName.canonicalTitle,
+          link: `/examples/${example.fileName.canonical}`,
+        }))
+      }
+      return [{
+        text: toTitle(groupName),
+        items: example.map(example => ({
+          text: example.fileName.canonicalTitle,
+          link: `/examples/${example.fileName.canonical}`,
+        })),
+      }]
+    },
+  ).sort((a) => a.items ? 1 : -1)
 
-const code = `
+  const code = `
 	import { DefaultTheme } from 'vitepress'
 
 	export const sidebarExamples:DefaultTheme.SidebarItem[] = ${JSON.stringify(sidebarExamples, null, 2)}
 `
 
-await FS.writeFile('.vitepress/configExamples.ts', code)
+  await FS.writeFile('.vitepress/configExamples.ts', code)
+}
 
 /**
  * Write Example Links Page Partials
@@ -266,7 +281,7 @@ const groups = examplesTransformed.reduce((groups, example) => {
 await Promise.all(
   Object.entries(groups).map(async ([groupName, examples]) => {
     const codeLinks = examples.map(example => {
-      return `[${titlizeExample(example)}](../../examples/${example.fileName.canonical}.md)`
+      return `[${example.fileName.canonicalTitle}](../../examples/${example.fileName.canonical}.md)`
     }).join(' / ')
     const code = `###### Examples -> ${codeLinks}`
     await FS.writeFile(`./content/guides/_example_links/${groupName}.md`, code)

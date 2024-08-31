@@ -48,7 +48,7 @@ export default defineConfig({
     aside: 'left',
     nav: [
       { text: 'Guides', link: '/guides/overview/introduction' },
-      { text: 'Examples', link: sidebarExamples[0].link ?? '/' },
+      { text: 'Examples', link: '/examples/raw' },
     ],
     sidebar: {
       '/examples/': sidebarExamples,

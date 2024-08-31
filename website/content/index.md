@@ -11,7 +11,7 @@ hero:
       link: /guides/overview/introduction
     - theme: alt
       text: Examples
-      link: /examples/arguments
+      link: /examples/raw
 features:
   - title: Opt-in Generation
     details: Begin with a traditional static library and seamlessly transition to a more powerful generated one when you want.
