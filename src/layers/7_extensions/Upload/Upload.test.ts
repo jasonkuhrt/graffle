@@ -7,7 +7,7 @@ import type { Server } from 'node:http'
 import { createServer } from 'node:http'
 import { afterAll, beforeAll, beforeEach, expect, test } from 'vitest'
 import { schema } from '../../../../tests/_/schemaUpload/schema.js'
-import { Graffle } from '../../../entrypoints/graffle/main.js'
+import { Graffle } from '../../../entrypoints/main.js'
 import { Upload } from './Upload.js'
 
 import { createYoga } from 'graphql-yoga'

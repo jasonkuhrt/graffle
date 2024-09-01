@@ -1,4 +1,4 @@
-import { Graffle } from '../src/entrypoints/graffle/main.js'
+import { Graffle } from '../src/entrypoints/main.js'
 import { show } from './$helpers.js'
 import { publicGraphQLSchemaEndpoints } from './$helpers.js'
 
