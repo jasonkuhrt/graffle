@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-import * as $ from 'graphql-request/schema'
+import * as $ from 'graffle/schema'
 import * as $Scalar from './Scalar.js'
 
 export const $defaultSchemaUrl = new URL('https://countries.trevorblades.com/graphql')

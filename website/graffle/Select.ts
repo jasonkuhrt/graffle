@@ -1,10 +1,10 @@
-import type { ResultSet, SelectionSet } from 'graphql-request/schema'
+import type { ResultSet, SelectionSet } from 'graffle/schema'
 import type { Index } from './Index.js'
 
 // Runtime
 // -------
 
-import { createSelect } from 'graphql-request/client'
+import { createSelect } from 'graffle/client'
 export const Select = createSelect('default')
 
 // Buildtime

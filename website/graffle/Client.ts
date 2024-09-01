@@ -1,4 +1,4 @@
-import { createPrefilled } from 'graphql-request/client'
+import { createPrefilled } from 'graffle/client'
 
 import { $defaultSchemaUrl, $Index } from './SchemaRuntime.js'
 

@@ -42,7 +42,7 @@ export namespace GlobalRegistry {
   export type DefaultSchemaName = 'default'
 
   export type SchemaNames = keyof GraphQLRequestTypes.Schemas extends never
-    ? TSError<'SchemaNames', 'No schemas have been registered. Did you run graphql-request generate?'>
+    ? TSError<'SchemaNames', 'No schemas have been registered. Did you run graffle generate?'>
     : keyof GraphQLRequestTypes.Schemas
 
   export type HasSchemaErrors<$Schema extends SchemaList> = $Schema['featureOptions']['schemaErrors']

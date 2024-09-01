@@ -195,11 +195,11 @@ const transformRewriteGraffleImports = (example: Example) => {
   const newContent = example.file.content
     .replaceAll(
       /from '\.\.\/src\/entrypoints\/main.js'/g,
-      `from 'graphql-request'`,
+      `from 'graffle'`,
     )
     .replaceAll(
       /from '\.\.\/src\/entrypoints\/(.*?).js'/g,
-      `from 'graphql-request/$1'`,
+      `from 'graffle/$1'`,
     )
     .replaceAll(
       /\.js$/g,

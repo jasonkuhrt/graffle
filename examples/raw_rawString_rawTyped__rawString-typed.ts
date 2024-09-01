@@ -11,7 +11,7 @@ const graffle = Graffle.create({
  * @remarks Typically this type would come from your code generation tool.
  *
  * @see https://the-guild.dev/graphql/codegen/plugins/presets/preset-client#documentmode
- * @see https://github.com/jasonkuhrt/graphql-request/issues/997
+ * @see https://github.com/jasonkuhrt/graffle/issues/997
  */
 type Document = TypedDocumentString<
   { countries: { name: string; continent: { name: string } }[] },

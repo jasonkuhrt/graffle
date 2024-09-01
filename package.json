@@ -1,5 +1,5 @@
 {
-  "name": "graphql-request",
+  "name": "graffle",
   "description": "Minimalist Progressively Type Safe GraphQL Client For JavaScript.",
   "version": "0.0.0-dripip",
   "packageManager": "pnpm@9.9.0",
@@ -39,7 +39,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/jasonkuhrt/graphql-request.git"
+    "url": "https://github.com/jasonkuhrt/graffle.git"
   },
   "keywords": [
     "graphql",
@@ -54,9 +54,9 @@
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/jasonkuhrt/graphql-request/issues"
+    "url": "https://github.com/jasonkuhrt/graffle/issues"
   },
-  "homepage": "https://github.com/jasonkuhrt/graphql-request",
+  "homepage": "https://github.com/jasonkuhrt/graffle",
   "scripts": {
     "graffle": "tsx ./src/cli/generate.ts",
     "gen:test:schema": "tsx tests/_/schemaGenerate.ts",

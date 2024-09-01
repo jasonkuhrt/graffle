@@ -2,7 +2,7 @@
 
 Raw methods allow you to work directly with GraphQL queries and data types. They have [`...OrThrow`](#orthrow) variants like other methods. They force you to use the [envelope](#envelope), however your configuration for [error channels](#errors) is still honoured.
 
-> Aside: These methods are approximately what `graphql-request` was before it turned into Graffle.
+> Aside: These methods are approximately what `graffle` was before it turned into Graffle.
 
 ## DocumentNode Document
 

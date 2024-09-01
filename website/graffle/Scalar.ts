@@ -1,1 +1,1 @@
-export * from 'graphql-request/schema/scalars'
+export * from 'graffle/schema/scalars'

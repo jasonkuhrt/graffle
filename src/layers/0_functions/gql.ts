@@ -6,7 +6,7 @@ import { parse } from 'graphql'
  *
  * @example
  * ```
- * import { gql } from 'graphql-request'
+ * import { gql } from 'graffle'
  *
  * await request('https://foo.bar/graphql', gql`...`)
  * ```
