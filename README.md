@@ -211,8 +211,8 @@ Compared to GraphQL clients like Apollo or Relay, `graffle` doesn't have a built
 
 ### Package Installs
 
-<a href="https://npm-compare.com/graffle#timeRange=FIVE_YEARS" target="_blank">
-  <img src="https://npm-compare.com/img/npm-trend/FIVE_YEARS/graffle.png" width="100%" alt="NPM Usage Trend of graffle" />
+<a href="https://npm-compare.com/graphql-request#timeRange=FIVE_YEARS" target="_blank">
+  <img src="https://npm-compare.com/img/npm-trend/FIVE_YEARS/graphql-request.png" width="100%" alt="NPM Usage Trend of graphql-request" />
 </a>
 
 ### Repo Beats
