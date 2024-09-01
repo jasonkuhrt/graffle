@@ -1,5 +1,5 @@
 > [!IMPORTANT]
-> The next version (`8`) of `graphql-request` is being renamed to "graffle". It has the same base simplicity but with many fixes, enhancements, and major new type safe features.
+> The next version (`8`) of `graphql-request` is being renamed to `graffle`. It has the same base simplicity but with many fixes, enhancements, and major new type safe features.
 > It is not released yet but will be in the coming weeks/months and is already usable. Learn more about it [here](https://github.com/jasonkuhrt/graffle/discussions/1026). You can see the in progress website at https://graffle.js.org.
 >
 > The following README is still for `graphql-request@7.x.x`
