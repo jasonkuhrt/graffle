@@ -23,7 +23,7 @@ importers:
       globby:
         specifier: ^14.0.2
         version: 14.0.2
-      graphql-request:
+      graffle:
         specifier: file:..
         version: file:..(graphql@16.9.0)
       tsx:
@@ -866,7 +866,7 @@ packages:
     resolution: {integrity: sha512-s3Fq41ZVh7vbbe2PN3nrW7yC7U7MFVc5c98/iTl9c2GawNMKx/J648KQRW6WKkuU8GIbbh2IXfIRQjOZnXcTnw==}
     engines: {node: '>=18'}
 
-  graphql-request@file:..:
+  graffle@file:..:
     resolution: {directory: .., type: directory}
     hasBin: true
     peerDependencies:
@@ -2100,7 +2100,7 @@ snapshots:
       slash: 5.1.0
       unicorn-magic: 0.1.0
 
-  graphql-request@file:..(graphql@16.9.0):
+  graffle@file:..(graphql@16.9.0):
     dependencies:
       '@graphql-typed-document-node/core': 3.2.0(graphql@16.9.0)
       '@molt/command': 0.9.0
