@@ -5,8 +5,8 @@ aside: false
 # Raw Typed
 
 ```ts twoslash
+import { gql, Graffle } from 'graffle'
 import type { TypedQueryDocumentNode } from 'graphql'
-import { gql, Graffle } from 'graphql-request/graffle/main'
 
 const graffle = Graffle.create({
   schema: `https://countries.trevorblades.com/graphql`,

@@ -1,1 +1,1 @@
-export * from '../../../src/entrypoints/graffle/scalars.js'
+export * from '../../../src/entrypoints/scalars.js'

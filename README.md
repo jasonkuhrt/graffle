@@ -1,8 +1,14 @@
+> [!IMPORTANT]
+> The next version (`8`) of `graphql-request` is being renamed to `graffle`. It has the same base simplicity but with many fixes, enhancements, and major new type safe features.
+> It is not released yet but will be in the coming weeks/months and is already usable. Learn more about it [here](https://github.com/jasonkuhrt/graffle/discussions/1026). You can see the in progress website at https://graffle.js.org.
+>
+> The following README is still for `graphql-request@7.x.x`
+
 # graphql-request
 
 Minimal GraphQL client supporting Node and browsers for scripts or simple apps.
 
-![GitHub Action](https://github.com/jasonkuhrt/graphql-request/workflows/trunk/badge.svg) [![npm version](https://badge.fury.io/js/graphql-request.svg)](https://badge.fury.io/js/graphql-request)
+![GitHub Action](https://github.com/jasonkuhrt/graffle/workflows/trunk/badge.svg) [![npm version](https://badge.fury.io/js/graffle.svg)](https://badge.fury.io/js/graffle)
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -23,8 +29,8 @@ Minimal GraphQL client supporting Node and browsers for scripts or simple apps.
 - [Knowledge Base](#knowledge-base)
   - [Why was the file upload feature taken away? Will it return?](#why-was-the-file-upload-feature-taken-away-will-it-return)
   - [Why do I have to install `graphql`?](#why-do-i-have-to-install-graphql)
-  - [Do I need to wrap my GraphQL documents inside the `gql` template exported by `graphql-request`?](#do-i-need-to-wrap-my-graphql-documents-inside-the-gql-template-exported-by-graphql-request)
-  - [What sets `graphql-request` apart from other clients like Apollo, Relay, etc.?](#what-sets-graphql-request-apart-from-other-clients-like-apollo-relay-etc)
+  - [Do I need to wrap my GraphQL documents inside the `gql` template exported by `graffle`?](#do-i-need-to-wrap-my-graphql-documents-inside-the-gql-template-exported-by-graffle)
+  - [What sets `graffle` apart from other clients like Apollo, Relay, etc.?](#what-sets-graffle-apart-from-other-clients-like-apollo-relay-etc)
 - [Project Stats](#project-stats)
   - [Package Installs](#package-installs)
   - [Repo Beats](#repo-beats)
@@ -43,7 +49,7 @@ Minimal GraphQL client supporting Node and browsers for scripts or simple apps.
 ## Install
 
 ```sh
-npm add graphql-request graphql
+npm add graffle graphql
 ```
 
 #### TypeScript Setup
@@ -58,7 +64,7 @@ This package uses [`package.exports`](https://www.typescriptlang.org/docs/handbo
 Send a GraphQL document using a static request function:
 
 ```js
-import { gql, request } from 'graphql-request'
+import { gql, request } from 'graffle'
 
 const document = gql`
   {
@@ -84,7 +90,7 @@ await request({
 A class is available for constructing your own instances:
 
 ```js
-import { gql, GraphQLClient } from 'graphql-request'
+import { gql, GraphQLClient } from 'graffle'
 
 const document = gql`
   {
@@ -163,7 +169,7 @@ Return both the errors and data, only works with `rawRequest`.
 
 ### IgnoreOperationName
 
-OperationName has been introduced to address issues reported here [Support operation name](https://github.com/jasonkuhrt/graphql-request/issues/64),
+OperationName has been introduced to address issues reported here [Support operation name](https://github.com/jasonkuhrt/graffle/issues/64),
 However, on certain occasions this information may not be needed in requests. In such cases, you might consider ignoring operationName to avoid the extraction steps currently performed by a parsing operation when the document is provided in string format.
 
 By default the GraphQLClient tries to extract the operationName from the document.
@@ -185,28 +191,28 @@ const client = new GraphQLClient(endpoint, {
 
 #### Why was the file upload feature taken away? Will it return?
 
-In [this issue](https://github.com/jasonkuhrt/graphql-request/issues/500) we decided to make this library more stable and maintainable. In principal the feature is still in scope of this library and will make a return when we find time to do the feature right.
+In [this issue](https://github.com/jasonkuhrt/graffle/issues/500) we decided to make this library more stable and maintainable. In principal the feature is still in scope of this library and will make a return when we find time to do the feature right.
 
 #### Why do I have to install `graphql`?
 
-`graphql-request` uses methods exposed by the `graphql` package to handle some internal logic. On top of that, for TypeScript users, some types are used from the `graphql` package to provide better typings.
+`graffle` uses methods exposed by the `graphql` package to handle some internal logic. On top of that, for TypeScript users, some types are used from the `graphql` package to provide better typings.
 
-#### Do I need to wrap my GraphQL documents inside the `gql` template exported by `graphql-request`?
+#### Do I need to wrap my GraphQL documents inside the `gql` template exported by `graffle`?
 
 No. It is there for convenience so that you can get the tooling support like automatic formatting and syntax highlighting. You can use `gql` from `graphql-tag` if you need it for some reason too.
 
-#### What sets `graphql-request` apart from other clients like Apollo, Relay, etc.?
+#### What sets `graffle` apart from other clients like Apollo, Relay, etc.?
 
-`graphql-request` is the most minimal and simplest to use GraphQL client. It's perfect for small scripts or simple apps.
+`graffle` is the most minimal and simplest to use GraphQL client. It's perfect for small scripts or simple apps.
 
-Compared to GraphQL clients like Apollo or Relay, `graphql-request` doesn't have a built-in cache and has no integrations for frontend frameworks. The goal is to keep the package and API as minimal as possible.
+Compared to GraphQL clients like Apollo or Relay, `graffle` doesn't have a built-in cache and has no integrations for frontend frameworks. The goal is to keep the package and API as minimal as possible.
 
 ## Project Stats
 
 ### Package Installs
 
-<a href="https://npm-compare.com/graphql-request#timeRange=FIVE_YEARS" target="_blank">
-  <img src="https://npm-compare.com/img/npm-trend/FIVE_YEARS/graphql-request.png" width="100%" alt="NPM Usage Trend of graphql-request" />
+<a href="https://npm-compare.com/graffle#timeRange=FIVE_YEARS" target="_blank">
+  <img src="https://npm-compare.com/img/npm-trend/FIVE_YEARS/graffle.png" width="100%" alt="NPM Usage Trend of graffle" />
 </a>
 
 ### Repo Beats

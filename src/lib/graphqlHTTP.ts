@@ -32,7 +32,7 @@ export const parseExecutionResult = (result: unknown): ExecutionResult => {
     )
   }
 
-  // todo add test coverage for case of null. @see https://github.com/jasonkuhrt/graphql-request/issues/739
+  // todo add test coverage for case of null. @see https://github.com/jasonkuhrt/graffle/issues/739
   if (`data` in result) {
     if (!isPlainObject(result.data) && result.data !== null) {
       throw new Error(`Invalid execution result: data is not plain object`) // prettier-ignore

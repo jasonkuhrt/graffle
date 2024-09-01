@@ -1,5 +1,5 @@
 {
-  "name": "graphql-request",
+  "name": "graffle",
   "description": "Minimalist Progressively Type Safe GraphQL Client For JavaScript.",
   "version": "0.0.0-dripip",
   "packageManager": "pnpm@9.9.0",
@@ -14,28 +14,22 @@
         "default": "./build/entrypoints/main.js"
       }
     },
-    "./graffle/main": {
+    "./client": {
       "import": {
-        "types": "./build/entrypoints/graffle/main.d.ts",
-        "default": "./build/entrypoints/graffle/main.js"
+        "types": "./build/entrypoints/client.d.ts",
+        "default": "./build/entrypoints/client.js"
       }
     },
-    "./graffle/client": {
+    "./schema": {
       "import": {
-        "types": "./build/entrypoints/graffle/client.d.ts",
-        "default": "./build/entrypoints/graffle/client.js"
+        "types": "./build/entrypoints/schema.d.ts",
+        "default": "./build/entrypoints/schema.js"
       }
     },
-    "./graffle/schema": {
+    "./schema/scalars": {
       "import": {
-        "types": "./build/entrypoints/graffle/schema.d.ts",
-        "default": "./build/entrypoints/graffle/schema.js"
-      }
-    },
-    "./graffle/schema/scalars": {
-      "import": {
-        "types": "./build/entrypoints/graffle/scalars.d.ts",
-        "default": "./build/entrypoints/graffle/scalars.js"
+        "types": "./build/entrypoints/scalars.d.ts",
+        "default": "./build/entrypoints/scalars.js"
       }
     }
   },
@@ -45,7 +39,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/jasonkuhrt/graphql-request.git"
+    "url": "https://github.com/jasonkuhrt/graffle.git"
   },
   "keywords": [
     "graphql",
@@ -60,14 +54,14 @@
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/jasonkuhrt/graphql-request/issues"
+    "url": "https://github.com/jasonkuhrt/graffle/issues"
   },
-  "homepage": "https://github.com/jasonkuhrt/graphql-request",
+  "homepage": "https://github.com/jasonkuhrt/graffle",
   "scripts": {
     "graffle": "tsx ./src/cli/generate.ts",
     "gen:test:schema": "tsx tests/_/schemaGenerate.ts",
     "gen:examples": "tsx scripts/generate-examples-derivatives/generate.ts && pnpm format",
-    "gen:docs:examples:clients:SocialStudies": "pnpm graffle --name SocialStudies --schema https://countries.trevorblades.com/graphql --output ./examples/generated-clients/SocialStudies --libraryPathClient ../../../src/entrypoints/graffle/client.js --libraryPathSchema ../../../src/entrypoints/graffle/schema.js --libraryPathScalars ../../../src/entrypoints/graffle/scalars.js",
+    "gen:docs:examples:clients:SocialStudies": "pnpm graffle --name SocialStudies --schema https://countries.trevorblades.com/graphql --output ./examples/generated-clients/SocialStudies --libraryPathClient ../../../src/entrypoints/client.js --libraryPathSchema ../../../src/entrypoints/schema.js --libraryPathScalars ../../../src/entrypoints/scalars.js",
     "dev": "rm -rf dist && tsc --watch",
     "format": "pnpm build:docs && dprint fmt",
     "lint": "eslint . --fix",

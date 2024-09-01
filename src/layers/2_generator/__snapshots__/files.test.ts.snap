@@ -1,7 +1,7 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`schema2 1`] = `
-"import { createPrefilled } from '../../../../src/entrypoints/graffle/client.js'
+"import { createPrefilled } from '../../../../src/entrypoints/client.js'
 
 import { $defaultSchemaUrl, $Index } from './SchemaRuntime.js'
 
@@ -43,13 +43,13 @@ export const isError = <$Value>(value: $Value): value is Include<$Value, ErrorOb
 `;
 
 exports[`schema2 5`] = `
-"import type { ResultSet, SelectionSet } from '../../../../src/entrypoints/graffle/schema.js'
+"import type { ResultSet, SelectionSet } from '../../../../src/entrypoints/schema.js'
 import type { Index } from './Index.js'
 
 // Runtime
 // -------
 
-import { createSelect } from '../../../../src/entrypoints/graffle/client.js'
+import { createSelect } from '../../../../src/entrypoints/client.js'
 export const Select = createSelect('default')
 
 // Buildtime
@@ -216,7 +216,7 @@ export interface Index {
 `;
 
 exports[`schema2 7`] = `
-"import type * as $ from '../../../../src/entrypoints/graffle/schema.js'
+"import type * as $ from '../../../../src/entrypoints/schema.js'
 import type * as $Scalar from './Scalar.ts'
 
 // ------------------------------------------------------------ //
@@ -560,7 +560,7 @@ export * from '../../customScalarCodecs.js'
 exports[`schema2 9`] = `
 "/* eslint-disable */
 
-import * as $ from '../../../../src/entrypoints/graffle/schema.js'
+import * as $ from '../../../../src/entrypoints/schema.js'
 import * as $Scalar from './Scalar.js'
 
 export const $defaultSchemaUrl = undefined

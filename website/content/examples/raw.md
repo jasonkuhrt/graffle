@@ -5,7 +5,7 @@ aside: false
 # Raw
 
 ```ts twoslash
-import { gql, Graffle } from 'graphql-request/graffle/main'
+import { gql, Graffle } from 'graffle'
 
 const graffle = Graffle.create({
   schema: `https://countries.trevorblades.com/graphql`,
