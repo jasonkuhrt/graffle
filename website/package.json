@@ -3,8 +3,7 @@
   "scripts": {
     "dev": "vitepress dev",
     "build": "vitepress build",
-    "preview": "vitepress preview",
-    "gen:examples": "tsx scripts/generate-examples.ts"
+    "preview": "vitepress preview"
   },
   "devDependencies": {
     "vitepress": "^1.3.3"
