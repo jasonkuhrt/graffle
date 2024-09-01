@@ -66,7 +66,7 @@
   "scripts": {
     "graffle": "tsx ./src/cli/generate.ts",
     "gen:test:schema": "tsx tests/_/schemaGenerate.ts",
-    "gen:test:examples": "tsx scripts/generate-test-examples.ts",
+    "gen:examples": "tsx scripts/generate-examples-derivatives/generate.ts && pnpm format",
     "gen:docs:examples:clients:SocialStudies": "pnpm graffle --name SocialStudies --schema https://countries.trevorblades.com/graphql --output ./examples/generated-clients/SocialStudies --libraryPathClient ../../../src/entrypoints/graffle/client.js --libraryPathSchema ../../../src/entrypoints/graffle/schema.js --libraryPathScalars ../../../src/entrypoints/graffle/scalars.js",
     "dev": "rm -rf dist && tsc --watch",
     "format": "pnpm build:docs && dprint fmt",
@@ -150,6 +150,7 @@
     "type-fest": "^4.26.0",
     "typescript": "^5.5.4",
     "typescript-eslint": "^8.3.0",
+    "vitepress": "^1.3.4",
     "vitest": "^2.0.5"
   }
 }
