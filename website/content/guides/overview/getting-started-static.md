@@ -10,7 +10,7 @@ pnpm add graffle
 
 ```ts twoslash
 // @noErrors
-import { Graffle } from 'graphql-request/graffle/main'
+import { Graffle } from 'graphql-request'
 
 const graffle = Graffle.create({
   schema: 'https://countries.trevorblades.com/graphql',
@@ -21,7 +21,7 @@ const graffle = Graffle.create({
 
 ```ts twoslash
 // @noErrors
-import { Graffle } from 'graphql-request/graffle/main'
+import { Graffle } from 'graphql-request'
 const graffle = Graffle.create({
   schema: 'https://countries.trevorblades.com/graphql',
 })
