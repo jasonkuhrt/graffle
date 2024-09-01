@@ -6,7 +6,7 @@ aside: false
 
 ```ts twoslash
 import { GraphQLObjectType, GraphQLSchema, GraphQLString } from 'graphql'
-import { Graffle } from 'graphql-request/graffle/main'
+import { Graffle } from 'graphql-request'
 
 const schema = new GraphQLSchema({
   query: new GraphQLObjectType({

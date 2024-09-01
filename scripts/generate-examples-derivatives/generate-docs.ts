@@ -194,8 +194,12 @@ interface Example {
 const transformRewriteGraffleImports = (example: Example) => {
   const newContent = example.file.content
     .replaceAll(
-      /from '\.\.\/src\/entrypoints\/graffle\/(.*?).js'/g,
-      `from 'graphql-request/graffle/$1'`,
+      /from '\.\.\/src\/entrypoints\/main.js'/g,
+      `from 'graphql-request'`,
+    )
+    .replaceAll(
+      /from '\.\.\/src\/entrypoints\/(.*?).js'/g,
+      `from 'graphql-request/$1'`,
     )
     .replaceAll(
       /\.js$/g,

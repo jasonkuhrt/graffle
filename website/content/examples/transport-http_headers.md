@@ -5,7 +5,7 @@ aside: false
 # Transport Http Headers
 
 ```ts twoslash
-import { Graffle } from 'graphql-request/graffle/main'
+import { Graffle } from 'graphql-request'
 
 const graffle = Graffle
   .create({

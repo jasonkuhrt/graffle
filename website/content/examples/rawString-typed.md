@@ -5,8 +5,8 @@ aside: false
 # RawString Typed
 
 ```ts twoslash
-import { Graffle } from 'graphql-request/graffle/main'
-// todo from 'graphql-request/graffle/utils'
+import { Graffle } from 'graphql-request'
+// todo from 'graphql-request/utils'
 import type { TypedDocumentString } from '../src/layers/0_functions/types.js'
 
 const graffle = Graffle.create({

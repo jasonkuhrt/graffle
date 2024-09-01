@@ -6,7 +6,7 @@ aside: false
 
 ```ts twoslash
 import type { TypedQueryDocumentNode } from 'graphql'
-import { gql, Graffle } from 'graphql-request/graffle/main'
+import { gql, Graffle } from 'graphql-request'
 
 const graffle = Graffle.create({
   schema: `https://countries.trevorblades.com/graphql`,
