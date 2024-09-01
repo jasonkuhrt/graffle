@@ -10,8 +10,6 @@ pnpm add graffle graphql
 
 ## Generate Client Lib
 
-<!-- TODO Default the output and name to "graffle"  -->
-
 Now you have access to the `graffle` command line interface in your project. Use it to generate a client. We will use a simple publicly available GraphQL API for our schema source.
 
 ```sh

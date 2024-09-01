@@ -3,7 +3,7 @@ import type { Index } from './Index.js'
 declare global {
   export namespace GraphQLRequestTypes {
     export interface Schemas {
-      graffle: {
+      default: {
         index: Index
         customScalars: {}
         featureOptions: {

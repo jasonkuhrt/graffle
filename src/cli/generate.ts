@@ -23,7 +23,7 @@ const args = Command.create().description(`Generate a type safe GraphQL client.`
   )
   .parameter(
     `output`,
-    z.string().min(1).describe(
+    z.string().min(1).default(`./graffle`).describe(
       `Directory path for where to output the generated TypeScript files.`,
     ),
   )
