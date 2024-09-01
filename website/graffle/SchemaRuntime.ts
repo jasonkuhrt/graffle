@@ -99,7 +99,7 @@ export const Query = $.Object$(`Query`, {
 })
 
 export const $Index = {
-  name: 'graffle' as const,
+  name: 'default' as const,
   Root: {
     Query,
     Mutation: null,

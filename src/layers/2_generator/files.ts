@@ -9,7 +9,7 @@ import { generateCode, type Input as GenerateInput } from './generateCode.js'
 import { fileExists } from './prelude.js'
 
 export interface Input {
-  outputDirPath: string
+  outputDirPath?: string
   name?: string
   code?: Omit<GenerateInput, 'schemaSource' | 'sourceDirPath' | 'options'>
   defaultSchemaUrl?: URL
@@ -62,12 +62,12 @@ const resolveSourceSchema = async (input: Input) => {
 export const generateFiles = async (input: Input) => {
   const sourceDirPath = input.sourceDirPath ?? process.cwd()
   const schemaSource = await resolveSourceSchema(input)
-
+  const outputDirPath = input.outputDirPath ?? Path.join(process.cwd(), `./graffle`)
   // todo support other extensions: .tsx,.js,.mjs,.cjs
   const customScalarCodecsFilePath = input.sourceCustomScalarCodecsFilePath
     ?? Path.join(sourceDirPath, `customScalarCodecs.ts`)
   const customScalarCodecsImportPath = Path.relative(
-    input.outputDirPath,
+    outputDirPath,
     customScalarCodecsFilePath.replace(/\.ts$/, `.js`),
   )
   const customScalarCodecsPathExists = await fileExists(customScalarCodecsFilePath)
@@ -91,10 +91,10 @@ export const generateFiles = async (input: Input) => {
     },
   })
 
-  await fs.mkdir(input.outputDirPath, { recursive: true })
+  await fs.mkdir(outputDirPath, { recursive: true })
   await Promise.all(
     codes.map((code) => {
-      return fs.writeFile(`${input.outputDirPath}/${code.moduleName}.ts`, code.code, { encoding: `utf8` })
+      return fs.writeFile(`${outputDirPath}/${code.moduleName}.ts`, code.code, { encoding: `utf8` })
     }),
   )
 }
