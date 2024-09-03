@@ -28,6 +28,7 @@ const testEachArgs = [
         output: outputConfigDefault,
         transport: `memory`,
         name: schemaIndex[`name`],
+        // eslint-disable-next-line
         initialInput: {} as any,
         requestInputOptions: {},
       },

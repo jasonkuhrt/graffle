@@ -116,6 +116,7 @@ export type Client<$Index extends Schema.Index | null, $Config extends Config> =
       : {} // eslint-disable-line
     )
   & {
+      // eslint-disable-next-line
       // @ts-ignore passes after generation
       with: <$Input extends InputIncrementable<$Config>>(input: $Input) => Client<$Index, AddIncrementalInput<$Config, $Input>>
       use: (extension: Extension | Anyware.Extension2<Core.Core<$Config>>) => Client<$Index, $Config>
@@ -138,7 +139,7 @@ type Create = <$Input extends InputStatic<GlobalRegistry.SchemaUnion>>(input: $I
        // v   It does after generation.
       ? GlobalRegistry.GetSchemaIndexOrDefault<$Input['name']>
       : null,
-    // @ts-ignore fixme
+    // @ts-expect-error fixme
     InputToConfig<$Input>
   >
 
@@ -254,7 +255,7 @@ const create_ = (
   const context: Context = {
     retry: state.retry,
     extensions: state.extensions,
-    // @ts-ignore fixme
+    // @ts-expect-error fixme
     config: inputToConfig(state.input),
   }
 

@@ -61,6 +61,7 @@ export type InputBase<$Schema extends GlobalRegistry.SchemaUnion> =
             schema: URLInput
           }
         )
+      // eslint-disable-next-line
       // @ts-ignore passes after generation
       & InputIncrementable<{ name: $Schema['name']; transport: 'http' }>
     )
@@ -76,6 +77,7 @@ export type InputBase<$Schema extends GlobalRegistry.SchemaUnion> =
             }
           : { schema: GraphQLSchema }
         )
+      // eslint-disable-next-line
       // @ts-ignore passes after generation
       & InputIncrementable<{ name: $Schema['name']; transport: 'memory' }>
     )
