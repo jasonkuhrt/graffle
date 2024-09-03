@@ -6,7 +6,7 @@ export const statusCodes = {
   success: 200,
 }
 
-export const mergeHeadersInit = (headers: HeadersInit, additionalHeaders: HeadersInit) => {
+export const mergeHeadersInit = (headers?: HeadersInit, additionalHeaders?: HeadersInit) => {
   const base = new Headers(headers)
   const additional = new Headers(additionalHeaders)
   for (const [key, value] of additional.entries()) {

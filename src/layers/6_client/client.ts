@@ -9,7 +9,7 @@ import { readMaybeThunk } from '../1_Schema/core/helpers.js'
 import type { GlobalRegistry } from '../2_generator/globalRegistry.js'
 import type { DocumentObject, GraphQLObjectSelection } from '../3_SelectionSet/encode.js'
 import { Core } from '../5_core/__.js'
-import { type HookDefEncode, type RequestInputOptions } from '../5_core/core.js'
+import { type HookDefEncode } from '../5_core/core.js'
 import type { InterfaceRaw, TransportHttp } from '../5_core/types.js'
 import type { DocumentFn } from './document.js'
 import type { GetRootTypeMethods } from './RootTypeMethods.js'
@@ -21,7 +21,10 @@ import {
   traditionalGraphqlOutput,
   traditionalGraphqlOutputThrowing,
 } from './Settings/Config.js'
-import { type Input, type InputToConfig, inputToConfig } from './Settings/Input.js'
+import { type InputStatic } from './Settings/Input.js'
+import type { AddIncrementalInput, InputIncrementable } from './Settings/inputIncrementable/inputIncrementable.js'
+import { mergeRequestInputOptions } from './Settings/inputIncrementable/request.js'
+import { type InputToConfig, inputToConfig } from './Settings/InputToConfig.js'
 
 // todo could list specific errors here
 // Anyware entrypoint
@@ -113,15 +116,10 @@ export type Client<$Index extends Schema.Index | null, $Config extends Config> =
       : {} // eslint-disable-line
     )
   & {
-      with: (configInput: Options) => Client<$Index, $Config>
+      with: <$Input extends InputIncrementable<$Config>>(input: $Input) => Client<$Index, AddIncrementalInput<$Config, $Input>>
       use: (extension: Extension | Anyware.Extension2<Core.Core<$Config>>) => Client<$Index, $Config>
       retry: (extension: Anyware.Extension2<Core.Core, { retrying: true }>) => Client<$Index, $Config>
     }
-
-// todo `request` only available if transport is http
-export type Options = {
-  request?: RequestInputOptions
-}
 
 export type ClientTyped<$Index extends Schema.Index, $Config extends Config> =
   & {
@@ -130,39 +128,34 @@ export type ClientTyped<$Index extends Schema.Index, $Config extends Config> =
   & GetRootTypeMethods<$Config, $Index>
 
 // dprint-ignore
-type Create = <
-  $Input extends Input<GlobalRegistry.SchemaList>,
->(
-  input: $Input,
-) =>
-Client<
-  // eslint-disable-next-line
-  // @ts-ignore passes after generation
-  $Input['schemaIndex'] extends Schema.Index
-     // v-- TypeScript does not understand this type satisfies the Index constraint.
-     // v   It does after generation.
-    ? GlobalRegistry.GetSchemaIndexOrDefault<$Input['name']>
-    : null,
-  InputToConfig<$Input>
->
+type Create = <$Input extends InputStatic<GlobalRegistry.SchemaUnion>>(input: $Input) =>
+  Client<
+    // eslint-disable-next-line
+    // @ts-ignore passes after generation
+    $Input['schemaIndex'] extends Schema.Index
+       // v-- TypeScript does not understand this type satisfies the Index constraint.
+       // v   It does after generation.
+      ? GlobalRegistry.GetSchemaIndexOrDefault<$Input['name']>
+      : null,
+    InputToConfig<$Input>
+  >
 
 export const create: Create = (input) => {
   const initialState = {
     extensions: [],
     retry: null,
-    options: input.options ?? {},
+    input,
   }
-  return create_(input, initialState)
+  return create_(initialState)
 }
 
 interface CreateState {
-  options: Options
+  input: InputStatic<GlobalRegistry.SchemaUnion>
   retry: Anyware.Extension2<Core.Core, { retrying: true }> | null
   extensions: Extension[]
 }
 
 const create_ = (
-  input: Readonly<Input<any>>,
   state: CreateState,
 ) => {
   /**
@@ -178,14 +171,14 @@ const create_ = (
     rootTypeName: RootTypeName,
     rootTypeSelectionSet: GraphQLObjectSelection,
   ) => {
-    const transport = input.schema instanceof GraphQLSchema ? `memory` : `http`
+    const transport = state.input.schema instanceof GraphQLSchema ? `memory` : `http`
     const interface_ = `typed`
     const initialInput = {
       interface: interface_,
       transport,
       selection: rootTypeSelectionSet,
       rootTypeName,
-      schema: input.schema,
+      schema: state.input.schema,
       context: {
         config: context.config,
         transport,
@@ -259,7 +252,7 @@ const create_ = (
   const context: Context = {
     retry: state.retry,
     extensions: state.extensions,
-    config: inputToConfig(input, state.options),
+    config: inputToConfig(state.input),
   }
 
   const run = async (context: Context, initialInput: HookDefEncode<Config>['input']) => {
@@ -273,12 +266,12 @@ const create_ = (
 
   const runRaw = async (context: Context, rawInput: BaseInput_) => {
     const interface_: InterfaceRaw = `raw`
-    const transport = input.schema instanceof GraphQLSchema ? `memory` : `http`
+    const transport = state.input.schema instanceof GraphQLSchema ? `memory` : `http`
     const initialInput = {
       interface: interface_,
       transport,
       document: rawInput.document,
-      schema: input.schema,
+      schema: state.input.schema,
       context: {
         config: context.config,
       },
@@ -314,15 +307,14 @@ const create_ = (
       // eslint-disable-next-line
       return await client.rawOrThrow(...args)
     },
-    with: (options: Options) => {
-      return create_(input, {
+    with: (input: InputIncrementable) => {
+      return create_({
         ...state,
-        options: {
-          ...state.options,
-          request: {
-            ...state.options.request,
-            ...options.request,
-          },
+        input: {
+          ...state.input,
+          output: state.input.output,
+          // @ts-expect-error fixme
+          request: mergeRequestInputOptions(state.input.request, input.request),
         },
       })
     },
@@ -331,18 +323,18 @@ const create_ = (
         ? { anyware: extensionOrAnyware, name: extensionOrAnyware.name }
         : extensionOrAnyware
       // todo test that adding extensions returns a copy of client
-      return create_(input, { ...state, extensions: [...state.extensions, extension] })
+      return create_({ ...state, extensions: [...state.extensions, extension] })
     },
     retry: (extension: Anyware.Extension2<Core.Core, { retrying: true }>) => {
-      return create_(input, { ...state, retry: extension })
+      return create_({ ...state, retry: extension })
     },
   }
 
   // todo extract this into constructor "create typed client"
-  if (input.schemaIndex) {
+  if (state.input.schemaIndex) {
     const typedContext: TypedContext = {
       ...context,
-      schemaIndex: input.schemaIndex,
+      schemaIndex: state.input.schemaIndex,
     }
 
     Object.assign(client, {

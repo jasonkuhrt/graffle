@@ -10,13 +10,11 @@ import { Graffle } from 'graffle'
 const graffle = Graffle
   .create({
     schema: `https://countries.trevorblades.com/graphql`,
-    options: {
-      request: {
-        headers: {
-          authorization: `Bearer MY_TOKEN`,
-        },
-        mode: `cors`,
+    request: {
+      headers: {
+        authorization: `Bearer MY_TOKEN`,
       },
+      mode: `cors`,
     },
   })
   .use(async ({ exchange }) => {

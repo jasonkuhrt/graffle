@@ -12,6 +12,7 @@ import type { GraphQLObjectSelection } from '../3_SelectionSet/encode.js'
 import * as Result from '../4_ResultSet/customScalars.js'
 import type { GraffleExecutionResultVar } from '../6_client/client.js'
 import type { Config } from '../6_client/Settings/Config.js'
+import { mergeRequestInputOptions, type RequestInput } from '../6_client/Settings/inputIncrementable/request.js'
 import type {
   ContextInterfaceRaw,
   ContextInterfaceTyped,
@@ -20,24 +21,6 @@ import type {
   TransportHttp,
   TransportMemory,
 } from './types.js'
-
-type HttpMethodInput =
-  | 'get'
-  | 'post'
-  | 'put'
-  | 'delete'
-  | 'patch'
-  | 'head'
-  | 'options'
-  | 'trace'
-  | 'GET'
-  | 'POST'
-  | 'PUT'
-  | 'DELETE'
-  | 'PATCH'
-  | 'HEAD'
-  | 'OPTIONS'
-  | 'TRACE'
 
 const getRootIndexOrThrow = (context: ContextInterfaceTyped, rootTypeName: string) => {
   // @ts-expect-error
@@ -108,19 +91,6 @@ export type HookDefPack<$Config extends Config> = {
       variables?: StandardScalarVariables
       operationName?: string
     }>
-}
-
-export type RequestInputOptions = Omit<RequestInit, 'body' | 'method'> & {
-  method?: HttpMethodInput
-}
-
-/**
- * An extension of {@link RequestInit} that adds a required `url` property and makes `body` required.
- */
-export type RequestInput = RequestInputOptions & {
-  url: string | URL
-  method: HttpMethodInput
-  body: BodyInit
 }
 
 export type HookDefExchange<$Config extends Config> = {
@@ -242,8 +212,8 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
             body: input.body,
             // @see https://graphql.github.io/graphql-over-http/draft/#sec-POST
             method: `POST`,
-            ...mergeRequestInputOptions(input.context.config.options.request, {
-              headers: {
+            ...mergeRequestInputOptions(input.context.config.requestInputOptions, {
+              headers: mergeHeadersInit(input.headers, {
                 // @see https://graphql.github.io/graphql-over-http/draft/#sec-Accept
                 accept: CONTENT_TYPE_GQL,
                 // todo if body is something else, say upload extension turns it into a FormData, then fetch will automatically set the content-type header.
@@ -251,7 +221,7 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
                 ...(typeof input.body === `string`
                   ? { 'content-type': CONTENT_TYPE_JSON }
                   : {}),
-              },
+              }),
             }),
           }
           return {
@@ -369,12 +339,3 @@ export type Core<$Config extends Config = Config> = Anyware.Core<
   HookMap<$Config>,
   GraffleExecutionResultVar<$Config>
 >
-
-const mergeRequestInputOptions = (a?: RequestInputOptions, b?: RequestInputOptions): RequestInputOptions => {
-  const headers = mergeHeadersInit(a?.headers ?? {}, b?.headers ?? {})
-  return {
-    ...a,
-    ...b,
-    headers,
-  }
-}

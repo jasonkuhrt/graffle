@@ -24,12 +24,23 @@ Graffle.create({
 
 :::
 
-## Headers
+## Configuration
 
-<!--@include: @guides/_example_links/transport-http_headers.md-->
+<!--@include: @guides/_example_links/transport-http_RequestInput.md-->
 
-When using this transport, you may also input [`HeadersInit`](https://developer.mozilla.org/en-US/docs/Web/API/Headers/Headers#init) into [`$with`](/todo).
+When using this transport, you can configure `request` for most aspects of the `fetch` `RequestInit`:
 
 ```ts
-graffle.$with({ headers: { authorization: '...' } })
+graffle.create({
+  request: { headers: { authorization: '...' }, mode: 'cors' },
+})
 ```
+
+## Anyware
+
+Hooks are augmented in the following ways:
+
+|           | Encode | Pack                   | Exchange  | Unpack     | Decode     |
+| --------- | ------ | ---------------------- | --------- | ---------- | ---------- |
+| Input     | -      | `url` `headers` `body` | `request` | `response` | `response` |
+| Functions | -      | -                      | `fetch`   |            |            |

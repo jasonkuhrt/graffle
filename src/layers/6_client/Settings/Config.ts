@@ -6,7 +6,8 @@ import type { Schema } from '../../1_Schema/__.js'
 import type { GlobalRegistry } from '../../2_generator/globalRegistry.js'
 import type { SelectionSet } from '../../3_SelectionSet/__.js'
 import type { Transport } from '../../5_core/types.js'
-import type { Options } from '../client.js'
+import type { InputStatic } from './Input.js'
+import type { RequestInputOptions } from './inputIncrementable/request.js'
 
 export type OutputChannel = 'throw' | 'return'
 
@@ -103,9 +104,14 @@ export type OutputConfigDefault = {
 }
 
 export type Config = {
+  /**
+   * The initial input that was given to derive this config.
+   */
+  initialInput: InputStatic<GlobalRegistry.SchemaUnion>
+  name: GlobalRegistry.SchemaNames
   output: OutputConfig
   transport: Transport
-  options: Options
+  requestInputOptions?: RequestInputOptions
 }
 
 // dprint-ignore

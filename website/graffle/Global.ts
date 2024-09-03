@@ -1,7 +1,7 @@
 import type { Index } from './Index.js'
 
 declare global {
-  export namespace GraphQLRequestTypes {
+  export namespace GraffleGlobalTypes {
     export interface Schemas {
       default: {
         index: Index
