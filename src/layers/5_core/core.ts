@@ -12,6 +12,7 @@ import type { GraphQLObjectSelection } from '../3_SelectionSet/encode.js'
 import * as Result from '../4_ResultSet/customScalars.js'
 import type { GraffleExecutionResultVar } from '../6_client/client.js'
 import type { Config } from '../6_client/Settings/Config.js'
+import { mergeRequestInputOptions, type RequestInput } from '../6_client/Settings/inputIncrementable/request.js'
 import type {
   ContextInterfaceRaw,
   ContextInterfaceTyped,
@@ -48,9 +49,7 @@ type TransportInput<$Config extends Config, $HttpProperties = {}, $MemoryPropert
       TransportHttp extends $Config['transport']
         ? ({
             transport: TransportHttp
-            transportConstructorConfig: {
-              headers?: HeadersInit
-            }
+            
           } & $HttpProperties)
         : never
     )
@@ -92,29 +91,6 @@ export type HookDefPack<$Config extends Config> = {
       variables?: StandardScalarVariables
       operationName?: string
     }>
-}
-
-export type RequestInput = {
-  url: string | URL
-  method:
-    | 'get'
-    | 'post'
-    | 'put'
-    | 'delete'
-    | 'patch'
-    | 'head'
-    | 'options'
-    | 'trace'
-    | 'GET'
-    | 'POST'
-    | 'PUT'
-    | 'DELETE'
-    | 'PATCH'
-    | 'HEAD'
-    | 'OPTIONS'
-    | 'TRACE'
-  headers?: HeadersInit
-  body: BodyInit
 }
 
 export type HookDefExchange<$Config extends Config> = {
@@ -231,26 +207,26 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
         }
         case `http`: {
           // TODO thrown error here is swallowed in examples.
-          const headers = mergeHeadersInit(
-            input.transportConstructorConfig.headers ?? {},
-            input.headers ?? {},
-          )
-          // @see https://graphql.github.io/graphql-over-http/draft/#sec-Accept
-          headers.set(`accept`, CONTENT_TYPE_GQL)
-          // @see https://graphql.github.io/graphql-over-http/draft/#sec-POST
-          // todo if body is something else, say upload extension turns it into a FormData, then fetch will automatically set the content-type header.
-          // ... however we should not rely on that behavior, and instead error here if there is no content type header and we cannot infer it here?
-          if (typeof input.body === `string`) {
-            headers.set(`content-type`, CONTENT_TYPE_JSON)
+          const request: RequestInput = {
+            url: input.url,
+            body: input.body,
+            // @see https://graphql.github.io/graphql-over-http/draft/#sec-POST
+            method: `POST`,
+            ...mergeRequestInputOptions(input.context.config.requestInputOptions, {
+              headers: mergeHeadersInit(input.headers, {
+                // @see https://graphql.github.io/graphql-over-http/draft/#sec-Accept
+                accept: CONTENT_TYPE_GQL,
+                // todo if body is something else, say upload extension turns it into a FormData, then fetch will automatically set the content-type header.
+                // ... however we should not rely on that behavior, and instead error here if there is no content type header and we cannot infer it here?
+                ...(typeof input.body === `string`
+                  ? { 'content-type': CONTENT_TYPE_JSON }
+                  : {}),
+              }),
+            }),
           }
           return {
             ...input,
-            request: {
-              url: input.url,
-              body: input.body,
-              method: `POST`,
-              headers,
-            },
+            request,
           }
         }
         default:
@@ -266,13 +242,8 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
       run: async ({ input, slots }) => {
         switch (input.transport) {
           case `http`: {
-            const response = await slots.fetch(
-              new Request(input.request.url, {
-                method: input.request.method,
-                headers: input.request.headers,
-                body: input.request.body,
-              }),
-            )
+            const request = new Request(input.request.url, input.request)
+            const response = await slots.fetch(request)
             return {
               ...input,
               response,

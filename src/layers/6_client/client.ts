@@ -21,7 +21,10 @@ import {
   traditionalGraphqlOutput,
   traditionalGraphqlOutputThrowing,
 } from './Settings/Config.js'
-import { type Input, type InputToConfig, inputToConfig } from './Settings/Input.js'
+import { type InputStatic } from './Settings/Input.js'
+import type { AddIncrementalInput, InputIncrementable } from './Settings/inputIncrementable/inputIncrementable.js'
+import { mergeRequestInputOptions } from './Settings/inputIncrementable/request.js'
+import { type InputToConfig, inputToConfig } from './Settings/InputToConfig.js'
 
 // todo could list specific errors here
 // Anyware entrypoint
@@ -59,7 +62,7 @@ export type SelectionSetOrIndicator = 0 | 1 | boolean | object
 export type SelectionSetOrArgs = object
 
 export interface Context {
-  retry: undefined | Anyware.Extension2<Core.Core, { retrying: true }>
+  retry: null | Anyware.Extension2<Core.Core, { retrying: true }>
   extensions: Extension[]
   config: Config
 }
@@ -113,6 +116,9 @@ export type Client<$Index extends Schema.Index | null, $Config extends Config> =
       : {} // eslint-disable-line
     )
   & {
+      // eslint-disable-next-line
+      // @ts-ignore passes after generation
+      with: <$Input extends InputIncrementable<$Config>>(input: $Input) => Client<$Index, AddIncrementalInput<$Config, $Input>>
       use: (extension: Extension | Anyware.Extension2<Core.Core<$Config>>) => Client<$Index, $Config>
       retry: (extension: Anyware.Extension2<Core.Core, { retrying: true }>) => Client<$Index, $Config>
     }
@@ -124,39 +130,38 @@ export type ClientTyped<$Index extends Schema.Index, $Config extends Config> =
   & GetRootTypeMethods<$Config, $Index>
 
 // dprint-ignore
-type Create = <
-  $Input extends Input<GlobalRegistry.SchemaList>,
->(
-  input: $Input,
-) =>
-Client<
-  // eslint-disable-next-line
-  // @ts-ignore passes after generation
-  $Input['schemaIndex'] extends Schema.Index
-     // v-- TypeScript does not understand this type satisfies the Index constraint.
-     // v   It does after generation.
-    ? GlobalRegistry.GetSchemaIndexOrDefault<$Input['name']>
-    : null,
-  InputToConfig<$Input>
->
+type Create = <$Input extends InputStatic<GlobalRegistry.SchemaUnion>>(input: $Input) =>
+  Client<
+    // eslint-disable-next-line
+    // @ts-ignore passes after generation
+    $Input['schemaIndex'] extends Schema.Index
+       // v-- TypeScript does not understand this type satisfies the Index constraint.
+       // v   It does after generation.
+      ? GlobalRegistry.GetSchemaIndexOrDefault<$Input['name']>
+      : null,
+    // eslint-disable-next-line
+    // @ts-ignore fixme
+    InputToConfig<$Input>
+  >
 
-export const create: Create = (
-  input_,
-) => createInternal(input_, { extensions: [], retry: undefined })
+export const create: Create = (input) => {
+  const initialState = {
+    extensions: [],
+    retry: null,
+    input,
+  }
+  return create_(initialState)
+}
 
 interface CreateState {
-  retry?: Anyware.Extension2<Core.Core, { retrying: true }>
+  input: InputStatic<GlobalRegistry.SchemaUnion>
+  retry: Anyware.Extension2<Core.Core, { retrying: true }> | null
   extensions: Extension[]
 }
 
-export const createInternal = (
-  input_: Input<any>,
+const create_ = (
   state: CreateState,
 ) => {
-  // eslint-disable-next-line
-  // @ts-ignore passes after generation
-  const input = input_ as Readonly<Input<any>>
-
   /**
    * @remarks Without generation the type of returnMode can be `ReturnModeTypeBase` which leads
    * TS to think some errors below are invalid checks because of a non-present member.
@@ -170,17 +175,14 @@ export const createInternal = (
     rootTypeName: RootTypeName,
     rootTypeSelectionSet: GraphQLObjectSelection,
   ) => {
-    const transport = input.schema instanceof GraphQLSchema ? `memory` : `http`
+    const transport = state.input.schema instanceof GraphQLSchema ? `memory` : `http`
     const interface_ = `typed`
     const initialInput = {
       interface: interface_,
       transport,
       selection: rootTypeSelectionSet,
       rootTypeName,
-      schema: input.schema,
-      transportConstructorConfig: {
-        headers: input.headers,
-      },
+      schema: state.input.schema,
       context: {
         config: context.config,
         transport,
@@ -254,7 +256,8 @@ export const createInternal = (
   const context: Context = {
     retry: state.retry,
     extensions: state.extensions,
-    config: inputToConfig(input),
+    // @ts-expect-error fixme
+    config: inputToConfig(state.input),
   }
 
   const run = async (context: Context, initialInput: HookDefEncode<Config>['input']) => {
@@ -268,15 +271,12 @@ export const createInternal = (
 
   const runRaw = async (context: Context, rawInput: BaseInput_) => {
     const interface_: InterfaceRaw = `raw`
-    const transport = input.schema instanceof GraphQLSchema ? `memory` : `http`
+    const transport = state.input.schema instanceof GraphQLSchema ? `memory` : `http`
     const initialInput = {
       interface: interface_,
       transport,
-      transportConstructorConfig: {
-        headers: input.headers,
-      },
       document: rawInput.document,
-      schema: input.schema,
+      schema: state.input.schema,
       context: {
         config: context.config,
       },
@@ -312,24 +312,34 @@ export const createInternal = (
       // eslint-disable-next-line
       return await client.rawOrThrow(...args)
     },
-    // todo $use
+    with: (input: InputIncrementable) => {
+      return create_({
+        ...state,
+        // @ts-expect-error fixme
+        input: {
+          ...state.input,
+          output: state.input.output,
+          request: mergeRequestInputOptions(state.input.request, input.request),
+        },
+      })
+    },
     use: (extensionOrAnyware: Extension | Anyware.Extension2<Core.Core>) => {
       const extension = typeof extensionOrAnyware === `function`
         ? { anyware: extensionOrAnyware, name: extensionOrAnyware.name }
         : extensionOrAnyware
       // todo test that adding extensions returns a copy of client
-      return createInternal(input, { extensions: [...state.extensions, extension] })
+      return create_({ ...state, extensions: [...state.extensions, extension] })
     },
     retry: (extension: Anyware.Extension2<Core.Core, { retrying: true }>) => {
-      return createInternal(input, { ...state, retry: extension })
+      return create_({ ...state, retry: extension })
     },
   }
 
   // todo extract this into constructor "create typed client"
-  if (input.schemaIndex) {
+  if (state.input.schemaIndex) {
     const typedContext: TypedContext = {
       ...context,
-      schemaIndex: input.schemaIndex,
+      schemaIndex: state.input.schemaIndex,
     }
 
     Object.assign(client, {

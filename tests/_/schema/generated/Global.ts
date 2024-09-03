@@ -3,9 +3,10 @@ import type { Index } from './Index.js'
 import type * as CustomScalar from '../../customScalarCodecs.js'
 
 declare global {
-  export namespace GraphQLRequestTypes {
+  export namespace GraffleGlobalTypes {
     export interface Schemas {
       default: {
+        name: 'default'
         index: Index
         customScalars: {
           Date: CustomScalar.Date

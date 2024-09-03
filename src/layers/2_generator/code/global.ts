@@ -28,9 +28,10 @@ export const { moduleName: moduleNameGlobal, generate: generateGlobal } = create
 
     code.push(`
     declare global {
-      export namespace GraphQLRequestTypes {
+      export namespace GraffleGlobalTypes {
         export interface Schemas {
           ${config.name}: {
+            name: '${config.name}'
             index: Index
             customScalars: {
               ${

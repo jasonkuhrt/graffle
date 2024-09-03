@@ -4,8 +4,8 @@ import { Graffle as Graffle2 } from '../../../tests/_/schema/generated/__.js'
 import { schema } from '../../../tests/_/schema/schema.js'
 import { Graffle } from '../../entrypoints/main.js'
 import { CONTENT_TYPE_GQL, CONTENT_TYPE_JSON } from '../../lib/http.js'
-import type { RequestInput } from '../5_core/core.js'
 import { Transport } from '../5_core/types.js'
+import type { RequestInput } from './Settings/inputIncrementable/request.js'
 
 const endpoint = new URL(`https://foo.io/api/graphql`)
 
@@ -54,7 +54,7 @@ describe(`transport`, () => {
     })
     test(`can set headers in constructor`, async ({ fetch }) => {
       fetch.mockImplementationOnce(() => Promise.resolve(createResponse({ data: { id: `abc` } })))
-      const graffle = Graffle.create({ schema: endpoint, headers: { 'x-foo': `bar` } })
+      const graffle = Graffle.create({ schema: endpoint, request: { headers: { 'x-foo': `bar` } } })
       await graffle.rawString({ document: `query { id }` })
       const request = fetch.mock.calls[0]?.[0]
       expect(request?.headers.get(`x-foo`)).toEqual(`bar`)
@@ -97,7 +97,7 @@ describe(`transport`, () => {
     test(`cannot set headers in constructor`, () => {
       // todo: This error is poor for the user. It refers to schema not being a URL. The better message would be that headers is not allowed with memory transport.
       // @ts-expect-error headers not allowed with GraphQL schema
-      Graffle.create({ schema, headers: { 'x-foo': `bar` } })
+      Graffle.create({ schema, request: { headers: { 'x-foo': `bar` } } })
     })
   })
 })

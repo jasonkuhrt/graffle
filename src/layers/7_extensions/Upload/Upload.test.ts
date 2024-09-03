@@ -16,7 +16,10 @@ import type { OutputConfigDefault } from '../../6_client/Settings/Config.js'
 
 let server: Server
 let port: number
-let graffle: Client<any, { transport: 'http'; output: OutputConfigDefault }>
+let graffle: Client<
+  any,
+  { transport: 'http'; output: OutputConfigDefault; initialInput: { schema: URL }; name: 'default' }
+>
 
 beforeAll(async () => {
   const yoga = createYoga({ schema })
