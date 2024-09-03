@@ -1,4 +1,0 @@
-Headers {
-  accept: 'application/graphql-response+json',
-  'content-type': 'application/json'
-}
