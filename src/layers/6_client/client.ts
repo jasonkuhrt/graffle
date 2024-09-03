@@ -139,7 +139,8 @@ type Create = <$Input extends InputStatic<GlobalRegistry.SchemaUnion>>(input: $I
        // v   It does after generation.
       ? GlobalRegistry.GetSchemaIndexOrDefault<$Input['name']>
       : null,
-    // @ts-expect-error fixme
+    // eslint-disable-next-line
+    // @ts-ignore fixme
     InputToConfig<$Input>
   >
 
