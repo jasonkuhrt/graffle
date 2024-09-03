@@ -49,7 +49,6 @@ export const inputToConfig = <$Input extends InputStatic<GlobalRegistry.SchemaUn
     initialInput: input,
     // @ts-expect-error conditional type fixme
     name: input.name ?? defaultSchemaName,
-    // @ts-expect-error conditional type fixme
     requestInputOptions: input.request,
     transport: handleTransport(input),
     output: {

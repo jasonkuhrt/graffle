@@ -310,10 +310,10 @@ const create_ = (
     with: (input: InputIncrementable) => {
       return create_({
         ...state,
+        // @ts-expect-error fixme
         input: {
           ...state.input,
           output: state.input.output,
-          // @ts-expect-error fixme
           request: mergeRequestInputOptions(state.input.request, input.request),
         },
       })
