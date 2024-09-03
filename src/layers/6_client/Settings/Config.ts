@@ -107,7 +107,7 @@ export type Config = {
   /**
    * The initial input that was given to derive this config.
    */
-  initialInput: InputStatic<GlobalRegistry.SchemaUnion>
+  initialInput: InputStatic<any> // InputStatic<GlobalRegistry.SchemaUnion>
   name: GlobalRegistry.SchemaNames
   output: OutputConfig
   transport: Transport

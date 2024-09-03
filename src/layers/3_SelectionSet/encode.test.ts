@@ -28,7 +28,7 @@ const testEachArgs = [
         output: outputConfigDefault,
         transport: `memory`,
         name: schemaIndex[`name`],
-        initialInput: {},
+        initialInput: {} as any,
         requestInputOptions: {},
       },
     }

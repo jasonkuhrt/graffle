@@ -137,6 +137,7 @@ type Create = <$Input extends InputStatic<GlobalRegistry.SchemaUnion>>(input: $I
        // v   It does after generation.
       ? GlobalRegistry.GetSchemaIndexOrDefault<$Input['name']>
       : null,
+    // @ts-ignore fixme
     InputToConfig<$Input>
   >
 
@@ -252,6 +253,7 @@ const create_ = (
   const context: Context = {
     retry: state.retry,
     extensions: state.extensions,
+    // @ts-ignore fixme
     config: inputToConfig(state.input),
   }
 
