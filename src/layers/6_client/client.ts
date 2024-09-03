@@ -9,7 +9,7 @@ import { readMaybeThunk } from '../1_Schema/core/helpers.js'
 import type { GlobalRegistry } from '../2_generator/globalRegistry.js'
 import type { DocumentObject, GraphQLObjectSelection } from '../3_SelectionSet/encode.js'
 import { Core } from '../5_core/__.js'
-import { type HookDefEncode } from '../5_core/core.js'
+import { type HookDefEncode, type RequestInputOptions } from '../5_core/core.js'
 import type { InterfaceRaw, TransportHttp } from '../5_core/types.js'
 import type { DocumentFn } from './document.js'
 import type { GetRootTypeMethods } from './RootTypeMethods.js'
@@ -59,7 +59,7 @@ export type SelectionSetOrIndicator = 0 | 1 | boolean | object
 export type SelectionSetOrArgs = object
 
 export interface Context {
-  retry: undefined | Anyware.Extension2<Core.Core, { retrying: true }>
+  retry: null | Anyware.Extension2<Core.Core, { retrying: true }>
   extensions: Extension[]
   config: Config
 }
@@ -113,9 +113,15 @@ export type Client<$Index extends Schema.Index | null, $Config extends Config> =
       : {} // eslint-disable-line
     )
   & {
+      with: (configInput: Options) => Client<$Index, $Config>
       use: (extension: Extension | Anyware.Extension2<Core.Core<$Config>>) => Client<$Index, $Config>
       retry: (extension: Anyware.Extension2<Core.Core, { retrying: true }>) => Client<$Index, $Config>
     }
+
+// todo `request` only available if transport is http
+export type Options = {
+  request?: RequestInputOptions
+}
 
 export type ClientTyped<$Index extends Schema.Index, $Config extends Config> =
   & {
@@ -140,23 +146,25 @@ Client<
   InputToConfig<$Input>
 >
 
-export const create: Create = (
-  input_,
-) => createInternal(input_, { extensions: [], retry: undefined })
+export const create: Create = (input) => {
+  const initialState = {
+    extensions: [],
+    retry: null,
+    options: input.options ?? {},
+  }
+  return create_(input, initialState)
+}
 
 interface CreateState {
-  retry?: Anyware.Extension2<Core.Core, { retrying: true }>
+  options: Options
+  retry: Anyware.Extension2<Core.Core, { retrying: true }> | null
   extensions: Extension[]
 }
 
-export const createInternal = (
-  input_: Input<any>,
+const create_ = (
+  input: Readonly<Input<any>>,
   state: CreateState,
 ) => {
-  // eslint-disable-next-line
-  // @ts-ignore passes after generation
-  const input = input_ as Readonly<Input<any>>
-
   /**
    * @remarks Without generation the type of returnMode can be `ReturnModeTypeBase` which leads
    * TS to think some errors below are invalid checks because of a non-present member.
@@ -178,9 +186,6 @@ export const createInternal = (
       selection: rootTypeSelectionSet,
       rootTypeName,
       schema: input.schema,
-      transportConstructorConfig: {
-        headers: input.headers,
-      },
       context: {
         config: context.config,
         transport,
@@ -254,7 +259,7 @@ export const createInternal = (
   const context: Context = {
     retry: state.retry,
     extensions: state.extensions,
-    config: inputToConfig(input),
+    config: inputToConfig(input, state.options),
   }
 
   const run = async (context: Context, initialInput: HookDefEncode<Config>['input']) => {
@@ -272,9 +277,6 @@ export const createInternal = (
     const initialInput = {
       interface: interface_,
       transport,
-      transportConstructorConfig: {
-        headers: input.headers,
-      },
       document: rawInput.document,
       schema: input.schema,
       context: {
@@ -312,16 +314,27 @@ export const createInternal = (
       // eslint-disable-next-line
       return await client.rawOrThrow(...args)
     },
-    // todo $use
+    with: (options: Options) => {
+      return create_(input, {
+        ...state,
+        options: {
+          ...state.options,
+          request: {
+            ...state.options.request,
+            ...options.request,
+          },
+        },
+      })
+    },
     use: (extensionOrAnyware: Extension | Anyware.Extension2<Core.Core>) => {
       const extension = typeof extensionOrAnyware === `function`
         ? { anyware: extensionOrAnyware, name: extensionOrAnyware.name }
         : extensionOrAnyware
       // todo test that adding extensions returns a copy of client
-      return createInternal(input, { extensions: [...state.extensions, extension] })
+      return create_(input, { ...state, extensions: [...state.extensions, extension] })
     },
     retry: (extension: Anyware.Extension2<Core.Core, { retrying: true }>) => {
-      return createInternal(input, { ...state, retry: extension })
+      return create_(input, { ...state, retry: extension })
     },
   }
 

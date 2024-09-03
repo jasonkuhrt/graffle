@@ -21,6 +21,24 @@ import type {
   TransportMemory,
 } from './types.js'
 
+type HttpMethodInput =
+  | 'get'
+  | 'post'
+  | 'put'
+  | 'delete'
+  | 'patch'
+  | 'head'
+  | 'options'
+  | 'trace'
+  | 'GET'
+  | 'POST'
+  | 'PUT'
+  | 'DELETE'
+  | 'PATCH'
+  | 'HEAD'
+  | 'OPTIONS'
+  | 'TRACE'
+
 const getRootIndexOrThrow = (context: ContextInterfaceTyped, rootTypeName: string) => {
   // @ts-expect-error
   // eslint-disable-next-line
@@ -48,9 +66,7 @@ type TransportInput<$Config extends Config, $HttpProperties = {}, $MemoryPropert
       TransportHttp extends $Config['transport']
         ? ({
             transport: TransportHttp
-            transportConstructorConfig: {
-              headers?: HeadersInit
-            }
+            
           } & $HttpProperties)
         : never
     )
@@ -94,26 +110,16 @@ export type HookDefPack<$Config extends Config> = {
     }>
 }
 
-export type RequestInput = {
+export type RequestInputOptions = Omit<RequestInit, 'body' | 'method'> & {
+  method?: HttpMethodInput
+}
+
+/**
+ * An extension of {@link RequestInit} that adds a required `url` property and makes `body` required.
+ */
+export type RequestInput = RequestInputOptions & {
   url: string | URL
-  method:
-    | 'get'
-    | 'post'
-    | 'put'
-    | 'delete'
-    | 'patch'
-    | 'head'
-    | 'options'
-    | 'trace'
-    | 'GET'
-    | 'POST'
-    | 'PUT'
-    | 'DELETE'
-    | 'PATCH'
-    | 'HEAD'
-    | 'OPTIONS'
-    | 'TRACE'
-  headers?: HeadersInit
+  method: HttpMethodInput
   body: BodyInit
 }
 
@@ -231,26 +237,26 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
         }
         case `http`: {
           // TODO thrown error here is swallowed in examples.
-          const headers = mergeHeadersInit(
-            input.transportConstructorConfig.headers ?? {},
-            input.headers ?? {},
-          )
-          // @see https://graphql.github.io/graphql-over-http/draft/#sec-Accept
-          headers.set(`accept`, CONTENT_TYPE_GQL)
-          // @see https://graphql.github.io/graphql-over-http/draft/#sec-POST
-          // todo if body is something else, say upload extension turns it into a FormData, then fetch will automatically set the content-type header.
-          // ... however we should not rely on that behavior, and instead error here if there is no content type header and we cannot infer it here?
-          if (typeof input.body === `string`) {
-            headers.set(`content-type`, CONTENT_TYPE_JSON)
+          const request: RequestInput = {
+            url: input.url,
+            body: input.body,
+            // @see https://graphql.github.io/graphql-over-http/draft/#sec-POST
+            method: `POST`,
+            ...mergeRequestInputOptions(input.context.config.options.request, {
+              headers: {
+                // @see https://graphql.github.io/graphql-over-http/draft/#sec-Accept
+                accept: CONTENT_TYPE_GQL,
+                // todo if body is something else, say upload extension turns it into a FormData, then fetch will automatically set the content-type header.
+                // ... however we should not rely on that behavior, and instead error here if there is no content type header and we cannot infer it here?
+                ...(typeof input.body === `string`
+                  ? { 'content-type': CONTENT_TYPE_JSON }
+                  : {}),
+              },
+            }),
           }
           return {
             ...input,
-            request: {
-              url: input.url,
-              body: input.body,
-              method: `POST`,
-              headers,
-            },
+            request,
           }
         }
         default:
@@ -266,13 +272,8 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
       run: async ({ input, slots }) => {
         switch (input.transport) {
           case `http`: {
-            const response = await slots.fetch(
-              new Request(input.request.url, {
-                method: input.request.method,
-                headers: input.request.headers,
-                body: input.request.body,
-              }),
-            )
+            const request = new Request(input.request.url, input.request)
+            const response = await slots.fetch(request)
             return {
               ...input,
               response,
@@ -368,3 +369,12 @@ export type Core<$Config extends Config = Config> = Anyware.Core<
   HookMap<$Config>,
   GraffleExecutionResultVar<$Config>
 >
+
+const mergeRequestInputOptions = (a?: RequestInputOptions, b?: RequestInputOptions): RequestInputOptions => {
+  const headers = mergeHeadersInit(a?.headers ?? {}, b?.headers ?? {})
+  return {
+    ...a,
+    ...b,
+    headers,
+  }
+}

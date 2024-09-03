@@ -14,6 +14,10 @@ export const sidebarExamples: DefaultTheme.SidebarItem[] = [
     'link': '/examples/transport-http_fetch',
   },
   {
+    'text': 'Transport Http RequestInput',
+    'link': '/examples/transport-http_RequestInput',
+  },
+  {
     'text': 'Raw Typed',
     'link': '/examples/raw-typed',
   },

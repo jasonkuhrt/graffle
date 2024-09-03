@@ -24,7 +24,6 @@ await graffle.rawString({ document: `{ languages { code } }` })
 
 ```txt
 Headers {
-  authorization: 'Bearer MY_TOKEN',
   accept: 'application/graphql-response+json',
   'content-type': 'application/json'
 }

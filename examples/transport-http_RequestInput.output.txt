@@ -1,0 +1,11 @@
+{
+  url: 'https://countries.trevorblades.com/graphql',
+  body: '{"query":"{ languages { code } }"}',
+  method: 'POST',
+  headers: Headers {
+    authorization: 'Bearer MY_TOKEN',
+    accept: 'application/graphql-response+json',
+    'content-type': 'application/json'
+  },
+  mode: 'cors'
+}

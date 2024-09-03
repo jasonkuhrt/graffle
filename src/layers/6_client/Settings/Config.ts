@@ -6,6 +6,7 @@ import type { Schema } from '../../1_Schema/__.js'
 import type { GlobalRegistry } from '../../2_generator/globalRegistry.js'
 import type { SelectionSet } from '../../3_SelectionSet/__.js'
 import type { Transport } from '../../5_core/types.js'
+import type { Options } from '../client.js'
 
 export type OutputChannel = 'throw' | 'return'
 
@@ -104,6 +105,7 @@ export type OutputConfigDefault = {
 export type Config = {
   output: OutputConfig
   transport: Transport
+  options: Options
 }
 
 // dprint-ignore

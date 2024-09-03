@@ -4,6 +4,7 @@ import type { Schema } from '../../1_Schema/__.js'
 import type { GlobalRegistry } from '../../2_generator/globalRegistry.js'
 import type { TransportHttp, TransportMemory } from '../../5_core/types.js'
 import { Transport } from '../../5_core/types.js'
+import type { Options } from '../client.js'
 import type { InputPrefilled } from '../prefilled.js'
 import { type OutputChannel, type OutputChannelConfig, outputConfigDefault } from './Config.js'
 
@@ -20,28 +21,31 @@ export type InputOutputEnvelopeLonghand = {
   }
 }
 
-export type Input<$Schema extends GlobalRegistry.SchemaList> = {
-  /**
-   * Used internally.
-   *
-   * When custom scalars are being used, this runtime schema is used to
-   * encode/decode them before/after your application sends/receives them.
-   *
-   * When using root type field methods, this runtime schema is used to assist how arguments on scalars versus objects
-   * are constructed into the sent GraphQL document.
-   */
-  readonly schemaIndex?: Schema.Index | null
-  /**
-   * The schema to use.
-   *
-   * TODO why don't we infer this from the runtime schemaIndex?
-   *
-   * @defaultValue 'default'
-   */
-  name?: $Schema['index']['name']
-  // todo way to hide Relay input pattern of nested input
-  // elideInputKey: true,
-} & InputPrefilled<$Schema>
+export type Input<$Schema extends GlobalRegistry.SchemaList> =
+  & {
+    /**
+     * Used internally.
+     *
+     * When custom scalars are being used, this runtime schema is used to
+     * encode/decode them before/after your application sends/receives them.
+     *
+     * When using root type field methods, this runtime schema is used to assist how arguments on scalars versus objects
+     * are constructed into the sent GraphQL document.
+     */
+    readonly schemaIndex?: Schema.Index | null
+    /**
+     * The schema to use.
+     *
+     * TODO why don't we infer this from the runtime schemaIndex?
+     *
+     * @defaultValue 'default'
+     */
+    name?: $Schema['index']['name']
+    // todo way to hide Relay input pattern of nested input
+    // elideInputKey: true,
+    options?: Options
+  }
+  & InputPrefilled<$Schema>
 
 // TODO use code generation to display
 // TODO test that schema is optional when introspection was used to generate client.
@@ -62,10 +66,6 @@ export type InputRaw<$Schema extends GlobalRegistry.SchemaList> =
         )
       & {
         /**
-         * Headers to send with each sent request.
-         */
-        headers?: HeadersInit
-        /**
          * Configure output behavior, such as if errors should be returned or thrown.
          */
         output?: OutputInput<{ schemaErrors: GlobalRegistry.HasSchemaErrors<$Schema>; transport: 'http' }>
@@ -84,7 +84,6 @@ export type InputRaw<$Schema extends GlobalRegistry.SchemaList> =
           }
       )
     & {
-        headers?: never
         /**
          * Configure output behavior, such as if errors should be returned or thrown.
          */
@@ -164,9 +163,10 @@ export type InputToConfig<$Input extends Input<any>> = {
       schema: ConfigManager.ReadOrDefault<$Input,['output', 'errors', 'schema'], false>
     }
   }
+  options: Options
 }
 
-export const inputToConfig = <T extends Input<any>>(input: T): InputToConfig<T> => {
+export const inputToConfig = <T extends Input<any>>(input: T, options: Options): InputToConfig<T> => {
   const envelopeLonghand: InputOutputEnvelopeLonghand | undefined = typeof input.output?.envelope === `object`
     ? { enabled: true, ...input.output.envelope }
     : typeof input.output?.envelope === `boolean`
@@ -202,6 +202,7 @@ export const inputToConfig = <T extends Input<any>>(input: T): InputToConfig<T> 
         schema: input.output?.errors?.schema ?? outputConfigDefault.errors.schema,
       },
     },
+    options,
   }
 }
 
