@@ -68,6 +68,7 @@ describe(`transport`, () => {
     })
     describe(`signal`, () => {
       // JSDom and Node result in different errors. JSDom is a plain Error type. Presumably an artifact of JSDom and now in actual browsers.
+      const abortErrorMessagePattern = /This operation was aborted|AbortError: The operation was aborted/
       test(`AbortController at instance level works`, async () => {
         const abortController = new AbortController()
         const graffle = Graffle.create({
@@ -79,7 +80,7 @@ describe(`transport`, () => {
         const { caughtError } = await resultPromise.catch((caughtError: unknown) => ({ caughtError })) as any as {
           caughtError: Error
         }
-        expect(caughtError.message).toMatch(/This operation was aborted|AbortError: The operation was aborted/)
+        expect(caughtError.message).toMatch(abortErrorMessagePattern)
       })
       test(`AbortController at method level works`, async () => {
         const abortController = new AbortController()
@@ -91,7 +92,7 @@ describe(`transport`, () => {
         const { caughtError } = await resultPromise.catch((caughtError: unknown) => ({ caughtError })) as any as {
           caughtError: Error
         }
-        expect(caughtError.message).toMatch(/This operation was aborted|AbortError: The operation was aborted/)
+        expect(caughtError.message).toMatch(abortErrorMessagePattern)
       })
     })
   })
