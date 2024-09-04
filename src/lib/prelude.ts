@@ -1,5 +1,5 @@
 import type { Simplify } from 'type-fest'
-import type { ConditionalSimplifyDeep } from 'type-fest/source/conditional-simplify.js'
+import type { ConditionalSimplify, ConditionalSimplifyDeep } from 'type-fest/source/conditional-simplify.js'
 
 /* eslint-disable */
 export type RemoveIndex<T> = {
@@ -395,3 +395,5 @@ export type PickRequiredProperties<T extends object> = {
 }
 
 export type Negate<T extends boolean> = T extends true ? false : true
+
+export type SimplifyExceptError<T extends unknown> = ConditionalSimplify<T, Error>

@@ -10,6 +10,10 @@ export const sidebarExamples: DefaultTheme.SidebarItem[] = [
     'link': '/examples/transport-http_fetch',
   },
   {
+    'text': 'Transport Http Abort',
+    'link': '/examples/transport-http_abort',
+  },
+  {
     'text': 'Transport Http RequestInput',
     'link': '/examples/transport-http_RequestInput',
   },

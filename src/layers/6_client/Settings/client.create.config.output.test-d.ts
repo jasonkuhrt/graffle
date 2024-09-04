@@ -1,14 +1,12 @@
 /* eslint-disable */
 import { type ExecutionResult } from 'graphql'
-import type { ObjMap } from 'graphql/jsutils/ObjMap.js'
 import { describe } from 'node:test'
-import type { Simplify } from 'type-fest'
-import type { ConditionalSimplify } from 'type-fest/source/conditional-simplify.js'
 import { expectTypeOf, test } from 'vitest'
 import { Graffle } from '../../../../tests/_/schema/generated/__.js'
 import { schema } from '../../../../tests/_/schema/schema.js'
 import { type GraphQLExecutionResultError } from '../../../lib/graphql.js'
-import { type Envelope, type OutputConfigDefault } from './Config.js'
+import type { ErrorsOther } from '../client.js'
+import { type Envelope } from './Config.js'
 
 const G = Graffle.create
 
@@ -104,7 +102,7 @@ describe('.envelope', () => {
     describe('.errors', () => {
       test('defaults to execution errors in envelope', () => {
         const g = G({ schema, output: { defaults: { errorChannel: 'return' }, envelope: true } })
-        expectTypeOf(g.query.__typename()).resolves.toEqualTypeOf<ExecutionResult<{ __typename: 'Query' }> | Error>()
+        expectTypeOf(g.query.__typename()).resolves.toEqualTypeOf<ExecutionResult<{ __typename: 'Query' }> | ErrorsOther>()
       })
       test('.execution:false restores errors to return', async () => {
         const g = G({
@@ -112,7 +110,7 @@ describe('.envelope', () => {
           output: { defaults: { errorChannel: 'return' }, envelope: { errors: { execution: false } } },
         })
         expectTypeOf(g.query.__typename()).resolves.toEqualTypeOf<
-          Omit<ExecutionResult<{ __typename: 'Query' }>, 'errors'> | Error | GraphQLExecutionResultError
+          Omit<ExecutionResult<{ __typename: 'Query' }>, 'errors'> | ErrorsOther | GraphQLExecutionResultError
         >()
       })
       test('.other:true raises them to envelope', () => {
@@ -140,7 +138,7 @@ describe('defaults.errorChannel: "return"', () => {
   describe('puts errors into return type', () => {
     const g = G({ schema, output: { defaults: { errorChannel: 'return' } } })
     test('query.<fieldMethod>', () => {
-      expectTypeOf(g.query.__typename()).resolves.toEqualTypeOf<'Query' | Error | GraphQLExecutionResultError>()
+      expectTypeOf(g.query.__typename()).resolves.toEqualTypeOf<'Query' | ErrorsOther | GraphQLExecutionResultError>()
     })
   })
   describe('with .errors', () => {
@@ -149,7 +147,7 @@ describe('defaults.errorChannel: "return"', () => {
         schema,
         output: { defaults: { errorChannel: 'return' }, errors: { execution: 'throw' } },
       })
-      expectTypeOf(await g.query.__typename()).toEqualTypeOf<'Query' | Error>()
+      expectTypeOf(await g.query.__typename()).toEqualTypeOf<'Query' | ErrorsOther>()
     })
     test('.other: throw', async () => {
       const g = G({

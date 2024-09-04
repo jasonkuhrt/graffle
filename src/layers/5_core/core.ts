@@ -312,7 +312,6 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
           // 1. Generate a map of possible custom scalar paths (tree structure)
           // 2. When traversing the result, skip keys that are not in the map
           const dataDecoded = Result.decode(getRootIndexOrThrow(input.context, input.rootTypeName), input.result.data)
-          // console.log(8, Object.keys({ ...input.result, data: dataDecoded }))
           switch (input.transport) {
             case `memory`: {
               return { ...input.result, data: dataDecoded }

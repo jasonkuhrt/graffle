@@ -1,8 +1,7 @@
 import { type ExecutionResult, GraphQLSchema, type TypedQueryDocumentNode } from 'graphql'
 import type { Anyware } from '../../lib/anyware/__.js'
-import { Errors } from '../../lib/errors/__.js'
+import type { Errors } from '../../lib/errors/__.js'
 import { isOperationTypeName, operationTypeNameToRootTypeName, type RootTypeName } from '../../lib/graphql.js'
-import { isPlainObject } from '../../lib/prelude.js'
 import type { BaseInput, BaseInput_, TypedDocumentString } from '../0_functions/types.js'
 import { Schema } from '../1_Schema/__.js'
 import { readMaybeThunk } from '../1_Schema/core/helpers.js'
@@ -10,13 +9,13 @@ import type { GlobalRegistry } from '../2_generator/globalRegistry.js'
 import type { DocumentObject, GraphQLObjectSelection } from '../3_SelectionSet/encode.js'
 import { Core } from '../5_core/__.js'
 import { type HookDefEncode } from '../5_core/core.js'
-import type { InterfaceRaw, TransportHttp } from '../5_core/types.js'
+import { type InterfaceRaw, type TransportHttp } from '../5_core/types.js'
 import type { DocumentFn } from './document.js'
+import { handleOutput } from './handleOutput.js'
 import type { GetRootTypeMethods } from './RootTypeMethods.js'
 import type { Envelope } from './Settings/Config.js'
 import {
   type Config,
-  isContextConfigTraditionalGraphQLOutput,
   readConfigErrorCategoryOutputChannel,
   traditionalGraphqlOutput,
   traditionalGraphqlOutputThrowing,
@@ -26,19 +25,15 @@ import type { AddIncrementalInput, InputIncrementable } from './Settings/inputIn
 import { mergeRequestInputOptions } from './Settings/inputIncrementable/request.js'
 import { type InputToConfig, inputToConfig } from './Settings/InputToConfig.js'
 
-// todo could list specific errors here
-// Anyware entrypoint
-// Extension
-type GraffleExecutionResult =
-  | (ExecutionResult & {
-    /**
-     * If transport was HTTP, then the raw response is available here.
-     */
-    response?: Response
-  })
+/**
+ * Types of "other" Graffle Error.
+ */
+export type ErrorsOther =
   | Errors.ContextualError
+  // Possible from http transport fetch with abort controller.
+  | DOMException
 
-export type GraffleExecutionResultVar<$Config extends Config> =
+export type GraffleExecutionResultVar<$Config extends Config = Config> =
   | (
     & ExecutionResult
     & ($Config['transport'] extends TransportHttp ? {
@@ -55,7 +50,7 @@ export type GraffleExecutionResultVar<$Config extends Config> =
         }
       : {}) // eslint-disable-line
   )
-  | Errors.ContextualError
+  | ErrorsOther
 
 export type SelectionSetOrIndicator = 0 | 1 | boolean | object
 
@@ -70,8 +65,6 @@ export interface Context {
 export type TypedContext = Context & {
   schemaIndex: Schema.Index
 }
-
-const isTypedContext = (context: Context): context is TypedContext => `schemaIndex` in context
 
 type RawParameters = [BaseInput_]
 // | [
@@ -265,7 +258,8 @@ const create_ = (
       initialInput,
       retryingExtension: context.retry as any, // eslint-disable-line
       extensions: context.extensions.filter(_ => _.anyware !== undefined).map(_ => _.anyware!) as any, // eslint-disable-line
-    }) as GraffleExecutionResult
+    }) as GraffleExecutionResultVar
+
     return handleOutput(context, result)
   }
 
@@ -393,100 +387,6 @@ const create_ = (
   }
 
   return client
-}
-
-const handleOutput = (
-  context: Context,
-  result: GraffleExecutionResult,
-) => {
-  if (isContextConfigTraditionalGraphQLOutput(context.config)) return result
-
-  const c = context.config.output
-
-  const isEnvelope = c.envelope.enabled
-
-  const isThrowOther = readConfigErrorCategoryOutputChannel(context.config, `other`) === `throw`
-    && (!c.envelope.enabled || !c.envelope.errors.other)
-
-  const isReturnOther = readConfigErrorCategoryOutputChannel(context.config, `other`) === `return`
-    && (!c.envelope.enabled || !c.envelope.errors.other)
-
-  const isThrowExecution = readConfigErrorCategoryOutputChannel(context.config, `execution`) === `throw`
-    && (!c.envelope.enabled || !c.envelope.errors.execution)
-
-  const isReturnExecution = readConfigErrorCategoryOutputChannel(context.config, `execution`) === `return`
-    && (!c.envelope.enabled || !c.envelope.errors.execution)
-
-  const isThrowSchema = readConfigErrorCategoryOutputChannel(context.config, `schema`) === `throw`
-
-  const isReturnSchema = readConfigErrorCategoryOutputChannel(context.config, `schema`) === `return`
-
-  if (result instanceof Error) {
-    if (isThrowOther) throw result
-    if (isReturnOther) return result
-    // todo not a graphql execution error class instance
-    return isEnvelope ? { errors: [result] } : result
-  }
-
-  if (result.errors && result.errors.length > 0) {
-    const error = new Errors.ContextualAggregateError(
-      `One or more errors in the execution result.`,
-      {},
-      result.errors,
-    )
-    if (isThrowExecution) throw error
-    if (isReturnExecution) return error
-    return isEnvelope ? result : error
-  }
-
-  {
-    if (isTypedContext(context)) {
-      if (c.errors.schema !== false) {
-        if (!isPlainObject(result.data)) throw new Error(`Expected data to be an object.`)
-        const schemaErrors = Object.entries(result.data).map(([rootFieldName, rootFieldValue]) => {
-          // todo this check would be nice but it doesn't account for aliases right now. To achieve this we would
-          // need to have the selection set available to use and then do a costly analysis for all fields that were aliases.
-          // So costly that we would probably instead want to create an index of them on the initial encoding step and
-          // then make available down stream. Also, note, here, the hardcoding of Query, needs to be any root type.
-          // const isResultField = Boolean(schemaIndex.error.rootResultFields.Query[rootFieldName])
-          // if (!isResultField) return null
-          // if (!isPlainObject(rootFieldValue)) return new Error(`Expected result field to be an object.`)
-          if (!isPlainObject(rootFieldValue)) return null
-          const __typename = rootFieldValue[`__typename`]
-          if (typeof __typename !== `string`) throw new Error(`Expected __typename to be selected and a string.`)
-          const isErrorObject = Boolean(
-            context.schemaIndex.error.objectsTypename[__typename],
-          )
-          if (!isErrorObject) return null
-          // todo extract message
-          // todo allow mapping error instances to schema errors
-          return new Error(`Failure on field ${rootFieldName}: ${__typename}`)
-        }).filter((_): _ is Error => _ !== null)
-
-        const error = (schemaErrors.length === 1)
-          ? schemaErrors[0]!
-          : schemaErrors.length > 0
-          ? new Errors.ContextualAggregateError(
-            `Two or more schema errors in the execution result.`,
-            {},
-            schemaErrors,
-          )
-          : null
-        if (error) {
-          if (isThrowSchema) throw error
-          if (isReturnSchema) {
-            return isEnvelope ? { ...result, errors: [...result.errors ?? [], error] } : error
-          }
-        }
-      }
-    }
-
-    if (isEnvelope) {
-      return result
-    }
-
-    return result.data
-  }
 }
 
 const contextConfigSetOrThrow = <$Context extends Context>(context: $Context): $Context => {

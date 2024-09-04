@@ -1,11 +1,12 @@
 import type { GraphQLError } from 'graphql'
 import type { Simplify } from 'type-fest'
 import type { GraphQLExecutionResultError } from '../../../lib/graphql.js'
-import type { ConfigManager, StringKeyof, Values } from '../../../lib/prelude.js'
+import type { ConfigManager, SimplifyExceptError, StringKeyof, Values } from '../../../lib/prelude.js'
 import type { Schema } from '../../1_Schema/__.js'
 import type { GlobalRegistry } from '../../2_generator/globalRegistry.js'
 import type { SelectionSet } from '../../3_SelectionSet/__.js'
 import type { Transport } from '../../5_core/types.js'
+import type { ErrorsOther } from '../client.js'
 import type { InputStatic } from './Input.js'
 import type { RequestInputOptions } from './inputIncrementable/request.js'
 
@@ -116,25 +117,29 @@ export type Config = {
 
 // dprint-ignore
 export type ResolveOutputReturnRootType<$Config extends Config, $Index extends Schema.Index, $Data> =
- | Simplify<IfConfiguredGetOutputErrorReturns<$Config>>
- | (
-      $Config['output']['envelope']['enabled'] extends true
-        ? Envelope<$Config, IfConfiguredStripSchemaErrorsFromDataRootType<$Config, $Index, $Data>>
-        : Simplify<IfConfiguredStripSchemaErrorsFromDataRootType<$Config, $Index, $Data>>
-   )
+  SimplifyExceptError<
+   | IfConfiguredGetOutputErrorReturns<$Config>
+   | (
+        $Config['output']['envelope']['enabled'] extends true
+          ? Envelope<$Config, IfConfiguredStripSchemaErrorsFromDataRootType<$Config, $Index, $Data>>
+          : Simplify<IfConfiguredStripSchemaErrorsFromDataRootType<$Config, $Index, $Data>>
+     )
+ >
 
 // dprint-ignore
 export type ResolveOutputReturnRootField<$Config extends Config, $Index extends Schema.Index, $Data, $DataRaw = undefined> =
-  | IfConfiguredGetOutputErrorReturns<$Config>
-  | (
-      $Config['output']['envelope']['enabled'] extends true
-        // todo: a typed execution result that allows for additional error types.
-        // currently it is always graphql execution error however envelope configuration can put more errors into that.
-        ? Envelope<$Config, $DataRaw extends undefined
-            ? Simplify<IfConfiguredStripSchemaErrorsFromDataRootField<$Config, $Index, $Data>>
-            : Simplify<IfConfiguredStripSchemaErrorsFromDataRootType<$Config, $Index, $DataRaw>>>
-        : Simplify<IfConfiguredStripSchemaErrorsFromDataRootField<$Config, $Index, $Data>>
-    )
+  SimplifyExceptError<
+    | IfConfiguredGetOutputErrorReturns<$Config>
+    | (
+        $Config['output']['envelope']['enabled'] extends true
+          // todo: a typed execution result that allows for additional error types.
+          // currently it is always graphql execution error however envelope configuration can put more errors into that.
+          ? Envelope<$Config, $DataRaw extends undefined
+              ? Simplify<IfConfiguredStripSchemaErrorsFromDataRootField<$Config, $Index, $Data>>
+              : Simplify<IfConfiguredStripSchemaErrorsFromDataRootType<$Config, $Index, $DataRaw>>>
+          : Simplify<IfConfiguredStripSchemaErrorsFromDataRootField<$Config, $Index, $Data>>
+      )
+  >
 
 type ObjMap<T = unknown> = {
   [key: string]: T
@@ -193,7 +198,7 @@ type ConfigGetOutputError<$Config extends Config, $ErrorCategory extends ErrorCa
 // dprint-ignore
 type IfConfiguredGetOutputErrorReturns<$Config extends Config> =
   | (ConfigGetOutputError<$Config, 'execution'>  extends 'return'  ? GraphQLExecutionResultError  : never)
-  | (ConfigGetOutputError<$Config, 'other'>      extends 'return'  ? Error                        : never)
+  | (ConfigGetOutputError<$Config, 'other'>      extends 'return'  ? ErrorsOther                  : never)
   | (ConfigGetOutputError<$Config, 'schema'>     extends 'return'  ? Error                        : never)
 
 // dprint-ignore

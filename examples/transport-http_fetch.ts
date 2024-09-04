@@ -1,6 +1,6 @@
 /* eslint-disable */
 import { Graffle } from '../src/entrypoints/main.js'
-import { show, showJson } from './$helpers.js'
+import { showJson } from './$helpers.js'
 import { publicGraphQLSchemaEndpoints } from './$helpers.js'
 
 const graffle = Graffle
