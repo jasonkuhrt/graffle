@@ -9,21 +9,19 @@ const abortController = new AbortController()
 
 const graffle = Graffle.create({
   schema: publicGraphQLSchemaEndpoints.SocialStudies,
-  output: { defaults: { errorChannel: `return` } },
-  request: {
-    signal: abortController.signal,
-  },
 })
 
-const resultPromise = graffle.raw({
-  document: gql`
+const resultPromise = graffle
+  .with({ request: { signal: abortController.signal } })
+  .raw({
+    document: gql`
       {
         countries {
           name
         }
       }
     `,
-})
+  })
 
 abortController.abort()
 
