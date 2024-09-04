@@ -65,7 +65,9 @@ export type RootTypeMethods<$Config extends Config, $Index extends Schema.Index,
 // dprint-ignore
 type RootMethod<$Config extends Config, $Index extends Schema.Index, $RootTypeName extends Schema.RootTypeName> =
   <$SelectionSet extends object>(selectionSet: Exact<$SelectionSet, SelectionSet.Root<$Index, $RootTypeName>>) =>
-    Promise<ResolveOutputReturnRootType<$Config, $Index, ResultSet.Root<AugmentRootTypeSelectionWithTypename<$Config,$Index,$RootTypeName,$SelectionSet>, $Index, $RootTypeName>>>
+    Promise<
+      ResolveOutputReturnRootType<$Config, $Index, ResultSet.Root<AugmentRootTypeSelectionWithTypename<$Config,$Index,$RootTypeName,$SelectionSet>, $Index, $RootTypeName>>
+    >
 
 // dprint-ignore
 type RootTypeFieldMethod<$Context extends RootTypeFieldContext> =

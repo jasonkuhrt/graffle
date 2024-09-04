@@ -59,13 +59,41 @@ describe(`transport`, () => {
       const request = fetch.mock.calls[0]?.[0]
       expect(request?.headers.get(`x-foo`)).toEqual(`bar`)
     })
-
-    test(`sends well formed request`, async ({ fetch, graffle }) => {
+    test(`sends spec compliant request`, async ({ fetch, graffle }) => {
       fetch.mockImplementationOnce(() => Promise.resolve(createResponse({ data: { greetings: `Hello World` } })))
       await graffle.rawString({ document: `query { greetings }` })
       const request = fetch.mock.calls[0]?.[0]
       expect(request?.headers.get(`content-type`)).toEqual(CONTENT_TYPE_JSON)
       expect(request?.headers.get(`accept`)).toEqual(CONTENT_TYPE_GQL)
+    })
+    describe(`signal`, () => {
+      // JSDom and Node result in different errors. JSDom is a plain Error type. Presumably an artifact of JSDom and now in actual browsers.
+      const abortErrorMessagePattern = /This operation was aborted|AbortError: The operation was aborted/
+      test(`AbortController at instance level works`, async () => {
+        const abortController = new AbortController()
+        const graffle = Graffle.create({
+          schema: endpoint,
+          request: { signal: abortController.signal },
+        })
+        const resultPromise = graffle.rawString({ document: `query { id }` })
+        abortController.abort()
+        const { caughtError } = await resultPromise.catch((caughtError: unknown) => ({ caughtError })) as any as {
+          caughtError: Error
+        }
+        expect(caughtError.message).toMatch(abortErrorMessagePattern)
+      })
+      test(`AbortController at method level works`, async () => {
+        const abortController = new AbortController()
+        const graffle = Graffle.create({
+          schema: endpoint,
+        }).with({ request: { signal: abortController.signal } })
+        const resultPromise = graffle.rawString({ document: `query { id }` })
+        abortController.abort()
+        const { caughtError } = await resultPromise.catch((caughtError: unknown) => ({ caughtError })) as any as {
+          caughtError: Error
+        }
+        expect(caughtError.message).toMatch(abortErrorMessagePattern)
+      })
     })
   })
   describe(`memory`, () => {
