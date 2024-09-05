@@ -1,7 +1,6 @@
 import type { StandardScalarVariables } from '../../../lib/graphql.js'
-import type { ExecutionInput } from '../../../lib/graphqlHTTP.js'
 import { createExtension } from '../../5_createExtension/createExtension.js'
-import extractFiles from './extractFiles.js'
+import { createBody } from './createBody.js'
 
 /**
  * @see https://github.com/jaydenseric/graphql-multipart-request-spec
@@ -9,52 +8,36 @@ import extractFiles from './extractFiles.js'
 export const Upload = createExtension({
   name: `Upload`,
   anyware: async ({ encode }) => {
-    return await encode({
+    const { pack } = await encode({
       using: {
         body: (input) => {
-          if (!(input.variables && isUsingUploadScalar(input.variables))) return
+          const hasUploadScalarVariable = input.variables && isUsingUploadScalar(input.variables)
+          if (!hasUploadScalarVariable) return
 
           // TODO we can probably get file upload working for in-memory schemas too :)
-          if (encode.input.transport !== `http`) throw new Error(`Must use http transport for uploads.`)
+          if (encode.input.transport !== `http`) throw new Error(`Must be using http transport to use "Upload" scalar.`)
 
-          return createUploadBody({
+          return createBody({
             query: input.query,
-            variables: input.variables,
+            variables: input.variables!,
           })
+        },
+      },
+    })
+    // Remove the content-type header so that fetch sets it automatically upon seeing the body is a FormData instance.
+    // @see https://muffinman.io/blog/uploading-files-using-fetch-multipart-form-data/
+    // @see https://stackoverflow.com/questions/3508338/what-is-the-boundary-in-multipart-form-data
+    // @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Disposition
+    return await pack({
+      input: {
+        ...pack.input,
+        headers: {
+          'content-type': ``,
         },
       },
     })
   },
 })
-
-const createUploadBody = (input: ExecutionInput): FormData => {
-  const { clone, files } = extractFiles(
-    { query: input.query, variables: input.variables },
-    (value: unknown) => value instanceof Blob,
-    ``,
-  )
-  const operationJSON = JSON.stringify(clone)
-
-  if (files.size === 0) throw new Error(`Not an upload request.`)
-
-  const form = new FormData()
-
-  form.append(`operations`, operationJSON)
-
-  const map: Record<string, string[]> = {}
-  let i = 0
-  for (const paths of files.values()) {
-    map[++i] = paths
-  }
-  form.append(`map`, JSON.stringify(map))
-
-  i = 0
-  for (const file of files.keys()) {
-    form.append(String(++i), file)
-  }
-
-  return form
-}
 
 const isUsingUploadScalar = (_variables: StandardScalarVariables) => {
   return Object.values(_variables).some(_ => _ instanceof Blob)
