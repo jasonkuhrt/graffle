@@ -6,6 +6,10 @@ export const sidebarExamples: DefaultTheme.SidebarItem[] = [
     'link': '/examples/transport-memory',
   },
   {
+    'text': 'DynamicHeaders',
+    'link': '/examples/dynamicHeaders',
+  },
+  {
     'text': 'Transport Http Fetch',
     'link': '/examples/transport-http_fetch',
   },
