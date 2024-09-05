@@ -2,7 +2,7 @@
 aside: false
 ---
 
-# Transport Http RequestInput
+# DynamicHeaders
 
 ```ts twoslash
 import { Graffle } from 'graffle'
@@ -10,12 +10,16 @@ import { Graffle } from 'graffle'
 const graffle = Graffle
   .create({
     schema: `https://countries.trevorblades.com/graphql`,
-    request: {
-      headers: {
-        authorization: `Bearer MY_TOKEN`,
+  })
+  .use(async ({ pack }) => {
+    return await pack({
+      input: {
+        ...pack.input,
+        headers: {
+          'X-Sent-At-Time': Date.now().toString(),
+        },
       },
-      mode: `cors`,
-    },
+    })
   })
   .use(async ({ exchange }) => {
     console.log(exchange.input.request)
@@ -35,8 +39,7 @@ await graffle.rawString({ document: `{ languages { code } }` })
   headers: Headers {
     accept: 'application/graphql-response+json; charset=utf-8, application/json; charset=utf-8',
     'content-type': 'application/json',
-    authorization: 'Bearer MY_TOKEN'
-  },
-  mode: 'cors'
+    'x-sent-at-time': '1725556925194'
+  }
 }
 ```
