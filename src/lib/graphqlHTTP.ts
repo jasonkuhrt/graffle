@@ -1,6 +1,7 @@
 import type { GraphQLFormattedError } from 'graphql'
 import { type ExecutionResult, GraphQLError } from 'graphql'
 import type { StandardScalarVariables } from './graphql.js'
+import { CONTENT_TYPE_GQL, CONTENT_TYPE_JSON } from './http.js'
 import { isPlainObject } from './prelude.js'
 
 export type ExecutionInput = {
@@ -51,3 +52,8 @@ export const parseExecutionResult = (result: unknown): ExecutionResult => {
     extensions,
   }
 }
+
+/**
+ * @see https://graphql.github.io/graphql-over-http/draft/#sec-Legacy-Watershed
+ */
+export const CONTENT_TYPE_GQL_OVER_HTTP_REC = `${CONTENT_TYPE_GQL}; charset=utf-8, ${CONTENT_TYPE_JSON}; charset=utf-8`

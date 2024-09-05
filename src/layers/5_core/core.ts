@@ -2,13 +2,8 @@ import type { DocumentNode, ExecutionResult, GraphQLSchema } from 'graphql'
 import { print } from 'graphql'
 import { Anyware } from '../../lib/anyware/__.js'
 import { type StandardScalarVariables } from '../../lib/graphql.js'
-import { parseExecutionResult } from '../../lib/graphqlHTTP.js'
-import {
-  CONTENT_TYPE_GQL,
-  CONTENT_TYPE_GQL_OVER_HTTP_REC,
-  CONTENT_TYPE_JSON,
-  mergeHeadersInit,
-} from '../../lib/http.js'
+import { CONTENT_TYPE_GQL_OVER_HTTP_REC, parseExecutionResult } from '../../lib/graphqlHTTP.js'
+import { CONTENT_TYPE_JSON, mergeHeadersInit } from '../../lib/http.js'
 import { casesExhausted } from '../../lib/prelude.js'
 import { execute } from '../0_functions/execute.js'
 import type { Schema } from '../1_Schema/__.js'
