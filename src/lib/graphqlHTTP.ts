@@ -63,3 +63,8 @@ export const CONTENT_TYPE_REC = CONTENT_TYPE_JSON
  * @see https://graphql.github.io/graphql-over-http/draft/#sec-Legacy-Watershed
  */
 export const ACCEPT_REC = `${CONTENT_TYPE_GQL}; charset=utf-8, ${CONTENT_TYPE_JSON}; charset=utf-8`
+
+export const headersRec = {
+  accept: ACCEPT_REC,
+  'content-type': CONTENT_TYPE_REC,
+}

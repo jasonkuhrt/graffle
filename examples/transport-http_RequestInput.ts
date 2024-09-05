@@ -5,11 +5,13 @@ import { publicGraphQLSchemaEndpoints } from './$helpers.js'
 const graffle = Graffle
   .create({
     schema: publicGraphQLSchemaEndpoints.SocialStudies,
-    request: {
+    transport: {
       headers: {
         authorization: `Bearer MY_TOKEN`,
       },
-      mode: `cors`,
+      raw: {
+        mode: `cors`,
+      },
     },
   })
   .use(async ({ exchange }) => {

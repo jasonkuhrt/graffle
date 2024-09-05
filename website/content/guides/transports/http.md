@@ -28,11 +28,11 @@ Graffle.create({
 
 <!--@include: @guides/_example_links/transport-http_RequestInput.md-->
 
-When using this transport, you can configure `request` for most aspects of the `fetch` `RequestInit`:
+You can configure aspects of the transport under `transport`:
 
 ```ts
 graffle.create({
-  request: { headers: { authorization: '...' }, mode: 'cors' },
+  transport: { headers: { authorization: '...' }, raw: { mode: 'cors' } },
 })
 ```
 

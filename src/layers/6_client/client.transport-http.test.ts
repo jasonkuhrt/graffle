@@ -3,7 +3,7 @@ import { createResponse, test } from '../../../tests/_/helpers.js'
 import { Graffle } from '../../entrypoints/main.js'
 import { ACCEPT_REC, CONTENT_TYPE_REC } from '../../lib/graphqlHTTP.js'
 import { Transport } from '../5_core/types.js'
-import type { RequestInput } from './Settings/inputIncrementable/request.js'
+import type { RequestInput } from './transportHttp/request.js'
 
 const endpoint = new URL(`https://foo.io/api/graphql`)
 
@@ -31,15 +31,15 @@ test(`anyware hooks are typed to http transport`, () => {
 
 test(`can set headers in constructor`, async ({ fetch }) => {
   fetch.mockImplementationOnce(() => Promise.resolve(createResponse({ data: { id: `abc` } })))
-  const graffle = Graffle.create({ schema: endpoint, request: { headers: { 'x-foo': `bar` } } })
+  const graffle = Graffle.create({ schema: endpoint, transport: { headers: { 'x-foo': `bar` } } })
   await graffle.rawString({ document: `query { id }` })
   const request = fetch.mock.calls[0]?.[0]
   expect(request?.headers.get(`x-foo`)).toEqual(`bar`)
 })
 
 test(`sends spec compliant request`, async ({ fetch, graffle }) => {
-  fetch.mockImplementationOnce(() => Promise.resolve(createResponse({ data: { greetings: `Hello World` } })))
-  await graffle.rawString({ document: `query { greetings }` })
+  fetch.mockImplementationOnce(() => Promise.resolve(createResponse({ data: { id: `abc` } })))
+  await graffle.rawString({ document: `query { id }` })
   const request = fetch.mock.calls[0]?.[0]
   expect(request?.headers.get(`content-type`)).toEqual(CONTENT_TYPE_REC)
   expect(request?.headers.get(`accept`)).toEqual(ACCEPT_REC)
@@ -52,7 +52,7 @@ describe(`signal`, () => {
     const abortController = new AbortController()
     const graffle = Graffle.create({
       schema: endpoint,
-      request: { signal: abortController.signal },
+      transport: { signal: abortController.signal },
     })
     const resultPromise = graffle.rawString({ document: `query { id }` })
     abortController.abort()
@@ -65,7 +65,7 @@ describe(`signal`, () => {
     const abortController = new AbortController()
     const graffle = Graffle.create({
       schema: endpoint,
-    }).with({ request: { signal: abortController.signal } })
+    }).with({ transport: { signal: abortController.signal } })
     const resultPromise = graffle.rawString({ document: `query { id }` })
     abortController.abort()
     const { caughtError } = await resultPromise.catch((caughtError: unknown) => ({ caughtError })) as any as {
@@ -73,4 +73,12 @@ describe(`signal`, () => {
     }
     expect(caughtError.message).toMatch(abortErrorMessagePattern)
   })
+})
+
+test(`can give a raw requestInit`, async ({ fetch }) => {
+  fetch.mockImplementationOnce(() => Promise.resolve(createResponse({ data: { id: `abc` } })))
+  const graffle = Graffle.create({ schema: endpoint, transport: { raw: { headers: { 'x-foo': `bar` } } } })
+  await graffle.rawString({ document: `query { id }` })
+  const request = fetch.mock.calls[0]?.[0]
+  expect(request?.headers.get(`x-foo`)).toEqual(`bar`)
 })

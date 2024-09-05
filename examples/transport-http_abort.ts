@@ -12,7 +12,7 @@ const graffle = Graffle.create({
 })
 
 const resultPromise = graffle
-  .with({ request: { signal: abortController.signal } })
+  .with({ transport: { signal: abortController.signal } })
   .raw({
     document: gql`
       {

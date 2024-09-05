@@ -16,6 +16,7 @@ const graffle = Graffle
     })
   })
   .use(async ({ exchange }) => {
+    // todo wrong type / runtime value
     show(exchange.input.request)
     return exchange()
   })

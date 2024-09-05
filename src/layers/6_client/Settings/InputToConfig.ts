@@ -1,15 +1,18 @@
 import type { ConfigManager } from '../../../lib/prelude.js'
 import type { GlobalRegistry } from '../../2_generator/globalRegistry.js'
 import { Transport, type TransportHttp, type TransportMemory } from '../../5_core/types.js'
+import type { TransportHttpInput } from '../transportHttp/request.js'
 import { outputConfigDefault } from './Config.js'
 import type { InputOutputEnvelopeLonghand, InputStatic, URLInput } from './Input.js'
-import type { RequestInputOptions } from './inputIncrementable/request.js'
 
 // dprint-ignore
 export type InputToConfig<$Input extends InputStatic<GlobalRegistry.SchemaUnion>> = {
   initialInput: $Input
   name: HandleName<$Input>
-  transport: HandleTransport<$Input>
+  transport: {
+    type: HandleTransport<$Input>
+    config: null | TransportHttpInput
+  }
   output: {
     defaults: {
       errorChannel: ConfigManager.ReadOrDefault<$Input, ['output', 'defaults', 'errorChannel'], 'throw'>
@@ -32,7 +35,6 @@ export type InputToConfig<$Input extends InputStatic<GlobalRegistry.SchemaUnion>
       schema: ConfigManager.ReadOrDefault<$Input,['output', 'errors', 'schema'], false>
     }
   }
-  requestInputOptions?: RequestInputOptions
 }
 
 export const defaultSchemaName: GlobalRegistry.DefaultSchemaName = `default`
@@ -49,8 +51,10 @@ export const inputToConfig = <$Input extends InputStatic<GlobalRegistry.SchemaUn
     initialInput: input,
     // @ts-expect-error conditional type fixme
     name: input.name ?? defaultSchemaName,
-    requestInputOptions: input.request,
-    transport: handleTransport(input),
+    transport: {
+      type: handleTransportType(input),
+      config: input.transport ?? null,
+    },
     output: {
       defaults: {
         // @ts-expect-error conditional type
@@ -91,7 +95,7 @@ type HandleTransport<$Input extends InputStatic<GlobalRegistry.SchemaUnion>> =
     ? TransportHttp
     : TransportMemory
 
-const handleTransport = <T extends InputStatic<GlobalRegistry.SchemaUnion>>(input: T): HandleTransport<T> => {
+const handleTransportType = <T extends InputStatic<GlobalRegistry.SchemaUnion>>(input: T): HandleTransport<T> => {
   // @ts-expect-error conditional type
   return input.schema instanceof URL || typeof input.schema === `string` ? Transport.http : Transport.memory
 }

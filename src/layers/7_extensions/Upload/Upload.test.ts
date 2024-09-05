@@ -13,12 +13,18 @@ import { Upload } from './Upload.js'
 import { createYoga } from 'graphql-yoga'
 import type { Client } from '../../6_client/client.js'
 import type { OutputConfigDefault } from '../../6_client/Settings/Config.js'
+import type { TransportHttpInput } from '../../6_client/transportHttp/request.js'
 
 let server: Server
 let port: number
 let graffle: Client<
   any,
-  { transport: 'http'; output: OutputConfigDefault; initialInput: { schema: URL }; name: 'default' }
+  {
+    transport: { type: 'http'; config: null | TransportHttpInput }
+    output: OutputConfigDefault
+    initialInput: { schema: URL }
+    name: 'default'
+  }
 >
 
 beforeAll(async () => {

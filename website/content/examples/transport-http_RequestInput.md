@@ -10,7 +10,7 @@ import { Graffle } from 'graffle'
 const graffle = Graffle
   .create({
     schema: `https://countries.trevorblades.com/graphql`,
-    request: {
+    transport: {
       headers: {
         authorization: `Bearer MY_TOKEN`,
       },

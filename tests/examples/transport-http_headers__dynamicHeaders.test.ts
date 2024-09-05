@@ -16,5 +16,7 @@ test(`transport-http_headers__dynamicHeaders`, async () => {
   const exampleResult = encode(stripAnsi(result.stdout))
   // If ever outputs vary by Node version, you can use this to snapshot by Node version.
   // const nodeMajor = process.version.match(/v(\d+)/)?.[1] ?? `unknown`
-  await expect(exampleResult).toMatchFileSnapshot(`../.././examples/transport-http_headers__dynamicHeaders.output.txt`)
+  await expect(exampleResult).toMatchFileSnapshot(
+    `../.././examples/transport-http_headers__dynamicHeaders.output.test.txt`,
+  )
 })

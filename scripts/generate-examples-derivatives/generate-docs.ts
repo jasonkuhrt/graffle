@@ -5,12 +5,10 @@ import { publicGraphQLSchemaEndpoints } from '../../examples/$helpers.js'
 import { deleteFiles } from '../lib/deleteFiles.js'
 import type { File } from '../lib/readFiles.js'
 import { readFiles } from '../lib/readFiles.js'
+import { readExampleFiles } from './helpers.js'
 
 export const generateDocs = async () => {
-  const exampleFiles = await readFiles({
-    pattern: `./examples/*.ts`,
-    options: { ignore: [`./examples/$*`] },
-  })
+  const exampleFiles = await readExampleFiles()
 
   const outputFiles = await readFiles({
     pattern: `./examples/*.output.txt`,

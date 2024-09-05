@@ -2,7 +2,7 @@ import type { DocumentNode, ExecutionResult, GraphQLSchema } from 'graphql'
 import { print } from 'graphql'
 import { Anyware } from '../../lib/anyware/__.js'
 import { type StandardScalarVariables } from '../../lib/graphql.js'
-import { ACCEPT_REC, CONTENT_TYPE_REC, parseExecutionResult } from '../../lib/graphqlHTTP.js'
+import { headersRec, parseExecutionResult } from '../../lib/graphqlHTTP.js'
 import { casesExhausted } from '../../lib/prelude.js'
 import { execute } from '../0_functions/execute.js'
 import type { Schema } from '../1_Schema/__.js'
@@ -11,7 +11,7 @@ import type { GraphQLObjectSelection } from '../3_SelectionSet/encode.js'
 import * as Result from '../4_ResultSet/customScalars.js'
 import type { GraffleExecutionResultVar } from '../6_client/client.js'
 import type { Config } from '../6_client/Settings/Config.js'
-import { mergeRequestInputOptions, type RequestInput } from '../6_client/Settings/inputIncrementable/request.js'
+import { mergeRequestInit, type RequestInput } from '../6_client/transportHttp/request.js'
 import type {
   ContextInterfaceRaw,
   ContextInterfaceTyped,
@@ -45,7 +45,7 @@ type InterfaceInput<TypedProperties = {}, RawProperties = {}> =
 // eslint-disable-next-line
 type TransportInput<$Config extends Config, $HttpProperties = {}, $MemoryProperties = {}> =
   | (
-      TransportHttp extends $Config['transport']
+      TransportHttp extends $Config['transport']['type']
         ? ({
             transport: TransportHttp
             
@@ -53,7 +53,7 @@ type TransportInput<$Config extends Config, $HttpProperties = {}, $MemoryPropert
         : never
     )
   | (
-      TransportMemory extends $Config['transport']
+      TransportMemory extends $Config['transport']['type']
         ? ({
           transport: TransportMemory
         } & $MemoryProperties)
@@ -205,27 +205,29 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
           return input
         }
         case `http`: {
-          // todo support GET
           // TODO thrown error here is swallowed in examples.
           const request: RequestInput = {
-            url: input.url,
-            body: input.body,
-            // @see https://graphql.github.io/graphql-over-http/draft/#sec-POST
-            method: `POST`,
-            ...mergeRequestInputOptions(
-              mergeRequestInputOptions(
-                {
-                  headers: {
-                    accept: ACCEPT_REC,
-                    'content-type': CONTENT_TYPE_REC,
+            ...mergeRequestInit(
+              mergeRequestInit(
+                mergeRequestInit(
+                  {
+                    headers: headersRec,
                   },
-                },
-                input.context.config.requestInputOptions,
+                  {
+                    headers: input.context.config.transport.config?.headers,
+                    signal: input.context.config.transport.config?.signal,
+                  },
+                ),
+                input.context.config.transport.config?.raw,
               ),
               {
                 headers: input.headers,
               },
             ),
+            // @see https://graphql.github.io/graphql-over-http/draft/#sec-POST
+            method: `POST` as const,
+            url: input.url,
+            body: input.body,
           }
           return {
             ...input,
@@ -246,9 +248,7 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
         switch (input.transport) {
           case `http`: {
             const request = new Request(input.request.url, input.request)
-            // console.log(request)
             const response = await slots.fetch(request)
-            // console.log(response)
             return {
               ...input,
               response,

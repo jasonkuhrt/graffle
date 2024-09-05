@@ -7,8 +7,8 @@ import type { GlobalRegistry } from '../../2_generator/globalRegistry.js'
 import type { SelectionSet } from '../../3_SelectionSet/__.js'
 import type { Transport } from '../../5_core/types.js'
 import type { ErrorsOther } from '../client.js'
+import type { TransportHttpInput } from '../transportHttp/request.js'
 import type { InputStatic } from './Input.js'
-import type { RequestInputOptions } from './inputIncrementable/request.js'
 
 export type OutputChannel = 'throw' | 'return'
 
@@ -111,8 +111,10 @@ export type Config = {
   initialInput: InputStatic<any> // InputStatic<GlobalRegistry.SchemaUnion>
   name: GlobalRegistry.SchemaNames
   output: OutputConfig
-  transport: Transport
-  requestInputOptions?: RequestInputOptions
+  transport: {
+    type: Transport
+    config: TransportHttpInput | null
+  }
 }
 
 // dprint-ignore
@@ -162,7 +164,7 @@ export type Envelope<$Config extends Config, $Data = unknown, $Errors extends Re
         extensions?: ObjMap
       }
     & (
-        $Config['transport'] extends 'http'
+        $Config['transport']['type'] extends 'http'
         ? { response: Response }
         : {} // eslint-disable-line
       )
