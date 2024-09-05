@@ -3,13 +3,13 @@ import tsEslint from 'typescript-eslint'
 
 export default tsEslint.config({
   ignores: [
-    '**/build/**/*',
     'eslint.config.js',
     'vite.config.ts',
     '**/generated/**/*',
     '**/$generated-clients/**/*',
-    '**/website/**/*',
-    '**/website/.vitepress/**/*',
+    'legacy/**/*',
+    'build/**/*',
+    'website/**/*'
   ],
   extends: configPrisma,
   languageOptions: {
