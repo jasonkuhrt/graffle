@@ -3,7 +3,7 @@ import { createResponse, test } from '../../../tests/_/helpers.js'
 import { Graffle } from '../../entrypoints/main.js'
 import { ACCEPT_REC, CONTENT_TYPE_REC } from '../../lib/graphqlHTTP.js'
 import { Transport } from '../5_core/types.js'
-import type { RequestInput } from './transportHttp/request.js'
+import type { CoreExchangeRequest } from './transportHttp/request.js'
 
 const endpoint = new URL(`https://foo.io/api/graphql`)
 
@@ -14,7 +14,7 @@ test(`anyware hooks are typed to http transport`, () => {
     expectTypeOf(pack.input.transport).toEqualTypeOf(Transport.http)
     const { exchange } = await pack()
     expectTypeOf(exchange.input.transport).toEqualTypeOf(Transport.http)
-    expectTypeOf(exchange.input.request).toEqualTypeOf<RequestInput>()
+    expectTypeOf(exchange.input.request).toEqualTypeOf<CoreExchangeRequest>()
     const { unpack } = await exchange()
     expectTypeOf(unpack.input.transport).toEqualTypeOf(Transport.http)
     expectTypeOf(unpack.input.response).toEqualTypeOf<Response>()

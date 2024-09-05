@@ -22,6 +22,7 @@ const graffle = Graffle
     })
   })
   .use(async ({ exchange }) => {
+    // todo wrong type / runtime value
     console.log(exchange.input.request)
     return exchange()
   })
@@ -33,13 +34,14 @@ await graffle.rawString({ document: `{ languages { code } }` })
 
 ```txt
 {
-  url: 'https://countries.trevorblades.com/graphql',
-  body: '{"query":"{ languages { code } }"}',
-  method: 'POST',
   headers: Headers {
     accept: 'application/graphql-response+json; charset=utf-8, application/json; charset=utf-8',
     'content-type': 'application/json',
-    'x-sent-at-time': '1725560229910'
-  }
+    'x-sent-at-time': '1725564397598'
+  },
+  signal: undefined,
+  method: 'POST',
+  url: 'https://countries.trevorblades.com/graphql',
+  body: '{"query":"{ languages { code } }"}'
 }
 ```

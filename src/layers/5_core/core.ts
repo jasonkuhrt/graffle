@@ -3,6 +3,7 @@ import { print } from 'graphql'
 import { Anyware } from '../../lib/anyware/__.js'
 import { type StandardScalarVariables } from '../../lib/graphql.js'
 import { headersRec, parseExecutionResult } from '../../lib/graphqlHTTP.js'
+import { mergeRequestInit } from '../../lib/http.js'
 import { casesExhausted } from '../../lib/prelude.js'
 import { execute } from '../0_functions/execute.js'
 import type { Schema } from '../1_Schema/__.js'
@@ -11,7 +12,7 @@ import type { GraphQLObjectSelection } from '../3_SelectionSet/encode.js'
 import * as Result from '../4_ResultSet/customScalars.js'
 import type { GraffleExecutionResultVar } from '../6_client/client.js'
 import type { Config } from '../6_client/Settings/Config.js'
-import { mergeRequestInit, type RequestInput } from '../6_client/transportHttp/request.js'
+import { type CoreExchangeRequest } from '../6_client/transportHttp/request.js'
 import type {
   ContextInterfaceRaw,
   ContextInterfaceTyped,
@@ -84,6 +85,7 @@ export type HookDefEncode<$Config extends Config> = {
 export type HookDefPack<$Config extends Config> = {
   input:
     & InterfaceInput
+    // todo why is headers here but not other http request properties?
     & TransportInput<$Config, { url: string | URL; headers?: HeadersInit; body: BodyInit }, {
       schema: GraphQLSchema
       query: string
@@ -99,7 +101,7 @@ export type HookDefExchange<$Config extends Config> = {
   input:
     & InterfaceInput
     & TransportInput<$Config, {
-      request: RequestInput
+      request: CoreExchangeRequest
     }, {
       schema: GraphQLSchema
       query: string | DocumentNode
@@ -206,7 +208,7 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
         }
         case `http`: {
           // TODO thrown error here is swallowed in examples.
-          const request: RequestInput = {
+          const request: CoreExchangeRequest = {
             ...mergeRequestInit(
               mergeRequestInit(
                 mergeRequestInit(

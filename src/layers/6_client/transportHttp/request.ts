@@ -1,4 +1,4 @@
-import { mergeHeadersInit } from '../../../lib/http.js'
+import { type HttpMethodInput } from '../../../lib/http.js'
 
 export type MethodMode = 'get' | 'post' | 'postMutation'
 
@@ -26,42 +26,8 @@ export type TransportHttpInput = {
 /**
  * An extension of {@link RequestInit} that adds a required `url` property and makes `body` required.
  */
-export type RequestInput = RequestInputOptions & {
+export type CoreExchangeRequest = Omit<RequestInit, 'body' | 'method'> & {
   url: string | URL
-  method: HttpMethodInput
   body: BodyInit
-}
-
-/**
- * A variant of {@link RequestInit} that removes `body` and strongly types `method`.
- */
-export type RequestInputOptions = Omit<RequestInit, 'body' | 'method'> & {
-  method?: HttpMethodInput
-}
-
-type HttpMethodInput =
-  | 'get'
-  | 'post'
-  | 'put'
-  | 'delete'
-  | 'patch'
-  | 'head'
-  | 'options'
-  | 'trace'
-  | 'GET'
-  | 'POST'
-  | 'PUT'
-  | 'DELETE'
-  | 'PATCH'
-  | 'HEAD'
-  | 'OPTIONS'
-  | 'TRACE'
-
-export const mergeRequestInit = (a?: RequestInit, b?: RequestInit): RequestInit => {
-  const headers = mergeHeadersInit(a?.headers ?? {}, b?.headers ?? {})
-  return {
-    ...a,
-    ...b,
-    headers,
-  }
+  method: HttpMethodInput
 }

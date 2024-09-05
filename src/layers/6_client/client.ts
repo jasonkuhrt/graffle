@@ -2,6 +2,7 @@ import { type ExecutionResult, GraphQLSchema, type TypedQueryDocumentNode } from
 import type { Anyware } from '../../lib/anyware/__.js'
 import type { Errors } from '../../lib/errors/__.js'
 import { isOperationTypeName, operationTypeNameToRootTypeName, type RootTypeName } from '../../lib/graphql.js'
+import { mergeRequestInit } from '../../lib/http.js'
 import type { BaseInput, BaseInput_, TypedDocumentString } from '../0_functions/types.js'
 import { Schema } from '../1_Schema/__.js'
 import { readMaybeThunk } from '../1_Schema/core/helpers.js'
@@ -23,7 +24,6 @@ import {
 import { type InputStatic } from './Settings/Input.js'
 import type { AddIncrementalInput, InputIncrementable } from './Settings/inputIncrementable/inputIncrementable.js'
 import { type InputToConfig, inputToConfig } from './Settings/InputToConfig.js'
-import { mergeRequestInit } from './transportHttp/request.js'
 
 /**
  * Types of "other" Graffle Error.

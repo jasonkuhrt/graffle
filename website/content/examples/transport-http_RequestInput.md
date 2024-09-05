@@ -14,7 +14,9 @@ const graffle = Graffle
       headers: {
         authorization: `Bearer MY_TOKEN`,
       },
-      mode: `cors`,
+      raw: {
+        mode: `cors`,
+      },
     },
   })
   .use(async ({ exchange }) => {
@@ -29,14 +31,15 @@ await graffle.rawString({ document: `{ languages { code } }` })
 
 ```txt
 {
-  url: 'https://countries.trevorblades.com/graphql',
-  body: '{"query":"{ languages { code } }"}',
-  method: 'POST',
   headers: Headers {
     accept: 'application/graphql-response+json; charset=utf-8, application/json; charset=utf-8',
     'content-type': 'application/json',
     authorization: 'Bearer MY_TOKEN'
   },
-  mode: 'cors'
+  signal: undefined,
+  mode: 'cors',
+  method: 'POST',
+  url: 'https://countries.trevorblades.com/graphql',
+  body: '{"query":"{ languages { code } }"}'
 }
 ```

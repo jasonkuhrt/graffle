@@ -22,3 +22,30 @@ export const mergeHeadersInit = (headers?: HeadersInit, additionalHeaders?: Head
 }
 
 const UnsetValue = ``
+
+export type HttpMethodInput =
+  | 'get'
+  | 'post'
+  | 'put'
+  | 'delete'
+  | 'patch'
+  | 'head'
+  | 'options'
+  | 'trace'
+  | 'GET'
+  | 'POST'
+  | 'PUT'
+  | 'DELETE'
+  | 'PATCH'
+  | 'HEAD'
+  | 'OPTIONS'
+  | 'TRACE'
+
+export const mergeRequestInit = (a?: RequestInit, b?: RequestInit): RequestInit => {
+  const headers = mergeHeadersInit(a?.headers ?? {}, b?.headers ?? {})
+  return {
+    ...a,
+    ...b,
+    headers,
+  }
+}
