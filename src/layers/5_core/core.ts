@@ -3,7 +3,12 @@ import { print } from 'graphql'
 import { Anyware } from '../../lib/anyware/__.js'
 import { type StandardScalarVariables } from '../../lib/graphql.js'
 import { parseExecutionResult } from '../../lib/graphqlHTTP.js'
-import { CONTENT_TYPE_GQL, CONTENT_TYPE_JSON, mergeHeadersInit } from '../../lib/http.js'
+import {
+  CONTENT_TYPE_GQL,
+  CONTENT_TYPE_GQL_OVER_HTTP_REC,
+  CONTENT_TYPE_JSON,
+  mergeHeadersInit,
+} from '../../lib/http.js'
 import { casesExhausted } from '../../lib/prelude.js'
 import { execute } from '../0_functions/execute.js'
 import type { Schema } from '../1_Schema/__.js'
@@ -206,6 +211,7 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
           return input
         }
         case `http`: {
+          // todo support GET
           // TODO thrown error here is swallowed in examples.
           const request: RequestInput = {
             url: input.url,
@@ -214,8 +220,7 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
             method: `POST`,
             ...mergeRequestInputOptions(input.context.config.requestInputOptions, {
               headers: mergeHeadersInit(input.headers, {
-                // @see https://graphql.github.io/graphql-over-http/draft/#sec-Accept
-                accept: CONTENT_TYPE_GQL,
+                accept: CONTENT_TYPE_GQL_OVER_HTTP_REC,
                 // todo if body is something else, say upload extension turns it into a FormData, then fetch will automatically set the content-type header.
                 // ... however we should not rely on that behavior, and instead error here if there is no content type header and we cannot infer it here?
                 ...(typeof input.body === `string`
