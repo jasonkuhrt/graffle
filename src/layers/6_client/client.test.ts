@@ -3,6 +3,7 @@ import { createResponse, test } from '../../../tests/_/helpers.js'
 import { Graffle as Graffle2 } from '../../../tests/_/schema/generated/__.js'
 import { schema } from '../../../tests/_/schema/schema.js'
 import { Graffle } from '../../entrypoints/main.js'
+import { ACCEPT_REC, CONTENT_TYPE_REC } from '../../lib/graphqlHTTP.js'
 import { CONTENT_TYPE_GQL, CONTENT_TYPE_JSON } from '../../lib/http.js'
 import { Transport } from '../5_core/types.js'
 import type { RequestInput } from './Settings/inputIncrementable/request.js'
@@ -63,8 +64,8 @@ describe(`transport`, () => {
       fetch.mockImplementationOnce(() => Promise.resolve(createResponse({ data: { greetings: `Hello World` } })))
       await graffle.rawString({ document: `query { greetings }` })
       const request = fetch.mock.calls[0]?.[0]
-      expect(request?.headers.get(`content-type`)).toEqual(CONTENT_TYPE_JSON)
-      expect(request?.headers.get(`accept`)).toEqual(CONTENT_TYPE_GQL)
+      expect(request?.headers.get(`content-type`)).toEqual(CONTENT_TYPE_REC)
+      expect(request?.headers.get(`accept`)).toEqual(ACCEPT_REC)
     })
     describe(`signal`, () => {
       // JSDom and Node result in different errors. JSDom is a plain Error type. Presumably an artifact of JSDom and now in actual browsers.

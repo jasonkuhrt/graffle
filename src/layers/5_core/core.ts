@@ -2,8 +2,7 @@ import type { DocumentNode, ExecutionResult, GraphQLSchema } from 'graphql'
 import { print } from 'graphql'
 import { Anyware } from '../../lib/anyware/__.js'
 import { type StandardScalarVariables } from '../../lib/graphql.js'
-import { CONTENT_TYPE_GQL_OVER_HTTP_REC, parseExecutionResult } from '../../lib/graphqlHTTP.js'
-import { CONTENT_TYPE_JSON, mergeHeadersInit } from '../../lib/http.js'
+import { ACCEPT_REC, CONTENT_TYPE_REC, parseExecutionResult } from '../../lib/graphqlHTTP.js'
 import { casesExhausted } from '../../lib/prelude.js'
 import { execute } from '../0_functions/execute.js'
 import type { Schema } from '../1_Schema/__.js'
@@ -213,16 +212,20 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
             body: input.body,
             // @see https://graphql.github.io/graphql-over-http/draft/#sec-POST
             method: `POST`,
-            ...mergeRequestInputOptions(input.context.config.requestInputOptions, {
-              headers: mergeHeadersInit(input.headers, {
-                accept: CONTENT_TYPE_GQL_OVER_HTTP_REC,
-                // todo if body is something else, say upload extension turns it into a FormData, then fetch will automatically set the content-type header.
-                // ... however we should not rely on that behavior, and instead error here if there is no content type header and we cannot infer it here?
-                ...(typeof input.body === `string`
-                  ? { 'content-type': CONTENT_TYPE_JSON }
-                  : {}),
-              }),
-            }),
+            ...mergeRequestInputOptions(
+              mergeRequestInputOptions(
+                {
+                  headers: {
+                    accept: ACCEPT_REC,
+                    'content-type': CONTENT_TYPE_REC,
+                  },
+                },
+                input.context.config.requestInputOptions,
+              ),
+              {
+                headers: input.headers,
+              },
+            ),
           }
           return {
             ...input,
@@ -243,7 +246,9 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
         switch (input.transport) {
           case `http`: {
             const request = new Request(input.request.url, input.request)
+            // console.log(request)
             const response = await slots.fetch(request)
+            // console.log(response)
             return {
               ...input,
               response,
@@ -270,7 +275,7 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
       switch (input.transport) {
         case `http`: {
           // todo 1 if response is missing header of content length then .json() hangs forever.
-          // todo 1 firstly consider a timeout, secondly, if response is malformed, then don't even run .json()
+          //        firstly consider a timeout, secondly, if response is malformed, then don't even run .json()
           // todo 2 if response is e.g. 404 with no json body, then an error is thrown because json parse cannot work, not gracefully handled here
           const json = await input.response.json() as object
           const result = parseExecutionResult(json)

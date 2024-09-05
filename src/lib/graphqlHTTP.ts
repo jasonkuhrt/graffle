@@ -54,6 +54,12 @@ export const parseExecutionResult = (result: unknown): ExecutionResult => {
 }
 
 /**
+ * @see https://graphql.github.io/graphql-over-http/draft/#sec-Media-Types
+ */
+export const CONTENT_TYPE_REC = CONTENT_TYPE_JSON
+
+/**
+ * @see https://graphql.github.io/graphql-over-http/draft/#sec-Accept
  * @see https://graphql.github.io/graphql-over-http/draft/#sec-Legacy-Watershed
  */
-export const CONTENT_TYPE_GQL_OVER_HTTP_REC = `${CONTENT_TYPE_GQL}; charset=utf-8, ${CONTENT_TYPE_JSON}; charset=utf-8`
+export const ACCEPT_REC = `${CONTENT_TYPE_GQL}; charset=utf-8, ${CONTENT_TYPE_JSON}; charset=utf-8`
