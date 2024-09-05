@@ -9,7 +9,7 @@ export default tsEslint.config({
     '**/$generated-clients/**/*',
     'legacy/**/*',
     'build/**/*',
-    'website/**/*'
+    'website/**/*',
   ],
   extends: configPrisma,
   languageOptions: {
