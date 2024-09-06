@@ -1,3 +1,4 @@
+import { capitalize, kebabCase } from 'es-toolkit'
 import { showPartition } from '../../examples/$/helpers.js'
 import { type File, readFiles } from '../lib/readFiles.js'
 
@@ -50,7 +51,7 @@ const parseFileName = (fileName: string): Example['fileName'] => {
     : null
   const canonicalTitleExpression = titleExpression ?? tagsExpressionWithoutGroupName ?? `impossible`
   return {
-    canonical: (group ? `${group}-` : ``) + canonicalTitleExpression,
+    canonical: (group ? `${group}-` : ``) + kebabCase(canonicalTitleExpression),
     canonicalTitle: toTitle(canonicalTitleExpression),
     tags: tagsExpression ?? `impossible`,
     title: titleExpression ?? null,
@@ -59,7 +60,8 @@ const parseFileName = (fileName: string): Example['fileName'] => {
 }
 
 const parseTags = (fileName: string) => {
-  const [tagsExpression] = fileName.split(`__`)
+  const [tagsExpression] = fileName.replace(/^[^|]+\|/, ``).split(`__`)
+  console.log(tagsExpression)
   if (!tagsExpression) return []
   const tags = tagsExpression.split(`_`)
   return tags
@@ -104,10 +106,7 @@ const extractDescription = (fileContent: string) => {
   }
 }
 
-export const toTitle = (name: string) =>
-  name.split(`-`).map(titlizeWord).join(` `).split(`_`).map(titlizeWord).join(` `)
-
-export const titlizeWord = (word: string) => word.charAt(0).toUpperCase() + word.slice(1)
+export const toTitle = (name: string) => kebabCase(name).split(`-`).map(capitalize).join(` `)
 
 export const computeCombinations = (arr: string[]): string[][] => {
   const result: string[][] = []

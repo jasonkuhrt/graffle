@@ -1,1 +1,1 @@
-###### Examples -> [RawString](../../examples/rawString.md) / [RawString Typed](../../examples/rawString-typed.md)
+###### Examples -> [Raw String](../../examples/raw-string.md) / [Raw String Typed](../../examples/raw-string-typed.md)

@@ -2,7 +2,7 @@
 aside: false
 ---
 
-# RequestInput
+# Request Input
 
 ```ts twoslash
 import { Graffle } from 'graffle'

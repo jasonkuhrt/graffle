@@ -2,7 +2,7 @@
 aside: false
 ---
 
-# RawString
+# Raw String
 
 ```ts twoslash
 import { Graffle } from 'graffle'

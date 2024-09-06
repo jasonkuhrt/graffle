@@ -38,6 +38,8 @@ graffle.create({
 
 ## GET
 
+<!--@include: @/guides/_example_links/method-get.md-->
+
 ## POST
 
 ## Raw

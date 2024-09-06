@@ -10,12 +10,12 @@ export const sidebarExamples: DefaultTheme.SidebarItem[] = [
     'link': '/examples/raw-typed',
   },
   {
-    'text': 'RawString Typed',
-    'link': '/examples/rawString-typed',
+    'text': 'Raw String Typed',
+    'link': '/examples/raw-string-typed',
   },
   {
-    'text': 'RawString',
-    'link': '/examples/rawString',
+    'text': 'Raw String',
+    'link': '/examples/raw-string',
   },
   {
     'text': 'Raw',
@@ -34,8 +34,8 @@ export const sidebarExamples: DefaultTheme.SidebarItem[] = [
     'text': 'Transport Http',
     'items': [
       {
-        'text': 'RequestInput',
-        'link': '/examples/transport-http-RequestInput',
+        'text': 'Request Input',
+        'link': '/examples/transport-http-request-input',
       },
       {
         'text': 'Abort',
@@ -46,8 +46,8 @@ export const sidebarExamples: DefaultTheme.SidebarItem[] = [
         'link': '/examples/transport-http-fetch',
       },
       {
-        'text': 'DynamicHeaders',
-        'link': '/examples/transport-http-dynamicHeaders',
+        'text': 'Dynamic Headers',
+        'link': '/examples/transport-http-dynamic-headers',
       },
       {
         'text': 'Method Get',
