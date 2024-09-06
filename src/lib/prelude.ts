@@ -397,3 +397,5 @@ export type PickRequiredProperties<T extends object> = {
 export type Negate<T extends boolean> = T extends true ? false : true
 
 export type SimplifyExceptError<T extends unknown> = ConditionalSimplify<T, Error>
+
+export type RequireProperties<O extends object, K extends keyof O> = Simplify<O & { [P in K]-?: O[P] }>

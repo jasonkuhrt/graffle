@@ -1,7 +1,13 @@
 import type { GraphQLError } from 'graphql'
 import type { Simplify } from 'type-fest'
 import type { GraphQLExecutionResultError } from '../../../lib/graphql.js'
-import type { ConfigManager, SimplifyExceptError, StringKeyof, Values } from '../../../lib/prelude.js'
+import type {
+  ConfigManager,
+  RequireProperties,
+  SimplifyExceptError,
+  StringKeyof,
+  Values,
+} from '../../../lib/prelude.js'
 import type { Schema } from '../../1_Schema/__.js'
 import type { GlobalRegistry } from '../../2_generator/globalRegistry.js'
 import type { SelectionSet } from '../../3_SelectionSet/__.js'
@@ -113,7 +119,7 @@ export type Config = {
   output: OutputConfig
   transport: {
     type: Transport
-    config: TransportHttpInput | null
+    config: RequireProperties<TransportHttpInput, 'methodMode'>
   }
 }
 

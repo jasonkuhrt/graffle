@@ -1,8 +1,8 @@
 import type { ConfigManager } from '../../../lib/prelude.js'
 import type { GlobalRegistry } from '../../2_generator/globalRegistry.js'
 import { Transport, type TransportHttp, type TransportMemory } from '../../5_core/types.js'
-import type { TransportHttpInput } from '../transportHttp/request.js'
-import { outputConfigDefault } from './Config.js'
+import { defaultMethodMode } from '../transportHttp/request.js'
+import { type Config, outputConfigDefault } from './Config.js'
 import type { InputOutputEnvelopeLonghand, InputStatic, URLInput } from './Input.js'
 
 // dprint-ignore
@@ -11,7 +11,7 @@ export type InputToConfig<$Input extends InputStatic<GlobalRegistry.SchemaUnion>
   name: HandleName<$Input>
   transport: {
     type: HandleTransport<$Input>
-    config: null | TransportHttpInput
+    config: Config['transport']['config']
   }
   output: {
     defaults: {
@@ -53,7 +53,10 @@ export const inputToConfig = <$Input extends InputStatic<GlobalRegistry.SchemaUn
     name: input.name ?? defaultSchemaName,
     transport: {
       type: handleTransportType(input),
-      config: input.transport ?? null,
+      config: {
+        methodMode: input.transport?.methodMode ?? defaultMethodMode,
+        ...input.transport,
+      },
     },
     output: {
       defaults: {

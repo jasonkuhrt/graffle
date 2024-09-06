@@ -64,7 +64,11 @@ export const CONTENT_TYPE_REC = CONTENT_TYPE_JSON
  */
 export const ACCEPT_REC = `${CONTENT_TYPE_GQL}; charset=utf-8, ${CONTENT_TYPE_JSON}; charset=utf-8`
 
-export const headersRec = {
+export const postRequestHeadersRec = {
   accept: ACCEPT_REC,
   'content-type': CONTENT_TYPE_REC,
+}
+
+export const getRequestHeadersRec = {
+  accept: ACCEPT_REC,
 }

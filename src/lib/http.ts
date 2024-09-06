@@ -23,6 +23,10 @@ export const mergeHeadersInit = (headers?: HeadersInit, additionalHeaders?: Head
 
 const UnsetValue = ``
 
+export type httpMethodGet = 'get'
+
+export type httpMethodPost = 'post'
+
 export type HttpMethodInput =
   | 'get'
   | 'post'
@@ -48,4 +52,19 @@ export const mergeRequestInit = (a?: RequestInit, b?: RequestInit): RequestInit 
     ...b,
     headers,
   }
+}
+
+export type SearchParamsInit = ConstructorParameters<typeof URLSearchParams>[0]
+
+export const searchParamsAppendAllMutate = (url: URL, additionalSearchParams: SearchParamsInit) => {
+  const sp = new URLSearchParams(additionalSearchParams)
+  sp.forEach((value, key) => {
+    url.searchParams.append(key, value)
+  })
+}
+
+export const searchParamsAppendAll = (url: URL | string, additionalSearchParams: SearchParamsInit) => {
+  const url2 = new URL(url)
+  searchParamsAppendAllMutate(url2, additionalSearchParams)
+  return url2
 }

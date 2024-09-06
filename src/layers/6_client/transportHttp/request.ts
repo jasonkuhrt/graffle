@@ -1,6 +1,9 @@
-import { type HttpMethodInput } from '../../../lib/http.js'
+import type { httpMethodGet, httpMethodPost } from '../../../lib/http.js'
 
-export type MethodMode = 'get' | 'post' | 'postMutation'
+export type MethodModeGet = 'get'
+export type MethodModePost = 'post'
+export type MethodModePostMutation = 'postMutation'
+export type MethodMode = MethodModeGet | MethodModePost | MethodModePostMutation
 
 export type TransportHttpInput = {
   /**
@@ -26,8 +29,17 @@ export type TransportHttpInput = {
 /**
  * An extension of {@link RequestInit} that adds a required `url` property and makes `body` required.
  */
-export type CoreExchangeRequest = Omit<RequestInit, 'body' | 'method'> & {
-  url: string | URL
+export type CoreExchangePostRequest = Omit<RequestInit, 'body' | 'method'> & {
+  methodMode: MethodModePost | MethodModePostMutation
+  method: httpMethodPost
+  url: string | URL // todo URL for config and string only for input. Requires anyware to allow different types for input and existing config.
   body: BodyInit
-  method: HttpMethodInput
 }
+
+export type CoreExchangeGetRequest = Omit<RequestInit, 'body' | 'method'> & {
+  methodMode: MethodModeGet
+  method: httpMethodGet
+  url: string | URL
+}
+
+export const defaultMethodMode: MethodMode = `post`
