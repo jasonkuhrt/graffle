@@ -141,6 +141,8 @@ import $1 from './$2/__.js'`,
     // These are used in the examples to run servers for the examples to interact with.
     // This is not something that the website examples support showing.
     // It would required bringing in analysis of the server code for twoslash.
+    // URL references are replaced with localhost URL literals.
+    .replaceAll(`server.url`, `"http://localhost:3000/graphql"`)
     .replaceAll(/.*server.*\n(?:\s*\n)?/g, ``)
 
   return {
