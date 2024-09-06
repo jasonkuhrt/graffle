@@ -5,12 +5,12 @@ import { createCodeGenerator } from '../createCodeGenerator.js'
 import { moduleNameSchemaBuildtime } from './SchemaBuildtime.js'
 
 export const { generate: generateIndex, moduleName: moduleNameIndex } = createCodeGenerator(
-  `Index`,
+  `SchemaIndex`,
   (config) => {
-    const namespace = `Schema`
+    const SchemaNamespace = `Schema`
     const code = []
     code.push(`/* eslint-disable */\n`)
-    code.push(`import type * as ${namespace} from './${moduleNameSchemaBuildtime}.js'\n`)
+    code.push(`import type * as ${SchemaNamespace} from './${moduleNameSchemaBuildtime}.js'\n`)
 
     code.push(Code.export$(
       Code.interface$(
@@ -19,25 +19,25 @@ export const { generate: generateIndex, moduleName: moduleNameIndex } = createCo
           name: Code.quote(config.name),
           Root: {
             type: Code.objectFrom({
-              Query: hasQuery(config.typeMapByKind) ? `${namespace}.Root.Query` : null,
-              Mutation: hasMutation(config.typeMapByKind) ? `${namespace}.Root.Mutation` : null,
-              Subscription: hasSubscription(config.typeMapByKind) ? `${namespace}.Root.Subscription` : null,
+              Query: hasQuery(config.typeMapByKind) ? `${SchemaNamespace}.Root.Query` : null,
+              Mutation: hasMutation(config.typeMapByKind) ? `${SchemaNamespace}.Root.Mutation` : null,
+              Subscription: hasSubscription(config.typeMapByKind) ? `${SchemaNamespace}.Root.Subscription` : null,
             }),
           },
           objects: Code.objectFromEntries(
-            config.typeMapByKind.GraphQLObjectType.map(_ => [_.name, `${namespace}.Object.${_.name}`]),
+            config.typeMapByKind.GraphQLObjectType.map(_ => [_.name, `${SchemaNamespace}.Object.${_.name}`]),
           ),
           unions: Code.objectFromEntries(
-            config.typeMapByKind.GraphQLUnionType.map(_ => [_.name, `${namespace}.Union.${_.name}`]),
+            config.typeMapByKind.GraphQLUnionType.map(_ => [_.name, `${SchemaNamespace}.Union.${_.name}`]),
           ),
           interfaces: Code.objectFromEntries(
-            config.typeMapByKind.GraphQLInterfaceType.map(_ => [_.name, `${namespace}.Interface.${_.name}`]),
+            config.typeMapByKind.GraphQLInterfaceType.map(_ => [_.name, `${SchemaNamespace}.Interface.${_.name}`]),
           ),
           // todo jsdoc comment saying:
           // Objects that match this pattern name: /.../
           error: Code.objectFrom({
             objects: Code.objectFromEntries(
-              config.error.objects.map(_ => [_.name, `${namespace}.Object.${_.name}`]),
+              config.error.objects.map(_ => [_.name, `${SchemaNamespace}.Object.${_.name}`]),
             ),
             objectsTypename: Code.objectFromEntries(
               config.error.objects.map(_ => [_.name, `{ __typename: "${_.name}" }`]),

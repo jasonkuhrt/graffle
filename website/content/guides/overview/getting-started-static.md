@@ -9,7 +9,6 @@ pnpm add graffle
 ## Create Client
 
 ```ts twoslash
-// @noErrors
 import { Graffle } from 'graffle'
 
 const graffle = Graffle.create({
@@ -20,7 +19,6 @@ const graffle = Graffle.create({
 ## Send Document
 
 ```ts twoslash
-// @noErrors
 import { Graffle } from 'graffle'
 const graffle = Graffle.create({
   schema: 'https://countries.trevorblades.com/graphql',

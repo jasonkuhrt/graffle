@@ -1,19 +1,16 @@
-import type { Index } from './Index.js'
+import type { Index } from './SchemaIndex.js'
 
 declare global {
   export namespace GraffleGlobalTypes {
     export interface Schemas {
-      default: {
-        name: 'default'
+      Pokemon: {
+        name: 'Pokemon'
         index: Index
         customScalars: {}
         featureOptions: {
           schemaErrors: true
         }
-        /**
-         * https://countries.trevorblades.com/graphql
-         */
-        defaultSchemaUrl: string
+        defaultSchemaUrl: null
       }
     }
   }
