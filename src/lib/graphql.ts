@@ -255,7 +255,29 @@ export type StandardScalarVariables = {
 
 export type GraphQLExecutionResultError = Errors.ContextualAggregateError<GraphQLError>
 
-export type OperationTypeName = 'query' | 'mutation'
+export const OperationTypes = {
+  query: `query`,
+  mutation: `mutation`,
+  subscription: `subscription`,
+} as const
+
+type OperationTypeQuery = typeof OperationTypes['query']
+type OperationTypeMutation = typeof OperationTypes['mutation']
+type OperationTypeSubscription = typeof OperationTypes['subscription']
+
+export type OperationTypeName = OperationTypeQuery | OperationTypeMutation
+export type OperationTypeNameAll = OperationTypeName | OperationTypeSubscription
+
+export const OperationTypeAccessTypeMap = {
+  query: `read`,
+  mutation: `write`,
+  subscription: `read`,
+} as const
+
+// Regular expressions to match GraphQL operations
+const queryRegex = /\bquery\b/i
+const mutationRegex = /\bmutation\b/i
+const subscriptionRegex = /\bsubscription\b/i
 
 export const isOperationTypeName = (value: unknown): value is OperationTypeName =>
   value === `query` || value === `mutation`
@@ -270,4 +292,51 @@ export type GraphQLRequestInput = {
   document: string | DocumentNode
   variables?: StandardScalarVariables
   operationName?: string
+}
+
+export const parseGraphQLOperationType = (request: GraphQLRequestEncoded): OperationTypeNameAll | null => {
+  const { operationName, query: document } = request
+
+  const definedOperations = document.split(/[{}\n]+/).map(s => s.trim()).filter(line => {
+    return line.startsWith(OperationTypes.mutation) || line.startsWith(OperationTypes.query)
+      || line.startsWith(OperationTypes.subscription)
+  })
+
+  // Handle obviously invalid cases that are zero cost to compute.
+
+  // The given operation name will not match to anything.
+  if (definedOperations.length > 1 && !request.operationName) return null
+
+  // An operation name is required but was not given.
+  if (definedOperations.length === 0 && request.operationName) return null
+
+  // Handle optimistically assumed valid case short circuits.
+
+  if (definedOperations.length === 0) {
+    // Assume that the implicit query syntax is being used.
+    // This is a non-validated optimistic approach for performance, not aimed at correctness.
+    // For example its not checked if the document is actually of the syntactic form `{ ... }`
+    return OperationTypes.query
+  }
+
+  // Continue to the full search.
+
+  const definedOperationToAnalyze = operationName
+    ? definedOperations.find(o => o.includes(operationName))
+    : definedOperations[0]
+
+  // Invalid: The given operation name does not show up in the document.
+  if (!definedOperationToAnalyze) return null
+
+  // Determine the type of operation
+  if (queryRegex.test(definedOperationToAnalyze)) {
+    return OperationTypes.query
+  } else if (mutationRegex.test(definedOperationToAnalyze)) {
+    return OperationTypes.mutation
+  } else if (subscriptionRegex.test(definedOperationToAnalyze)) {
+    return OperationTypes.subscription
+  }
+
+  // Invalid: Undefined case here. Should be impossible due to initial operation type filtering at start of function.
+  return null
 }

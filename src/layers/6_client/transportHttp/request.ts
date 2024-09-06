@@ -3,11 +3,11 @@ import type { httpMethodGet, httpMethodPost } from '../../../lib/http.js'
 export const MethodMode = {
   post: `post`,
   getReads: `getReads`,
-}
+} as const
 
 export type MethodModeGetReads = typeof MethodMode['getReads']
 export type MethodModePost = typeof MethodMode['post']
-export type MethodMode = MethodModePost
+export type MethodMode = MethodModePost | MethodModeGetReads
 
 export type TransportHttpInput = {
   /**
@@ -33,7 +33,7 @@ export type TransportHttpInput = {
  * An extension of {@link RequestInit} that adds a required `url` property and makes `body` required.
  */
 export type CoreExchangePostRequest = Omit<RequestInit, 'body' | 'method'> & {
-  methodMode: MethodModePost
+  methodMode: MethodModePost | MethodModeGetReads
   method: httpMethodPost
   url: string | URL // todo URL for config and string only for input. Requires anyware to allow different types for input and existing config.
   body: BodyInit

@@ -36,6 +36,7 @@ describe(`methodMode`, () => {
       fetch.mockImplementationOnce(() => Promise.resolve(createResponse({ data: { id: `abc` } })))
       await graffle.rawString({ document: `query { id }` })
       const request = fetch.mock.calls[0]?.[0]
+      expect(request?.method).toEqual(`POST`)
       expect(request?.headers.get(`content-type`)).toEqual(CONTENT_TYPE_REC)
       expect(request?.headers.get(`accept`)).toEqual(ACCEPT_REC)
     })
@@ -63,6 +64,15 @@ describe(`methodMode`, () => {
       await graffle.rawString({ document: `query {user{name}}` })
       const request = fetch.mock.calls[0]?.[0]
       expect(request?.url).toMatchInlineSnapshot(`"https://foo.io/api/graphql?query=query+%7Buser%7Bname%7D%7D"`)
+    })
+    test(`mutation still uses POST`, async ({ fetch }) => {
+      fetch.mockImplementationOnce(() => Promise.resolve(createResponse({ data: { user: { name: `foo` } } })))
+      const graffle = Graffle.create({ schema, transport: { methodMode: `getReads` } })
+      await graffle.rawString({ document: `mutation {user{name}}` })
+      const request = fetch.mock.calls[0]?.[0]
+      expect(request?.method).toEqual(`POST`)
+      expect(request?.headers.get(`content-type`)).toEqual(CONTENT_TYPE_REC)
+      expect(request?.headers.get(`accept`)).toEqual(ACCEPT_REC)
     })
   })
 })

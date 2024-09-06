@@ -4,6 +4,8 @@ import { Anyware } from '../../lib/anyware/__.js'
 import {
   type GraphQLRequestEncoded,
   type GraphQLRequestInput,
+  OperationTypeAccessTypeMap,
+  parseGraphQLOperationType,
   type StandardScalarVariables,
 } from '../../lib/graphql.js'
 import {
@@ -14,7 +16,7 @@ import {
   postRequestHeadersRec,
 } from '../../lib/graphqlHTTP.js'
 import { mergeRequestInit, searchParamsAppendAll } from '../../lib/http.js'
-import { casesExhausted } from '../../lib/prelude.js'
+import { casesExhausted, throwNull } from '../../lib/prelude.js'
 import { execute } from '../0_functions/execute.js'
 import type { Schema } from '../1_Schema/__.js'
 import { SelectionSet } from '../3_SelectionSet/__.js'
@@ -26,6 +28,7 @@ import {
   type CoreExchangeGetRequest,
   type CoreExchangePostRequest,
   MethodMode,
+  type MethodModeGetReads,
 } from '../6_client/transportHttp/request.js'
 import type {
   ContextInterfaceRaw,
@@ -203,18 +206,25 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
         body: postRequestEncodeBody,
       },
       run: ({ input, slots }) => {
+        // TODO thrown error here is swallowed in examples.
         switch (input.transport) {
           case `memory`: {
             return input
           }
           case `http`: {
             const methodMode = input.context.config.transport.config.methodMode
-            // TODO thrown error here is swallowed in examples.
+            const operationType = throwNull(parseGraphQLOperationType(input)) // todo better feedback here than throwNull
+            const requestMethod = methodMode === MethodMode.post
+              ? `post`
+              : methodMode === MethodMode.getReads // eslint-disable-line
+              ? OperationTypeAccessTypeMap[operationType] === `read` ? `get` : `post`
+              : casesExhausted(methodMode)
+
             const baseProperties = mergeRequestInit(
               mergeRequestInit(
                 mergeRequestInit(
                   {
-                    headers: methodMode === MethodMode.getReads ? getRequestHeadersRec : postRequestHeadersRec,
+                    headers: requestMethod === `get` ? getRequestHeadersRec : postRequestHeadersRec,
                   },
                   {
                     headers: input.context.config.transport.config.headers,
@@ -227,15 +237,15 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
                 headers: input.headers,
               },
             )
-            const request: CoreExchangePostRequest | CoreExchangeGetRequest = methodMode === MethodMode.getReads
+            const request: CoreExchangePostRequest | CoreExchangeGetRequest = requestMethod === `get`
               ? {
-                methodMode,
+                methodMode: methodMode as MethodModeGetReads,
                 ...baseProperties,
                 method: `get`,
                 url: searchParamsAppendAll(input.url, slots.searchParams(input)),
               }
               : {
-                methodMode,
+                methodMode: methodMode,
                 ...baseProperties,
                 method: `post`,
                 url: input.url,
