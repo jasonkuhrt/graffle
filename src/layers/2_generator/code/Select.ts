@@ -1,6 +1,6 @@
 import { createCodeGenerator } from '../createCodeGenerator.js'
 import { title, typeTitle } from '../helpers.js'
-import { moduleNameIndex } from './Index.js'
+import { moduleNameIndex } from './SchemaIndex.js'
 
 export const { generate: generateSelect, moduleName: moduleNameSelect } = createCodeGenerator(
   `Select`,

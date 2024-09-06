@@ -1,5 +1,5 @@
 import { createCodeGenerator } from '../createCodeGenerator.js'
-import { moduleNameIndex } from './Index.js'
+import { moduleNameIndex } from './SchemaIndex.js'
 
 export const { moduleName: moduleNameGlobal, generate: generateGlobal } = createCodeGenerator(
   `Global`,

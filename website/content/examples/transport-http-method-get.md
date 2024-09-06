@@ -9,6 +9,7 @@ to be sent over HTTP GET method. Note write-kind operations (mutation) are still
 
 <!-- dprint-ignore-start -->
 ```ts twoslash
+// @noErrors
 import './pokemon/Global.js'
 // ---cut---
 import { Pokemon } from './pokemon/__.js'

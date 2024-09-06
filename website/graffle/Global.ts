@@ -1,4 +1,4 @@
-import type { Index } from './Index.js'
+import type { Index } from './SchemaIndex.js'
 
 declare global {
   export namespace GraffleGlobalTypes {

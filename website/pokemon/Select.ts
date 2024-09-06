@@ -1,11 +1,11 @@
 import type { ResultSet, SelectionSet } from 'graffle/schema'
-import type { Index } from './Index.js'
+import type { Index } from './SchemaIndex.js'
 
 // Runtime
 // -------
 
 import { createSelect } from 'graffle/client'
-export const Select = createSelect('default')
+export const Select = createSelect(`default`)
 
 // Buildtime
 // ---------
