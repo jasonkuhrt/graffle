@@ -43,7 +43,7 @@ describe(`methodMode`, () => {
   describe(`get`, () => {
     test(`can set method mode to get`, async ({ fetch }) => {
       fetch.mockImplementationOnce(() => Promise.resolve(createResponse({ data: { user: { name: `foo` } } })))
-      const graffle = Graffle.create({ schema, transport: { methodMode: `get` } })
+      const graffle = Graffle.create({ schema, transport: { methodMode: `getReads` } })
       await graffle.rawString({
         document: `query foo($id: ID!){user(id:$id){name}}`,
         variables: { 'id': `QVBJcy5ndXJ1` },
@@ -59,7 +59,7 @@ describe(`methodMode`, () => {
     })
     test(`if no variables or operationName then search parameters are omitted`, async ({ fetch }) => {
       fetch.mockImplementationOnce(() => Promise.resolve(createResponse({ data: { user: { name: `foo` } } })))
-      const graffle = Graffle.create({ schema, transport: { methodMode: `get` } })
+      const graffle = Graffle.create({ schema, transport: { methodMode: `getReads` } })
       await graffle.rawString({ document: `query {user{name}}` })
       const request = fetch.mock.calls[0]?.[0]
       expect(request?.url).toMatchInlineSnapshot(`"https://foo.io/api/graphql?query=query+%7Buser%7Bname%7D%7D"`)

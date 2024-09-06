@@ -1,9 +1,13 @@
 import type { httpMethodGet, httpMethodPost } from '../../../lib/http.js'
 
-export type MethodModeGet = 'get'
-export type MethodModePost = 'post'
-export type MethodModePostMutation = 'postMutation'
-export type MethodMode = MethodModeGet | MethodModePost | MethodModePostMutation
+export const MethodMode = {
+  post: `post`,
+  getReads: `getReads`,
+}
+
+export type MethodModeGetReads = typeof MethodMode['getReads']
+export type MethodModePost = typeof MethodMode['post']
+export type MethodMode = MethodModePost
 
 export type TransportHttpInput = {
   /**
@@ -15,8 +19,7 @@ export type TransportHttpInput = {
    * Options:
    *
    * 1. `post` - Apply https://graphql.github.io/graphql-over-http/draft/#sec-POST
-   * 2. `get` - Apply https://graphql.github.io/graphql-over-http/draft/#sec-GET
-   * 3. `postMutation` - If the operation to execute is a mutation then `post`, otherwise `get`.
+   * 2. `getReads` - Apply https://graphql.github.io/graphql-over-http/draft/#sec-GET
    *
    * @defaultValue `post`
    */
@@ -30,14 +33,14 @@ export type TransportHttpInput = {
  * An extension of {@link RequestInit} that adds a required `url` property and makes `body` required.
  */
 export type CoreExchangePostRequest = Omit<RequestInit, 'body' | 'method'> & {
-  methodMode: MethodModePost | MethodModePostMutation
+  methodMode: MethodModePost
   method: httpMethodPost
   url: string | URL // todo URL for config and string only for input. Requires anyware to allow different types for input and existing config.
   body: BodyInit
 }
 
 export type CoreExchangeGetRequest = Omit<RequestInit, 'body' | 'method'> & {
-  methodMode: MethodModeGet
+  methodMode: MethodModeGetReads
   method: httpMethodGet
   url: string | URL
 }

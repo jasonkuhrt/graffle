@@ -22,7 +22,11 @@ import type { GraphQLObjectSelection } from '../3_SelectionSet/encode.js'
 import * as Result from '../4_ResultSet/customScalars.js'
 import type { GraffleExecutionResultVar } from '../6_client/client.js'
 import type { Config } from '../6_client/Settings/Config.js'
-import { type CoreExchangeGetRequest, type CoreExchangePostRequest } from '../6_client/transportHttp/request.js'
+import {
+  type CoreExchangeGetRequest,
+  type CoreExchangePostRequest,
+  MethodMode,
+} from '../6_client/transportHttp/request.js'
 import type {
   ContextInterfaceRaw,
   ContextInterfaceTyped,
@@ -210,7 +214,7 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
               mergeRequestInit(
                 mergeRequestInit(
                   {
-                    headers: methodMode === `get` ? getRequestHeadersRec : postRequestHeadersRec,
+                    headers: methodMode === MethodMode.getReads ? getRequestHeadersRec : postRequestHeadersRec,
                   },
                   {
                     headers: input.context.config.transport.config.headers,
@@ -223,7 +227,7 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
                 headers: input.headers,
               },
             )
-            const request: CoreExchangePostRequest | CoreExchangeGetRequest = methodMode === `get`
+            const request: CoreExchangePostRequest | CoreExchangeGetRequest = methodMode === MethodMode.getReads
               ? {
                 methodMode,
                 ...baseProperties,
