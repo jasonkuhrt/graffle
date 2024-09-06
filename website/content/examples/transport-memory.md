@@ -5,8 +5,9 @@ aside: false
 # Transport Memory
 
 ```ts twoslash
-import { Graffle } from 'graffle'
 import { GraphQLObjectType, GraphQLSchema, GraphQLString } from 'graphql'
+import { Graffle } from 'graffle'
+import { console.log } from './$/helpers.js'
 
 const schema = new GraphQLSchema({
   query: new GraphQLObjectType({

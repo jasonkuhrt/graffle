@@ -6,22 +6,6 @@ export const sidebarExamples: DefaultTheme.SidebarItem[] = [
     'link': '/examples/transport-memory',
   },
   {
-    'text': 'DynamicHeaders',
-    'link': '/examples/dynamicHeaders',
-  },
-  {
-    'text': 'Transport Http Fetch',
-    'link': '/examples/transport-http_fetch',
-  },
-  {
-    'text': 'Transport Http Abort',
-    'link': '/examples/transport-http_abort',
-  },
-  {
-    'text': 'Transport Http RequestInput',
-    'link': '/examples/transport-http_RequestInput',
-  },
-  {
     'text': 'Raw Typed',
     'link': '/examples/raw-typed',
   },
@@ -43,6 +27,31 @@ export const sidebarExamples: DefaultTheme.SidebarItem[] = [
       {
         'text': 'Arguments',
         'link': '/examples/generated-arguments',
+      },
+    ],
+  },
+  {
+    'text': 'Transport Http',
+    'items': [
+      {
+        'text': 'RequestInput',
+        'link': '/examples/transport-http-RequestInput',
+      },
+      {
+        'text': 'Abort',
+        'link': '/examples/transport-http-abort',
+      },
+      {
+        'text': 'Fetch',
+        'link': '/examples/transport-http-fetch',
+      },
+      {
+        'text': 'DynamicHeaders',
+        'link': '/examples/transport-http-dynamicHeaders',
+      },
+      {
+        'text': 'Method Get',
+        'link': '/examples/transport-http-method-get',
       },
     ],
   },

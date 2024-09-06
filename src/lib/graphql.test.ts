@@ -6,6 +6,7 @@ const operationNameTwo = `two`
 const docNoDefinedOps = ``
 const docMultipleQueryOperations = `query ${operationNameOne} { x }\nquery ${operationNameTwo} { x }`
 const docMultipleMixedOperations = `mutation ${operationNameOne} { x }\nquery ${operationNameTwo} { x }`
+const docOverloadedTerms = `query { queryX }`
 
 type CaseParameters = [
   description: string,
@@ -24,6 +25,7 @@ describe(`parseGraphQLOperationType`, () => {
     [ `query if multiple defined query operations and no query operation name given `, 			{ query: docMultipleQueryOperations, operationName: operationNameOne }, `query` ],
     [ `query if multiple defined mixed operations and no mutation operation name given `, 	{ query: docMultipleMixedOperations, operationName: operationNameTwo }, `query` ],
     [ `mutation if multiple defined mixed operations and no query operation name given `, 	{ query: docMultipleMixedOperations, operationName: operationNameOne }, `mutation` ],
+    [ `overloaded terms do not confuse parser`, 	                                          { query: docOverloadedTerms },                                          `query` ],
   ])(`%s`, (_, request, result) => {
     expect(parseGraphQLOperationType(request)).toEqual(result)
   })

@@ -36,6 +36,12 @@ graffle.create({
 })
 ```
 
+## GET
+
+## POST
+
+## Raw
+
 ## Anyware
 
 Hooks are augmented in the following ways:

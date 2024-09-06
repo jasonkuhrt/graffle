@@ -2,20 +2,16 @@
 // @vitest-environment node
 
 import { omit } from 'es-toolkit'
-import getPort from 'get-port'
-import type { Server } from 'node:http'
-import { createServer } from 'node:http'
 import { afterAll, beforeAll, beforeEach, expect, test } from 'vitest'
 import { schema } from '../../../../tests/_/schemaUpload/schema.js'
 import { Graffle } from '../../../entrypoints/main.js'
 import { Upload } from './Upload.js'
 
-import { createYoga } from 'graphql-yoga'
+import { type SchemaServer, serveSchema } from '../../../../examples/$/helpers.js'
 import type { Client } from '../../6_client/client.js'
 import type { Config, OutputConfigDefault } from '../../6_client/Settings/Config.js'
 
-let server: Server
-let port: number
+let schemaServer: SchemaServer
 let graffle: Client<
   any,
   {
@@ -27,30 +23,15 @@ let graffle: Client<
 >
 
 beforeAll(async () => {
-  const yoga = createYoga({ schema })
-  server = createServer(yoga) // eslint-disable-line
-  port = await getPort({ port: [3000, 3001, 3002, 3003, 3004] })
-  server.listen(port)
-  await new Promise((resolve) =>
-    server.once(`listening`, () => {
-      resolve(undefined)
-    })
-  )
+  schemaServer = await serveSchema({ schema })
 })
 
 beforeEach(() => {
-  graffle = Graffle.create({
-    schema: new URL(`http://localhost:${String(port)}/graphql`),
-  }).use(Upload)
+  graffle = Graffle.create({ schema: schemaServer.url }).use(Upload)
 })
 
 afterAll(async () => {
-  await new Promise((resolve) => {
-    server.close(resolve)
-    setImmediate(() => {
-      server.emit(`close`)
-    })
-  })
+  await schemaServer.stop()
 })
 
 test(`upload`, async () => {

@@ -298,8 +298,8 @@ export const parseGraphQLOperationType = (request: GraphQLRequestEncoded): Opera
   const { operationName, query: document } = request
 
   const definedOperations = document.split(/[{}\n]+/).map(s => s.trim()).filter(line => {
-    return line.startsWith(OperationTypes.mutation) || line.startsWith(OperationTypes.query)
-      || line.startsWith(OperationTypes.subscription)
+    return line.startsWith(OperationTypes.mutation + ` `) || line.startsWith(OperationTypes.query + ` `)
+      || line.startsWith(OperationTypes.subscription + ` `)
   })
 
   // Handle obviously invalid cases that are zero cost to compute.

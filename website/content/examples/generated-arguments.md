@@ -5,9 +5,8 @@ aside: false
 # Arguments
 
 ```ts twoslash
-import './graffle/Global.js'
-// ---cut---
-import { Graffle as SocialStudies } from './graffle/__.js'
+import { SocialStudies } from './$/generated-clients/SocialStudies/__.js'
+import { console.log } from './$/helpers.js'
 
 const socialStudies = SocialStudies.create()
 

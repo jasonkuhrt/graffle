@@ -6,6 +6,7 @@ aside: false
 
 ```ts twoslash
 import { Graffle } from 'graffle'
+import { publicGraphQLSchemaEndpoints, console.log } from './$/helpers.js'
 
 const graffle = Graffle.create({
   schema: `https://countries.trevorblades.com/graphql`,
