@@ -12,10 +12,13 @@
   "dependencies": {
     "@shikijs/twoslash": "^1.16.2",
     "@shikijs/vitepress-twoslash": "^1.16.2",
+    "@tsconfig/node20": "^20.1.4",
+    "@tsconfig/strictest": "^2.0.5",
     "es-toolkit": "^1.17.0",
     "floating-vue": "^5.2.2",
     "globby": "^14.0.2",
-    "graffle": "link:..",
+    "graffle": "8.0.0-next.24",
+    "graphql": "^16.9.0",
     "tsx": "^4.19.0",
     "typescript": "^5.5.4"
   }
