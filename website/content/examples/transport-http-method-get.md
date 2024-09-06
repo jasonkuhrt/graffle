@@ -15,6 +15,7 @@ import { Pokemon } from './pokemon/__.js'
 
 const graffle = Pokemon
   .create({
+    schema: `http://localhost:3000/graphql`,
     transport: { methodMode: `getReads` }, // [!code highlight]
   })
   .use(async ({ exchange }) => {
