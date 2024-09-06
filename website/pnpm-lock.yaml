@@ -23,6 +23,9 @@ importers:
       globby:
         specifier: ^14.0.2
         version: 14.0.2
+      graffle:
+        specifier: link:..
+        version: link:..
       tsx:
         specifier: ^4.19.0
         version: 4.19.0
