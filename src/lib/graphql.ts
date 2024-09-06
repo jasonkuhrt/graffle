@@ -1,4 +1,11 @@
-import type { GraphQLEnumValue, GraphQLError, GraphQLField, GraphQLInputField, GraphQLSchema } from 'graphql'
+import type {
+  DocumentNode,
+  GraphQLEnumValue,
+  GraphQLError,
+  GraphQLField,
+  GraphQLInputField,
+  GraphQLSchema,
+} from 'graphql'
 import {
   GraphQLEnumType,
   GraphQLInputObjectType,
@@ -252,3 +259,15 @@ export type OperationTypeName = 'query' | 'mutation'
 
 export const isOperationTypeName = (value: unknown): value is OperationTypeName =>
   value === `query` || value === `mutation`
+
+export type GraphQLRequestEncoded = {
+  query: string
+  variables?: StandardScalarVariables
+  operationName?: string
+}
+
+export type GraphQLRequestInput = {
+  document: string | DocumentNode
+  variables?: StandardScalarVariables
+  operationName?: string
+}

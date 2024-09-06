@@ -1,9 +1,19 @@
 import type { DocumentNode, ExecutionResult, GraphQLSchema } from 'graphql'
 import { print } from 'graphql'
 import { Anyware } from '../../lib/anyware/__.js'
-import { type StandardScalarVariables } from '../../lib/graphql.js'
-import { getRequestHeadersRec, parseExecutionResult, postRequestHeadersRec } from '../../lib/graphqlHTTP.js'
-import { mergeRequestInit, searchParamsAppendAll, type SearchParamsInit } from '../../lib/http.js'
+import {
+  type GraphQLRequestEncoded,
+  type GraphQLRequestInput,
+  type StandardScalarVariables,
+} from '../../lib/graphql.js'
+import {
+  getRequestEncodeSearchParameters,
+  getRequestHeadersRec,
+  parseExecutionResult,
+  postRequestEncodeBody,
+  postRequestHeadersRec,
+} from '../../lib/graphqlHTTP.js'
+import { mergeRequestInit, searchParamsAppendAll } from '../../lib/http.js'
 import { casesExhausted } from '../../lib/prelude.js'
 import { execute } from '../0_functions/execute.js'
 import type { Schema } from '../1_Schema/__.js'
@@ -67,20 +77,13 @@ export type HookSequence = typeof hookNamesOrderedBySequence
 
 export type HookDefEncode<$Config extends Config> = {
   input:
-    & InterfaceInput<
-      { selection: GraphQLObjectSelection },
-      { document: string | DocumentNode; variables?: StandardScalarVariables; operationName?: string }
-    >
+    & InterfaceInput<{ selection: GraphQLObjectSelection }, GraphQLRequestInput>
     & TransportInput<$Config, { schema: string | URL }, { schema: GraphQLSchema }>
 }
 
 export type HookDefPack<$Config extends Config> = {
   input:
-    & {
-      query: string
-      variables?: StandardScalarVariables
-      operationName?: string
-    }
+    & GraphQLRequestEncoded
     & InterfaceInput
     // todo why is headers here but not other http request properties?
     & TransportInput<$Config, { url: string | URL; headers?: HeadersInit }, {
@@ -90,41 +93,11 @@ export type HookDefPack<$Config extends Config> = {
     /**
      * When request will be sent using POST this slot is called to create the value that will be used for the HTTP body.
      */
-    searchParams: (
-      input: {
-        /**
-         * TODO
-         */
-        query: string
-        /**
-         * TODO
-         */
-        variables?: StandardScalarVariables
-        /**
-         * TODO
-         */
-        operationName?: string
-      },
-    ) => SearchParamsInit
+    searchParams: getRequestEncodeSearchParameters
     /**
      * When request will be sent using POST this slot is called to create the value that will be used for the HTTP body.
      */
-    body: (
-      input: {
-        /**
-         * TODO
-         */
-        query: string
-        /**
-         * TODO
-         */
-        variables?: StandardScalarVariables
-        /**
-         * TODO
-         */
-        operationName?: string
-      },
-    ) => BodyInit
+    body: postRequestEncodeBody
   }
 }
 
@@ -222,20 +195,8 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
     },
     pack: {
       slots: {
-        searchParams: (input) => {
-          return {
-            query: input.query,
-            ...(input.variables ? { variables: JSON.stringify(input.variables) } : {}),
-            ...(input.operationName ? { operationName: input.operationName } : {}),
-          }
-        },
-        body: (input) => {
-          return JSON.stringify({
-            query: input.query,
-            variables: input.variables,
-            operationName: input.operationName,
-          })
-        },
+        searchParams: getRequestEncodeSearchParameters,
+        body: postRequestEncodeBody,
       },
       run: ({ input, slots }) => {
         switch (input.transport) {
@@ -288,9 +249,9 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
     },
     exchange: {
       slots: {
-        fetch: (request) => {
-          return fetch(request)
-        },
+        // Put fetch behind a lambda so that it can be easily globally overridden
+        // by fixtures.
+        fetch: (request) => fetch(request),
       },
       run: async ({ input, slots }) => {
         switch (input.transport) {
