@@ -53,7 +53,7 @@ By default all requests use HTTP POST. However you can configure queries and sub
 ```ts twoslash
 import { Graffle } from 'graffle'
 // ---cut---
-graffle.create({
+Graffle.create({
   schema: 'https://...',
   transport: { methodMode: 'getReads' },
 })
