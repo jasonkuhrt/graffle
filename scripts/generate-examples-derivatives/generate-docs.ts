@@ -1,33 +1,12 @@
 import { groupBy } from 'es-toolkit'
 import * as FS from 'node:fs/promises'
 import { type DefaultTheme } from 'vitepress'
-import { publicGraphQLSchemaEndpoints } from '../../examples/$helpers.js'
+import { publicGraphQLSchemaEndpoints } from '../../examples/$/helpers.js'
 import { deleteFiles } from '../lib/deleteFiles.js'
-import type { File } from '../lib/readFiles.js'
-import { readFiles } from '../lib/readFiles.js'
+import { computeCombinations, type Example, readExamples, toTitle } from './helpers.js'
 
 export const generateDocs = async () => {
-  const exampleFiles = await readFiles({
-    pattern: `./examples/*.ts`,
-    options: { ignore: [`./examples/$*`] },
-  })
-
-  const outputFiles = await readFiles({
-    pattern: `./examples/*.output.txt`,
-  })
-
-  const examples = exampleFiles.map(example => {
-    const output = outputFiles.find(file => file.name === `${example.name}.output.txt`)
-    if (!output) throw new Error(`Could not find output file for ${example.name}`)
-
-    return {
-      file: example,
-      fileName: parseFileName(example.name),
-      output,
-      isUsingJsonOutput: example.content.includes(`showJson`),
-      tags: parseTags(example.name),
-    }
-  })
+  const examples = await readExamples()
 
   const examplesTransformed = examples
     .map(transformOther)
@@ -74,9 +53,9 @@ export const generateDocs = async () => {
     ).sort((a) => a.items ? 1 : -1)
 
     const code = `
-	import { DefaultTheme } from 'vitepress'
+ import { DefaultTheme } from 'vitepress'
 
-	export const sidebarExamples:DefaultTheme.SidebarItem[] = ${JSON.stringify(sidebarExamples, null, 2)}
+ export const sidebarExamples:DefaultTheme.SidebarItem[] = ${JSON.stringify(sidebarExamples, null, 2)}
 `
 
     await FS.writeFile(`./website/.vitepress/configExamples.ts`, code)
@@ -118,67 +97,6 @@ export const generateDocs = async () => {
     }),
   )
   console.log(`Generated a Vitepress Markdown partial for each example tags combination.`)
-}
-
-const computeCombinations = (arr: string[]): string[][] => {
-  const result: string[][] = []
-
-  const generateCombinations = (currentCombination: string[], index: number) => {
-    if (index === arr.length) {
-      result.push([...currentCombination])
-      return
-    }
-
-    // Include the current element
-    generateCombinations([...currentCombination, arr[index]!], index + 1)
-
-    // Exclude the current element
-    generateCombinations(currentCombination, index + 1)
-  }
-
-  generateCombinations([], 0)
-
-  return result
-}
-
-const toTitle = (name: string) => name.split(`-`).map(titlizeWord).join(` `).split(`_`).map(titlizeWord).join(` `)
-
-const titlizeWord = (word: string) => word.charAt(0).toUpperCase() + word.slice(1)
-
-const parseFileName = (fileName: string): Example['fileName'] => {
-  const [group, fileNameWithoutGroup] = fileName.includes(`|`) ? fileName.split(`|`) : [null, fileName]
-  const [tagsExpression, titleExpression] = fileNameWithoutGroup.split(`__`)
-  const canonicalTitleExpression = titleExpression ?? tagsExpression ?? `impossible`
-  return {
-    canonical: (group ? `${group}-` : ``) + canonicalTitleExpression,
-    canonicalTitle: toTitle(canonicalTitleExpression),
-    tags: tagsExpression ?? `impossible`,
-    title: titleExpression ?? null,
-    group,
-  }
-}
-
-type Tag = string
-
-const parseTags = (fileName: string) => {
-  const [tagsExpression] = fileName.split(`__`)
-  if (!tagsExpression) return []
-  const tags = tagsExpression.split(`_`)
-  return tags
-}
-
-interface Example {
-  file: File
-  fileName: {
-    canonical: string
-    canonicalTitle: string
-    tags: string
-    title: string | null
-    group: null | string
-  }
-  output: File
-  isUsingJsonOutput: boolean
-  tags: Tag[]
 }
 
 /**
@@ -227,7 +145,7 @@ import { Graffle as SocialStudies } from './graffle/__.js'`,
 const transformRewriteHelperImports = (example: Example) => {
   const consoleLog = `console.log`
   const newContent = example.file.content
-    .replaceAll(/^import.*\$helpers.*$\n/gm, ``)
+    .replaceAll(/^import.*\$\/helpers.*$\n/gm, ``)
     .replaceAll(
       `publicGraphQLSchemaEndpoints.SocialStudies`,
       `\`${publicGraphQLSchemaEndpoints.SocialStudies}\``,
@@ -275,18 +193,27 @@ const transformMarkdown = (example: Example) => {
 aside: false
 ---
 
-# ${example.fileName.canonicalTitle}
+# ${example.fileName.canonicalTitle}${example.description ? `\n\n${example.description}\n` : ``}
 
+<!-- dprint-ignore-start -->
 \`\`\`ts twoslash
 ${example.file.content.trim()}
 \`\`\`
+<!-- dprint-ignore-end -->
 
-#### Output
+#### Outputs
 
+${
+    example.output.blocks.map(block => {
+      return `
+<!-- dprint-ignore-start -->
 \`\`\`${example.isUsingJsonOutput ? `json` : `txt`}
-${example.output.content.trim()}
+${block}
 \`\`\`
-
+<!-- dprint-ignore-end -->
+`.trim()
+    }).join(`\n`)
+  }
 `.trim()
 
   return {

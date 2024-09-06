@@ -1,9 +1,22 @@
 import type { DocumentNode, ExecutionResult, GraphQLSchema } from 'graphql'
 import { print } from 'graphql'
 import { Anyware } from '../../lib/anyware/__.js'
-import { type StandardScalarVariables } from '../../lib/graphql.js'
-import { ACCEPT_REC, CONTENT_TYPE_REC, parseExecutionResult } from '../../lib/graphqlHTTP.js'
-import { casesExhausted } from '../../lib/prelude.js'
+import {
+  type GraphQLRequestEncoded,
+  type GraphQLRequestInput,
+  OperationTypeAccessTypeMap,
+  parseGraphQLOperationType,
+  type StandardScalarVariables,
+} from '../../lib/graphql.js'
+import {
+  getRequestEncodeSearchParameters,
+  getRequestHeadersRec,
+  parseExecutionResult,
+  postRequestEncodeBody,
+  postRequestHeadersRec,
+} from '../../lib/graphqlHTTP.js'
+import { mergeRequestInit, searchParamsAppendAll } from '../../lib/http.js'
+import { casesExhausted, throwNull } from '../../lib/prelude.js'
 import { execute } from '../0_functions/execute.js'
 import type { Schema } from '../1_Schema/__.js'
 import { SelectionSet } from '../3_SelectionSet/__.js'
@@ -11,7 +24,12 @@ import type { GraphQLObjectSelection } from '../3_SelectionSet/encode.js'
 import * as Result from '../4_ResultSet/customScalars.js'
 import type { GraffleExecutionResultVar } from '../6_client/client.js'
 import type { Config } from '../6_client/Settings/Config.js'
-import { mergeRequestInputOptions, type RequestInput } from '../6_client/Settings/inputIncrementable/request.js'
+import {
+  type CoreExchangeGetRequest,
+  type CoreExchangePostRequest,
+  MethodMode,
+  type MethodModeGetReads,
+} from '../6_client/transportHttp/request.js'
 import type {
   ContextInterfaceRaw,
   ContextInterfaceTyped,
@@ -45,7 +63,7 @@ type InterfaceInput<TypedProperties = {}, RawProperties = {}> =
 // eslint-disable-next-line
 type TransportInput<$Config extends Config, $HttpProperties = {}, $MemoryProperties = {}> =
   | (
-      TransportHttp extends $Config['transport']
+      TransportHttp extends $Config['transport']['type']
         ? ({
             transport: TransportHttp
             
@@ -53,7 +71,7 @@ type TransportInput<$Config extends Config, $HttpProperties = {}, $MemoryPropert
         : never
     )
   | (
-      TransportMemory extends $Config['transport']
+      TransportMemory extends $Config['transport']['type']
         ? ({
           transport: TransportMemory
         } & $MemoryProperties)
@@ -66,30 +84,28 @@ export type HookSequence = typeof hookNamesOrderedBySequence
 
 export type HookDefEncode<$Config extends Config> = {
   input:
-    & InterfaceInput<
-      { selection: GraphQLObjectSelection },
-      { document: string | DocumentNode; variables?: StandardScalarVariables; operationName?: string }
-    >
+    & InterfaceInput<{ selection: GraphQLObjectSelection }, GraphQLRequestInput>
     & TransportInput<$Config, { schema: string | URL }, { schema: GraphQLSchema }>
-  slots: {
-    /**
-     * Create the value that will be used as the HTTP body for the sent GraphQL request.
-     */
-    body: (
-      input: { query: string; variables?: StandardScalarVariables; operationName?: string },
-    ) => BodyInit
-  }
 }
 
 export type HookDefPack<$Config extends Config> = {
   input:
+    & GraphQLRequestEncoded
     & InterfaceInput
-    & TransportInput<$Config, { url: string | URL; headers?: HeadersInit; body: BodyInit }, {
+    // todo why is headers here but not other http request properties?
+    & TransportInput<$Config, { url: string | URL; headers?: HeadersInit }, {
       schema: GraphQLSchema
-      query: string
-      variables?: StandardScalarVariables
-      operationName?: string
     }>
+  slots: {
+    /**
+     * When request will be sent using POST this slot is called to create the value that will be used for the HTTP body.
+     */
+    searchParams: getRequestEncodeSearchParameters
+    /**
+     * When request will be sent using POST this slot is called to create the value that will be used for the HTTP body.
+     */
+    body: postRequestEncodeBody
+  }
 }
 
 export type HookDefExchange<$Config extends Config> = {
@@ -99,7 +115,7 @@ export type HookDefExchange<$Config extends Config> = {
   input:
     & InterfaceInput
     & TransportInput<$Config, {
-      request: RequestInput
+      request: CoreExchangePostRequest | CoreExchangeGetRequest
     }, {
       schema: GraphQLSchema
       query: string | DocumentNode
@@ -134,121 +150,132 @@ export type HookMap<$Config extends Config = Config> = {
 export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
   hookNamesOrderedBySequence,
   hooks: {
-    encode: {
-      slots: {
-        body: (input) => {
-          return JSON.stringify({
-            query: input.query,
-            variables: input.variables,
-            operationName: input.operationName,
-          })
-        },
-      },
-      run: ({ input, slots }) => {
-        let document: string
-        let variables: StandardScalarVariables | undefined = undefined
-        let operationName: string | undefined = undefined
+    encode: ({ input }) => {
+      let document: string
+      let variables: StandardScalarVariables | undefined = undefined
+      let operationName: string | undefined = undefined
 
-        switch (input.interface) {
-          case `raw`: {
-            const documentPrinted = typeof input.document === `string`
-              ? input.document
-              : print(input.document)
-            document = documentPrinted
-            variables = input.variables
-            operationName = input.operationName
-            break
-          }
-          case `typed`: {
-            // todo turn inputs into variables
-            variables = undefined
-            document = SelectionSet.Print.rootTypeSelectionSet(
-              input.context,
-              getRootIndexOrThrow(input.context, input.rootTypeName),
-              input.selection,
-            )
-            break
-          }
-          default:
-            throw casesExhausted(input)
+      switch (input.interface) {
+        case `raw`: {
+          const documentPrinted = typeof input.document === `string`
+            ? input.document
+            : print(input.document)
+          document = documentPrinted
+          variables = input.variables
+          operationName = input.operationName
+          break
         }
-
-        switch (input.transport) {
-          case `http`: {
-            const body = slots.body({
-              query: document,
-              variables,
-              operationName,
-            })
-
-            return {
-              ...input,
-              url: input.schema,
-              body,
-            }
-          }
-          case `memory`: {
-            return {
-              ...input,
-              schema: input.schema,
-              query: document,
-              variables,
-              operationName,
-            }
-          }
-        }
-      },
-    },
-    pack: ({ input }) => {
-      switch (input.transport) {
-        case `memory`: {
-          return input
-        }
-        case `http`: {
-          // todo support GET
-          // TODO thrown error here is swallowed in examples.
-          const request: RequestInput = {
-            url: input.url,
-            body: input.body,
-            // @see https://graphql.github.io/graphql-over-http/draft/#sec-POST
-            method: `POST`,
-            ...mergeRequestInputOptions(
-              mergeRequestInputOptions(
-                {
-                  headers: {
-                    accept: ACCEPT_REC,
-                    'content-type': CONTENT_TYPE_REC,
-                  },
-                },
-                input.context.config.requestInputOptions,
-              ),
-              {
-                headers: input.headers,
-              },
-            ),
-          }
-          return {
-            ...input,
-            request,
-          }
+        case `typed`: {
+          // todo turn inputs into variables
+          variables = undefined
+          document = SelectionSet.Print.rootTypeSelectionSet(
+            input.context,
+            getRootIndexOrThrow(input.context, input.rootTypeName),
+            input.selection,
+          )
+          break
         }
         default:
           throw casesExhausted(input)
       }
+
+      switch (input.transport) {
+        case `http`: {
+          return {
+            ...input,
+            url: input.schema,
+            query: document,
+            variables,
+            operationName,
+          }
+        }
+        case `memory`: {
+          return {
+            ...input,
+            schema: input.schema,
+            query: document,
+            variables,
+            operationName,
+          }
+        }
+      }
+    },
+    pack: {
+      slots: {
+        searchParams: getRequestEncodeSearchParameters,
+        body: postRequestEncodeBody,
+      },
+      run: ({ input, slots }) => {
+        // TODO thrown error here is swallowed in examples.
+        switch (input.transport) {
+          case `memory`: {
+            return input
+          }
+          case `http`: {
+            const methodMode = input.context.config.transport.config.methodMode
+            // todo parsing here can be optimized.
+            //      1. If using TS interface then work with initially submitted structured data to already know the operation type
+            //      2. Maybe: Memoize over request.{ operationName, query }
+            //      3. Maybe: Keep a cache of parsed request.{ query }
+            const operationType = throwNull(parseGraphQLOperationType(input)) // todo better feedback here than throwNull
+            const requestMethod = methodMode === MethodMode.post
+              ? `post`
+              : methodMode === MethodMode.getReads // eslint-disable-line
+              ? OperationTypeAccessTypeMap[operationType] === `read` ? `get` : `post`
+              : casesExhausted(methodMode)
+
+            const baseProperties = mergeRequestInit(
+              mergeRequestInit(
+                mergeRequestInit(
+                  {
+                    headers: requestMethod === `get` ? getRequestHeadersRec : postRequestHeadersRec,
+                  },
+                  {
+                    headers: input.context.config.transport.config.headers,
+                    signal: input.context.config.transport.config.signal,
+                  },
+                ),
+                input.context.config.transport.config.raw,
+              ),
+              {
+                headers: input.headers,
+              },
+            )
+            const request: CoreExchangePostRequest | CoreExchangeGetRequest = requestMethod === `get`
+              ? {
+                methodMode: methodMode as MethodModeGetReads,
+                ...baseProperties,
+                method: `get`,
+                url: searchParamsAppendAll(input.url, slots.searchParams(input)),
+              }
+              : {
+                methodMode: methodMode,
+                ...baseProperties,
+                method: `post`,
+                url: input.url,
+                body: slots.body(input),
+              }
+            return {
+              ...input,
+              request,
+            }
+          }
+          default:
+            throw casesExhausted(input)
+        }
+      },
     },
     exchange: {
       slots: {
-        fetch: (request) => {
-          return fetch(request)
-        },
+        // Put fetch behind a lambda so that it can be easily globally overridden
+        // by fixtures.
+        fetch: (request) => fetch(request),
       },
       run: async ({ input, slots }) => {
         switch (input.transport) {
           case `http`: {
             const request = new Request(input.request.url, input.request)
-            // console.log(request)
             const response = await slots.fetch(request)
-            // console.log(response)
             return {
               ...input,
               response,

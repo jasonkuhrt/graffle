@@ -33,5 +33,5 @@ test(`anyware hooks are typed to memory transport`, () => {
 test(`cannot set headers in constructor`, () => {
   // todo: This error is poor for the user. It refers to schema not being a URL. The better message would be that headers is not allowed with memory transport.
   // @ts-expect-error headers not allowed with GraphQL schema
-  Graffle.create({ schema, request: { headers: { 'x-foo': `bar` } } })
+  Graffle.create({ schema, transport: { headers: { 'x-foo': `bar` } } })
 })

@@ -1,6 +1,6 @@
 import type { GraphQLFormattedError } from 'graphql'
 import { type ExecutionResult, GraphQLError } from 'graphql'
-import type { StandardScalarVariables } from './graphql.js'
+import type { GraphQLRequestEncoded, StandardScalarVariables } from './graphql.js'
 import { CONTENT_TYPE_GQL, CONTENT_TYPE_JSON } from './http.js'
 import { isPlainObject } from './prelude.js'
 
@@ -63,3 +63,31 @@ export const CONTENT_TYPE_REC = CONTENT_TYPE_JSON
  * @see https://graphql.github.io/graphql-over-http/draft/#sec-Legacy-Watershed
  */
 export const ACCEPT_REC = `${CONTENT_TYPE_GQL}; charset=utf-8, ${CONTENT_TYPE_JSON}; charset=utf-8`
+
+export const postRequestHeadersRec = {
+  accept: ACCEPT_REC,
+  'content-type': CONTENT_TYPE_REC,
+}
+
+export const getRequestHeadersRec = {
+  accept: ACCEPT_REC,
+}
+
+export const getRequestEncodeSearchParameters = (request: GraphQLRequestEncoded): Record<string, string> => {
+  return {
+    query: request.query,
+    ...(request.variables ? { variables: JSON.stringify(request.variables) } : {}),
+    ...(request.operationName ? { operationName: request.operationName } : {}),
+  }
+}
+export type getRequestEncodeSearchParameters = typeof getRequestEncodeSearchParameters
+
+export const postRequestEncodeBody = (input: GraphQLRequestEncoded): BodyInit => {
+  return JSON.stringify({
+    query: input.query,
+    variables: input.variables,
+    operationName: input.operationName,
+  })
+}
+
+export type postRequestEncodeBody = typeof postRequestEncodeBody

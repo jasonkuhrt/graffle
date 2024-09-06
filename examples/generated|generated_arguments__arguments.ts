@@ -1,5 +1,5 @@
-import { SocialStudies } from './$generated-clients/SocialStudies/__.js'
-import { showJson } from './$helpers.js'
+import { SocialStudies } from './$/generated-clients/SocialStudies/__.js'
+import { showJson } from './$/helpers.js'
 
 const socialStudies = SocialStudies.create()
 

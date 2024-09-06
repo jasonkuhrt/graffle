@@ -4,9 +4,10 @@ aside: false
 
 # Transport Memory
 
+<!-- dprint-ignore-start -->
 ```ts twoslash
-import { Graffle } from 'graffle'
 import { GraphQLObjectType, GraphQLSchema, GraphQLString } from 'graphql'
+import { Graffle } from 'graffle'
 
 const schema = new GraphQLSchema({
   query: new GraphQLObjectType({
@@ -27,9 +28,11 @@ const result = await graffle.rawString({ document: `{ foo }` })
 console.log(result)
 //          ^?
 ```
+<!-- dprint-ignore-end -->
 
-#### Output
+#### Outputs
 
+<!-- dprint-ignore-start -->
 ```json
 {
   "data": {
@@ -37,3 +40,4 @@ console.log(result)
   }
 }
 ```
+<!-- dprint-ignore-end -->

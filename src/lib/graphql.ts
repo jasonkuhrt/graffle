@@ -1,4 +1,11 @@
-import type { GraphQLEnumValue, GraphQLError, GraphQLField, GraphQLInputField, GraphQLSchema } from 'graphql'
+import type {
+  DocumentNode,
+  GraphQLEnumValue,
+  GraphQLError,
+  GraphQLField,
+  GraphQLInputField,
+  GraphQLSchema,
+} from 'graphql'
 import {
   GraphQLEnumType,
   GraphQLInputObjectType,
@@ -248,7 +255,79 @@ export type StandardScalarVariables = {
 
 export type GraphQLExecutionResultError = Errors.ContextualAggregateError<GraphQLError>
 
-export type OperationTypeName = 'query' | 'mutation'
+export const OperationTypes = {
+  query: `query`,
+  mutation: `mutation`,
+  subscription: `subscription`,
+} as const
+
+type OperationTypeQuery = typeof OperationTypes['query']
+type OperationTypeMutation = typeof OperationTypes['mutation']
+type OperationTypeSubscription = typeof OperationTypes['subscription']
+
+export type OperationTypeName = OperationTypeQuery | OperationTypeMutation
+export type OperationTypeNameAll = OperationTypeName | OperationTypeSubscription
+
+export const OperationTypeAccessTypeMap = {
+  query: `read`,
+  mutation: `write`,
+  subscription: `read`,
+} as const
 
 export const isOperationTypeName = (value: unknown): value is OperationTypeName =>
   value === `query` || value === `mutation`
+
+export type GraphQLRequestEncoded = {
+  query: string
+  variables?: StandardScalarVariables
+  operationName?: string
+}
+
+export type GraphQLRequestInput = {
+  document: string | DocumentNode
+  variables?: StandardScalarVariables
+  operationName?: string
+}
+
+const definedOperationPattern = new RegExp(`^\\b(${Object.values(OperationTypes).join(`|`)})\\b`)
+
+export const parseGraphQLOperationType = (request: GraphQLRequestEncoded): OperationTypeNameAll | null => {
+  const { operationName, query: document } = request
+
+  const definedOperations = document.split(/[{}\n]+/).map(s => s.trim()).map(line => {
+    const match = line.match(definedOperationPattern)
+    if (!match) return null
+    return {
+      line,
+      operationType: match[0] as OperationTypeNameAll,
+    }
+  }).filter(Boolean)
+
+  // Handle obviously invalid cases that are zero cost to compute.
+
+  // The given operation name will not match to anything.
+  if (definedOperations.length > 1 && !request.operationName) return null
+
+  // An operation name is required but was not given.
+  if (definedOperations.length === 0 && request.operationName) return null
+
+  // Handle optimistically assumed valid case short circuits.
+
+  if (definedOperations.length === 0) {
+    // Assume that the implicit query syntax is being used.
+    // This is a non-validated optimistic approach for performance, not aimed at correctness.
+    // For example its not checked if the document is actually of the syntactic form `{ ... }`
+    return OperationTypes.query
+  }
+
+  // Continue to the full search.
+
+  const definedOperationToAnalyze = operationName
+    ? definedOperations.find(o => o?.line.includes(operationName))
+    : definedOperations[0]
+
+  // Invalid: The given operation name does not show up in the document.
+  if (!definedOperationToAnalyze) return null
+
+  return definedOperationToAnalyze.operationType
+}

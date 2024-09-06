@@ -60,3 +60,13 @@
 .VPContent h6 a:hover {
 	opacity: 1;
 }
+
+/* Improve Code Blocks */
+
+:root {
+	--vp-code-line-highlight-color: hsla(57.82, 100%, 63%, 0.37);
+}
+
+.dark {
+	--vp-code-line-highlight-color: hsla(208.91, 100%, 84.25%, 0.05);
+}

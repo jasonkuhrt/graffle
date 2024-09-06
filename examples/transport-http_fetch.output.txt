@@ -1,7 +1,0 @@
-{
-  "countries": [
-    {
-      "name": "Canada Mocked!"
-    }
-  ]
-}

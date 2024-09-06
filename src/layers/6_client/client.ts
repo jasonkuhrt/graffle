@@ -2,6 +2,7 @@ import { type ExecutionResult, GraphQLSchema, type TypedQueryDocumentNode } from
 import type { Anyware } from '../../lib/anyware/__.js'
 import type { Errors } from '../../lib/errors/__.js'
 import { isOperationTypeName, operationTypeNameToRootTypeName, type RootTypeName } from '../../lib/graphql.js'
+import { mergeRequestInit } from '../../lib/http.js'
 import type { BaseInput, BaseInput_, TypedDocumentString } from '../0_functions/types.js'
 import { Schema } from '../1_Schema/__.js'
 import { readMaybeThunk } from '../1_Schema/core/helpers.js'
@@ -22,7 +23,6 @@ import {
 } from './Settings/Config.js'
 import { type InputStatic } from './Settings/Input.js'
 import type { AddIncrementalInput, InputIncrementable } from './Settings/inputIncrementable/inputIncrementable.js'
-import { mergeRequestInputOptions } from './Settings/inputIncrementable/request.js'
 import { type InputToConfig, inputToConfig } from './Settings/InputToConfig.js'
 
 /**
@@ -36,13 +36,13 @@ export type ErrorsOther =
 export type GraffleExecutionResultVar<$Config extends Config = Config> =
   | (
     & ExecutionResult
-    & ($Config['transport'] extends TransportHttp ? {
+    & ($Config['transport']['type'] extends TransportHttp ? {
         /**
          * If transport was HTTP, then the raw response is available here.
          */
         response: Response
       }
-      : TransportHttp extends $Config['transport'] ? {
+      : TransportHttp extends $Config['transport']['type'] ? {
           /**
            * If transport was HTTP, then the raw response is available here.
            */
@@ -178,7 +178,7 @@ const create_ = (
       schema: state.input.schema,
       context: {
         config: context.config,
-        transport,
+        transportInputOptions: state.input.transport,
         interface: interface_,
         schemaIndex: context.schemaIndex,
       },
@@ -313,7 +313,11 @@ const create_ = (
         input: {
           ...state.input,
           output: state.input.output,
-          request: mergeRequestInputOptions(state.input.request, input.request),
+          transport: {
+            ...state.input.transport,
+            ...input.transport,
+            raw: mergeRequestInit(state.input.transport?.raw, input.transport?.raw),
+          },
         },
       })
     },

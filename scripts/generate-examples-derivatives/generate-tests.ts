@@ -8,7 +8,7 @@ export const generateTests = async () => {
   // Handle case of renaming or deleting examples.
   await deleteFiles({ pattern: `./tests/examples/*.test.ts` })
 
-  const files = await readFiles({
+  const exampleFiles = await readFiles({
     pattern: `./examples/*.ts`,
     options: { ignore: [`./examples/$*`, `./examples/*.output.*`, `./examples/*.output-encoder.*`] },
   })
@@ -16,7 +16,7 @@ export const generateTests = async () => {
 
   const outputDir = Path.join(process.cwd(), `./tests/examples`)
 
-  await Promise.all(files.map(async (file) => {
+  await Promise.all(exampleFiles.map(async (file) => {
     const encoderFilePath = encoderFilePaths.find((encoderFilePath) =>
       encoderFilePath.match(new RegExp(`${file.name}.output-encoder.ts`)) !== null
     )
@@ -41,7 +41,9 @@ test(\`${file.name}\`, async () => {
   const exampleResult = ${encoderFilePath ? `encode(stripAnsi(result.stdout))` : `stripAnsi(result.stdout)`} 
   // If ever outputs vary by Node version, you can use this to snapshot by Node version.
   // const nodeMajor = process.version.match(/v(\\d+)/)?.[1] ?? \`unknown\`
-  await expect(exampleResult).toMatchFileSnapshot(\`../../${file.path.dir}/${file.name}.output.txt\`)
+  await expect(exampleResult).toMatchFileSnapshot(\`../../${file.path.dir}/${file.name}.output${
+      encoderFilePath ? `.test` : ``
+    }.txt\`)
 })
 `
 

@@ -26,11 +26,10 @@ const testEachArgs = [
       schemaIndex,
       config: {
         output: outputConfigDefault,
-        transport: `memory`,
+        transport: { type: `memory`, config: { methodMode: `post` } },
         name: schemaIndex[`name`],
         // eslint-disable-next-line
         initialInput: {} as any,
-        requestInputOptions: {},
       },
     }
     const graphqlDocumentString = rootTypeSelectionSet(context, schemaIndex[`Root`][`Query`], ss as any)

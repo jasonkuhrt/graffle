@@ -1,1 +1,1 @@
-###### Examples -> [DynamicHeaders.output Encoder](../../examples/dynamicHeaders.output-encoder.md) / [DynamicHeaders](../../examples/dynamicHeaders.md)
+###### Examples -> [Dynamic Headers](../../examples/transport-http-dynamic-headers.md)

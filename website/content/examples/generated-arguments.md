@@ -4,10 +4,9 @@ aside: false
 
 # Arguments
 
+<!-- dprint-ignore-start -->
 ```ts twoslash
-import './graffle/Global.js'
-// ---cut---
-import { Graffle as SocialStudies } from './graffle/__.js'
+import { SocialStudies } from './$/generated-clients/SocialStudies/__.js'
 
 const socialStudies = SocialStudies.create()
 
@@ -20,9 +19,11 @@ const countries = await socialStudies.query.countries({
 console.log(countries)
 //          ^?
 ```
+<!-- dprint-ignore-end -->
 
-#### Output
+#### Outputs
 
+<!-- dprint-ignore-start -->
 ```json
 [
   {
@@ -45,3 +46,4 @@ console.log(countries)
   }
 ]
 ```
+<!-- dprint-ignore-end -->

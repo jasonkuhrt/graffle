@@ -4,6 +4,7 @@ aside: false
 
 # Raw
 
+<!-- dprint-ignore-start -->
 ```ts twoslash
 import { gql, Graffle } from 'graffle'
 
@@ -28,9 +29,11 @@ const result = await graffle.raw({
 console.log(result.data)
 //          ^?
 ```
+<!-- dprint-ignore-end -->
 
-#### Output
+#### Outputs
 
+<!-- dprint-ignore-start -->
 ```txt
 {
   countries: [
@@ -40,3 +43,4 @@ console.log(result.data)
   ]
 }
 ```
+<!-- dprint-ignore-end -->

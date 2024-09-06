@@ -10,7 +10,7 @@ export const handleOutput = (
 ) => {
   // If core errors caused by an abort error then raise it as a direct error.
   // This is an expected possible error. Possible when user cancels a request.
-  if (context.config.transport === Transport.http && result instanceof Error && isAbortError(result.cause)) {
+  if (context.config.transport.type === Transport.http && result instanceof Error && isAbortError(result.cause)) {
     result = result.cause
   }
 

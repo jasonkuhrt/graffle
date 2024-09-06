@@ -1,0 +1,25 @@
+type Mutation {
+  addPokemon(attack: Int!, defense: Int!, hp: Int!, name: String!): Pokemon
+}
+
+type Pokemon {
+  attack: Int
+  defense: Int
+  hp: Int
+  id: Int
+  name: String
+  trainer: Trainer
+}
+
+type Query {
+  pokemon: [Pokemon!]
+  pokemonByName(name: String!): [Pokemon!]
+  trainerByName(name: String!): Trainer
+  trainers: [Trainer!]
+}
+
+type Trainer {
+  id: Int
+  name: String
+  pokemon: [Pokemon!]
+}
