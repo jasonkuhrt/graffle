@@ -14,7 +14,7 @@ export const { generate: generateSelect, moduleName: moduleNameSelect } = create
     code.push(
       title(`Runtime`),
       `import { createSelect } from '${config.libraryPaths.client}'`,
-      `export const Select = createSelect('default')`,
+      `export const Select = createSelect(\`default\`)`,
       ``,
       title(`Buildtime`),
       ``,
