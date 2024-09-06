@@ -69,7 +69,7 @@ const graffle = Graffle.create({
 }
 ```
 
-#### Output
+#### Outputs
 
 ```txt
 [
@@ -77,6 +77,9 @@ const graffle = Graffle.create({
   { name: 'Germany', continent: { name: 'Europe' } },
   { name: 'Japan', continent: { name: 'Asia' } }
 ]
+```
+
+```txt
 [
   { name: 'Canada', continent: { name: 'North America' } },
   { name: 'Germany', continent: { name: 'Europe' } },

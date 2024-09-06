@@ -1,3 +1,4 @@
+import { showPartition } from '../../examples/$/helpers.js'
 import { type File, readFiles } from '../lib/readFiles.js'
 
 export const examplesIgnorePatterns = [`./examples/$*`, `./examples/*.output.*`, `./examples/*.output-encoder.*`]
@@ -16,8 +17,8 @@ export const readExamples = async (): Promise<Example[]> => {
   })
 
   const examples = exampleFiles.map((example) => {
-    const output = outputFiles.find(file => file.name === `${example.name}.output.txt`)
-    if (!output) throw new Error(`Could not find output file for ${example.name}`)
+    const outputFile = outputFiles.find(file => file.name === `${example.name}.output.txt`)
+    if (!outputFile) throw new Error(`Could not find output file for ${example.name}`)
 
     const { description, content } = extractDescription(example.content)
 
@@ -27,7 +28,10 @@ export const readExamples = async (): Promise<Example[]> => {
         content,
       },
       fileName: parseFileName(example.name),
-      output,
+      output: {
+        file: outputFile,
+        blocks: outputFile.content.split(showPartition + `\n`).map(block => block.trim()).filter(Boolean),
+      },
       isUsingJsonOutput: example.content.includes(`showJson`),
       description,
       tags: parseTags(example.name),
@@ -71,7 +75,10 @@ export interface Example {
     title: string | null
     group: null | string
   }
-  output: File
+  output: {
+    file: File
+    blocks: string[]
+  }
   isUsingJsonOutput: boolean
   tags: Tag[]
 }

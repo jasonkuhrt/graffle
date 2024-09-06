@@ -38,7 +38,7 @@ console.log(result)
 // todo .with(...) variant
 ```
 
-#### Output
+#### Outputs
 
 ```txt
 'This operation was aborted'

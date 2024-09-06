@@ -20,7 +20,7 @@ console.log(countries)
 //          ^?
 ```
 
-#### Output
+#### Outputs
 
 ```json
 [

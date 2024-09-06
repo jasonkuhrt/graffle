@@ -68,7 +68,7 @@ describe(`methodMode`, () => {
     test(`mutation still uses POST`, async ({ fetch }) => {
       fetch.mockImplementationOnce(() => Promise.resolve(createResponse({ data: { user: { name: `foo` } } })))
       const graffle = Graffle.create({ schema, transport: { methodMode: `getReads` } })
-      await graffle.rawString({ document: `mutation {user{name}}` })
+      await graffle.rawString({ document: `mutation { user { name } }` })
       const request = fetch.mock.calls[0]?.[0]
       expect(request?.method).toEqual(`POST`)
       expect(request?.headers.get(`content-type`)).toEqual(CONTENT_TYPE_REC)

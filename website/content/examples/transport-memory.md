@@ -29,7 +29,7 @@ console.log(result)
 //          ^?
 ```
 
-#### Output
+#### Outputs
 
 ```json
 {

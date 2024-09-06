@@ -8,11 +8,15 @@ export const publicGraphQLSchemaEndpoints = {
   SocialStudies: `https://countries.trevorblades.com/graphql`,
 }
 
+export const showPartition = `---------------------------------------- SHOW ----------------------------------------`
+
 export const show = (value: unknown) => {
+  console.log(showPartition)
   console.log(inspect(value, { depth: null, colors: true }))
 }
 
 export const showJson = (value: unknown) => {
+  console.log(showPartition)
   console.log(JSON.stringify(value, null, 2))
 }
 

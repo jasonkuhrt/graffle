@@ -30,7 +30,7 @@ console.log(countries.data)
 //          ^?
 ```
 
-#### Output
+#### Outputs
 
 ```json
 {

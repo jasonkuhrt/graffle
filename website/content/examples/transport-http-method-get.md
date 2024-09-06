@@ -33,7 +33,7 @@ await graffle.rawString({ document: `query { pokemonByName(name:"Nano") { hp } }
 await server.stop()
 ```
 
-#### Output
+#### Outputs
 
 ```txt
 {
@@ -60,6 +60,9 @@ await server.stop()
   },
   body: '{"query":"mutation addPokemon(attack:0, defense:0, hp:1, name:\\"Nano\\") { name }"}'
 }
+```
+
+```txt
 {
   methodMode: 'getReads',
   headers: Headers {

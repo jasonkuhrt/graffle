@@ -17,6 +17,7 @@ type CaseParameters = [
 describe(`parseGraphQLOperationType`, () => {
   // dprint-ignore
   test.each<CaseParameters>([
+    
     [ `null if no defined operations and operation name given `, 														{ query: docNoDefinedOps, operationName: operationNameOne }, 						null ],
     [ `null if multiple defined operations and no operation name given`, 										{ query: docMultipleQueryOperations  }, 																null ],
     [ `null if multiple defined operations and no operation name given (empty string)`, 		{ query: docMultipleQueryOperations, operationName: ``  }, 							null ],
@@ -25,6 +26,7 @@ describe(`parseGraphQLOperationType`, () => {
     [ `query if multiple defined query operations and no query operation name given `, 			{ query: docMultipleQueryOperations, operationName: operationNameOne }, `query` ],
     [ `query if multiple defined mixed operations and no mutation operation name given `, 	{ query: docMultipleMixedOperations, operationName: operationNameTwo }, `query` ],
     [ `mutation if multiple defined mixed operations and no query operation name given `, 	{ query: docMultipleMixedOperations, operationName: operationNameOne }, `mutation` ],
+    [ `mutation if only operation without name and no operation given `, 									  { query: `mutation { user { name } }` }, 						                    `mutation` ],
     [ `overloaded terms do not confuse parser`, 	                                          { query: docOverloadedTerms },                                          `query` ],
   ])(`%s`, (_, request, result) => {
     expect(parseGraphQLOperationType(request)).toEqual(result)

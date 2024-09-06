@@ -274,11 +274,6 @@ export const OperationTypeAccessTypeMap = {
   subscription: `read`,
 } as const
 
-// Regular expressions to match GraphQL operations
-const queryRegex = /\bquery\b/i
-const mutationRegex = /\bmutation\b/i
-const subscriptionRegex = /\bsubscription\b/i
-
 export const isOperationTypeName = (value: unknown): value is OperationTypeName =>
   value === `query` || value === `mutation`
 
@@ -294,13 +289,19 @@ export type GraphQLRequestInput = {
   operationName?: string
 }
 
+const definedOperationPattern = new RegExp(`^\\b(${Object.values(OperationTypes).join(`|`)})\\b`)
+
 export const parseGraphQLOperationType = (request: GraphQLRequestEncoded): OperationTypeNameAll | null => {
   const { operationName, query: document } = request
 
-  const definedOperations = document.split(/[{}\n]+/).map(s => s.trim()).filter(line => {
-    return line.startsWith(OperationTypes.mutation + ` `) || line.startsWith(OperationTypes.query + ` `)
-      || line.startsWith(OperationTypes.subscription + ` `)
-  })
+  const definedOperations = document.split(/[{}\n]+/).map(s => s.trim()).map(line => {
+    const match = line.match(definedOperationPattern)
+    if (!match) return null
+    return {
+      line,
+      operationType: match[0] as OperationTypeNameAll,
+    }
+  }).filter(Boolean)
 
   // Handle obviously invalid cases that are zero cost to compute.
 
@@ -322,21 +323,11 @@ export const parseGraphQLOperationType = (request: GraphQLRequestEncoded): Opera
   // Continue to the full search.
 
   const definedOperationToAnalyze = operationName
-    ? definedOperations.find(o => o.includes(operationName))
+    ? definedOperations.find(o => o?.line.includes(operationName))
     : definedOperations[0]
 
   // Invalid: The given operation name does not show up in the document.
   if (!definedOperationToAnalyze) return null
 
-  // Determine the type of operation
-  if (queryRegex.test(definedOperationToAnalyze)) {
-    return OperationTypes.query
-  } else if (mutationRegex.test(definedOperationToAnalyze)) {
-    return OperationTypes.mutation
-  } else if (subscriptionRegex.test(definedOperationToAnalyze)) {
-    return OperationTypes.subscription
-  }
-
-  // Invalid: Undefined case here. Should be impossible due to initial operation type filtering at start of function.
-  return null
+  return definedOperationToAnalyze.operationType
 }

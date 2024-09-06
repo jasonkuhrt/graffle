@@ -31,7 +31,7 @@ const graffle = Graffle
 await graffle.rawString({ document: `{ languages { code } }` })
 ```
 
-#### Output
+#### Outputs
 
 ```txt
 {
@@ -39,7 +39,7 @@ await graffle.rawString({ document: `{ languages { code } }` })
   headers: Headers {
     accept: 'application/graphql-response+json; charset=utf-8, application/json; charset=utf-8',
     'content-type': 'application/json',
-    'x-sent-at-time': '1725643620132'
+    'x-sent-at-time': '1725644467972'
   },
   signal: undefined,
   method: 'post',

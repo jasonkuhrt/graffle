@@ -28,7 +28,7 @@ console.log(result.data)
 //          ^?
 ```
 
-#### Output
+#### Outputs
 
 ```txt
 {

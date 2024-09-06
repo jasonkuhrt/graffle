@@ -29,7 +29,7 @@ const graffle = Graffle
 await graffle.rawString({ document: `{ languages { code } }` })
 ```
 
-#### Output
+#### Outputs
 
 ```txt
 {

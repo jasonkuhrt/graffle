@@ -45,7 +45,7 @@ console.log(result.data?.countries)
 //          ^?
 ```
 
-#### Output
+#### Outputs
 
 ```txt
 [

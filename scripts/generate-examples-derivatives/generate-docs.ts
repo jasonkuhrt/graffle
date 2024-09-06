@@ -199,12 +199,16 @@ aside: false
 ${example.file.content.trim()}
 \`\`\`
 
-#### Output
+#### Outputs
 
+${
+    example.output.blocks.map(block => {
+      return `
 \`\`\`${example.isUsingJsonOutput ? `json` : `txt`}
-${example.output.content.trim()}
-\`\`\`
-
+${block}
+\`\`\``.trim()
+    }).join(`\n`)
+  }
 `.trim()
 
   return {
