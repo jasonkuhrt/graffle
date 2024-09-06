@@ -125,14 +125,12 @@ const transformRewriteGraffleImports = (example: Example) => {
     )
     .replaceAll(
       `import { SocialStudies } from './$/generated-clients/SocialStudies/__.js'`,
-      `import './graffle/Global.js'
-// ---cut---
+      `// ---cut---
 import { Graffle as SocialStudies } from './graffle/__.js'`,
     )
     .replaceAll(
       /import ({[^}]+}) from '.\/\$\/generated-clients\/([^/]+)\/__\.js'/g,
-      `import './$2/Global.js'
-// ---cut---
+      `// ---cut---
 import $1 from './$2/__.js'`,
     )
     // Any remaining $ imports are entirely removed.

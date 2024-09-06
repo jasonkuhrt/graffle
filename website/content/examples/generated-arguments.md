@@ -6,7 +6,6 @@ aside: false
 
 <!-- dprint-ignore-start -->
 ```ts twoslash
-import './graffle/Global.js'
 // ---cut---
 import { Graffle as SocialStudies } from './graffle/__.js'
 

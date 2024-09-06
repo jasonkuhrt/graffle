@@ -33,8 +33,6 @@ You will see a directory named `graffle` has been created in the current working
 Create a module, import the constructor, and create an instance. As you can see it is extremely minimal. Graffle even defaults the schema URL to what we used during gentime so we can omit it here.
 
 ```ts twoslash
-import './graffle/Global.js'
-// ---cut---
 import { Graffle } from './graffle/__.js'
 
 const graffle = Graffle.create()
@@ -45,10 +43,10 @@ const graffle = Graffle.create()
 Now you're ready to send a "document". Your generated client gives you a rich interface reflecting the shape of the schema. Not only does this give you type safety it simplifies the result type (but if you want that envelope back for any reason don't worry, its [just a config away](./todo)).
 
 ```ts twoslash
-import './graffle/Global.js'
 import { Graffle } from './graffle/__.js'
+
 const graffle = Graffle.create({ schema: 'abc' })
-// ---cut---
+
 const countries = await graffle.query.countries({
   $: {
     filter: {

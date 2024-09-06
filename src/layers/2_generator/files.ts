@@ -91,10 +91,15 @@ export const generateFiles = async (input: Input) => {
     },
   })
 
+  // todo clear directory before generating so that removed or renamed files are cleaned up.
   await fs.mkdir(outputDirPath, { recursive: true })
+  await fs.mkdir(`${outputDirPath}/modules`, { recursive: true })
   await Promise.all(
     codes.map((code) => {
-      return fs.writeFile(`${outputDirPath}/${code.moduleName}.ts`, code.code, { encoding: `utf8` })
+      const isIndexModule = code.moduleName.match(/^_+$/) !== null
+      return fs.writeFile(`${outputDirPath}/${isIndexModule ? `` : `modules/`}${code.moduleName}.ts`, code.code, {
+        encoding: `utf8`,
+      })
     }),
   )
 }
