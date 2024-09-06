@@ -34,13 +34,14 @@ await graffle.rawString({ document: `{ languages { code } }` })
 
 ```txt
 {
+  methodMode: 'post',
   headers: Headers {
     accept: 'application/graphql-response+json; charset=utf-8, application/json; charset=utf-8',
     'content-type': 'application/json',
-    'x-sent-at-time': '1725564397598'
+    'x-sent-at-time': '1725590920216'
   },
   signal: undefined,
-  method: 'POST',
+  method: 'post',
   url: 'https://countries.trevorblades.com/graphql',
   body: '{"query":"{ languages { code } }"}'
 }
