@@ -26,19 +26,38 @@ Graffle.create({
 
 ## Configuration
 
-<!--@include: @guides/_example_links/transport-http_RequestInput.md-->
+You can generally configure aspects of the transport in three ways:
 
-You can configure aspects of the transport under `transport`:
+1. In the constructor under `transport`.
+2. Using `with` under `transport`.
+3. Using extensions.
 
-```ts
-graffle.create({
-  transport: { headers: { authorization: '...' }, raw: { mode: 'cors' } },
-})
+```ts twoslash
+import * as GGGGGGGG from 'graffle'
+// @noErrors
+GGGGGGGG.
+//      ^|
+// const graffle = Graffle.create({ schema: 'ignoreme' })
+// // ---cut---
+// graffle.create({
+//   transport: {
+//     headers: { authorization: '...' },
+//     raw: { mode: 'cors' },
+//   },
+// })
 ```
 
 ## GET
 
 <!--@include: @/guides/_example_links/method-get.md-->
+
+By default all requests use HTTP POST. However you can configure queries and subscriptions to be sent over HTTP GET.
+
+```ts
+graffle.create({
+  transport: { methodMode: 'getReads' },
+})
+```
 
 ## POST
 
