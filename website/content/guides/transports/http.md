@@ -33,18 +33,15 @@ You can generally configure aspects of the transport in three ways:
 3. Using extensions.
 
 ```ts twoslash
-import * as GGGGGGGG from 'graffle'
-// @noErrors
-GGGGGGGG.
-//      ^|
-// const graffle = Graffle.create({ schema: 'ignoreme' })
-// // ---cut---
-// graffle.create({
-//   transport: {
-//     headers: { authorization: '...' },
-//     raw: { mode: 'cors' },
-//   },
-// })
+import { Graffle } from 'graffle'
+// ---cut---
+Graffle.create({
+  schema: 'https://...',
+  transport: {
+    headers: { authorization: '...' },
+    raw: { mode: 'cors' },
+  },
+})
 ```
 
 ## GET
@@ -53,8 +50,11 @@ GGGGGGGG.
 
 By default all requests use HTTP POST. However you can configure queries and subscriptions to be sent over HTTP GET.
 
-```ts
+```ts twoslash
+import { Graffle } from 'graffle'
+// ---cut---
 graffle.create({
+  schema: 'https://...',
   transport: { methodMode: 'getReads' },
 })
 ```
