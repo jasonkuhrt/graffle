@@ -4,6 +4,7 @@ aside: false
 
 # Request Input
 
+<!-- dprint-ignore-start -->
 ```ts twoslash
 import { Graffle } from 'graffle'
 
@@ -26,9 +27,11 @@ const graffle = Graffle
 
 await graffle.rawString({ document: `{ languages { code } }` })
 ```
+<!-- dprint-ignore-end -->
 
 #### Outputs
 
+<!-- dprint-ignore-start -->
 ```txt
 {
   methodMode: 'post',
@@ -44,3 +47,4 @@ await graffle.rawString({ document: `{ languages { code } }` })
   body: '{"query":"{ languages { code } }"}'
 }
 ```
+<!-- dprint-ignore-end -->

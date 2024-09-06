@@ -195,18 +195,23 @@ aside: false
 
 # ${example.fileName.canonicalTitle}${example.description ? `\n\n${example.description}\n` : ``}
 
+<!-- dprint-ignore-start -->
 \`\`\`ts twoslash
 ${example.file.content.trim()}
 \`\`\`
+<!-- dprint-ignore-end -->
 
 #### Outputs
 
 ${
     example.output.blocks.map(block => {
       return `
+<!-- dprint-ignore-start -->
 \`\`\`${example.isUsingJsonOutput ? `json` : `txt`}
 ${block}
-\`\`\``.trim()
+\`\`\`
+<!-- dprint-ignore-end -->
+`.trim()
     }).join(`\n`)
   }
 `.trim()

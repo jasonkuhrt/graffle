@@ -4,6 +4,7 @@ aside: false
 
 # Raw String Typed
 
+<!-- dprint-ignore-start -->
 ```ts twoslash
 import { Graffle } from 'graffle'
 // todo from 'graffle/utils'
@@ -43,9 +44,11 @@ const result = await graffle.rawString({
 console.log(result.data?.countries)
 //          ^?
 ```
+<!-- dprint-ignore-end -->
 
 #### Outputs
 
+<!-- dprint-ignore-start -->
 ```txt
 [
   { name: 'Canada', continent: { name: 'North America' } },
@@ -53,3 +56,4 @@ console.log(result.data?.countries)
   { name: 'Japan', continent: { name: 'Asia' } }
 ]
 ```
+<!-- dprint-ignore-end -->

@@ -6,6 +6,7 @@ aside: false
 
 It is possible to cancel a request using an `AbortController` signal.
 
+<!-- dprint-ignore-start -->
 ```ts twoslash
 import { Graffle } from 'graffle'
 
@@ -29,18 +30,19 @@ const resultPromise = graffle
 
 abortController.abort()
 
-const result = await resultPromise.catch((error: unknown) =>
-  (error as Error).message
-)
+const result = await resultPromise.catch((error: unknown) => (error as Error).message)
 
 console.log(result)
 //          ^?
 
 // todo .with(...) variant
 ```
+<!-- dprint-ignore-end -->
 
 #### Outputs
 
+<!-- dprint-ignore-start -->
 ```txt
 'This operation was aborted'
 ```
+<!-- dprint-ignore-end -->

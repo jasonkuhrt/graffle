@@ -8,6 +8,7 @@ import { serveSchema, show } from './$/helpers.js'
 import { schema } from './$/schemas/pokemon/schema.js'
 
 const server = await serveSchema({ schema })
+
 const graffle = Pokemon
   .create({
     schema: server.url,

@@ -4,6 +4,7 @@ aside: false
 
 # Arguments
 
+<!-- dprint-ignore-start -->
 ```ts twoslash
 import { SocialStudies } from './$/generated-clients/SocialStudies/__.js'
 
@@ -18,9 +19,11 @@ const countries = await socialStudies.query.countries({
 console.log(countries)
 //          ^?
 ```
+<!-- dprint-ignore-end -->
 
 #### Outputs
 
+<!-- dprint-ignore-start -->
 ```json
 [
   {
@@ -43,3 +46,4 @@ console.log(countries)
   }
 ]
 ```
+<!-- dprint-ignore-end -->
