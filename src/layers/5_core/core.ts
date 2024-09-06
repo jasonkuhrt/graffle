@@ -213,6 +213,10 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
           }
           case `http`: {
             const methodMode = input.context.config.transport.config.methodMode
+            // todo parsing here can be optimized.
+            //      1. If using TS interface then work with initially submitted structured data to already know the operation type
+            //      2. Maybe: Memoize over request.{ operationName, query }
+            //      3. Maybe: Keep a cache of parsed request.{ query }
             const operationType = throwNull(parseGraphQLOperationType(input)) // todo better feedback here than throwNull
             const requestMethod = methodMode === MethodMode.post
               ? `post`
