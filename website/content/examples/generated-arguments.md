@@ -6,7 +6,6 @@ aside: false
 
 ```ts twoslash
 import { SocialStudies } from './$/generated-clients/SocialStudies/__.js'
-import { console.log } from './$/helpers.js'
 
 const socialStudies = SocialStudies.create()
 

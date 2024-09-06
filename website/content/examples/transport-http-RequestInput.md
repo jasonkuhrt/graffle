@@ -6,8 +6,6 @@ aside: false
 
 ```ts twoslash
 import { Graffle } from 'graffle'
-import { console.log } from './$/helpers.js'
-import { publicGraphQLSchemaEndpoints } from './$/helpers.js'
 
 const graffle = Graffle
   .create({

@@ -2,7 +2,7 @@
  * It is possible to cancel a request using an `AbortController` signal.
  */
 
-import { gql, Graffle } from '../src/entrypoints/main.js'
+import { Graffle } from '../src/entrypoints/main.js'
 import { publicGraphQLSchemaEndpoints, show } from './$/helpers.js'
 
 const abortController = new AbortController()
@@ -13,8 +13,8 @@ const graffle = Graffle.create({
 
 const resultPromise = graffle
   .with({ transport: { signal: abortController.signal } })
-  .raw({
-    document: gql`
+  .rawString({
+    document: `
       {
         countries {
           name

@@ -7,8 +7,7 @@ aside: false
 It is possible to cancel a request using an `AbortController` signal.
 
 ```ts twoslash
-import { gql, Graffle } from 'graffle'
-import { publicGraphQLSchemaEndpoints, console.log } from './$/helpers.js'
+import { Graffle } from 'graffle'
 
 const abortController = new AbortController()
 
@@ -18,8 +17,8 @@ const graffle = Graffle.create({
 
 const resultPromise = graffle
   .with({ transport: { signal: abortController.signal } })
-  .raw({
-    document: gql`
+  .rawString({
+    document: `
       {
         countries {
           name
@@ -30,7 +29,9 @@ const resultPromise = graffle
 
 abortController.abort()
 
-const result = await resultPromise.catch((error: unknown) => (error as Error).message)
+const result = await resultPromise.catch((error: unknown) =>
+  (error as Error).message
+)
 
 console.log(result)
 //          ^?

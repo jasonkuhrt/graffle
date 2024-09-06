@@ -6,7 +6,6 @@ aside: false
 
 ```ts twoslash
 import { Graffle } from 'graffle'
-import { publicGraphQLSchemaEndpoints, console.log } from './$/helpers.js'
 
 const graffle = Graffle
   .create({
@@ -39,7 +38,7 @@ await graffle.rawString({ document: `{ languages { code } }` })
   headers: Headers {
     accept: 'application/graphql-response+json; charset=utf-8, application/json; charset=utf-8',
     'content-type': 'application/json',
-    'x-sent-at-time': '1725644467972'
+    'x-sent-at-time': '1725645410453'
   },
   signal: undefined,
   method: 'post',

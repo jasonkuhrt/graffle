@@ -145,7 +145,7 @@ import { Graffle as SocialStudies } from './graffle/__.js'`,
 const transformRewriteHelperImports = (example: Example) => {
   const consoleLog = `console.log`
   const newContent = example.file.content
-    .replaceAll(/^import.*\$helpers.*$\n/gm, ``)
+    .replaceAll(/^import.*\$\/helpers.*$\n/gm, ``)
     .replaceAll(
       `publicGraphQLSchemaEndpoints.SocialStudies`,
       `\`${publicGraphQLSchemaEndpoints.SocialStudies}\``,

@@ -8,7 +8,6 @@ aside: false
 import { Graffle } from 'graffle'
 // todo from 'graffle/utils'
 import type { TypedDocumentString } from '../src/layers/0_functions/types.js'
-import { publicGraphQLSchemaEndpoints, console.log } from './$/helpers.js'
 
 const graffle = Graffle.create({
   schema: `https://countries.trevorblades.com/graphql`,
