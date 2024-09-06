@@ -15,7 +15,7 @@ const server = await serveSchema({ schema })
 const graffle = Pokemon
   .create({
     schema: server.url,
-    transport: { methodMode: `getReads` },
+    transport: { methodMode: `getReads` }, // [!code highlight]
   })
   .use(async ({ exchange }) => {
     console.log(exchange.input.request)
