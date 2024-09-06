@@ -9,14 +9,12 @@ to be sent over HTTP GET method. Note write-kind operations (mutation) are still
 
 <!-- dprint-ignore-start -->
 ```ts twoslash
-import { Pokemon } from './$/generated-clients/Pokemon/__.js'
-import { schema } from './$/schemas/pokemon/schema.js'
-
-const server = await serveSchema({ schema })
+import './pokemon/Global.js'
+// ---cut---
+import { Pokemon } from './pokemon/__.js'
 
 const graffle = Pokemon
   .create({
-    schema: server.url,
     transport: { methodMode: `getReads` }, // [!code highlight]
   })
   .use(async ({ exchange }) => {
@@ -31,8 +29,6 @@ await graffle.rawString({ document: `mutation addPokemon(attack:0, defense:0, hp
 // The following request will use an HTTP GET method because it
 // is using a "query" type of operation.
 await graffle.rawString({ document: `query { pokemonByName(name:"Nano") { hp } }` })
-
-await server.stop()
 ```
 <!-- dprint-ignore-end -->
 

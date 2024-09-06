@@ -129,6 +129,19 @@ const transformRewriteGraffleImports = (example: Example) => {
 // ---cut---
 import { Graffle as SocialStudies } from './graffle/__.js'`,
     )
+    .replaceAll(
+      /import ({[^}]+}) from '.\/\$\/generated-clients\/([^/]+)\/__\.js'/g,
+      `import './$2/Global.js'
+// ---cut---
+import $1 from './$2/__.js'`,
+    )
+    // Any remaining $ imports are entirely removed.
+    .replaceAll(/import.*'.*\$.*'\n/g, ``)
+    // Any references to servers are removed.
+    // These are used in the examples to run servers for the examples to interact with.
+    // This is not something that the website examples support showing.
+    // It would required bringing in analysis of the server code for twoslash.
+    .replaceAll(/.*server.*\n(?:\s*\n)?/g, ``)
 
   return {
     ...example,
