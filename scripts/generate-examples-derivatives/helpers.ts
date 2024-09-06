@@ -61,7 +61,6 @@ const parseFileName = (fileName: string): Example['fileName'] => {
 
 const parseTags = (fileName: string) => {
   const [tagsExpression] = fileName.replace(/^[^|]+\|/, ``).split(`__`)
-  console.log(tagsExpression)
   if (!tagsExpression) return []
   const tags = tagsExpression.split(`_`)
   return tags
@@ -93,7 +92,6 @@ const extractDescription = (fileContent: string) => {
 
   if (jsdocMatch) {
     const description = jsdocMatch[1]!.trim().replaceAll(/^\s*\* /gm, ``)
-    console.log(description)
     return {
       description,
       content: fileContent.replace(pattern, ``),

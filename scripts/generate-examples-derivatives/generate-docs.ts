@@ -124,7 +124,7 @@ const transformRewriteGraffleImports = (example: Example) => {
       ``,
     )
     .replaceAll(
-      `import { SocialStudies } from './$generated-clients/SocialStudies/__.js'`,
+      `import { SocialStudies } from './$/generated-clients/SocialStudies/__.js'`,
       `import './graffle/Global.js'
 // ---cut---
 import { Graffle as SocialStudies } from './graffle/__.js'`,
