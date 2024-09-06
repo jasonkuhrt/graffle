@@ -6,7 +6,7 @@ export default tsEslint.config({
     'eslint.config.js',
     'vite.config.ts',
     '**/generated/**/*',
-    '**/$generated-clients/**/*',
+    '**/$/**/*',
     'legacy/**/*',
     'build/**/*',
     'website/**/*',
