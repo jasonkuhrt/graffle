@@ -26,7 +26,7 @@ const testEachArgs = [
       schemaIndex,
       config: {
         output: outputConfigDefault,
-        transport: { type: `memory`, config: null },
+        transport: { type: `memory`, config: { methodMode: `post` } },
         name: schemaIndex[`name`],
         // eslint-disable-next-line
         initialInput: {} as any,

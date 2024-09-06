@@ -12,15 +12,14 @@ import { Upload } from './Upload.js'
 
 import { createYoga } from 'graphql-yoga'
 import type { Client } from '../../6_client/client.js'
-import type { OutputConfigDefault } from '../../6_client/Settings/Config.js'
-import type { TransportHttpInput } from '../../6_client/transportHttp/request.js'
+import type { Config, OutputConfigDefault } from '../../6_client/Settings/Config.js'
 
 let server: Server
 let port: number
 let graffle: Client<
   any,
   {
-    transport: { type: 'http'; config: null | TransportHttpInput }
+    transport: { type: 'http'; config: Config['transport']['config'] }
     output: OutputConfigDefault
     initialInput: { schema: URL }
     name: 'default'
