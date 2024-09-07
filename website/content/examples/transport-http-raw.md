@@ -2,7 +2,9 @@
 aside: false
 ---
 
-# Request Input
+# Raw
+
+This example shows how to use the `raw` configuration of transport configuration to easily access low-level `RequestInit` configuration.
 
 <!-- dprint-ignore-start -->
 ```ts twoslash
@@ -12,9 +14,6 @@ const graffle = Graffle
   .create({
     schema: `https://countries.trevorblades.com/graphql`,
     transport: {
-      headers: {
-        authorization: `Bearer MY_TOKEN`,
-      },
       raw: {
         mode: `cors`,
       },
@@ -37,8 +36,7 @@ await graffle.rawString({ document: `{ languages { code } }` })
   methodMode: 'post',
   headers: Headers {
     accept: 'application/graphql-response+json; charset=utf-8, application/json; charset=utf-8',
-    'content-type': 'application/json',
-    authorization: 'Bearer MY_TOKEN'
+    'content-type': 'application/json'
   },
   signal: undefined,
   mode: 'cors',

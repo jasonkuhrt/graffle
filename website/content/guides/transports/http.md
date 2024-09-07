@@ -90,6 +90,8 @@ Graffle.create({
 
 ## Anyware
 
+<!--@include: @/guides/_example_links/transport-http_extension.md-->
+
 Hooks are augmented in the following ways:
 
 |           | Encode | Pack                   | Exchange  | Unpack     | Decode     |
@@ -98,6 +100,8 @@ Hooks are augmented in the following ways:
 | Functions | -      | -                      | `fetch`   |            |            |
 
 ## Raw
+
+<!--@include: @/guides/_example_links/transport-http_raw.md-->
 
 - You can easily pass configuration to `fetch` via `transport.raw`.
 - It takes precedence over other `transport.*` properties.

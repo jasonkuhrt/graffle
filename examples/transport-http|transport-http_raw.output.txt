@@ -3,8 +3,7 @@
   methodMode: 'post',
   headers: Headers {
     accept: 'application/graphql-response+json; charset=utf-8, application/json; charset=utf-8',
-    'content-type': 'application/json',
-    authorization: 'Bearer MY_TOKEN'
+    'content-type': 'application/json'
   },
   signal: undefined,
   mode: 'cors',

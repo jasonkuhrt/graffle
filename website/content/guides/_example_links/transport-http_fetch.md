@@ -1,1 +1,1 @@
-###### Examples -> [Fetch](../../examples/transport-http-fetch.md)
+###### Examples -> [Custom Fetch](../../examples/transport-http-custom-fetch.md)

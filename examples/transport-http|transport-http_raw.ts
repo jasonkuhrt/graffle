@@ -1,22 +1,20 @@
+/**
+ * This example shows how to use the `raw` configuration of transport configuration to easily access low-level `RequestInit` configuration.
+ */
 import { Graffle } from '../src/entrypoints/main.js'
-import { publicGraphQLSchemaEndpoints, show } from './$/helpers.js'
+import { show } from './$/helpers.js'
+import { publicGraphQLSchemaEndpoints } from './$/helpers.js'
 
 const graffle = Graffle
   .create({
     schema: publicGraphQLSchemaEndpoints.SocialStudies,
-  })
-  .use(async ({ pack }) => {
-    return await pack({
-      input: {
-        ...pack.input,
-        headers: {
-          'X-Sent-At-Time': Date.now().toString(),
-        },
+    transport: {
+      raw: {
+        mode: `cors`,
       },
-    })
+    },
   })
   .use(async ({ exchange }) => {
-    // todo wrong type / runtime value
     show(exchange.input.request)
     return exchange()
   })

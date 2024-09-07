@@ -4,13 +4,14 @@ aside: false
 
 # Abort
 
-It is possible to cancel a request using an `AbortController` signal.
+This example shows how to cancel requests using an `AbortController` signal.
 
 <!-- dprint-ignore-start -->
 ```ts twoslash
 import { Graffle } from 'graffle'
 
 const abortController = new AbortController()
+//    ^^^^^^^^^^^^^^^
 
 const graffle = Graffle.create({
   schema: `https://countries.trevorblades.com/graphql`,
@@ -18,6 +19,7 @@ const graffle = Graffle.create({
 
 const resultPromise = graffle
   .with({ transport: { signal: abortController.signal } })
+  //                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   .rawString({
     document: `
       {
@@ -29,6 +31,7 @@ const resultPromise = graffle
   })
 
 abortController.abort()
+//              ^^^^^^^
 
 const result = await resultPromise.catch((error: unknown) => (error as Error).message)
 

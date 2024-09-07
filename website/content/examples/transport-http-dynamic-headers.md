@@ -4,6 +4,8 @@ aside: false
 
 # Dynamic Headers
 
+This example shows how to leverage the extension system to dynamically manipulate headers per request.
+
 <!-- dprint-ignore-start -->
 ```ts twoslash
 import { Graffle } from 'graffle'
@@ -41,7 +43,7 @@ await graffle.rawString({ document: `{ languages { code } }` })
   headers: Headers {
     accept: 'application/graphql-response+json; charset=utf-8, application/json; charset=utf-8',
     'content-type': 'application/json',
-    'x-sent-at-time': '1725665559439'
+    'x-sent-at-time': '1725741416691'
   },
   signal: undefined,
   method: 'post',

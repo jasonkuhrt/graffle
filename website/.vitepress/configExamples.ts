@@ -34,24 +34,28 @@ export const sidebarExamples: DefaultTheme.SidebarItem[] = [
     'text': 'Transport Http',
     'items': [
       {
-        'text': 'Request Input',
-        'link': '/examples/transport-http-request-input',
-      },
-      {
         'text': 'Abort',
         'link': '/examples/transport-http-abort',
       },
       {
-        'text': 'Fetch',
-        'link': '/examples/transport-http-fetch',
+        'text': 'Custom Fetch',
+        'link': '/examples/transport-http-custom-fetch',
       },
       {
         'text': 'Dynamic Headers',
         'link': '/examples/transport-http-dynamic-headers',
       },
       {
+        'text': 'Headers',
+        'link': '/examples/transport-http-headers',
+      },
+      {
         'text': 'Method Get',
         'link': '/examples/transport-http-method-get',
+      },
+      {
+        'text': 'Raw',
+        'link': '/examples/transport-http-raw',
       },
     ],
   },

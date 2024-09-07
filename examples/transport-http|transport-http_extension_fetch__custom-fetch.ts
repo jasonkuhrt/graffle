@@ -1,15 +1,14 @@
----
-aside: false
----
+/**
+ * This examples shows how to leverage the extension system to override the "exchange" hook's default fetch implementation.
+ */
 
-# Fetch
-
-<!-- dprint-ignore-start -->
-```ts twoslash
-import { Graffle } from 'graffle'
+/* eslint-disable */
+import { Graffle } from '../src/entrypoints/main.js'
+import { showJson } from './$/helpers.js'
+import { publicGraphQLSchemaEndpoints } from './$/helpers.js'
 
 const graffle = Graffle
-  .create({ schema: `https://countries.trevorblades.com/graphql` })
+  .create({ schema: publicGraphQLSchemaEndpoints.SocialStudies })
   .use({
     name: `CustomFetch`,
     anyware: async ({ exchange }) => {
@@ -25,21 +24,4 @@ const graffle = Graffle
 
 const countries = await graffle.rawString({ document: `{ countries { name } }` })
 
-console.log(countries.data)
-//          ^?
-```
-<!-- dprint-ignore-end -->
-
-#### Outputs
-
-<!-- dprint-ignore-start -->
-```json
-{
-  "countries": [
-    {
-      "name": "Canada Mocked!"
-    }
-  ]
-}
-```
-<!-- dprint-ignore-end -->
+showJson(countries.data)
