@@ -74,6 +74,8 @@ export default defineConfig({
               text: 'Generation <span title="Requires generation" style="font-size:1.75em;line-height:0;">⩕</span>',
               link: '/guides/overview/generation',
             },
+            { text: 'Output', link: '/guides/configuration/output' },
+            { text: 'Anyware', link: '/guides/configuration/anyware' },
           ],
         },
         {
@@ -82,16 +84,6 @@ export default defineConfig({
           items: [
             { text: 'HTTP', link: '/guides/transports/http' },
             { text: 'Memory', link: '/guides/transports/memory' },
-          ],
-        },
-        {
-          text: 'Configuration',
-          collapsed: false,
-          items: [
-            { text: 'Transports', link: '/guides/configuration/transports' },
-            { text: 'Output', link: '/guides/configuration/output' },
-            { text: 'Request', link: '/guides/configuration/request' },
-            { text: 'Anyware', link: '/guides/configuration/anyware' },
           ],
         },
         {

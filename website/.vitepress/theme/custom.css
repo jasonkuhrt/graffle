@@ -70,3 +70,13 @@
 .dark {
 	--vp-code-line-highlight-color: hsla(208.91, 100%, 84.25%, 0.05);
 }
+
+.twoslash-highlighted {
+	--twoslash-highlighted-bg: hsla(58, 100%, 63%, 0.408);
+	--twoslash-highlighted-border: hsla(0,0%,0%,0);
+	padding: 1px 2px 3px 2px;
+}
+
+.dark .twoslash-highlighted {
+	--twoslash-highlighted-bg: hsla(208.91, 100%, 84.25%, 0.05);
+}

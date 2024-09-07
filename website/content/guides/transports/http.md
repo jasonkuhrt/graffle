@@ -44,6 +44,20 @@ Graffle.create({
 })
 ```
 
+Precedence is:
+
+1. The extension stack, later extensions taking precedence
+2. `with` configuration
+3. Constructor configuration
+
+Within each of the above the `raw` configuration takes precedence over other properties directly under `transport`.
+
+Note:
+
+- Headers are merged.
+- If a header is given an empty string value, then it deletes that header value if previously set.
+- Because `transport.raw` has zero guard rails you should know what you're doing when using it. For example if you set `raw.method` to `PATCH` that would override the `methodMode` configuration and lead to a generally invalid GraphQL request over HTTP.
+
 ## GET
 
 <!--@include: @/guides/_example_links/method-get.md-->
@@ -56,12 +70,23 @@ import { Graffle } from 'graffle'
 Graffle.create({
   schema: 'https://...',
   transport: { methodMode: 'getReads' },
+  //                       ^^^^^^^^^^
 })
 ```
 
 ## POST
 
-## Raw
+By default all requests use HTTP POST. If you need to explicitly re-configure this you can.
+
+```ts twoslash
+import { Graffle } from 'graffle'
+// ---cut---
+Graffle.create({
+  schema: 'https://...',
+  transport: { methodMode: 'post' }, // The default.
+  //                       ^^^^^^
+})
+```
 
 ## Anyware
 
@@ -71,3 +96,19 @@ Hooks are augmented in the following ways:
 | --------- | ------ | ---------------------- | --------- | ---------- | ---------- |
 | Input     | -      | `url` `headers` `body` | `request` | `response` | `response` |
 | Functions | -      | -                      | `fetch`   |            |            |
+
+## Raw
+
+- You can easily pass configuration to `fetch` via `transport.raw`.
+- It takes precedence over other `transport.*` properties.
+- Because `transport.raw` has zero guard rails you should know what you're doing when using it. For example if you set `raw.method` to `PATCH` that would override the `methodMode` configuration and lead to a generally invalid GraphQL request over HTTP.
+
+```ts twoslash
+import { Graffle } from 'graffle'
+// ---cut---
+Graffle.create({
+  schema: 'https://...',
+  transport: { raw: { mode: 'cors' } },
+  //           ^^^
+})
+```
