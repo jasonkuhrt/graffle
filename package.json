@@ -10,25 +10,26 @@
   "exports": {
     ".": {
       "import": {
-        "types": "./build/entrypoints/main.d.ts",
         "default": "./build/entrypoints/main.js"
+      }
+    },
+    "./generator": {
+      "import": {
+        "default": "./build/entrypoints/generator.js"
       }
     },
     "./client": {
       "import": {
-        "types": "./build/entrypoints/client.d.ts",
         "default": "./build/entrypoints/client.js"
       }
     },
     "./schema": {
       "import": {
-        "types": "./build/entrypoints/schema.d.ts",
         "default": "./build/entrypoints/schema.js"
       }
     },
     "./schema/scalars": {
       "import": {
-        "types": "./build/entrypoints/scalars.d.ts",
         "default": "./build/entrypoints/scalars.js"
       }
     }
