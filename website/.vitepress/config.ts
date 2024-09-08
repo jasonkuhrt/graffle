@@ -9,6 +9,9 @@ export default defineConfig({
   description: 'Minimalist Progressively Type Safe GraphQL Client For JavaScript.',
   // TODO, remove before going live.
   ignoreDeadLinks: true,
+  sitemap: {
+    hostname: 'https://graffle.js.org',
+  },
   markdown: {
     codeTransformers: [
       transformerTwoslash({

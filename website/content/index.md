@@ -12,6 +12,9 @@ hero:
     - theme: alt
       text: Examples
       link: /examples/raw
+  image:
+    src: /_assets/logo-dark.png
+    alt: Graffle
 features:
   - title: Spec Compliant
     details: Graffle complies with the <a href="https://graphql.github.io/graphql-over-http">GraphQL over HTTP</a> and <a href="">GraphQL Multipart Request</a> specifications.
@@ -31,3 +34,13 @@ features:
   # - title: Schema Errors<br/><span style="opacity:0.25;">( gen )</span>
     # details: First class support for schemas that have modelled errors into their design. Result Fields can be made to throw on errors or automatically map to error classes.
 ---
+
+<style>
+.VPHomeHero img {
+  filter: opacity(0.85);
+}
+
+html.dark .VPHomeHero img {
+  filter: invert(1) opacity(0.9);
+}
+</style>
