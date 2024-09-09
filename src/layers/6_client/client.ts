@@ -12,9 +12,8 @@ import { Core } from '../5_core/__.js'
 import { type HookDefEncode } from '../5_core/core.js'
 import { type InterfaceRaw, type TransportHttp } from '../5_core/types.js'
 import type { DocumentFn } from './document.js'
-import { handleOutput } from './handleOutput.js'
+import { type Envelope, handleOutput } from './handleOutput.js'
 import type { GetRootTypeMethods } from './RootTypeMethods.js'
-import type { Envelope } from './Settings/Config.js'
 import {
   type Config,
   readConfigErrorCategoryOutputChannel,

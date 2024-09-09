@@ -6,7 +6,7 @@ import { Graffle } from '../../../../tests/_/schema/generated/__.js'
 import { schema } from '../../../../tests/_/schema/schema.js'
 import { type GraphQLExecutionResultError } from '../../../lib/graphql.js'
 import type { ErrorsOther } from '../client.js'
-import { type Envelope } from './Config.js'
+import type { Envelope } from '../handleOutput.js'
 
 const G = Graffle.create
 

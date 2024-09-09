@@ -31,6 +31,19 @@ export const sidebarExamples: DefaultTheme.SidebarItem[] = [
     ],
   },
   {
+    'text': 'Output',
+    'items': [
+      {
+        'text': 'Default',
+        'link': '/examples/output-default',
+      },
+      {
+        'text': 'Envelope',
+        'link': '/examples/output-envelope',
+      },
+    ],
+  },
+  {
     'text': 'Transport Http',
     'items': [
       {

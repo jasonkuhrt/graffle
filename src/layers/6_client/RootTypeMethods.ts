@@ -4,13 +4,12 @@ import type { TSError } from '../../lib/TSError.js'
 import type { InputFieldsAllNullable, Schema } from '../1_Schema/__.js'
 import type { SelectionSet } from '../3_SelectionSet/__.js'
 import type { ResultSet } from '../4_ResultSet/__.js'
+import type { ResolveOutputReturnRootField, ResolveOutputReturnRootType } from './handleOutput.js'
 import type {
   AugmentRootTypeSelectionWithTypename,
   Config,
   CreateSelectionTypename,
   OrThrowifyConfig,
-  ResolveOutputReturnRootField,
-  ResolveOutputReturnRootType,
 } from './Settings/Config.js'
 
 type RootTypeFieldContext = {
@@ -26,8 +25,6 @@ export type GetRootTypeMethods<$Config extends Config, $Index extends Schema.Ind
 	[$OperationName in OperationTypeName as $Index['Root'][Capitalize<$OperationName>] extends null ? never : $OperationName]:
 		RootTypeMethods<$Config, $Index, Capitalize<$OperationName>>
 }
-
-// type x = OrThrowifyConfig<{ output: OutputConfigDefault; transport: 'http' }>
 
 // dprint-ignore
 export type RootTypeMethods<$Config extends Config, $Index extends Schema.Index, $RootTypeName extends Schema.RootTypeName> =

@@ -9,7 +9,7 @@ const abortController = new AbortController()
 //    ^^^^^^^^^^^^^^^
 
 const graffle = Graffle.create({
-  schema: publicGraphQLSchemaEndpoints.SocialStudies,
+  schema: publicGraphQLSchemaEndpoints.Atlas,
 })
 
 const resultPromise = graffle

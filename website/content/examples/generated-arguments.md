@@ -7,11 +7,11 @@ aside: false
 <!-- dprint-ignore-start -->
 ```ts twoslash
 // ---cut---
-import { Graffle as SocialStudies } from './graffle/__.js'
+import { Graffle as Atlas } from './graffle/__.js'
 
-const socialStudies = SocialStudies.create()
+const atlas = Atlas.create()
 
-const countries = await socialStudies.query.countries({
+const countries = await atlas.query.countries({
   $: { filter: { name: { in: [`Canada`, `Germany`, `Japan`] } } },
   name: true,
   continent: { name: true },
