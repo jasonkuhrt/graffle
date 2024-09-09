@@ -7,13 +7,14 @@
 import { execaCommand } from 'execa'
 import stripAnsi from 'strip-ansi'
 import { expect, test } from 'vitest'
+import { encode } from '../../examples/output|output_envelope.output-encoder.js'
 
 test(`output|output_envelope`, async () => {
   const result = await execaCommand(`pnpm tsx ./examples/output|output_envelope.ts`)
   expect(result.exitCode).toBe(0)
   // Examples should output their data results.
-  const exampleResult = stripAnsi(result.stdout)
+  const exampleResult = encode(stripAnsi(result.stdout))
   // If ever outputs vary by Node version, you can use this to snapshot by Node version.
   // const nodeMajor = process.version.match(/v(\d+)/)?.[1] ?? `unknown`
-  await expect(exampleResult).toMatchFileSnapshot(`../.././examples/output|output_envelope.output.txt`)
+  await expect(exampleResult).toMatchFileSnapshot(`../.././examples/output|output_envelope.output.test.txt`)
 })

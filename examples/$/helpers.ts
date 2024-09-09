@@ -55,3 +55,5 @@ export const serveSchema = async (input: { schema: GraphQLSchema }) => {
 }
 
 export type SchemaServer = Awaited<ReturnType<typeof serveSchema>>
+
+export const dynamicValue = `DYNAMIC_VALUE`

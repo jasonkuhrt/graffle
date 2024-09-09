@@ -159,7 +159,7 @@ const transformRewriteHelperImports = (example: Example) => {
   const consoleLog = `console.log`
   const newContent = example.file.content
     .replaceAll(/^import.*\$\/helpers.*$\n/gm, ``)
-    .replaceAll(`documentQueryContinents`, `{ document: \`${documentQueryContinents.document}\` }`) // eslint-disable-line
+    .replaceAll(`documentQueryContinents`, `{ document: \`${documentQueryContinents.document}\` }`)
     .replaceAll(
       `publicGraphQLSchemaEndpoints.Atlas`,
       `\`${publicGraphQLSchemaEndpoints.Atlas}\``,
