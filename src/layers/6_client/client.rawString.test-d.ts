@@ -4,7 +4,7 @@ import { test } from '../../../tests/_/helpers.js'
 import { Graffle } from '../../../tests/_/schema/generated/__.js'
 import { schema } from '../../../tests/_/schema/schema.js'
 import type { TypedDocumentString } from '../0_functions/types.js'
-import type { Envelope } from './Settings/Config.js'
+import type { Envelope } from './handleOutput.js'
 
 const g = Graffle.create({ schema })
 
