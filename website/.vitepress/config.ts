@@ -73,12 +73,9 @@ export default defineConfig({
                 link: '/guides/overview/getting-started-generated',
               }],
             },
-            {
-              text: 'Generation <span title="Requires generation" style="font-size:1.75em;line-height:0;">⩕</span>',
-              link: '/guides/overview/generation',
-            },
-            { text: 'Output', link: '/guides/configuration/output' },
-            { text: 'Anyware', link: '/guides/configuration/anyware' },
+
+            { text: 'Output', link: '/guides/overview/output' },
+            { text: 'Anyware', link: '/guides/overview/anyware' },
           ],
         },
         {
@@ -131,6 +128,7 @@ export default defineConfig({
             { text: 'Schema Errors', link: '/guides/misc/schema-errors' },
             { text: 'Select', link: '/guides/misc/select' },
             { text: 'Extension Authoring', link: '/guides/misc/extension-authoring' },
+            { text: 'About Generation', link: '/guides/misc/about-generation' },
           ],
         },
         {
