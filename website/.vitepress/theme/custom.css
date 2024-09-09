@@ -80,3 +80,42 @@
 .dark .twoslash-highlighted {
 	--twoslash-highlighted-bg: hsla(208.91, 100%, 84.25%, 0.05);
 }
+
+
+/* Site wide banner */
+
+:root {
+	--message-height: 15px;
+	--vp-nav-height: calc(64px + var(--message-height));
+}
+
+.VPNavBar .title {
+	padding-top: var(--message-height);
+}
+.VPNavBar.home .title {
+	height: auto;
+	padding-top: 20px;
+}
+
+.VPNavBar .content-body {
+	flex-wrap: wrap;
+}
+
+.VPNavBarMenu {
+	height: auto;
+}
+
+#graffle-warning-message {
+	padding-left: 2rem;
+	padding-top: 4px;
+	text-wrap: auto;
+	width: 100%;
+	height: var(--message-height);
+	font-size: 0.75rem;
+	font-weight: bold;
+	opacity: 0.75;
+}
+
+#graffle-warning-message a {
+	text-decoration: underline;
+}
