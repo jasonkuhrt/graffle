@@ -99,7 +99,7 @@ export const Query = $.Object$(`Query`, {
 })
 
 export const $Index = {
-  name: 'SocialStudies' as const,
+  name: 'Atlas' as const,
   Root: {
     Query,
     Mutation: null,

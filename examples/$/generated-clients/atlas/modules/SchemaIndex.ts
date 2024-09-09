@@ -3,7 +3,7 @@
 import type * as Schema from './SchemaBuildtime.js'
 
 export interface Index {
-  name: 'SocialStudies'
+  name: 'Atlas'
   Root: {
     Query: Schema.Root.Query
     Mutation: null

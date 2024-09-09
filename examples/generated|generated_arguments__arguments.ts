@@ -1,9 +1,9 @@
-import { SocialStudies } from './$/generated-clients/SocialStudies/__.js'
+import { Atlas } from './$/generated-clients/atlas/__.js'
 import { showJson } from './$/helpers.js'
 
-const socialStudies = SocialStudies.create()
+const atlas = Atlas.create()
 
-const countries = await socialStudies.query.countries({
+const countries = await atlas.query.countries({
   $: { filter: { name: { in: [`Canada`, `Germany`, `Japan`] } } },
   name: true,
   continent: { name: true },

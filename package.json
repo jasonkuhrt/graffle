@@ -62,7 +62,7 @@
     "graffle": "tsx ./src/cli/generate.ts",
     "gen:test:schema": "tsx tests/_/schemaGenerate.ts",
     "gen:examples": "tsx scripts/generate-examples-derivatives/generate.ts && pnpm format",
-    "gen:examples:clients": "tsx './examples/$/schemas/pokemon/generateSdl.ts' && pnpm graffle --name Pokemon --schema './examples/$/schemas/pokemon/schema.graphql' --output './examples/$/generated-clients/pokemon' --libraryPathClient ../../../../../src/entrypoints/client.js --libraryPathSchema ../../../../../src/entrypoints/schema.js --libraryPathScalars ../../../../../src/entrypoints/scalars.js && pnpm graffle --name SocialStudies --schema https://countries.trevorblades.com/graphql --output './examples/$/generated-clients/SocialStudies' --libraryPathClient ../../../../../src/entrypoints/client.js --libraryPathSchema ../../../../../src/entrypoints/schema.js --libraryPathScalars ../../../../../src/entrypoints/scalars.js",
+    "gen:examples:clients": "tsx './examples/$/schemas/pokemon/generateSdl.ts' && pnpm graffle --name Pokemon --schema './examples/$/schemas/pokemon/schema.graphql' --output './examples/$/generated-clients/pokemon' --libraryPathClient ../../../../../src/entrypoints/client.js --libraryPathSchema ../../../../../src/entrypoints/schema.js --libraryPathScalars ../../../../../src/entrypoints/scalars.js && pnpm graffle --name Atlas --schema https://countries.trevorblades.com/graphql --output './examples/$/generated-clients/atlas' --libraryPathClient ../../../../../src/entrypoints/client.js --libraryPathSchema ../../../../../src/entrypoints/schema.js --libraryPathScalars ../../../../../src/entrypoints/scalars.js",
     "dev": "rm -rf dist && tsc --watch",
     "format": "pnpm build:docs && dprint fmt",
     "lint": "eslint . --fix",

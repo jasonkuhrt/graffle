@@ -3,8 +3,8 @@ import type { Index } from './SchemaIndex.js'
 declare global {
   export namespace GraffleGlobalTypes {
     export interface Schemas {
-      SocialStudies: {
-        name: 'SocialStudies'
+      Atlas: {
+        name: 'Atlas'
         index: Index
         customScalars: {}
         featureOptions: {

@@ -7,7 +7,7 @@ import { publicGraphQLSchemaEndpoints } from './$/helpers.js'
 
 const graffle = Graffle
   .create({
-    schema: publicGraphQLSchemaEndpoints.SocialStudies,
+    schema: publicGraphQLSchemaEndpoints.Atlas,
     transport: {
       raw: {
         mode: `cors`,

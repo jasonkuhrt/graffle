@@ -1,7 +1,7 @@
 import { groupBy } from 'es-toolkit'
 import * as FS from 'node:fs/promises'
 import { type DefaultTheme } from 'vitepress'
-import { publicGraphQLSchemaEndpoints } from '../../examples/$/helpers.js'
+import { documentQueryContinents, publicGraphQLSchemaEndpoints } from '../../examples/$/helpers.js'
 import { deleteFiles } from '../lib/deleteFiles.js'
 import { computeCombinations, type Example, readExamples, toTitle } from './helpers.js'
 
@@ -124,9 +124,9 @@ const transformRewriteGraffleImports = (example: Example) => {
       ``,
     )
     .replaceAll(
-      `import { SocialStudies } from './$/generated-clients/SocialStudies/__.js'`,
+      `import { Atlas } from './$/generated-clients/atlas/__.js'`,
       `// ---cut---
-import { Graffle as SocialStudies } from './graffle/__.js'`,
+import { Graffle as Atlas } from './graffle/__.js'`,
     )
     .replaceAll(
       /import ({[^}]+}) from '.\/\$\/generated-clients\/([^/]+)\/__\.js'/g,
@@ -159,9 +159,10 @@ const transformRewriteHelperImports = (example: Example) => {
   const consoleLog = `console.log`
   const newContent = example.file.content
     .replaceAll(/^import.*\$\/helpers.*$\n/gm, ``)
+    .replaceAll(`documentQueryContinents`, `{ document: \`${documentQueryContinents.document}\` }`) // eslint-disable-line
     .replaceAll(
-      `publicGraphQLSchemaEndpoints.SocialStudies`,
-      `\`${publicGraphQLSchemaEndpoints.SocialStudies}\``,
+      `publicGraphQLSchemaEndpoints.Atlas`,
+      `\`${publicGraphQLSchemaEndpoints.Atlas}\``,
     )
     .replaceAll(`showJson`, consoleLog)
     .replaceAll(`show`, consoleLog)

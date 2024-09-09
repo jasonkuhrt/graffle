@@ -1,4 +1,5 @@
 import { describe, expect, expectTypeOf } from 'vitest'
+import { Atlas } from '../../../examples/$/generated-clients/atlas/__.js'
 import { createResponse, test } from '../../../tests/_/helpers.js'
 import { Graffle } from '../../entrypoints/main.js'
 import { ACCEPT_REC, CONTENT_TYPE_REC } from '../../lib/graphqlHTTP.js'
@@ -28,6 +29,12 @@ test(`anyware hooks are typed to http transport`, () => {
     }
     return result
   })
+})
+
+test(`when envelope is used then response property is present even if relying on schema url default`, async () => {
+  const atlas = Atlas.create({ output: { envelope: true } })
+  const result = await atlas.query.continents({ name: true })
+  expectTypeOf(result.response).toEqualTypeOf<Response>()
 })
 
 describe(`methodMode`, () => {

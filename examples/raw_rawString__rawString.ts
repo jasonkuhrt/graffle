@@ -2,7 +2,7 @@ import { Graffle } from '../src/entrypoints/main.js'
 import { publicGraphQLSchemaEndpoints, show } from './$/helpers.js'
 
 const graffle = Graffle.create({
-  schema: publicGraphQLSchemaEndpoints.SocialStudies,
+  schema: publicGraphQLSchemaEndpoints.Atlas,
 })
 
 const document = /* gql */ `

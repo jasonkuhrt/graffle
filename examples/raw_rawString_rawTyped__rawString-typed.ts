@@ -4,7 +4,7 @@ import type { TypedDocumentString } from '../src/layers/0_functions/types.js'
 import { publicGraphQLSchemaEndpoints, show } from './$/helpers.js'
 
 const graffle = Graffle.create({
-  schema: publicGraphQLSchemaEndpoints.SocialStudies,
+  schema: publicGraphQLSchemaEndpoints.Atlas,
 })
 
 /**
