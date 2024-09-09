@@ -7,7 +7,7 @@
 import { execaCommand } from 'execa'
 import stripAnsi from 'strip-ansi'
 import { expect, test } from 'vitest'
-import { encode } from '../../examples/transport-http_headers__dynamicHeaders.output-encoder.js'
+import { encode } from '../../examples/transport-http|transport-http_extension_headers__dynamicHeaders.output-encoder.js'
 
 test(`transport-http|transport-http_extension_headers__dynamicHeaders`, async () => {
   const result = await execaCommand(

@@ -7,7 +7,6 @@
 import { execaCommand } from 'execa'
 import stripAnsi from 'strip-ansi'
 import { expect, test } from 'vitest'
-import { encode } from '../../examples/transport-http_headers__dynamicHeaders.output-encoder.js'
 
 test(`transport-http|transport-http_extension_fetch__custom-fetch`, async () => {
   const result = await execaCommand(
@@ -15,10 +14,10 @@ test(`transport-http|transport-http_extension_fetch__custom-fetch`, async () => 
   )
   expect(result.exitCode).toBe(0)
   // Examples should output their data results.
-  const exampleResult = encode(stripAnsi(result.stdout))
+  const exampleResult = stripAnsi(result.stdout)
   // If ever outputs vary by Node version, you can use this to snapshot by Node version.
   // const nodeMajor = process.version.match(/v(\d+)/)?.[1] ?? `unknown`
   await expect(exampleResult).toMatchFileSnapshot(
-    `../.././examples/transport-http|transport-http_extension_fetch__custom-fetch.output.test.txt`,
+    `../.././examples/transport-http|transport-http_extension_fetch__custom-fetch.output.txt`,
   )
 })

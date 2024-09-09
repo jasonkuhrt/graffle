@@ -18,8 +18,9 @@ export const generateTests = async () => {
 
   await Promise.all(exampleFiles.map(async (file) => {
     const encoderFilePath = encoderFilePaths.find((encoderFilePath) =>
-      encoderFilePath.match(new RegExp(`${file.name}.output-encoder.ts`)) !== null
+      encoderFilePath.includes(`${file.name}.output-encoder.ts`)
     )
+    const snapshotFileName = `../../${file.path.dir}/${file.name}.output${encoderFilePath ? `.test` : ``}.txt`
     const code = `// @vitest-environment node
 
 // WARNING:
@@ -41,9 +42,7 @@ test(\`${file.name}\`, async () => {
   const exampleResult = ${encoderFilePath ? `encode(stripAnsi(result.stdout))` : `stripAnsi(result.stdout)`} 
   // If ever outputs vary by Node version, you can use this to snapshot by Node version.
   // const nodeMajor = process.version.match(/v(\\d+)/)?.[1] ?? \`unknown\`
-  await expect(exampleResult).toMatchFileSnapshot(\`../../${file.path.dir}/${file.name}.output${
-      encoderFilePath ? `.test` : ``
-    }.txt\`)
+  await expect(exampleResult).toMatchFileSnapshot(\`${snapshotFileName}\`)
 })
 `
 
