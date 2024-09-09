@@ -107,26 +107,26 @@ await client.request(document)
 ## Examples
 
 - Request:
-  - [Authentication via HTTP header](./examples/legacy/request-authentication-via-http-header.ts)
-  - [Method GET](./examples/legacy/request-method-get.ts)
-  - [Cancellation](./examples/legacy/request-cancellation.ts)
-  - [Headers Per Request (static)](./examples/legacy/request-headers-static-per-request.ts)
-  - [Headers Per Request (dynamic)](./examples/legacy/request-headers-dynamic-per-request.ts)
-  - [Handle Raw Response](./examples/legacy/request-handle-raw-response.ts)
+  - [Authentication via HTTP header](https://github.com/jasonkuhrt/graffle/tree/graphql-request/examples/legacy/request-authentication-via-http-header.ts)
+  - [Method GET](https://github.com/jasonkuhrt/graffle/tree/graphql-request/examples/legacy/request-method-get.ts)
+  - [Cancellation](https://github.com/jasonkuhrt/graffle/tree/graphql-request/examples/legacy/request-cancellation.ts)
+  - [Headers Per Request (static)](https://github.com/jasonkuhrt/graffle/tree/graphql-request/examples/legacy/request-headers-static-per-request.ts)
+  - [Headers Per Request (dynamic)](https://github.com/jasonkuhrt/graffle/tree/graphql-request/examples/legacy/request-headers-dynamic-per-request.ts)
+  - [Handle Raw Response](https://github.com/jasonkuhrt/graffle/tree/graphql-request/examples/legacy/request-handle-raw-response.ts)
 - GraphQL:
-  - [Document Variables](./examples/legacy/graphql-document-variables.ts)
-  - [Mutation](./examples/legacy/graphql-mutations.ts)
-  - [Batching Requests](./examples/legacy/graphql-batching-requests.ts)
+  - [Document Variables](https://github.com/jasonkuhrt/graffle/tree/graphql-request/examples/legacy/graphql-document-variables.ts)
+  - [Mutation](https://github.com/jasonkuhrt/graffle/tree/graphql-request/examples/legacy/graphql-mutations.ts)
+  - [Batching Requests](https://github.com/jasonkuhrt/graffle/tree/graphql-request/examples/legacy/graphql-batching-requests.ts)
 - Configuration:
-  - [Fetch: Passing Options](./examples/legacy/configuration-fetch-options.ts)
-  - [Custom JSON Serializer](./examples/legacy/configuration-request-json-serializer.ts)
-  - [Incremental: Set Endpoint](./examples/legacy/configuration-incremental-endpoint.ts)
-  - [Incremental: Set Request Headers](./examples/legacy/configuration-incremental-request-headers.ts)
+  - [Fetch: Passing Options](https://github.com/jasonkuhrt/graffle/tree/graphql-request/examples/legacy/configuration-fetch-options.ts)
+  - [Custom JSON Serializer](https://github.com/jasonkuhrt/graffle/tree/graphql-request/examples/legacy/configuration-request-json-serializer.ts)
+  - [Incremental: Set Endpoint](https://github.com/jasonkuhrt/graffle/tree/graphql-request/examples/legacy/configuration-incremental-endpoint.ts)
+  - [Incremental: Set Request Headers](https://github.com/jasonkuhrt/graffle/tree/graphql-request/examples/legacy/configuration-incremental-request-headers.ts)
 - TypeScript:
-  - [Use `TypedDocumentNode`](./examples/legacy/typescript-typed-document-node.ts)
+  - [Use `TypedDocumentNode`](https://github.com/jasonkuhrt/graffle/tree/graphql-request/examples/legacy/typescript-typed-document-node.ts)
 - Other:
-  - [Middleware](./examples/legacy/other-middleware.ts)
-  - [Error Handling](./examples/legacy/other-error-handling.ts)
+  - [Middleware](https://github.com/jasonkuhrt/graffle/tree/graphql-request/examples/legacy/other-middleware.ts)
+  - [Error Handling](https://github.com/jasonkuhrt/graffle/tree/graphql-request/examples/legacy/other-error-handling.ts)
 
 ## Node Version Support
 
@@ -142,7 +142,7 @@ Any issue that exists solely for an unsupported version of Nodejs will be reject
 
 ## Reference
 
-⚠️ This reference is incomplete. Check out the [examples](./examples/legacy/) for more reference material.
+⚠️ This reference is incomplete. Check out the [examples](https://github.com/jasonkuhrt/graffle/tree/graphql-request/examples/legacy/) for more reference material.
 
 ### Configuration
 
