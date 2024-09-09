@@ -1,5 +1,7 @@
 # Output
 
+<!--@include: @/guides/_example_links/output.md-->
+
 This guide is about Graffle's ability to return various types from its request methods depending on the mode you've chosen to run it with.
 
 ## Overview
