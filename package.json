@@ -2,7 +2,7 @@
   "name": "graffle",
   "description": "Minimalist Progressively Type Safe GraphQL Client For JavaScript.",
   "version": "0.0.0-dripip",
-  "packageManager": "pnpm@9.9.0",
+  "packageManager": "pnpm@9.10.0",
   "type": "module",
   "bin": {
     "graffle": "./build/cli/generate.js"
