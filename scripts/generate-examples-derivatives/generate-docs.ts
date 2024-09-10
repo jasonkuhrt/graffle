@@ -3,11 +3,9 @@ import * as FS from 'node:fs/promises'
 import { type DefaultTheme } from 'vitepress'
 import { documentQueryContinents, publicGraphQLSchemaEndpoints } from '../../examples/$/helpers.js'
 import { deleteFiles } from '../lib/deleteFiles.js'
-import { computeCombinations, type Example, readExamples, toTitle } from './helpers.js'
+import { computeCombinations, type Example, toTitle } from './helpers.js'
 
-export const generateDocs = async () => {
-  const examples = await readExamples()
-
+export const generateDocs = async (examples: Example[]) => {
   const examplesTransformed = examples
     .map(transformOther)
     .map(transformRewriteGraffleImports)
@@ -185,7 +183,10 @@ const transformRewriteHelperImports = (example: Example) => {
  * 1. Remove eslint directives.
  */
 const transformOther = (example: Example) => {
-  const newContent = example.file.content.replaceAll(`/* eslint-disable */`, ``)
+  const newContent = example.file.content.replaceAll(`/* eslint-disable */`, ``).replaceAll(
+    /.*\/\/ dprint-ignore.*\n/g,
+    ``,
+  )
   return {
     ...example,
     file: {

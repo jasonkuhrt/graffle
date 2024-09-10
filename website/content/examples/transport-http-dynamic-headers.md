@@ -43,7 +43,7 @@ await graffle.rawString({ document: `{ languages { code } }` })
   headers: Headers {
     accept: 'application/graphql-response+json; charset=utf-8, application/json; charset=utf-8',
     'content-type': 'application/json',
-    'x-sent-at-time': '1725929436225'
+    'x-sent-at-time': '1725995139086'
   },
   signal: undefined,
   method: 'post',

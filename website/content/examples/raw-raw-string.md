@@ -4,6 +4,8 @@ aside: false
 
 # Raw String
 
+This example shows how to send a request using a string for the GraphQL document.
+
 <!-- dprint-ignore-start -->
 ```ts twoslash
 import { Graffle } from 'graffle'

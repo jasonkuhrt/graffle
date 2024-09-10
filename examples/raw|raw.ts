@@ -1,3 +1,7 @@
+/**
+ * This example shows how to send a request using a Document instance for the GraphQL document.
+ */
+
 import { gql, Graffle } from '../src/entrypoints/main.js'
 import { publicGraphQLSchemaEndpoints, show } from './$/helpers.js'
 

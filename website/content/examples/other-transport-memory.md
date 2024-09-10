@@ -4,6 +4,8 @@ aside: false
 
 # Transport Memory
 
+This example shows how you can send requests against an in-memory GraphQL schema instead of one hosted over HTTP.
+
 <!-- dprint-ignore-start -->
 ```ts twoslash
 import { GraphQLObjectType, GraphQLSchema, GraphQLString } from 'graphql'

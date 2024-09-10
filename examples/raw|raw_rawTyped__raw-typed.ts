@@ -1,3 +1,7 @@
+/**
+ * This example shows how to send a request using a Document instance for the GraphQL document while also being typesafe in regards to the passed variables and return type.
+ */
+
 import type { TypedQueryDocumentNode } from 'graphql'
 import { gql, Graffle } from '../src/entrypoints/main.js'
 import { publicGraphQLSchemaEndpoints, show } from './$/helpers.js'

@@ -4,6 +4,8 @@ aside: false
 
 # Default
 
+This example shows the default output behavior.
+
 <!-- dprint-ignore-start -->
 ```ts twoslash
 // ---cut---

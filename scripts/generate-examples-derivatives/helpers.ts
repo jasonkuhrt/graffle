@@ -1,6 +1,14 @@
 import { capitalize, kebabCase } from 'es-toolkit'
+import { execa } from 'execa'
+import { globby } from 'globby'
+import stripAnsi from 'strip-ansi'
 import { showPartition } from '../../examples/$/helpers.js'
 import { type File, readFiles } from '../lib/readFiles.js'
+
+export const directories = {
+  outputs: `./examples/__outputs__`,
+  examples: `./examples`,
+}
 
 export const examplesIgnorePatterns = [`./examples/$*`, `./examples/*.output.*`, `./examples/*.output-encoder.*`]
 
@@ -14,12 +22,17 @@ export const readExamples = async (): Promise<Example[]> => {
   const exampleFiles = await readExampleFiles()
 
   const outputFiles = await readFiles({
-    pattern: `./examples/*.output.txt`,
+    pattern: `./examples/__outputs__/*.output.txt`,
   })
+
+  const encoderFilePaths = await globby(`${directories.outputs}/*.output.encoder.ts`)
 
   const examples = exampleFiles.map((example) => {
     const outputFile = outputFiles.find(file => file.name === `${example.name}.output.txt`)
     if (!outputFile) throw new Error(`Could not find output file for ${example.name}`)
+    const encoderFilePath = encoderFilePaths.find((encoderFilePath) =>
+      encoderFilePath.includes(`${example.name}.output.encoder.ts`)
+    )
 
     const { description, content } = extractDescription(example.content)
 
@@ -32,6 +45,11 @@ export const readExamples = async (): Promise<Example[]> => {
       output: {
         file: outputFile,
         blocks: outputFile.content.split(showPartition + `\n`).map(block => block.trim()).filter(Boolean),
+        encoder: encoderFilePath
+          ? {
+            filePath: encoderFilePath,
+          }
+          : undefined,
       },
       isUsingJsonOutput: example.content.includes(`showJson`),
       description,
@@ -80,6 +98,9 @@ export interface Example {
   output: {
     file: File
     blocks: string[]
+    encoder?: {
+      filePath: string
+    }
   }
   isUsingJsonOutput: boolean
   tags: Tag[]
@@ -126,4 +147,23 @@ export const computeCombinations = (arr: string[]): string[][] => {
   generateCombinations([], 0)
 
   return result
+}
+
+export const runExample = async (filePath: string) => {
+  const result = await execa({ reject: false })`pnpm tsx ${filePath}`
+
+  let exampleOutput = ``
+
+  exampleOutput = result.failed ? result.stderr : result.stdout
+  exampleOutput = stripAnsi(exampleOutput)
+  exampleOutput = rewriteDynamicError(exampleOutput)
+
+  return exampleOutput
+}
+
+export const rewriteDynamicError = (value: string) => {
+  return value
+    .replaceAll(/\/.*\/(.+)\.ts/g, `/some/path/to/$1.ts`)
+    // When Node.js process exits via an uncaught thrown error, version is printed at bottom.
+    .replaceAll(/Node\.js v.+/g, `Node.js vXX.XX.XX`)
 }
