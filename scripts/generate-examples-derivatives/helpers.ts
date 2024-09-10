@@ -7,6 +7,7 @@ import { type File, readFiles } from '../lib/readFiles.js'
 
 export const directories = {
   outputs: `./examples/__outputs__`,
+  examples: `./examples`,
 }
 
 export const examplesIgnorePatterns = [`./examples/$*`, `./examples/*.output.*`, `./examples/*.output-encoder.*`]

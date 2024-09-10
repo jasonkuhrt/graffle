@@ -1,11 +1,15 @@
 import * as FS from 'node:fs/promises'
 import * as Path from 'node:path'
 import { deleteFiles } from '../lib/deleteFiles.js'
-import { type Example } from './helpers.js'
+import { directories, type Example } from './helpers.js'
 
 export const generateTests = async (examples: Example[]) => {
   // Handle case of renaming or deleting examples.
-  await deleteFiles({ pattern: `./tests/examples/*.test.ts` })
+  await Promise.all([
+    deleteFiles({ pattern: `${directories.outputs}/*.output.test.txt` }),
+    deleteFiles({ pattern: `${directories.examples}/*.output.test.txt` }),
+    deleteFiles({ pattern: `./tests/examples/*.test.ts` }),
+  ])
 
   const outputDir = Path.join(process.cwd(), `./tests/examples`)
 

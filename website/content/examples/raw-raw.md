@@ -4,6 +4,8 @@ aside: false
 
 # Raw
 
+This example shows how to send a request using a Document instance for the GraphQL document.
+
 <!-- dprint-ignore-start -->
 ```ts twoslash
 import { gql, Graffle } from 'graffle'

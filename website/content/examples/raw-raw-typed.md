@@ -4,6 +4,8 @@ aside: false
 
 # Raw Typed
 
+This example shows how to send a request using a Document instance for the GraphQL document while also being typesafe in regards to the passed variables and return type.
+
 <!-- dprint-ignore-start -->
 ```ts twoslash
 import type { TypedQueryDocumentNode } from 'graphql'

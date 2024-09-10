@@ -1,3 +1,7 @@
+/**
+ * This example shows how to use the TypeScript interface for GraphQL arguments.
+ */
+
 import { Atlas } from './$/generated-clients/atlas/__.js'
 import { showJson } from './$/helpers.js'
 
