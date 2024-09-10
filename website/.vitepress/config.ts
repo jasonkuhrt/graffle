@@ -12,6 +12,14 @@ export default defineConfig({
   sitemap: {
     hostname: 'https://graffle.js.org',
   },
+  head: [
+    // <script defer data-domain="graffle.js.org" src="https://plausible.io/js/script.js"></script>
+    ['script', {
+      defer: 'true',
+      'data-domain': 'graffle.js.org',
+      src: 'https://plausible.io/js/script.js',
+    }],
+  ],
   markdown: {
     codeTransformers: [
       transformerTwoslash({
@@ -51,7 +59,7 @@ export default defineConfig({
     aside: 'left',
     nav: [
       { text: 'Guides', link: '/guides/overview/introduction' },
-      { text: 'Examples', link: '/examples/raw' },
+      { text: 'Examples', link: '/examples/raw-raw' },
     ],
     sidebar: {
       '/examples/': sidebarExamples,

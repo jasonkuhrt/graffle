@@ -4,8 +4,12 @@ import { createYoga } from 'graphql-yoga'
 import { createServer } from 'node:http'
 import { inspect } from 'node:util'
 
+export const documentQueryContinents = {
+  document: `query { continents { name } }`,
+}
+
 export const publicGraphQLSchemaEndpoints = {
-  SocialStudies: `https://countries.trevorblades.com/graphql`,
+  Atlas: `https://countries.trevorblades.com/graphql`,
 }
 
 export const showPartition = `---------------------------------------- SHOW ----------------------------------------`
@@ -51,3 +55,5 @@ export const serveSchema = async (input: { schema: GraphQLSchema }) => {
 }
 
 export type SchemaServer = Awaited<ReturnType<typeof serveSchema>>
+
+export const dynamicValue = `DYNAMIC_VALUE`

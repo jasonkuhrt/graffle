@@ -1,62 +1,86 @@
-import { DefaultTheme } from 'vitepress'
 
-export const sidebarExamples: DefaultTheme.SidebarItem[] = [
+ import { DefaultTheme } from 'vitepress'
+
+ export const sidebarExamples:DefaultTheme.SidebarItem[] = [
   {
-    'text': 'Transport Memory',
-    'link': '/examples/transport-memory',
+    "text": "Generated",
+    "items": [
+      {
+        "text": "Arguments",
+        "link": "/examples/generated-arguments"
+      }
+    ]
   },
   {
-    'text': 'Raw Typed',
-    'link': '/examples/raw-typed',
+    "text": "Other",
+    "items": [
+      {
+        "text": "Transport Memory",
+        "link": "/examples/other-transport-memory"
+      }
+    ]
   },
   {
-    'text': 'Raw String Typed',
-    'link': '/examples/raw-string-typed',
+    "text": "Output",
+    "items": [
+      {
+        "text": "Default",
+        "link": "/examples/output-default"
+      },
+      {
+        "text": "Envelope",
+        "link": "/examples/output-envelope"
+      }
+    ]
   },
   {
-    'text': 'Raw String',
-    'link': '/examples/raw-string',
+    "text": "Raw",
+    "items": [
+      {
+        "text": "Raw",
+        "link": "/examples/raw-raw"
+      },
+      {
+        "text": "Raw String",
+        "link": "/examples/raw-raw-string"
+      },
+      {
+        "text": "Raw String Typed",
+        "link": "/examples/raw-raw-string-typed"
+      },
+      {
+        "text": "Raw Typed",
+        "link": "/examples/raw-raw-typed"
+      }
+    ]
   },
   {
-    'text': 'Raw',
-    'link': '/examples/raw',
-  },
-  {
-    'text': 'Generated',
-    'items': [
+    "text": "Transport Http",
+    "items": [
       {
-        'text': 'Arguments',
-        'link': '/examples/generated-arguments',
-      },
-    ],
-  },
-  {
-    'text': 'Transport Http',
-    'items': [
-      {
-        'text': 'Abort',
-        'link': '/examples/transport-http-abort',
+        "text": "Abort",
+        "link": "/examples/transport-http-abort"
       },
       {
-        'text': 'Custom Fetch',
-        'link': '/examples/transport-http-custom-fetch',
+        "text": "Custom Fetch",
+        "link": "/examples/transport-http-custom-fetch"
       },
       {
-        'text': 'Dynamic Headers',
-        'link': '/examples/transport-http-dynamic-headers',
+        "text": "Dynamic Headers",
+        "link": "/examples/transport-http-dynamic-headers"
       },
       {
-        'text': 'Headers',
-        'link': '/examples/transport-http-headers',
+        "text": "Headers",
+        "link": "/examples/transport-http-headers"
       },
       {
-        'text': 'Method Get',
-        'link': '/examples/transport-http-method-get',
+        "text": "Method Get",
+        "link": "/examples/transport-http-method-get"
       },
       {
-        'text': 'Raw',
-        'link': '/examples/transport-http-raw',
-      },
-    ],
-  },
+        "text": "Raw",
+        "link": "/examples/transport-http-raw"
+      }
+    ]
+  }
 ]

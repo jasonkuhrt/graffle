@@ -6,12 +6,8 @@ import type { Schema } from '../1_Schema/__.js'
 import { SelectionSet } from '../3_SelectionSet/__.js'
 import type { Context, DocumentObject } from '../3_SelectionSet/encode.js'
 import type { ResultSet } from '../4_ResultSet/__.js'
-import type {
-  AugmentRootTypeSelectionWithTypename,
-  Config,
-  OrThrowifyConfig,
-  ResolveOutputReturnRootType,
-} from './Settings/Config.js'
+import type { ResolveOutputReturnRootType } from './handleOutput.js'
+import type { AugmentRootTypeSelectionWithTypename, Config, OrThrowifyConfig } from './Settings/Config.js'
 
 // dprint-ignore
 export type DocumentFn<$Config extends Config, $Index extends Schema.Index> =

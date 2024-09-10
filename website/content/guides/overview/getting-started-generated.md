@@ -166,23 +166,39 @@ console.log(countries)
 
 Its worth knowing Graffle also gives you utilities beyond the direct client itself. For example you can build up reusable selection sets:
 
-```ts twoslash
-// TODO
-// import { Select } from './graffle/__.js'
-import { Select } from './graffle/modules/Select.js'
+::: code-group
+
+```ts twoslash [Graffle Namespace]
+import { Graffle } from './graffle/__.js'
+
+const ContinentSelection = Graffle.Select.Continent({ name: true })
+```
+
+```ts twoslash [Barrel Import]
+import { Select } from './graffle/_.js'
 
 const ContinentSelection = Select.Continent({ name: true })
 ```
 
+:::
+
 You can also do the same thing at the type level which can sometimes be handy when you want to define data types based on selection sets.
 
-```ts twoslash
-// TODO
-// import { type Select } from './graffle/__.js'
-import { type Select } from './graffle/modules/Select.js'
+::: code-group
+
+```ts twoslash [Graffle Namespace]
+import { type Graffle } from './graffle/__.js'
+
+type Continent = Graffle.Select.Continent<{ name: true }>
+```
+
+```ts twoslash [Barrel Import]
+import { type Select } from './graffle/_.js'
 
 type Continent = Select.Continent<{ name: true }>
 ```
+
+:::
 
 ## Conclusion
 

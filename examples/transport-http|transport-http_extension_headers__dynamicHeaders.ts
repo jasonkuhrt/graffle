@@ -7,7 +7,7 @@ import { publicGraphQLSchemaEndpoints, show } from './$/helpers.js'
 
 const graffle = Graffle
   .create({
-    schema: publicGraphQLSchemaEndpoints.SocialStudies,
+    schema: publicGraphQLSchemaEndpoints.Atlas,
   })
   .use(async ({ pack }) => {
     return await pack({

@@ -1,3 +1,4 @@
+import type { IsUnknown } from 'type-fest'
 import type { ConfigManager } from '../../../lib/prelude.js'
 import type { GlobalRegistry } from '../../2_generator/globalRegistry.js'
 import { Transport, type TransportHttp, type TransportMemory } from '../../5_core/types.js'
@@ -94,9 +95,11 @@ type HandleName<$Input extends InputStatic<GlobalRegistry.SchemaUnion>> = $Input
 
 // dprint-ignore
 type HandleTransport<$Input extends InputStatic<GlobalRegistry.SchemaUnion>> =
-  $Input['schema'] extends URLInput
-    ? TransportHttp
-    : TransportMemory
+  $Input['schema'] extends URLInput         ? TransportHttp :
+  // When the client is generated via introspection of a URL then the schema defaults to that URL.
+  // This is the only case when schema can be unknown from so we can assume that transport is HTTP.
+  IsUnknown<$Input['schema']> extends true  ? TransportHttp
+                                            : TransportMemory
 
 const handleTransportType = <T extends InputStatic<GlobalRegistry.SchemaUnion>>(input: T): HandleTransport<T> => {
   // @ts-expect-error conditional type
