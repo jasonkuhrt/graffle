@@ -6,9 +6,7 @@ aside: false
 
 <!-- dprint-ignore-start -->
 ```ts twoslash
-import { Graffle } from 'graffle'
-// todo from 'graffle/utils'
-import type { TypedDocumentString } from '../src/layers/0_functions/types.js'
+import { Graffle, type TypedDocumentString } from 'graffle'
 
 const graffle = Graffle.create({
   schema: `https://countries.trevorblades.com/graphql`,
