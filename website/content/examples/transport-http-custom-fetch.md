@@ -28,7 +28,6 @@ const graffle = Graffle
 const countries = await graffle.rawString({ document: `{ countries { name } }` })
 
 console.log(countries.data)
-//          ^?
 ```
 <!-- dprint-ignore-end -->
 

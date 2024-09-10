@@ -28,7 +28,6 @@ const graffle = Graffle.create({ schema })
 const result = await graffle.rawString({ document: `{ foo }` })
 
 console.log(result)
-//          ^?
 ```
 <!-- dprint-ignore-end -->
 

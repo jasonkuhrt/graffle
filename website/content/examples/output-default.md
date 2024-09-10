@@ -16,7 +16,6 @@ const atlas = Atlas.create()
 const result = await atlas.query.continents({ name: true })
 
 console.log(result)
-//          ^?
 ```
 <!-- dprint-ignore-end -->
 

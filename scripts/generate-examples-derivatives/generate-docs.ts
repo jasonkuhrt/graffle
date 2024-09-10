@@ -158,17 +158,10 @@ const transformRewriteHelperImports = (example: Example) => {
   const newContent = example.file.content
     .replaceAll(/^import.*\$\/helpers.*$\n/gm, ``)
     .replaceAll(`documentQueryContinents`, `{ document: \`${documentQueryContinents.document}\` }`)
-    .replaceAll(
-      `publicGraphQLSchemaEndpoints.Atlas`,
-      `\`${publicGraphQLSchemaEndpoints.Atlas}\``,
-    )
-    .replaceAll(`showJson`, consoleLog)
-    .replaceAll(`show`, consoleLog)
-    .replaceAll(
-      /(^console.log.*$)/gm,
-      `$1
-//${` `.repeat(consoleLog.length - 1)}^?`,
-    )
+    .replaceAll(`publicGraphQLSchemaEndpoints.Atlas`, `\`${publicGraphQLSchemaEndpoints.Atlas}\``)
+    .replaceAll(/showJson|show/g, consoleLog)
+  // We disabled this because the popover gets in the way of output below often.
+  // .replaceAll(/(^console.log.*$)/gm, `$1\n//${` `.repeat(consoleLog.length - 1)}^?`)
 
   return {
     ...example,

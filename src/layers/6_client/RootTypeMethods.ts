@@ -4,7 +4,7 @@ import type { TSError } from '../../lib/TSError.js'
 import type { InputFieldsAllNullable, Schema } from '../1_Schema/__.js'
 import type { SelectionSet } from '../3_SelectionSet/__.js'
 import type { ResultSet } from '../4_ResultSet/__.js'
-import type { ResolveOutputReturnRootField, ResolveOutputReturnRootType } from './handleOutput.js'
+import type { ResolveOutputReturnRootField, ResolveOutputReturnRootType, SimplifyOutput } from './handleOutput.js'
 import type {
   AugmentRootTypeSelectionWithTypename,
   Config,
@@ -79,10 +79,14 @@ type RootTypeFieldMethod_<$Context extends RootTypeFieldContext, $Type extends S
   $Type extends Schema.__typename                           ? ScalarFieldMethod<$Context> :
                                                               ObjectLikeFieldMethod<$Context>
 
+// If this type is not locally defined, apparently it affects the computed TS type.
+// This exact same utility type used via import leads to different results....?!
+type SimplifyOutputUnionLocal<T> = T extends any ? SimplifyOutput<T> : never
+
 // dprint-ignore
 type ObjectLikeFieldMethod<$Context extends RootTypeFieldContext> =
   <$SelectionSet>(selectionSet: Exact<$SelectionSet, SelectionSet.Field<$Context['Field'], $Context['Index'], { hideDirectives: true }>>) =>
-    Promise<ReturnModeForFieldMethod<$Context, ResultSet.Field<$SelectionSet & CreateSelectionTypename<$Context['Config'],$Context['Index']>, $Context['Field'], $Context['Index']>>>
+    Promise<SimplifyOutputUnionLocal<ReturnModeForFieldMethod<$Context, ResultSet.Field<$SelectionSet & CreateSelectionTypename<$Context['Config'],$Context['Index']>, $Context['Field'], $Context['Index']>>>>
 
 // dprint-ignore
 type ScalarFieldMethod<$Context extends RootTypeFieldContext> =

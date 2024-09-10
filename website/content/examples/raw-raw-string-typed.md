@@ -44,7 +44,6 @@ const result = await graffle.rawString({
 })
 
 console.log(result.data?.countries)
-//          ^?
 ```
 <!-- dprint-ignore-end -->
 

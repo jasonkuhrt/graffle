@@ -26,10 +26,11 @@ export const showJson = (value: unknown) => {
 
 export const serveSchema = async (input: { schema: GraphQLSchema }) => {
   const { schema } = input
-  const yoga = createYoga({ schema })
+  const yoga = createYoga({ schema, logging: false, maskedErrors: false })
   const server = createServer(yoga) // eslint-disable-line
   const port = await getPort({ port: [3000, 3001, 3002, 3003, 3004] })
   const url = new URL(`http://localhost:${String(port)}/graphql`)
+  let runState = true
   server.listen(port)
   await new Promise((resolve) =>
     server.once(`listening`, () => {
@@ -37,6 +38,8 @@ export const serveSchema = async (input: { schema: GraphQLSchema }) => {
     })
   )
   const stop = async () => {
+    if (!runState) return
+    runState = false
     await new Promise((resolve) => {
       server.close(resolve)
       setImmediate(() => {
@@ -44,6 +47,8 @@ export const serveSchema = async (input: { schema: GraphQLSchema }) => {
       })
     })
   }
+
+  process.once('beforeExit', stop)
 
   return {
     yoga,
