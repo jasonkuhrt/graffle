@@ -3,31 +3,20 @@
 
  export const sidebarExamples:DefaultTheme.SidebarItem[] = [
   {
-    "text": "Transport Memory",
-    "link": "/examples/transport-memory"
-  },
-  {
-    "text": "Raw Typed",
-    "link": "/examples/raw-typed"
-  },
-  {
-    "text": "Raw String Typed",
-    "link": "/examples/raw-string-typed"
-  },
-  {
-    "text": "Raw String",
-    "link": "/examples/raw-string"
-  },
-  {
-    "text": "Raw",
-    "link": "/examples/raw"
-  },
-  {
     "text": "Generated",
     "items": [
       {
         "text": "Arguments",
         "link": "/examples/generated-arguments"
+      }
+    ]
+  },
+  {
+    "text": "Other",
+    "items": [
+      {
+        "text": "Transport Memory",
+        "link": "/examples/other-transport-memory"
       }
     ]
   },
@@ -41,6 +30,27 @@
       {
         "text": "Envelope",
         "link": "/examples/output-envelope"
+      }
+    ]
+  },
+  {
+    "text": "Raw",
+    "items": [
+      {
+        "text": "",
+        "link": "/examples/raw-"
+      },
+      {
+        "text": "Raw String",
+        "link": "/examples/raw-raw-string"
+      },
+      {
+        "text": "Raw String Typed",
+        "link": "/examples/raw-raw-string-typed"
+      },
+      {
+        "text": "Raw Typed",
+        "link": "/examples/raw-raw-typed"
       }
     ]
   },
