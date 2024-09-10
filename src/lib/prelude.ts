@@ -1,5 +1,5 @@
 import type { Simplify } from 'type-fest'
-import type { ConditionalSimplifyDeep } from 'type-fest/source/conditional-simplify.js'
+import type { ConditionalSimplify, ConditionalSimplifyDeep } from 'type-fest/source/conditional-simplify.js'
 
 /* eslint-disable */
 export type RemoveIndex<T> = {
@@ -182,8 +182,6 @@ export type NotEmptyObject<T> = keyof T extends never ? never : T
 export type Values<T> = T[keyof T]
 
 export type GetKeyOr<T, Key, Or> = Key extends keyof T ? T[Key] : Or
-
-export type SimplifyDeep<T> = ConditionalSimplifyDeep<T, Function | Iterable<unknown> | Date, object>
 
 export type As<T, U> = U extends T ? U : never
 
@@ -396,11 +394,13 @@ export type PickRequiredProperties<T extends object> = {
 
 export type Negate<T extends boolean> = T extends true ? false : true
 
-export type SimplifyExceptError<T extends unknown> = ConditionalSimplifyDeep<T, Error>
+export type SimplifyExceptError<T extends unknown> = ConditionalSimplify<T, Error>
 
 export type SimplifyExceptErrorUnion<T> = T extends any ? SimplifyExceptError<T> : never
 
 export type SimplifyUnion<T> = T extends any ? Simplify<T> : never
+
+export type SimplifyDeep<T> = ConditionalSimplifyDeep<T, Function | Iterable<unknown> | Date, object>
 
 export type SimplifyDeepUnion<T> = T extends any ? SimplifyDeep<T> : never
 

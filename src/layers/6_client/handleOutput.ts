@@ -1,5 +1,6 @@
 import type { GraphQLError } from 'graphql'
 import type { Simplify } from 'type-fest'
+import type { ConditionalSimplify } from 'type-fest/source/conditional-simplify.js'
 import { Errors } from '../../lib/errors/__.js'
 import type { GraphQLExecutionResultError } from '../../lib/graphql.js'
 import { isPlainObject, type SimplifyExceptError, type Values } from '../../lib/prelude.js'
@@ -228,3 +229,7 @@ type IsEnvelopeWithoutErrors<$Config extends Config> =
       ? true
     : false
   : false
+
+export type SimplifyOutput<O> = ConditionalSimplify<O, Error | Response>
+
+export type SimplifyOutputUnion<T> = T extends any ? SimplifyOutput<T> : never
