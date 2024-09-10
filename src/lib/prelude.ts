@@ -1,5 +1,5 @@
 import type { Simplify } from 'type-fest'
-import type { ConditionalSimplify, ConditionalSimplifyDeep } from 'type-fest/source/conditional-simplify.js'
+import type { ConditionalSimplifyDeep } from 'type-fest/source/conditional-simplify.js'
 
 /* eslint-disable */
 export type RemoveIndex<T> = {

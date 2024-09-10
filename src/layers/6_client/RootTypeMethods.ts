@@ -1,4 +1,3 @@
-import type { ConditionalSimplify } from 'type-fest/source/conditional-simplify.js'
 import type { OperationTypeName } from '../../lib/graphql.js'
 import type { Exact, SimplifyExceptError } from '../../lib/prelude.js'
 import type { TSError } from '../../lib/TSError.js'
