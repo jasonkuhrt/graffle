@@ -137,13 +137,14 @@ export const runExample = async (filePath: string) => {
 
   exampleOutput = result.failed ? result.stderr : result.stdout
   exampleOutput = stripAnsi(exampleOutput)
-  if (result.failed) {
-    exampleOutput = rewriteDynamicError(exampleOutput)
-  }
+  exampleOutput = rewriteDynamicError(exampleOutput)
 
   return exampleOutput
 }
 
 export const rewriteDynamicError = (value: string) => {
-  return value.replaceAll(/\/.*\/(.+)\.ts/g, `/some/path/to/$1.ts`).replaceAll(/Node\.js v.+/g, `Node.js vXX.XX.XX`)
+  return value
+    .replaceAll(/\/.*\/(.+)\.ts/g, `/some/path/to/$1.ts`)
+    // When Node.js process exits via an uncaught thrown error, version is printed at bottom.
+    .replaceAll(/Node\.js v.+/g, `Node.js vXX.XX.XX`)
 }
