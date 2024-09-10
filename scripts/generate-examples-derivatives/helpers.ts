@@ -166,4 +166,5 @@ export const rewriteDynamicError = (value: string) => {
     .replaceAll(/\/.*\/(.+)\.ts/g, `/some/path/to/$1.ts`)
     // When Node.js process exits via an uncaught thrown error, version is printed at bottom.
     .replaceAll(/Node\.js v.+/g, `Node.js vXX.XX.XX`)
+    .replaceAll(/(.+):\d+:\d+\)/g, `$1:XX:XX)`)
 }

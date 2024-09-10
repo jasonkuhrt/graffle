@@ -1,17 +1,17 @@
 ---------------------------------------- SHOW ----------------------------------------
 ContextualError: There was an error in the extension "anonymous" (use named functions to improve this error message) while running hook "encode".
-    at runPipeline (/some/path/to/runPipeline.ts:76:18)
-    at async Object.run (/some/path/to/main.ts:286:22)
-    at async run (/some/path/to/client.ts:256:20)
-    at async executeRootType (/some/path/to/client.ts:185:12)
-    at async executeRootTypeField (/some/path/to/client.ts:216:20)
-    at async <anonymous> (/some/path/to/output|output_return-error.ts:24:16) {
+    at runPipeline (/some/path/to/runPipeline.ts:XX:XX)
+    at async Object.run (/some/path/to/main.ts:XX:XX)
+    at async run (/some/path/to/client.ts:XX:XX)
+    at async executeRootType (/some/path/to/client.ts:XX:XX)
+    at async executeRootTypeField (/some/path/to/client.ts:XX:XX)
+    at async <anonymous> (/some/path/to/output|output_return-error.ts:XX:XX) {
   context: {
     hookName: 'encode',
     source: 'extension',
     extensionName: 'anonymous'
   },
   cause: Error: Something went wrong.
-      at <anonymous> (/some/path/to/output|output_return-error.ts:20:11)
-      at applyBody (/some/path/to/main.ts:310:28)
+      at <anonymous> (/some/path/to/output|output_return-error.ts:XX:XX)
+      at applyBody (/some/path/to/main.ts:XX:XX)
 }
