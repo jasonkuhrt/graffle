@@ -14,6 +14,6 @@ test(`output|output_envelope_envelope-error__envelope-error`, async () => {
   // If ever outputs vary by Node version, you can use this to snapshot by Node version.
   // const nodeMajor = process.version.match(/v(\d+)/)?.[1] ?? `unknown`
   await expect(exampleResultMaybeEncoded).toMatchFileSnapshot(
-    `../.././examples/output|output_envelope_envelope-error__envelope-error.output.txt`,
+    `../.././examples/__outputs__/output|output_envelope_envelope-error__envelope-error.output.txt`,
   )
 })

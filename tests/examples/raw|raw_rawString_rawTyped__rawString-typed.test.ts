@@ -14,6 +14,6 @@ test(`raw|raw_rawString_rawTyped__rawString-typed`, async () => {
   // If ever outputs vary by Node version, you can use this to snapshot by Node version.
   // const nodeMajor = process.version.match(/v(\d+)/)?.[1] ?? `unknown`
   await expect(exampleResultMaybeEncoded).toMatchFileSnapshot(
-    `../.././examples/raw|raw_rawString_rawTyped__rawString-typed.output.txt`,
+    `../.././examples/__outputs__/raw|raw_rawString_rawTyped__rawString-typed.output.txt`,
   )
 })

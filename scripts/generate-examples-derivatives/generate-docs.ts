@@ -3,11 +3,9 @@ import * as FS from 'node:fs/promises'
 import { type DefaultTheme } from 'vitepress'
 import { documentQueryContinents, publicGraphQLSchemaEndpoints } from '../../examples/$/helpers.js'
 import { deleteFiles } from '../lib/deleteFiles.js'
-import { computeCombinations, type Example, readExamples, toTitle } from './helpers.js'
+import { computeCombinations, type Example, toTitle } from './helpers.js'
 
-export const generateDocs = async () => {
-  const examples = await readExamples()
-
+export const generateDocs = async (examples: Example[]) => {
   const examplesTransformed = examples
     .map(transformOther)
     .map(transformRewriteGraffleImports)

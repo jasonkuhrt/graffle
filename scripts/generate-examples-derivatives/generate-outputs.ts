@@ -1,17 +1,18 @@
 import * as FS from 'node:fs/promises'
 import { deleteFiles } from '../lib/deleteFiles.js'
-import { readExampleFiles, runExample } from './helpers.js'
+import { directories, type Example, runExample } from './helpers.js'
 
-export const generateOutputs = async () => {
+export const generateOutputs = async (examples: Example[]) => {
   // Handle case of renaming or deleting examples.
-  await deleteFiles({ pattern: `./examples/*.output.*` })
+  await Promise.all([
+    deleteFiles({ pattern: `./examples/*.output.txt` }),
+    deleteFiles({ pattern: `${directories.outputs}/*.output.txt` }),
+  ])
 
-  const exampleFiles = await readExampleFiles()
-
-  await Promise.all(exampleFiles.map(async (file) => {
-    const filePath = `./examples/${file.name}.ts`
+  await Promise.all(examples.map(async (example) => {
+    const filePath = `./examples/${example.file.name}.ts`
     const exampleResult = await runExample(filePath)
-    await FS.writeFile(`./examples/${file.name}.output.txt`, exampleResult)
+    await FS.writeFile(`${directories.outputs}/${example.file.name}.output.txt`, exampleResult)
   }))
 
   console.log(`Generated an output for each example.`)

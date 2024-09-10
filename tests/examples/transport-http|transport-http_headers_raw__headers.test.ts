@@ -14,6 +14,6 @@ test(`transport-http|transport-http_headers_raw__headers`, async () => {
   // If ever outputs vary by Node version, you can use this to snapshot by Node version.
   // const nodeMajor = process.version.match(/v(\d+)/)?.[1] ?? `unknown`
   await expect(exampleResultMaybeEncoded).toMatchFileSnapshot(
-    `../.././examples/transport-http|transport-http_headers_raw__headers.output.txt`,
+    `../.././examples/__outputs__/transport-http|transport-http_headers_raw__headers.output.txt`,
   )
 })

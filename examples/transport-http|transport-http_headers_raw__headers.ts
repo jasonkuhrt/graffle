@@ -1,6 +1,7 @@
 /**
  * This example shows how to use the `transport` configuration to control request headers. Notice how empty string headers unset previously set headers.
  */
+
 import { Graffle } from '../src/entrypoints/main.js'
 import { show } from './$/helpers.js'
 import { publicGraphQLSchemaEndpoints } from './$/helpers.js'

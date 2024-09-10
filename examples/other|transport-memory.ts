@@ -1,3 +1,7 @@
+/**
+ * This example shows how you can send requests against an in-memory GraphQL schema instead of one hosted over HTTP.
+ */
+
 import { GraphQLObjectType, GraphQLSchema, GraphQLString } from 'graphql'
 import { Graffle } from '../src/entrypoints/main.js'
 import { showJson } from './$/helpers.js'

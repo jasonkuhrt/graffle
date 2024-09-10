@@ -14,6 +14,6 @@ test(`transport-http|transport-http_extension_fetch__custom-fetch`, async () => 
   // If ever outputs vary by Node version, you can use this to snapshot by Node version.
   // const nodeMajor = process.version.match(/v(\d+)/)?.[1] ?? `unknown`
   await expect(exampleResultMaybeEncoded).toMatchFileSnapshot(
-    `../.././examples/transport-http|transport-http_extension_fetch__custom-fetch.output.txt`,
+    `../.././examples/__outputs__/transport-http|transport-http_extension_fetch__custom-fetch.output.txt`,
   )
 })
