@@ -17,13 +17,13 @@ export type BaseInput<$Document extends DocumentInput = DocumentInput> =
       document: $Document
       operationName?: OperationNameInput
     }
-  & (
+  & NoInfer<(
     $Document extends TypedDocumentString<any,any>
         ? GetVariablesInputFromString<Exclude<$Document,TypedQueryDocumentNode>>
         : string extends $Document
           ? { variables?: StandardScalarVariables }
           : GetVariablesInputFromDocumentNode<Exclude<$Document, TypedDocumentString>>
-    )
+    )>
 
 // dprint-ignore
 type GetVariablesInputFromString<$Document extends TypedDocumentString> =

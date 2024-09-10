@@ -1,4 +1,6 @@
 import { capitalize, kebabCase } from 'es-toolkit'
+import { execa } from 'execa'
+import stripAnsi from 'strip-ansi'
 import { showPartition } from '../../examples/$/helpers.js'
 import { type File, readFiles } from '../lib/readFiles.js'
 
@@ -126,4 +128,23 @@ export const computeCombinations = (arr: string[]): string[][] => {
   generateCombinations([], 0)
 
   return result
+}
+
+export const runExample = async (filePath: string) => {
+  const result = await execa({ reject: false })`pnpm tsx ${filePath}`
+
+  let exampleOutput = ``
+
+  exampleOutput = result.failed ? result.stderr : result.stdout
+  exampleOutput = stripAnsi(exampleOutput)
+  exampleOutput = rewriteDynamicError(exampleOutput)
+
+  return exampleOutput
+}
+
+export const rewriteDynamicError = (value: string) => {
+  return value
+    .replaceAll(/\/.*\/(.+)\.ts/g, `/some/path/to/$1.ts`)
+    // When Node.js process exits via an uncaught thrown error, version is printed at bottom.
+    .replaceAll(/Node\.js v.+/g, `Node.js vXX.XX.XX`)
 }
