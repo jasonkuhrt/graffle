@@ -26,9 +26,6 @@ importers:
       is-plain-obj:
         specifier: ^4.1.0
         version: 4.1.0
-      zod:
-        specifier: ^3.23.8
-        version: 3.23.8
     devDependencies:
       '@arethetypeswrong/cli':
         specifier: ^0.16.2
@@ -39,6 +36,9 @@ importers:
       '@pothos/plugin-simple-objects':
         specifier: ^4.1.0
         version: 4.1.0(@pothos/core@4.2.0(graphql@16.9.0))(graphql@16.9.0)
+      '@pothos/plugin-zod':
+        specifier: ^4.1.0
+        version: 4.1.0(@pothos/core@4.2.0(graphql@16.9.0))(graphql@16.9.0)(zod@3.23.8)
       '@tsconfig/node20':
         specifier: ^20.1.4
         version: 20.1.4
@@ -150,6 +150,9 @@ importers:
       vitest:
         specifier: ^2.0.5
         version: 2.0.5(@types/node@22.5.4)(happy-dom@15.7.3)(jsdom@25.0.0)
+      zod:
+        specifier: ^3.23.8
+        version: 3.23.8
 
 packages:
 
@@ -860,6 +863,13 @@ packages:
     peerDependencies:
       '@pothos/core': '*'
       graphql: '>=16.6.0'
+
+  '@pothos/plugin-zod@4.1.0':
+    resolution: {integrity: sha512-KNAFllvYTZimY+rjELNRRUNVyN2zhZ0jIGsTDb9QVYZ8c5EBT3tHjuImu7t12GHnOAkuTimCEk/VngyMUQpEyw==}
+    peerDependencies:
+      '@pothos/core': '*'
+      graphql: '>=16.6.0'
+      zod: '*'
 
   '@repeaterjs/repeater@3.0.6':
     resolution: {integrity: sha512-Javneu5lsuhwNCryN+pXH93VPQ8g0dBX7wItHFgYiwQmzE1sVdg5tWHiOgHywzL2W21XQopa7IwIEnNbmeUJYA==}
@@ -4487,6 +4497,12 @@ snapshots:
     dependencies:
       '@pothos/core': 4.2.0(graphql@16.9.0)
       graphql: 16.9.0
+
+  '@pothos/plugin-zod@4.1.0(@pothos/core@4.2.0(graphql@16.9.0))(graphql@16.9.0)(zod@3.23.8)':
+    dependencies:
+      '@pothos/core': 4.2.0(graphql@16.9.0)
+      graphql: 16.9.0
+      zod: 3.23.8
 
   '@repeaterjs/repeater@3.0.6': {}
 

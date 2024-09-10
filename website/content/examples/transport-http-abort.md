@@ -36,7 +36,6 @@ abortController.abort()
 const result = await resultPromise.catch((error: unknown) => (error as Error).message)
 
 console.log(result)
-//          ^?
 
 // todo .with(...) variant
 ```

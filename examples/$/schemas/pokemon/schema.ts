@@ -1,5 +1,6 @@
 import SchemaBuilder from '@pothos/core'
 import SimpleObjectsPlugin from '@pothos/plugin-simple-objects'
+import ZodPlugin from '@pothos/plugin-zod'
 
 type Trainer = {
   id: number
@@ -23,7 +24,7 @@ const builder = new SchemaBuilder<{
     }
   }
 }>({
-  plugins: [SimpleObjectsPlugin],
+  plugins: [SimpleObjectsPlugin, ZodPlugin],
 })
 
 type Database = {
@@ -97,7 +98,10 @@ builder.mutationField(`addPokemon`, (t) =>
   t.field({
     type: Pokemon,
     args: {
-      name: t.arg.string({ required: true }),
+      name: t.arg.string({
+        required: true,
+        validate: { minLength: [1, { message: 'Pokemon name cannot be empty.' }] },
+      }),
       hp: t.arg.int({ required: true }),
       attack: t.arg.int({ required: true }),
       defense: t.arg.int({ required: true }),

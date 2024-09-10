@@ -27,6 +27,7 @@ export default defineConfig({
           compilerOptions: {
             moduleResolution: ModuleResolutionKind.Bundler,
             module: ModuleKind.ESNext,
+            noErrorTruncation: true,
           },
 
           extraFiles: {

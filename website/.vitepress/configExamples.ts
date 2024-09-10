@@ -38,6 +38,14 @@
       {
         "text": "Envelope Error Throw",
         "link": "/examples/output-envelope-error-throw"
+      },
+      {
+        "text": "Return Error",
+        "link": "/examples/output-return-error"
+      },
+      {
+        "text": "Return Error Execution",
+        "link": "/examples/output-return-error-execution"
       }
     ]
   },

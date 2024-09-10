@@ -11,25 +11,26 @@ This example shows how to configure output to embed errors into the envelope.
 // ---cut---
 import { Graffle as Atlas } from './graffle/__.js'
 
-const atlas = Atlas.create({
-  output: {
-    envelope: {
-      errors: {
-//    ^^^^^^
-        execution: true, // default
-        other: true,
+const atlas = Atlas
+  .create({
+    output: {
+      envelope: {
+        errors: {
+  //    ^^^^^^
+          execution: true, // default
+          other: true,
+        },
       },
     },
-  },
-}).use(({ encode: _ }) => {
-  throw new Error(`Something went wrong.`)
-//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-})
+  })
+  .use(({ encode: _ }) => {
+    throw new Error(`Something went wrong.`)
+  //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  })
 
 const result = await atlas.query.continents({ name: true })
 
 console.log(result)
-//          ^?
 ```
 <!-- dprint-ignore-end -->
 
@@ -45,14 +46,14 @@ console.log(result)
         at async run (/some/path/to/client.ts:256:20)
         at async executeRootType (/some/path/to/client.ts:185:12)
         at async executeRootTypeField (/some/path/to/client.ts:216:20)
-        at async <anonymous> (/some/path/to/output|output_envelope_envelope-error__envelope-error.ts:24:16) {
+        at async <anonymous> (/some/path/to/output|output_envelope_envelope-error__envelope-error.ts:26:16) {
       context: {
         hookName: 'encode',
         source: 'extension',
         extensionName: 'anonymous'
       },
       cause: Error: Something went wrong.
-          at <anonymous> (/some/path/to/output|output_envelope_envelope-error__envelope-error.ts:20:9)
+          at <anonymous> (/some/path/to/output|output_envelope_envelope-error__envelope-error.ts:22:11)
           at applyBody (/some/path/to/main.ts:310:28)
     }
   ]

@@ -20,7 +20,6 @@ const atlas = Atlas.create({
 const result = await atlas.query.continents({ name: true })
 
 console.log(result)
-//          ^?
 ```
 <!-- dprint-ignore-end -->
 
@@ -48,7 +47,7 @@ console.log(result)
     headers: Headers {
       connection: 'keep-alive',
       'content-length': '119',
-      'x-served-by': 'cache-yul1970024-YUL',
+      'x-served-by': 'cache-yul1970030-YUL',
       'accept-ranges': 'bytes',
       date: 'Sun, 08 Sep 2024 18:13:26 GMT',
       'content-type': 'application/graphql-response+json; charset=utf-8',
@@ -61,13 +60,13 @@ console.log(result)
       'alt-svc': 'h3=":443"; ma=86400',
       'access-control-allow-origin': '*',
       'x-powered-by': 'Stellate',
-      age: '175934',
+      age: '183975',
       'cache-control': 'public, s-maxage=2628000, stale-while-revalidate=2628000',
       'x-cache': 'HIT',
-      'x-cache-hits': '32',
+      'x-cache-hits': '8',
       'gcdn-cache': 'HIT',
-      'stellate-rate-limit-budget-remaining': '43',
-      'stellate-rate-limit-rules': '"IP limit";type="RequestCount";budget=50;limited=?0;remaining=43;refill=59',
+      'stellate-rate-limit-budget-remaining': '35',
+      'stellate-rate-limit-rules': '"IP limit";type="RequestCount";budget=50;limited=?0;remaining=35;refill=38',
       'stellate-rate-limit-decision': 'pass',
       'stellate-rate-limit-budget-required': '5',
       'content-encoding': 'br'

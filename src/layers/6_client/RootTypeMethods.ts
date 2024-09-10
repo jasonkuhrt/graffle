@@ -1,5 +1,6 @@
+import type { ConditionalSimplify } from 'type-fest/source/conditional-simplify.js'
 import type { OperationTypeName } from '../../lib/graphql.js'
-import type { Exact } from '../../lib/prelude.js'
+import type { Exact, SimplifyExceptError } from '../../lib/prelude.js'
 import type { TSError } from '../../lib/TSError.js'
 import type { InputFieldsAllNullable, Schema } from '../1_Schema/__.js'
 import type { SelectionSet } from '../3_SelectionSet/__.js'
@@ -79,10 +80,14 @@ type RootTypeFieldMethod_<$Context extends RootTypeFieldContext, $Type extends S
   $Type extends Schema.__typename                           ? ScalarFieldMethod<$Context> :
                                                               ObjectLikeFieldMethod<$Context>
 
+// If this type is not locally defined, apparently it affects the computed TS type.
+// This exact same utility type used via import leads to different results....?!
+type SimplifyExceptErrorUnion<T> = T extends any ? SimplifyExceptError<T> : never
+
 // dprint-ignore
 type ObjectLikeFieldMethod<$Context extends RootTypeFieldContext> =
   <$SelectionSet>(selectionSet: Exact<$SelectionSet, SelectionSet.Field<$Context['Field'], $Context['Index'], { hideDirectives: true }>>) =>
-    Promise<ReturnModeForFieldMethod<$Context, ResultSet.Field<$SelectionSet & CreateSelectionTypename<$Context['Config'],$Context['Index']>, $Context['Field'], $Context['Index']>>>
+    Promise<SimplifyExceptErrorUnion<ReturnModeForFieldMethod<$Context, ResultSet.Field<$SelectionSet & CreateSelectionTypename<$Context['Config'],$Context['Index']>, $Context['Field'], $Context['Index']>>>>
 
 // dprint-ignore
 type ScalarFieldMethod<$Context extends RootTypeFieldContext> =
@@ -90,5 +95,5 @@ type ScalarFieldMethod<$Context extends RootTypeFieldContext> =
                                                                                                                   <$SelectionSet>(args:  Exact<$SelectionSet, SelectionSet.Args<$Context['Field']['args']>>) => Promise<ReturnModeForFieldMethod<$Context, ResultSet.Field<$SelectionSet, $Context['Field'], $Context['Index']>>> :
                                                                   (() => Promise<ReturnModeForFieldMethod<$Context, ResultSet.Field<true, $Context['Field'], $Context['Index']>>>)
 // dprint-ignore
-type ReturnModeForFieldMethod<$Context extends RootTypeFieldContext, $Data> =
+export type ReturnModeForFieldMethod<$Context extends RootTypeFieldContext, $Data> =
   ResolveOutputReturnRootField<$Context['Config'], $Context['Index'], $Data, { [k in $Context['RootTypeFieldName']] : $Data }>

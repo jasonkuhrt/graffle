@@ -29,7 +29,6 @@ const result = await graffle.raw({
 })
 
 console.log(result.data)
-//          ^?
 ```
 <!-- dprint-ignore-end -->
 

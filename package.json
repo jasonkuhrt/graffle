@@ -86,8 +86,7 @@
   "dependencies": {
     "@graphql-typed-document-node/core": "^3.2.0",
     "@molt/command": "^0.9.0",
-    "is-plain-obj": "^4.1.0",
-    "zod": "^3.23.8"
+    "is-plain-obj": "^4.1.0"
   },
   "peerDependencies": {
     "@dprint/formatter": "^0.3.0 || ^0.4.0",
@@ -110,6 +109,7 @@
     "@arethetypeswrong/cli": "^0.16.2",
     "@pothos/core": "^4.2.0",
     "@pothos/plugin-simple-objects": "^4.1.0",
+    "@pothos/plugin-zod": "^4.1.0",
     "@tsconfig/node20": "^20.1.4",
     "@tsconfig/strictest": "^2.0.5",
     "@types/body-parser": "^1.19.5",
@@ -146,6 +146,7 @@
     "typescript": "^5.6.2",
     "typescript-eslint": "^8.5.0",
     "vitepress": "^1.3.4",
-    "vitest": "^2.0.5"
+    "vitest": "^2.0.5",
+    "zod": "^3.23.8"
   }
 }

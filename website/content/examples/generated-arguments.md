@@ -20,7 +20,6 @@ const countries = await atlas.query.countries({
 })
 
 console.log(countries)
-//          ^?
 ```
 <!-- dprint-ignore-end -->
 
