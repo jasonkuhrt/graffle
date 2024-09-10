@@ -5,7 +5,7 @@
 // Do not modify this file directly.
 
 import { expect, test } from 'vitest'
-import { encode } from '../../examples/output|output_envelope.output-encoder.js'
+import { encode } from '../../examples/__outputs__/output|output_envelope.output.encoder.js'
 import { runExample } from '../../scripts/generate-examples-derivatives/helpers.js'
 
 test(`output|output_envelope`, async () => {
@@ -14,5 +14,7 @@ test(`output|output_envelope`, async () => {
   const exampleResultMaybeEncoded = encode(exampleResult)
   // If ever outputs vary by Node version, you can use this to snapshot by Node version.
   // const nodeMajor = process.version.match(/v(\d+)/)?.[1] ?? `unknown`
-  await expect(exampleResultMaybeEncoded).toMatchFileSnapshot(`../.././examples/output|output_envelope.output.test.txt`)
+  await expect(exampleResultMaybeEncoded).toMatchFileSnapshot(
+    `../.././examples/__outputs__/output|output_envelope.output.test.txt`,
+  )
 })

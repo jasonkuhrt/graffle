@@ -1,27 +1,19 @@
-import { globby } from 'globby'
 import * as FS from 'node:fs/promises'
 import * as Path from 'node:path'
 import { deleteFiles } from '../lib/deleteFiles.js'
-import { readFiles } from '../lib/readFiles.js'
+import { type Example } from './helpers.js'
 
-export const generateTests = async () => {
+export const generateTests = async (examples: Example[]) => {
   // Handle case of renaming or deleting examples.
   await deleteFiles({ pattern: `./tests/examples/*.test.ts` })
 
-  const exampleFiles = await readFiles({
-    pattern: `./examples/*.ts`,
-    options: { ignore: [`./examples/$*`, `./examples/*.output.*`, `./examples/*.output-encoder.*`] },
-  })
-  const encoderFilePaths = await globby(`./examples/*.output-encoder.ts`)
-
   const outputDir = Path.join(process.cwd(), `./tests/examples`)
 
-  await Promise.all(exampleFiles.map(async (file) => {
-    const encoderFilePath = encoderFilePaths.find((encoderFilePath) =>
-      encoderFilePath.includes(`${file.name}.output-encoder.ts`)
-    )
-    const snapshotFileName = `../../${file.path.dir}/${file.name}.output${encoderFilePath ? `.test` : ``}.txt`
-    const exampleFilePath = `./examples/${file.name}.ts`
+  await Promise.all(examples.map(async (example) => {
+    const snapshotFileName = `../../${example.file.path.dir}/__outputs__/${example.file.name}.output${
+      example.output.encoder ? `.test` : ``
+    }.txt`
+    const exampleFilePath = `./examples/${example.file.name}.ts`
     const code = `// @vitest-environment node
 
 // WARNING:
@@ -30,21 +22,23 @@ export const generateTests = async () => {
 
 import { runExample } from '../../scripts/generate-examples-derivatives/helpers.js'
 import { expect, test } from 'vitest'${
-      encoderFilePath
-        ? `\nimport { encode } from '${Path.relative(outputDir, encoderFilePath.replace(`.ts`, `.js`))}'`
+      example.output.encoder
+        ? `\nimport { encode } from '${
+          Path.relative(outputDir, example.output.encoder.filePath.replace(`.ts`, `.js`))
+        }'`
         : ``
     }
 
-test(\`${file.name}\`, async () => {
+test(\`${example.file.name}\`, async () => {
   const exampleResult = await runExample(\`${exampleFilePath}\`)
   // Examples should output their data results.
-  const exampleResultMaybeEncoded = ${encoderFilePath ? `encode(exampleResult)` : `exampleResult`} 
+  const exampleResultMaybeEncoded = ${example.output.encoder ? `encode(exampleResult)` : `exampleResult`} 
   // If ever outputs vary by Node version, you can use this to snapshot by Node version.
   // const nodeMajor = process.version.match(/v(\\d+)/)?.[1] ?? \`unknown\`
   await expect(exampleResultMaybeEncoded).toMatchFileSnapshot(\`${snapshotFileName}\`)
 })
 `
-    await FS.writeFile(Path.join(outputDir, `${file.name}.test.ts`), code)
+    await FS.writeFile(Path.join(outputDir, `${example.file.name}.test.ts`), code)
   }))
 
   console.log(`Generated a test for each example.`)

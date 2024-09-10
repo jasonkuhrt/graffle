@@ -14,6 +14,6 @@ test(`generated|generated_arguments__arguments`, async () => {
   // If ever outputs vary by Node version, you can use this to snapshot by Node version.
   // const nodeMajor = process.version.match(/v(\d+)/)?.[1] ?? `unknown`
   await expect(exampleResultMaybeEncoded).toMatchFileSnapshot(
-    `../.././examples/generated|generated_arguments__arguments.output.txt`,
+    `../.././examples/__outputs__/generated|generated_arguments__arguments.output.txt`,
   )
 })
