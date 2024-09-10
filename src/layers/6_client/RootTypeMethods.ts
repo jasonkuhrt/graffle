@@ -86,7 +86,7 @@ type SimplifyExceptErrorUnion<T> = T extends any ? SimplifyExceptError<T> : neve
 // dprint-ignore
 type ObjectLikeFieldMethod<$Context extends RootTypeFieldContext> =
   <$SelectionSet>(selectionSet: Exact<$SelectionSet, SelectionSet.Field<$Context['Field'], $Context['Index'], { hideDirectives: true }>>) =>
-    Promise<SimplifyExceptErrorUnion<ReturnModeForFieldMethod<$Context, ResultSet.Field<$SelectionSet & CreateSelectionTypename<$Context['Config'],$Context['Index']>, $Context['Field'], $Context['Index']>>>>
+    Promise<ReturnModeForFieldMethod<$Context, ResultSet.Field<$SelectionSet & CreateSelectionTypename<$Context['Config'],$Context['Index']>, $Context['Field'], $Context['Index']>>>
 
 // dprint-ignore
 type ScalarFieldMethod<$Context extends RootTypeFieldContext> =
@@ -94,5 +94,5 @@ type ScalarFieldMethod<$Context extends RootTypeFieldContext> =
                                                                                                                   <$SelectionSet>(args:  Exact<$SelectionSet, SelectionSet.Args<$Context['Field']['args']>>) => Promise<ReturnModeForFieldMethod<$Context, ResultSet.Field<$SelectionSet, $Context['Field'], $Context['Index']>>> :
                                                                   (() => Promise<ReturnModeForFieldMethod<$Context, ResultSet.Field<true, $Context['Field'], $Context['Index']>>>)
 // dprint-ignore
-export type ReturnModeForFieldMethod<$Context extends RootTypeFieldContext, $Data> =
+type ReturnModeForFieldMethod<$Context extends RootTypeFieldContext, $Data> =
   ResolveOutputReturnRootField<$Context['Config'], $Context['Index'], $Data, { [k in $Context['RootTypeFieldName']] : $Data }>

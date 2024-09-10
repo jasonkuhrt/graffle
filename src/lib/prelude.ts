@@ -396,9 +396,9 @@ export type PickRequiredProperties<T extends object> = {
 
 export type Negate<T extends boolean> = T extends true ? false : true
 
-export type SimplifyExceptErrorUnion<T> = T extends any ? SimplifyExceptError<T> : never
-
 export type SimplifyExceptError<T extends unknown> = ConditionalSimplifyDeep<T, Error>
+
+export type SimplifyExceptErrorUnion<T> = T extends any ? SimplifyExceptError<T> : never
 
 export type SimplifyUnion<T> = T extends any ? Simplify<T> : never
 
