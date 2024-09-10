@@ -30,6 +30,14 @@
       {
         "text": "Envelope",
         "link": "/examples/output-envelope"
+      },
+      {
+        "text": "Envelope Error",
+        "link": "/examples/output-envelope-error"
+      },
+      {
+        "text": "Envelope Error Throw",
+        "link": "/examples/output-envelope-error-throw"
       }
     ]
   },

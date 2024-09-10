@@ -7,13 +7,13 @@
 import { expect, test } from 'vitest'
 import { runExample } from '../../scripts/generate-examples-derivatives/helpers.js'
 
-test(`transport-http|transport-http_extension_fetch__custom-fetch`, async () => {
-  const exampleResult = await runExample(`./examples/transport-http|transport-http_extension_fetch__custom-fetch.ts`)
+test(`output|output_envelope_envelope-error__envelope-error`, async () => {
+  const exampleResult = await runExample(`./examples/output|output_envelope_envelope-error__envelope-error.ts`)
   // Examples should output their data results.
   const exampleResultMaybeEncoded = exampleResult
   // If ever outputs vary by Node version, you can use this to snapshot by Node version.
   // const nodeMajor = process.version.match(/v(\d+)/)?.[1] ?? `unknown`
   await expect(exampleResultMaybeEncoded).toMatchFileSnapshot(
-    `../.././examples/transport-http|transport-http_extension_fetch__custom-fetch.output.txt`,
+    `../.././examples/output|output_envelope_envelope-error__envelope-error.output.txt`,
   )
 })

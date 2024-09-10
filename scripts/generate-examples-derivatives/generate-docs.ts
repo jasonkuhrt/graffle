@@ -185,7 +185,10 @@ const transformRewriteHelperImports = (example: Example) => {
  * 1. Remove eslint directives.
  */
 const transformOther = (example: Example) => {
-  const newContent = example.file.content.replaceAll(`/* eslint-disable */`, ``)
+  const newContent = example.file.content.replaceAll(`/* eslint-disable */`, ``).replaceAll(
+    /.*\/\/ dprint-ignore.*\n/g,
+    ``,
+  )
   return {
     ...example,
     file: {

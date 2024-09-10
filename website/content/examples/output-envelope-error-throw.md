@@ -1,0 +1,60 @@
+---
+aside: false
+---
+
+# Envelope Error Throw
+
+This example shows how to configure output to throw errors even when using the envelope.
+
+<!-- dprint-ignore-start -->
+```ts twoslash
+// ---cut---
+import { Graffle as Atlas } from './graffle/__.js'
+
+const atlas = Atlas.create({
+  output: {
+    envelope: {
+      errors: {
+        execution: false,
+        other: false, // default
+      }
+    },
+  },
+}).use(({ encode: _ }) => {
+  throw new Error(`Something went wrong.`)
+//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+})
+
+await atlas.query.continents({ name: true })
+```
+<!-- dprint-ignore-end -->
+
+#### Outputs
+
+<!-- dprint-ignore-start -->
+```txt
+/some/path/to/runPipeline.ts:76
+          return new ContextualError(message, {
+                 ^
+
+
+ContextualError: There was an error in the extension "anonymous" (use named functions to improve this error message) while running hook "encode".
+    at runPipeline (/some/path/to/runPipeline.ts:76:18)
+    at async Object.run (/some/path/to/main.ts:286:22)
+    at async run (/some/path/to/client.ts:256:20)
+    at async executeRootType (/some/path/to/client.ts:185:12)
+    at async executeRootTypeField (/some/path/to/client.ts:216:20)
+    at async <anonymous> (/some/path/to/output|output_envelope_envelope_error-throw__envelope-error-throw.ts:22:1) {
+  context: {
+    hookName: 'encode',
+    source: 'extension',
+    extensionName: 'anonymous'
+  },
+  cause: Error: Something went wrong.
+      at <anonymous> (/some/path/to/output|output_envelope_envelope_error-throw__envelope-error-throw.ts:18:9)
+      at applyBody (/some/path/to/main.ts:310:28)
+}
+
+Node.js vXX.XX.XX
+```
+<!-- dprint-ignore-end -->
