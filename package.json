@@ -107,7 +107,7 @@
     }
   },
   "devDependencies": {
-    "@arethetypeswrong/cli": "^0.16.0",
+    "@arethetypeswrong/cli": "^0.16.2",
     "@pothos/core": "^4.2.0",
     "@pothos/plugin-simple-objects": "^4.1.0",
     "@tsconfig/node20": "^20.1.4",
@@ -116,12 +116,12 @@
     "@types/express": "^4.17.21",
     "@types/json-bigint": "^1.0.4",
     "@types/node": "^22.5.4",
-    "@typescript-eslint/eslint-plugin": "^8.4.0",
-    "@typescript-eslint/parser": "^8.4.0",
+    "@typescript-eslint/eslint-plugin": "^8.5.0",
+    "@typescript-eslint/parser": "^8.5.0",
     "doctoc": "^2.2.1",
     "dripip": "^0.10.0",
     "es-toolkit": "^1.17.0",
-    "eslint": "^9.9.1",
+    "eslint": "^9.10.0",
     "eslint-config-prisma": "^0.6.0",
     "eslint-plugin-deprecation": "^3.0.0",
     "eslint-plugin-only-warn": "^1.1.0",
@@ -142,9 +142,9 @@
     "publint": "^0.2.10",
     "strip-ansi": "^7.1.0",
     "tsx": "^4.19.0",
-    "type-fest": "^4.26.0",
-    "typescript": "^5.5.4",
-    "typescript-eslint": "^8.4.0",
+    "type-fest": "^4.26.1",
+    "typescript": "^5.6.2",
+    "typescript-eslint": "^8.5.0",
     "vitepress": "^1.3.4",
     "vitest": "^2.0.5"
   }
