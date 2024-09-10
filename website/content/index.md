@@ -11,7 +11,7 @@ hero:
       link: /guides/overview/introduction
     - theme: alt
       text: Examples
-      link: /examples/raw
+      link: /examples/raw-raw
   image:
     src: /_assets/logo-dark.png
     alt: Graffle

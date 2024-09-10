@@ -46,8 +46,9 @@ const parseFileName = (fileName: string): Example['fileName'] => {
   const [group, fileNameWithoutGroup] = fileName.includes(`|`) ? fileName.split(`|`) : [null, fileName]
   const [tagsExpression, titleExpression] = fileNameWithoutGroup.split(`__`)
   // If group name is duplicated by tags then omit that from the canonical title.
-  const tagsExpressionWithoutGroupName = tagsExpression
-    ? parseTags(tagsExpression).map(tag => tag === group ? `` : tag).filter(Boolean).join(` `)
+  const tags = tagsExpression ? parseTags(tagsExpression) : null
+  const tagsExpressionWithoutGroupName = tags
+    ? (tags.length > 1 ? tags.map(tag => tag === group ? `` : tag).filter(Boolean) : tags).join(` `)
     : null
   const canonicalTitleExpression = titleExpression ?? tagsExpressionWithoutGroupName ?? `impossible`
   return {
