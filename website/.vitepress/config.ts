@@ -7,6 +7,7 @@ import { sidebarExamples } from './configExamples'
 export default defineConfig({
   title: 'Graffle',
   description: 'Minimalist Progressively Type Safe GraphQL Client For JavaScript.',
+  cleanUrls: true,
   // TODO, remove before going live.
   ignoreDeadLinks: true,
   sitemap: {
