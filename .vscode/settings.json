@@ -12,5 +12,6 @@
     "source.fixAll.eslint": "explicit",
     "source.organizeImports": "never"
   },
-  "prettier.enable": false
+  "prettier.enable": false,
+  "vite.autoStart": false
 }
