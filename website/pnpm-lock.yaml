@@ -10,7 +10,7 @@ importers:
     dependencies:
       '@shikijs/twoslash':
         specifier: ^1.16.3
-        version: 1.16.3(typescript@5.6.2)
+        version: 1.17.0(typescript@5.6.2)
       '@shikijs/vitepress-twoslash':
         specifier: ^1.16.3
         version: 1.17.0(typescript@5.6.2)
@@ -569,9 +569,6 @@ packages:
 
   '@shikijs/transformers@1.16.3':
     resolution: {integrity: sha512-bu4IcpUWmch4NvIWQgyMk2r9sH1XNZjUFgu56d3TPD1wLmBB/krctzVYgmurQ45X4dBEpNZdNvdG3v5B27taSw==}
-
-  '@shikijs/twoslash@1.16.3':
-    resolution: {integrity: sha512-lSBWuLv7K6QvQ1bKuJ7HLuIMa1tHjyLtijCRDjD7plhmSJXbS92icvXSCDaJsZ7ACt7KAgba4cA6ffMT7YAbjQ==}
 
   '@shikijs/twoslash@1.17.0':
     resolution: {integrity: sha512-CqXVLRbX5D/bN9OAWNVAxkjF1ZpqyzD6jHtKYor+rxvqz2QXK57taWo4IHa1s9APHpgGidMNxXVZZ5eN8uZnlg==}
@@ -1671,14 +1668,6 @@ snapshots:
   '@shikijs/transformers@1.16.3':
     dependencies:
       shiki: 1.16.3
-
-  '@shikijs/twoslash@1.16.3(typescript@5.6.2)':
-    dependencies:
-      '@shikijs/core': 1.16.3
-      twoslash: 0.2.11(typescript@5.6.2)
-    transitivePeerDependencies:
-      - supports-color
-      - typescript
 
   '@shikijs/twoslash@1.17.0(typescript@5.6.2)':
     dependencies:
