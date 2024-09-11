@@ -1,6 +1,6 @@
 # Opentelemetry
 
-<!--@include: @/guides/_example_links/extension-opentelemetry.md-->
+<!--@include: @/guides/_example_links/extension_opentelemetry.md-->
 
 You can Instrument requests from Graffle with [OpenTelemetry](https://opentelemetry.io) using the `Opentelemetry` extension. Check out the example to get started. You'll also find output there that shows each span created, allowing you to see its parent, attributes, etc.
 
