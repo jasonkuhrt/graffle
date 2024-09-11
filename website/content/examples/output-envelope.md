@@ -8,7 +8,6 @@ This example shows how to configure output to use the envelope.
 
 <!-- dprint-ignore-start -->
 ```ts twoslash
-// ---cut---
 import { Graffle as Atlas } from './graffle/__.js'
 
 const atlas = Atlas.create({
@@ -47,7 +46,7 @@ console.log(result)
     headers: Headers {
       connection: 'keep-alive',
       'content-length': '119',
-      'x-served-by': 'cache-yul1970023-YUL',
+      'x-served-by': 'cache-yul1970045-YUL',
       'accept-ranges': 'bytes',
       date: 'Sun, 08 Sep 2024 18:13:26 GMT',
       'content-type': 'application/graphql-response+json; charset=utf-8',
@@ -60,13 +59,13 @@ console.log(result)
       'alt-svc': 'h3=":443"; ma=86400',
       'access-control-allow-origin': '*',
       'x-powered-by': 'Stellate',
-      age: '185021',
+      age: '249539',
       'cache-control': 'public, s-maxage=2628000, stale-while-revalidate=2628000',
       'x-cache': 'HIT',
-      'x-cache-hits': '38',
+      'x-cache-hits': '5',
       'gcdn-cache': 'HIT',
-      'stellate-rate-limit-budget-remaining': '36',
-      'stellate-rate-limit-rules': '"IP limit";type="RequestCount";budget=50;limited=?0;remaining=36;refill=6',
+      'stellate-rate-limit-budget-remaining': '41',
+      'stellate-rate-limit-rules': '"IP limit";type="RequestCount";budget=50;limited=?0;remaining=41;refill=60',
       'stellate-rate-limit-decision': 'pass',
       'stellate-rate-limit-budget-required': '5',
       'content-encoding': 'br'

@@ -2,7 +2,8 @@ import getPort from 'get-port'
 import type { GraphQLSchema } from 'graphql'
 import { createYoga } from 'graphql-yoga'
 import { createServer } from 'node:http'
-import { inspect } from 'node:util'
+
+export * from './show.js'
 
 export const documentQueryContinents = {
   document: `query { continents { name } }`,
@@ -10,18 +11,6 @@ export const documentQueryContinents = {
 
 export const publicGraphQLSchemaEndpoints = {
   Atlas: `https://countries.trevorblades.com/graphql`,
-}
-
-export const showPartition = `---------------------------------------- SHOW ----------------------------------------`
-
-export const show = (value: unknown) => {
-  console.log(showPartition)
-  console.log(inspect(value, { depth: null, colors: true }))
-}
-
-export const showJson = (value: unknown) => {
-  console.log(showPartition)
-  console.log(JSON.stringify(value, null, 2))
 }
 
 export const serveSchema = async (input: { schema: GraphQLSchema }) => {

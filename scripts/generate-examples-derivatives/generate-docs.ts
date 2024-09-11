@@ -21,7 +21,7 @@ export const generateDocs = async (examples: Example[]) => {
   // Delete all existing to handle case of renaming or deleting examples.
   await deleteFiles({
     pattern: `./website/content/examples/*.md`,
-    options: { ignore: [`./website/content/examples/welcome.md`] },
+    options: { ignore: [`./website/content/examples/index.md`] },
   })
 
   await Promise.all(examplesTransformed.map(async (example) => {
@@ -126,8 +126,7 @@ const transformRewriteGraffleImports = (example: Example) => {
     )
     .replaceAll(
       `import { Atlas } from './$/generated-clients/atlas/__.js'`,
-      `// ---cut---
-import { Graffle as Atlas } from './graffle/__.js'`,
+      `import { Graffle as Atlas } from './graffle/__.js'`,
     )
     .replaceAll(
       /import ({[^}]+}) from '.\/\$\/generated-clients\/([^/]+)\/__\.js'/g,
@@ -162,6 +161,7 @@ const transformRewriteHelperImports = (example: Example) => {
     .replaceAll(/^import.*\$\/helpers.*$\n/gm, ``)
     .replaceAll(`documentQueryContinents`, `{ document: \`${documentQueryContinents.document}\` }`)
     .replaceAll(`publicGraphQLSchemaEndpoints.Atlas`, `\`${publicGraphQLSchemaEndpoints.Atlas}\``)
+    .replaceAll(/interceptAndShowOutput.*\n/g, ``)
     .replaceAll(/showJson|show/g, consoleLog)
   // We disabled this because the popover gets in the way of output below often.
   // .replaceAll(/(^console.log.*$)/gm, `$1\n//${` `.repeat(consoleLog.length - 1)}^?`)

@@ -147,8 +147,8 @@ export default defineConfig({
           text: 'Extensions',
           collapsed: false,
           items: [
+            { text: 'Opentelemetry', link: '/guides/extensions/opentelemetry' },
             { text: 'File Upload', link: '/guides/extensions/file-upload' },
-            { text: 'OTEL', link: '/guides/extensions/otel' },
             { text: 'Or Throw', link: '/guides/extensions/or-throw' },
           ],
         },

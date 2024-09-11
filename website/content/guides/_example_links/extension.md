@@ -1,1 +1,1 @@
-###### Examples -> [Custom Fetch](../../examples/transport-http-custom-fetch.md) / [Dynamic Headers](../../examples/transport-http-dynamic-headers.md)
+###### Examples -> [Opentelemetry](../../examples/extension-opentelemetry.md) / [Custom Fetch](../../examples/transport-http-custom-fetch.md) / [Dynamic Headers](../../examples/transport-http-dynamic-headers.md)

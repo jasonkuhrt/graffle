@@ -8,7 +8,6 @@ This example shows how to use the TypeScript interface for GraphQL arguments.
 
 <!-- dprint-ignore-start -->
 ```ts twoslash
-// ---cut---
 import { Graffle as Atlas } from './graffle/__.js'
 
 const atlas = Atlas.create()
