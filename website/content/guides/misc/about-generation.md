@@ -12,6 +12,30 @@ If you haven't read the [introduction](../overview/introduction.md), here is a r
 
 TODO
 
+## Multiple Clients
+
+Sometimes you need to work with multiple schemas in one project, for example imagine having to use both the Shopify API and GitHub API. In such a case you may want to name your clients differently. Naming them has the advantage of changing the generated namespace name making it easier for you to auto-import. For that matter even when using a single client you may prefer to name it semantically.
+
+Here is an example walkthrough.
+
+1. You generate a client for GitHub. The default output goes to `./github`.
+
+   ```sh
+   pnpm graffle --name Github --schema '...'
+   ```
+
+2. You can now import from it:
+
+   ```ts
+   import { Github } from './github/index.js'
+
+   const github = Github.create({
+     transport: { headers: { authorization: '...' } },
+   })
+
+   const repos = await github.query.viewer({ repos: { name: true } })
+   ```
+
 ## CLI
 
 Typically you will use the CLI to generate a client. After installing `graffle` you will have access to a CLI also named `graffle`.
