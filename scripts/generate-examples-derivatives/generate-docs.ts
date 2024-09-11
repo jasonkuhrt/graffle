@@ -19,7 +19,10 @@ export const generateDocs = async (examples: Example[]) => {
    */
 
   // Delete all existing to handle case of renaming or deleting examples.
-  await deleteFiles({ pattern: `./website/content/examples/*.md` })
+  await deleteFiles({
+    pattern: `./website/content/examples/*.md`,
+    options: { ignore: [`./website/content/examples/welcome.md`] },
+  })
 
   await Promise.all(examplesTransformed.map(async (example) => {
     await FS.writeFile(`./website/content/examples/${example.fileName.canonical}.md`, example.file.content)
