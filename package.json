@@ -104,6 +104,9 @@
     "dprint": {
       "optional": true
     },
+    "@opentelemetry/api": {
+      "optional": true
+    },
     "@dprint/formatter": {
       "optional": true
     },
