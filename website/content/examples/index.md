@@ -1,8 +1,4 @@
----
-aside: false
----
-
-# Welcome To Graffle Examples
+# Introduction
 
 Welcome to Graffle's collection of examples. Here you will find an assortment of runnable code showing how various features of Graffle work. Here are a few points of interest that may help you better use and understand the examples:
 
