@@ -8,7 +8,6 @@ This example shows the default output behavior.
 
 <!-- dprint-ignore-start -->
 ```ts twoslash
-// ---cut---
 import { Graffle as Atlas } from './graffle/__.js'
 
 const atlas = Atlas.create()

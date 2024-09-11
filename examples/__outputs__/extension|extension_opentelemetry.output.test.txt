@@ -1,0 +1,156 @@
+---------------------------------------- SHOW ----------------------------------------
+{
+  resource: {
+    attributes: {
+      'service.name': 'unknown_service:/Users/jasonkuhrt/Library/pnpm/nodejs/22.7.0/bin/node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '...'
+    }
+  },
+  instrumentationScope: { name: 'graffle', version: undefined, schemaUrl: undefined },
+  traceId: '...',
+  parentId: '...',
+  traceState: undefined,
+  name: 'encode',
+  id: '...',
+  kind: 0,
+  timestamp: 0,
+  duration: 0.0,
+  attributes: {},
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+---------------------------------------- SHOW ----------------------------------------
+{
+  resource: {
+    attributes: {
+      'service.name': 'unknown_service:/Users/jasonkuhrt/Library/pnpm/nodejs/22.7.0/bin/node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '...'
+    }
+  },
+  instrumentationScope: { name: 'graffle', version: undefined, schemaUrl: undefined },
+  traceId: '...',
+  parentId: '...',
+  traceState: undefined,
+  name: 'pack',
+  id: '...',
+  kind: 0,
+  timestamp: 0,
+  duration: 0.0,
+  attributes: {},
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+---------------------------------------- SHOW ----------------------------------------
+{
+  resource: {
+    attributes: {
+      'service.name': 'unknown_service:/Users/jasonkuhrt/Library/pnpm/nodejs/22.7.0/bin/node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '...'
+    }
+  },
+  instrumentationScope: { name: 'graffle', version: undefined, schemaUrl: undefined },
+  traceId: '...',
+  parentId: '...',
+  traceState: undefined,
+  name: 'exchange',
+  id: '...',
+  kind: 0,
+  timestamp: 0,
+  duration: 0.0,
+  attributes: {},
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+---------------------------------------- SHOW ----------------------------------------
+{
+  resource: {
+    attributes: {
+      'service.name': 'unknown_service:/Users/jasonkuhrt/Library/pnpm/nodejs/22.7.0/bin/node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '...'
+    }
+  },
+  instrumentationScope: { name: 'graffle', version: undefined, schemaUrl: undefined },
+  traceId: '...',
+  parentId: '...',
+  traceState: undefined,
+  name: 'unpack',
+  id: '...',
+  kind: 0,
+  timestamp: 0,
+  duration: 0.0,
+  attributes: {},
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+---------------------------------------- SHOW ----------------------------------------
+{
+  resource: {
+    attributes: {
+      'service.name': 'unknown_service:/Users/jasonkuhrt/Library/pnpm/nodejs/22.7.0/bin/node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '...'
+    }
+  },
+  instrumentationScope: { name: 'graffle', version: undefined, schemaUrl: undefined },
+  traceId: '...',
+  parentId: '...',
+  traceState: undefined,
+  name: 'decode',
+  id: '...',
+  kind: 0,
+  timestamp: 0,
+  duration: 0.0,
+  attributes: {},
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+---------------------------------------- SHOW ----------------------------------------
+{
+  resource: {
+    attributes: {
+      'service.name': 'unknown_service:/Users/jasonkuhrt/Library/pnpm/nodejs/22.7.0/bin/node',
+      'telemetry.sdk.language': 'nodejs',
+      'telemetry.sdk.name': 'opentelemetry',
+      'telemetry.sdk.version': '...'
+    }
+  },
+  instrumentationScope: { name: 'graffle', version: undefined, schemaUrl: undefined },
+  traceId: '...',
+  parentId: undefined,
+  traceState: undefined,
+  name: 'request',
+  id: '...',
+  kind: 0,
+  timestamp: 0,
+  duration: 0.0,
+  attributes: {},
+  status: { code: 0 },
+  events: [],
+  links: []
+}
+---------------------------------------- SHOW ----------------------------------------
+{
+  continents: [
+    { name: 'Africa' },
+    { name: 'Antarctica' },
+    { name: 'Asia' },
+    { name: 'Europe' },
+    { name: 'North America' },
+    { name: 'Oceania' },
+    { name: 'South America' }
+  ]
+}

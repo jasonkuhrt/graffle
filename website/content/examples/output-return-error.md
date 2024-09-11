@@ -8,7 +8,6 @@ This example shows how to configure output to have errors returned instead of e.
 
 <!-- dprint-ignore-start -->
 ```ts twoslash
-// ---cut---
 import { Graffle as Atlas } from './graffle/__.js'
 
 const atlas = Atlas

@@ -3,6 +3,15 @@
 
  export const sidebarExamples:DefaultTheme.SidebarItem[] = [
   {
+    "text": "Extension",
+    "items": [
+      {
+        "text": "Opentelemetry",
+        "link": "/examples/extension-opentelemetry"
+      }
+    ]
+  },
+  {
     "text": "Generated",
     "items": [
       {

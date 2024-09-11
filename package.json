@@ -18,6 +18,11 @@
         "default": "./build/entrypoints/generator.js"
       }
     },
+    "./extensions": {
+      "import": {
+        "default": "./build/entrypoints/extensions.js"
+      }
+    },
     "./client": {
       "import": {
         "default": "./build/entrypoints/client.js"
@@ -91,6 +96,7 @@
   "peerDependencies": {
     "@dprint/formatter": "^0.3.0 || ^0.4.0",
     "@dprint/typescript": "^0.91.1",
+    "@opentelemetry/api": "^1.9.0",
     "dprint": "^0.46.2 || ^0.47.0",
     "graphql": "14 - 16"
   },
@@ -107,6 +113,9 @@
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.16.2",
+    "@opentelemetry/api": "^1.9.0",
+    "@opentelemetry/sdk-trace-base": "^1.26.0",
+    "@opentelemetry/sdk-trace-node": "^1.26.0",
     "@pothos/core": "^4.2.0",
     "@pothos/plugin-simple-objects": "^4.1.0",
     "@pothos/plugin-zod": "^4.1.0",
