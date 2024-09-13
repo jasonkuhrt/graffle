@@ -300,7 +300,7 @@ const createWithState = (
         // @ts-expect-error fixme
         input: {
           ...state.input,
-          output: state.input.output,
+          output: input.output,
           transport: {
             ...state.input.transport,
             ...input.transport,
@@ -385,13 +385,13 @@ const createWithState = (
     })
   }
 
-  const clientProxy = proxyGet(clientDirect, (method) => {
-    const getBuilders = state.extensions.map(_ => _.methods).filter(_ => _ !== undefined).map(_ => _.get).filter(
+  const clientProxy = proxyGet(clientDirect, ({ path, property }) => {
+    const getBuilders = state.extensions.map(_ => _.builder).filter(_ => _ !== undefined).map(_ => _.get).filter(
       _ => _ !== undefined,
     )
 
     for (const getBuilder of getBuilders) {
-      const result = getBuilder({ context, client: clientDirect, method })
+      const result = getBuilder({ context, client: clientDirect, path, property })
       if (result !== undefined) return result
     }
 

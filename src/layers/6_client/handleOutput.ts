@@ -3,7 +3,7 @@ import type { Simplify } from 'type-fest'
 import type { ConditionalSimplify } from 'type-fest/source/conditional-simplify.js'
 import { Errors } from '../../lib/errors/__.js'
 import type { GraphQLExecutionResultError } from '../../lib/graphql.js'
-import { isPlainObject, type SimplifyExceptError, type Values } from '../../lib/prelude.js'
+import { isRecordLikeObject, type SimplifyExceptError, type Values } from '../../lib/prelude.js'
 import type { Schema } from '../1_Schema/__.js'
 import { Transport } from '../5_core/types.js'
 import type { Context, ErrorsOther, GraffleExecutionResultVar, TypedContext } from './client.js'
@@ -71,7 +71,7 @@ export const handleOutput = (
   {
     if (isTypedContext(context)) {
       if (c.errors.schema !== false) {
-        if (!isPlainObject(result.data)) throw new Error(`Expected data to be an object.`)
+        if (!isRecordLikeObject(result.data)) throw new Error(`Expected data to be an object.`)
         const schemaErrors = Object.entries(result.data).map(([rootFieldName, rootFieldValue]) => {
           // todo this check would be nice but it doesn't account for aliases right now. To achieve this we would
           // need to have the selection set available to use and then do a costly analysis for all fields that were aliases.
@@ -80,7 +80,7 @@ export const handleOutput = (
           // const isResultField = Boolean(schemaIndex.error.rootResultFields.Query[rootFieldName])
           // if (!isResultField) return null
           // if (!isPlainObject(rootFieldValue)) return new Error(`Expected result field to be an object.`)
-          if (!isPlainObject(rootFieldValue)) return null
+          if (!isRecordLikeObject(rootFieldValue)) return null
           const __typename = rootFieldValue[`__typename`]
           if (typeof __typename !== `string`) throw new Error(`Expected __typename to be selected and a string.`)
           const isErrorObject = Boolean(

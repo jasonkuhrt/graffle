@@ -13,11 +13,12 @@ export interface Extension extends ExtensionBase, Fn<{ Config: unknown; Index: u
 export interface ExtensionBase {
   name: string
   anyware?: Anyware.Extension2<Core.Core>
-  methods?: {
+  builder?: {
     get?: (
       input: {
         context: Context
-        method: string
+        path: string[]
+        property: string
         client: Client<null, Config>
       },
     ) => unknown

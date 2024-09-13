@@ -84,7 +84,7 @@ export const casesExhausted = (value: never): never => {
   throw new Error(`Unhandled case: ${String(value)}`)
 }
 
-export const isPlainObject = (value: unknown): value is Record<string, unknown> => {
+export const isRecordLikeObject = (value: unknown): value is Record<string, unknown> => {
   return typeof value === `object` && value !== null && !Array.isArray(value)
 }
 
@@ -345,10 +345,10 @@ export namespace ConfigManager {
 
   // dprint-ignore
   export type Read<$Value, $Path extends [...string[]]> =
-		$Value extends undefined ? undefined
+  $Value extends undefined ? undefined
   : $Path extends [infer P1 extends string, ...infer PN extends string[]] ?
-			$Value extends object ?	P1 extends keyof $Value ? Read<$Value[P1], PN> : undefined
-														: undefined
+   $Value extends object ?	P1 extends keyof $Value ? Read<$Value[P1], PN> : undefined
+              : undefined
   : $Value
 
   export type SetProperty<$Obj extends object, $Prop extends keyof $Obj, $Type extends $Obj[$Prop]> =
@@ -411,13 +411,33 @@ export const throwNull = <V>(value: V): Exclude<V, null> => {
   return value as Exclude<V, null>
 }
 
-export const proxyGet = <T>(
-  target: T,
-  handler: (prop: string) => unknown,
-): T => {
+export const proxyGet = <$Target>(
+  target: $Target,
+  handler: (input: { property: string; path: string[] }) => unknown,
+  path: string[] = [],
+): $Target => {
   return new Proxy(target, {
-    get: (target: any, prop: string, receiver: any) => {
-      return handler(prop) ?? Reflect.get(target, prop, receiver)
+    get: (target: any, property: string, receiver: any) => {
+      const value = Reflect.get(target, property, receiver)
+
+      if (isRecordLikeObject(value)) {
+        return proxyGet(value, handler, [...path, property])
+      }
+
+      return handler({ property, path }) ?? Reflect.get(target, property, receiver)
     },
   })
+}
+
+type PathToValue<T, Path extends readonly string[]> = Path extends [infer First, ...infer Rest]
+  ? First extends keyof T ? Rest extends string[] ? PathToValue<T[First], Rest>
+    : never
+  : never
+  : T
+
+export const getValueAtPath = <T, Path extends readonly string[]>(
+  obj: T,
+  path: Path,
+): PathToValue<T, Path> | undefined => {
+  return path.reduce<any>((acc, key) => acc?.[key], obj)
 }

@@ -1,6 +1,6 @@
 import type { TypedQueryDocumentNode } from 'graphql'
 import type { CamelCase } from 'type-fest'
-import type { As, ConfigManager } from '../../../lib/prelude.js'
+import { type As, type ConfigManager, getValueAtPath } from '../../../lib/prelude.js'
 import type { BaseInput, TypedDocumentString } from '../../0_functions/types.js'
 import type { Schema } from '../../1_Schema/__.js'
 import { createExtension } from '../../5_createExtension/createExtension.js'
@@ -23,31 +23,39 @@ const suffix = `OrThrow`
 export const OrThrow = () => {
   return createExtension<OrThrowExtension>({
     name,
-    methods: {
-      get: ({ client, method }) => {
-        if (method.endsWith(suffix)) {
-          const config: InputIncrementable = {
-            output: {
-              envelope: {
-                enabled: client.internal.config.output.envelope.enabled,
-                errors: {
-                  execution: false,
-                  other: false,
-                  // @ts-expect-error
-                  schema: false,
-                },
-              },
+    builder: {
+      get: ({ client, property, path }) => {
+        if (!property.endsWith(suffix)) return
+
+        const config: InputIncrementable = {
+          output: {
+            envelope: {
+              enabled: client.internal.config.output.envelope.enabled,
               errors: {
-                execution: `throw`,
-                other: `throw`,
+                execution: false,
+                other: false,
                 // @ts-expect-error
-                schema: `throw`,
+                schema: false,
               },
             },
+            errors: {
+              execution: `throw`,
+              other: `throw`,
+              // @ts-expect-error
+              schema: `throw`,
+            },
+          },
+        }
+
+        return (...args: [...unknown[]]) => {
+          const redirectedPath = [...path, property.slice(0, suffix.length * -1)]
+          const clientReconfigured = client.with(config)
+          const value = getValueAtPath(clientReconfigured, redirectedPath)
+          const valueType = typeof value
+          if (valueType !== `function`) {
+            throw new Error(`Expected function at path ${redirectedPath.join(`.`)} but got ${valueType}`)
           }
-          // @ts-expect-error dynamic
-          // todo path to method like query.idOrThrow
-          return (args) => client.with(config)[method.slice(0, suffix.length * -1)](...args)
+          return (value as any)(...args)
         }
       },
     },
