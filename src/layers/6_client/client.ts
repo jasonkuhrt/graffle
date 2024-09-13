@@ -310,13 +310,8 @@ const createWithState = (
         },
       })
     },
-    use: (extensionOrAnyware: Extension | Anyware.Extension2<Core.Core>) => {
-      const extension = typeof extensionOrAnyware === `function`
-        ? { anyware: extensionOrAnyware, name: extensionOrAnyware.name }
-        : extensionOrAnyware
-      // todo test that adding extensions returns a copy of client
-      const x = createWithState({ ...state, extensions: [...state.extensions, extension] })
-      return x
+    use: (extension: Extension) => {
+      return createWithState({ ...state, extensions: [...state.extensions, extension] })
     },
     anyware: (anyware: Anyware.Extension2<Core.Core>) => {
       return createWithState({
@@ -369,14 +364,6 @@ const createWithState = (
             const { selection, rootTypeName } = processInput(maybeOperationName)
             return await executeRootType(typedContext, rootTypeName, selection)
           },
-          // runOrThrow: async (maybeOperationName: string) => {
-          //   const { selection, rootTypeName } = processInput(maybeOperationName)
-          //   return await executeRootType(
-          //     contextConfigSetOrThrow(typedContext),
-          //     rootTypeName,
-          //     selection,
-          //   )
-          // },
         }
       },
       query: createRootTypeMethods(typedContext, `Query`),
@@ -399,9 +386,9 @@ const createWithState = (
     return undefined
   }) as any as Client<any, any>
 
-  return clientProxy
+  return clientProxy as any
 }
 
-const updateContextConfig = <$Context extends Context>(context: $Context, config: Config): $Context => {
-  return { ...context, config: { ...context.config, ...config } }
-}
+// const updateContextConfig = <$Context extends Context>(context: $Context, config: Config): $Context => {
+//   return { ...context, config: { ...context.config, ...config } }
+// }

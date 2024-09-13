@@ -1,7 +1,6 @@
 // todo in order to test jsdom, we need to boot the server in a separate process
 // @vitest-environment node
 
-import { omit } from 'es-toolkit'
 import { afterAll, beforeAll, beforeEach, expect, test } from 'vitest'
 import { schema } from '../../../../tests/_/schemaUpload/schema.js'
 import { Graffle } from '../../../entrypoints/main.js'
@@ -37,7 +36,7 @@ afterAll(async () => {
 })
 
 test(`upload`, async () => {
-  const result = await graffle.rawString({
+  const data = await graffle.rawString({
     document: `
       mutation ($blob: Upload!) {
         readTextFile(blob: $blob)
@@ -47,7 +46,7 @@ test(`upload`, async () => {
       blob: new Blob([`Hello World`], { type: `text/plain` }) as any,
     },
   })
-  expect(omit(result, [`response`])).toMatchInlineSnapshot(`
+  expect(data).toMatchInlineSnapshot(`
     {
       "readTextFile": "Hello World",
     }

@@ -1,6 +1,6 @@
 import type { TypedQueryDocumentNode } from 'graphql'
 import type { CamelCase } from 'type-fest'
-import { type As, type ConfigManager, getValueAtPath } from '../../../lib/prelude.js'
+import { type ConfigManager, getValueAtPath } from '../../../lib/prelude.js'
 import type { BaseInput, TypedDocumentString } from '../../0_functions/types.js'
 import type { Schema } from '../../1_Schema/__.js'
 import { createExtension } from '../../5_createExtension/createExtension.js'
@@ -64,56 +64,12 @@ export const OrThrow = () => {
   })
 }
 
-// const isContextConfigOrThrowSemantics = ({ config }: Context): boolean => {
-//   const isAllCategoriesThrowOrDisabled = readConfigErrorCategoryOutputChannel(config, `execution`) === `throw`
-//     && readConfigErrorCategoryOutputChannel(config, `other`) === `throw`
-//     && (readConfigErrorCategoryOutputChannel(config, `schema`) === `throw`
-//       || readConfigErrorCategoryOutputChannel(config, `schema`) === `throw`) // todo: or false and not using schema errors
-
-//   if (!isAllCategoriesThrowOrDisabled) return false
-
-//   if (
-//     config.output.envelope.enabled
-//     && Object.values(config.output.envelope.errors.execution).filter(_ => _ === true).length > 0
-//   ) {
-//     return false
-//   }
-
-//   return true
-// }
-
-// const contextConfigSetOrThrow = <$Context extends Context>(context: $Context): $Context => {
-//   if (isContextConfigOrThrowSemantics(context)) return context
-
-//   return updateContextConfig(context, {
-//     ...context.config,
-//     output: {
-//       ...context.config.output,
-//       errors: {
-//         execution: `throw`,
-//         other: `throw`,
-//         schema: `throw`,
-//       },
-//       envelope: {
-//         ...context.config.output.envelope,
-//         errors: {
-//           execution: false,
-//           other: false,
-//           schema: false,
-//         },
-//       },
-//     },
-//   })
-// }
-
-// const updateContextConfig = <$Context extends Context>(context: $Context, config: Config): $Context => {
-//   return { ...context, config: { ...context.config, ...config } }
-// }
-
 // dprint-ignore
 type Methods<$Config extends Config, $Index extends Schema.Index> =
   & {
+      // @ts-expect-error fixme
       rawStringOrThrow<$Data extends Record<string, any>, $Variables>(input: BaseInput<TypedDocumentString<$Data, $Variables>>):    Promise<RawResolveOutputReturnRootType<OrThrowifyConfig<$Config>, $Data>>
+      // @ts-expect-error fixme
       rawOrThrow      <$Data extends Record<string, any>, $Variables>(input: BaseInput<TypedQueryDocumentNode<$Data, $Variables>>): Promise<RawResolveOutputReturnRootType<OrThrowifyConfig<$Config>, $Data>>
     }
   & {
@@ -124,7 +80,8 @@ type Methods<$Config extends Config, $Index extends Schema.Index> =
       $Index['RootTypesPresent'][number] extends never
         ? {}
         : {
-            documentOrThrow: DocumentFn<As<OrThrowifyConfig<$Config>, Config>, $Index>          
+            // @ts-expect-error fixme
+            documentOrThrow: DocumentFn<OrThrowifyConfig<$Config>, $Index>          
           }
     )
 
@@ -159,40 +116,3 @@ type RootTypeToRootTypeProperty<T> = CamelCase<T>
 // dprint-ignore
 export type OrThrowifyConfig<$Config extends Config> =
   ConfigManager.Set<$Config, ['output', 'errors'], { other: 'throw', execution: 'throw', schema: 'throw' }>
-
-// .document().runOrThrow()
-
-// runOrThrow: <
-//   $Name extends keyof $Document & string,
-//   $Params extends (IsMultipleKeys<$Document> extends true ? [name: $Name] : ([] | [name: $Name | undefined])),
-// >(...params: $Params) => Promise<
-//   ResolveOutputReturnRootType<
-//     // @ts-expect-error fixme
-//     OrThrowifyConfig<$Config>,
-//     $Index,
-//     // @ts-expect-error fixme
-//     ResultSet.Root<GetRootTypeSelection<OrThrowifyConfig<$Config>, $Index, $Document[$Name]>, $Index, GetRootType<$Document[$Name]>>>
-// >
-
-// type IntersectReturnTypeWith<T extends (...args: any) => any, U> = (
-//   ...args: Parameters<T>
-// ) => ReturnType<T> & U
-
-// // Example function
-// type MyFunction = (x: number, y: string) => { a: number }
-
-// // Example object type
-// type Additional = { b: string }
-
-// // Apply the utility type
-// type MergedFunction = IntersectReturnTypeWith<MyFunction, Additional>
-
-// // Test
-// const example: MergedFunction = (x, y) => {
-//   return {
-//     a: x,
-//     b: y,
-//   }
-// }
-
-// // example will have a return type of { a: number; b: string }

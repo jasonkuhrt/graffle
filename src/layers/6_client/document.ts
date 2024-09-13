@@ -20,6 +20,7 @@ export type DocumentRunner<$Config extends Config, $Index extends Schema.Index, 
     $Name extends keyof $Document & string,
     $Params extends (IsMultipleKeys<$Document> extends true ? [name: $Name] : ([] | [name: $Name | undefined])),
   >(...params: $Params) => Promise<
+  // $Config
     ResolveOutputReturnRootType<$Config, $Index, ResultSet.Root<GetRootTypeSelection<$Config,$Index,$Document[$Name]>, $Index, GetRootType<$Document[$Name]>>>
   >
 }
