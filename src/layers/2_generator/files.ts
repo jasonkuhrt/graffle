@@ -63,11 +63,12 @@ export const generateFiles = async (input: Input) => {
   const sourceDirPath = input.sourceDirPath ?? process.cwd()
   const schemaSource = await resolveSourceSchema(input)
   const outputDirPath = input.outputDirPath ?? Path.join(process.cwd(), `./graffle`)
+  const outputModulesDirPath = Path.join(outputDirPath, `/modules`)
   // todo support other extensions: .tsx,.js,.mjs,.cjs
   const customScalarCodecsFilePath = input.sourceCustomScalarCodecsFilePath
     ?? Path.join(sourceDirPath, `customScalarCodecs.ts`)
   const customScalarCodecsImportPath = Path.relative(
-    outputDirPath,
+    outputModulesDirPath,
     customScalarCodecsFilePath.replace(/\.ts$/, `.js`),
   )
   const customScalarCodecsPathExists = await fileExists(customScalarCodecsFilePath)

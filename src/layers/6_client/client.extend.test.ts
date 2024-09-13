@@ -4,12 +4,13 @@ import { db } from '../../../tests/_/db.js'
 import { createResponse, test } from '../../../tests/_/helpers.js'
 import { Graffle } from '../../../tests/_/schema/generated/__.js'
 import { oops } from '../../lib/anyware/specHelpers.js'
+import { OrThrow } from '../7_extensions/OrThrow/OrThrow.js'
 
 const client = Graffle.create({ schema: 'https://foo', output: { defaults: { errorChannel: 'return' } } })
 const headers = { 'x-foo': 'bar' }
 
 test('using an extension returns a copy of the client', () => {
-  const client2 = client.use(async () => {})
+  const client2 = client.use(OrThrow())
   expect(client2 !== client).toBe(true)
 })
 
@@ -19,7 +20,7 @@ describe(`entrypoint pack`, () => {
       expect(input.headers.get('x-foo')).toEqual(headers['x-foo'])
       return createResponse({ data: { id: db.id } })
     })
-    const client2 = client.use(async ({ pack }) => {
+    const client2 = client.anyware(async ({ pack }) => {
       return await pack({ input: { ...pack.input, headers } })
     })
     expect(await client2.query.id()).toEqual(db.id)
@@ -28,7 +29,7 @@ describe(`entrypoint pack`, () => {
     fetch.mockImplementationOnce(async () => {
       return createResponse({ data: { id: db.id } })
     })
-    const client2 = client.use(async ({ pack }) => {
+    const client2 = client.anyware(async ({ pack }) => {
       const { exchange } = await pack({ input: { ...pack.input, headers } })
       return await exchange({ input: exchange.input })
     })

@@ -1,5 +1,6 @@
 import { getIntrospectionQuery, type IntrospectionQuery } from 'graphql'
 import { Graffle } from '../entrypoints/__Graffle.js'
+import { OrThrow } from '../entrypoints/extensions.js'
 import type { TypedDocumentString } from '../layers/0_functions/types.js'
 
 export const introspectionQuery = async (endpoint: URL): Promise<IntrospectionQuery> => {
@@ -11,7 +12,7 @@ export const introspectionQuery = async (endpoint: URL): Promise<IntrospectionQu
     inputValueDeprecation: true,
   }) as TypedDocumentString<IntrospectionQuery>
 
-  const result = await Graffle.create({ schema: endpoint }).rawStringOrThrow({
+  const result = await Graffle.create({ schema: endpoint }).use(OrThrow()).rawStringOrThrow({
     document: introspectionQueryDocument,
   })
 

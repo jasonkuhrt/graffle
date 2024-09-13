@@ -73,7 +73,7 @@ export const inputToConfig = <$Input extends InputStatic<GlobalRegistry.SchemaUn
           // @ts-expect-error conditional type
           other: envelopeLonghand?.errors?.other ?? outputConfigDefault.envelope.errors.other,
           // @ts-expect-error conditional type
-          // eslint-disable-next-line
+           
           schema: envelopeLonghand?.errors?.schema ?? outputConfigDefault.envelope.errors.schema,
         },
       },
@@ -83,7 +83,7 @@ export const inputToConfig = <$Input extends InputStatic<GlobalRegistry.SchemaUn
         // @ts-expect-error conditional type
         other: input.output?.errors?.other ?? outputConfigDefault.errors.other,
         // @ts-expect-error conditional type
-        // eslint-disable-next-line
+         
         schema: input.output?.errors?.schema ?? outputConfigDefault.errors.schema,
       },
     },

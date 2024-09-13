@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/ban-types */
+ 
 
 import type { GlobalRegistry } from '../../../../2_generator/globalRegistry.js'
 import type { Codec } from './codec.js'
@@ -21,7 +21,7 @@ export const create = <$Name extends string, $Decoded, $Encoded extends Standard
 ): Scalar<$Name, $Decoded, $Encoded> => ({
   kind: ScalarKind,
   name: name,
-  codec: codec as any, // eslint-disable-line
+  codec: codec as any,  
 })
 
 export const scalar = <$Name extends string, $Codec extends Codec<any, any>>(
@@ -30,7 +30,7 @@ export const scalar = <$Name extends string, $Codec extends Codec<any, any>>(
 ): Scalar<$Name, $Codec> => ({
   kind: ScalarKind,
   name: name,
-  codec: codec as any, // eslint-disable-line
+  codec: codec as any,  
 })
 
 export interface Scalar<

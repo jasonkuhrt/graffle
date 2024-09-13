@@ -4,6 +4,7 @@ import type * as Schema from './SchemaBuildtime.js'
 
 export interface Index {
   name: 'QueryOnly'
+  RootTypesPresent: ['Query']
   Root: {
     Query: Schema.Root.Query
     Mutation: null

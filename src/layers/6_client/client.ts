@@ -2,6 +2,7 @@ import { type ExecutionResult, GraphQLSchema, type TypedQueryDocumentNode } from
 import type { Anyware } from '../../lib/anyware/__.js'
 import type { Errors } from '../../lib/errors/__.js'
 import { isOperationTypeName, operationTypeNameToRootTypeName, type RootTypeName } from '../../lib/graphql.js'
+import type { Call } from '../../lib/hkt/hkt.js'
 import { mergeRequestInit } from '../../lib/http.js'
 import type { BaseInput, BaseInput_, TypedDocumentString } from '../0_functions/types.js'
 import { Schema } from '../1_Schema/__.js'
@@ -12,14 +13,10 @@ import { Core } from '../5_core/__.js'
 import { type HookDefEncode } from '../5_core/core.js'
 import { type InterfaceRaw, type TransportHttp } from '../5_core/types.js'
 import type { DocumentFn } from './document.js'
+import type { Extension } from './extension.js'
 import { type Envelope, handleOutput } from './handleOutput.js'
 import type { GetRootTypeMethods } from './RootTypeMethods.js'
-import {
-  type Config,
-  readConfigErrorCategoryOutputChannel,
-  traditionalGraphqlOutput,
-  traditionalGraphqlOutputThrowing,
-} from './Settings/Config.js'
+import { type Config, traditionalGraphqlOutput } from './Settings/Config.js'
 import { type InputStatic } from './Settings/Input.js'
 import type { AddIncrementalInput, InputIncrementable } from './Settings/inputIncrementable/inputIncrementable.js'
 import { type InputToConfig, inputToConfig } from './Settings/InputToConfig.js'
@@ -47,7 +44,7 @@ export type GraffleExecutionResultVar<$Config extends Config = Config> =
            */
           response?: Response
         }
-      : {}) // eslint-disable-line
+      : {})  
   )
   | ErrorsOther
 
@@ -82,36 +79,31 @@ const resolveRawParameters = (parameters: RawParameters) => {
 // todo no config needed?
 // dprint-ignore
 export type ClientRaw<$Config extends Config> = {
-  rawString<$Data, $Variables>(input: BaseInput<TypedDocumentString<$Data, $Variables>>): Promise<Envelope<$Config, $Data>>
-  rawStringOrThrow<$Data, $Variables>(input: BaseInput<TypedDocumentString<$Data, $Variables>>): Promise<Envelope<$Config, $Data, []>>
-
   raw<$Data, $Variables>(input: BaseInput<TypedQueryDocumentNode<$Data, $Variables>>): Promise<Envelope<$Config, $Data>>
-  rawOrThrow<$Data, $Variables>(input: BaseInput<TypedQueryDocumentNode<$Data, $Variables>>): Promise<Envelope<$Config, $Data, []>>
-}
-
-export type Extension = {
-  name: string
-  anyware?: Anyware.Extension2<Core.Core>
+  rawString<$Data, $Variables>(input: BaseInput<TypedDocumentString<$Data, $Variables>>): Promise<Envelope<$Config, $Data>>
 }
 
 // dprint-ignore
-export type Client<$Index extends Schema.Index | null, $Config extends Config> =
+export type Client<$Index extends Schema.Index | null, $Config extends Config, $AdditionalMethods = unknown> =
   {
     internal: {
       config: $Config
     }
   }
+  & $AdditionalMethods
   & ClientRaw<$Config>
   & (
       $Index extends Schema.Index
+      // todo OmitDeeply
       ? ClientTyped<$Index, $Config>
-      : {} // eslint-disable-line
+      : {}  
     )
   & {
       // eslint-disable-next-line
       // @ts-ignore passes after generation
       with: <$Input extends InputIncrementable<$Config>>(input: $Input) => Client<$Index, AddIncrementalInput<$Config, $Input>>
-      use: (extension: Extension | Anyware.Extension2<Core.Core<$Config>>) => Client<$Index, $Config>
+      use: <$Extension extends Extension>(extension: $Extension) => Client<$Index, $Config, Call<$Extension, { Index:$Index, Config:$Config, AdditionalMethods:$AdditionalMethods }>> 
+      anyware: (anyware: Anyware.Extension2<Core.Core<$Config>>) => Client<$Index, $Config, $AdditionalMethods> 
       retry: (extension: Anyware.Extension2<Core.Core, { retrying: true }>) => Client<$Index, $Config>
     }
 
@@ -142,7 +134,7 @@ export const create: Create = (input) => {
     retry: null,
     input,
   }
-  return create_(initialState)
+  return createWithState(initialState)
 }
 
 interface CreateState {
@@ -151,7 +143,7 @@ interface CreateState {
   extensions: Extension[]
 }
 
-const create_ = (
+const createWithState = (
   state: CreateState,
 ) => {
   /**
@@ -229,17 +221,13 @@ const create_ = (
       get: (_, key) => {
         if (typeof key === `symbol`) throw new Error(`Symbols not supported.`)
 
-        // todo We need to document that in order for this to 100% work none of the user's root type fields can end with "OrThrow".
-        const isOrThrow = key.endsWith(`OrThrow`)
-        const contextWithReturnModeSet = isOrThrow ? contextConfigSetOrThrow(context) : context
-
         if (key.startsWith(`$batch`)) {
           return async (selectionSetOrIndicator: SelectionSetOrIndicator) =>
-            executeRootType(contextWithReturnModeSet, rootTypeName, selectionSetOrIndicator as GraphQLObjectSelection)
+            executeRootType(context, rootTypeName, selectionSetOrIndicator as GraphQLObjectSelection)
         } else {
-          const fieldName = isOrThrow ? key.slice(0, -7) : key
+          const fieldName = key
           return (selectionSetOrArgs: SelectionSetOrArgs) =>
-            executeRootTypeField(contextWithReturnModeSet, rootTypeName, fieldName, selectionSetOrArgs)
+            executeRootTypeField(context, rootTypeName, fieldName, selectionSetOrArgs)
         }
       },
     })
@@ -255,8 +243,8 @@ const create_ = (
   const run = async (context: Context, initialInput: HookDefEncode<Config>['input']) => {
     const result = await Core.anyware.run({
       initialInput,
-      retryingExtension: context.retry as any, // eslint-disable-line
-      extensions: context.extensions.filter(_ => _.anyware !== undefined).map(_ => _.anyware!) as any, // eslint-disable-line
+      retryingExtension: context.retry as any,
+      extensions: context.extensions.filter(_ => _.anyware !== undefined).map(_ => _.anyware!) as any,
     }) as GraffleExecutionResultVar
 
     return handleOutput(context, result)
@@ -280,7 +268,7 @@ const create_ = (
   }
 
   // @ts-expect-error ignoreme
-  const client: Client = {
+  const clientDirect: Client = {
     internal: {
       config: context.config,
     },
@@ -289,24 +277,24 @@ const create_ = (
       const contextWithOutputSet = updateContextConfig(context, { ...context.config, output: traditionalGraphqlOutput })
       return await runRaw(contextWithOutputSet, input)
     },
-    rawOrThrow: async (...args: RawParameters) => {
-      const input = resolveRawParameters(args)
-      const contextWithOutputSet = updateContextConfig(context, {
-        ...context.config,
-        output: traditionalGraphqlOutputThrowing,
-      })
-      return await runRaw(contextWithOutputSet, input)
-    },
+    // rawOrThrow: async (...args: RawParameters) => {
+    //   const input = resolveRawParameters(args)
+    //   const contextWithOutputSet = updateContextConfig(context, {
+    //     ...context.config,
+    //     output: traditionalGraphqlOutputThrowing,
+    //   })
+    //   return await runRaw(contextWithOutputSet, input)
+    // },
     rawString: async (...args: RawParameters) => {
       // eslint-disable-next-line
-      return await client.raw(...args)
+      return await clientDirect.raw(...args)
     },
-    rawStringOrThrow: async (...args: RawParameters) => {
-      // eslint-disable-next-line
-      return await client.rawOrThrow(...args)
-    },
+    // rawStringOrThrow: async (...args: RawParameters) => {
+    //   // eslint-disable-next-line
+    //   return await client.rawOrThrow(...args)
+    // },
     with: (input: InputIncrementable) => {
-      return create_({
+      return createWithState({
         ...state,
         // @ts-expect-error fixme
         input: {
@@ -321,14 +309,17 @@ const create_ = (
       })
     },
     use: (extensionOrAnyware: Extension | Anyware.Extension2<Core.Core>) => {
+      console.log(`use and copy`)
       const extension = typeof extensionOrAnyware === `function`
         ? { anyware: extensionOrAnyware, name: extensionOrAnyware.name }
         : extensionOrAnyware
       // todo test that adding extensions returns a copy of client
-      return create_({ ...state, extensions: [...state.extensions, extension] })
+      const x = createWithState({ ...state, extensions: [...state.extensions, extension] })
+      // console.log(x)
+      return x
     },
     retry: (extension: Anyware.Extension2<Core.Core, { retrying: true }>) => {
-      return create_({ ...state, retry: extension })
+      return createWithState({ ...state, retry: extension })
     },
   }
 
@@ -339,7 +330,7 @@ const create_ = (
       schemaIndex: state.input.schemaIndex,
     }
 
-    Object.assign(client, {
+    Object.assign(clientDirect, {
       document: (documentObject: DocumentObject) => {
         const hasMultipleOperations = Object.keys(documentObject).length > 1
 
@@ -372,14 +363,14 @@ const create_ = (
             const { selection, rootTypeName } = processInput(maybeOperationName)
             return await executeRootType(typedContext, rootTypeName, selection)
           },
-          runOrThrow: async (maybeOperationName: string) => {
-            const { selection, rootTypeName } = processInput(maybeOperationName)
-            return await executeRootType(
-              contextConfigSetOrThrow(typedContext),
-              rootTypeName,
-              selection,
-            )
-          },
+          // runOrThrow: async (maybeOperationName: string) => {
+          //   const { selection, rootTypeName } = processInput(maybeOperationName)
+          //   return await executeRootType(
+          //     contextConfigSetOrThrow(typedContext),
+          //     rootTypeName,
+          //     selection,
+          //   )
+          // },
         }
       },
       query: createRootTypeMethods(typedContext, `Query`),
@@ -389,51 +380,70 @@ const create_ = (
     })
   }
 
-  return client
-}
+  const clientProxy = proxyMethodCalls(clientDirect, (method, args) => {
+    const invokeBuilders = state.extensions.map(_ => _.methods).filter(_ => _ !== undefined).map(_ => _.invoke).filter(
+      _ => _ !== undefined,
+    )
+    for (const invokeBuilder of invokeBuilders) {
+      console.log(`invokeBuilder`)
+      const result = invokeBuilder({ context, client: clientDirect, method, args })
+      if (result) return result
+    }
+  }) as any as Client<any, any>
+  // console.log('clientproxy', clientProxy)
 
-const contextConfigSetOrThrow = <$Context extends Context>(context: $Context): $Context => {
-  if (isContextConfigOrThrowSemantics(context)) return context
-
-  return updateContextConfig(context, {
-    ...context.config,
-    output: {
-      ...context.config.output,
-      errors: {
-        execution: `throw`,
-        other: `throw`,
-        schema: `throw`,
-      },
-      envelope: {
-        ...context.config.output.envelope,
-        errors: {
-          execution: false,
-          other: false,
-          schema: false,
-        },
-      },
-    },
-  })
-}
-
-const isContextConfigOrThrowSemantics = ({ config }: Context): boolean => {
-  const isAllCategoriesThrowOrDisabled = readConfigErrorCategoryOutputChannel(config, `execution`) === `throw`
-    && readConfigErrorCategoryOutputChannel(config, `other`) === `throw`
-    && (readConfigErrorCategoryOutputChannel(config, `schema`) === `throw`
-      || readConfigErrorCategoryOutputChannel(config, `schema`) === `throw`) // todo: or false and not using schema errors
-
-  if (!isAllCategoriesThrowOrDisabled) return false
-
-  if (
-    config.output.envelope.enabled
-    && Object.values(config.output.envelope.errors.execution).filter(_ => _ === true).length > 0
-  ) {
-    return false
-  }
-
-  return true
+  return clientProxy
 }
 
 const updateContextConfig = <$Context extends Context>(context: $Context, config: Config): $Context => {
   return { ...context, config: { ...context.config, ...config } }
 }
+
+const proxyMethodCalls = <T>(
+  target: T,
+  methodCallHandler: (prop: string, args: any[]) => any = () => {},
+): T => {
+  return new Proxy(target, {
+    get: (target: any, prop: string, receiver: any) => {
+      const value = Reflect.get(target, prop, receiver)
+      console.log(`get`, prop, value)
+
+      // If the property is a function, return a wrapped version that intercepts the method call
+      if (typeof value === `function`) {
+        return (...args: any[]) => {
+          const result = methodCallHandler(prop, args)
+          if (result === undefined) {
+            // console.log(target)
+            const result = value.apply(target, args)
+            console.log(`passthrough`, result)
+            return result
+          }
+        }
+      }
+
+      // If the value is an object, recursively create a proxy for the nested object
+      if (typeof value === `object` && value !== null) {
+        return proxyMethodCalls(value, methodCallHandler)
+      }
+
+      // See what will be done with undefined value
+      if (value === undefined) {
+        console.log(`return undefined thing`)
+        return new Proxy(funcToProxy, {
+          apply: (target, thisArg, args) => {
+            const result = methodCallHandler(prop, args)
+            console.log(`undefined thing was applied!`)
+            if (!result) throw new Error(`value is undefined`)
+            return result
+          },
+        })
+      }
+
+      // Otherwise, just return the value
+      console.log(`just return`, value)
+      return value
+    },
+  })
+}
+
+const funcToProxy = () => {}

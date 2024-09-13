@@ -1,4 +1,4 @@
-import type * as $ from '../../../../src/entrypoints/schema.js'
+import type * as $ from '../../../../../src/entrypoints/schema.js'
 import type * as $Scalar from './Scalar.ts'
 
 // ------------------------------------------------------------ //
@@ -6,7 +6,7 @@ import type * as $Scalar from './Scalar.ts'
 // ------------------------------------------------------------ //
 
 export namespace Root {
-  export type Query = $.Object$2<'Query', {
+  export type Mutation = $.Object$2<'Mutation', {
     id: $.Field<$.Output.Nullable<$Scalar.ID>, null>
     idNonNull: $.Field<$Scalar.ID, null>
   }>

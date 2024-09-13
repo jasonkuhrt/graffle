@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/ban-types */
+ 
 
 import type { Simplify } from 'type-fest'
 import type { ExcludeNull, GetKeyOr, SimplifyDeep } from '../../lib/prelude.js'

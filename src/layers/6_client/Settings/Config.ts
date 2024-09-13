@@ -1,4 +1,4 @@
-import type { ConfigManager, RequireProperties, StringKeyof } from '../../../lib/prelude.js'
+import type { RequireProperties, StringKeyof } from '../../../lib/prelude.js'
 import type { Schema } from '../../1_Schema/__.js'
 import type { GlobalRegistry } from '../../2_generator/globalRegistry.js'
 import type { SelectionSet } from '../../3_SelectionSet/__.js'
@@ -114,11 +114,6 @@ export type Config = {
   }
 }
 
-// todo this changed, check tests, add new tests as needed.
-// dprint-ignore
-export type OrThrowifyConfig<$Config extends Config> =
-  ConfigManager.Set<$Config, ['output', 'errors'], { other: 'throw', execution: 'throw', schema: 'throw' }>
-
 /**
  * We inject __typename select when:
  * 1. using schema errors
@@ -129,7 +124,7 @@ type TypenameSelection = { __typename: true }
 
 // dprint-ignore
 export type CreateSelectionTypename<$Config extends Config, $Index extends Schema.Index> =
-  IsNeedSelectionTypename<$Config, $Index> extends true ? TypenameSelection : {} // eslint-disable-line
+  IsNeedSelectionTypename<$Config, $Index> extends true ? TypenameSelection : {}  
 
 // dprint-ignore
 export type IsNeedSelectionTypename<$Config extends Config, $Index extends Schema.Index> =
@@ -147,7 +142,7 @@ export type AugmentRootTypeSelectionWithTypename<
 > = IsNeedSelectionTypename<$Config, $Index> extends true ? {
     [$Key in StringKeyof<$Selection>]:
       & $Selection[$Key]
-      & (IsRootFieldNameAResultField<$Index, $RootTypeName, $Key> extends true ? TypenameSelection : {}) // eslint-disable-line
+      & (IsRootFieldNameAResultField<$Index, $RootTypeName, $Key> extends true ? TypenameSelection : {})  
   }
   : $Selection
 

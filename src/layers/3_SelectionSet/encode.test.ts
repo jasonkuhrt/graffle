@@ -1,8 +1,8 @@
 import { parse, print } from 'graphql'
 import { describe, expect, test } from 'vitest'
 import { db } from '../../../tests/_/db.js'
-import type { Index } from '../../../tests/_/schema/generated/Index.js'
-import { $Index as schemaIndex } from '../../../tests/_/schema/generated/SchemaRuntime.js'
+import type { Index } from '../../../tests/_/schema/generated/modules/SchemaIndex.js'
+import { $Index as schemaIndex } from '../../../tests/_/schema/generated/modules/SchemaRuntime.js'
 import { outputConfigDefault } from '../6_client/Settings/Config.js'
 import type { SelectionSet } from './__.js'
 import type { Context } from './encode.js'
@@ -28,7 +28,7 @@ const testEachArgs = [
         output: outputConfigDefault,
         transport: { type: `memory`, config: { methodMode: `post` } },
         name: schemaIndex[`name`],
-        // eslint-disable-next-line
+         
         initialInput: {} as any,
       },
     }

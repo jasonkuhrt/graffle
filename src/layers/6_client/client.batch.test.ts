@@ -2,8 +2,9 @@ import { describe, expect, test } from 'vitest'
 import { db } from '../../../tests/_/db.js'
 import { Graffle } from '../../../tests/_/schema/generated/__.js'
 import * as Schema from '../../../tests/_/schema/schema.js'
+import { OrThrow } from '../7_extensions/OrThrow/OrThrow.js'
 
-const graffle = Graffle.create({ schema: Schema.schema })
+const graffle = Graffle.create({ schema: Schema.schema }).use(OrThrow())
 
 // dprint-ignore
 describe(`query`, () => {
@@ -20,5 +21,5 @@ describe(`query`, () => {
     test(`error`, async () => {
       await expect(graffle.query.$batchOrThrow({ error: true })).rejects.toMatchObject(db.errorAggregate)
     })  
-    })
+  })
 })

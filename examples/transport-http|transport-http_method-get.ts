@@ -14,7 +14,7 @@ const graffle = Pokemon
     schema: server.url,
     transport: { methodMode: `getReads` }, // [!code highlight]
   })
-  .use(async ({ exchange }) => {
+  .anyware(async ({ exchange }) => {
     show(exchange.input.request)
     return exchange()
   })

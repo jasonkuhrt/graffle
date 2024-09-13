@@ -27,7 +27,9 @@ beforeAll(async () => {
 })
 
 beforeEach(() => {
-  graffle = Graffle.create({ schema: schemaServer.url }).use(Upload)
+  // todo direct assignment leads to "excessive ..." error
+  const graffle_ = Graffle.create({ schema: schemaServer.url }).use(Upload())
+  graffle = graffle_
 })
 
 afterAll(async () => {
@@ -42,7 +44,7 @@ test(`upload`, async () => {
       }
     `,
     variables: {
-      blob: new Blob([`Hello World`], { type: `text/plain` }) as any, // eslint-disable-line
+      blob: new Blob([`Hello World`], { type: `text/plain` }) as any,  
     },
   })
   expect(omit(result, [`response`])).toMatchInlineSnapshot(`

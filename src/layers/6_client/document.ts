@@ -7,30 +7,22 @@ import { SelectionSet } from '../3_SelectionSet/__.js'
 import type { Context, DocumentObject } from '../3_SelectionSet/encode.js'
 import type { ResultSet } from '../4_ResultSet/__.js'
 import type { ResolveOutputReturnRootType } from './handleOutput.js'
-import type { AugmentRootTypeSelectionWithTypename, Config, OrThrowifyConfig } from './Settings/Config.js'
+import type { AugmentRootTypeSelectionWithTypename, Config } from './Settings/Config.js'
 
 // dprint-ignore
 export type DocumentFn<$Config extends Config, $Index extends Schema.Index> =
-<$Document extends Document<$Index>>(document: ValidateDocumentOperationNames<NonEmptyObject<$Document>>) =>
-  {
-    run: <
-      $Name extends keyof $Document & string,
-      $Params extends (IsMultipleKeys<$Document> extends true ? [name: $Name] : ([] | [name: $Name | undefined])),
-    >(...params: $Params) => Promise<
-      ResolveOutputReturnRootType<$Config, $Index, ResultSet.Root<GetRootTypeSelection<$Config,$Index,$Document[$Name]>, $Index, GetRootType<$Document[$Name]>>>
-    >
-    runOrThrow: <
-      $Name extends keyof $Document & string,
-      $Params extends (IsMultipleKeys<$Document> extends true ? [name: $Name] : ([] | [name: $Name | undefined])),
-    >(...params: $Params) => Promise<
-      ResolveOutputReturnRootType<
-        // @ts-expect-error fixme
-        OrThrowifyConfig<$Config>,
-        $Index,
-        // @ts-expect-error fixme
-        ResultSet.Root<GetRootTypeSelection<OrThrowifyConfig<$Config>, $Index, $Document[$Name]>, $Index, GetRootType<$Document[$Name]>>>
-    >
-  }
+  <$Document extends Document<$Index>>(document: ValidateDocumentOperationNames<NonEmptyObject<$Document>>) =>
+    DocumentRunner<$Config, $Index, $Document>
+
+// dprint-ignore
+export type DocumentRunner<$Config extends Config, $Index extends Schema.Index, $Document extends Document<$Index>> = {
+  run: <
+    $Name extends keyof $Document & string,
+    $Params extends (IsMultipleKeys<$Document> extends true ? [name: $Name] : ([] | [name: $Name | undefined])),
+  >(...params: $Params) => Promise<
+    ResolveOutputReturnRootType<$Config, $Index, ResultSet.Root<GetRootTypeSelection<$Config,$Index,$Document[$Name]>, $Index, GetRootType<$Document[$Name]>>>
+  >
+}
 
 export const toDocumentString = (
   context: Context,
@@ -39,7 +31,7 @@ export const toDocumentString = (
   return Object.entries(document).map(([operationName, operationDocument]) => {
     const operationType = `query` in operationDocument ? `query` : `mutation`
     const rootType = operationTypeNameToRootTypeName[operationType]
-    const rootTypeDocument = (operationDocument as any)[operationType] as SelectionSet.Print.GraphQLObjectSelection // eslint-disable-line
+    const rootTypeDocument = (operationDocument as any)[operationType] as SelectionSet.Print.GraphQLObjectSelection
 
     const schemaRootType = context.schemaIndex[`Root`][rootType]
     if (!schemaRootType) throw new Error(`Schema has no ${rootType} root type`)

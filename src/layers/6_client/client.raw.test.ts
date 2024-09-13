@@ -3,10 +3,11 @@ import { test } from '../../../tests/_/helpers.js'
 import { Graffle } from '../../../tests/_/schema/generated/__.js'
 import { schema } from '../../../tests/_/schema/schema.js'
 import { createExtension } from '../5_createExtension/createExtension.js'
+import { OrThrow } from '../7_extensions/OrThrow/OrThrow.js'
 
 // todo test with custom scalars
 
-const graffle = Graffle.create({ schema })
+const graffle = Graffle.create({ schema }).use(OrThrow())
 
 test(`.rawOrThrow() throws if errors array non-empty`, async () => {
   await expect(graffle.rawStringOrThrow({ document: `query {}` })).rejects.toMatchInlineSnapshot(

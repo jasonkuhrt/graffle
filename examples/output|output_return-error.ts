@@ -16,7 +16,7 @@ const atlas = Atlas
     },
   })
   // dprint-ignore
-  .use(({ encode: _ }) => {
+  .anyware(({ encode: _ }) => {
     throw new Error(`Something went wrong.`)
 //  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 
   })

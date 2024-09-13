@@ -12,16 +12,25 @@ export const { generate: generateIndex, moduleName: moduleNameIndex } = createCo
     code.push(`/* eslint-disable */\n`)
     code.push(`import type * as ${SchemaNamespace} from './${moduleNameSchemaBuildtime}.js'\n`)
 
+    const rootTypesPresence = {
+      Query: hasQuery(config.typeMapByKind),
+      Mutation: hasMutation(config.typeMapByKind),
+      Subscription: hasSubscription(config.typeMapByKind),
+    }
+
     code.push(Code.export$(
       Code.interface$(
         `Index`,
         Code.objectFrom({
           name: Code.quote(config.name),
+          RootTypesPresent: `[${
+            Object.entries(rootTypesPresence).filter(([_, present]) => present).map(([_]) => Code.quote(_)).join(`, `)
+          }]`,
           Root: {
             type: Code.objectFrom({
-              Query: hasQuery(config.typeMapByKind) ? `${SchemaNamespace}.Root.Query` : null,
-              Mutation: hasMutation(config.typeMapByKind) ? `${SchemaNamespace}.Root.Mutation` : null,
-              Subscription: hasSubscription(config.typeMapByKind) ? `${SchemaNamespace}.Root.Subscription` : null,
+              Query: rootTypesPresence.Query ? `${SchemaNamespace}.Root.Query` : null,
+              Mutation: rootTypesPresence.Mutation ? `${SchemaNamespace}.Root.Mutation` : null,
+              Subscription: rootTypesPresence.Subscription ? `${SchemaNamespace}.Root.Subscription` : null,
             }),
           },
           objects: Code.objectFromEntries(

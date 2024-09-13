@@ -14,7 +14,7 @@ export const field = <$Type extends Output.Any, $Args extends null | Args<any> =
 ): Field<$Type, $Args> => {
   return {
     // At type level "type" is not a thunk
-    type: type as any, // eslint-disable-line
+    type: type as any,  
     args,
   }
 }

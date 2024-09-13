@@ -77,7 +77,7 @@ const defineConcreteRenderers = <
         key,
         (config: Config, node: any) => {
           if (!node) return ``
-          return renderer(config, node) // eslint-disable-line
+          return renderer(config, node)  
         },
       ]
     }),
@@ -91,7 +91,7 @@ const dispatchToReferenceRenderer = (config: Config, node: AnyClass): string =>
 // @ts-expect-error fixme
 const getReferenceRenderer = <N extends AnyClass>(node: N): (typeof referenceRenderers)[ClassToName<N>] => {
   // @ts-expect-error lookup
-  const renderer = referenceRenderers[node.constructor.name] // eslint-disable-line
+  const renderer = referenceRenderers[node.constructor.name]  
   if (!renderer) {
     throw new Error(`No renderer found for class: ${node.constructor.name}`)
   }
@@ -112,11 +112,11 @@ const dispatchToConcreteRenderer = (
   node: GraphQLNamedType,
 ): string => {
   // @ts-expect-error lookup
-  const renderer = concreteRenderers[node.constructor.name] // eslint-disable-line
+  const renderer = concreteRenderers[node.constructor.name]  
   if (!renderer) {
     throw new Error(`No renderer found for class: ${node.constructor.name}`)
   }
-  return renderer(config, node) // eslint-disable-line
+  return renderer(config, node)  
 }
 
 const concreteRenderers = defineConcreteRenderers({

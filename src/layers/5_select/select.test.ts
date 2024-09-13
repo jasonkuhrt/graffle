@@ -4,7 +4,7 @@ import { create } from './select.js'
 const select = create(`default`)
 
 test(`returns the input for any method name`, () => {
-  const s = select as any // eslint-disable-line
+  const s = select as any  
   expect(s.anything(1)).toEqual(1) // eslint-disable-line
 })
 

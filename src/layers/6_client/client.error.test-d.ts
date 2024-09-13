@@ -1,7 +1,7 @@
 /* eslint-disable */
 import { expectTypeOf, test } from 'vitest'
 import { Graffle } from '../../../tests/_/schema/generated/__.js'
-import { isError } from '../../../tests/_/schema/generated/Error.js'
+import { isError } from '../../../tests/_/schema/generated/modules/Error.js'
 import * as Schema from '../../../tests/_/schema/schema.js'
 
 const client = Graffle.create({ schema: Schema.schema })

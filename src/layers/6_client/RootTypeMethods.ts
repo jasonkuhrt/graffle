@@ -5,12 +5,7 @@ import type { InputFieldsAllNullable, Schema } from '../1_Schema/__.js'
 import type { SelectionSet } from '../3_SelectionSet/__.js'
 import type { ResultSet } from '../4_ResultSet/__.js'
 import type { ResolveOutputReturnRootField, ResolveOutputReturnRootType, SimplifyOutput } from './handleOutput.js'
-import type {
-  AugmentRootTypeSelectionWithTypename,
-  Config,
-  CreateSelectionTypename,
-  OrThrowifyConfig,
-} from './Settings/Config.js'
+import type { AugmentRootTypeSelectionWithTypename, Config, CreateSelectionTypename } from './Settings/Config.js'
 
 type RootTypeFieldContext = {
   Config: Config
@@ -32,8 +27,6 @@ export type RootTypeMethods<$Config extends Config, $Index extends Schema.Index,
   (
   & {
       $batch: RootMethod<$Config, $Index, $RootTypeName>
-      // @ts-expect-error fixme
-      $batchOrThrow: RootMethod<OrThrowifyConfig<$Config>, $Index, $RootTypeName>
     }
   & {
       [$RootTypeFieldName in keyof $Index['Root'][$RootTypeName]['fields'] & string]:
@@ -45,22 +38,11 @@ export type RootTypeMethods<$Config extends Config, $Index extends Schema.Index,
           Field: $Index['Root'][$RootTypeName]['fields'][$RootTypeFieldName]
         }>
     }
-    & {
-      [$RootTypeFieldName in keyof $Index['Root'][$RootTypeName]['fields'] & string as `${$RootTypeFieldName}OrThrow`]:
-      // @ts-expect-error fixme
-        RootTypeFieldMethod<{
-          Config: OrThrowifyConfig<$Config>,
-          Index: $Index,
-          RootTypeName: $RootTypeName,
-          RootTypeFieldName: $RootTypeFieldName
-          Field: $Index['Root'][$RootTypeName]['fields'][$RootTypeFieldName]
-        }>
-    }
   )
   : TSError<'RootTypeMethods', `Your schema does not have the root type "${$RootTypeName}".`>
 
 // dprint-ignore
-type RootMethod<$Config extends Config, $Index extends Schema.Index, $RootTypeName extends Schema.RootTypeName> =
+export type RootMethod<$Config extends Config, $Index extends Schema.Index, $RootTypeName extends Schema.RootTypeName> =
   <$SelectionSet extends object>(selectionSet: Exact<$SelectionSet, SelectionSet.Root<$Index, $RootTypeName>>) =>
     Promise<
       ResolveOutputReturnRootType<$Config, $Index, ResultSet.Root<AugmentRootTypeSelectionWithTypename<$Config,$Index,$RootTypeName,$SelectionSet>, $Index, $RootTypeName>>

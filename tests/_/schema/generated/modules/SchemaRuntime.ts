@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-import * as $ from '../../../../src/entrypoints/schema.js'
+import * as $ from '../../../../../src/entrypoints/schema.js'
 import * as $Scalar from './Scalar.js'
 
 export const $defaultSchemaUrl = undefined
@@ -229,6 +229,7 @@ export const Query = $.Object$(`Query`, {
 
 export const $Index = {
   name: 'default' as const,
+  RootTypesPresent: ['Query', 'Mutation'] as const,
   Root: {
     Query,
     Mutation,

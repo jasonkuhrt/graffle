@@ -9,18 +9,15 @@ import { publicGraphQLSchemaEndpoints } from './$/helpers.js'
 
 const graffle = Graffle
   .create({ schema: publicGraphQLSchemaEndpoints.Atlas })
-  .use({
-    name: `CustomFetch`,
-    anyware: async ({ exchange }) => {
-      return await exchange({
-        using: {
-          fetch: async () => {
-            return new Response(JSON.stringify({ data: { countries: [{ name: `Canada Mocked!` }] } }))
-          },
+  .anyware(({ exchange }) =>
+    exchange({
+      using: {
+        fetch: async () => {
+          return new Response(JSON.stringify({ data: { countries: [{ name: `Canada Mocked!` }] } }))
         },
-      })
-    },
-  })
+      },
+    })
+  )
 
 const countries = await graffle.rawString({ document: `{ countries { name } }` })
 

@@ -21,6 +21,7 @@ import {
   isScalarType,
   isUnionType,
 } from 'graphql'
+import { Code } from '../../../lib/Code.js'
 import type { AnyClass, AnyGraphQLOutputField } from '../../../lib/graphql.js'
 import { hasMutation, hasQuery, hasSubscription, unwrapToNamed, unwrapToNonNull } from '../../../lib/graphql.js'
 import { createCodeGenerator } from '../createCodeGenerator.js'
@@ -66,14 +67,22 @@ export const { generate: generateRuntimeSchema, moduleName: moduleNameSchemaRunt
 )
 
 const index = (config: Config) => {
+  const rootTypesPresence = {
+    Query: hasQuery(config.typeMapByKind),
+    Mutation: hasMutation(config.typeMapByKind),
+    Subscription: hasSubscription(config.typeMapByKind),
+  }
   // todo input objects for decode/encode input object fields
   return `
     export const $Index = {
       name: "${config.name}" as const,
+      RootTypesPresent: [${
+    Object.entries(rootTypesPresence).filter(([_, present]) => present).map(([_]) => Code.quote(_)).join(`, `)
+  }] as const,
       Root: {
-        Query ${hasQuery(config.typeMapByKind) ? `` : `:null`} ,
-        Mutation ${hasMutation(config.typeMapByKind) ? `` : `:null`},
-        Subscription ${hasSubscription(config.typeMapByKind) ? `` : `:null`}
+        Query ${rootTypesPresence.Query ? `` : `:null`} ,
+        Mutation ${rootTypesPresence.Mutation ? `` : `:null`},
+        Subscription ${rootTypesPresence.Subscription ? `` : `:null`}
       },
       objects: {
         ${config.typeMapByKind.GraphQLObjectType.map(type => type.name).join(`,\n`)}

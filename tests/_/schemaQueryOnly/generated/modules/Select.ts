@@ -1,11 +1,11 @@
-import type { ResultSet, SelectionSet } from '../../../../src/entrypoints/schema.js'
-import type { Index } from './Index.js'
+import type { ResultSet, SelectionSet } from '../../../../../src/entrypoints/schema.js'
+import type { Index } from './SchemaIndex.js'
 
 // Runtime
 // -------
 
-import { createSelect } from '../../../../src/entrypoints/client.js'
-export const Select = createSelect('default')
+import { createSelect } from '../../../../../src/entrypoints/client.js'
+export const Select = createSelect(`default`)
 
 // Buildtime
 // ---------
