@@ -80,6 +80,7 @@
     "build:docs": "doctoc README.md --notitle && dprint fmt README.md",
     "build": "pnpm clean && pnpm tsc --project tsconfig.build.json && chmod +x ./build/cli/generate.js",
     "clean": "tsc --build --clean && rm -rf build",
+    "test:unit": "vitest --exclude tests/examples",
     "test": "vitest",
     "test:web": "vitest --environment jsdom",
     "test:types": "vitest --typecheck",

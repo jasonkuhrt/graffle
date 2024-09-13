@@ -276,8 +276,8 @@ const createWithState = (
     },
     raw: async (...args: RawParameters) => {
       const input = resolveRawParameters(args)
-      const contextWithOutputSet = updateContextConfig(context, { ...context.config, output: traditionalGraphqlOutput })
-      return await runRaw(contextWithOutputSet, input)
+      // const contextWithOutputSet = updateContextConfig(context, { ...context.config, output: traditionalGraphqlOutput })
+      return await runRaw(context, input)
     },
     // rawOrThrow: async (...args: RawParameters) => {
     //   const input = resolveRawParameters(args)

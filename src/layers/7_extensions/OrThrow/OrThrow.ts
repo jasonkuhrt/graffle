@@ -27,6 +27,8 @@ export const OrThrow = () => {
       get: ({ client, property, path }) => {
         if (!property.endsWith(suffix)) return
 
+        // todo redesign input to allow to force throw always
+        // todo pull pre-configured config from core
         const config: InputIncrementable = {
           output: {
             envelope: {

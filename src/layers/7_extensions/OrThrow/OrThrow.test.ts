@@ -30,3 +30,9 @@ describe(`document(...).runOrThrow()`, () => {
     })
   })
 })
+
+test(`.rawOrThrow() throws if errors array non-empty`, async () => {
+  await expect(graffle.rawStringOrThrow({ document: `query {}` })).rejects.toMatchInlineSnapshot(
+    `[ContextualAggregateError: One or more errors in the execution result.]`,
+  )
+})

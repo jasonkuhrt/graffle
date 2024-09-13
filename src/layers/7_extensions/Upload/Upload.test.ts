@@ -44,16 +44,12 @@ test(`upload`, async () => {
       }
     `,
     variables: {
-      blob: new Blob([`Hello World`], { type: `text/plain` }) as any,  
+      blob: new Blob([`Hello World`], { type: `text/plain` }) as any,
     },
   })
   expect(omit(result, [`response`])).toMatchInlineSnapshot(`
     {
-      "data": {
-        "readTextFile": "Hello World",
-      },
-      "errors": undefined,
-      "extensions": undefined,
+      "readTextFile": "Hello World",
     }
   `)
 })
