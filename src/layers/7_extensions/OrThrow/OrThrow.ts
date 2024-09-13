@@ -1,6 +1,6 @@
 import type { TypedQueryDocumentNode } from 'graphql'
 import type { CamelCase } from 'type-fest'
-import { type ConfigManager, getValueAtPath } from '../../../lib/prelude.js'
+import { type As, type ConfigManager, getValueAtPath } from '../../../lib/prelude.js'
 import type { BaseInput, TypedDocumentString } from '../../0_functions/types.js'
 import type { Schema } from '../../1_Schema/__.js'
 import { createExtension } from '../../5_createExtension/createExtension.js'
@@ -71,46 +71,42 @@ type Methods<$Config extends Config, $Index extends Schema.Index> =
       rawStringOrThrow<$Data extends Record<string, any>, $Variables>(input: BaseInput<TypedDocumentString<$Data, $Variables>>):    Promise<RawResolveOutputReturnRootType<OrThrowifyConfig<$Config>, $Data>>
       // @ts-expect-error fixme
       rawOrThrow      <$Data extends Record<string, any>, $Variables>(input: BaseInput<TypedQueryDocumentNode<$Data, $Variables>>): Promise<RawResolveOutputReturnRootType<OrThrowifyConfig<$Config>, $Data>>
+      // @ts-expect-error fixme
+      documentOrThrow: DocumentFn<OrThrowifyConfig<$Config>, $Index>          
     }
-  & {
-      [_ in $Index['RootTypesPresent'][number] as $Index['Root'][_] extends null ? never : RootTypeToRootTypeProperty<_>]:
-        RootTypeMethods<$Config, $Index, _>
-    }
-  & (
-      $Index['RootTypesPresent'][number] extends never
-        ? {}
-        : {
-            // @ts-expect-error fixme
-            documentOrThrow: DocumentFn<OrThrowifyConfig<$Config>, $Index>          
-          }
-    )
+  & RootTypesMethods<$Config,$Index>
 
 // dprint-ignore
-type RootTypeMethods<$Config extends Config, $Index extends Schema.Index, $RootTypeName extends Schema.RootTypeName> =
-  $Index['Root'][$RootTypeName] extends Schema.Object$2 ? (
-      & {
-          // @ts-expect-error fixme
-          $batchOrThrow: RootMethod<OrThrowifyConfig<$Config>, $Index, $RootTypeName>
-        }
-      & {
-        [
-          $RootTypeFieldName in
-            & keyof $Index['Root'][$RootTypeName]['fields']
-            & string as `${$RootTypeFieldName}OrThrow`
-        ]:
-          // @ts-expect-error fixme
-          RootTypeFieldMethod<{
-            Config: OrThrowifyConfig<$Config>
-            Index: $Index
-            RootTypeName: $RootTypeName
-            RootTypeFieldName: $RootTypeFieldName
-            Field: $Index['Root'][$RootTypeName]['fields'][$RootTypeFieldName]
-          }>
-      }
-    )
-    : {}
+type RootTypesMethods<$Config extends Config, $Index extends Schema.Index> = {
+  [$RootTypeName in $Index['RootTypesPresent'][number] as CamelCase<$RootTypeName>]:
+    // Since $RootTypeName comes from present root types, the index is guaranteed to have the root type.
+    $Index['Root'][$RootTypeName] extends Schema.Object$2
+      ? RootTypeMethods<$Config, $Index, $RootTypeName, $Index['Root'][$RootTypeName]>
+      : never 
+}
 
-type RootTypeToRootTypeProperty<T> = CamelCase<T>
+// dprint-ignore
+type RootTypeMethods<$Config extends Config, $Index extends Schema.Index, $RootTypeName extends Schema.RootTypeName, $Object extends Schema.Object$2> =
+  & {
+      // @ts-expect-error fixme
+      $batchOrThrow: RootMethod<OrThrowifyConfig<$Config>, $Index, $RootTypeName>
+    }
+  & {
+      [
+        $RootTypeFieldName in
+          & keyof  $Object['fields']
+          & string
+          as `${$RootTypeFieldName}OrThrow`
+      ]:
+        // @ts-expect-error fixme
+        RootTypeFieldMethod<{
+          Config: OrThrowifyConfig<$Config>
+          Index: $Index
+          RootTypeName: $RootTypeName
+          RootTypeFieldName: $RootTypeFieldName
+          Field: $Object['fields'][$RootTypeFieldName]
+        }>
+  }
 
 // todo this changed, check tests, add new tests as needed.
 // dprint-ignore
