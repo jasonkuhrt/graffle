@@ -4,6 +4,7 @@ import type { Errors } from '../../lib/errors/__.js'
 import { isOperationTypeName, operationTypeNameToRootTypeName, type RootTypeName } from '../../lib/graphql.js'
 import type { Call } from '../../lib/hkt/hkt.js'
 import { mergeRequestInit } from '../../lib/http.js'
+import { proxyGet } from '../../lib/prelude.js'
 import type { BaseInput, BaseInput_, TypedDocumentString } from '../0_functions/types.js'
 import { Schema } from '../1_Schema/__.js'
 import { readMaybeThunk } from '../1_Schema/core/helpers.js'
@@ -12,6 +13,7 @@ import type { DocumentObject, GraphQLObjectSelection } from '../3_SelectionSet/e
 import { Core } from '../5_core/__.js'
 import { type HookDefEncode } from '../5_core/core.js'
 import { type InterfaceRaw, type TransportHttp } from '../5_core/types.js'
+import { createExtension } from '../5_createExtension/createExtension.js'
 import type { DocumentFn } from './document.js'
 import type { Extension } from './extension.js'
 import { type Envelope, handleOutput } from './handleOutput.js'
@@ -44,7 +46,7 @@ export type GraffleExecutionResultVar<$Config extends Config = Config> =
            */
           response?: Response
         }
-      : {})  
+      : {})
   )
   | ErrorsOther
 
@@ -286,7 +288,6 @@ const createWithState = (
     //   return await runRaw(contextWithOutputSet, input)
     // },
     rawString: async (...args: RawParameters) => {
-      // eslint-disable-next-line
       return await clientDirect.raw(...args)
     },
     // rawStringOrThrow: async (...args: RawParameters) => {
@@ -309,17 +310,21 @@ const createWithState = (
       })
     },
     use: (extensionOrAnyware: Extension | Anyware.Extension2<Core.Core>) => {
-      console.log(`use and copy`)
       const extension = typeof extensionOrAnyware === `function`
         ? { anyware: extensionOrAnyware, name: extensionOrAnyware.name }
         : extensionOrAnyware
       // todo test that adding extensions returns a copy of client
       const x = createWithState({ ...state, extensions: [...state.extensions, extension] })
-      // console.log(x)
       return x
     },
-    retry: (extension: Anyware.Extension2<Core.Core, { retrying: true }>) => {
-      return createWithState({ ...state, retry: extension })
+    anyware: (anyware: Anyware.Extension2<Core.Core>) => {
+      return createWithState({
+        ...state,
+        extensions: [...state.extensions, createExtension({ name: `InlineAnyware`, anyware })],
+      })
+    },
+    retry: (anyware: Anyware.Extension2<Core.Core, { retrying: true }>) => {
+      return createWithState({ ...state, retry: anyware })
     },
   }
 
@@ -380,17 +385,18 @@ const createWithState = (
     })
   }
 
-  const clientProxy = proxyMethodCalls(clientDirect, (method, args) => {
-    const invokeBuilders = state.extensions.map(_ => _.methods).filter(_ => _ !== undefined).map(_ => _.invoke).filter(
+  const clientProxy = proxyGet(clientDirect, (method) => {
+    const getBuilders = state.extensions.map(_ => _.methods).filter(_ => _ !== undefined).map(_ => _.get).filter(
       _ => _ !== undefined,
     )
-    for (const invokeBuilder of invokeBuilders) {
-      console.log(`invokeBuilder`)
-      const result = invokeBuilder({ context, client: clientDirect, method, args })
-      if (result) return result
+
+    for (const getBuilder of getBuilders) {
+      const result = getBuilder({ context, client: clientDirect, method })
+      if (result !== undefined) return result
     }
+
+    return undefined
   }) as any as Client<any, any>
-  // console.log('clientproxy', clientProxy)
 
   return clientProxy
 }
@@ -398,52 +404,3 @@ const createWithState = (
 const updateContextConfig = <$Context extends Context>(context: $Context, config: Config): $Context => {
   return { ...context, config: { ...context.config, ...config } }
 }
-
-const proxyMethodCalls = <T>(
-  target: T,
-  methodCallHandler: (prop: string, args: any[]) => any = () => {},
-): T => {
-  return new Proxy(target, {
-    get: (target: any, prop: string, receiver: any) => {
-      const value = Reflect.get(target, prop, receiver)
-      console.log(`get`, prop, value)
-
-      // If the property is a function, return a wrapped version that intercepts the method call
-      if (typeof value === `function`) {
-        return (...args: any[]) => {
-          const result = methodCallHandler(prop, args)
-          if (result === undefined) {
-            // console.log(target)
-            const result = value.apply(target, args)
-            console.log(`passthrough`, result)
-            return result
-          }
-        }
-      }
-
-      // If the value is an object, recursively create a proxy for the nested object
-      if (typeof value === `object` && value !== null) {
-        return proxyMethodCalls(value, methodCallHandler)
-      }
-
-      // See what will be done with undefined value
-      if (value === undefined) {
-        console.log(`return undefined thing`)
-        return new Proxy(funcToProxy, {
-          apply: (target, thisArg, args) => {
-            const result = methodCallHandler(prop, args)
-            console.log(`undefined thing was applied!`)
-            if (!result) throw new Error(`value is undefined`)
-            return result
-          },
-        })
-      }
-
-      // Otherwise, just return the value
-      console.log(`just return`, value)
-      return value
-    },
-  })
-}
-
-const funcToProxy = () => {}

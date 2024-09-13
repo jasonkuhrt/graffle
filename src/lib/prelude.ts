@@ -410,3 +410,14 @@ export const throwNull = <V>(value: V): Exclude<V, null> => {
   if (value === null) throw new Error('Unexpected null value.')
   return value as Exclude<V, null>
 }
+
+export const proxyGet = <T>(
+  target: T,
+  handler: (prop: string) => unknown,
+): T => {
+  return new Proxy(target, {
+    get: (target: any, prop: string, receiver: any) => {
+      return handler(prop) ?? Reflect.get(target, prop, receiver)
+    },
+  })
+}

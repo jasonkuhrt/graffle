@@ -14,12 +14,11 @@ export interface ExtensionBase {
   name: string
   anyware?: Anyware.Extension2<Core.Core>
   methods?: {
-    invoke?: (
+    get?: (
       input: {
         context: Context
         method: string
         client: Client<null, Config>
-        args: [...unknown[]]
       },
     ) => unknown
   }

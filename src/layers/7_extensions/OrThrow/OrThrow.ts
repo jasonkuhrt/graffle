@@ -24,7 +24,7 @@ export const OrThrow = () => {
   return createExtension<OrThrowExtension>({
     name,
     methods: {
-      invoke: ({ client, method, args }) => {
+      get: ({ client, method }) => {
         if (method.endsWith(suffix)) {
           const config: InputIncrementable = {
             output: {
@@ -47,7 +47,7 @@ export const OrThrow = () => {
           }
           // @ts-expect-error dynamic
           // todo path to method like query.idOrThrow
-          return client.with(config)[method.slice(0, suffix.length * -1)](...args)
+          return (args) => client.with(config)[method.slice(0, suffix.length * -1)](...args)
         }
       },
     },
