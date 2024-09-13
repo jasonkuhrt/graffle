@@ -3,7 +3,7 @@ import { Graffle } from '../../../../tests/_/schema/generated/__.js'
 import { schema } from '../../../../tests/_/schema/schema.js'
 import { OrThrow } from './OrThrow.js'
 
-const graffle = Graffle.create({ schema, output: { envelope: false } }).use(OrThrow())
+const graffle = Graffle.create({ schema }).use(OrThrow())
 
 describe(`documentOrThrow(...).run()`, () => {
   describe(`query result field`, () => {
@@ -23,4 +23,9 @@ describe(`documentOrThrow(...).run()`, () => {
       >()
     })
   })
+})
+
+test(`can customize the suffix`, () => {
+  const graffle = Graffle.create({ schema }).use(OrThrow({ suffix: `_` }))
+  graffle.document_
 })

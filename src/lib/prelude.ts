@@ -1,4 +1,4 @@
-import type { Simplify } from 'type-fest'
+import type { IsUnknown, Simplify } from 'type-fest'
 import type { ConditionalSimplify, ConditionalSimplifyDeep } from 'type-fest/source/conditional-simplify.js'
 
 /* eslint-disable */
@@ -341,7 +341,9 @@ export namespace ConfigManager {
 
   export type ReadOrDefault<$Obj, $Path extends Path, $Default> = OrDefault<Read<$Obj, $Path>, $Default>
 
-  export type OrDefault<$Value, $Default> = $Value extends undefined ? $Default : $Value
+  export type OrDefault<$Value, $Default> = IsUnknown<$Value> extends true ? $Default
+    : $Value extends undefined ? $Default
+    : $Value
 
   // dprint-ignore
   export type Read<$Value, $Path extends [...string[]]> =
@@ -440,4 +442,8 @@ export const getValueAtPath = <T, Path extends readonly string[]>(
   path: Path,
 ): PathToValue<T, Path> | undefined => {
   return path.reduce<any>((acc, key) => acc?.[key], obj)
+}
+
+export type SuffixKeyNames<$Suffix extends string, $Object extends object> = {
+  [$Key in keyof $Object & string as `${$Key}${$Suffix}`]: $Object[$Key]
 }

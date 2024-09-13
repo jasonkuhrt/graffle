@@ -1,6 +1,6 @@
 import type { TypedQueryDocumentNode } from 'graphql'
 import type { CamelCase } from 'type-fest'
-import { type As, type ConfigManager, getValueAtPath } from '../../../lib/prelude.js'
+import { type ConfigManager, getValueAtPath, type SuffixKeyNames } from '../../../lib/prelude.js'
 import type { BaseInput, TypedDocumentString } from '../../0_functions/types.js'
 import type { Schema } from '../../1_Schema/__.js'
 import { createExtension } from '../../5_createExtension/createExtension.js'
@@ -10,26 +10,25 @@ import type { RawResolveOutputReturnRootType } from '../../6_client/handleOutput
 import type { RootMethod } from '../../6_client/RootTypeMethods.js'
 import { type Config } from '../../6_client/Settings/Config.js'
 import type { InputIncrementable } from '../../6_client/Settings/inputIncrementable/inputIncrementable.js'
+import { type Config as Options, createConfig, type Input } from './config.js'
 
-const name = `OrThrow`
-
-interface OrThrowExtension extends Extension {
+interface OrThrowExtension<$Options extends Options> extends Extension {
   // @ts-expect-error fixme
-  return: this['params']['AdditionalMethods'] & Methods<this['params']['Config'], this['params']['Index']>
+  return: this['params']['AdditionalMethods'] & Methods<this['params']['Config'], this['params']['Index'], $Options>
 }
 
-const suffix = `OrThrow`
+export const OrThrow = <const $Input extends Input>(input?: $Input) => {
+  const config = createConfig(input)
 
-export const OrThrow = () => {
-  return createExtension<OrThrowExtension>({
-    name,
+  return createExtension<OrThrowExtension<createConfig<$Input>>>({
+    name: `OrThrow`,
     builder: {
       get: ({ client, property, path }) => {
-        if (!property.endsWith(suffix)) return
+        if (!property.endsWith(config.suffix)) return
 
         // todo redesign input to allow to force throw always
         // todo pull pre-configured config from core
-        const config: InputIncrementable = {
+        const graffleConfig: InputIncrementable = {
           output: {
             envelope: {
               enabled: client.internal.config.output.envelope.enabled,
@@ -50,8 +49,8 @@ export const OrThrow = () => {
         }
 
         return (...args: [...unknown[]]) => {
-          const redirectedPath = [...path, property.slice(0, suffix.length * -1)]
-          const clientReconfigured = client.with(config)
+          const redirectedPath = [...path, property.slice(0, config.suffix.length * -1)]
+          const clientReconfigured = client.with(graffleConfig)
           const value = getValueAtPath(clientReconfigured, redirectedPath)
           const valueType = typeof value
           if (valueType !== `function`) {
@@ -65,38 +64,38 @@ export const OrThrow = () => {
 }
 
 // dprint-ignore
-type Methods<$Config extends Config, $Index extends Schema.Index> =
-  & {
+type Methods<$Config extends Config, $Index extends Schema.Index, $Options extends Options> =
+  & SuffixKeyNames<$Options['suffix'], {
       // @ts-expect-error fixme
-      rawStringOrThrow<$Data extends Record<string, any>, $Variables>(input: BaseInput<TypedDocumentString<$Data, $Variables>>):    Promise<RawResolveOutputReturnRootType<OrThrowifyConfig<$Config>, $Data>>
+      rawString<$Data extends Record<string, any>, $Variables>(input: BaseInput<TypedDocumentString<$Data, $Variables>>):    Promise<RawResolveOutputReturnRootType<OrThrowifyConfig<$Config>, $Data>>
       // @ts-expect-error fixme
-      rawOrThrow      <$Data extends Record<string, any>, $Variables>(input: BaseInput<TypedQueryDocumentNode<$Data, $Variables>>): Promise<RawResolveOutputReturnRootType<OrThrowifyConfig<$Config>, $Data>>
+      raw      <$Data extends Record<string, any>, $Variables>(input: BaseInput<TypedQueryDocumentNode<$Data, $Variables>>): Promise<RawResolveOutputReturnRootType<OrThrowifyConfig<$Config>, $Data>>
       // @ts-expect-error fixme
-      documentOrThrow: DocumentFn<OrThrowifyConfig<$Config>, $Index>          
-    }
-  & RootTypesMethods<$Config,$Index>
+      document: DocumentFn<OrThrowifyConfig<$Config>, $Index>          
+    }>
+  & RootTypesMethods<$Config, $Index, $Options>
 
 // dprint-ignore
-type RootTypesMethods<$Config extends Config, $Index extends Schema.Index> = {
+type RootTypesMethods<$Config extends Config, $Index extends Schema.Index, $Options extends Options> = {
   [$RootTypeName in $Index['RootTypesPresent'][number] as CamelCase<$RootTypeName>]:
     // Since $RootTypeName comes from present root types, the index is guaranteed to have the root type.
     $Index['Root'][$RootTypeName] extends Schema.Object$2
-      ? RootTypeMethods<$Config, $Index, $RootTypeName, $Index['Root'][$RootTypeName]>
+      ? RootTypeMethods<$Config, $Index, $RootTypeName, $Index['Root'][$RootTypeName], $Options>
       : never 
 }
 
 // dprint-ignore
-type RootTypeMethods<$Config extends Config, $Index extends Schema.Index, $RootTypeName extends Schema.RootTypeName, $Object extends Schema.Object$2> =
-  & {
+type RootTypeMethods<$Config extends Config, $Index extends Schema.Index, $RootTypeName extends Schema.RootTypeName, $Object extends Schema.Object$2, $Options extends Options> =
+  & SuffixKeyNames<$Options['suffix'], {
       // @ts-expect-error fixme
-      $batchOrThrow: RootMethod<OrThrowifyConfig<$Config>, $Index, $RootTypeName>
-    }
+      $batch: RootMethod<OrThrowifyConfig<$Config>, $Index, $RootTypeName>
+    }>
   & {
       [
         $RootTypeFieldName in
           & keyof  $Object['fields']
           & string
-          as `${$RootTypeFieldName}OrThrow`
+          as `${$RootTypeFieldName}${$Options['suffix']}`
       ]:
         // @ts-expect-error fixme
         RootTypeFieldMethod<{
