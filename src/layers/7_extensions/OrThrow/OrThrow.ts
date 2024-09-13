@@ -6,7 +6,7 @@ import type { Schema } from '../../1_Schema/__.js'
 import { createExtension } from '../../5_createExtension/createExtension.js'
 import type { DocumentFn } from '../../6_client/document.js'
 import type { Extension } from '../../6_client/extension.js'
-import type { Envelope } from '../../6_client/handleOutput.js'
+import type { RawResolveOutputReturnRootType } from '../../6_client/handleOutput.js'
 import type { RootMethod } from '../../6_client/RootTypeMethods.js'
 import { type Config } from '../../6_client/Settings/Config.js'
 import type { InputIncrementable } from '../../6_client/Settings/inputIncrementable/inputIncrementable.js'
@@ -113,8 +113,8 @@ export const OrThrow = () => {
 // dprint-ignore
 type Methods<$Config extends Config, $Index extends Schema.Index> =
   & {
-      rawStringOrThrow<$Data, $Variables>(input: BaseInput<TypedDocumentString<$Data, $Variables>>):    Promise<Envelope<$Config, $Data, []>>
-      rawOrThrow      <$Data, $Variables>(input: BaseInput<TypedQueryDocumentNode<$Data, $Variables>>): Promise<Envelope<$Config, $Data, []>>
+      rawStringOrThrow<$Data extends Record<string, any>, $Variables>(input: BaseInput<TypedDocumentString<$Data, $Variables>>):    Promise<RawResolveOutputReturnRootType<OrThrowifyConfig<$Config>, $Data>>
+      rawOrThrow      <$Data extends Record<string, any>, $Variables>(input: BaseInput<TypedQueryDocumentNode<$Data, $Variables>>): Promise<RawResolveOutputReturnRootType<OrThrowifyConfig<$Config>, $Data>>
     }
   & {
       [_ in $Index['RootTypesPresent'][number] as $Index['Root'][_] extends null ? never : RootTypeToRootTypeProperty<_>]:

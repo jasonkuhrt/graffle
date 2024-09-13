@@ -16,5 +16,5 @@ provider.addSpanProcessor(processor)
 provider.register()
 
 const graffle = Atlas.create().use(Opentelemetry())
-const result = await graffle.rawString({ document: `query { continents { name } }` })
-show(result.data)
+const data = await graffle.rawString({ document: `query { continents { name } }` })
+show(data)

@@ -23,11 +23,12 @@ export const readConfigErrorCategoryOutputChannel = (
   return config.output.errors[errorCategory]
 }
 
-export const traditionalGraphqlOutput: OutputConfig = {
+export const traditionalGraphqlOutput = {
   defaults: { errorChannel: `throw` },
   envelope: { enabled: true, errors: { execution: true, other: false, schema: false } },
   errors: { execution: `default`, other: `default`, schema: false },
-}
+} satisfies OutputConfig
+
 export const traditionalGraphqlOutputThrowing: OutputConfig = {
   ...traditionalGraphqlOutput,
   envelope: {
@@ -124,7 +125,7 @@ type TypenameSelection = { __typename: true }
 
 // dprint-ignore
 export type CreateSelectionTypename<$Config extends Config, $Index extends Schema.Index> =
-  IsNeedSelectionTypename<$Config, $Index> extends true ? TypenameSelection : {}  
+  IsNeedSelectionTypename<$Config, $Index> extends true ? TypenameSelection : {}
 
 // dprint-ignore
 export type IsNeedSelectionTypename<$Config extends Config, $Index extends Schema.Index> =
@@ -142,7 +143,7 @@ export type AugmentRootTypeSelectionWithTypename<
 > = IsNeedSelectionTypename<$Config, $Index> extends true ? {
     [$Key in StringKeyof<$Selection>]:
       & $Selection[$Key]
-      & (IsRootFieldNameAResultField<$Index, $RootTypeName, $Key> extends true ? TypenameSelection : {})  
+      & (IsRootFieldNameAResultField<$Index, $RootTypeName, $Key> extends true ? TypenameSelection : {})
   }
   : $Selection
 

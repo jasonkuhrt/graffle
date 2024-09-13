@@ -128,6 +128,27 @@ const isAbortError = (error: any): error is DOMException & { name: 'AbortError' 
 const isTypedContext = (context: Context): context is TypedContext => `schemaIndex` in context
 
 // dprint-ignore
+export type RawResolveOutputReturnRootType<$Config extends Config, $Data> =
+  SimplifyExceptError<
+   | IfConfiguredGetOutputErrorReturns<$Config>
+   | (
+        $Config['output']['envelope']['enabled'] extends true
+          // todo even when envelope is enabled, its possible errors can not be included in its output.
+          // When not, undefined should be removed from the data property.
+          ? Envelope<$Config, $Data>
+          // Note 1
+          // `undefined` is not a possible type because that would only happen if an error occurred.
+          // If an error occurs when the envelope is disabled then either it throws or is returned.
+          // No case swallows the error and returns undefined data.
+          //
+          // Note 2
+          // null is possible because of GraphQL null propagation.
+          // todo We need to integrate this reality into the the other typed non-envelope output types too. 
+          : $Data | null
+     )
+ >
+
+// dprint-ignore
 export type ResolveOutputReturnRootType<$Config extends Config, $Index extends Schema.Index, $Data> =
   SimplifyExceptError<
    | IfConfiguredGetOutputErrorReturns<$Config>

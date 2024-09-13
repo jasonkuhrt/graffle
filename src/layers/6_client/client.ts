@@ -4,7 +4,7 @@ import type { Errors } from '../../lib/errors/__.js'
 import { isOperationTypeName, operationTypeNameToRootTypeName, type RootTypeName } from '../../lib/graphql.js'
 import type { Call } from '../../lib/hkt/hkt.js'
 import { mergeRequestInit } from '../../lib/http.js'
-import { proxyGet } from '../../lib/prelude.js'
+import { proxyGet, type SimplifyExceptError } from '../../lib/prelude.js'
 import type { BaseInput, BaseInput_, TypedDocumentString } from '../0_functions/types.js'
 import { Schema } from '../1_Schema/__.js'
 import { readMaybeThunk } from '../1_Schema/core/helpers.js'
@@ -16,9 +16,9 @@ import { type InterfaceRaw, type TransportHttp } from '../5_core/types.js'
 import { createExtension } from '../5_createExtension/createExtension.js'
 import type { DocumentFn } from './document.js'
 import type { Extension } from './extension.js'
-import { type Envelope, handleOutput } from './handleOutput.js'
+import { handleOutput, type RawResolveOutputReturnRootType } from './handleOutput.js'
 import type { GetRootTypeMethods } from './RootTypeMethods.js'
-import { type Config, traditionalGraphqlOutput } from './Settings/Config.js'
+import { type Config } from './Settings/Config.js'
 import { type InputStatic } from './Settings/Input.js'
 import type { AddIncrementalInput, InputIncrementable } from './Settings/inputIncrementable/inputIncrementable.js'
 import { type InputToConfig, inputToConfig } from './Settings/InputToConfig.js'
@@ -81,8 +81,9 @@ const resolveRawParameters = (parameters: RawParameters) => {
 // todo no config needed?
 // dprint-ignore
 export type ClientRaw<$Config extends Config> = {
-  raw<$Data, $Variables>(input: BaseInput<TypedQueryDocumentNode<$Data, $Variables>>): Promise<Envelope<$Config, $Data>>
-  rawString<$Data, $Variables>(input: BaseInput<TypedDocumentString<$Data, $Variables>>): Promise<Envelope<$Config, $Data>>
+  raw<$Data extends Record<string, any>, $Variables>(input: BaseInput<TypedQueryDocumentNode<$Data, $Variables>>): Promise<  SimplifyExceptError<
+RawResolveOutputReturnRootType<$Config, $Data>>>
+  rawString<$Data extends Record<string, any>, $Variables>(input: BaseInput<TypedDocumentString<$Data, $Variables>>): Promise<RawResolveOutputReturnRootType<$Config, $Data>>
 }
 
 // dprint-ignore
