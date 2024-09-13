@@ -41,6 +41,24 @@ You can change the suffix to something else if you prefer. For example:
 import { Graffle } from 'graffle'
 import { OrThrow } from 'graffle/extensions'
 // ---cut---
-const graffle = Graffle.create({ schema: '...' }).use(OrThrow({ suffix: '_' }))
+const graffle = Graffle
+  .create({ schema: '...' })
+  .use(OrThrow({ suffix: '_' }))
 graffle.raw_ // instead of graffle.rawOrThrow
 ```
+
+## Limitations
+
+### Schema Type Names
+
+If you are using the generated client note that if any of your schema's root fields have the same suffix as the one used by this extension then the following will happen. You will correctly end up with static types like (as expected):
+
+```
+Base                  				Added by this extension
+----                  				-----------------------
+graffle.query.fooOrThrow      graffle.query.fooOrThrowOrThrow
+```
+
+However the runtime output of `fooOrThrow` will always be executed as if you executed `fooOrThrowOrThrow` which is not intentional.
+
+This is an edge case you're unlikely to hit. Its also fixable, so if you have a use-case, open an issue to motivate a fix or better yet submit a PR (hint: have the extension use the runtime schema index to ensure it only deals with its OrThrow added methods).
