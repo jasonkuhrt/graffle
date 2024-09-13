@@ -4,10 +4,6 @@
 
 The `Opentelemetry` extension instruments requests with [OpenTelemetry](https://opentelemetry.io).
 
-## About
-
-Check out the example to get started. You'll also find output there that shows each span created, allowing you to see its parent, attributes, etc.
-
 ## Getting Started
 
 `Opentelemetry` is a first party extension shipping in the graffle package. You will need to install some peer dependencies though.
@@ -18,10 +14,11 @@ Graffle has an optional peer-dependency on `@opentelemetry/api`. You'll need to 
 pnpm add @opentelemetry/api
 ```
 
-```ts
+```ts twoslash
+import { Graffle } from 'graffle'
 import { Opentelemetry } from 'graffle/extensions'
 
-const graffle = Graffle.create().use(Opentelemetry())
+const graffle = Graffle.create({ schema: '...' }).use(Opentelemetry())
 ```
 
 ## Span Structure

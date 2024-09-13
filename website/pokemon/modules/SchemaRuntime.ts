@@ -47,6 +47,7 @@ export const Query = $.Object$(`Query`, {
 
 export const $Index = {
   name: 'Pokemon' as const,
+  RootTypesPresent: ['Query', 'Mutation'] as const,
   Root: {
     Query,
     Mutation,
