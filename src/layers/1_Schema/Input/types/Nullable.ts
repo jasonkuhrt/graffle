@@ -9,7 +9,7 @@ export type Nullable<$InnerType extends InnerType> = Base.Nullable<$InnerType>
 export const Nullable = <$InnerType extends InnerType>(type: MaybeThunk<$InnerType>): Nullable<$InnerType> => ({
   kind: `nullable`,
   // at type level "type" is not a thunk
-  type: type as any,  
+  type: type as any,
 })
 
 // dprint-ignore

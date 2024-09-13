@@ -8,13 +8,16 @@ This example shows how to send a request using a Document instance for the Graph
 
 <!-- dprint-ignore-start -->
 ```ts twoslash
+import { Opentelemetry, OrThrow } from 'graffle/extensions'
 import { gql, Graffle } from 'graffle'
 
 const graffle = Graffle.create({
   schema: `https://countries.trevorblades.com/graphql`,
 })
+  .use(OrThrow())
+  .use(Opentelemetry())
 
-const result = await graffle.raw({
+const data = await graffle.raw({
   document: gql`
     query countries ($filter: [String!]) {
       countries (filter: { name: { in: $filter } }) {
@@ -28,7 +31,7 @@ const result = await graffle.raw({
   variables: { filter: [`Canada`, `Germany`, `Japan`] },
 })
 
-console.log(result.data)
+console.log(data)
 ```
 <!-- dprint-ignore-end -->
 

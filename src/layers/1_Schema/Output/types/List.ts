@@ -9,5 +9,5 @@ export type List<$Type extends InnerType> = Base.List<$Type>
 export const List = <$Type extends InnerType>(type: MaybeThunk<$Type>): List<$Type> => ({
   kind: `list`,
   // at type level "type" is not a thunk
-  type: type as any,  
+  type: type as any,
 })

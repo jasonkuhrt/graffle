@@ -25,9 +25,9 @@ const schema = new GraphQLSchema({
 
 const graffle = Graffle.create({ schema })
 
-const result = await graffle.rawString({ document: `{ foo }` })
+const data = await graffle.rawString({ document: `{ foo }` })
 
-console.log(result)
+console.log(data)
 ```
 <!-- dprint-ignore-end -->
 
@@ -36,9 +36,7 @@ console.log(result)
 <!-- dprint-ignore-start -->
 ```json
 {
-  "data": {
-    "foo": "bar"
-  }
+  "foo": "bar"
 }
 ```
 <!-- dprint-ignore-end -->

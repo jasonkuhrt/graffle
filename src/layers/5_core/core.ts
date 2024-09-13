@@ -41,13 +41,12 @@ import type {
 
 const getRootIndexOrThrow = (context: ContextInterfaceTyped, rootTypeName: string) => {
   // @ts-expect-error
-   
+
   const rootIndex = context.schemaIndex.Root[rootTypeName]
   if (!rootIndex) throw new Error(`Root type not found: ${rootTypeName}`)
   return rootIndex
 }
 
- 
 type InterfaceInput<TypedProperties = {}, RawProperties = {}> =
   | ({
     interface: InterfaceTyped
@@ -60,7 +59,7 @@ type InterfaceInput<TypedProperties = {}, RawProperties = {}> =
   } & RawProperties)
 
 // dprint-ignore
- 
+
 type TransportInput<$Config extends Config, $HttpProperties = {}, $MemoryProperties = {}> =
   | (
       TransportHttp extends $Config['transport']['type']

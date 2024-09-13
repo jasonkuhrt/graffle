@@ -35,9 +35,9 @@ const graffle = Graffle.create({
     }
   `
 
-  const result = await graffle.raw({ document, variables: { filter: [`Canada`, `Germany`, `Japan`] } })
+  const data = await graffle.raw({ document, variables: { filter: [`Canada`, `Germany`, `Japan`] } })
 
-  console.log(result.data?.countries)
+  console.log(data?.countries)
 }
 
 /*************************************** Variation 2 ***************************************
@@ -65,9 +65,9 @@ const graffle = Graffle.create({
     }
   `
 
-  const result = await graffle.raw({ document, variables: { filter: [`Canada`, `Germany`, `Japan`] } })
+  const data = await graffle.raw({ document, variables: { filter: [`Canada`, `Germany`, `Japan`] } })
 
-  console.log(result.data?.countries)
+  console.log(data?.countries)
 }
 ```
 <!-- dprint-ignore-end -->

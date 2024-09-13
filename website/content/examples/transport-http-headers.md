@@ -29,7 +29,7 @@ const graffle = Graffle
   .with({
     transport: { headers: { 'x-something-to-unset': `` } },
   })
-  .use(async ({ exchange }) => {
+  .anyware(async ({ exchange }) => {
     console.log(exchange.input.request.headers)
     return exchange()
   })

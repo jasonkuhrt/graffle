@@ -28,7 +28,7 @@ const testEachArgs = [
         output: outputConfigDefault,
         transport: { type: `memory`, config: { methodMode: `post` } },
         name: schemaIndex[`name`],
-         
+
         initialInput: {} as any,
       },
     }

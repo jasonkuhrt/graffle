@@ -21,7 +21,7 @@
     searchParams: URLSearchParams {},
     hash: ''
   },
-  body: '{"query":"mutation addPokemon(attack:0, defense:0, hp:1, name:\\"Nano\\") { name }"}'
+  body: '{"query":"mutation { addPokemon(attack:0, defense:0, hp:1, name:\\"Nano\\") { name } }"}'
 }
 ---------------------------------------- SHOW ----------------------------------------
 {

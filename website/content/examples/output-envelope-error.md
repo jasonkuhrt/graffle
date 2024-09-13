@@ -22,7 +22,7 @@ const atlas = Atlas
       },
     },
   })
-  .use(({ encode: _ }) => {
+  .anyware(({ encode: _ }) => {
     throw new Error(`Something went wrong.`)
   //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   })

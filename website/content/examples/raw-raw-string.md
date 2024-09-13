@@ -22,11 +22,9 @@ const document = /* gql */ `
   }	
 `
 
-const result = await graffle.rawString({
-  document,
-})
+const data = await graffle.rawString({ document })
 
-console.log(result.data)
+console.log(data)
 ```
 <!-- dprint-ignore-end -->
 

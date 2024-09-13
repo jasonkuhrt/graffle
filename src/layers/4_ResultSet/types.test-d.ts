@@ -1,5 +1,3 @@
- 
-
 import { expectTypeOf, test } from 'vitest'
 import type * as Schema from '../../../tests/_/schema/generated/modules/SchemaBuildtime.js'
 import type { Index } from '../../../tests/_/schema/generated/modules/SchemaIndex.js'

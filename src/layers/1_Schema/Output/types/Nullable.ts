@@ -12,5 +12,5 @@ export const Nullable = <$Type extends InnerType>(
 ): Nullable<$Type> => ({
   kind: `nullable`,
   // at type level "type" is not a thunk
-  type: type as any,  
+  type: type as any,
 })

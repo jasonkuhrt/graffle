@@ -38,12 +38,12 @@ const document: Document = /* gql */ `
   }
 `
 
-const result = await graffle.rawString({
+const data = await graffle.rawString({
   document,
   variables: { filter: [`Canada`, `Germany`, `Japan`] },
 })
 
-console.log(result.data?.countries)
+console.log(data?.countries)
 ```
 <!-- dprint-ignore-end -->
 
