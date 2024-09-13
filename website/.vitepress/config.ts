@@ -51,7 +51,7 @@ const sidebars = fixTitles(fixLinks(generateSidebar([
   },
 ]) as SidebarMulti))
 
-console.log(sidebars['/guides/'].items[0])
+// console.log(sidebars['/guides/'].items[0])
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
