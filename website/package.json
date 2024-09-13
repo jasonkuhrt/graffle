@@ -20,6 +20,7 @@
     "graffle": "link:..",
     "graphql": "^16.9.0",
     "tsx": "^4.19.0",
-    "typescript": "^5.6.2"
+    "typescript": "^5.6.2",
+    "vitepress-sidebar": "^1.25.3"
   }
 }

@@ -1,3 +1,7 @@
+---
+title: Generated
+---
+
 # Getting Started <Badge text="generated client" />
 
 The following takes you through a simple example to demonstrate how generation works and what it gives you.

@@ -24,6 +24,8 @@ export const generateDocs = async (examples: Example[]) => {
     options: { ignore: [`./website/content/examples/index.md`] },
   })
 
+  await FS.mkdir(`./website/content/examples`, { recursive: true })
+
   await Promise.all(examplesTransformed.map(async (example) => {
     await FS.writeFile(`./website/content/examples/${example.fileName.canonical}.md`, example.file.content)
   }))
@@ -91,9 +93,10 @@ export const generateDocs = async (examples: Example[]) => {
   await Promise.all(
     Object.entries(groups).map(async ([groupName, examples]) => {
       const codeLinks = examples.map(example => {
-        return `[${example.fileName.canonicalTitle}](../../examples/${example.fileName.canonical}.md)`
-      }).join(` / `)
-      const code = `###### Examples -> ${codeLinks}`
+        return `<a href="../../examples/${example.fileName.canonical}">${example.fileName.canonicalTitle}</a>`
+      }).join(` <span class="ExampleLinksSeparator"></span> `)
+      const code =
+        `<p class="ExampleLinks">Examples <span class="ExampleLinksTitleSeparator">-></span> ${codeLinks}</p>`
       await FS.writeFile(`./website/content/guides/_example_links/${groupName}.md`, code)
     }),
   )

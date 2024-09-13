@@ -3,5 +3,7 @@
     "@tsconfig/strictest/tsconfig.json",
     "@tsconfig/node20/tsconfig.json"
   ],
-  "compilerOptions": {}
+  "compilerOptions": {
+    "lib": ["ES2023"]
+  }
 }

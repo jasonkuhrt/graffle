@@ -1,1 +1,1 @@
-###### Examples -> [Envelope Error Throw](../../examples/output-envelope-error-throw.md)
+<p class="ExampleLinks">Examples <span class="ExampleLinksTitleSeparator">-></span> <a href="../../examples/output-envelope-error-throw">Envelope Error Throw</a></p>

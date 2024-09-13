@@ -2,14 +2,26 @@
 
 <!--@include: @/guides/_example_links/extension_opentelemetry.md-->
 
-You can Instrument requests from Graffle with [OpenTelemetry](https://opentelemetry.io) using the `Opentelemetry` extension. Check out the example to get started. You'll also find output there that shows each span created, allowing you to see its parent, attributes, etc.
+The `Opentelemetry` extension instruments requests with [OpenTelemetry](https://opentelemetry.io).
 
-## Dependencies
+## About
 
-Graffle has an optional peer-dependency on `@opentelemetry/api`. To use this extension you'll need to install a compatible version into your project. You'll most likely need a handful of other `@opentelemetry/*` dependencies too. Check out the example for a working demo and some of what those deps might be.
+Check out the example to get started. You'll also find output there that shows each span created, allowing you to see its parent, attributes, etc.
+
+## Getting Started
+
+`Opentelemetry` is a first party extension shipping in the graffle package. You will need to install some peer dependencies though.
+
+Graffle has an optional peer-dependency on `@opentelemetry/api`. You'll need to install a compatible version into your project and likely a handful of other `@opentelemetry/*` dependencies too. Check out the example for a working demo and some of what those deps might be.
 
 ```sh
 pnpm add @opentelemetry/api
+```
+
+```ts
+import { Opentelemetry } from 'graffle/extensions'
+
+const graffle = Graffle.create().use(Opentelemetry())
 ```
 
 ## Span Structure

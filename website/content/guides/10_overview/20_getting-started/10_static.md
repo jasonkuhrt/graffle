@@ -1,3 +1,7 @@
+---
+title: Static
+---
+
 # Getting Started <Badge text="Static Client" />
 
 ## Install Package
