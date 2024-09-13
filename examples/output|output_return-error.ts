@@ -21,8 +21,8 @@ const atlas = Atlas
 //  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 
   })
 
-const result = await atlas.query.continents({ name: true })
-type _result = typeof result
+const continents = await atlas.query.continents({ name: true })
+type _continents = typeof continents
 //   ^?
 
-show(result)
+show(continents)

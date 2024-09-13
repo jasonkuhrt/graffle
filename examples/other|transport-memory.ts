@@ -20,6 +20,6 @@ const schema = new GraphQLSchema({
 
 const graffle = Graffle.create({ schema })
 
-const result = await graffle.rawString({ document: `{ foo }` })
+const data = await graffle.rawString({ document: `{ foo }` })
 
-showJson(result)
+showJson(data)

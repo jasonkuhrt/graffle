@@ -17,8 +17,6 @@ const document = /* gql */ `
   }	
 `
 
-const result = await graffle.rawString({
-  document,
-})
+const data = await graffle.rawString({ document })
 
-show(result.data)
+show(data)

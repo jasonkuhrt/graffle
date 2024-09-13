@@ -12,7 +12,7 @@ const graffle = Graffle.create({
   .use(OrThrow())
   .use(Opentelemetry())
 
-const result = await graffle.raw({
+const data = await graffle.raw({
   document: gql`
     query countries ($filter: [String!]) {
       countries (filter: { name: { in: $filter } }) {
@@ -26,4 +26,4 @@ const result = await graffle.raw({
   variables: { filter: [`Canada`, `Germany`, `Japan`] },
 })
 
-show(result.data)
+show(data)

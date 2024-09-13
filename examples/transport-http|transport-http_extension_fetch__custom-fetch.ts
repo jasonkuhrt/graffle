@@ -19,6 +19,6 @@ const graffle = Graffle
     })
   )
 
-const countries = await graffle.rawString({ document: `{ countries { name } }` })
+const data = await graffle.rawString({ document: `{ countries { name } }` })
 
-showJson(countries.data)
+showJson(data)
