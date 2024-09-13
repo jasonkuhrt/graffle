@@ -41,6 +41,6 @@ You can change the suffix to something else if you prefer. For example:
 import { Graffle } from 'graffle'
 import { OrThrow } from 'graffle/extensions'
 // ---cut---
-const graffle = Graffle.create().use(OrThrow({ suffix: '_' }))
+const graffle = Graffle.create({ schema: '...' }).use(OrThrow({ suffix: '_' }))
 graffle.raw_ // instead of graffle.rawOrThrow
 ```

@@ -29,7 +29,7 @@ const graffle = Graffle.create({
 })
 // ---cut---
 
-const result = await graffle.rawString({
+const data = await graffle.rawString({
   document: `
     query countries ($filter: [String!]) {
       countries (filter: { name: { in: $filter } }) {
@@ -43,7 +43,7 @@ const result = await graffle.rawString({
   variables: { filter: [`Canada`, `Germany`, `Japan`] },
 })
 
-console.log(result.data)
+console.log(data)
 //          ^?
 ```
 

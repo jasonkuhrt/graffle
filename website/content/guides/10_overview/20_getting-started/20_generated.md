@@ -62,10 +62,10 @@ Now you're ready to send a request (run e.g. `pnpm tsx main.ts`). Before getting
 import { Graffle } from './graffle/__.js'
 const graffle = Graffle.create()
 // ---cut---
-const result = await graffle.rawString({
+const data = await graffle.rawString({
   document: `query { continents { name } }`,
 })
-console.log(result.data)
+console.log(data)
 ```
 
 <!-- dprint-ignore -->
