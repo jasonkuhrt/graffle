@@ -28,7 +28,6 @@ export const generateOutputs = async () => {
   ])
 
   await Promise.all(exampleFiles.map(async (file) => {
-    console.log(file.path.full)
     const content = await runExample(file.path.full)
 
     const dirPathWithinExamples = Path.dirname(file.path.full.replace(directories.examples, ``))

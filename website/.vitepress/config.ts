@@ -61,7 +61,7 @@ const sidebars = fixTitles(fixLinks(generateSidebar([
   },
 ]) as SidebarMulti))
 
-// console.log(sidebars['/guides/'].items[0])
+console.log(sidebars['/examples/'].items[0])
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -70,9 +70,9 @@ export default defineConfig({
    */
   // dprint-ignore
   rewrites: {
-    'guides/{:_(\\d+_)}?:one/{:_(\\d+_)}?:two/{:_(\\d+_)}?:three'   : 'guides/:one/:two/:three',
-    'guides/{:_(\\d+_)}?:one/{:_(\\d+_)}?:two'                      : 'guides/:one/:two',
-    'guides/{:prefixOne(\\d+_)}?:one'                               : 'guides/:one'
+    ':section/{:_(\\d+_)}?:one/{:_(\\d+_)}?:two/{:_(\\d+_)}?:three'   : ':section/:one/:two/:three',
+    ':section/{:_(\\d+_)}?:one/{:_(\\d+_)}?:two'                      : ':section/:one/:two',
+    ':section/{:prefixOne(\\d+_)}?:one'                               : ':section/:one'
   },
   title: 'Graffle',
   description: 'Minimalist Progressively Type Safe GraphQL Client For JavaScript.',

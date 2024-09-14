@@ -4,15 +4,16 @@ import { deleteFiles } from '../lib/deleteFiles.js'
 import { getOutputFilePathFromExampleFilePath } from './generate-outputs.js'
 import { directories, type Example } from './helpers.js'
 
+const encodedOutputExtension = `.output.test.txt`
 export const generateTests = async (examples: Example[]) => {
   // Handle case of renaming or deleting examples.
   await Promise.all([
-    deleteFiles({ pattern: `${directories.outputs}/*/*.output.test.txt` }),
+    deleteFiles({ pattern: `${directories.outputs}/*/*${encodedOutputExtension}` }),
     deleteFiles({ pattern: `${directories.tests}/*.test.ts` }),
   ])
 
   await Promise.all(examples.map(async (example) => {
-    const dir = Path.join(directories.tests, example.group)
+    const dir = Path.join(directories.tests, example.group.dirName)
     const outputFilePath = getOutputFilePathFromExampleFilePath(example.file.path.full).replace(
       `.txt`,
       example.output.encoder ? `.test.txt` : `.txt`,

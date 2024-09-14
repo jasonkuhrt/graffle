@@ -24,14 +24,18 @@ export const generateDocs = async (examples: Example[]) => {
   })
 
   {
-    const groups = Object.entries(groupBy(examplesTransformed, example => example.group))
+    const groups = Object.values(groupBy(examplesTransformed, example => example.group.dirName))
 
     await Promise.all(
-      groups.map(async ([groupName, examples]) => {
+      groups.map(async (examples) => {
+        const groupName = examples[0]!.group.dirName
         await FS.mkdir(`./website/content/examples/${groupName}`, { recursive: true })
         await Promise.all(examples.map(async (example) => {
-          const exampleMarkdownFilePath = `./website/content/examples/${groupName}/${example.fileName.canonical}.md`
+          console.log(example.fileName.canonical)
+          const exampleMarkdownFilePath =
+            `./website/content/examples/${example.group.dirName}/${example.fileName.canonical}.md`
           await FS.writeFile(exampleMarkdownFilePath, example.file.content)
+          console.log(`Generated example doc in markdown at`, exampleMarkdownFilePath)
         }))
       }),
     )
@@ -89,11 +93,11 @@ export const generateDocs = async (examples: Example[]) => {
 const transformRewriteGraffleImports = (example: Example) => {
   const newContent = example.file.content
     .replaceAll(
-      /from '\.\.\/src\/entrypoints\/main.js'/g,
+      /from '.*entrypoints\/main.js'/g,
       `from 'graffle'`,
     )
     .replaceAll(
-      /from '\.\.\/src\/entrypoints\/(.*?).js'/g,
+      /from '.*entrypoints\/(.*?).js'/g,
       `from 'graffle/$1'`,
     )
     .replaceAll(
@@ -105,7 +109,7 @@ const transformRewriteGraffleImports = (example: Example) => {
       `import { Graffle as Atlas } from './graffle/__.js'`,
     )
     .replaceAll(
-      /import ({[^}]+}) from '.\/\$\/generated-clients\/([^/]+)\/__\.js'/g,
+      /import ({[^}]+}) from '.*\/generated-clients\/([^/]+)\/__\.js'/g,
       `// ---cut---
 import $1 from '../$2/__.js'`,
     )

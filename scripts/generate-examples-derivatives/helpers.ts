@@ -35,8 +35,8 @@ export const readExamples = async (): Promise<Example[]> => {
   const encoderFilePaths = await globby(`${directories.outputs}/**/*${outputEncoderExtension}`)
 
   const examples = exampleFiles.map((example) => {
-    const group = example.path.dir.split(`/`).pop()!
-    const fileName = parseFileName(example.name, group)
+    const group = parseGroup(example.path.full)
+    const fileName = parseFileName(example.name, group.humanName)
 
     const outputFilePath = getOutputFilePathFromExampleFilePath(example.path.full)
     const outputEncoderFilePath = getOutputEncoderFilePathFromExampleFilePath(example.path.full)
@@ -76,6 +76,15 @@ export const readExamples = async (): Promise<Example[]> => {
   return examples
 }
 
+const parseGroup = (filePath: string) => {
+  const dirName = Path.dirname(filePath).split(`/`).pop()!
+  const humanName = dirName.replace(/^\d+_/, ``)
+  return {
+    dirName,
+    humanName,
+  }
+}
+
 const parseFileName = (fileName: string, group: string): Example['fileName'] => {
   const fileNameWithoutGroup = fileName
   const [tagsExpression, titleExpression] = fileNameWithoutGroup.split(`__`)
@@ -109,7 +118,10 @@ export interface Example {
     tags: string
     title: string | null
   }
-  group: string
+  group: {
+    humanName: string
+    dirName: string
+  }
   output: {
     file: File
     blocks: string[]
