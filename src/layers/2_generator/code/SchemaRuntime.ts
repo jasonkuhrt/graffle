@@ -39,7 +39,7 @@ export const { generate: generateRuntimeSchema, moduleName: moduleNameSchemaRunt
     code.push(
       `
       import * as $ from '${config.libraryPaths.schema}'
-      import * as $Scalar from './${moduleNameScalar}.js'
+      import * as $Scalar from '../${moduleNameScalar}.js'
     `,
     )
 

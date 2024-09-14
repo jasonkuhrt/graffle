@@ -3,7 +3,6 @@ import { capitalize } from 'es-toolkit'
 import { ModuleKind, ModuleResolutionKind } from 'typescript'
 import { defineConfig } from 'vitepress'
 import { generateSidebar, Sidebar, SidebarItem, SidebarMulti, SidebarMultiItem } from 'vitepress-sidebar'
-import { sidebarExamples } from './configExamples'
 
 const prefixPattern = /\d+_/g
 
@@ -39,7 +38,18 @@ const sidebars = fixTitles(fixLinks(generateSidebar([
   {
     scanStartPath: 'content/guides',
     resolvePath: '/guides/',
-    excludeFolders: ['_example_links'],
+    // collapsed: false,
+    // capitalizeEachWords: true,
+    // hyphenToSpace: true,
+    prefixSeparator: '_',
+    removePrefixAfterOrdering: true,
+    useTitleFromFrontmatter: true,
+    useTitleFromFileHeading: true,
+    keepMarkdownSyntaxFromTitle: true,
+  },
+  {
+    scanStartPath: 'content/examples',
+    resolvePath: '/examples/',
     // collapsed: false,
     // capitalizeEachWords: true,
     // hyphenToSpace: true,
@@ -118,10 +128,6 @@ export default defineConfig({
       { text: 'Examples', link: '/examples' },
     ],
     sidebar: {
-      '/examples/': [
-        { text: 'Introduction', link: 'examples/index' },
-        ...sidebarExamples,
-      ],
       ...sidebars,
     },
     socialLinks: [

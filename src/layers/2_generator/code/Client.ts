@@ -8,7 +8,7 @@ export const { generate: generateClient, moduleName: moduleNameClient } = create
 
     code.push(
       `import { createPrefilled } from '${config.libraryPaths.client}'`,
-      `import { $defaultSchemaUrl, $Index } from './${moduleNameSchemaRuntime}.js'`,
+      `import { $defaultSchemaUrl, $Index } from '../${moduleNameSchemaRuntime}.js'`,
       ``,
       `export const create = createPrefilled(\`${config.name}\`, $Index, $defaultSchemaUrl)`,
     )

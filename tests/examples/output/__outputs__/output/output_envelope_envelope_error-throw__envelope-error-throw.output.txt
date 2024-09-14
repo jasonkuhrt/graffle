@@ -1,0 +1,20 @@
+
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/some/path/to/output_envelope_envelope_error-throw__envelope-error-throw.ts' imported from /Users/jasonkuhrt/projects/jasonkuhrt/graffle/
+    at finalizeResolution (node:internal/modules/esm/resolve:XX:XX)
+    at moduleResolve (node:internal/modules/esm/resolve:XX:XX)
+    at defaultResolve (node:internal/modules/esm/resolve:XX:XX)
+    at nextResolve (node:internal/modules/esm/hooks:XX:XX)
+    at resolveBase (file:///Users/jasonkuhrt/projects/jasonkuhrt/graffle/node_modules/.pnpm/tsx@4.19.1/node_modules/tsx/dist/esm/index.mjs?1726353752236:XX:XX)
+    at resolveDirectory (file:///Users/jasonkuhrt/projects/jasonkuhrt/graffle/node_modules/.pnpm/tsx@4.19.1/node_modules/tsx/dist/esm/index.mjs?1726353752236:XX:XX)
+    at resolveTsPaths (file:///Users/jasonkuhrt/projects/jasonkuhrt/graffle/node_modules/.pnpm/tsx@4.19.1/node_modules/tsx/dist/esm/index.mjs?1726353752236:XX:XX)
+    at resolve (file:///Users/jasonkuhrt/projects/jasonkuhrt/graffle/node_modules/.pnpm/tsx@4.19.1/node_modules/tsx/dist/esm/index.mjs?1726353752236:XX:XX)
+    at nextResolve (node:internal/modules/esm/hooks:XX:XX)
+    at Hooks.resolve (node:internal/modules/esm/hooks:XX:XX) {
+  code: 'ERR_MODULE_NOT_FOUND',
+  url: 'file:/some/path/to/output_envelope_envelope_error-throw__envelope-error-throw.ts'
+}
+
+Node.js vXX.XX.XX

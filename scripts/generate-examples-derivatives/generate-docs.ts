@@ -1,9 +1,8 @@
 import { groupBy } from 'es-toolkit'
 import * as FS from 'node:fs/promises'
-import { type DefaultTheme } from 'vitepress'
 import { documentQueryContinents, publicGraphQLSchemaEndpoints } from '../../examples/$/helpers.js'
 import { deleteFiles } from '../lib/deleteFiles.js'
-import { computeCombinations, type Example, toTitle } from './helpers.js'
+import { computeCombinations, type Example } from './helpers.js'
 
 export const generateDocs = async (examples: Example[]) => {
   const examplesTransformed = examples
@@ -20,48 +19,22 @@ export const generateDocs = async (examples: Example[]) => {
 
   // Delete all existing to handle case of renaming or deleting examples.
   await deleteFiles({
-    pattern: `./website/content/examples/*.md`,
+    pattern: `./website/content/examples/**/*`,
     options: { ignore: [`./website/content/examples/index.md`] },
   })
 
-  await FS.mkdir(`./website/content/examples`, { recursive: true })
-
-  await Promise.all(examplesTransformed.map(async (example) => {
-    await FS.writeFile(`./website/content/examples/${example.fileName.canonical}.md`, example.file.content)
-  }))
-
-  /**
-   * Update Examples Sidebar
-   * -----------------------
-   */
-
   {
-    const groups = groupBy(examplesTransformed, example => example.fileName.group ?? `ungrouped`)
-    const sidebarExamples = Object.entries(groups).flatMap(
-      ([groupName, example]): DefaultTheme.SidebarItem[] => {
-        if (groupName === `ungrouped`) {
-          return example.map(example => ({
-            text: example.fileName.canonicalTitle,
-            link: `/examples/${example.fileName.canonical}`,
-          }))
-        }
-        return [{
-          text: toTitle(groupName),
-          items: example.map(example => ({
-            text: example.fileName.canonicalTitle,
-            link: `/examples/${example.fileName.canonical}`,
-          })),
-        }]
-      },
-    ).sort((a) => a.items ? 1 : -1)
+    const groups = Object.entries(groupBy(examplesTransformed, example => example.group))
 
-    const code = `
- import { DefaultTheme } from 'vitepress'
-
- export const sidebarExamples:DefaultTheme.SidebarItem[] = ${JSON.stringify(sidebarExamples, null, 2)}
-`
-
-    await FS.writeFile(`./website/.vitepress/configExamples.ts`, code)
+    await Promise.all(
+      groups.map(async ([groupName, examples]) => {
+        await FS.mkdir(`./website/content/examples/${groupName}`, { recursive: true })
+        await Promise.all(examples.map(async (example) => {
+          const exampleMarkdownFilePath = `./website/content/examples/${groupName}/${example.fileName.canonical}.md`
+          await FS.writeFile(exampleMarkdownFilePath, example.file.content)
+        }))
+      }),
+    )
   }
 
   console.log(`Generated a Vitepress page for each example.`)
@@ -128,13 +101,13 @@ const transformRewriteGraffleImports = (example: Example) => {
       ``,
     )
     .replaceAll(
-      `import { Atlas } from './$/generated-clients/atlas/__.js'`,
+      `import { Atlas } from '../$/generated-clients/atlas/__.js'`,
       `import { Graffle as Atlas } from './graffle/__.js'`,
     )
     .replaceAll(
       /import ({[^}]+}) from '.\/\$\/generated-clients\/([^/]+)\/__\.js'/g,
       `// ---cut---
-import $1 from './$2/__.js'`,
+import $1 from '../$2/__.js'`,
     )
     // Any remaining $ imports are entirely removed.
     .replaceAll(/import.*'.*\$.*'\n/g, ``)
