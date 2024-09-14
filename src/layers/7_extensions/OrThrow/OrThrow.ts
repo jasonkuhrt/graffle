@@ -18,29 +18,21 @@ export const OrThrow = <const $Input extends Input>(input?: $Input) => {
 
       // todo redesign input to allow to force throw always
       // todo pull pre-configured config from core
-      const graffleConfig: WithInput = {
+      const orThrowifiedInput: WithInput = {
         output: {
           envelope: {
             enabled: client.internal.config.output.envelope.enabled,
-            errors: {
-              execution: false,
-              other: false,
-              // @ts-expect-error
-              schema: false,
-            },
-          },
-          errors: {
-            execution: `throw`,
-            other: `throw`,
             // @ts-expect-error
-            schema: `throw`,
+            errors: { execution: false, other: false, schema: false },
           },
+          // @ts-expect-error
+          errors: { execution: `throw`, other: `throw`, schema: `throw` },
         },
       }
 
       return (...args: [...unknown[]]) => {
         const redirectedPath = [...path, property.slice(0, config.suffix.length * -1)]
-        const clientReconfigured = client.with(graffleConfig)
+        const clientReconfigured = client.with(orThrowifiedInput)
         const value = getValueAtPath(clientReconfigured, redirectedPath)
         const valueType = typeof value
         if (valueType !== `function`) {
@@ -63,7 +55,8 @@ interface OrThrowExtension<$Input extends Config> extends Extension {
   >
 }
 
-// todo this changed, check tests, add new tests as needed.
-// dprint-ignore
-export type OrThrowifyConfig<$BuilderConfig extends BuilderConfig> =
-  ConfigManager.Set<$BuilderConfig, ['output', 'errors'], { other: 'throw', execution: 'throw', schema: 'throw' }>
+type OrThrowifyConfig<$BuilderConfig extends BuilderConfig> = ConfigManager.Set<
+  $BuilderConfig,
+  ['output', 'errors'],
+  { other: 'throw'; execution: 'throw'; schema: 'throw' }
+>
