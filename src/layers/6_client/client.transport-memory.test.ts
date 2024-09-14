@@ -5,7 +5,7 @@ import { Graffle } from '../../entrypoints/main.js'
 import { Transport } from '../5_core/types.js'
 
 test(`anyware hooks are typed to memory transport`, () => {
-  Graffle.create({ schema }).use(async ({ encode }) => {
+  Graffle.create({ schema }).anyware(async ({ encode }) => {
     expectTypeOf(encode.input.transport).toEqualTypeOf(Transport.memory)
     const { pack } = await encode()
     expectTypeOf(pack.input.transport).toEqualTypeOf(Transport.memory)

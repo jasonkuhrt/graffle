@@ -3,7 +3,7 @@ import type { Simplify } from 'type-fest'
 import type { ConditionalSimplify } from 'type-fest/source/conditional-simplify.js'
 import { Errors } from '../../lib/errors/__.js'
 import type { GraphQLExecutionResultError } from '../../lib/graphql.js'
-import { isPlainObject, type SimplifyExceptError, type Values } from '../../lib/prelude.js'
+import { isRecordLikeObject, type SimplifyExceptError, type Values } from '../../lib/prelude.js'
 import type { Schema } from '../1_Schema/__.js'
 import { Transport } from '../5_core/types.js'
 import type { Context, ErrorsOther, GraffleExecutionResultVar, TypedContext } from './client.js'
@@ -71,7 +71,7 @@ export const handleOutput = (
   {
     if (isTypedContext(context)) {
       if (c.errors.schema !== false) {
-        if (!isPlainObject(result.data)) throw new Error(`Expected data to be an object.`)
+        if (!isRecordLikeObject(result.data)) throw new Error(`Expected data to be an object.`)
         const schemaErrors = Object.entries(result.data).map(([rootFieldName, rootFieldValue]) => {
           // todo this check would be nice but it doesn't account for aliases right now. To achieve this we would
           // need to have the selection set available to use and then do a costly analysis for all fields that were aliases.
@@ -80,7 +80,7 @@ export const handleOutput = (
           // const isResultField = Boolean(schemaIndex.error.rootResultFields.Query[rootFieldName])
           // if (!isResultField) return null
           // if (!isPlainObject(rootFieldValue)) return new Error(`Expected result field to be an object.`)
-          if (!isPlainObject(rootFieldValue)) return null
+          if (!isRecordLikeObject(rootFieldValue)) return null
           const __typename = rootFieldValue[`__typename`]
           if (typeof __typename !== `string`) throw new Error(`Expected __typename to be selected and a string.`)
           const isErrorObject = Boolean(
@@ -126,6 +126,27 @@ const isAbortError = (error: any): error is DOMException & { name: 'AbortError' 
 }
 
 const isTypedContext = (context: Context): context is TypedContext => `schemaIndex` in context
+
+// dprint-ignore
+export type RawResolveOutputReturnRootType<$Config extends Config, $Data> =
+  SimplifyExceptError<
+   | IfConfiguredGetOutputErrorReturns<$Config>
+   | (
+        $Config['output']['envelope']['enabled'] extends true
+          // todo even when envelope is enabled, its possible errors can not be included in its output.
+          // When not, undefined should be removed from the data property.
+          ? Envelope<$Config, $Data>
+          // Note 1
+          // `undefined` is not a possible type because that would only happen if an error occurred.
+          // If an error occurs when the envelope is disabled then either it throws or is returned.
+          // No case swallows the error and returns undefined data.
+          //
+          // Note 2
+          // null is possible because of GraphQL null propagation.
+          // todo We need to integrate this reality into the the other typed non-envelope output types too. 
+          : $Data | null
+     )
+ >
 
 // dprint-ignore
 export type ResolveOutputReturnRootType<$Config extends Config, $Index extends Schema.Index, $Data> =
@@ -204,14 +225,14 @@ export type Envelope<$Config extends Config, $Data = unknown, $Errors extends Re
     & (
         $Config['transport']['type'] extends 'http'
         ? { response: Response }
-        : {} // eslint-disable-line
+        : {}  
       )
       // todo remove use of errors type variable. Rely only on $Config.
     & (
         $Errors extends []
-        ? {} // eslint-disable-line
+        ? {}  
         : IsEnvelopeWithoutErrors<$Config> extends true
-        ? {} // eslint-disable-line
+        ? {}  
         : {
             errors?: ReadonlyArray<GraphQLError>
           }

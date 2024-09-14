@@ -9,7 +9,7 @@ export * from './types/Nullable.js'
 export const field = <$Type extends Any>(type: MaybeThunk<$Type>): Field<$Type> => {
   return {
     // Thunks do not exist at the type level
-    type: type as any, // eslint-disable-line
+    type: type as any,
   }
 }
 

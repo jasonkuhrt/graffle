@@ -23,14 +23,15 @@ const generate = async (
     outputDirPath: join(sourceDirPath, `/generated`),
     code: {
       libraryPaths: {
-        client: `../../../../src/entrypoints/client.js`,
-        schema: `../../../../src/entrypoints/schema.js`,
-        scalars: `../../../../src/layers/1_Schema/Hybrid/types/Scalar/Scalar.js`,
+        client: `../../../../../src/entrypoints/client.js`,
+        schema: `../../../../../src/entrypoints/schema.js`,
+        scalars: `../../../../../src/layers/1_Schema/Hybrid/types/Scalar/Scalar.js`,
       },
     },
     name: input.name,
     ...input.options,
   })
+  console.log(`generated at`, sourceDirPath)
 }
 
 await generate({

@@ -1,1 +1,1 @@
-###### Examples -> [Custom Fetch](../../examples/transport-http-custom-fetch.md) / [Dynamic Headers](../../examples/transport-http-dynamic-headers.md)
+<p class="ExampleLinks">Examples <span class="ExampleLinksTitleSeparator">-></span> <a href="../../examples/transport-http-custom-fetch">Custom Fetch</a> <span class="ExampleLinksSeparator"></span> <a href="../../examples/transport-http-dynamic-headers">Dynamic Headers</a></p>

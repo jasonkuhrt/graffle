@@ -9,7 +9,7 @@ import type { CoreExchangeGetRequest, CoreExchangePostRequest } from './transpor
 const schema = new URL(`https://foo.io/api/graphql`)
 
 test(`anyware hooks are typed to http transport`, () => {
-  Graffle.create({ schema }).use(async ({ encode }) => {
+  Graffle.create({ schema }).anyware(async ({ encode }) => {
     expectTypeOf(encode.input.transport).toEqualTypeOf(Transport.http)
     const { pack } = await encode()
     expectTypeOf(pack.input.transport).toEqualTypeOf(Transport.http)

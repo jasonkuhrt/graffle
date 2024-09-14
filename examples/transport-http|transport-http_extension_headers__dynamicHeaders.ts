@@ -9,7 +9,7 @@ const graffle = Graffle
   .create({
     schema: publicGraphQLSchemaEndpoints.Atlas,
   })
-  .use(async ({ pack }) => {
+  .anyware(async ({ pack }) => {
     return await pack({
       input: {
         ...pack.input,
@@ -19,7 +19,7 @@ const graffle = Graffle
       },
     })
   })
-  .use(async ({ exchange }) => {
+  .anyware(async ({ exchange }) => {
     // todo wrong type / runtime value
     show(exchange.input.request)
     return exchange()

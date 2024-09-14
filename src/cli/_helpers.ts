@@ -11,13 +11,13 @@ export const introspectionQuery = async (endpoint: URL): Promise<IntrospectionQu
     inputValueDeprecation: true,
   }) as TypedDocumentString<IntrospectionQuery>
 
-  const result = await Graffle.create({ schema: endpoint }).rawStringOrThrow({
+  const data = await Graffle.create({ schema: endpoint }).rawString({
     document: introspectionQueryDocument,
   })
 
-  if (!result.data) {
+  if (!data) {
     throw new Error(`No data returned for introspection query.`)
   }
 
-  return result.data
+  return data
 }

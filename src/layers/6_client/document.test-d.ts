@@ -72,22 +72,3 @@ describe(`document(...).run()`, () => {
     expectTypeOf(result).resolves.toEqualTypeOf<{ id: string | null }>()
   })
 })
-
-describe(`document(...).runOrThrow()`, () => {
-  describe(`query result field`, () => {
-    test(`with __typename`, () => {
-      const result = graffle.document({ x: { query: { resultNonNull: { __typename: true } } } }).runOrThrow()
-      expectTypeOf(result).resolves.toEqualTypeOf<{ resultNonNull: { __typename: 'Object1' } }>()
-    })
-    test(`without __typename`, () => {
-      const result = graffle.document({ x: { query: { resultNonNull: {} } } }).runOrThrow()
-      expectTypeOf(result).resolves.toEqualTypeOf<{ resultNonNull: { __typename: 'Object1' } }>()
-    })
-    test(`multiple via alias`, () => {
-      const result = graffle.document({ x: { query: { resultNonNull: {}, resultNonNull_as_x: {} } } }).runOrThrow()
-      expectTypeOf(result).resolves.toEqualTypeOf<
-        { resultNonNull: { __typename: 'Object1' }; x: { __typename: 'Object1' } }
-      >()
-    })
-  })
-})

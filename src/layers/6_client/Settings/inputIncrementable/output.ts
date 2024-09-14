@@ -50,5 +50,5 @@ export type OutputInput<$Context extends IncrementableInputContext> =
             schema?: false | OutputChannelConfig
           }
         }
-      : {} // eslint-disable-line
+      : {}  
     )

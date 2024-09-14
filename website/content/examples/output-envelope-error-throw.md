@@ -10,19 +10,21 @@ This example shows how to configure output to throw errors even when using the e
 ```ts twoslash
 import { Graffle as Atlas } from './graffle/__.js'
 
-const atlas = Atlas.create({
-  output: {
-    envelope: {
-      errors: {
-        execution: false,
-        other: false, // default
-      }
+const atlas = Atlas
+  .create({
+    output: {
+      envelope: {
+        errors: {
+          execution: false,
+          other: false, // default
+        }
+      },
     },
-  },
-}).use(({ encode: _ }) => {
-  throw new Error(`Something went wrong.`)
-//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-})
+  })
+  .anyware(({ encode: _ }) => {
+    throw new Error(`Something went wrong.`)
+  //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  })
 
 await atlas.query.continents({ name: true })
 ```

@@ -12,9 +12,9 @@ import { Graffle as Atlas } from './graffle/__.js'
 
 const atlas = Atlas.create()
 
-const result = await atlas.query.continents({ name: true })
+const continents = await atlas.query.continents({ name: true })
 
-console.log(result)
+console.log(continents)
 ```
 <!-- dprint-ignore-end -->
 

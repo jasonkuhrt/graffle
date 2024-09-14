@@ -15,7 +15,7 @@ const graffle = Graffle
       },
     },
   })
-  .use(async ({ exchange }) => {
+  .anyware(async ({ exchange }) => {
     show(exchange.input.request)
     return exchange()
   })

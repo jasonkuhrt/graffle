@@ -4,7 +4,7 @@ import { test } from '../../../tests/_/helpers.js'
 import { Graffle } from '../../../tests/_/schema/generated/__.js'
 import { schema } from '../../../tests/_/schema/schema.js'
 import type { TypedDocumentString } from '../0_functions/types.js'
-import type { Envelope } from './handleOutput.js'
+import type { Envelope, RawResolveOutputReturnRootType } from './handleOutput.js'
 
 const g = Graffle.create({ schema })
 
@@ -16,9 +16,8 @@ describe(`TypedDocumentString with just data (no variables)`, () => {
   ` as TypedDocumentString<{ id: string }, {}>
 
   test(`envelope data is typed`, () => {
-    // todo is it correct that result.data could be null or undefined?
     expectTypeOf(g.rawString({ document })).resolves.toEqualTypeOf<
-      Envelope<typeof g.internal.config, { id: string }>
+      RawResolveOutputReturnRootType<typeof g.internal.config, { id: string }>
     >()
   })
   test('variables are not allowed to be passed in', () => {
@@ -36,7 +35,7 @@ describe(`TypedQueryDocumentNode with data and optional variables`, () => {
 
   // dprint-ignore
   test(`envelope data is typed`, () => {
-    expectTypeOf(g.rawString({ document })).resolves.toEqualTypeOf<Envelope<typeof g.internal.config, { id: string }>>()
+    expectTypeOf(g.rawString({ document })).resolves.toEqualTypeOf<RawResolveOutputReturnRootType<typeof g.internal.config, { id: string }>>()
   })
   test('variables are typed and allowed to be passed in or omitted', () => {
     // Expect no type errors below

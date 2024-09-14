@@ -9,7 +9,7 @@ export const createResponse = (body: object) =>
 
 interface Fixtures {
   fetch: Mock<(request: Request) => Promise<Response>>
-  graffle: Client<any, any>
+  graffle: Client<any, any, any>
 }
 
 export const test = testBase.extend<Fixtures>({

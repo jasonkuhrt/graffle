@@ -1,5 +1,6 @@
-import type { Simplify } from 'type-fest'
+import type { IsUnknown, Simplify } from 'type-fest'
 import type { ConditionalSimplify, ConditionalSimplifyDeep } from 'type-fest/source/conditional-simplify.js'
+import type { IsPlainObject } from 'type-fest/source/internal/object.js'
 
 /* eslint-disable */
 export type RemoveIndex<T> = {
@@ -84,7 +85,7 @@ export const casesExhausted = (value: never): never => {
   throw new Error(`Unhandled case: ${String(value)}`)
 }
 
-export const isPlainObject = (value: unknown): value is Record<string, unknown> => {
+export const isRecordLikeObject = (value: unknown): value is Record<string, unknown> => {
   return typeof value === `object` && value !== null && !Array.isArray(value)
 }
 
@@ -341,14 +342,16 @@ export namespace ConfigManager {
 
   export type ReadOrDefault<$Obj, $Path extends Path, $Default> = OrDefault<Read<$Obj, $Path>, $Default>
 
-  export type OrDefault<$Value, $Default> = $Value extends undefined ? $Default : $Value
+  export type OrDefault<$Value, $Default> = IsUnknown<$Value> extends true ? $Default
+    : $Value extends undefined ? $Default
+    : $Value
 
   // dprint-ignore
   export type Read<$Value, $Path extends [...string[]]> =
-		$Value extends undefined ? undefined
+  $Value extends undefined ? undefined
   : $Path extends [infer P1 extends string, ...infer PN extends string[]] ?
-			$Value extends object ?	P1 extends keyof $Value ? Read<$Value[P1], PN> : undefined
-														: undefined
+   $Value extends object ?	P1 extends keyof $Value ? Read<$Value[P1], PN> : undefined
+              : undefined
   : $Value
 
   export type SetProperty<$Obj extends object, $Prop extends keyof $Obj, $Type extends $Obj[$Prop]> =
@@ -410,3 +413,65 @@ export const throwNull = <V>(value: V): Exclude<V, null> => {
   if (value === null) throw new Error('Unexpected null value.')
   return value as Exclude<V, null>
 }
+
+export const proxyGet = <$Target>(
+  target: $Target,
+  handler: (input: { property: string; path: string[] }) => unknown,
+  path: string[] = [],
+): $Target => {
+  return new Proxy(target, {
+    get: (target: any, property: string, receiver: any) => {
+      const value = Reflect.get(target, property, receiver)
+
+      if (isRecordLikeObject(value)) {
+        return proxyGet(value, handler, [...path, property])
+      }
+
+      return handler({ property, path }) ?? Reflect.get(target, property, receiver)
+    },
+  })
+}
+
+type PathToValue<T, Path extends readonly string[]> = Path extends [infer First, ...infer Rest]
+  ? First extends keyof T ? Rest extends string[] ? PathToValue<T[First], Rest>
+    : never
+  : never
+  : T
+
+export const getValueAtPath = <T, Path extends readonly string[]>(
+  obj: T,
+  path: Path,
+): PathToValue<T, Path> | undefined => {
+  return path.reduce<any>((acc, key) => acc?.[key], obj)
+}
+
+export type SuffixKeyNames<$Suffix extends string, $Object extends object> = {
+  [$Key in keyof $Object & string as `${$Key}${$Suffix}`]: $Object[$Key]
+}
+
+// dprint-ignore
+export type SuffixMethodsDeep<$Suffix extends string, $Object> = {
+  [
+    $Key in keyof $Object & string
+    as $Object[$Key] extends AnyFunction
+      ? `${$Key}${$Suffix}`
+      : $Key
+  ]:
+    IsPlainObject<$Object[$Key]> extends true
+      ? SuffixMethodsDeep<$Suffix, $Object[$Key]>
+      : $Object[$Key]
+}
+
+type AnyFunction = (...args: any[]) => any
+
+type _test = SimplifyDeep<
+  SuffixMethodsDeep<'Foo', {
+    a: () => void
+    b: {
+      c: () => void
+      d: {
+        e: () => void
+      }
+    }
+  }>
+>

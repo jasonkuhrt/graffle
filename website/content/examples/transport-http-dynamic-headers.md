@@ -14,7 +14,7 @@ const graffle = Graffle
   .create({
     schema: `https://countries.trevorblades.com/graphql`,
   })
-  .use(async ({ pack }) => {
+  .anyware(async ({ pack }) => {
     return await pack({
       input: {
         ...pack.input,
@@ -24,7 +24,7 @@ const graffle = Graffle
       },
     })
   })
-  .use(async ({ exchange }) => {
+  .anyware(async ({ exchange }) => {
     // todo wrong type / runtime value
     console.log(exchange.input.request)
     return exchange()
@@ -43,7 +43,7 @@ await graffle.rawString({ document: `{ languages { code } }` })
   headers: Headers {
     accept: 'application/graphql-response+json; charset=utf-8, application/json; charset=utf-8',
     'content-type': 'application/json',
-    'x-sent-at-time': '1726068743905'
+    'x-sent-at-time': '1726346409373'
   },
   signal: undefined,
   method: 'post',

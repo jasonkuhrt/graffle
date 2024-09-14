@@ -45,15 +45,15 @@
 
 .VPContent h6 {
 	opacity: 0.6;
-	font-size: 0.6rem;
-	text-transform: uppercase;
-	font-weight: 900;	
+	font-size: 0.7rem;
+	/* text-transform: uppercase; */
+	/* font-weight: 900;	 */
 }
 
 .VPContent h6 a {
 	opacity: 0.6;
-	font-size: 0.6rem;
-	text-transform: uppercase;
+	/* font-size: 0.6rem; */
+	/* text-transform: uppercase; */
 	font-weight: 900;	
 }
 
@@ -118,4 +118,25 @@
 
 #graffle-warning-message a {
 	text-decoration: underline;
+}
+
+/* Example Links */
+.ExampleLinks {
+	opacity: 0.6;
+	font-size: 0.7rem;
+}
+
+.ExampleLinksSeparator {
+
+	display: inline-block;
+	margin: auto 0.25rem;
+}
+
+.ExampleLinksSeparator:before {
+	content: '•'
+}
+
+.ExampleLinksTitleSeparator {
+	display: inline-block;
+	margin: auto 0.25rem;
 }

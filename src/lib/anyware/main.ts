@@ -80,7 +80,7 @@ type Hook<
   & (<$$Input extends $HookMap[$Name]['input']>(
     input?: {
       input?: $$Input
-    } & (keyof $HookMap[$Name]['slots'] extends never ? {} : { using?: SlotInputify<$HookMap[$Name]['slots']> }), // eslint-disable-line
+    } & (keyof $HookMap[$Name]['slots'] extends never ? {} : { using?: SlotInputify<$HookMap[$Name]['slots']> }),
   ) => HookReturn<$HookSequence, $HookMap, $Result, $Name, $Options>)
   & {
     [hookSymbol]: HookSymbol
@@ -224,7 +224,7 @@ const createPassthrough = (hookName: string) => async (hookEnvelope: SomeHookEnv
   if (!hook) {
     throw new Errors.ContextualError(`Hook not found in hook envelope`, { hookName })
   }
-  return await hook({ input: hook.input }) // eslint-disable-line
+  return await hook({ input: hook.input })
 }
 
 type Config = Required<Options>
@@ -352,7 +352,7 @@ const toInternalExtension = (core: Core, config: Config, extension: ExtensionInp
       const passthroughs = hooksBeforeEntrypoint.map((hookName) => createPassthrough(hookName))
       let currentChunkPromiseChain = currentChunk.promise
       for (const passthrough of passthroughs) {
-        currentChunkPromiseChain = currentChunkPromiseChain.then(passthrough) // eslint-disable-line
+        currentChunkPromiseChain = currentChunkPromiseChain.then(passthrough)
       }
       void currentChunkPromiseChain.then(applyBody)
 

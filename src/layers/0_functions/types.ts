@@ -31,7 +31,7 @@ type GetVariablesInputFromString<$Document extends TypedDocumentString> =
     ? HasRequiredKeys<VariablesOf<$Document>> extends true
       ? { variables: VariablesOf<$Document> }
       : { variables?: VariablesOf<$Document> }
-    : {} // eslint-disable-line
+    : {}
 
 // dprint-ignore
 type GetVariablesInputFromDocumentNode<$Document extends TypedQueryDocumentNode> =
@@ -39,7 +39,7 @@ type GetVariablesInputFromDocumentNode<$Document extends TypedQueryDocumentNode>
     ? HasRequiredKeys<VariablesOf<$Document>> extends true
       ? { variables: VariablesOf<$Document> }
       : { variables?: VariablesOf<$Document> }
-    : {} // eslint-disable-line
+    : {}
 
 export type HasVariables<$Document extends TypedQueryDocumentNode | TypedDocumentString> = Negate<
   IsEmptyObject<VariablesOf<$Document>>
@@ -55,5 +55,5 @@ type VariablesOf<$Document extends TypedQueryDocumentNode | TypedDocumentString>
 
 // TODO open issue asking for core library to expose this type.
 export interface TypedDocumentString<TResult = Record<string, any>, TVariables = Record<string, any>>
-  extends String, DocumentTypeDecoration<TResult, TVariables> // eslint-disable-line
+  extends String, DocumentTypeDecoration<TResult, TVariables>
 {}

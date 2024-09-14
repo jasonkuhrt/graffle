@@ -7,6 +7,6 @@ import { show } from './$/helpers.js'
 
 const atlas = Atlas.create()
 
-const result = await atlas.query.continents({ name: true })
+const continents = await atlas.query.continents({ name: true })
 
-show(result)
+show(continents)

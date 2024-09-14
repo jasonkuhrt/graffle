@@ -33,7 +33,7 @@ show(result)
 
 try {
   await pokemon
-    .use(({ encode: _ }) => {
+    .anyware(({ encode: _ }) => {
       throw new Error(`Something went wrong.`)
     })
     .query

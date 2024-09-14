@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-types */
-
 import type { MaybeList, StringNonEmpty, Values } from '../../lib/prelude.js'
 import type { TSError } from '../../lib/TSError.js'
 import type {

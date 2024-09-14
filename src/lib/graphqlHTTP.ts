@@ -2,7 +2,7 @@ import type { GraphQLFormattedError } from 'graphql'
 import { type ExecutionResult, GraphQLError } from 'graphql'
 import type { GraphQLRequestEncoded, StandardScalarVariables } from './graphql.js'
 import { CONTENT_TYPE_GQL, CONTENT_TYPE_JSON } from './http.js'
-import { isPlainObject } from './prelude.js'
+import { isRecordLikeObject } from './prelude.js'
 
 export type ExecutionInput = {
   query: string
@@ -23,7 +23,7 @@ export const parseExecutionResult = (result: unknown): ExecutionResult => {
     if (
       !Array.isArray(result.errors)
       || result.errors.some(
-        error => !(isPlainObject(error) && `message` in error && typeof error[`message`] === `string`),
+        error => !(isRecordLikeObject(error) && `message` in error && typeof error[`message`] === `string`),
       )
     ) {
       throw new Error(`Invalid execution result: errors is not array of formatted errors`) // prettier-ignore
@@ -35,14 +35,16 @@ export const parseExecutionResult = (result: unknown): ExecutionResult => {
 
   // todo add test coverage for case of null. @see https://github.com/jasonkuhrt/graffle/issues/739
   if (`data` in result) {
-    if (!isPlainObject(result.data) && result.data !== null) {
+    if (!isRecordLikeObject(result.data) && result.data !== null) {
       throw new Error(`Invalid execution result: data is not plain object`) // prettier-ignore
     }
     data = result.data
   }
 
   if (`extensions` in result) {
-    if (!isPlainObject(result.extensions)) throw new Error(`Invalid execution result: extensions is not plain object`) // prettier-ignore
+    if (!isRecordLikeObject(result.extensions)) {
+      throw new Error(`Invalid execution result: extensions is not plain object`) // prettier-ignore
+    }
     extensions = result.extensions
   }
 

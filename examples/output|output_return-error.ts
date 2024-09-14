@@ -16,13 +16,13 @@ const atlas = Atlas
     },
   })
   // dprint-ignore
-  .use(({ encode: _ }) => {
+  .anyware(({ encode: _ }) => {
     throw new Error(`Something went wrong.`)
 //  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 
   })
 
-const result = await atlas.query.continents({ name: true })
-type _result = typeof result
+const continents = await atlas.query.continents({ name: true })
+type _continents = typeof continents
 //   ^?
 
-show(result)
+show(continents)

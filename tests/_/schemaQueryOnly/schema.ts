@@ -14,5 +14,5 @@ export const schema = builder.toSchema({
   sortSchema: true,
 })
 
-export type { Index } from './generated/Index.js'
-export { $Index } from './generated/SchemaRuntime.js'
+export type { Index } from './generated/modules/SchemaIndex.js'
+export { $Index } from './generated/modules/SchemaRuntime.js'

@@ -3,6 +3,7 @@ import type { Anyware } from '../../lib/anyware/__.js'
 import type { Errors } from '../../lib/errors/__.js'
 import { isOperationTypeName, operationTypeNameToRootTypeName, type RootTypeName } from '../../lib/graphql.js'
 import { mergeRequestInit } from '../../lib/http.js'
+import { proxyGet, type SimplifyExceptError } from '../../lib/prelude.js'
 import type { BaseInput, BaseInput_, TypedDocumentString } from '../0_functions/types.js'
 import { Schema } from '../1_Schema/__.js'
 import { readMaybeThunk } from '../1_Schema/core/helpers.js'
@@ -12,16 +13,12 @@ import { Core } from '../5_core/__.js'
 import { type HookDefEncode } from '../5_core/core.js'
 import { type InterfaceRaw, type TransportHttp } from '../5_core/types.js'
 import type { DocumentFn } from './document.js'
-import { type Envelope, handleOutput } from './handleOutput.js'
-import type { GetRootTypeMethods } from './RootTypeMethods.js'
-import {
-  type Config,
-  readConfigErrorCategoryOutputChannel,
-  traditionalGraphqlOutput,
-  traditionalGraphqlOutputThrowing,
-} from './Settings/Config.js'
+import { createExtension, type Extension, type ExtensionCallBuilderMerge } from './extension.js'
+import { handleOutput, type RawResolveOutputReturnRootType } from './handleOutput.js'
+import type { BuilderRequestMethodsGeneratedRootTypes } from './RootTypeMethods.js'
+import { type Config } from './Settings/Config.js'
 import { type InputStatic } from './Settings/Input.js'
-import type { AddIncrementalInput, InputIncrementable } from './Settings/inputIncrementable/inputIncrementable.js'
+import type { AddIncrementalInput, WithInput } from './Settings/inputIncrementable/inputIncrementable.js'
 import { type InputToConfig, inputToConfig } from './Settings/InputToConfig.js'
 
 /**
@@ -47,7 +44,7 @@ export type GraffleExecutionResultVar<$Config extends Config = Config> =
            */
           response?: Response
         }
-      : {}) // eslint-disable-line
+      : {})
   )
   | ErrorsOther
 
@@ -79,47 +76,66 @@ const resolveRawParameters = (parameters: RawParameters) => {
   return parameters[0]
 }
 
+// dprint-ignore
+export type BuilderRequestMethods<$Config extends Config, $Index extends null | Schema.Index >=
+  & BuilderRequestMethodsStatic<$Config>
+  & (
+    $Index extends Schema.Index
+      ? BuilderRequestMethodsGenerated<$Config, $Index>
+      : {}
+  )
+
 // todo no config needed?
 // dprint-ignore
-export type ClientRaw<$Config extends Config> = {
-  rawString<$Data, $Variables>(input: BaseInput<TypedDocumentString<$Data, $Variables>>): Promise<Envelope<$Config, $Data>>
-  rawStringOrThrow<$Data, $Variables>(input: BaseInput<TypedDocumentString<$Data, $Variables>>): Promise<Envelope<$Config, $Data, []>>
-
-  raw<$Data, $Variables>(input: BaseInput<TypedQueryDocumentNode<$Data, $Variables>>): Promise<Envelope<$Config, $Data>>
-  rawOrThrow<$Data, $Variables>(input: BaseInput<TypedQueryDocumentNode<$Data, $Variables>>): Promise<Envelope<$Config, $Data, []>>
+export type BuilderRequestMethodsStatic<$Config extends Config> = {
+  raw: <$Data extends Record<string, any>, $Variables>(input: BaseInput<TypedQueryDocumentNode<$Data, $Variables>>) =>
+      Promise<SimplifyExceptError<RawResolveOutputReturnRootType<$Config, $Data>>>
+  rawString: <$Data extends Record<string, any>, $Variables>(input: BaseInput<TypedDocumentString<$Data, $Variables>>) =>
+      Promise<RawResolveOutputReturnRootType<$Config, $Data>>
 }
 
-export type Extension = {
-  name: string
-  anyware?: Anyware.Extension2<Core.Core>
+// dprint
+export type BuilderRequestMethodsGenerated<$Config extends Config, $Index extends Schema.Index> =
+  & BuilderRequestMethodsGeneratedStatic<$Config, $Index>
+  & BuilderRequestMethodsGeneratedRootTypes<$Config, $Index>
+
+export type BuilderRequestMethodsGeneratedStatic<$Config extends Config, $Index extends Schema.Index> = {
+  document: DocumentFn<$Config, $Index>
 }
 
 // dprint-ignore
-export type Client<$Index extends Schema.Index | null, $Config extends Config> =
+export type Client<$Index extends Schema.Index | null, $Config extends Config, $AdditionalMethods = unknown> =
   {
     internal: {
       config: $Config
     }
   }
-  & ClientRaw<$Config>
+  & $AdditionalMethods
+  & BuilderRequestMethodsStatic<$Config>
   & (
       $Index extends Schema.Index
+      // todo OmitDeeply
       ? ClientTyped<$Index, $Config>
-      : {} // eslint-disable-line
+      : {}  
     )
   & {
       // eslint-disable-next-line
       // @ts-ignore passes after generation
-      with: <$Input extends InputIncrementable<$Config>>(input: $Input) => Client<$Index, AddIncrementalInput<$Config, $Input>>
-      use: (extension: Extension | Anyware.Extension2<Core.Core<$Config>>) => Client<$Index, $Config>
-      retry: (extension: Anyware.Extension2<Core.Core, { retrying: true }>) => Client<$Index, $Config>
+      with: <$Input extends WithInput<$Config>>(input: $Input) =>
+        // eslint-disable-next-line
+        // @ts-ignore passes after generation
+        Client<$Index, AddIncrementalInput<$Config, $Input>>
+      use: <$Extension extends Extension>(extension: $Extension) =>
+        Client<$Index, $Config, $AdditionalMethods & ExtensionCallBuilderMerge<$Extension, { Index:$Index, Config:$Config, AdditionalMethods:$AdditionalMethods }>> 
+      anyware: (anyware: Anyware.Extension2<Core.Core<$Config>>) =>
+        Client<$Index, $Config, $AdditionalMethods> 
+      retry: (extension: Anyware.Extension2<Core.Core, { retrying: true }>) =>
+        Client<$Index, $Config>
     }
 
 export type ClientTyped<$Index extends Schema.Index, $Config extends Config> =
-  & {
-    document: DocumentFn<$Config, $Index>
-  }
-  & GetRootTypeMethods<$Config, $Index>
+  & BuilderRequestMethodsGeneratedStatic<$Config, $Index>
+  & BuilderRequestMethodsGeneratedRootTypes<$Config, $Index>
 
 // dprint-ignore
 type Create = <$Input extends InputStatic<GlobalRegistry.SchemaUnion>>(input: $Input) =>
@@ -142,7 +158,7 @@ export const create: Create = (input) => {
     retry: null,
     input,
   }
-  return create_(initialState)
+  return createWithState(initialState)
 }
 
 interface CreateState {
@@ -151,7 +167,7 @@ interface CreateState {
   extensions: Extension[]
 }
 
-const create_ = (
+const createWithState = (
   state: CreateState,
 ) => {
   /**
@@ -229,17 +245,13 @@ const create_ = (
       get: (_, key) => {
         if (typeof key === `symbol`) throw new Error(`Symbols not supported.`)
 
-        // todo We need to document that in order for this to 100% work none of the user's root type fields can end with "OrThrow".
-        const isOrThrow = key.endsWith(`OrThrow`)
-        const contextWithReturnModeSet = isOrThrow ? contextConfigSetOrThrow(context) : context
-
         if (key.startsWith(`$batch`)) {
           return async (selectionSetOrIndicator: SelectionSetOrIndicator) =>
-            executeRootType(contextWithReturnModeSet, rootTypeName, selectionSetOrIndicator as GraphQLObjectSelection)
+            executeRootType(context, rootTypeName, selectionSetOrIndicator as GraphQLObjectSelection)
         } else {
-          const fieldName = isOrThrow ? key.slice(0, -7) : key
+          const fieldName = key
           return (selectionSetOrArgs: SelectionSetOrArgs) =>
-            executeRootTypeField(contextWithReturnModeSet, rootTypeName, fieldName, selectionSetOrArgs)
+            executeRootTypeField(context, rootTypeName, fieldName, selectionSetOrArgs)
         }
       },
     })
@@ -255,8 +267,8 @@ const create_ = (
   const run = async (context: Context, initialInput: HookDefEncode<Config>['input']) => {
     const result = await Core.anyware.run({
       initialInput,
-      retryingExtension: context.retry as any, // eslint-disable-line
-      extensions: context.extensions.filter(_ => _.anyware !== undefined).map(_ => _.anyware!) as any, // eslint-disable-line
+      retryingExtension: context.retry as any,
+      extensions: context.extensions.filter(_ => _.onRequest !== undefined).map(_ => _.onRequest!) as any,
     }) as GraffleExecutionResultVar
 
     return handleOutput(context, result)
@@ -280,38 +292,37 @@ const create_ = (
   }
 
   // @ts-expect-error ignoreme
-  const client: Client = {
+  const clientDirect: Client = {
     internal: {
       config: context.config,
     },
     raw: async (...args: RawParameters) => {
       const input = resolveRawParameters(args)
-      const contextWithOutputSet = updateContextConfig(context, { ...context.config, output: traditionalGraphqlOutput })
-      return await runRaw(contextWithOutputSet, input)
+      // const contextWithOutputSet = updateContextConfig(context, { ...context.config, output: traditionalGraphqlOutput })
+      return await runRaw(context, input)
     },
-    rawOrThrow: async (...args: RawParameters) => {
-      const input = resolveRawParameters(args)
-      const contextWithOutputSet = updateContextConfig(context, {
-        ...context.config,
-        output: traditionalGraphqlOutputThrowing,
-      })
-      return await runRaw(contextWithOutputSet, input)
-    },
+    // rawOrThrow: async (...args: RawParameters) => {
+    //   const input = resolveRawParameters(args)
+    //   const contextWithOutputSet = updateContextConfig(context, {
+    //     ...context.config,
+    //     output: traditionalGraphqlOutputThrowing,
+    //   })
+    //   return await runRaw(contextWithOutputSet, input)
+    // },
     rawString: async (...args: RawParameters) => {
-      // eslint-disable-next-line
-      return await client.raw(...args)
+      return await clientDirect.raw(...args)
     },
-    rawStringOrThrow: async (...args: RawParameters) => {
-      // eslint-disable-next-line
-      return await client.rawOrThrow(...args)
-    },
-    with: (input: InputIncrementable) => {
-      return create_({
+    // rawStringOrThrow: async (...args: RawParameters) => {
+    //   // eslint-disable-next-line
+    //   return await client.rawOrThrow(...args)
+    // },
+    with: (input: WithInput) => {
+      return createWithState({
         ...state,
         // @ts-expect-error fixme
         input: {
           ...state.input,
-          output: state.input.output,
+          output: input.output,
           transport: {
             ...state.input.transport,
             ...input.transport,
@@ -320,15 +331,17 @@ const create_ = (
         },
       })
     },
-    use: (extensionOrAnyware: Extension | Anyware.Extension2<Core.Core>) => {
-      const extension = typeof extensionOrAnyware === `function`
-        ? { anyware: extensionOrAnyware, name: extensionOrAnyware.name }
-        : extensionOrAnyware
-      // todo test that adding extensions returns a copy of client
-      return create_({ ...state, extensions: [...state.extensions, extension] })
+    use: (extension: Extension) => {
+      return createWithState({ ...state, extensions: [...state.extensions, extension] })
     },
-    retry: (extension: Anyware.Extension2<Core.Core, { retrying: true }>) => {
-      return create_({ ...state, retry: extension })
+    anyware: (anyware: Anyware.Extension2<Core.Core>) => {
+      return createWithState({
+        ...state,
+        extensions: [...state.extensions, createExtension({ name: `InlineAnyware`, onRequest: anyware })],
+      })
+    },
+    retry: (anyware: Anyware.Extension2<Core.Core, { retrying: true }>) => {
+      return createWithState({ ...state, retry: anyware })
     },
   }
 
@@ -339,7 +352,7 @@ const create_ = (
       schemaIndex: state.input.schemaIndex,
     }
 
-    Object.assign(client, {
+    Object.assign(clientDirect, {
       document: (documentObject: DocumentObject) => {
         const hasMultipleOperations = Object.keys(documentObject).length > 1
 
@@ -372,14 +385,6 @@ const create_ = (
             const { selection, rootTypeName } = processInput(maybeOperationName)
             return await executeRootType(typedContext, rootTypeName, selection)
           },
-          runOrThrow: async (maybeOperationName: string) => {
-            const { selection, rootTypeName } = processInput(maybeOperationName)
-            return await executeRootType(
-              contextConfigSetOrThrow(typedContext),
-              rootTypeName,
-              selection,
-            )
-          },
         }
       },
       query: createRootTypeMethods(typedContext, `Query`),
@@ -389,51 +394,20 @@ const create_ = (
     })
   }
 
-  return client
+  const clientProxy = proxyGet(clientDirect, ({ path, property }) => {
+    const onGetHandlers = state.extensions.map(_ => _.onBuilderGet).filter(_ => _ !== undefined)
+
+    for (const onGetHandler of onGetHandlers) {
+      const result = onGetHandler({ context, client: clientDirect, path, property })
+      if (result !== undefined) return result
+    }
+
+    return undefined
+  }) as any as Client<any, any>
+
+  return clientProxy as any
 }
 
-const contextConfigSetOrThrow = <$Context extends Context>(context: $Context): $Context => {
-  if (isContextConfigOrThrowSemantics(context)) return context
-
-  return updateContextConfig(context, {
-    ...context.config,
-    output: {
-      ...context.config.output,
-      errors: {
-        execution: `throw`,
-        other: `throw`,
-        schema: `throw`,
-      },
-      envelope: {
-        ...context.config.output.envelope,
-        errors: {
-          execution: false,
-          other: false,
-          schema: false,
-        },
-      },
-    },
-  })
-}
-
-const isContextConfigOrThrowSemantics = ({ config }: Context): boolean => {
-  const isAllCategoriesThrowOrDisabled = readConfigErrorCategoryOutputChannel(config, `execution`) === `throw`
-    && readConfigErrorCategoryOutputChannel(config, `other`) === `throw`
-    && (readConfigErrorCategoryOutputChannel(config, `schema`) === `throw`
-      || readConfigErrorCategoryOutputChannel(config, `schema`) === `throw`) // todo: or false and not using schema errors
-
-  if (!isAllCategoriesThrowOrDisabled) return false
-
-  if (
-    config.output.envelope.enabled
-    && Object.values(config.output.envelope.errors.execution).filter(_ => _ === true).length > 0
-  ) {
-    return false
-  }
-
-  return true
-}
-
-const updateContextConfig = <$Context extends Context>(context: $Context, config: Config): $Context => {
-  return { ...context, config: { ...context.config, ...config } }
-}
+// const updateContextConfig = <$Context extends Context>(context: $Context, config: Config): $Context => {
+//   return { ...context, config: { ...context.config, ...config } }
+// }

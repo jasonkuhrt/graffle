@@ -1,5 +1,5 @@
 import { capitalize, kebabCase } from 'es-toolkit'
-import { execa } from 'execa'
+import { execa, ExecaError } from 'execa'
 import { globby } from 'globby'
 import stripAnsi from 'strip-ansi'
 import { showPartition } from '../../examples/$/helpers.js'
@@ -154,7 +154,16 @@ export const runExample = async (filePath: string) => {
 
   let exampleOutput = ``
 
-  exampleOutput = result.failed ? result.stderr : result.stdout
+  // todo: better understand the Execa API
+  if (filePath.includes(`_or-throw`)) {
+    if (result instanceof ExecaError) {
+      // @ts-expect-error fixme
+      exampleOutput = result.stdout
+    }
+  } else {
+    exampleOutput = result.failed ? result.stderr : result.stdout
+  }
+
   exampleOutput = stripAnsi(exampleOutput)
   exampleOutput = rewriteDynamicError(exampleOutput)
 

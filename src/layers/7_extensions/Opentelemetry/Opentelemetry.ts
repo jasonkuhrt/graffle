@@ -1,5 +1,5 @@
 import { trace, type Tracer } from '@opentelemetry/api'
-import { createExtension } from '../../5_createExtension/createExtension.js'
+import { createExtension } from '../../6_client/extension.js'
 import { createConfig, type Input } from './config.js'
 
 const name = `Opentelemetry`
@@ -11,7 +11,7 @@ export const Opentelemetry = (input?: Input) => {
 
   return createExtension({
     name,
-    anyware: async ({ encode }) => {
+    onRequest: async ({ encode }) => {
       return await startActiveGraffleSpan(`request`, async () => {
         const { pack } = await startActiveGraffleSpan(`encode`, encode)
         const { exchange } = await startActiveGraffleSpan(`pack`, pack)

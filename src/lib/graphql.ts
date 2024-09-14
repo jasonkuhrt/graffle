@@ -253,6 +253,8 @@ export type StandardScalarVariables = {
   [key: string]: string | boolean | null | number | StandardScalarVariables
 }
 
+export type SomeData = Record<string, any>
+
 export type GraphQLExecutionResultError = Errors.ContextualAggregateError<GraphQLError>
 
 export const OperationTypes = {

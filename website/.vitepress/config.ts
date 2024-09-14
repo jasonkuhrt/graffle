@@ -1,10 +1,69 @@
 import { transformerTwoslash } from '@shikijs/vitepress-twoslash'
+import { capitalize } from 'es-toolkit'
 import { ModuleKind, ModuleResolutionKind } from 'typescript'
 import { defineConfig } from 'vitepress'
+import { generateSidebar, Sidebar, SidebarItem, SidebarMulti, SidebarMultiItem } from 'vitepress-sidebar'
 import { sidebarExamples } from './configExamples'
+
+const prefixPattern = /\d+_/g
+
+const sidebarMultiVisitItems = (sidebarMulti: SidebarMulti, visitor: (sidebarItem: SidebarItem) => void) => {
+  Object.values(sidebarMulti).forEach(sidebar => sidebar.items.forEach(_ => sidebarItemVisitItems(_, visitor)))
+  return sidebarMulti
+}
+
+const sidebarItemVisitItems = (sidebarItem: SidebarItem, visitor: (sidebarItem: SidebarItem) => void) => {
+  visitor(sidebarItem)
+  sidebarItem.items?.forEach(_ => sidebarItemVisitItems(_, visitor))
+}
+
+const fixLinks = (sidebarMulti: SidebarMulti) => {
+  return sidebarMultiVisitItems(sidebarMulti, (sidebarItem) => {
+    sidebarItem.link = sidebarItem.link?.replaceAll(prefixPattern, '')
+  })
+}
+
+const fixTitles = (sidebarMulti: SidebarMulti) => {
+  return sidebarMultiVisitItems(sidebarMulti, (sidebarItem) => {
+    const [title, maybeHtml] = sidebarItem.text?.split('<') as [string, string | undefined]
+    if (sidebarItem.text) {
+      sidebarItem.text = capitalize(title.replaceAll(/-/g, ' ')) + (maybeHtml ? `<${maybeHtml}` : '')
+    }
+  })
+}
+
+/**
+ * @see https://vitepress-sidebar.cdget.com/guide/api
+ */
+const sidebars = fixTitles(fixLinks(generateSidebar([
+  {
+    scanStartPath: 'content/guides',
+    resolvePath: '/guides/',
+    excludeFolders: ['_example_links'],
+    // collapsed: false,
+    // capitalizeEachWords: true,
+    // hyphenToSpace: true,
+    prefixSeparator: '_',
+    removePrefixAfterOrdering: true,
+    useTitleFromFrontmatter: true,
+    useTitleFromFileHeading: true,
+    keepMarkdownSyntaxFromTitle: true,
+  },
+]) as SidebarMulti))
+
+// console.log(sidebars['/guides/'].items[0])
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
+  /**
+   * @see https://github.com/pillarjs/path-to-regexp/blob/8b7440438f726cce7a891f9325dd79a65978347f/Readme.md
+   */
+  // dprint-ignore
+  rewrites: {
+    'guides/{:_(\\d+_)}?:one/{:_(\\d+_)}?:two/{:_(\\d+_)}?:three'   : 'guides/:one/:two/:three',
+    'guides/{:_(\\d+_)}?:one/{:_(\\d+_)}?:two'                      : 'guides/:one/:two',
+    'guides/{:prefixOne(\\d+_)}?:one'                               : 'guides/:one'
+  },
   title: 'Graffle',
   description: 'Minimalist Progressively Type Safe GraphQL Client For JavaScript.',
   cleanUrls: true,
@@ -29,11 +88,6 @@ export default defineConfig({
             moduleResolution: ModuleResolutionKind.Bundler,
             module: ModuleKind.ESNext,
             noErrorTruncation: true,
-          },
-
-          extraFiles: {
-            // 'foo.ts':
-            // 'export function ref<T>(value: T): Ref<T> { return { value } }\ninterface Ref<T> { value: string }',
           },
           // Instead of automatically putting underlines over every property and variable,
           // only do so for the ones we explicitly ask for in our markdown.
@@ -68,92 +122,7 @@ export default defineConfig({
         { text: 'Introduction', link: 'examples/index' },
         ...sidebarExamples,
       ],
-      '/guides/': [
-        {
-          text: 'Overview',
-          collapsed: false,
-          items: [
-            { text: 'Introduction', link: '/guides/overview/introduction' },
-            {
-              text: 'Getting Started',
-              // link: '/overview/getting-started',
-              items: [{
-                text: 'Static Client',
-                link: '/guides/overview/getting-started-static',
-              }, {
-                text:
-                  'Generated Client <span title="Requires generation" style="font-size:1.75em;line-height:0;">⩕</span>',
-                link: '/guides/overview/getting-started-generated',
-              }],
-            },
-
-            { text: 'Output', link: '/guides/overview/output' },
-            { text: 'Anyware', link: '/guides/overview/anyware' },
-          ],
-        },
-        {
-          text: 'Transports',
-          collapsed: false,
-          items: [
-            { text: 'HTTP', link: '/guides/transports/http' },
-            { text: 'Memory', link: '/guides/transports/memory' },
-          ],
-        },
-        {
-          text: 'Methods',
-          collapsed: false,
-          items: [
-            { text: 'Raw', link: '/methods/raw' },
-            { text: 'Or Throw', link: '/guides/methods/or-throw' },
-            {
-              text: 'Document <span title="Requires generation" style="font-size:1.75em;line-height:0;">⩕</span>',
-              link: '/guides/methods/document',
-            },
-            {
-              text: 'Batch <span title="Requires generation" style="font-size:1.75em;line-height:0;">⩕</span>',
-              link: '/guides/methods/batch',
-            },
-            {
-              text: 'Root Fields <span title="Requires generation" style="font-size:1.75em;line-height:0;">⩕</span>',
-              link: '/guides/methods/root-fields',
-            },
-          ],
-        },
-        {
-          text:
-            'GQL Feature Mapping <span title="Requires generation" style="font-size:1.75em;line-height:0;">⩕</span>',
-          collapsed: false,
-          items: [
-            { text: 'Arguments', link: '/guides/graphql-feature-mapping/arguments' },
-            { text: 'Aliases', link: '/guides/graphql-feature-mapping/aliases' },
-            { text: 'Enums', link: '/guides/graphql-feature-mapping/enums' },
-            { text: 'Interfaces', link: '/guides/graphql-feature-mapping/interfaces' },
-            { text: 'Unions', link: '/guides/graphql-feature-mapping/unions' },
-            { text: 'Directives', link: '/guides/graphql-feature-mapping/directives' },
-            { text: 'Custom Scalars', link: '/guides/graphql-feature-mapping/custom-scalars' },
-            { text: 'Selection Groups', link: '/guides/graphql-feature-mapping/selection-groups' },
-          ],
-        },
-        {
-          text: 'Misc <span title="Requires generation" style="font-size:1.75em;line-height:0;">⩕</span>',
-          collapsed: false,
-          items: [
-            { text: 'Schema Errors', link: '/guides/misc/schema-errors' },
-            { text: 'Select', link: '/guides/misc/select' },
-            { text: 'Extension Authoring', link: '/guides/misc/extension-authoring' },
-            { text: 'About Generation', link: '/guides/misc/about-generation' },
-          ],
-        },
-        {
-          text: 'Extensions',
-          collapsed: false,
-          items: [
-            { text: 'Opentelemetry', link: '/guides/extensions/opentelemetry' },
-            { text: 'File Upload', link: '/guides/extensions/file-upload' },
-            { text: 'Or Throw', link: '/guides/extensions/or-throw' },
-          ],
-        },
-      ],
+      ...sidebars,
     },
     socialLinks: [
       { icon: 'github', link: 'https://github.com/jasonkuhrt/graffle' },

@@ -8,6 +8,10 @@
       {
         "text": "Opentelemetry",
         "link": "/examples/extension-opentelemetry"
+      },
+      {
+        "text": "Or Throw",
+        "link": "/examples/extension-or-throw"
       }
     ]
   },

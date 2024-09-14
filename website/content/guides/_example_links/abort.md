@@ -1,1 +1,1 @@
-###### Examples -> [Abort](../../examples/transport-http-abort.md)
+<p class="ExampleLinks">Examples <span class="ExampleLinksTitleSeparator">-></span> <a href="../../examples/transport-http-abort">Abort</a></p>

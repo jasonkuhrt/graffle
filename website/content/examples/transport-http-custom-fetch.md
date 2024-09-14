@@ -12,22 +12,19 @@ import { Graffle } from 'graffle'
 
 const graffle = Graffle
   .create({ schema: `https://countries.trevorblades.com/graphql` })
-  .use({
-    name: `CustomFetch`,
-    anyware: async ({ exchange }) => {
-      return await exchange({
-        using: {
-          fetch: async () => {
-            return new Response(JSON.stringify({ data: { countries: [{ name: `Canada Mocked!` }] } }))
-          },
+  .anyware(({ exchange }) =>
+    exchange({
+      using: {
+        fetch: async () => {
+          return new Response(JSON.stringify({ data: { countries: [{ name: `Canada Mocked!` }] } }))
         },
-      })
-    },
-  })
+      },
+    })
+  )
 
-const countries = await graffle.rawString({ document: `{ countries { name } }` })
+const data = await graffle.rawString({ document: `{ countries { name } }` })
 
-console.log(countries.data)
+console.log(data)
 ```
 <!-- dprint-ignore-end -->
 
