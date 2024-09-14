@@ -31,7 +31,6 @@ export const generateDocs = async (examples: Example[]) => {
         const groupName = examples[0]!.group.dirName
         await FS.mkdir(`./website/content/examples/${groupName}`, { recursive: true })
         await Promise.all(examples.map(async (example) => {
-          console.log(example.fileName.canonical)
           const exampleMarkdownFilePath =
             `./website/content/examples/${example.group.dirName}/${example.fileName.canonical}.md`
           await FS.writeFile(exampleMarkdownFilePath, example.file.content)
@@ -111,7 +110,7 @@ const transformRewriteGraffleImports = (example: Example) => {
     .replaceAll(
       /import ({[^}]+}) from '.*\/generated-clients\/([^/]+)\/__\.js'/g,
       `// ---cut---
-import $1 from '../$2/__.js'`,
+import $1 from './$2/__.js'`,
     )
     // Any remaining $ imports are entirely removed.
     .replaceAll(/import.*'.*\$.*'\n/g, ``)
