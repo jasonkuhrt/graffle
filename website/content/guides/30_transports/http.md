@@ -2,7 +2,7 @@
 
 Graffle has the concept of "transports". A transport is how the request reaches the GraphQL schema for execution. This section is about the "http" transport.
 
-<!--@include: @/guides/_example_links/transport-http.md-->
+<!--@include: @/_snippets/example-links/transport-http.md-->
 
 ## Overview
 
@@ -60,7 +60,7 @@ Note:
 
 ## GET
 
-<!--@include: @/guides/_example_links/method-get.md-->
+<!--@include: @/_snippets/example-links/method-get.md-->
 
 By default all requests use HTTP POST. However you can configure queries and subscriptions to be sent over HTTP GET.
 
@@ -90,7 +90,7 @@ Graffle.create({
 
 ## Anyware
 
-<!--@include: @/guides/_example_links/transport-http_extension.md-->
+<!--@include: @/_snippets/example-links/transport-http_extension.md-->
 
 Hooks are augmented in the following ways:
 
@@ -101,7 +101,7 @@ Hooks are augmented in the following ways:
 
 ## Raw
 
-<!--@include: @/guides/_example_links/transport-http_raw.md-->
+<!--@include: @/_snippets/example-links/transport-http_raw.md-->
 
 - You can easily pass configuration to `fetch` via `transport.raw`.
 - It takes precedence over other `transport.*` properties.

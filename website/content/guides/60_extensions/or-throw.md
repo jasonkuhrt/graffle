@@ -1,6 +1,6 @@
 # Or Throw
 
-<!--@include: @/guides/_example_links/extension_or-throw.md-->
+<!--@include: @/_snippets/example-links/extension_or-throw.md-->
 
 ## Introduction
 

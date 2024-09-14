@@ -1,6 +1,6 @@
 # Upload
 
-<!--@include: @/guides/_example_links/extension_upload.md-->
+<!--@include: @/_snippets/example-links/extension_upload.md-->
 
 Adds support for [GraphQL Multipart Request](https://github.com/jaydenseric/graphql-multipart-request-spec) to Graffle.
 

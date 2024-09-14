@@ -73,7 +73,7 @@ export const generateDocs = async (examples: Example[]) => {
   // todo
 
   // Delete all existing to handle case of renaming or deleting examples.
-  await deleteFiles({ pattern: `./website/content/guides/_example_links/*.md` })
+  await deleteFiles({ pattern: `./website/content/_snippets/example-links/*.md` })
 
   const groups = examplesTransformed.reduce<Record<string, Example[]>>((groups, example) => {
     const combinations = computeCombinations(example.tags).filter(_ => {
@@ -97,7 +97,7 @@ export const generateDocs = async (examples: Example[]) => {
       }).join(` <span class="ExampleLinksSeparator"></span> `)
       const code =
         `<p class="ExampleLinks">Examples <span class="ExampleLinksTitleSeparator">-></span> ${codeLinks}</p>`
-      await FS.writeFile(`./website/content/guides/_example_links/${groupName}.md`, code)
+      await FS.writeFile(`./website/content/_snippets/example-links/${groupName}.md`, code)
     }),
   )
   console.log(`Generated a Vitepress Markdown partial for each example tags combination.`)
