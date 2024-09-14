@@ -1,0 +1,27 @@
+---------------------------------------- SHOW ----------------------------------------
+{
+  data: {
+    continents: [
+      { name: 'Africa' },
+      { name: 'Antarctica' },
+      { name: 'Asia' },
+      { name: 'Europe' },
+      { name: 'North America' },
+      { name: 'Oceania' },
+      { name: 'South America' }
+    ]
+  },
+  errors: undefined,
+  extensions: undefined,
+  response: Response {
+    status: 200,
+    statusText: '',
+    headers: DYNAMIC_VALUE,
+    body: ReadableStream { locked: true, state: 'closed', supportsBYOB: true },
+    bodyUsed: true,
+    ok: true,
+    redirected: false,
+    type: 'basic',
+    url: 'https://countries.trevorblades.com/graphql'
+  }
+}
