@@ -119,6 +119,8 @@ export type Client<$Index extends Schema.Index | null, $Config extends Config, $
       : {}  
     )
   & {
+      // eslint-disable-next-line
+      // @ts-ignore passes after generation
       with: <$Input extends WithInput<$Config>>(input: $Input) =>
         // eslint-disable-next-line
         // @ts-ignore passes after generation
