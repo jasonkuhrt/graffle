@@ -8,7 +8,6 @@ This example shows how to configure output to throw errors even when using the e
 
 <!-- dprint-ignore-start -->
 ```ts twoslash
-import { OrThrow } from 'graffle/extensions'
 import { Graffle as Atlas } from './graffle/__.js'
 
 const atlas = Atlas
@@ -22,13 +21,12 @@ const atlas = Atlas
       },
     },
   })
-  .use(OrThrow())
   .anyware(({ encode: _ }) => {
     throw new Error(`Something went wrong.`)
   //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   })
 
-await atlas.query.continentsOrThrow({ name: true })
+await atlas.query.continents({ name: true })
 ```
 <!-- dprint-ignore-end -->
 

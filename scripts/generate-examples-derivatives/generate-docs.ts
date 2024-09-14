@@ -164,7 +164,8 @@ const transformRewriteHelperImports = (example: Example) => {
     .replaceAll(/^import.*\$\/helpers.*$\n/gm, ``)
     .replaceAll(`documentQueryContinents`, `{ document: \`${documentQueryContinents.document}\` }`)
     .replaceAll(`publicGraphQLSchemaEndpoints.Atlas`, `\`${publicGraphQLSchemaEndpoints.Atlas}\``)
-    .replaceAll(/interceptAndShowOutput.*\n/g, ``)
+    .replaceAll(/interceptAndShowOutput.*\n\n?/g, ``)
+    .replaceAll(/interceptAndShowUncaughtErrors.*\n\n?/g, ``)
     .replaceAll(/showJson|show/g, consoleLog)
   // We disabled this because the popover gets in the way of output below often.
   // .replaceAll(/(^console.log.*$)/gm, `$1\n//${` `.repeat(consoleLog.length - 1)}^?`)

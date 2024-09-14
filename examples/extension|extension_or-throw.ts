@@ -4,7 +4,7 @@
 
 import { OrThrow } from '../src/entrypoints/extensions.js'
 import { Atlas } from './$/generated-clients/atlas/__.js'
-import { show, interceptAndShowUncaughtErrors } from './$/show.js'
+import { interceptAndShowUncaughtErrors, show } from './$/show.js'
 
 interceptAndShowUncaughtErrors()
 
@@ -15,7 +15,7 @@ const atlas = Atlas
     throw new Error(`Something went wrong.`)
   })
 
-const result = await atlas.query.continents({ name: true })
-show(result)
+const result1 = await atlas.query.continents({ name: true })
+show(result1)
 
-await atlas.query.continentOrThrow({ name: true })
+const result2 = await atlas.query.continentOrThrow({ name: true })
