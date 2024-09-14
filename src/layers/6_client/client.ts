@@ -15,10 +15,10 @@ import { type InterfaceRaw, type TransportHttp } from '../5_core/types.js'
 import type { DocumentFn } from './document.js'
 import { createExtension, type Extension, type ExtensionCallBuilderMerge } from './extension.js'
 import { handleOutput, type RawResolveOutputReturnRootType } from './handleOutput.js'
-import type { GetRootTypeMethods } from './RootTypeMethods.js'
+import type { BuilderRequestMethodsGeneratedRootTypes } from './RootTypeMethods.js'
 import { type Config } from './Settings/Config.js'
 import { type InputStatic } from './Settings/Input.js'
-import type { AddIncrementalInput, InputIncrementable } from './Settings/inputIncrementable/inputIncrementable.js'
+import type { AddIncrementalInput, WithInput } from './Settings/inputIncrementable/inputIncrementable.js'
 import { type InputToConfig, inputToConfig } from './Settings/InputToConfig.js'
 
 /**
@@ -76,12 +76,31 @@ const resolveRawParameters = (parameters: RawParameters) => {
   return parameters[0]
 }
 
+// dprint-ignore
+export type BuilderRequestMethods<$Config extends Config, $Index extends null | Schema.Index >=
+  & BuilderRequestMethodsStatic<$Config>
+  & (
+    $Index extends Schema.Index
+      ? BuilderRequestMethodsGenerated<$Config, $Index>
+      : {}
+  )
+
 // todo no config needed?
 // dprint-ignore
-export type ClientRaw<$Config extends Config> = {
-  raw<$Data extends Record<string, any>, $Variables>(input: BaseInput<TypedQueryDocumentNode<$Data, $Variables>>): Promise<  SimplifyExceptError<
-RawResolveOutputReturnRootType<$Config, $Data>>>
-  rawString<$Data extends Record<string, any>, $Variables>(input: BaseInput<TypedDocumentString<$Data, $Variables>>): Promise<RawResolveOutputReturnRootType<$Config, $Data>>
+export type BuilderRequestMethodsStatic<$Config extends Config> = {
+  raw: <$Data extends Record<string, any>, $Variables>(input: BaseInput<TypedQueryDocumentNode<$Data, $Variables>>) =>
+      Promise<SimplifyExceptError<RawResolveOutputReturnRootType<$Config, $Data>>>
+  rawString: <$Data extends Record<string, any>, $Variables>(input: BaseInput<TypedDocumentString<$Data, $Variables>>) =>
+      Promise<RawResolveOutputReturnRootType<$Config, $Data>>
+}
+
+// dprint
+export type BuilderRequestMethodsGenerated<$Config extends Config, $Index extends Schema.Index> =
+  & BuilderRequestMethodsGeneratedStatic<$Config, $Index>
+  & BuilderRequestMethodsGeneratedRootTypes<$Config, $Index>
+
+export type BuilderRequestMethodsGeneratedStatic<$Config extends Config, $Index extends Schema.Index> = {
+  document: DocumentFn<$Config, $Index>
 }
 
 // dprint-ignore
@@ -92,7 +111,7 @@ export type Client<$Index extends Schema.Index | null, $Config extends Config, $
     }
   }
   & $AdditionalMethods
-  & ClientRaw<$Config>
+  & BuilderRequestMethodsStatic<$Config>
   & (
       $Index extends Schema.Index
       // todo OmitDeeply
@@ -102,7 +121,7 @@ export type Client<$Index extends Schema.Index | null, $Config extends Config, $
   & {
       // eslint-disable-next-line
       // @ts-ignore passes after generation
-      with: <$Input extends InputIncrementable<$Config>>(input: $Input) =>
+      with: <$Input extends WithInput<$Config>>(input: $Input) =>
         Client<$Index, AddIncrementalInput<$Config, $Input>>
       use: <$Extension extends Extension>(extension: $Extension) =>
         Client<$Index, $Config, $AdditionalMethods & ExtensionCallBuilderMerge<$Extension, { Index:$Index, Config:$Config, AdditionalMethods:$AdditionalMethods }>> 
@@ -113,10 +132,8 @@ export type Client<$Index extends Schema.Index | null, $Config extends Config, $
     }
 
 export type ClientTyped<$Index extends Schema.Index, $Config extends Config> =
-  & {
-    document: DocumentFn<$Config, $Index>
-  }
-  & GetRootTypeMethods<$Config, $Index>
+  & BuilderRequestMethodsGeneratedStatic<$Config, $Index>
+  & BuilderRequestMethodsGeneratedRootTypes<$Config, $Index>
 
 // dprint-ignore
 type Create = <$Input extends InputStatic<GlobalRegistry.SchemaUnion>>(input: $Input) =>
@@ -297,7 +314,7 @@ const createWithState = (
     //   // eslint-disable-next-line
     //   return await client.rawOrThrow(...args)
     // },
-    with: (input: InputIncrementable) => {
+    with: (input: WithInput) => {
       return createWithState({
         ...state,
         // @ts-expect-error fixme

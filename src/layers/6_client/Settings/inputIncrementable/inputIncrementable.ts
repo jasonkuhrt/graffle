@@ -6,7 +6,7 @@ import type { InputToConfig } from '../InputToConfig.js'
 import type { OutputInput } from './output.js'
 
 // dprint-ignore
-export type InputIncrementable<$Context extends IncrementableInputContext = IncrementableInputContext> =
+export type WithInput<$Context extends IncrementableInputContext = IncrementableInputContext> =
   & {
       /**
        * Configure output behavior, such as if errors should be returned or thrown.
@@ -25,5 +25,5 @@ export type IncrementableInputContext = {
 }
 
 // dprint-ignore
-export type AddIncrementalInput<$Config extends Config, $Input extends InputIncrementable> =
+export type AddIncrementalInput<$Config extends Config, $Input extends WithInput> =
   InputToConfig<$Config['initialInput'] & $Input>

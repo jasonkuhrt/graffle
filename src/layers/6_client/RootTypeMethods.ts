@@ -1,4 +1,4 @@
-import type { OperationTypeName } from '../../lib/graphql.js'
+import type { CamelCase } from 'type-fest'
 import type { Exact } from '../../lib/prelude.js'
 import type { TSError } from '../../lib/TSError.js'
 import type { InputFieldsAllNullable, Schema } from '../1_Schema/__.js'
@@ -16,9 +16,12 @@ type RootTypeFieldContext = {
 }
 
 // dprint-ignore
-export type GetRootTypeMethods<$Config extends Config, $Index extends Schema.Index> = {
-	[$OperationName in OperationTypeName as $Index['Root'][Capitalize<$OperationName>] extends null ? never : $OperationName]:
-		RootTypeMethods<$Config, $Index, Capitalize<$OperationName>>
+export type BuilderRequestMethodsGeneratedRootTypes<$Config extends Config, $Index extends Schema.Index> = {
+  // todo
+  // [$OperationName in $Index['OperationsPresent'][number]]:
+  //   RootTypeMethods<$Config, $Index, OperationNameToRootType<OperationName>>
+  [$RootTypeName in $Index['RootTypesPresent'][number] as CamelCase<$RootTypeName>]:
+		RootTypeMethods<$Config, $Index, $RootTypeName>
 }
 
 // dprint-ignore

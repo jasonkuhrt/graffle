@@ -1,7 +1,7 @@
 import type { GraphQLSchema } from 'graphql'
 import type { Schema } from '../../1_Schema/__.js'
 import type { GlobalRegistry } from '../../2_generator/globalRegistry.js'
-import type { InputIncrementable } from './inputIncrementable/inputIncrementable.js'
+import type { WithInput } from './inputIncrementable/inputIncrementable.js'
 
 export type URLInput = URL | string
 
@@ -63,7 +63,7 @@ export type InputBase<$Schema extends GlobalRegistry.SchemaUnion> =
         )
       // eslint-disable-next-line
       // @ts-ignore passes after generation
-      & InputIncrementable<{ name: $Schema['name']; transport: 'http' }>
+      & WithInput<{ name: $Schema['name']; transport: 'http' }>
     )
   | (
       & (
@@ -79,5 +79,5 @@ export type InputBase<$Schema extends GlobalRegistry.SchemaUnion> =
         )
       // eslint-disable-next-line
       // @ts-ignore passes after generation
-      & InputIncrementable<{ name: $Schema['name']; transport: 'memory' }>
+      & WithInput<{ name: $Schema['name']; transport: 'memory' }>
     )
