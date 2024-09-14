@@ -2,7 +2,6 @@ import { type ExecutionResult, GraphQLSchema, type TypedQueryDocumentNode } from
 import type { Anyware } from '../../lib/anyware/__.js'
 import type { Errors } from '../../lib/errors/__.js'
 import { isOperationTypeName, operationTypeNameToRootTypeName, type RootTypeName } from '../../lib/graphql.js'
-import type { Call } from '../../lib/hkt/hkt.js'
 import { mergeRequestInit } from '../../lib/http.js'
 import { proxyGet, type SimplifyExceptError } from '../../lib/prelude.js'
 import type { BaseInput, BaseInput_, TypedDocumentString } from '../0_functions/types.js'
@@ -13,9 +12,8 @@ import type { DocumentObject, GraphQLObjectSelection } from '../3_SelectionSet/e
 import { Core } from '../5_core/__.js'
 import { type HookDefEncode } from '../5_core/core.js'
 import { type InterfaceRaw, type TransportHttp } from '../5_core/types.js'
-import { createExtension } from '../5_createExtension/createExtension.js'
 import type { DocumentFn } from './document.js'
-import type { Extension } from './extension.js'
+import { createExtension, type Extension, type ExtensionCallBuilderMerge } from './extension.js'
 import { handleOutput, type RawResolveOutputReturnRootType } from './handleOutput.js'
 import type { GetRootTypeMethods } from './RootTypeMethods.js'
 import { type Config } from './Settings/Config.js'
@@ -104,10 +102,14 @@ export type Client<$Index extends Schema.Index | null, $Config extends Config, $
   & {
       // eslint-disable-next-line
       // @ts-ignore passes after generation
-      with: <$Input extends InputIncrementable<$Config>>(input: $Input) => Client<$Index, AddIncrementalInput<$Config, $Input>>
-      use: <$Extension extends Extension>(extension: $Extension) => Client<$Index, $Config, Call<$Extension, { Index:$Index, Config:$Config, AdditionalMethods:$AdditionalMethods }>> 
-      anyware: (anyware: Anyware.Extension2<Core.Core<$Config>>) => Client<$Index, $Config, $AdditionalMethods> 
-      retry: (extension: Anyware.Extension2<Core.Core, { retrying: true }>) => Client<$Index, $Config>
+      with: <$Input extends InputIncrementable<$Config>>(input: $Input) =>
+        Client<$Index, AddIncrementalInput<$Config, $Input>>
+      use: <$Extension extends Extension>(extension: $Extension) =>
+        Client<$Index, $Config, $AdditionalMethods & ExtensionCallBuilderMerge<$Extension, { Index:$Index, Config:$Config, AdditionalMethods:$AdditionalMethods }>> 
+      anyware: (anyware: Anyware.Extension2<Core.Core<$Config>>) =>
+        Client<$Index, $Config, $AdditionalMethods> 
+      retry: (extension: Anyware.Extension2<Core.Core, { retrying: true }>) =>
+        Client<$Index, $Config>
     }
 
 export type ClientTyped<$Index extends Schema.Index, $Config extends Config> =
@@ -247,7 +249,7 @@ const createWithState = (
     const result = await Core.anyware.run({
       initialInput,
       retryingExtension: context.retry as any,
-      extensions: context.extensions.filter(_ => _.anyware !== undefined).map(_ => _.anyware!) as any,
+      extensions: context.extensions.filter(_ => _.onRequest !== undefined).map(_ => _.onRequest!) as any,
     }) as GraffleExecutionResultVar
 
     return handleOutput(context, result)
@@ -316,7 +318,7 @@ const createWithState = (
     anyware: (anyware: Anyware.Extension2<Core.Core>) => {
       return createWithState({
         ...state,
-        extensions: [...state.extensions, createExtension({ name: `InlineAnyware`, anyware })],
+        extensions: [...state.extensions, createExtension({ name: `InlineAnyware`, onRequest: anyware })],
       })
     },
     retry: (anyware: Anyware.Extension2<Core.Core, { retrying: true }>) => {
@@ -374,12 +376,10 @@ const createWithState = (
   }
 
   const clientProxy = proxyGet(clientDirect, ({ path, property }) => {
-    const getBuilders = state.extensions.map(_ => _.builder).filter(_ => _ !== undefined).map(_ => _.get).filter(
-      _ => _ !== undefined,
-    )
+    const onGetHandlers = state.extensions.map(_ => _.onBuilderGet).filter(_ => _ !== undefined)
 
-    for (const getBuilder of getBuilders) {
-      const result = getBuilder({ context, client: clientDirect, path, property })
+    for (const onGetHandler of onGetHandlers) {
+      const result = onGetHandler({ context, client: clientDirect, path, property })
       if (result !== undefined) return result
     }
 

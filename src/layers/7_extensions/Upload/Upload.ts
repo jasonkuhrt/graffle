@@ -1,5 +1,5 @@
+import { createExtension } from '../../../entrypoints/main.js'
 import type { StandardScalarVariables } from '../../../lib/graphql.js'
-import { createExtension } from '../../5_createExtension/createExtension.js'
 import { createBody } from './createBody.js'
 
 /**
@@ -8,23 +8,7 @@ import { createBody } from './createBody.js'
 export const Upload = () =>
   createExtension({
     name: `Upload`,
-    anyware: async ({ pack }) => {
-      // const { pack } = await encode({
-      //   using: {
-      //     body: (input) => {
-      //       const hasUploadScalarVariable = input.variables && isUsingUploadScalar(input.variables)
-      //       if (!hasUploadScalarVariable) return
-
-      //       // TODO we can probably get file upload working for in-memory schemas too :)
-      //       if (encode.input.transport !== `http`) throw new Error(`Must be using http transport to use "Upload" scalar.`)
-
-      //       return createBody({
-      //         query: input.query,
-      //         variables: input.variables!,
-      //       })
-      //     },
-      //   },
-      // })
+    onRequest: async ({ pack }) => {
       // Remove the content-type header so that fetch sets it automatically upon seeing the body is a FormData instance.
       // @see https://muffinman.io/blog/uploading-files-using-fetch-multipart-form-data/
       // @see https://stackoverflow.com/questions/3508338/what-is-the-boundary-in-multipart-form-data

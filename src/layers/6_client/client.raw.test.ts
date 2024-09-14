@@ -2,7 +2,7 @@ import { beforeEach, describe, expect } from 'vitest'
 import { test } from '../../../tests/_/helpers.js'
 import { Graffle } from '../../../tests/_/schema/generated/__.js'
 import { schema } from '../../../tests/_/schema/schema.js'
-import { createExtension } from '../5_createExtension/createExtension.js'
+import { createExtension } from './extension.js'
 
 // todo test with custom scalars
 
@@ -12,7 +12,7 @@ describe(`memory transport`, () => {
   let input: object | undefined
   const spyExchangeInput = createExtension({
     name: `spy`,
-    anyware: ({ exchange }) => {
+    onRequest: ({ exchange }) => {
       if (exchange.input.transport === `memory`) {
         input = exchange.input
       }
