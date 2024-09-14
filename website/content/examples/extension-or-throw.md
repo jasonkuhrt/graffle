@@ -22,6 +22,7 @@ const result1 = await atlas.query.continents({ name: true })
 console.log(result1)
 
 const result2 = await atlas.query.continentsOrThrow({ name: true })
+result2 // This line will never be reached because of thrown error.
 ```
 <!-- dprint-ignore-end -->
 
