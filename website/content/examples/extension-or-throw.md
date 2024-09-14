@@ -21,7 +21,7 @@ const atlas = Atlas
 const result1 = await atlas.query.continents({ name: true })
 console.log(result1)
 
-const result2 = await atlas.query.continentOrThrow({ name: true })
+const result2 = await atlas.query.continentsOrThrow({ name: true })
 ```
 <!-- dprint-ignore-end -->
 

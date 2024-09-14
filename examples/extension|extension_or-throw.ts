@@ -18,4 +18,4 @@ const atlas = Atlas
 const result1 = await atlas.query.continents({ name: true })
 show(result1)
 
-const result2 = await atlas.query.continentOrThrow({ name: true })
+const result2 = await atlas.query.continentsOrThrow({ name: true })
