@@ -3,7 +3,6 @@ import { capitalize } from 'es-toolkit'
 import { ModuleKind, ModuleResolutionKind } from 'typescript'
 import { defineConfig } from 'vitepress'
 import { generateSidebar, Sidebar, SidebarItem, SidebarMulti, SidebarMultiItem } from 'vitepress-sidebar'
-import { sidebarExamples } from './configExamples'
 
 const prefixPattern = /\d+_/g
 
@@ -39,7 +38,18 @@ const sidebars = fixTitles(fixLinks(generateSidebar([
   {
     scanStartPath: 'content/guides',
     resolvePath: '/guides/',
-    excludeFolders: ['_example_links'],
+    // collapsed: false,
+    // capitalizeEachWords: true,
+    // hyphenToSpace: true,
+    prefixSeparator: '_',
+    removePrefixAfterOrdering: true,
+    useTitleFromFrontmatter: true,
+    useTitleFromFileHeading: true,
+    keepMarkdownSyntaxFromTitle: true,
+  },
+  {
+    scanStartPath: 'content/examples',
+    resolvePath: '/examples/',
     // collapsed: false,
     // capitalizeEachWords: true,
     // hyphenToSpace: true,
@@ -51,7 +61,7 @@ const sidebars = fixTitles(fixLinks(generateSidebar([
   },
 ]) as SidebarMulti))
 
-// console.log(sidebars['/guides/'].items[0])
+// console.log(sidebars['/examples/'].items[0])
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -60,9 +70,9 @@ export default defineConfig({
    */
   // dprint-ignore
   rewrites: {
-    'guides/{:_(\\d+_)}?:one/{:_(\\d+_)}?:two/{:_(\\d+_)}?:three'   : 'guides/:one/:two/:three',
-    'guides/{:_(\\d+_)}?:one/{:_(\\d+_)}?:two'                      : 'guides/:one/:two',
-    'guides/{:prefixOne(\\d+_)}?:one'                               : 'guides/:one'
+    ':section/{:_(\\d+_)}?:one/{:_(\\d+_)}?:two/{:_(\\d+_)}?:three'   : ':section/:one/:two/:three',
+    ':section/{:_(\\d+_)}?:one/{:_(\\d+_)}?:two'                      : ':section/:one/:two',
+    ':section/{:prefixOne(\\d+_)}?:one'                               : ':section/:one'
   },
   title: 'Graffle',
   description: 'Minimalist Progressively Type Safe GraphQL Client For JavaScript.',
@@ -118,10 +128,6 @@ export default defineConfig({
       { text: 'Examples', link: '/examples' },
     ],
     sidebar: {
-      '/examples/': [
-        { text: 'Introduction', link: 'examples/index' },
-        ...sidebarExamples,
-      ],
       ...sidebars,
     },
     socialLinks: [

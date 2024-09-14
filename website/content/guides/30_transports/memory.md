@@ -6,7 +6,7 @@ aside: false
 
 Graffle has the concept of "transports". A transport is how the request reaches the GraphQL schema for execution. This section is about the "memory" transport.
 
-<!--@include: @/guides/_example_links/transport-memory.md-->
+<!--@include: @/_snippets/example-links/transport-memory.md-->
 
 ## Overview
 

@@ -10,7 +10,7 @@ export const { generate: generateIndex, moduleName: moduleNameIndex } = createCo
     const SchemaNamespace = `Schema`
     const code = []
     code.push(`/* eslint-disable */\n`)
-    code.push(`import type * as ${SchemaNamespace} from './${moduleNameSchemaBuildtime}.js'\n`)
+    code.push(`import type * as ${SchemaNamespace} from '../${moduleNameSchemaBuildtime}.js'\n`)
 
     const rootTypesPresence = {
       Query: hasQuery(config.typeMapByKind),

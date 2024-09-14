@@ -1,6 +1,6 @@
 # Opentelemetry
 
-<!--@include: @/guides/_example_links/extension_opentelemetry.md-->
+<!--@include: @/_snippets/example-links/extension_opentelemetry.md-->
 
 The `Opentelemetry` extension instruments requests with [OpenTelemetry](https://opentelemetry.io).
 

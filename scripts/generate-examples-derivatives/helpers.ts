@@ -1,20 +1,27 @@
 import { capitalize, kebabCase } from 'es-toolkit'
 import { execa, ExecaError } from 'execa'
 import { globby } from 'globby'
+import * as Path from 'node:path'
 import stripAnsi from 'strip-ansi'
 import { showPartition } from '../../examples/$/helpers.js'
 import { type File, readFiles } from '../lib/readFiles.js'
+import {
+  getOutputEncoderFilePathFromExampleFilePath,
+  getOutputFilePathFromExampleFilePath,
+  outputEncoderExtension,
+} from './generate-outputs.js'
 
 export const directories = {
   outputs: `./examples/__outputs__`,
   examples: `./examples`,
+  tests: `./tests/examples`,
 }
 
-export const examplesIgnorePatterns = [`./examples/$*`, `./examples/*.output.*`, `./examples/*.output-encoder.*`]
+export const examplesIgnorePatterns = [`./examples/$`, directories.outputs]
 
 export const readExampleFiles = () =>
   readFiles({
-    pattern: `./examples/*.ts`,
+    pattern: `./examples/*/*.ts`,
     options: { ignore: examplesIgnorePatterns },
   })
 
@@ -22,17 +29,25 @@ export const readExamples = async (): Promise<Example[]> => {
   const exampleFiles = await readExampleFiles()
 
   const outputFiles = await readFiles({
-    pattern: `./examples/__outputs__/*.output.txt`,
+    pattern: `./examples/__outputs__/*/*.output.txt`,
   })
 
-  const encoderFilePaths = await globby(`${directories.outputs}/*.output.encoder.ts`)
+  const encoderFilePaths = await globby(`${directories.outputs}/**/*${outputEncoderExtension}`)
 
   const examples = exampleFiles.map((example) => {
-    const outputFile = outputFiles.find(file => file.name === `${example.name}.output.txt`)
+    const group = parseGroup(example.path.full)
+    const fileName = parseFileName(example.name, group.humanName)
+
+    const outputFilePath = getOutputFilePathFromExampleFilePath(example.path.full)
+    const outputEncoderFilePath = getOutputEncoderFilePathFromExampleFilePath(example.path.full)
+    const outputFile = outputFiles.find(file => {
+      return Path.relative(file.path.full, outputFilePath) === ``
+    })
     if (!outputFile) throw new Error(`Could not find output file for ${example.name}`)
-    const encoderFilePath = encoderFilePaths.find((encoderFilePath) =>
-      encoderFilePath.includes(`${example.name}.output.encoder.ts`)
-    )
+
+    const testEncoderFilePath = encoderFilePaths.find((filePath) => {
+      return Path.relative(filePath, outputEncoderFilePath) === ``
+    })
 
     const { description, content } = extractDescription(example.content)
 
@@ -41,13 +56,14 @@ export const readExamples = async (): Promise<Example[]> => {
         ...example,
         content,
       },
-      fileName: parseFileName(example.name),
+      group,
+      fileName,
       output: {
         file: outputFile,
         blocks: outputFile.content.split(showPartition + `\n`).map(block => block.trim()).filter(Boolean),
-        encoder: encoderFilePath
+        encoder: testEncoderFilePath
           ? {
-            filePath: encoderFilePath,
+            filePath: testEncoderFilePath,
           }
           : undefined,
       },
@@ -60,8 +76,17 @@ export const readExamples = async (): Promise<Example[]> => {
   return examples
 }
 
-const parseFileName = (fileName: string): Example['fileName'] => {
-  const [group, fileNameWithoutGroup] = fileName.includes(`|`) ? fileName.split(`|`) : [null, fileName]
+const parseGroup = (filePath: string) => {
+  const dirName = Path.dirname(filePath).split(`/`).pop()!
+  const humanName = dirName.replace(/^\d+_/, ``)
+  return {
+    dirName,
+    humanName,
+  }
+}
+
+const parseFileName = (fileName: string, group: string): Example['fileName'] => {
+  const fileNameWithoutGroup = fileName
   const [tagsExpression, titleExpression] = fileNameWithoutGroup.split(`__`)
   // If group name is duplicated by tags then omit that from the canonical title.
   const tags = tagsExpression ? parseTags(tagsExpression) : null
@@ -70,11 +95,10 @@ const parseFileName = (fileName: string): Example['fileName'] => {
     : null
   const canonicalTitleExpression = titleExpression ?? tagsExpressionWithoutGroupName ?? `impossible`
   return {
-    canonical: (group ? `${group}-` : ``) + kebabCase(canonicalTitleExpression),
+    canonical: kebabCase(canonicalTitleExpression),
     canonicalTitle: toTitle(canonicalTitleExpression),
     tags: tagsExpression ?? `impossible`,
     title: titleExpression ?? null,
-    group,
   }
 }
 
@@ -93,7 +117,10 @@ export interface Example {
     canonicalTitle: string
     tags: string
     title: string | null
-    group: null | string
+  }
+  group: {
+    humanName: string
+    dirName: string
   }
   output: {
     file: File
