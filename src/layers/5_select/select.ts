@@ -34,13 +34,13 @@ type Create = <$Name extends GlobalRegistry.SchemaNames>(
 ) => TypeSelectionSets<GlobalRegistry.GetSchemaIndexOrDefault<$Name>>
 
 export const create: Create = (_name) => {
-  return idProxy as any
+  return identityProxy as any
 }
 
-const idProxy = new Proxy({}, {
+const identityProxy = new Proxy({}, {
   get: () => (value: unknown) => value,
 })
 
 // eslint-disable-next-line
 // @ts-ignore generated types
-export const select: TypeSelectionSets<GlobalRegistry.SchemaIndexDefault> = idProxy
+export const select: TypeSelectionSets<GlobalRegistry.SchemaIndexDefault> = identityProxy
