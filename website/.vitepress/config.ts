@@ -61,6 +61,8 @@ const sidebars = fixTitles(fixLinks(generateSidebar([
   },
 ]) as SidebarMulti))
 
+sidebars['/examples/'].items.unshift({ text: 'Introduction', link: '/' })
+
 // console.log(sidebars['/examples/'].items[0])
 
 // https://vitepress.dev/reference/site-config
