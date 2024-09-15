@@ -14,7 +14,7 @@ const graffle = Graffle.create({
 
 const resultPromise = graffle
   .with({ transport: { signal: abortController.signal } })
-  //                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  //                           ^^^^^^^^^^^^^^^
   .rawString({
     document: `
       {
@@ -26,10 +26,8 @@ const resultPromise = graffle
   })
 
 abortController.abort()
-//              ^^^^^^^
+//              ^^^^^
 
 const result = await resultPromise.catch((error: unknown) => (error as Error).message)
 
 show(result)
-
-// todo .with(...) variant

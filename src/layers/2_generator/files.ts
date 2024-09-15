@@ -12,14 +12,17 @@ export interface Input {
   outputDirPath?: string
   name?: string
   code?: Omit<GenerateInput, 'schemaSource' | 'sourceDirPath' | 'options'>
-  defaultSchemaUrl?: URL
+  defaultSchemaUrl?: boolean | URL
   sourceSchema: {
     type: 'sdl'
     /**
      * Defaults to the source directory if set, otherwise the current working directory.
      */
     dirPath?: string
-  } | { type: 'url'; url: URL }
+  } | {
+    type: 'url'
+    url: URL
+  }
   /**
    * Defaults to the current working directory.
    */
@@ -73,9 +76,16 @@ export const generateFiles = async (input: Input) => {
   )
   const customScalarCodecsPathExists = await fileExists(customScalarCodecsFilePath)
   const typeScriptFormatter = (input.format ?? true) ? await getTypeScriptFormatter() : undefined
+  // dprint-ignore
+  const defaultSchemaUrl =
+    typeof input.defaultSchemaUrl === `boolean`
+      ? input.sourceSchema.type === `url`
+        ? input.sourceSchema.url
+        : undefined
+      : input.defaultSchemaUrl
 
   const codes = generateCode({
-    defaultSchemaUrl: input.defaultSchemaUrl,
+    defaultSchemaUrl,
     libraryPaths: {
       ...input.libraryPaths,
     },
