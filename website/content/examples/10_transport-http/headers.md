@@ -15,7 +15,6 @@ const graffle = Graffle
     schema: `https://countries.trevorblades.com/graphql`,
     transport: {
       headers: {
-        // todo: authorization header not console.loging up in final output!
         authorization: `Bearer MY_TOKEN`,
         'x-something-to-unset': `true`,
       },
@@ -45,6 +44,7 @@ await graffle.rawString({ document: `{ languages { code } }` })
 Headers {
   accept: 'application/graphql-response+json; charset=utf-8, application/json; charset=utf-8',
   'content-type': 'application/json',
+  authorization: 'Bearer MY_TOKEN',
   'x-from-raw': 'true'
 }
 ```
