@@ -69,7 +69,7 @@ export const generateDocs = async (examples: Example[]) => {
   await Promise.all(
     Object.entries(groups).map(async ([groupName, examples]) => {
       const codeLinks = examples.map(example => {
-        return `<a href="../../examples/${example.fileName.canonical}">${example.fileName.canonicalTitle}</a>`
+        return `<a href="../../examples/${example.group.humanName}/${example.fileName.canonical}">${example.fileName.canonicalTitle}</a>`
       }).join(` <span class="ExampleLinksSeparator"></span> `)
       const code =
         `<p class="ExampleLinks">Examples <span class="ExampleLinksTitleSeparator">-></span> ${codeLinks}</p>`
