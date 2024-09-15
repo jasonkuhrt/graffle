@@ -1,1 +1,1 @@
-<p class="ExampleLinks">Examples <span class="ExampleLinksTitleSeparator">-></span> <a href="../../examples/headers">Headers</a></p>
+<p class="ExampleLinks">Examples <span class="ExampleLinksTitleSeparator">-></span> <a href="../../examples/transport-http/headers">Headers</a></p>

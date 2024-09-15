@@ -11,7 +11,6 @@ const graffle = Graffle
     schema: publicGraphQLSchemaEndpoints.Atlas,
     transport: {
       headers: {
-        // todo: authorization header not showing up in final output!
         authorization: `Bearer MY_TOKEN`,
         'x-something-to-unset': `true`,
       },
