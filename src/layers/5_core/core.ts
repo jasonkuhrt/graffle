@@ -97,7 +97,7 @@ export type HookDefPack<$Config extends Config> = {
     }>
   slots: {
     /**
-     * When request will be sent using POST this slot is called to create the value that will be used for the HTTP body.
+     * When request will be sent using GET this slot is called to create the value that will be used for the HTTP Search Parameters.
      */
     searchParams: getRequestEncodeSearchParameters
     /**
