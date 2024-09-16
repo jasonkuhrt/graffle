@@ -12,7 +12,7 @@ ContextualError: There was an error in the core implementation of hook "exchange
     at async Proxy.rawString (/some/path/to/client.ts:XX:XX)
     at async <anonymous> (/some/path/to/output_preset__standard-graphql.ts:XX:XX) {
   context: { hookName: 'exchange', source: 'implementation' },
-  [cause]: TypeError: Failed to parse URL from undefined
+  [cause]: TypeError: Failed to parse URL from ...
       at new Request (node:internal/deps/undici/undici:XX:XX)
       at Object.run (/some/path/to/core.ts:XX:XX)
       ... 6 lines matching cause stack trace ...
@@ -30,7 +30,7 @@ ContextualError: There was an error in the core implementation of hook "exchange
         at async run (/some/path/to/client.ts:XX:XX)
         at async runRaw (/some/path/to/client.ts:XX:XX) {
       code: 'ERR_INVALID_URL',
-      input: 'undefined'
+      input: '...'
     }
   }
 }

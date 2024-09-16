@@ -6,6 +6,7 @@ import { Graffle, Preset } from '../../src/entrypoints/main.js'
 import { show } from '../$/show.js'
 
 const graffle = Graffle.create({
+  schema: `...`,
   output: Preset.traditionalGraphqlOutput,
 })
 
