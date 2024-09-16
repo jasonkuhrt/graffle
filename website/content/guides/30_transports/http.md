@@ -1,3 +1,7 @@
+---
+title: HTTP
+---
+
 # HTTP Transport
 
 Graffle has the concept of "transports". A transport is how the request reaches the GraphQL schema for execution. This section is about the "http" transport.

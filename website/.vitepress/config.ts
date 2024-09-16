@@ -38,9 +38,6 @@ const sidebars = fixTitles(fixLinks(generateSidebar([
   {
     scanStartPath: 'content/guides',
     resolvePath: '/guides/',
-    // collapsed: false,
-    // capitalizeEachWords: true,
-    // hyphenToSpace: true,
     prefixSeparator: '_',
     removePrefixAfterOrdering: true,
     useTitleFromFrontmatter: true,
@@ -50,9 +47,6 @@ const sidebars = fixTitles(fixLinks(generateSidebar([
   {
     scanStartPath: 'content/examples',
     resolvePath: '/examples/',
-    // collapsed: false,
-    // capitalizeEachWords: true,
-    // hyphenToSpace: true,
     prefixSeparator: '_',
     removePrefixAfterOrdering: true,
     useTitleFromFrontmatter: true,
@@ -62,8 +56,10 @@ const sidebars = fixTitles(fixLinks(generateSidebar([
 ]) as SidebarMulti))
 
 sidebars['/examples/'].items.unshift({ text: 'Introduction', link: '/' })
-
-// console.log(sidebars['/examples/'].items[0])
+sidebars['/guides/'].items.unshift({ text: 'Introduction', link: '/' })
+const rootItems = sidebars['/guides/'].items.filter(_ => !_.items)
+sidebars['/guides/'].items = sidebars['/guides/'].items.filter(_ => _.items && _.items.length > 0)
+sidebars['/guides/'].items.unshift(...rootItems)
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -112,6 +108,10 @@ export default defineConfig({
   },
   srcDir: './content',
   themeConfig: {
+    footer: {
+      message: 'Released under the MIT License.',
+      copyright: 'Copyright © 2024-present Jason Kuhrt',
+    },
     // @see https://github.com/vuejs/vitepress/issues/4141
     logo: {
       light: '/_assets/logo-dark.svg',
@@ -126,7 +126,7 @@ export default defineConfig({
     },
     aside: 'left',
     nav: [
-      { text: 'Guides', link: '/guides/overview/introduction' },
+      { text: 'Guides', link: '/guides' },
       { text: 'Examples', link: '/examples' },
     ],
     sidebar: {

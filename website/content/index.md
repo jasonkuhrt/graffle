@@ -8,12 +8,12 @@ hero:
   actions:
     - theme: brand
       text: Guides 
-      link: /guides/overview/introduction
+      link: /guides
     - theme: alt
       text: Examples
       link: /examples
   image:
-    src: /_assets/logo-dark.png
+    src: /_assets/logo-dark-squared.png
     alt: Graffle
 features:
   - title: Spec Compliant
@@ -24,7 +24,6 @@ features:
     details: Ready to go extensions for things like OpenTelemetry and file uploads to meet real world project needs.
   - title: In-Memory Schemas Too
     details: Not just a great way to query GraphQL APIs. Execute documents against in memory schemas just as easily with nearly the same interface.
-    # TODO support for subscription type.
   - title: Opt-in Generation
     details: Begin with a traditional static library and seamlessly transition to a more powerful generated one when you want.
   - title: Type Safe Results <br/><span style="opacity:0.25;">( gen )</span>
@@ -35,12 +34,43 @@ features:
     details: First class support for schemas that have modelled errors into their design. Result Fields can be made to throw on errors or automatically map to error classes.
 ---
 
+<script setup>
+import { VPTeamMembers } from 'vitepress/theme'
+
+const members = [
+  {
+    avatar: 'https://www.github.com/jasonkuhrt.png',
+    name: 'Jason Kuhrt',
+    title: 'Creator',
+    desc: 'Ex @prisma Dialogue littleBits. Creator Graffle Molt Paka Nexus. Shapeshifting Polymath ≒ Art ∙ Design ∙ Engineering. Heart humanities.  In an alternate universe ⊻ Coureur de Bois, Architect, Athlete, Lego Master Builder',
+    sponsor: 'https://github.com/sponsors/jasonkuhrt',
+    links: [
+      { icon: { svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle fill="none" cx="12" cy="12" r="10"/><path fill="none" d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><path d="M2 12h20"/></svg>' }, link: 'https://kuhrt.me' },
+      { icon: 'github', link: 'https://github.com/jasonkuhrt' },
+      { icon: 'twitter', link: 'https://twitter.com/jasonkuhrt' },
+      { icon: 'instagram', link: 'https://instagram.com/jasonkuhrt' },
+    ]
+  },
+]
+</script>
+
 <style>
-.VPHomeHero img {
-  filter: opacity(0.85);
+.VPHome .vp-doc .VPTeamMembers {
+  margin-top: 1.2rem;
 }
 
-html.dark .VPHomeHero img {
-  filter: invert(1) opacity(0.9);
+.vp-doc .VPTeamMembers.small.count-1 .container {
+  max-width: none!important;
 }
+
+.VPTeamMembers.small .container {
+  grid-template-columns: repeat(4, 1fr)!important;
+}
+
 </style>
+
+<section class="CustomSections">
+
+<VPTeamMembers size="small" :members="members" />
+
+</section>
