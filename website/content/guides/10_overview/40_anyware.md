@@ -62,13 +62,9 @@ Discriminated unions are used to model this in the input/output types flowing th
 import { Graffle } from 'graffle'
 // ---cut---
 Graffle
-  .create({ schema: '...' })
+  .create({ schema: 'https://...' })
   .anyware(async ({ encode }) => {
     if (encode.input.interface === 'typed') {
-      // Do something here.
-    }
-
-    if (encode.input.transport === 'memory') {
       // Do something here.
     }
 
@@ -77,6 +73,8 @@ Graffle
     return encode()
   })
 ```
+
+If Graffle is created with a URL for schema then it will automatically type `transport` as `http`. Conversely if you pass a GraphQL schema instance it will automatically type `transport` as `memory`.
 
 ## Hooks
 
