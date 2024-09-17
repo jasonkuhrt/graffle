@@ -12,7 +12,7 @@ importers:
         specifier: ^0.3.0 || ^0.4.0
         version: 0.3.0
       '@dprint/typescript':
-        specifier: ^0.91.1
+        specifier: ^0.91.1 || ^0.92.0
         version: 0.91.1
       '@graphql-typed-document-node/core':
         specifier: ^3.2.0
