@@ -64,9 +64,20 @@ const members = [
 }
 
 .VPTeamMembers.small .container {
-  grid-template-columns: repeat(4, 1fr)!important;
+  grid-template-columns: repeat(2, 1fr)!important;
 }
 
+@media (min-width: 767px) and (max-width: 1023px) {
+  .VPTeamMembers.small .container {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .VPTeamMembers.small .container {
+    grid-template-columns: 1fr !important;
+  }
+}
 </style>
 
 <section class="CustomSections">
