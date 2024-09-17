@@ -24,8 +24,9 @@ const fixLinks = (sidebarMulti: SidebarMulti) => {
 
 const fixTitles = (sidebarMulti: SidebarMulti) => {
   return sidebarMultiVisitItems(sidebarMulti, (sidebarItem) => {
+    const [title, maybeHtml] = sidebarItem.text?.split('<') as [string, string | undefined]
     if (sidebarItem.text) {
-      sidebarItem.text = capitalize(sidebarItem.text.replaceAll(/-/g, ' '))
+      sidebarItem.text = capitalize(title.replaceAll(/-/g, ' ')) + (maybeHtml ? `<${maybeHtml}` : '')
     }
   })
 }
@@ -41,13 +42,14 @@ const sidebars = fixTitles(fixLinks(generateSidebar([
     removePrefixAfterOrdering: true,
     useTitleFromFrontmatter: true,
     useTitleFromFileHeading: true,
-    hyphenToSpace: true,
-    capitalizeEachWords: true,
+    // https://github.com/jooy2/vitepress-sidebar/issues/176
+    // hyphenToSpace: true,
+    // capitalizeEachWords: true,
     keepMarkdownSyntaxFromTitle: true,
   },
   {
-    hyphenToSpace: true,
-    capitalizeEachWords: true,
+    // hyphenToSpace: true,
+    // capitalizeEachWords: true,
     scanStartPath: 'content/examples',
     resolvePath: '/examples/',
     prefixSeparator: '_',
