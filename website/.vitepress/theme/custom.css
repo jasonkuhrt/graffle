@@ -167,6 +167,12 @@
   }
 }
 
+:root {
+  --vp-home-hero-img-border-radius: 33px;
+}
+
+
+
 .VPHomeHero .image-bg {
   animation: rainbow-wave 30s linear infinite;
   background-image: 
@@ -191,7 +197,7 @@
   background-size: 200% 200%, 100% 100%, 200% 200%;
   background-position: 0% 50%;
   background-blend-mode: overlay, soft-light, overlay;
-  border-radius: 35px;
+  border-radius: calc(var(--vp-home-hero-img-border-radius) + 2px);
   overflow: hidden;
 }
 
@@ -214,8 +220,32 @@
 }
 
 .VPHomeHero img {
-  border-radius: 33px;
+  border-radius:  var(--vp-home-hero-img-border-radius);
   filter: invert(1) opacity(0.8);
   position: relative;
   z-index: 1;
+}
+
+@media (min-width: 767px) and (max-width: 960px) {
+:root {
+    --vp-home-hero-img-border-radius: 28px;
+  }
+  .VPHomeHero .image-bg {
+    border-radius: calc(var(--vp-home-hero-img-border-radius) + 2px);
+  }
+  .VPHomeHero img {
+    border-radius: calc(var(--vp-home-hero-img-border-radius) + 0px);
+  }
+}
+
+@media (max-width: 767px) {
+  :root {
+    --vp-home-hero-img-border-radius: 20px;
+  }
+  .VPHomeHero .image-bg {
+    border-radius: calc(var(--vp-home-hero-img-border-radius) + 2px);
+  }
+  .VPHomeHero img {
+    border-radius: calc(var(--vp-home-hero-img-border-radius) + 0px);
+  }
 }
