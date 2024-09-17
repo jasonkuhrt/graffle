@@ -1,4 +1,4 @@
-# Schema Errors <span title="Requires generation" style="font-size:1.75em;line-height:0;">⩕</span>
+# Schema Errors <GeneratedClientBadge />
 
 There is a GraphQL schema design pattern that advocates for encoding errors into your schema. It generally has two parts: One, objects that represent errors; Two, root fields that return unions of one success object and multiple error objects. The benefit of this approach is letting users know about error states and enabling clients to receive them in a type safe way. The general net positive is higher quality and easier to develop software.
 

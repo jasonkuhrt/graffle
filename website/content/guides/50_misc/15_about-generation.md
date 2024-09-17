@@ -1,4 +1,4 @@
-# About Generation <span title="Requires generation" style="font-size:1.75em;line-height:0;">⩕</span>
+# About Generation <GeneratedClientBadge />
 
 This guide is an overview of using generation. Individual features enabled by generation are discussed in other guides. There is a [practical tutorial in getting started](../overview/getting-started-generated.md). But if you're trying to build a mental model of what Graffle means when it talks about generation or generally want more detail on generation tools, then this guide is for you.
 
