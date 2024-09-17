@@ -1,4 +1,26 @@
----------------------------------------- SHOW ----------------------------------------
+::: details Example
+
+<div class="ExampleSnippet">
+<a href="../../examples/output/envelope">Envelope</a>
+
+<!-- dprint-ignore-start -->
+```ts twoslash
+import { Graffle as Atlas } from './graffle/__.js'
+
+const atlas = Atlas.create({
+  output: {
+    envelope: true,
+  },
+})
+
+const result = await atlas.query.continents({ name: true })
+
+console.log(result)
+```
+<!-- dprint-ignore-end -->
+
+<!-- dprint-ignore-start -->
+```txt
 {
   data: {
     continents: [
@@ -51,3 +73,8 @@
     url: 'https://countries.trevorblades.com/graphql'
   }
 }
+```
+<!-- dprint-ignore-end -->
+
+</div>
+:::

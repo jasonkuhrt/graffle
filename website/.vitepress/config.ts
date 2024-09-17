@@ -2,7 +2,8 @@ import { transformerTwoslash } from '@shikijs/vitepress-twoslash'
 import { capitalize } from 'es-toolkit'
 import { ModuleKind, ModuleResolutionKind } from 'typescript'
 import { defineConfig } from 'vitepress'
-import { generateSidebar, Sidebar, SidebarItem, SidebarMulti, SidebarMultiItem } from 'vitepress-sidebar'
+import { tabsMarkdownPlugin } from 'vitepress-plugin-tabs'
+import { generateSidebar, SidebarItem, SidebarMulti } from 'vitepress-sidebar'
 
 const prefixPattern = /\d+_/g
 
@@ -95,6 +96,9 @@ export default defineConfig({
     }],
   ],
   markdown: {
+    config(md) {
+      md.use(tabsMarkdownPlugin)
+    },
     codeTransformers: [
       transformerTwoslash({
         twoslashOptions: {

@@ -1,4 +1,30 @@
----------------------------------------- SHOW ----------------------------------------
+<div class="ExampleSnippet">
+<a href="../../examples/extension/opentelemetry">Opentelemetry</a>
+
+<!-- dprint-ignore-start -->
+```ts twoslash
+import { ConsoleSpanExporter, SimpleSpanProcessor } from '@opentelemetry/sdk-trace-base'
+import { NodeTracerProvider } from '@opentelemetry/sdk-trace-node'
+import { Opentelemetry } from 'graffle/extensions'
+import { Graffle as Atlas } from './graffle/__.js'
+
+// Setup Opentelemetry
+// 1. Initialize the OpenTelemetry provider
+// 2. Register the provider to make the OpenTelemetry API use it
+const exporter = new ConsoleSpanExporter()
+const processor = new SimpleSpanProcessor(exporter)
+const provider = new NodeTracerProvider()
+provider.addSpanProcessor(processor)
+provider.register()
+
+const graffle = Atlas.create().use(Opentelemetry())
+const data = await graffle.rawString({ document: `query { continents { name } }` })
+console.log(data)
+```
+<!-- dprint-ignore-end -->
+
+<!-- dprint-ignore-start -->
+```txt
 {
   resource: {
     attributes: {
@@ -22,7 +48,10 @@
   events: [],
   links: []
 }
----------------------------------------- SHOW ----------------------------------------
+```
+<!-- dprint-ignore-end -->
+<!-- dprint-ignore-start -->
+```txt
 {
   resource: {
     attributes: {
@@ -46,7 +75,10 @@
   events: [],
   links: []
 }
----------------------------------------- SHOW ----------------------------------------
+```
+<!-- dprint-ignore-end -->
+<!-- dprint-ignore-start -->
+```txt
 {
   resource: {
     attributes: {
@@ -70,7 +102,10 @@
   events: [],
   links: []
 }
----------------------------------------- SHOW ----------------------------------------
+```
+<!-- dprint-ignore-end -->
+<!-- dprint-ignore-start -->
+```txt
 {
   resource: {
     attributes: {
@@ -94,7 +129,10 @@
   events: [],
   links: []
 }
----------------------------------------- SHOW ----------------------------------------
+```
+<!-- dprint-ignore-end -->
+<!-- dprint-ignore-start -->
+```txt
 {
   resource: {
     attributes: {
@@ -118,7 +156,10 @@
   events: [],
   links: []
 }
----------------------------------------- SHOW ----------------------------------------
+```
+<!-- dprint-ignore-end -->
+<!-- dprint-ignore-start -->
+```txt
 {
   resource: {
     attributes: {
@@ -142,7 +183,10 @@
   events: [],
   links: []
 }
----------------------------------------- SHOW ----------------------------------------
+```
+<!-- dprint-ignore-end -->
+<!-- dprint-ignore-start -->
+```txt
 {
   continents: [
     { name: 'Africa' },
@@ -154,3 +198,7 @@
     { name: 'South America' }
   ]
 }
+```
+<!-- dprint-ignore-end -->
+
+</div>

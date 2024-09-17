@@ -1,10 +1,5 @@
----
-aside: false
----
-
-# Dynamic Headers
-
-This example shows how to leverage the extension system to dynamically manipulate headers per request.
+<div class="ExampleSnippet">
+<a href="../../examples/transport-http/dynamic-headers">Dynamic Headers</a>
 
 <!-- dprint-ignore-start -->
 ```ts twoslash
@@ -34,8 +29,6 @@ await graffle.rawString({ document: `{ languages { code } }` })
 ```
 <!-- dprint-ignore-end -->
 
-#### Outputs
-
 <!-- dprint-ignore-start -->
 ```txt
 {
@@ -52,3 +45,5 @@ await graffle.rawString({ document: `{ languages { code } }` })
 }
 ```
 <!-- dprint-ignore-end -->
+
+</div>

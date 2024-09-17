@@ -4,6 +4,15 @@ import { documentQueryContinents, publicGraphQLSchemaEndpoints } from '../../exa
 import { deleteFiles } from '../lib/deleteFiles.js'
 import { computeCombinations, type Example } from './helpers.js'
 
+interface ExampleTransformed extends Example {
+  snippet: {
+    content: string
+  }
+  snippetDetail: {
+    content: string
+  }
+}
+
 export const generateDocs = async (examples: Example[]) => {
   const examplesTransformed = examples
     .map(transformOther)
@@ -12,10 +21,48 @@ export const generateDocs = async (examples: Example[]) => {
     .map(transformOther)
     .map(transformMarkdown)
 
-  /**
-   * Write Example Pages
-   * -------------------
-   */
+  await Promise.all([
+    generateExampleSnippets(examplesTransformed),
+    generateExamplePages(examplesTransformed),
+    generateExampleLinksSnippets(examplesTransformed),
+  ])
+}
+
+/**
+ * Define Generators
+ * -----------------
+ */
+
+const generateExampleSnippets = async (examplesTransformed: ExampleTransformed[]) => {
+  const exampleGroups = Object.values(groupBy(examplesTransformed, example => example.group.dirName))
+  {
+    // Delete all existing to handle case of renaming or deleting examples.
+    await deleteFiles({
+      pattern: `./website/content/_snippets/examples/**/*.md`,
+    })
+    await Promise.all(
+      exampleGroups.map(async (examples) => {
+        const groupName = examples[0]!.group.humanName
+        await FS.mkdir(`./website/content/_snippets/examples/${groupName}`, { recursive: true })
+        await Promise.all(examples.map(async (example) => {
+          const snippetFilePath = `./website/content/_snippets/examples/${groupName}/${example.fileName.canonical}.md`
+          const snippetDetailFilePath =
+            `./website/content/_snippets/examples/${groupName}/${example.fileName.canonical}.detail.md`
+          await Promise.all([
+            FS.writeFile(snippetFilePath, example.snippet.content),
+            FS.writeFile(snippetDetailFilePath, example.snippetDetail.content),
+          ])
+          console.log(`Generated example doc snippet in markdown at`, snippetFilePath)
+        }))
+      }),
+    )
+  }
+
+  console.log(`Generated a Vitepress snippet for each example.`)
+}
+
+const generateExamplePages = async (examplesTransformed: ExampleTransformed[]) => {
+  const exampleGroups = Object.values(groupBy(examplesTransformed, example => example.group.dirName))
 
   // Delete all existing to handle case of renaming or deleting examples.
   await deleteFiles({
@@ -23,31 +70,21 @@ export const generateDocs = async (examples: Example[]) => {
     options: { ignore: [`./website/content/examples/index.md`] },
   })
 
-  {
-    const groups = Object.values(groupBy(examplesTransformed, example => example.group.dirName))
-
-    await Promise.all(
-      groups.map(async (examples) => {
-        const groupName = examples[0]!.group.dirName
-        await FS.mkdir(`./website/content/examples/${groupName}`, { recursive: true })
-        await Promise.all(examples.map(async (example) => {
-          const exampleMarkdownFilePath =
-            `./website/content/examples/${example.group.dirName}/${example.fileName.canonical}.md`
-          await FS.writeFile(exampleMarkdownFilePath, example.file.content)
-          console.log(`Generated example doc in markdown at`, exampleMarkdownFilePath)
-        }))
-      }),
-    )
-  }
-
+  await Promise.all(
+    exampleGroups.map(async (examples) => {
+      const groupName = examples[0]!.group.dirName
+      await FS.mkdir(`./website/content/examples/${groupName}`, { recursive: true })
+      await Promise.all(examples.map(async (example) => {
+        const exampleMarkdownFilePath = `./website/content/examples/${groupName}/${example.fileName.canonical}.md`
+        await FS.writeFile(exampleMarkdownFilePath, example.file.content)
+        console.log(`Generated example doc page in markdown at`, exampleMarkdownFilePath)
+      }))
+    }),
+  )
   console.log(`Generated a Vitepress page for each example.`)
+}
 
-  /**
-   * Write Example Links Page Partials
-   * ---------------------------------
-   */
-  // todo
-
+const generateExampleLinksSnippets = async (examplesTransformed: ExampleTransformed[]) => {
   // Delete all existing to handle case of renaming or deleting examples.
   await deleteFiles({ pattern: `./website/content/_snippets/example-links/*.md` })
 
@@ -189,32 +226,57 @@ ${block}
 `.trim()
   }).join(`\n`)
 
-  const outputs = outputBlocks.length > 0
-    ? `
+  const codeBlock = `
+<!-- dprint-ignore-start -->
+\`\`\`ts twoslash
+${example.file.content.trim()}
+\`\`\`
+<!-- dprint-ignore-end -->
+  `.trim()
+
+  const outputs = outputBlocks.length === 0
+    ? ``
+    : `
 #### Outputs
 
 ${outputBlocks}
 `.trim()
-    : ``
 
-  const source = `
+  const newContent = `
 ---
 aside: false
 ---
 
 # ${example.fileName.canonicalTitle}${example.description ? `\n\n${example.description}\n` : ``}
 
-<!-- dprint-ignore-start -->
-\`\`\`ts twoslash
-${example.file.content.trim()}
-\`\`\`
-<!-- dprint-ignore-end -->
+${codeBlock}
+
+${outputs}
 `.trim()
 
-  const newContent = [source, outputs].filter(_ => _ !== ``).join(`\n\n`)
+  const snippet = {
+    content: `
+<div class="ExampleSnippet">
+<a href="../../examples/${example.group.humanName}/${example.fileName.canonical}">${example.fileName.canonicalTitle}</a>
+
+${[codeBlock, outputBlocks].filter(_ => _ !== ``).join(`\n\n`).trim()}
+
+</div>
+    `.trim(),
+  }
+
+  const snippetDetail = {
+    content: `
+::: details Example
+${snippet.content}
+:::
+    `.trim(),
+  }
 
   return {
     ...example,
+    snippet,
+    snippetDetail,
     file: {
       ...example.file,
       content: newContent,

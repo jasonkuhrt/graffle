@@ -1,11 +1,7 @@
----
-aside: false
----
+::: details Example
 
-# Method Get
-
-This example shows usage of the `getReads` method mode for the HTTP transport. This mode causes read-kind operations (query, subscription)
-to be sent over HTTP GET method. Note write-kind operations (mutation) are still sent over HTTP POST method.
+<div class="ExampleSnippet">
+<a href="../../examples/transport-http/method-get">Method Get</a>
 
 <!-- dprint-ignore-start -->
 ```ts twoslash
@@ -31,8 +27,6 @@ await graffle.rawString({ document: `mutation { addPokemon(attack:0, defense:0, 
 await graffle.rawString({ document: `query { pokemonByName(name:"Nano") { hp } }` })
 ```
 <!-- dprint-ignore-end -->
-
-#### Outputs
 
 <!-- dprint-ignore-start -->
 ```txt
@@ -60,3 +54,6 @@ Emitted 'error' event on Server instance at:
 Node.js vXX.XX.XX
 ```
 <!-- dprint-ignore-end -->
+
+</div>
+:::

@@ -1,4 +1,5 @@
 import type { EnhanceAppContext } from 'vitepress'
+import { enhanceAppWithTabs } from 'vitepress-plugin-tabs/client'
 import DefaultTheme from 'vitepress/theme'
 import './custom.css'
 import MyLayout from './MyLayout.vue'
@@ -13,6 +14,7 @@ export default {
   extends: DefaultTheme,
   Layout: MyLayout,
   enhanceApp({ app }: EnhanceAppContext) {
+    enhanceAppWithTabs(app)
     app.use(TwoslashFloatingVue)
   },
 }
