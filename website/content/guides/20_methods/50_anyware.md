@@ -4,6 +4,8 @@ outline: [2,5]
 
 # Anyware
 
+<!--@include: @/_snippets/example-links/anyware.md-->
+
 ## Introduction
 
 Graffle allows you to apply one or more anyware's to the request pipeline. Each anyware runs on every request.
@@ -136,6 +138,8 @@ If Graffle is created with a URL for schema then it will automatically type `tra
 
 ## Jump-Starting
 
+<!--@include: @/_snippets/example-links/jump-start.md-->
+
 If you want to jump straight to a specific hook other than `encode` you can do so by simplify destructing to the desired hook. For example here we write anyware for `exchange`:
 
 ```ts twoslash
@@ -158,6 +162,8 @@ Graffle
 Note that you will hit a runtime error if you try to destructure more than one hook.
 
 ## Short-Circuiting
+
+<!--@include: @/_snippets/example-links/short-circuit.md-->
 
 If you want to end your work before `decode` you can do so by returning any hook result. This will cause the reset of the hooks to become passthroughs. For example:
 
@@ -205,6 +211,8 @@ Graffle
 ```
 
 ## Slots
+
+<!--@include: @/_snippets/example-links/slot.md-->
 
 Hooks can have one or more slots that allow you to override a part of their implementation.
 

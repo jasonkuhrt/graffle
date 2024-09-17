@@ -18,6 +18,7 @@ hero:
 features:
   - title: Spec Compliant
     details: Graffle complies with the <a href="https://graphql.github.io/graphql-over-http">GraphQL over HTTP</a> and <a href="https://github.com/jaydenseric/graphql-multipart-request-spec">GraphQL Multipart Request</a> specifications.
+    icon: 'x'
   - title: Extensible
     details: Powerful type-safe extension system. Intercept and manipulate inputs, outputs, and core with hooks; Add new methods; And more.
   - title: Ecosystem

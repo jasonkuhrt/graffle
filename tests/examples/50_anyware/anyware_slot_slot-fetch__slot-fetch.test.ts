@@ -7,13 +7,13 @@
 import { expect, test } from 'vitest'
 import { runExample } from '../../../scripts/generate-examples-derivatives/helpers.js'
 
-test(`raw_rawTyped__raw-typed`, async () => {
-  const exampleResult = await runExample(`./examples/30_raw/raw_rawTyped__raw-typed.ts`)
+test(`anyware_slot_slot-fetch__slot-fetch`, async () => {
+  const exampleResult = await runExample(`./examples/50_anyware/anyware_slot_slot-fetch__slot-fetch.ts`)
   // Examples should output their data results.
   const exampleResultMaybeEncoded = exampleResult
   // If ever outputs vary by Node version, you can use this to snapshot by Node version.
   // const nodeMajor = process.version.match(/v(\d+)/)?.[1] ?? `unknown`
   await expect(exampleResultMaybeEncoded).toMatchFileSnapshot(
-    `../../../examples/__outputs__/30_raw/raw_rawTyped__raw-typed.output.txt`,
+    `../../../examples/__outputs__/50_anyware/anyware_slot_slot-fetch__slot-fetch.output.txt`,
   )
 })
