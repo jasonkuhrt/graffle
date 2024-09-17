@@ -2,7 +2,7 @@
 aside: false
 ---
 
-# Raw Typed
+# Raw Document Node Typed
 
 This example shows how to send a request using a Document instance for the GraphQL document while also being typesafe in regards to the passed variables and return type.
 

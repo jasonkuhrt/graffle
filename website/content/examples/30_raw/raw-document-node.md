@@ -2,7 +2,7 @@
 aside: false
 ---
 
-# Raw
+# Raw Document Node
 
 This example shows how to send a request using a Document instance for the GraphQL document.
 
