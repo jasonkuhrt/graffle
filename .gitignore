@@ -8,4 +8,3 @@ tsconfig.vitest-temp.json
 website/.vitepress/dist
 website/.vitepress/cache
 legacy
-.vitepress

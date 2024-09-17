@@ -36,55 +36,27 @@ await graffle.rawString({ document: `query { pokemonByName(name:"Nano") { hp } }
 
 <!-- dprint-ignore-start -->
 ```txt
-{
-  methodMode: 'getReads',
-  headers: Headers {
-    accept: 'application/graphql-response+json; charset=utf-8, application/json; charset=utf-8',
-    'content-type': 'application/json'
-  },
-  signal: undefined,
-  method: 'post',
-  url: URL {
-    href: 'http://localhost:3000/graphql',
-    origin: 'http://localhost:3000',
-    protocol: 'http:',
-    username: '',
-    password: '',
-    host: 'localhost:3000',
-    hostname: 'localhost',
-    port: '3000',
-    pathname: '/graphql',
-    search: '',
-    searchParams: URLSearchParams {},
-    hash: ''
-  },
-  body: '{"query":"mutation { addPokemon(attack:0, defense:0, hp:1, name:\\"Nano\\") { name } }"}'
+node:events:498
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::3000
+    at Server.setupListenHandle [as _listen2] (node:net:XX:XX)
+    at listenInCluster (node:net:XX:XX)
+    at Server.listen (node:net:XX:XX)
+    at serveSchema (/some/path/to/helpers.ts:XX:XX)
+    at process.processTicksAndRejections (node:internal/process/task_queues:XX:XX)
+    at async <anonymous> (/some/path/to/transport-http_method-get.ts:XX:XX)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:XX:XX)
+    at process.processTicksAndRejections (node:internal/process/task_queues:XX:XX) {
+  code: 'EADDRINUSE',
+  errno: -48,
+  syscall: 'listen',
+  address: '::',
+  port: 3000
 }
-```
-<!-- dprint-ignore-end -->
-<!-- dprint-ignore-start -->
-```txt
-{
-  methodMode: 'getReads',
-  headers: Headers {
-    accept: 'application/graphql-response+json; charset=utf-8, application/json; charset=utf-8'
-  },
-  signal: undefined,
-  method: 'get',
-  url: URL {
-    href: 'http://localhost:3000/graphql?query=query+%7B+pokemonByName%28name%3A%22Nano%22%29+%7B+hp+%7D+%7D',
-    origin: 'http://localhost:3000',
-    protocol: 'http:',
-    username: '',
-    password: '',
-    host: 'localhost:3000',
-    hostname: 'localhost',
-    port: '3000',
-    pathname: '/graphql',
-    search: '?query=query+%7B+pokemonByName%28name%3A%22Nano%22%29+%7B+hp+%7D+%7D',
-    searchParams: URLSearchParams { 'query' => 'query { pokemonByName(name:"Nano") { hp } }' },
-    hash: ''
-  }
-}
+
+Node.js vXX.XX.XX
 ```
 <!-- dprint-ignore-end -->

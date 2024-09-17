@@ -2,7 +2,7 @@
 title: Static
 ---
 
-# Getting Started <Badge text="Static Client" />
+# Getting Started
 
 ## Install Package
 

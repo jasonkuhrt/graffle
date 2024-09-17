@@ -1,7 +1,9 @@
 import type { EnhanceAppContext } from 'vitepress'
+import { enhanceAppWithTabs } from 'vitepress-plugin-tabs/client'
 import DefaultTheme from 'vitepress/theme'
 import './custom.css'
-import MyLayout from './MyLayout.vue'
+import GeneratedClientBadge from './components/GeneratedClientBadge.vue'
+import MyLayout from './components/MyLayout.vue'
 
 // Imports for Twoslash
 import TwoslashFloatingVue from '@shikijs/vitepress-twoslash/client'
@@ -13,6 +15,8 @@ export default {
   extends: DefaultTheme,
   Layout: MyLayout,
   enhanceApp({ app }: EnhanceAppContext) {
+    enhanceAppWithTabs(app)
+    app.component('GeneratedClientBadge', GeneratedClientBadge)
     app.use(TwoslashFloatingVue)
   },
 }

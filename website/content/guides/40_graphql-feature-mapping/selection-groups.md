@@ -1,1 +1,1 @@
-# Selection Groups <span title="Requires generation" style="font-size:1.75em;line-height:0;">⩕</span>
+# Selection Groups <GeneratedClientBadge />
