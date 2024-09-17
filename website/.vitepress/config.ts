@@ -26,7 +26,8 @@ const fixTitles = (sidebarMulti: SidebarMulti) => {
   return sidebarMultiVisitItems(sidebarMulti, (sidebarItem) => {
     const [title, maybeHtml] = sidebarItem.text?.split('<') as [string, string | undefined]
     if (sidebarItem.text) {
-      sidebarItem.text = capitalize(title.replaceAll(/-/g, ' ')) + (maybeHtml ? `<${maybeHtml}` : '')
+      sidebarItem.text = title.replaceAll(/-/g, ' ').split(' ').map(capitalize).join(' ')
+        + (maybeHtml ? `<${maybeHtml}` : '')
     }
   })
 }

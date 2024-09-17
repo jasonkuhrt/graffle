@@ -109,7 +109,7 @@ export type HookDefPack<$Config extends Config> = {
 
 export type HookDefExchange<$Config extends Config> = {
   slots: {
-    fetch: typeof fetch
+    fetch: (request: Request) => Response | Promise<Response>
   }
   input:
     & InterfaceInput
@@ -252,7 +252,11 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
                 ...baseProperties,
                 method: `post`,
                 url: input.url,
-                body: slots.body(input),
+                body: slots.body({
+                  query: input.query,
+                  variables: input.variables,
+                  operationName: input.operationName,
+                }),
               }
             return {
               ...input,

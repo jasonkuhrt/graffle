@@ -179,7 +179,25 @@ const transformOther = (example: Example) => {
  * 2. Add twoslash code block.
  */
 const transformMarkdown = (example: Example) => {
-  const newContent = `
+  const outputBlocks = example.output.blocks.map(block => {
+    return `
+<!-- dprint-ignore-start -->
+\`\`\`${example.isUsingJsonOutput ? `json` : `txt`}
+${block}
+\`\`\`
+<!-- dprint-ignore-end -->
+`.trim()
+  }).join(`\n`)
+
+  const outputs = outputBlocks.length > 0
+    ? `
+#### Outputs
+
+${outputBlocks}
+`.trim()
+    : ``
+
+  const source = `
 ---
 aside: false
 ---
@@ -191,21 +209,9 @@ aside: false
 ${example.file.content.trim()}
 \`\`\`
 <!-- dprint-ignore-end -->
-
-#### Outputs
-
-${
-    example.output.blocks.map(block => {
-      return `
-<!-- dprint-ignore-start -->
-\`\`\`${example.isUsingJsonOutput ? `json` : `txt`}
-${block}
-\`\`\`
-<!-- dprint-ignore-end -->
 `.trim()
-    }).join(`\n`)
-  }
-`.trim()
+
+  const newContent = [source, outputs].filter(_ => _ !== ``).join(`\n\n`)
 
   return {
     ...example,
