@@ -2,7 +2,7 @@
 title: Generated <GeneratedClientBadge />
 ---
 
-# Getting Started <Badge text="generated client" />
+# Getting Started <GeneratedClientBadge />
 
 The following takes you through a simple example to demonstrate how generation works and what it gives you.
 
