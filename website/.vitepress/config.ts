@@ -24,9 +24,8 @@ const fixLinks = (sidebarMulti: SidebarMulti) => {
 
 const fixTitles = (sidebarMulti: SidebarMulti) => {
   return sidebarMultiVisitItems(sidebarMulti, (sidebarItem) => {
-    const [title, maybeHtml] = sidebarItem.text?.split('<') as [string, string | undefined]
     if (sidebarItem.text) {
-      sidebarItem.text = capitalize(title.replaceAll(/-/g, ' ')) + (maybeHtml ? `<${maybeHtml}` : '')
+      sidebarItem.text = capitalize(sidebarItem.text.replaceAll(/-/g, ' '))
     }
   })
 }
@@ -42,9 +41,13 @@ const sidebars = fixTitles(fixLinks(generateSidebar([
     removePrefixAfterOrdering: true,
     useTitleFromFrontmatter: true,
     useTitleFromFileHeading: true,
+    hyphenToSpace: true,
+    capitalizeEachWords: true,
     keepMarkdownSyntaxFromTitle: true,
   },
   {
+    hyphenToSpace: true,
+    capitalizeEachWords: true,
     scanStartPath: 'content/examples',
     resolvePath: '/examples/',
     prefixSeparator: '_',
