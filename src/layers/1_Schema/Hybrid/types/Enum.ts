@@ -7,7 +7,7 @@ export interface Enum<
   members: $Members
 }
 
-export const Enum = <$Name extends string, $Members extends [string, ...string[]]>(
+export const Enum = <$Name extends string, const $Members extends [string, ...string[]]>(
   name: $Name,
   members: $Members,
 ): Enum<$Name, $Members> => ({

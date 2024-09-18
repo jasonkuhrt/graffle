@@ -1,24 +1,21 @@
-import type { MaybeList, StringNonEmpty, Values } from '../../lib/prelude.js'
+import type { ExcludeNull, MaybeList, StringNonEmpty, Values } from '../../lib/prelude.js'
 import type { TSError } from '../../lib/TSError.js'
-import type {
-  InputFieldsAllNullable,
-  OmitNullableFields,
-  PickNullableFields,
-  Schema,
-  SomeField,
-  SomeFields,
-} from '../1_Schema/__.js'
+import type { OmitNullableFields, PickNullableFields, Schema, SomeField, SomeFields } from '../1_Schema/__.js'
 
-export type Query<$Index extends Schema.Index> = Root<$Index, 'Query'>
+export type Query<$Index extends Schema.Index> = RootViaObject<$Index, $Index['Root']['Query']>
 
-export type Mutation<$Index extends Schema.Index> = Root<$Index, 'Mutation'>
+export type Mutation<$Index extends Schema.Index> = RootViaObject<$Index, $Index['Root']['Mutation']>
 
-export type Subscription<$Index extends Schema.Index> = Root<$Index, 'Subscription'>
+export type Subscription<$Index extends Schema.Index> = RootViaObject<$Index, $Index['Root']['Subscription']>
 
-// dprint-ignore
-export type Root<$Index extends Schema.Index, Type extends keyof Schema.Index['Root']> =
-  $Index['Root'][Type] extends Schema.Object$2 ?  Object<$Index['Root'][Type], $Index> :
-                                                  never
+export type RootViaObject<$Index extends Schema.Index, $RootType extends null | Schema.Output.RootType> =
+  $RootType extends null ? never
+    : Object<ExcludeNull<$RootType>, $Index>
+
+export type Root<$Index extends Schema.Index, $RootTypeName extends Schema.RootTypeName> = RootViaObject<
+  $Index,
+  $Index['Root'][$RootTypeName]
+>
 
 // dprint-ignore
 export type Object<$Object extends Schema.Object$2, $Index extends Schema.Index> =
@@ -34,6 +31,7 @@ type Fields<$Fields extends SomeFields, $Index extends Schema.Index> =
       Field<$Fields[Key], $Index>
   }
   &
+  // todo optimize?
   /**
    * Alias support.
    * Allow every field to also be given as a key with this pattern `<field>_as_<alias>: ...`
@@ -94,7 +92,7 @@ export type Field_<
                                                             TSError<'Field', '$Field case not handled', { $Field: $Field }>
 // dprint-ignore
 type Arguments<$Field extends SomeField> =
-  $Field['args'] extends Schema.Args<any>         ? InputFieldsAllNullable<$Field['args']['fields']> extends true  ?  { $?: Args<$Field['args']> } :
+  $Field['args'] extends Schema.Args<any>         ? $Field['args']['isFieldsAllNullable'] extends true  ?  { $?: Args<$Field['args']> } :
                                                                                                                       { $: Args<$Field['args']> } :
                                                   {}
 
@@ -182,26 +180,27 @@ export type ResolveAliasTargets<SelectionSet> = {
  * Directives
  */
 
+// dprint-ignore
 export namespace Directive {
-  export type Include = { $include: boolean | { if?: boolean } }
+  export interface Include { $include: boolean | { if?: boolean } }
   export namespace Include {
-    export type Positive = { $include: true | { if: true } }
-    export type Negative = { $include: false | { if: false } }
+    export interface Positive { $include: true | { if: true } }
+    export interface Negative { $include: false | { if: false } }
   }
-  export type Skip = { $skip: boolean | { if?: boolean } }
+  export interface Skip { $skip: boolean | { if?: boolean } }
   export namespace Skip {
-    export type Positive = { $skip: true | { if: true } }
-    export type Negative = { $skip: false | { if: false } }
+    export interface Positive { $skip: true | { if: true } }
+    export interface Negative { $skip: false | { if: false } }
   }
-  export type Defer = { $defer: boolean | { if?: boolean; label?: string } }
+  export interface Defer { $defer: boolean | { if?: boolean; label?: string } }
   export namespace Defer {
-    export type Positive = { $defer: true | { if: true } }
-    export type Negative = { $defer: false | { if: false } }
+    export interface Positive { $defer: true | { if: true } }
+    export interface Negative { $defer: false | { if: false } }
   }
-  export type Stream = { $stream: boolean | { if?: boolean; label?: string; initialCount?: number } }
+  export interface Stream { $stream: boolean | { if?: boolean; label?: string; initialCount?: number } }
   export namespace Stream {
-    export type Positive = { $stream: true | { if: true } }
-    export type Negative = { $stream: false | { if: false } }
+    export interface Positive { $stream: true | { if: true } }
+    export interface Negative { $stream: false | { if: false } }
   }
 }
 
@@ -220,6 +219,10 @@ export type OmitNegativeIndicators<$SelectionSet> = {
   [K in keyof $SelectionSet as $SelectionSet[K] extends ClientIndicatorNegative ? never : K]: $SelectionSet[K]
 }
 
+// dprint-ignore
+export type Indicator<$Field extends SomeField> =
+  $Field['args'] extends null ? NoArgsIndicator : ArgsIndicator<ExcludeNull<$Field['args']>>
+
 /**
  * Field selection in general, with directives support too.
  * If a field directive is given as an indicator then it implies "select this" e.g. `true`/`1`.
@@ -227,12 +230,9 @@ export type OmitNegativeIndicators<$SelectionSet> = {
  */
 export type NoArgsIndicator = ClientIndicator | FieldDirectives
 
-// dprint-ignore
-export type Indicator<$Field extends SomeField> =
-  $Field['args'] extends Schema.Args<any>        ?  InputFieldsAllNullable<$Field['args']['fields']> extends true
-                                                      ? ({ $?: Args<$Field['args']> } & FieldDirectives) | ClientIndicator :
-                                                        { $: Args<$Field['args']> } & FieldDirectives :
-                                                    NoArgsIndicator
+type ArgsIndicator<$Args extends Schema.Args<any>> = $Args['isFieldsAllNullable'] extends true
+  ? ({ $?: Args<$Args> } & FieldDirectives) | ClientIndicator
+  : { $: Args<$Args> } & FieldDirectives
 
 // dprint-ignore
 export type Args<$Args extends Schema.Args<any>> = ArgFields<$Args['fields']>
@@ -246,10 +246,12 @@ export type ArgFields<$ArgFields extends Schema.InputObject['fields']> =
       [Key in keyof PickNullableFields<$ArgFields>]?: InputField<$ArgFields[Key]> | null
     }
 
+type InputField<$InputField extends Schema.Input.Field> = InputFieldType<$InputField['type']>
+
 // dprint-ignore
-type InputField<$InputType extends Schema.Input.Any> =
-  $InputType extends Schema.Input.Nullable<infer $InnerType>    ? InputField<$InnerType> | null :
-  $InputType extends Schema.Input.List<infer $InnerType>        ? InputField<$InnerType>[] :
+type InputFieldType<$InputType extends Schema.Input.Any> =
+  $InputType extends Schema.Input.Nullable<infer $InnerType>    ? InputFieldType<$InnerType> | null :
+  $InputType extends Schema.Input.List<infer $InnerType>        ? InputFieldType<$InnerType>[] :
   $InputType extends Schema.InputObject<infer _, infer $Fields> ? ArgFields<$Fields> :
   $InputType extends Schema.Enum<infer _, infer $Members>       ? $Members[number] :
   $InputType extends Schema.Scalar.Any                          ? ReturnType<$InputType['codec']['decode']> :

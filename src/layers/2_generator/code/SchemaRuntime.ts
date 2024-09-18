@@ -23,7 +23,15 @@ import {
 } from 'graphql'
 import { Code } from '../../../lib/Code.js'
 import type { AnyClass, AnyGraphQLOutputField } from '../../../lib/graphql.js'
-import { hasMutation, hasQuery, hasSubscription, unwrapToNamed, unwrapToNonNull } from '../../../lib/graphql.js'
+import {
+  hasMutation,
+  hasQuery,
+  hasSubscription,
+  isAllArgsNullable,
+  isAllInputObjectFieldsNullable,
+  unwrapToNamed,
+  unwrapToNonNull,
+} from '../../../lib/graphql.js'
 import { createCodeGenerator } from '../createCodeGenerator.js'
 import type { Config } from '../generateCode.js'
 import { moduleNameData } from './Data.js'
@@ -83,6 +91,7 @@ const index = (config: Config) => {
       RootTypesPresent: [${
     Object.entries(rootTypesPresence).filter(([_, present]) => present).map(([_]) => Code.quote(_)).join(`, `)
   }] as const,
+      RootUnion: undefined as any, // Type level only.
       Root: {
         Query ${rootTypesPresence.Query ? `` : `:null`} ,
         Mutation ${rootTypesPresence.Mutation ? `` : `:null`},
@@ -170,13 +179,14 @@ const object = (config: Config, type: GraphQLObjectType) => {
 }
 
 const inputObject = (config: Config, type: GraphQLInputObjectType) => {
+  const isFieldsAllNullable = isAllInputObjectFieldsNullable(type)
   const fields = Object.values(type.getFields()).map((field) => `${field.name}: ${inputField(config, field)}`).join(
     `,\n`,
   )
   return `
     export const ${type.name} = $.InputObject(\`${type.name}\`, {
       ${fields}
-    })
+    }, ${Code.boolean(isFieldsAllNullable)})
 	`
 }
 unwrapToNamed
@@ -184,7 +194,7 @@ unwrapToNamed
 const inputField = (config: Config, field: GraphQLInputField): string => {
   const type = buildType(`input`, config, field.type)
   const isNeedThunk = isInputObjectType(unwrapToNamed(field.type))
-  return `$.Input.field(${isNeedThunk ? `() => ${type}` : type})`
+  return `$.Input.Field(${isNeedThunk ? `() => ${type}` : type})`
 }
 
 const outputField = (config: Config, field: AnyGraphQLOutputField): string => {
@@ -195,12 +205,13 @@ const outputField = (config: Config, field: AnyGraphQLOutputField): string => {
 }
 
 const renderArgs = (config: Config, args: readonly GraphQLArgument[]) => {
-  return `$.Args({${args.map(arg => renderArg(config, arg)).join(`, `)}})`
+  const isFieldsAllNullable = isAllArgsNullable(args)
+  return `$.Args({${args.map(arg => renderArg(config, arg)).join(`, `)}}, ${Code.boolean(isFieldsAllNullable)})`
 }
 
 const renderArg = (config: Config, arg: GraphQLArgument) => {
   const type = buildType(`input`, config, arg.type)
-  return `${arg.name}: ${type}`
+  return `${arg.name}: $.Input.Field(${type})`
 }
 
 const scalar = (_config: Config, type: GraphQLScalarType) => {

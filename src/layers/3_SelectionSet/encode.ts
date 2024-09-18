@@ -49,12 +49,14 @@ export interface Context {
 
 export const rootTypeSelectionSet = (
   context: Context,
-  objectDef: Schema.Object$2,
+  rootObjectDef: Schema.Output.RootType,
   selectionSet: GraphQLObjectSelection,
   operationName: string = ``,
 ) => {
-  const operationTypeName = lowerCaseFirstLetter(objectDef.fields.__typename.type.type)
-  return `${operationTypeName} ${operationName} { ${resolveObjectLikeFieldValue(context, objectDef, selectionSet)} }`
+  const operationTypeName = lowerCaseFirstLetter(rootObjectDef.fields.__typename.type.type)
+  return `${operationTypeName} ${operationName} { ${
+    resolveObjectLikeFieldValue(context, rootObjectDef, selectionSet)
+  } }`
 }
 
 const resolveDirectives = (fieldValue: FieldValue) => {
@@ -135,9 +137,9 @@ const resolveArgs = (context: Context, schemaField: Schema.SomeField, ss: Indica
 
   return `(${
     argEntries.map(([argFieldName, v]) => {
-      const schemaArgField = schemaArgs.fields[argFieldName] as Schema.Input.Any | undefined
+      const schemaArgField = schemaArgs.fields[argFieldName] as Schema.Input.Field | undefined
       if (!schemaArgField) throw new Error(`Arg field ${argFieldName} not found in schema.`)
-      const valueEncoded = resolveArgValue(context, schemaArgField, v)
+      const valueEncoded = resolveArgValue(context, schemaArgField.type, v)
       return `${argFieldName}: ${valueEncoded}`
     }).join(`, `)
   })`

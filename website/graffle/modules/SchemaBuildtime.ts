@@ -6,42 +6,42 @@ import type * as $Scalar from './Scalar.ts'
 // ------------------------------------------------------------ //
 
 export namespace Root {
-  export type Query = $.Object$2<'Query', {
+  export type Query = $.Output.ObjectQuery<{
     continent: $.Field<
       $.Output.Nullable<Object.Continent>,
       $.Args<{
-        code: $Scalar.ID
-      }>
+        code: $.Input.Field<$Scalar.ID>
+      }, false>
     >
     continents: $.Field<
       $.Output.List<Object.Continent>,
       $.Args<{
-        filter: $.Input.Nullable<InputObject.ContinentFilterInput>
-      }>
+        filter: $.Input.Field<$.Input.Nullable<InputObject.ContinentFilterInput>>
+      }, true>
     >
     countries: $.Field<
       $.Output.List<Object.Country>,
       $.Args<{
-        filter: $.Input.Nullable<InputObject.CountryFilterInput>
-      }>
+        filter: $.Input.Field<$.Input.Nullable<InputObject.CountryFilterInput>>
+      }, true>
     >
     country: $.Field<
       $.Output.Nullable<Object.Country>,
       $.Args<{
-        code: $Scalar.ID
-      }>
+        code: $.Input.Field<$Scalar.ID>
+      }, false>
     >
     language: $.Field<
       $.Output.Nullable<Object.Language>,
       $.Args<{
-        code: $Scalar.ID
-      }>
+        code: $.Input.Field<$Scalar.ID>
+      }, false>
     >
     languages: $.Field<
       $.Output.List<Object.Language>,
       $.Args<{
-        filter: $.Input.Nullable<InputObject.LanguageFilterInput>
-      }>
+        filter: $.Input.Field<$.Input.Nullable<InputObject.LanguageFilterInput>>
+      }, true>
     >
   }>
 }
@@ -60,27 +60,27 @@ export namespace Enum {
 
 export namespace InputObject {
   export type ContinentFilterInput = $.InputObject<'ContinentFilterInput', {
-    code: $.Input.Nullable<InputObject.StringQueryOperatorInput>
-  }>
+    code: $.Input.Field<$.Input.Nullable<InputObject.StringQueryOperatorInput>>
+  }, true>
 
   export type CountryFilterInput = $.InputObject<'CountryFilterInput', {
-    code: $.Input.Nullable<InputObject.StringQueryOperatorInput>
-    continent: $.Input.Nullable<InputObject.StringQueryOperatorInput>
-    currency: $.Input.Nullable<InputObject.StringQueryOperatorInput>
-    name: $.Input.Nullable<InputObject.StringQueryOperatorInput>
-  }>
+    code: $.Input.Field<$.Input.Nullable<InputObject.StringQueryOperatorInput>>
+    continent: $.Input.Field<$.Input.Nullable<InputObject.StringQueryOperatorInput>>
+    currency: $.Input.Field<$.Input.Nullable<InputObject.StringQueryOperatorInput>>
+    name: $.Input.Field<$.Input.Nullable<InputObject.StringQueryOperatorInput>>
+  }, true>
 
   export type LanguageFilterInput = $.InputObject<'LanguageFilterInput', {
-    code: $.Input.Nullable<InputObject.StringQueryOperatorInput>
-  }>
+    code: $.Input.Field<$.Input.Nullable<InputObject.StringQueryOperatorInput>>
+  }, true>
 
   export type StringQueryOperatorInput = $.InputObject<'StringQueryOperatorInput', {
-    eq: $.Input.Nullable<$Scalar.String>
-    in: $.Input.Nullable<$.Input.List<$Scalar.String>>
-    ne: $.Input.Nullable<$Scalar.String>
-    nin: $.Input.Nullable<$.Input.List<$Scalar.String>>
-    regex: $.Input.Nullable<$Scalar.String>
-  }>
+    eq: $.Input.Field<$.Input.Nullable<$Scalar.String>>
+    in: $.Input.Field<$.Input.Nullable<$.Input.List<$Scalar.String>>>
+    ne: $.Input.Field<$.Input.Nullable<$Scalar.String>>
+    nin: $.Input.Field<$.Input.Nullable<$.Input.List<$Scalar.String>>>
+    regex: $.Input.Field<$.Input.Nullable<$Scalar.String>>
+  }, true>
 }
 
 // ------------------------------------------------------------ //
@@ -115,8 +115,8 @@ export namespace Object {
     name: $.Field<
       $Scalar.String,
       $.Args<{
-        lang: $.Input.Nullable<$Scalar.String>
-      }>
+        lang: $.Input.Field<$.Input.Nullable<$Scalar.String>>
+      }, true>
     >
     native: $.Field<$Scalar.String, null>
     phone: $.Field<$Scalar.String, null>

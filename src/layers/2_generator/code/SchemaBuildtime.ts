@@ -20,9 +20,12 @@ import type {
 } from '../../../lib/graphql.js'
 import {
   getNodeDisplayName,
+  isAllArgsNullable,
+  isAllInputObjectFieldsNullable,
   isDeprecatableNode,
   isGraphQLOutputField,
   type NameToClass,
+  RootTypeName,
   unwrapToNonNull,
 } from '../../../lib/graphql.js'
 import { entries, values } from '../../../lib/prelude.js'
@@ -102,7 +105,9 @@ const referenceRenderers = defineReferenceRenderers({
   GraphQLEnumType: (_, node) => Code.propertyAccess(namespaceNames.GraphQLEnumType, node.name),
   GraphQLInputObjectType: (_, node) => Code.propertyAccess(namespaceNames.GraphQLInputObjectType, node.name),
   GraphQLInterfaceType: (_, node) => Code.propertyAccess(namespaceNames.GraphQLInterfaceType, node.name),
-  GraphQLObjectType: (_, node) => Code.propertyAccess(namespaceNames.GraphQLObjectType, node.name),
+  GraphQLObjectType: (_, node) => {
+    return Code.propertyAccess(namespaceNames.GraphQLObjectType, node.name)
+  },
   GraphQLUnionType: (_, node) => Code.propertyAccess(namespaceNames.GraphQLUnionType, node.name),
   GraphQLScalarType: (_, node) => `$Scalar.${node.name}`,
 })
@@ -130,11 +135,19 @@ const concreteRenderers = defineConcreteRenderers({
         ),
       ),
     ),
-  GraphQLInputObjectType: (config, node) =>
-    Code.TSDoc(
-      getDocumentation(config, node),
-      Code.export$(Code.type(node.name, `$.InputObject<${Code.quote(node.name)}, ${renderInputFields(config, node)}>`)),
-    ),
+  GraphQLInputObjectType: (config, node) => {
+    const doc = getDocumentation(config, node)
+    const isAllFieldsNullable = isAllInputObjectFieldsNullable(node)
+    const source = Code.export$(
+      Code.type(
+        node.name,
+        `$.InputObject<${Code.quote(node.name)}, ${renderInputFields(config, node)}, ${
+          Code.boolean(isAllFieldsNullable)
+        }>`,
+      ),
+    )
+    return Code.TSDoc(doc, source)
+  },
   GraphQLInterfaceType: (config, node) => {
     const implementors = config.typeMapByKind.GraphQLObjectType.filter(_ =>
       _.getInterfaces().filter(_ => _.name === node.name).length > 0
@@ -149,11 +162,15 @@ const concreteRenderers = defineConcreteRenderers({
       )),
     )
   },
-  GraphQLObjectType: (config, node) =>
-    Code.TSDoc(
-      getDocumentation(config, node),
-      Code.export$(Code.type(node.name, `$.Object$2<${Code.quote(node.name)}, ${renderOutputFields(config, node)}>`)),
-    ),
+  GraphQLObjectType: (config, node) => {
+    const maybeRootTypeName = (RootTypeName as Record<string, RootTypeName>)[node.name]
+    const type = maybeRootTypeName
+      ? `$.Output.Object${maybeRootTypeName}<${renderOutputFields(config, node)}>`
+      : `$.Object$2<${Code.quote(node.name)}, ${renderOutputFields(config, node)}>`
+    const doc = getDocumentation(config, node)
+    const source = Code.export$(Code.type(node.name, type))
+    return Code.TSDoc(doc, source)
+  },
   GraphQLScalarType: () => ``,
   GraphQLUnionType: (config, node) =>
     Code.TSDoc(
@@ -258,7 +275,7 @@ const renderOutputField = (config: Config, field: AnyField): string => {
 }
 
 const renderInputField = (config: Config, field: AnyField): string => {
-  return buildType(`input`, config, field.type)
+  return `$.Input.Field<${buildType(`input`, config, field.type)}>`
 }
 
 const buildType = (direction: 'input' | 'output', config: Config, node: AnyClass) => {
@@ -285,22 +302,21 @@ const buildType = (direction: 'input' | 'output', config: Config, node: AnyClass
 }
 
 const renderArgs = (config: Config, args: readonly GraphQLArgument[]) => {
-  let hasRequiredArgs = false
-  const argsRendered = `$.Args<${
+  const code = `$.Args<${
     Code.object(
       Code.fields(
-        args.map((arg) => {
-          const { nullable } = unwrapToNonNull(arg.type)
-          hasRequiredArgs = hasRequiredArgs || !nullable
-          return Code.field(
-            arg.name,
-            buildType(`input`, config, arg.type),
-          )
-        }),
+        args.map((arg) => renderArg(config, arg)),
       ),
     )
-  }>`
-  return argsRendered
+  }, ${Code.boolean(isAllArgsNullable(args))}>`
+  return code
+}
+
+const renderArg = (config: Config, arg: GraphQLArgument) => {
+  // const { nullable } = unwrapToNonNull(arg.type)
+  // hasRequiredArgs = hasRequiredArgs || !nullable
+  const type = buildType(`input`, config, arg.type)
+  return Code.field(arg.name, `$.Input.Field<${type}>`)
 }
 
 // high level

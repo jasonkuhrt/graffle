@@ -33,6 +33,7 @@ export namespace Code {
       ),
     )
   }
+  export const boolean = (value: boolean) => value ? `true` : `false`
   export const type = (name: string, type: string) => `type ${name} = ${type}`
   export const interface$ = (name: string, object: string) => `interface ${name} ${object}`
   export const export$ = (thing: string) => `export ${thing}`

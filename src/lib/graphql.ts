@@ -1,5 +1,6 @@
 import type {
   DocumentNode,
+  GraphQLArgument,
   GraphQLEnumValue,
   GraphQLError,
   GraphQLField,
@@ -42,17 +43,23 @@ export const RootTypeName = {
   Subscription: `Subscription`,
 } as const
 
+export type RootTypeNameQuery = typeof RootTypeName['Query']
+export type RootTypeNameMutation = typeof RootTypeName['Mutation']
+export type RootTypeNameSubscription = typeof RootTypeName['Subscription']
+
 export const operationTypeNameToRootTypeName = {
   query: `Query`,
   mutation: `Mutation`,
   subscription: `Subscription`,
 } as const
 
-export const rootTypeNameToOperationName = {
+export const RootTypeNameToOperationName = {
   Query: `query`,
   Mutation: `mutation`,
   Subscription: `subscription`,
 } as const
+
+export type RootTypeNameToOperationName = typeof RootTypeNameToOperationName
 
 export type RootTypeName = keyof typeof RootTypeName
 
@@ -332,4 +339,12 @@ export const parseGraphQLOperationType = (request: GraphQLRequestEncoded): Opera
   if (!definedOperationToAnalyze) return null
 
   return definedOperationToAnalyze.operationType
+}
+
+export const isAllArgsNullable = (args: readonly GraphQLArgument[]) => {
+  return !args.some(_ => isNonNullType(_.type))
+}
+
+export const isAllInputObjectFieldsNullable = (node: GraphQLInputObjectType) => {
+  return Object.values(node.getFields()).some(_ => !isNonNullType(_.type))
 }

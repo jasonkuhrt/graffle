@@ -83,7 +83,7 @@
     "test:unit": "vitest --exclude tests/examples",
     "test": "vitest",
     "test:web": "vitest --environment jsdom",
-    "test:types": "vitest --typecheck",
+    "test:types": "vitest --typecheck src/**/**/*.test-d.ts",
     "test:coverage": "pnpm test -- --coverage",
     "release:stable": "dripip stable",
     "release:preview": "dripip preview",

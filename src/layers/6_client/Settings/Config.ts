@@ -138,12 +138,14 @@ export type IsNeedSelectionTypename<$Config extends Config, $Index extends Schem
 export type AugmentRootTypeSelectionWithTypename<
   $Config extends Config,
   $Index extends Schema.Index,
-  $RootTypeName extends Schema.RootTypeName,
+  $RootType extends Schema.Output.RootType,
   $Selection extends object,
 > = IsNeedSelectionTypename<$Config, $Index> extends true ? {
     [$Key in StringKeyof<$Selection>]:
       & $Selection[$Key]
-      & (IsRootFieldNameAResultField<$Index, $RootTypeName, $Key> extends true ? TypenameSelection : {})
+      & (IsRootFieldNameAResultField<$Index, $RootType['fields']['__typename']['type']['type'], $Key> extends true
+        ? TypenameSelection
+        : {})
   }
   : $Selection
 

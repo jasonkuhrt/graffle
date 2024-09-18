@@ -434,18 +434,18 @@ export namespace Enum {
 
 export namespace InputObject {
   export type InputObject = $.InputObject<'InputObject', {
-    date: $.Input.Nullable<$Scalar.Date>
-    dateRequired: $Scalar.Date
-    id: $.Input.Nullable<$Scalar.ID>
-    idRequired: $Scalar.ID
+    date: $.Input.Field<$.Input.Nullable<$Scalar.Date>>
+    dateRequired: $.Input.Field<$Scalar.Date>
+    id: $.Input.Field<$.Input.Nullable<$Scalar.ID>>
+    idRequired: $.Input.Field<$Scalar.ID>
   }>
 
   export type InputObjectNested = $.InputObject<'InputObjectNested', {
-    InputObject: $.Input.Nullable<InputObject.InputObject>
+    InputObject: $.Input.Field<$.Input.Nullable<InputObject.InputObject>>
   }>
 
   export type InputObjectNestedNonNull = $.InputObject<'InputObjectNestedNonNull', {
-    InputObject: InputObject.InputObject
+    InputObject: $.Input.Field<InputObject.InputObject>
   }>
 }
 

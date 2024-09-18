@@ -16,9 +16,9 @@ const s = (selectionSet: Q) => selectionSet
 const testEachArgs = [
   `Query`,
   (
-    ...args: [SelectionSet.Object<Index['Root']['Query'], Index>] | [
+    ...args: [SelectionSet.Root<Index, 'Query'>] | [
       description: string,
-      ss: SelectionSet.Object<Index['Root']['Query'], Index>,
+      ss: SelectionSet.Root<Index, 'Query'>,
     ]
   ) => {
     const [description, ss] = args.length === 1 ? [undefined, args[0]] : args

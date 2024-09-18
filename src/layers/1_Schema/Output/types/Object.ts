@@ -1,8 +1,23 @@
+import type { RootTypeNameMutation, RootTypeNameQuery, RootTypeNameSubscription } from '../../../../lib/graphql.js'
 import type { Field, SomeFields } from '../../Field.js'
 import { field } from '../../Field.js'
 import type { Hybrid } from '../../Hybrid/__.js'
 import type { UnwrapToNamed } from '../typeGroups.js'
 import { __typename } from './__typename.js'
+
+export interface ObjectQuery<
+  $Fields extends SomeFields = SomeFields,
+> extends Object$2<RootTypeNameQuery, $Fields> {}
+
+export interface ObjectMutation<
+  $Fields extends SomeFields = SomeFields,
+> extends Object$2<RootTypeNameMutation, $Fields> {}
+
+export interface ObjectSubscription<
+  $Fields extends SomeFields = SomeFields,
+> extends Object$2<RootTypeNameSubscription, $Fields> {}
+
+export type RootType = ObjectQuery | ObjectMutation | ObjectSubscription
 
 export interface Object$2<
   $Name extends string = string,

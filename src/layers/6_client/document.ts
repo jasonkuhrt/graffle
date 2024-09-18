@@ -1,6 +1,6 @@
 import type { MergeExclusive, NonEmptyObject } from 'type-fest'
 import { operationTypeNameToRootTypeName } from '../../lib/graphql.js'
-import type { IsMultipleKeys } from '../../lib/prelude.js'
+import type { ExcludeNull, IsMultipleKeys } from '../../lib/prelude.js'
 import type { TSError } from '../../lib/TSError.js'
 import type { Schema } from '../1_Schema/__.js'
 import { SelectionSet } from '../3_SelectionSet/__.js'
@@ -20,7 +20,6 @@ export type DocumentRunner<$Config extends Config, $Index extends Schema.Index, 
     $Name extends keyof $Document & string,
     $Params extends (IsMultipleKeys<$Document> extends true ? [name: $Name] : ([] | [name: $Name | undefined])),
   >(...params: $Params) => Promise<
-  // $Config
     ResolveOutputReturnRootType<$Config, $Index, ResultSet.Root<GetRootTypeSelection<$Config,$Index,$Document[$Name]>, $Index, GetRootType<$Document[$Name]>>>
   >
 }
@@ -80,14 +79,22 @@ export type ValidateDocumentOperationNames<$Document> =
 type GetRootTypeSelection<
   $Config extends Config,
   $Index extends Schema.Index,
-  $Selection extends object 
+  $Selection extends SomeSelection
 > =
-  $Selection extends { query: infer U extends object }    ? AugmentRootTypeSelectionWithTypename<$Config, $Index, 'Query', U> : 
-  $Selection extends { mutation: infer U extends object } ? AugmentRootTypeSelectionWithTypename<$Config, $Index, 'Mutation', U> :
-  never
+  $Selection extends { query: infer $SS extends object }
+    ? $Index['Root']['Query'] extends null
+      ? TSError<'GetRootTypeSelection', `Query root type is not allowed to be null in document`>
+      : AugmentRootTypeSelectionWithTypename<$Config, $Index, ExcludeNull<$Index['Root']['Query']>, $SS>
+    : $Selection extends { mutation: infer $SS extends object }
+      ? $Index['Root']['Mutation'] extends null
+        ? TSError<'GetRootTypeSelection', `Mutation root type is not allowed to be null in document`>
+        : AugmentRootTypeSelectionWithTypename<$Config, $Index, ExcludeNull<$Index['Root']['Mutation']>, $SS>
+  : never
 
 // dprint-ignore
 type GetRootType<$Selection extends object> =
   $Selection extends {query:any}    ? 'Query' : 
   $Selection extends {mutation:any} ? 'Mutation' :
   never
+
+type SomeSelection = object

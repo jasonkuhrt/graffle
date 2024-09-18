@@ -7,6 +7,7 @@ import type * as Schema from './SchemaBuildtime.js'
 export interface Index {
   name: Data.Name
   RootTypesPresent: ['Query', 'Mutation']
+  RootUnion: Schema.Root.Query | Schema.Root.Mutation
   Root: {
     Query: Schema.Root.Query
     Mutation: Schema.Root.Mutation
