@@ -1,5 +1,4 @@
 import type * as Data from './Data.js'
-
 import type { Index } from './SchemaIndex.js'
 
 declare global {

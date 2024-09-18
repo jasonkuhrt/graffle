@@ -30,6 +30,9 @@
     "isolatedModules": false,
     "verbatimModuleSyntax": true
   },
-  "include": ["examples/55_generated/generated_arguments__arguments.ts"],
+  "include": [
+    "examples/55_generated/generated_arguments__arguments.ts",
+    "examples/55_generated/generated_document__document.ts"
+  ],
   "exclude": ["build"]
 }

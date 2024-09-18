@@ -1,16 +1,14 @@
-/**
- * This example shows how to use the TypeScript interface for GraphQL arguments.
- */
-
+import { bench } from '@ark/attest'
 import { Atlas } from '../$/generated-clients/atlas/__.js'
-import { showJson } from '../$/helpers.js'
 
-const atlas = Atlas.create()
+bench.baseline(() => null)
 
-const countries = await atlas.query.countries({
-  $: { filter: { name: { in: [`Canada`, `Germany`, `Japan`] } } },
-  name: true,
-  continent: { name: true },
-})
-
-showJson(countries)
+bench(`query.countries`, async () => {
+  const atlas = Atlas.create()
+  const x = await atlas.query.continent({ name: true })
+  // await atlas.query.countries({
+  //   name: true,
+  //   // $: { filter: { name: { in: [`Canada`, `Germany`, `Japan`] } } },
+  //   // continent: { name: true },
+  // })
+}).types([1, `instantiations`])

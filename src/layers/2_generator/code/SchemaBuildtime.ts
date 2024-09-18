@@ -1,12 +1,11 @@
 import type {
   GraphQLArgument,
-  GraphQLEnumValue,
   GraphQLInputObjectType,
   GraphQLInterfaceType,
   GraphQLNamedType,
   GraphQLObjectType,
 } from 'graphql'
-import { isEnumType, isListType, isNamedType } from 'graphql'
+import { isListType, isNamedType } from 'graphql'
 import _ from 'json-bigint'
 import { Code } from '../../../lib/Code.js'
 import type {
@@ -14,23 +13,21 @@ import type {
   AnyField,
   AnyNamedClassName,
   ClassToName,
-  Describable,
   NamedNameToClass,
   NameToClassNamedType,
 } from '../../../lib/graphql.js'
 import {
-  getNodeDisplayName,
   isAllArgsNullable,
   isAllInputObjectFieldsNullable,
-  isDeprecatableNode,
   isGraphQLOutputField,
   type NameToClass,
   RootTypeName,
   unwrapToNonNull,
 } from '../../../lib/graphql.js'
 import { entries, values } from '../../../lib/prelude.js'
-import { createCodeGenerator } from '../createCodeGenerator.js'
+import { createModuleGenerator } from '../createCodeGenerator.js'
 import { type Config } from '../generateCode.js'
+import { getDocumentation } from '../helpers.js'
 
 const namespaceNames = {
   GraphQLEnumType: `Enum`,
@@ -126,7 +123,7 @@ const dispatchToConcreteRenderer = (
 
 const concreteRenderers = defineConcreteRenderers({
   GraphQLEnumType: (config, node) =>
-    Code.TSDoc(
+    Code.TSDocWithBlock(
       getDocumentation(config, node),
       Code.export$(
         Code.type(
@@ -146,13 +143,13 @@ const concreteRenderers = defineConcreteRenderers({
         }>`,
       ),
     )
-    return Code.TSDoc(doc, source)
+    return Code.TSDocWithBlock(doc, source)
   },
   GraphQLInterfaceType: (config, node) => {
     const implementors = config.typeMapByKind.GraphQLObjectType.filter(_ =>
       _.getInterfaces().filter(_ => _.name === node.name).length > 0
     )
-    return Code.TSDoc(
+    return Code.TSDocWithBlock(
       getDocumentation(config, node),
       Code.export$(Code.type(
         node.name,
@@ -169,11 +166,11 @@ const concreteRenderers = defineConcreteRenderers({
       : `$.Object$2<${Code.quote(node.name)}, ${renderOutputFields(config, node)}>`
     const doc = getDocumentation(config, node)
     const source = Code.export$(Code.type(node.name, type))
-    return Code.TSDoc(doc, source)
+    return Code.TSDocWithBlock(doc, source)
   },
   GraphQLScalarType: () => ``,
   GraphQLUnionType: (config, node) =>
-    Code.TSDoc(
+    Code.TSDocWithBlock(
       getDocumentation(config, node),
       Code.export$(
         Code.type(
@@ -192,60 +189,10 @@ const concreteRenderers = defineConcreteRenderers({
     ),
 })
 
-const getDocumentation = (config: Config, node: Describable) => {
-  const generalDescription = node.description
-    ?? (config.options.TSDoc.noDocPolicy === `message` ? defaultDescription(node) : null)
-
-  const deprecationDescription = isDeprecatableNode(node) && node.deprecationReason
-    ? `@deprecated ${node.deprecationReason}`
-    : null
-
-  const enumMemberDescriptions: string[] = isEnumType(node)
-    ? node
-      .getValues()
-      .map((_) => {
-        const deprecationDescription = _.deprecationReason
-          ? `(DEPRECATED: ${_.deprecationReason})`
-          : null
-        const generalDescription = _.description
-          ? _.description
-          : config.options.TSDoc.noDocPolicy === `message`
-          ? `Missing description.`
-          : null
-        if (!generalDescription && !deprecationDescription) return null
-        const content = [generalDescription, deprecationDescription]
-          .filter((_) => _ !== null)
-          .join(` `)
-        return [_, content] as const
-      })
-      .filter((_): _ is [GraphQLEnumValue, string] => _ !== null)
-      .map(([node, description]) => {
-        const content = `"${node.name}" - ${description}`
-        return content
-      })
-    : []
-  const enumMemberDescription = enumMemberDescriptions.length > 0
-    ? `Members\n${enumMemberDescriptions.join(`\n`)}`
-    : null
-  if (!enumMemberDescription && !generalDescription && !deprecationDescription) {
-    return null
-  }
-  const content = [
-    generalDescription,
-    enumMemberDescription,
-    deprecationDescription,
-  ]
-    .filter((_) => _ !== null)
-    .join(`\n\n`)
-  return content
-}
-
-const defaultDescription = (node: Describable) => `There is no documentation for this ${getNodeDisplayName(node)}.`
-
 const renderOutputFields = (config: Config, node: AnyGraphQLFieldsType): string => {
   return Code.object(Code.fields([
     ...values(node.getFields()).map((field) =>
-      Code.TSDoc(
+      Code.TSDocWithBlock(
         getDocumentation(config, field),
         Code.field(field.name, renderOutputField(config, field)),
       )
@@ -256,7 +203,7 @@ const renderOutputFields = (config: Config, node: AnyGraphQLFieldsType): string 
 const renderInputFields = (config: Config, node: AnyGraphQLFieldsType): string => {
   return Code.object(Code.fields([
     ...values(node.getFields()).map((field) =>
-      Code.TSDoc(
+      Code.TSDocWithBlock(
         getDocumentation(config, field),
         Code.field(field.name, renderInputField(config, field)),
       )
@@ -321,14 +268,12 @@ const renderArg = (config: Config, arg: GraphQLArgument) => {
 
 // high level
 
-export const { generate: generateSchemaBuildtime, moduleName: moduleNameSchemaBuildtime } = createCodeGenerator(
+export const { generate: generateSchemaBuildtime, moduleName: moduleNameSchemaBuildtime } = createModuleGenerator(
   `SchemaBuildtime`,
-  (config: Config) => {
-    let code = ``
-
-    code += `import type * as $ from '${config.libraryPaths.schema}'\n`
-    code += `import type * as $Scalar from './Scalar.ts'\n`
-    code += `\n\n`
+  ({ config, code }) => {
+    code.push(`import type * as $ from '${config.libraryPaths.schema}'`)
+    code.push(`import type * as $Scalar from './Scalar.ts'`)
+    code.push(`\n\n`)
 
     for (const [name, types] of entries(config.typeMapByKind)) {
       if (name === `GraphQLScalarType`) continue
@@ -336,8 +281,8 @@ export const { generate: generateSchemaBuildtime, moduleName: moduleNameSchemaBu
       if (name === `GraphQLScalarTypeStandard`) continue
 
       const namespaceName = name === `GraphQLRootType` ? `Root` : namespaceNames[name]
-      code += Code.commentSectionTitle(namespaceName)
-      code += Code.export$(
+      code.push(Code.commentSectionTitle(namespaceName))
+      code.push(Code.export$(
         Code.namespace(
           namespaceName,
           types.length === 0
@@ -346,7 +291,7 @@ export const { generate: generateSchemaBuildtime, moduleName: moduleNameSchemaBu
               .map((_) => dispatchToConcreteRenderer(config, _))
               .join(`\n\n`),
         ),
-      )
+      ))
     }
 
     return code

@@ -1,15 +1,13 @@
-import { createCodeGenerator } from '../createCodeGenerator.js'
+import { createModuleGenerator } from '../createCodeGenerator.js'
 import { moduleNameData } from './Data.js'
 import { moduleNameSchemaIndex } from './SchemaIndex.js'
 
-export const { moduleName: moduleNameGlobal, generate: generateGlobal } = createCodeGenerator(
+export const { moduleName: moduleNameGlobal, generate: generateGlobal } = createModuleGenerator(
   `Global`,
-  (config) => {
+  ({ config, code }) => {
     const StandardScalarNamespace = `StandardScalar`
     const needsDefaultCustomScalarImplementation = config.typeMapByKind.GraphQLScalarTypeCustom.length > 0
       && !config.options.customScalars
-
-    const code: string[] = []
 
     code.push(
       `import type * as Data from './${moduleNameData}.js'`,
@@ -28,33 +26,33 @@ export const { moduleName: moduleNameGlobal, generate: generateGlobal } = create
             */`
       : ``
 
+    const customScalarsProperties = config.typeMapByKind.GraphQLScalarTypeCustom
+      .map((_) => {
+        return `${_.name}: ${
+          needsDefaultCustomScalarImplementation ? `${StandardScalarNamespace}.String` : `CustomScalar.${_.name}`
+        }`
+      }).join(`\n`)
+
     code.push(`
-    declare global {
-      export namespace GraffleGlobalTypes {
-        export interface Schemas {
-          ${config.name}: {
-            name: Data.Name
-            index: Index
-            customScalars: {
-              ${
-      config.typeMapByKind.GraphQLScalarTypeCustom
-        .map((_) => {
-          return `${_.name}: ${
-            needsDefaultCustomScalarImplementation ? `${StandardScalarNamespace}.String` : `CustomScalar.${_.name}`
-          }`
-        }).join(`\n`)
-    }
+      declare global {
+        export namespace GraffleGlobalTypes {
+          export interface Schemas {
+            ${config.name}: {
+              name: Data.Name
+              index: Index
+              customScalars: {
+                ${customScalarsProperties}
+            }
+            featureOptions: {
+              schemaErrors: ${config.options.errorTypeNamePattern ? `true` : `false`}
+            }${defaultSchemaUrlTsDoc}
+            defaultSchemaUrl: ${config.defaultSchemaUrl ? `string` : `null`}
           }
-          featureOptions: {
-            schemaErrors: ${config.options.errorTypeNamePattern ? `true` : `false`}
-          }${defaultSchemaUrlTsDoc}
-          defaultSchemaUrl: ${config.defaultSchemaUrl ? `string` : `null`}
         }
       }
     }
-  }
   `)
 
-    return code.join(`\n\n`)
+    return code
   },
 )

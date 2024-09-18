@@ -71,6 +71,12 @@ const args = Command.create().description(`Generate a type safe GraphQL client.`
       `Custom location for where the generated code should import the Graffle "scalars" module from.`,
     ),
   )
+  .parameter(
+    `libraryPathUtilitiesForGenerated`,
+    z.string().optional().describe(
+      `Custom location for where the generated code should import the Graffle "utilities-for-generated" module from.`,
+    ),
+  )
   .settings({
     parameters: {
       environment: false,
@@ -93,6 +99,7 @@ await generateFiles({
     client: args.libraryPathClient,
     schema: args.libraryPathSchema,
     scalars: args.libraryPathScalars,
+    utilitiesForGenerated: args.libraryPathUtilitiesForGenerated,
   },
   outputDirPath: args.output,
   format: args.format,

@@ -1,13 +1,11 @@
-import { createCodeGenerator } from '../createCodeGenerator.js'
+import { createModuleGenerator } from '../createCodeGenerator.js'
 import { title, typeTitle } from '../helpers.js'
 import { moduleNameData } from './Data.js'
 import { moduleNameSchemaIndex } from './SchemaIndex.js'
 
-export const { generate: generateSelect, moduleName: moduleNameSelect } = createCodeGenerator(
+export const { generate: generateSelect, moduleName: moduleNameSelect } = createModuleGenerator(
   `Select`,
-  (config) => {
-    const code: string[] = []
-
+  ({ config, code }) => {
     code.push(`import * as Data from './${moduleNameData}.js'`)
     code.push(`import type { Index } from './${moduleNameSchemaIndex}.js'`)
     code.push(`import type { SelectionSet, ResultSet } from '${config.libraryPaths.schema}'`)
@@ -49,6 +47,6 @@ export const { generate: generateSelect, moduleName: moduleNameSelect } = create
 
     code.push(`}`) // namespace Select
 
-    return code.join(`\n`)
+    return code
   },
 )

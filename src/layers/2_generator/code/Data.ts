@@ -1,15 +1,13 @@
-import { createCodeGenerator } from '../createCodeGenerator.js'
+import { createModuleGenerator } from '../createCodeGenerator.js'
 
-export const { generate: generateData, moduleName: moduleNameData } = createCodeGenerator(
+export const { generate: generateData, moduleName: moduleNameData } = createModuleGenerator(
   `Data`,
-  (config) => {
-    const code: string[] = []
-
+  ({ config, code }) => {
     code.push(
       `export const Name = \`${config.name}\``,
       `export type Name = '${config.name}'`,
     )
 
-    return code.join(`\n\n`)
+    return code
   },
 )

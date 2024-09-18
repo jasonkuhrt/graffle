@@ -1,11 +1,9 @@
-import { createCodeGenerator } from '../createCodeGenerator.js'
+import { createModuleGenerator } from '../createCodeGenerator.js'
 import { moduleNameSchemaRuntime } from './SchemaRuntime.js'
 
-export const { generate: generateClient, moduleName: moduleNameClient } = createCodeGenerator(
+export const { generate: generateClient, moduleName: moduleNameClient } = createModuleGenerator(
   `Client`,
-  (config) => {
-    const code: string[] = []
-
+  ({ config, code }) => {
     code.push(
       `import { createPrefilled } from '${config.libraryPaths.client}'`,
       `import { $defaultSchemaUrl, $Index } from './${moduleNameSchemaRuntime}.js'`,
@@ -13,6 +11,6 @@ export const { generate: generateClient, moduleName: moduleNameClient } = create
       `export const create = createPrefilled(\`${config.name}\`, $Index, $defaultSchemaUrl)`,
     )
 
-    return code.join(`\n\n`)
+    return code
   },
 )

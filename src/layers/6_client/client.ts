@@ -2,8 +2,9 @@ import { type ExecutionResult, GraphQLSchema, type TypedQueryDocumentNode } from
 import type { Anyware } from '../../lib/anyware/__.js'
 import type { Errors } from '../../lib/errors/__.js'
 import { isOperationTypeName, operationTypeNameToRootTypeName, type RootTypeName } from '../../lib/graphql.js'
+import type { HKT } from '../../lib/hkt/__.js'
 import { mergeHeadersInit, mergeRequestInit } from '../../lib/http.js'
-import { proxyGet, type SimplifyExceptError } from '../../lib/prelude.js'
+import { type ExcludeNull, proxyGet, type SimplifyExceptError } from '../../lib/prelude.js'
 import type { BaseInput, BaseInput_, TypedDocumentString } from '../0_functions/types.js'
 import { Schema } from '../1_Schema/__.js'
 import { readMaybeThunk } from '../1_Schema/core/helpers.js'
@@ -80,12 +81,11 @@ const resolveRawParameters = (parameters: RawParameters) => {
 export type BuilderRequestMethods<$Config extends Config, $Index extends null | Schema.Index >=
   & BuilderRequestMethodsStatic<$Config>
   & (
-    $Index extends Schema.Index
-      ? BuilderRequestMethodsGenerated<$Config, $Index>
-      : {}
+    $Index extends null
+      ? {}
+      : HKT.Call<ExcludeNull<$Index>['Builder']['RootMethods'], { Config: $Config }>//BuilderRequestMethodsGenerated<$Config, $Index>
   )
 
-// todo no config needed?
 // dprint-ignore
 export type BuilderRequestMethodsStatic<$Config extends Config> = {
   raw: <$Data extends Record<string, any>, $Variables>(input: BaseInput<TypedQueryDocumentNode<$Data, $Variables>>) =>
@@ -105,20 +105,12 @@ export type BuilderRequestMethodsGeneratedStatic<$Config extends Config, $Index 
 
 // dprint-ignore
 export type Client<$Index extends Schema.Index | null, $Config extends Config, $AdditionalMethods = unknown> =
-  {
-    internal: {
-      config: $Config
-    }
-  }
   & $AdditionalMethods
-  & BuilderRequestMethodsStatic<$Config>
-  & (
-      $Index extends Schema.Index
-      // todo OmitDeeply
-      ? ClientTyped<$Index, $Config>
-      : {}  
-    )
+  & BuilderRequestMethods<$Config, $Index>
   & {
+      internal: {
+        config: $Config
+      }
       // eslint-disable-next-line
       // @ts-ignore passes after generation
       with: <$Input extends WithInput<$Config>>(input: $Input) =>
@@ -132,10 +124,6 @@ export type Client<$Index extends Schema.Index | null, $Config extends Config, $
       retry: (extension: Anyware.Extension2<Core.Core, { retrying: true }>) =>
         Client<$Index, $Config>
     }
-
-export type ClientTyped<$Index extends Schema.Index, $Config extends Config> =
-  & BuilderRequestMethodsGeneratedStatic<$Config, $Index>
-  & BuilderRequestMethodsGeneratedRootTypes<$Config, $Index>
 
 // dprint-ignore
 type Create = <$Input extends InputStatic<GlobalRegistry.SchemaUnion>>(input: $Input) =>
@@ -404,9 +392,9 @@ const createWithState = (
     }
 
     return undefined
-  }) as any as Client<any, any>
+  }) as any
 
-  return clientProxy as any
+  return clientProxy
 }
 
 // const updateContextConfig = <$Context extends Context>(context: $Context, config: Config): $Context => {

@@ -1,9 +1,7 @@
 /* eslint-disable */
-
 import type * as Data from './Data.js'
-
+import type * as RootMethods from './RootMethods.js'
 import type * as Schema from './SchemaBuildtime.js'
-
 export interface Index {
   name: Data.Name
   RootTypesPresent: ['Query']
@@ -12,6 +10,9 @@ export interface Index {
     Query: Schema.Root.Query
     Mutation: null
     Subscription: null
+  }
+  Builder: {
+    RootMethods: RootMethods.BuilderRootMethodsFn
   }
   objects: {
     Continent: Schema.Object.Continent

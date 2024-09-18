@@ -37,8 +37,13 @@ export namespace Code {
   export const type = (name: string, type: string) => `type ${name} = ${type}`
   export const interface$ = (name: string, object: string) => `interface ${name} ${object}`
   export const export$ = (thing: string) => `export ${thing}`
-  export const TSDoc = (content: string | null, block: string) =>
-    content === null ? block : `/**\n${prependLines(`* `, content) || `*`}\n*/\n${block}`
+  export const TSDoc = (content: string | null) =>
+    content === null ? null : `/**\n${prependLines(`* `, content) || `*`}\n*/`
+  export const TSDocWithBlock = (content: string | null, block: string) => {
+    const tsDoc = TSDoc(content)
+    return tsDoc === null ? block : `${tsDoc}\n${block}`
+  }
+
   export const namespace = (name: string, content: string) => `namespace ${name} ${Code.object(content)}`
   export const group = (...content: string[]) => content.join(`\n`)
   export const commentSectionTitle = (title: string) => {

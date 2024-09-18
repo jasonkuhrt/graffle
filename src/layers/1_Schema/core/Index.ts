@@ -1,3 +1,4 @@
+import type { HKT } from '../../../entrypoints/utilities-for-generated.js'
 import type { RootTypeName } from '../../../lib/graphql.js'
 import type { GlobalRegistry } from '../../2_generator/globalRegistry.js'
 import type { Output } from '../Output/__.js'
@@ -15,6 +16,9 @@ export interface Index {
     Query: null | Output.ObjectQuery
     Mutation: null | Output.ObjectMutation
     Subscription: null | Output.ObjectSubscription
+  }
+  Builder: {
+    RootMethods: HKT.Fn
   }
   objects: Record<string, Output.Object$2>
   unions: Record<string, Output.Union>

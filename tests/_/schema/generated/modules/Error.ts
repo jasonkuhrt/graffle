@@ -1,5 +1,4 @@
 type Include<T, U> = Exclude<T, Exclude<T, U>>
-
 type ObjectWithTypeName = { __typename: string }
 
 const ErrorObjectsTypeNameSelectedEnum = {

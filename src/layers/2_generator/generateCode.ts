@@ -10,6 +10,7 @@ import { generateClient } from './code/Client.js'
 import { generateData } from './code/Data.js'
 import { generateError } from './code/Error.js'
 import { generateGlobal } from './code/global.js'
+import { generateRootMethods } from './code/RootMethods.js'
 import { generateScalar } from './code/Scalar.js'
 import { generateSchemaBuildtime } from './code/SchemaBuildtime.js'
 import { generateSchemaIndex } from './code/SchemaIndex.js'
@@ -35,6 +36,7 @@ export interface Input {
     client?: string
     schema?: string
     scalars?: string
+    utilitiesForGenerated?: string
   }
   importPaths?: {
     customScalarCodecs?: string
@@ -52,6 +54,7 @@ export interface Config {
   schema: GraphQLSchema
   typeMapByKind: TypeMapByKind
   defaultSchemaUrl: URL | null
+  rootTypesPresent: GraphQLObjectType[]
   rootTypes: {
     Query: GraphQLObjectType | null
     Mutation: GraphQLObjectType | null
@@ -65,6 +68,7 @@ export interface Config {
     client: string
     schema: string
     scalars: string
+    utilitiesForGenerated: string
   }
   importPaths: {
     customScalarCodecs: string
@@ -88,6 +92,12 @@ export const resolveOptions = (input: Input): Config => {
     ? Object.values(typeMapByKind.GraphQLObjectType).filter(_ => _.name.match(errorTypeNamePattern))
     : []
   const defaultSchemaUrl = input.defaultSchemaUrl ?? null
+  const rootTypes = {
+    Query: typeMapByKind.GraphQLRootType.find(_ => _.name === `Query`) ?? null,
+    Mutation: typeMapByKind.GraphQLRootType.find(_ => _.name === `Mutation`) ?? null,
+    Subscription: typeMapByKind.GraphQLRootType.find(_ => _.name === `Subscription`) ?? null,
+  }
+  const rootTypesPresent = Object.values(rootTypes).filter(_ => _ !== null)
   return {
     name: input.name ?? defaultName,
     defaultSchemaUrl,
@@ -103,13 +113,11 @@ export const resolveOptions = (input: Input): Config => {
       client: input.libraryPaths?.client ?? `graffle/client`,
       scalars: input.libraryPaths?.scalars ?? `graffle/schema/scalars`,
       schema: input.libraryPaths?.schema ?? `graffle/schema`,
+      utilitiesForGenerated: input.libraryPaths?.utilitiesForGenerated ?? `graffle/utilities-for-generated`,
     },
     typeMapByKind,
-    rootTypes: {
-      Query: typeMapByKind.GraphQLRootType.find(_ => _.name === `Query`) ?? null,
-      Mutation: typeMapByKind.GraphQLRootType.find(_ => _.name === `Mutation`) ?? null,
-      Subscription: typeMapByKind.GraphQLRootType.find(_ => _.name === `Subscription`) ?? null,
-    },
+    rootTypes,
+    rootTypesPresent,
     options: {
       errorTypeNamePattern,
       customScalars: input.options?.customScalars ?? false,
@@ -142,6 +150,7 @@ export const generateCode = (input: Input) => {
     generateSchemaBuildtime,
     generateRuntimeSchema,
     generateSelect,
+    generateRootMethods,
   ].map(_ => _(config)).map(code => ({
     ...code,
     code: format(code.code),

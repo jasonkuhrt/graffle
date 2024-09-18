@@ -1,12 +1,11 @@
-import { createCodeGenerator } from '../createCodeGenerator.js'
+import { createModuleGenerator } from '../createCodeGenerator.js'
 import { moduleNameClient } from './Client.js'
 import { moduleNameError } from './Error.js'
 import { moduleNameSelect } from './Select.js'
 
-export const { generate: generate_, moduleName: moduleName_ } = createCodeGenerator(
+export const { generate: generate_, moduleName: moduleName_ } = createModuleGenerator(
   `_`,
-  (_config) => {
-    const code: string[] = []
+  ({ code }) => {
     code.push(
       `// We import the global module for good measure although it is not clear it is always needed.`,
       `// It at least helps with Twoslash wherein without this import here Twoslash will not include the global module.`,
@@ -19,6 +18,6 @@ export const { generate: generate_, moduleName: moduleName_ } = createCodeGenera
       `export { create } from './modules/${moduleNameClient}.js'`,
     )
 
-    return code.join(`\n`)
+    return code
   },
 )

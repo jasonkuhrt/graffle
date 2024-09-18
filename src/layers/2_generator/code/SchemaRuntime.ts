@@ -32,19 +32,15 @@ import {
   unwrapToNamed,
   unwrapToNonNull,
 } from '../../../lib/graphql.js'
-import { createCodeGenerator } from '../createCodeGenerator.js'
+import { createModuleGenerator } from '../createCodeGenerator.js'
 import type { Config } from '../generateCode.js'
 import { moduleNameData } from './Data.js'
 import { moduleNameScalar } from './Scalar.js'
 import { moduleNameSchemaIndex } from './SchemaIndex.js'
 
-export const { generate: generateRuntimeSchema, moduleName: moduleNameSchemaRuntime } = createCodeGenerator(
+export const { generate: generateRuntimeSchema, moduleName: moduleNameSchemaRuntime } = createModuleGenerator(
   `SchemaRuntime`,
-  (
-    config,
-  ) => {
-    const code: string[] = []
-
+  ({ config, code }) => {
     code.push(`/* eslint-disable */\n`)
     code.push(
       `
@@ -74,7 +70,7 @@ export const { generate: generateRuntimeSchema, moduleName: moduleNameSchemaRunt
       index(config),
     )
 
-    return code.join(`\n`)
+    return code
   },
 )
 
