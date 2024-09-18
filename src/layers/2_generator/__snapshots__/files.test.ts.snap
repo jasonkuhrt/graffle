@@ -172,6 +172,7 @@ import type * as Schema from './SchemaBuildtime.js'
 export interface Index {
   name: Data.Name
   RootTypesPresent: ['Query', 'Mutation']
+  RootUnion: Schema.Root.Query | Schema.Root.Mutation
   Root: {
     Query: Schema.Root.Query
     Mutation: Schema.Root.Mutation
@@ -234,23 +235,23 @@ import type * as $Scalar from './Scalar.ts'
 // ------------------------------------------------------------ //
 
 export namespace Root {
-  export type Mutation = $.Object$2<'Mutation', {
+  export type Mutation = $.Output.ObjectMutation<{
     id: $.Field<$.Output.Nullable<$Scalar.ID>, null>
     idNonNull: $.Field<$Scalar.ID, null>
   }>
 
-  export type Query = $.Object$2<'Query', {
+  export type Query = $.Output.ObjectQuery<{
     InputObjectNested: $.Field<
       $.Output.Nullable<$Scalar.ID>,
       $.Args<{
-        input: $.Input.Nullable<InputObject.InputObjectNested>
-      }>
+        input: $.Input.Field<$.Input.Nullable<InputObject.InputObjectNested>>
+      }, true>
     >
     InputObjectNestedNonNull: $.Field<
       $.Output.Nullable<$Scalar.ID>,
       $.Args<{
-        input: InputObject.InputObjectNestedNonNull
-      }>
+        input: $.Input.Field<InputObject.InputObjectNestedNonNull>
+      }, false>
     >
     /**
      * Query enum field documentation.
@@ -260,38 +261,38 @@ export namespace Root {
     dateArg: $.Field<
       $.Output.Nullable<$Scalar.Date>,
       $.Args<{
-        date: $.Input.Nullable<$Scalar.Date>
-      }>
+        date: $.Input.Field<$.Input.Nullable<$Scalar.Date>>
+      }, true>
     >
     dateArgInputObject: $.Field<
       $.Output.Nullable<$Scalar.Date>,
       $.Args<{
-        input: $.Input.Nullable<InputObject.InputObject>
-      }>
+        input: $.Input.Field<$.Input.Nullable<InputObject.InputObject>>
+      }, true>
     >
     dateArgList: $.Field<
       $.Output.Nullable<$Scalar.Date>,
       $.Args<{
-        date: $.Input.Nullable<$.Input.List<$Scalar.Date>>
-      }>
+        date: $.Input.Field<$.Input.Nullable<$.Input.List<$Scalar.Date>>>
+      }, true>
     >
     dateArgNonNull: $.Field<
       $.Output.Nullable<$Scalar.Date>,
       $.Args<{
-        date: $Scalar.Date
-      }>
+        date: $.Input.Field<$Scalar.Date>
+      }, false>
     >
     dateArgNonNullList: $.Field<
       $.Output.Nullable<$Scalar.Date>,
       $.Args<{
-        date: $.Input.List<$.Input.Nullable<$Scalar.Date>>
-      }>
+        date: $.Input.Field<$.Input.List<$.Input.Nullable<$Scalar.Date>>>
+      }, false>
     >
     dateArgNonNullListNonNull: $.Field<
       $.Output.Nullable<$Scalar.Date>,
       $.Args<{
-        date: $.Input.List<$Scalar.Date>
-      }>
+        date: $.Input.Field<$.Input.List<$Scalar.Date>>
+      }, false>
     >
     dateInterface1: $.Field<$.Output.Nullable<Interface.DateInterface1>, null>
     dateList: $.Field<$.Output.Nullable<$.Output.List<$Scalar.Date>>, null>
@@ -302,8 +303,8 @@ export namespace Root {
     error: $.Field<
       $.Output.Nullable<$Scalar.String>,
       $.Args<{
-        case: $.Input.Nullable<$Scalar.String>
-      }>
+        case: $.Input.Field<$.Input.Nullable<$Scalar.String>>
+      }, true>
     >
     id: $.Field<$.Output.Nullable<$Scalar.ID>, null>
     idNonNull: $.Field<$Scalar.ID, null>
@@ -312,8 +313,8 @@ export namespace Root {
     interfaceWithArgs: $.Field<
       $.Output.Nullable<Interface.Interface>,
       $.Args<{
-        id: $Scalar.ID
-      }>
+        id: $.Input.Field<$Scalar.ID>
+      }, false>
     >
     listInt: $.Field<$.Output.Nullable<$.Output.List<$.Output.Nullable<$Scalar.Int>>>, null>
     listIntNonNull: $.Field<$.Output.List<$Scalar.Int>, null>
@@ -331,79 +332,79 @@ export namespace Root {
     objectWithArgs: $.Field<
       $.Output.Nullable<Object.Object1>,
       $.Args<{
-        boolean: $.Input.Nullable<$Scalar.Boolean>
-        float: $.Input.Nullable<$Scalar.Float>
-        id: $.Input.Nullable<$Scalar.ID>
-        int: $.Input.Nullable<$Scalar.Int>
-        string: $.Input.Nullable<$Scalar.String>
-      }>
+        boolean: $.Input.Field<$.Input.Nullable<$Scalar.Boolean>>
+        float: $.Input.Field<$.Input.Nullable<$Scalar.Float>>
+        id: $.Input.Field<$.Input.Nullable<$Scalar.ID>>
+        int: $.Input.Field<$.Input.Nullable<$Scalar.Int>>
+        string: $.Input.Field<$.Input.Nullable<$Scalar.String>>
+      }, true>
     >
     result: $.Field<
       $.Output.Nullable<Union.Result>,
       $.Args<{
-        case: Enum.Case
-      }>
+        case: $.Input.Field<Enum.Case>
+      }, false>
     >
     resultNonNull: $.Field<
       Union.Result,
       $.Args<{
-        case: $.Input.Nullable<Enum.Case>
-      }>
+        case: $.Input.Field<$.Input.Nullable<Enum.Case>>
+      }, true>
     >
     string: $.Field<$.Output.Nullable<$Scalar.String>, null>
     stringWithArgEnum: $.Field<
       $.Output.Nullable<$Scalar.String>,
       $.Args<{
-        ABCEnum: $.Input.Nullable<Enum.ABCEnum>
-      }>
+        ABCEnum: $.Input.Field<$.Input.Nullable<Enum.ABCEnum>>
+      }, true>
     >
     stringWithArgInputObject: $.Field<
       $.Output.Nullable<$Scalar.String>,
       $.Args<{
-        input: $.Input.Nullable<InputObject.InputObject>
-      }>
+        input: $.Input.Field<$.Input.Nullable<InputObject.InputObject>>
+      }, true>
     >
     stringWithArgInputObjectRequired: $.Field<
       $.Output.Nullable<$Scalar.String>,
       $.Args<{
-        input: InputObject.InputObject
-      }>
+        input: $.Input.Field<InputObject.InputObject>
+      }, false>
     >
     stringWithArgs: $.Field<
       $.Output.Nullable<$Scalar.String>,
       $.Args<{
-        boolean: $.Input.Nullable<$Scalar.Boolean>
-        float: $.Input.Nullable<$Scalar.Float>
-        id: $.Input.Nullable<$Scalar.ID>
-        int: $.Input.Nullable<$Scalar.Int>
-        string: $.Input.Nullable<$Scalar.String>
-      }>
+        boolean: $.Input.Field<$.Input.Nullable<$Scalar.Boolean>>
+        float: $.Input.Field<$.Input.Nullable<$Scalar.Float>>
+        id: $.Input.Field<$.Input.Nullable<$Scalar.ID>>
+        int: $.Input.Field<$.Input.Nullable<$Scalar.Int>>
+        string: $.Input.Field<$.Input.Nullable<$Scalar.String>>
+      }, true>
     >
     stringWithListArg: $.Field<
       $.Output.Nullable<$Scalar.String>,
       $.Args<{
-        ints: $.Input.Nullable<$.Input.List<$.Input.Nullable<$Scalar.Int>>>
-      }>
+        ints: $.Input.Field<$.Input.Nullable<$.Input.List<$.Input.Nullable<$Scalar.Int>>>>
+      }, true>
     >
     stringWithListArgRequired: $.Field<
       $.Output.Nullable<$Scalar.String>,
       $.Args<{
-        ints: $.Input.List<$Scalar.Int>
-      }>
+        ints: $.Input.Field<$.Input.List<$Scalar.Int>>
+      }, false>
     >
     stringWithRequiredArg: $.Field<
       $.Output.Nullable<$Scalar.String>,
       $.Args<{
-        string: $Scalar.String
-      }>
+        string: $.Input.Field<$Scalar.String>
+      }, false>
     >
     unionFooBar: $.Field<$.Output.Nullable<Union.FooBarUnion>, null>
     unionFooBarNonNull: $.Field<Union.FooBarUnion, null>
     unionFooBarWithArgs: $.Field<
       $.Output.Nullable<Union.FooBarUnion>,
       $.Args<{
-        id: $.Input.Nullable<$Scalar.ID>
-      }>
+        id: $.Input.Field<$.Input.Nullable<$Scalar.ID>>
+      }, true>
     >
     unionObject: $.Field<$.Output.Nullable<Object.ObjectUnion>, null>
     unionObjectNonNull: $.Field<Object.ObjectUnion, null>
@@ -438,15 +439,15 @@ export namespace InputObject {
     dateRequired: $.Input.Field<$Scalar.Date>
     id: $.Input.Field<$.Input.Nullable<$Scalar.ID>>
     idRequired: $.Input.Field<$Scalar.ID>
-  }>
+  }, true>
 
   export type InputObjectNested = $.InputObject<'InputObjectNested', {
     InputObject: $.Input.Field<$.Input.Nullable<InputObject.InputObject>>
-  }>
+  }, true>
 
   export type InputObjectNestedNonNull = $.InputObject<'InputObjectNestedNonNull', {
     InputObject: $.Input.Field<InputObject.InputObject>
-  }>
+  }, false>
 }
 
 // ------------------------------------------------------------ //
@@ -580,19 +581,19 @@ export const ABCEnum = $.Enum(\`ABCEnum\`, [\`A\`, \`B\`, \`C\`])
 export const Case = $.Enum(\`Case\`, [\`ErrorOne\`, \`ErrorTwo\`, \`Object1\`])
 
 export const InputObject = $.InputObject(\`InputObject\`, {
-  date: $.Input.field($.Input.Nullable($Scalar.Date)),
-  dateRequired: $.Input.field($Scalar.Date),
-  id: $.Input.field($.Input.Nullable($Scalar.ID)),
-  idRequired: $.Input.field($Scalar.ID),
-})
+  date: $.Input.Field($.Input.Nullable($Scalar.Date)),
+  dateRequired: $.Input.Field($Scalar.Date),
+  id: $.Input.Field($.Input.Nullable($Scalar.ID)),
+  idRequired: $.Input.Field($Scalar.ID),
+}, true)
 
 export const InputObjectNested = $.InputObject(\`InputObjectNested\`, {
-  InputObject: $.Input.field(() => $.Input.Nullable(InputObject)),
-})
+  InputObject: $.Input.Field(() => $.Input.Nullable(InputObject)),
+}, true)
 
 export const InputObjectNestedNonNull = $.InputObject(\`InputObjectNestedNonNull\`, {
-  InputObject: $.Input.field(() => InputObject),
-})
+  InputObject: $.Input.Field(() => InputObject),
+}, false)
 
 // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
 export const Bar = $.Object$(\`Bar\`, {
@@ -699,20 +700,38 @@ export const Mutation = $.Object$(\`Mutation\`, {
 
 // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
 export const Query = $.Object$(\`Query\`, {
-  InputObjectNested: $.field($.Output.Nullable($Scalar.ID), $.Args({ input: $.Input.Nullable(InputObjectNested) })),
-  InputObjectNestedNonNull: $.field($.Output.Nullable($Scalar.ID), $.Args({ input: InputObjectNestedNonNull })),
+  InputObjectNested: $.field(
+    $.Output.Nullable($Scalar.ID),
+    $.Args({ input: $.Input.Field($.Input.Nullable(InputObjectNested)) }, true),
+  ),
+  InputObjectNestedNonNull: $.field(
+    $.Output.Nullable($Scalar.ID),
+    $.Args({ input: $.Input.Field(InputObjectNestedNonNull) }, false),
+  ),
   // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
   abcEnum: $.field($.Output.Nullable(ABCEnum)),
   date: $.field($.Output.Nullable($Scalar.Date)),
-  dateArg: $.field($.Output.Nullable($Scalar.Date), $.Args({ date: $.Input.Nullable($Scalar.Date) })),
-  dateArgInputObject: $.field($.Output.Nullable($Scalar.Date), $.Args({ input: $.Input.Nullable(InputObject) })),
-  dateArgList: $.field($.Output.Nullable($Scalar.Date), $.Args({ date: $.Input.Nullable($.Input.List($Scalar.Date)) })),
-  dateArgNonNull: $.field($.Output.Nullable($Scalar.Date), $.Args({ date: $Scalar.Date })),
+  dateArg: $.field(
+    $.Output.Nullable($Scalar.Date),
+    $.Args({ date: $.Input.Field($.Input.Nullable($Scalar.Date)) }, true),
+  ),
+  dateArgInputObject: $.field(
+    $.Output.Nullable($Scalar.Date),
+    $.Args({ input: $.Input.Field($.Input.Nullable(InputObject)) }, true),
+  ),
+  dateArgList: $.field(
+    $.Output.Nullable($Scalar.Date),
+    $.Args({ date: $.Input.Field($.Input.Nullable($.Input.List($Scalar.Date))) }, true),
+  ),
+  dateArgNonNull: $.field($.Output.Nullable($Scalar.Date), $.Args({ date: $.Input.Field($Scalar.Date) }, false)),
   dateArgNonNullList: $.field(
     $.Output.Nullable($Scalar.Date),
-    $.Args({ date: $.Input.List($.Input.Nullable($Scalar.Date)) }),
+    $.Args({ date: $.Input.Field($.Input.List($.Input.Nullable($Scalar.Date))) }, false),
   ),
-  dateArgNonNullListNonNull: $.field($.Output.Nullable($Scalar.Date), $.Args({ date: $.Input.List($Scalar.Date) })),
+  dateArgNonNullListNonNull: $.field(
+    $.Output.Nullable($Scalar.Date),
+    $.Args({ date: $.Input.Field($.Input.List($Scalar.Date)) }, false),
+  ),
   // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
   dateInterface1: $.field($.Output.Nullable(() => DateInterface1)),
   dateList: $.field($.Output.Nullable($.Output.List($Scalar.Date))),
@@ -722,7 +741,10 @@ export const Query = $.Object$(\`Query\`, {
   dateObject1: $.field($.Output.Nullable(() => DateObject1)),
   // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
   dateUnion: $.field($.Output.Nullable(() => DateUnion)),
-  error: $.field($.Output.Nullable($Scalar.String), $.Args({ case: $.Input.Nullable($Scalar.String) })),
+  error: $.field(
+    $.Output.Nullable($Scalar.String),
+    $.Args({ case: $.Input.Field($.Input.Nullable($Scalar.String)) }, true),
+  ),
   id: $.field($.Output.Nullable($Scalar.ID)),
   idNonNull: $.field($Scalar.ID),
   // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
@@ -730,7 +752,7 @@ export const Query = $.Object$(\`Query\`, {
   // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
   interfaceNonNull: $.field(() => Interface),
   // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-  interfaceWithArgs: $.field($.Output.Nullable(() => Interface), $.Args({ id: $Scalar.ID })),
+  interfaceWithArgs: $.field($.Output.Nullable(() => Interface), $.Args({ id: $.Input.Field($Scalar.ID) }, false)),
   listInt: $.field($.Output.Nullable($.Output.List($.Output.Nullable($Scalar.Int)))),
   listIntNonNull: $.field($.Output.List($Scalar.Int)),
   listListInt: $.field(
@@ -753,46 +775,61 @@ export const Query = $.Object$(\`Query\`, {
   objectWithArgs: $.field(
     $.Output.Nullable(() => Object1),
     $.Args({
-      boolean: $.Input.Nullable($Scalar.Boolean),
-      float: $.Input.Nullable($Scalar.Float),
-      id: $.Input.Nullable($Scalar.ID),
-      int: $.Input.Nullable($Scalar.Int),
-      string: $.Input.Nullable($Scalar.String),
-    }),
+      boolean: $.Input.Field($.Input.Nullable($Scalar.Boolean)),
+      float: $.Input.Field($.Input.Nullable($Scalar.Float)),
+      id: $.Input.Field($.Input.Nullable($Scalar.ID)),
+      int: $.Input.Field($.Input.Nullable($Scalar.Int)),
+      string: $.Input.Field($.Input.Nullable($Scalar.String)),
+    }, true),
   ),
   // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-  result: $.field($.Output.Nullable(() => Result), $.Args({ case: Case })),
+  result: $.field($.Output.Nullable(() => Result), $.Args({ case: $.Input.Field(Case) }, false)),
   // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-  resultNonNull: $.field(() => Result, $.Args({ case: $.Input.Nullable(Case) })),
+  resultNonNull: $.field(() => Result, $.Args({ case: $.Input.Field($.Input.Nullable(Case)) }, true)),
   string: $.field($.Output.Nullable($Scalar.String)),
-  stringWithArgEnum: $.field($.Output.Nullable($Scalar.String), $.Args({ ABCEnum: $.Input.Nullable(ABCEnum) })),
+  stringWithArgEnum: $.field(
+    $.Output.Nullable($Scalar.String),
+    $.Args({ ABCEnum: $.Input.Field($.Input.Nullable(ABCEnum)) }, true),
+  ),
   stringWithArgInputObject: $.field(
     $.Output.Nullable($Scalar.String),
-    $.Args({ input: $.Input.Nullable(InputObject) }),
+    $.Args({ input: $.Input.Field($.Input.Nullable(InputObject)) }, true),
   ),
-  stringWithArgInputObjectRequired: $.field($.Output.Nullable($Scalar.String), $.Args({ input: InputObject })),
+  stringWithArgInputObjectRequired: $.field(
+    $.Output.Nullable($Scalar.String),
+    $.Args({ input: $.Input.Field(InputObject) }, false),
+  ),
   stringWithArgs: $.field(
     $.Output.Nullable($Scalar.String),
     $.Args({
-      boolean: $.Input.Nullable($Scalar.Boolean),
-      float: $.Input.Nullable($Scalar.Float),
-      id: $.Input.Nullable($Scalar.ID),
-      int: $.Input.Nullable($Scalar.Int),
-      string: $.Input.Nullable($Scalar.String),
-    }),
+      boolean: $.Input.Field($.Input.Nullable($Scalar.Boolean)),
+      float: $.Input.Field($.Input.Nullable($Scalar.Float)),
+      id: $.Input.Field($.Input.Nullable($Scalar.ID)),
+      int: $.Input.Field($.Input.Nullable($Scalar.Int)),
+      string: $.Input.Field($.Input.Nullable($Scalar.String)),
+    }, true),
   ),
   stringWithListArg: $.field(
     $.Output.Nullable($Scalar.String),
-    $.Args({ ints: $.Input.Nullable($.Input.List($.Input.Nullable($Scalar.Int))) }),
+    $.Args({ ints: $.Input.Field($.Input.Nullable($.Input.List($.Input.Nullable($Scalar.Int)))) }, true),
   ),
-  stringWithListArgRequired: $.field($.Output.Nullable($Scalar.String), $.Args({ ints: $.Input.List($Scalar.Int) })),
-  stringWithRequiredArg: $.field($.Output.Nullable($Scalar.String), $.Args({ string: $Scalar.String })),
+  stringWithListArgRequired: $.field(
+    $.Output.Nullable($Scalar.String),
+    $.Args({ ints: $.Input.Field($.Input.List($Scalar.Int)) }, false),
+  ),
+  stringWithRequiredArg: $.field(
+    $.Output.Nullable($Scalar.String),
+    $.Args({ string: $.Input.Field($Scalar.String) }, false),
+  ),
   // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
   unionFooBar: $.field($.Output.Nullable(() => FooBarUnion)),
   // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
   unionFooBarNonNull: $.field(() => FooBarUnion),
   // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-  unionFooBarWithArgs: $.field($.Output.Nullable(() => FooBarUnion), $.Args({ id: $.Input.Nullable($Scalar.ID) })),
+  unionFooBarWithArgs: $.field(
+    $.Output.Nullable(() => FooBarUnion),
+    $.Args({ id: $.Input.Field($.Input.Nullable($Scalar.ID)) }, true),
+  ),
   // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
   unionObject: $.field($.Output.Nullable(() => ObjectUnion)),
   // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
@@ -802,6 +839,7 @@ export const Query = $.Object$(\`Query\`, {
 export const $Index: Index = {
   name: Data.Name,
   RootTypesPresent: ['Query', 'Mutation'] as const,
+  RootUnion: undefined as any, // Type level only.
   Root: {
     Query,
     Mutation,
