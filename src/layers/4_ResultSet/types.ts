@@ -13,6 +13,12 @@ export type Mutation<$SelectionSet extends object, $Index extends Schema.Index> 
 // dprint-ignore
 export type Subscription<$SelectionSet extends object, $Index extends Schema.Index> = Root<$SelectionSet, $Index, 'Subscription'>
 
+export type RootViaObject<
+  $SelectionSet extends object,
+  $Index extends Schema.Index,
+  $RootType extends Schema.Output.RootType,
+> = Root<$SelectionSet, $Index, $RootType['fields']['__typename']['type']['type']>
+
 export type Root<
   $SelectionSet extends object,
   $Index extends Schema.Index,
@@ -101,5 +107,6 @@ type FieldDirectiveSkip<$SelectionSet> =
 
 // dprint-ignore
 export namespace Errors {
-  export type UnknownFieldName<$FieldName extends string, $Object extends Schema.Object$2> = TSError<'Object', `field "${$FieldName}" does not exist on object "${$Object['fields']['__typename']['type']['type']}"`>
+  export type UnknownFieldName<$FieldName extends string, $Object extends Schema.Object$2 | Schema.Output.RootType> =
+    TSError<'Object', `field "${$FieldName}" does not exist on object "${$Object['fields']['__typename']['type']['type']}"`>
 }

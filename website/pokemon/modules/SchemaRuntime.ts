@@ -1,7 +1,9 @@
 /* eslint-disable */
 
 import * as $ from 'graffle/schema'
+import * as Data from './Data.js'
 import * as $Scalar from './Scalar.js'
+import type { Index } from './SchemaIndex.js'
 
 export const $defaultSchemaUrl = undefined
 
@@ -29,7 +31,12 @@ export const Mutation = $.Object$(`Mutation`, {
   // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
   addPokemon: $.field(
     $.Output.Nullable(() => Pokemon),
-    $.Args({ attack: $Scalar.Int, defense: $Scalar.Int, hp: $Scalar.Int, name: $Scalar.String }),
+    $.Args({
+      attack: $.Input.Field($Scalar.Int),
+      defense: $.Input.Field($Scalar.Int),
+      hp: $.Input.Field($Scalar.Int),
+      name: $.Input.Field($Scalar.String),
+    }, false),
   ),
 })
 
@@ -38,16 +45,20 @@ export const Query = $.Object$(`Query`, {
   // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
   pokemon: $.field($.Output.Nullable($.Output.List(() => Pokemon))),
   // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-  pokemonByName: $.field($.Output.Nullable($.Output.List(() => Pokemon)), $.Args({ name: $Scalar.String })),
+  pokemonByName: $.field(
+    $.Output.Nullable($.Output.List(() => Pokemon)),
+    $.Args({ name: $.Input.Field($Scalar.String) }, false),
+  ),
   // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-  trainerByName: $.field($.Output.Nullable(() => Trainer), $.Args({ name: $Scalar.String })),
+  trainerByName: $.field($.Output.Nullable(() => Trainer), $.Args({ name: $.Input.Field($Scalar.String) }, false)),
   // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
   trainers: $.field($.Output.Nullable($.Output.List(() => Trainer))),
 })
 
-export const $Index = {
-  name: 'Pokemon' as const,
+export const $Index: Index = {
+  name: Data.Name,
   RootTypesPresent: ['Query', 'Mutation'] as const,
+  RootUnion: undefined as any, // Type level only.
   Root: {
     Query,
     Mutation,

@@ -1,55 +1,52 @@
-import type { CamelCase } from 'type-fest'
+import type { RootTypeNameToOperationName } from '../../lib/graphql.js'
 import type { Exact } from '../../lib/prelude.js'
-import type { TSError } from '../../lib/TSError.js'
-import type { InputFieldsAllNullable, Schema } from '../1_Schema/__.js'
+import type { Schema } from '../1_Schema/__.js'
 import type { SelectionSet } from '../3_SelectionSet/__.js'
 import type { ResultSet } from '../4_ResultSet/__.js'
 import type { ResolveOutputReturnRootField, ResolveOutputReturnRootType, SimplifyOutput } from './handleOutput.js'
 import type { AugmentRootTypeSelectionWithTypename, Config, CreateSelectionTypename } from './Settings/Config.js'
 
+// dprint-ignore
+export type BuilderRequestMethodsGeneratedRootTypes<$Config extends Config, $Index extends Schema.Index> = {
+  [$RootType in $Index['RootUnion'] as RootTypeNameToOperationName[$RootType['fields']['__typename']['type']['type']]]:
+		RootTypeMethods<$Config, $Index, $RootType>
+}
+
+// dprint-ignore
+type RootTypeMethods<$Config extends Config, $Index extends Schema.Index, $RootType extends Schema.Output.RootType> =
+(
+  & {
+      $batch: RootTypeMethod<$Config, $Index, $RootType>
+    }
+  & RootTypeFieldMethods<$Config, $Index, $RootType>
+)
+
+// dprint-ignore
+export type RootTypeMethod<$Config extends Config, $Index extends Schema.Index, $RootType extends Schema.Output.RootType> =
+  <$SelectionSet extends object>(selectionSet: Exact<$SelectionSet, SelectionSet.RootViaObject<$Index, $RootType>>) =>
+    Promise<
+      ResolveOutputReturnRootType<$Config, $Index, ResultSet.RootViaObject<AugmentRootTypeSelectionWithTypename<$Config,$Index,$RootType,$SelectionSet>, $Index, $RootType>>
+    >
+
+type RootTypeFieldMethods<
+  $Config extends Config,
+  $Index extends Schema.Index,
+  $RootType extends Schema.Output.RootType,
+> = {
+  [$RootTypeFieldName in keyof $RootType['fields'] & string]: RootTypeFieldMethod<{
+    Config: $Config
+    Index: $Index
+    RootTypeFieldName: $RootTypeFieldName
+    Field: $RootType['fields'][$RootTypeFieldName]
+  }>
+}
+
 type RootTypeFieldContext = {
   Config: Config
   Index: Schema.Index
-  RootTypeName: Schema.RootTypeName
   RootTypeFieldName: string
   Field: Schema.SomeField
 }
-
-// dprint-ignore
-export type BuilderRequestMethodsGeneratedRootTypes<$Config extends Config, $Index extends Schema.Index> = {
-  // todo
-  // [$OperationName in $Index['OperationsPresent'][number]]:
-  //   RootTypeMethods<$Config, $Index, OperationNameToRootType<OperationName>>
-  [$RootTypeName in $Index['RootTypesPresent'][number] as CamelCase<$RootTypeName>]:
-		RootTypeMethods<$Config, $Index, $RootTypeName>
-}
-
-// dprint-ignore
-export type RootTypeMethods<$Config extends Config, $Index extends Schema.Index, $RootTypeName extends Schema.RootTypeName> =
-  $Index['Root'][$RootTypeName] extends Schema.Object$2 ?
-  (
-  & {
-      $batch: RootMethod<$Config, $Index, $RootTypeName>
-    }
-  & {
-      [$RootTypeFieldName in keyof $Index['Root'][$RootTypeName]['fields'] & string]:
-        RootTypeFieldMethod<{
-          Config: $Config,
-          Index: $Index,
-          RootTypeName: $RootTypeName,
-          RootTypeFieldName: $RootTypeFieldName
-          Field: $Index['Root'][$RootTypeName]['fields'][$RootTypeFieldName]
-        }>
-    }
-  )
-  : TSError<'RootTypeMethods', `Your schema does not have the root type "${$RootTypeName}".`>
-
-// dprint-ignore
-export type RootMethod<$Config extends Config, $Index extends Schema.Index, $RootTypeName extends Schema.RootTypeName> =
-  <$SelectionSet extends object>(selectionSet: Exact<$SelectionSet, SelectionSet.Root<$Index, $RootTypeName>>) =>
-    Promise<
-      ResolveOutputReturnRootType<$Config, $Index, ResultSet.Root<AugmentRootTypeSelectionWithTypename<$Config,$Index,$RootTypeName,$SelectionSet>, $Index, $RootTypeName>>
-    >
 
 // dprint-ignore
 type RootTypeFieldMethod<$Context extends RootTypeFieldContext> =
@@ -75,7 +72,7 @@ type ObjectLikeFieldMethod<$Context extends RootTypeFieldContext> =
 
 // dprint-ignore
 type ScalarFieldMethod<$Context extends RootTypeFieldContext> =
-  $Context['Field']['args'] extends Schema.Args<infer $Fields>  ? InputFieldsAllNullable<$Fields> extends true  ? <$SelectionSet>(args?: Exact<$SelectionSet, SelectionSet.Args<$Context['Field']['args']>>) => Promise<ReturnModeForFieldMethod<$Context, ResultSet.Field<$SelectionSet, $Context['Field'], $Context['Index']>>> :
+  $Context['Field']['args'] extends Schema.Args<any>            ? $Context['Field']['args']['isFieldsAllNullable'] extends true  ? <$SelectionSet>(args?: Exact<$SelectionSet, SelectionSet.Args<$Context['Field']['args']>>) => Promise<ReturnModeForFieldMethod<$Context, ResultSet.Field<$SelectionSet, $Context['Field'], $Context['Index']>>> :
                                                                                                                   <$SelectionSet>(args:  Exact<$SelectionSet, SelectionSet.Args<$Context['Field']['args']>>) => Promise<ReturnModeForFieldMethod<$Context, ResultSet.Field<$SelectionSet, $Context['Field'], $Context['Index']>>> :
                                                                   (() => Promise<ReturnModeForFieldMethod<$Context, ResultSet.Field<true, $Context['Field'], $Context['Index']>>>)
 // dprint-ignore

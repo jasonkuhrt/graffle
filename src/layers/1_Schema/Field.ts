@@ -19,19 +19,18 @@ export const field = <$Type extends Output.Any, $Args extends null | Args<any> =
   }
 }
 
-// todo test  non null interface fields
-export type SomeField = Field<
+type FieldType =
   | Hybrid.Enum
   | Hybrid.Scalar.Any
   | Output.List<any>
   | Output.Nullable<any>
   | Output.Object$2<string, any>
   | Output.Union<string, [any, ...any[]]>
-  | Output.Interface<string, Record<string, Field<any, Args<any> | null>>, [any, ...any[]]>,
-  Args<any> | null
->
+  | Output.Interface<string, Record<string, Field<any, Args<any> | null>>, [any, ...any[]]>
 
-export type SomeFields<$Keys extends string | number | symbol = string | number | symbol> = Record<
-  $Keys,
-  SomeField
->
+// todo test non null interface fields
+export type SomeField = Field<FieldType, Args<any> | null>
+
+export type SomeFields<$Keys extends SomeKey = SomeKey> = Record<$Keys, SomeField>
+
+type SomeKey = string | number | symbol

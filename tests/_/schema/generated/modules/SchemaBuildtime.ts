@@ -6,23 +6,23 @@ import type * as $Scalar from './Scalar.ts'
 // ------------------------------------------------------------ //
 
 export namespace Root {
-  export type Mutation = $.Object$2<'Mutation', {
+  export type Mutation = $.Output.ObjectMutation<{
     id: $.Field<$.Output.Nullable<$Scalar.ID>, null>
     idNonNull: $.Field<$Scalar.ID, null>
   }>
 
-  export type Query = $.Object$2<'Query', {
+  export type Query = $.Output.ObjectQuery<{
     InputObjectNested: $.Field<
       $.Output.Nullable<$Scalar.ID>,
       $.Args<{
-        input: $.Input.Nullable<InputObject.InputObjectNested>
-      }>
+        input: $.Input.Field<$.Input.Nullable<InputObject.InputObjectNested>>
+      }, true>
     >
     InputObjectNestedNonNull: $.Field<
       $.Output.Nullable<$Scalar.ID>,
       $.Args<{
-        input: InputObject.InputObjectNestedNonNull
-      }>
+        input: $.Input.Field<InputObject.InputObjectNestedNonNull>
+      }, false>
     >
     /**
      * Query enum field documentation.
@@ -32,38 +32,38 @@ export namespace Root {
     dateArg: $.Field<
       $.Output.Nullable<$Scalar.Date>,
       $.Args<{
-        date: $.Input.Nullable<$Scalar.Date>
-      }>
+        date: $.Input.Field<$.Input.Nullable<$Scalar.Date>>
+      }, true>
     >
     dateArgInputObject: $.Field<
       $.Output.Nullable<$Scalar.Date>,
       $.Args<{
-        input: $.Input.Nullable<InputObject.InputObject>
-      }>
+        input: $.Input.Field<$.Input.Nullable<InputObject.InputObject>>
+      }, true>
     >
     dateArgList: $.Field<
       $.Output.Nullable<$Scalar.Date>,
       $.Args<{
-        date: $.Input.Nullable<$.Input.List<$Scalar.Date>>
-      }>
+        date: $.Input.Field<$.Input.Nullable<$.Input.List<$Scalar.Date>>>
+      }, true>
     >
     dateArgNonNull: $.Field<
       $.Output.Nullable<$Scalar.Date>,
       $.Args<{
-        date: $Scalar.Date
-      }>
+        date: $.Input.Field<$Scalar.Date>
+      }, false>
     >
     dateArgNonNullList: $.Field<
       $.Output.Nullable<$Scalar.Date>,
       $.Args<{
-        date: $.Input.List<$.Input.Nullable<$Scalar.Date>>
-      }>
+        date: $.Input.Field<$.Input.List<$.Input.Nullable<$Scalar.Date>>>
+      }, false>
     >
     dateArgNonNullListNonNull: $.Field<
       $.Output.Nullable<$Scalar.Date>,
       $.Args<{
-        date: $.Input.List<$Scalar.Date>
-      }>
+        date: $.Input.Field<$.Input.List<$Scalar.Date>>
+      }, false>
     >
     dateInterface1: $.Field<$.Output.Nullable<Interface.DateInterface1>, null>
     dateList: $.Field<$.Output.Nullable<$.Output.List<$Scalar.Date>>, null>
@@ -74,8 +74,8 @@ export namespace Root {
     error: $.Field<
       $.Output.Nullable<$Scalar.String>,
       $.Args<{
-        case: $.Input.Nullable<$Scalar.String>
-      }>
+        case: $.Input.Field<$.Input.Nullable<$Scalar.String>>
+      }, true>
     >
     id: $.Field<$.Output.Nullable<$Scalar.ID>, null>
     idNonNull: $.Field<$Scalar.ID, null>
@@ -84,8 +84,8 @@ export namespace Root {
     interfaceWithArgs: $.Field<
       $.Output.Nullable<Interface.Interface>,
       $.Args<{
-        id: $Scalar.ID
-      }>
+        id: $.Input.Field<$Scalar.ID>
+      }, false>
     >
     listInt: $.Field<$.Output.Nullable<$.Output.List<$.Output.Nullable<$Scalar.Int>>>, null>
     listIntNonNull: $.Field<$.Output.List<$Scalar.Int>, null>
@@ -103,79 +103,79 @@ export namespace Root {
     objectWithArgs: $.Field<
       $.Output.Nullable<Object.Object1>,
       $.Args<{
-        boolean: $.Input.Nullable<$Scalar.Boolean>
-        float: $.Input.Nullable<$Scalar.Float>
-        id: $.Input.Nullable<$Scalar.ID>
-        int: $.Input.Nullable<$Scalar.Int>
-        string: $.Input.Nullable<$Scalar.String>
-      }>
+        boolean: $.Input.Field<$.Input.Nullable<$Scalar.Boolean>>
+        float: $.Input.Field<$.Input.Nullable<$Scalar.Float>>
+        id: $.Input.Field<$.Input.Nullable<$Scalar.ID>>
+        int: $.Input.Field<$.Input.Nullable<$Scalar.Int>>
+        string: $.Input.Field<$.Input.Nullable<$Scalar.String>>
+      }, true>
     >
     result: $.Field<
       $.Output.Nullable<Union.Result>,
       $.Args<{
-        case: Enum.Case
-      }>
+        case: $.Input.Field<Enum.Case>
+      }, false>
     >
     resultNonNull: $.Field<
       Union.Result,
       $.Args<{
-        case: $.Input.Nullable<Enum.Case>
-      }>
+        case: $.Input.Field<$.Input.Nullable<Enum.Case>>
+      }, true>
     >
     string: $.Field<$.Output.Nullable<$Scalar.String>, null>
     stringWithArgEnum: $.Field<
       $.Output.Nullable<$Scalar.String>,
       $.Args<{
-        ABCEnum: $.Input.Nullable<Enum.ABCEnum>
-      }>
+        ABCEnum: $.Input.Field<$.Input.Nullable<Enum.ABCEnum>>
+      }, true>
     >
     stringWithArgInputObject: $.Field<
       $.Output.Nullable<$Scalar.String>,
       $.Args<{
-        input: $.Input.Nullable<InputObject.InputObject>
-      }>
+        input: $.Input.Field<$.Input.Nullable<InputObject.InputObject>>
+      }, true>
     >
     stringWithArgInputObjectRequired: $.Field<
       $.Output.Nullable<$Scalar.String>,
       $.Args<{
-        input: InputObject.InputObject
-      }>
+        input: $.Input.Field<InputObject.InputObject>
+      }, false>
     >
     stringWithArgs: $.Field<
       $.Output.Nullable<$Scalar.String>,
       $.Args<{
-        boolean: $.Input.Nullable<$Scalar.Boolean>
-        float: $.Input.Nullable<$Scalar.Float>
-        id: $.Input.Nullable<$Scalar.ID>
-        int: $.Input.Nullable<$Scalar.Int>
-        string: $.Input.Nullable<$Scalar.String>
-      }>
+        boolean: $.Input.Field<$.Input.Nullable<$Scalar.Boolean>>
+        float: $.Input.Field<$.Input.Nullable<$Scalar.Float>>
+        id: $.Input.Field<$.Input.Nullable<$Scalar.ID>>
+        int: $.Input.Field<$.Input.Nullable<$Scalar.Int>>
+        string: $.Input.Field<$.Input.Nullable<$Scalar.String>>
+      }, true>
     >
     stringWithListArg: $.Field<
       $.Output.Nullable<$Scalar.String>,
       $.Args<{
-        ints: $.Input.Nullable<$.Input.List<$.Input.Nullable<$Scalar.Int>>>
-      }>
+        ints: $.Input.Field<$.Input.Nullable<$.Input.List<$.Input.Nullable<$Scalar.Int>>>>
+      }, true>
     >
     stringWithListArgRequired: $.Field<
       $.Output.Nullable<$Scalar.String>,
       $.Args<{
-        ints: $.Input.List<$Scalar.Int>
-      }>
+        ints: $.Input.Field<$.Input.List<$Scalar.Int>>
+      }, false>
     >
     stringWithRequiredArg: $.Field<
       $.Output.Nullable<$Scalar.String>,
       $.Args<{
-        string: $Scalar.String
-      }>
+        string: $.Input.Field<$Scalar.String>
+      }, false>
     >
     unionFooBar: $.Field<$.Output.Nullable<Union.FooBarUnion>, null>
     unionFooBarNonNull: $.Field<Union.FooBarUnion, null>
     unionFooBarWithArgs: $.Field<
       $.Output.Nullable<Union.FooBarUnion>,
       $.Args<{
-        id: $.Input.Nullable<$Scalar.ID>
-      }>
+        id: $.Input.Field<$.Input.Nullable<$Scalar.ID>>
+      }, true>
     >
     unionObject: $.Field<$.Output.Nullable<Object.ObjectUnion>, null>
     unionObjectNonNull: $.Field<Object.ObjectUnion, null>
@@ -206,19 +206,19 @@ export namespace Enum {
 
 export namespace InputObject {
   export type InputObject = $.InputObject<'InputObject', {
-    date: $.Input.Nullable<$Scalar.Date>
-    dateRequired: $Scalar.Date
-    id: $.Input.Nullable<$Scalar.ID>
-    idRequired: $Scalar.ID
-  }>
+    date: $.Input.Field<$.Input.Nullable<$Scalar.Date>>
+    dateRequired: $.Input.Field<$Scalar.Date>
+    id: $.Input.Field<$.Input.Nullable<$Scalar.ID>>
+    idRequired: $.Input.Field<$Scalar.ID>
+  }, true>
 
   export type InputObjectNested = $.InputObject<'InputObjectNested', {
-    InputObject: $.Input.Nullable<InputObject.InputObject>
-  }>
+    InputObject: $.Input.Field<$.Input.Nullable<InputObject.InputObject>>
+  }, true>
 
   export type InputObjectNestedNonNull = $.InputObject<'InputObjectNestedNonNull', {
-    InputObject: InputObject.InputObject
-  }>
+    InputObject: $.Input.Field<InputObject.InputObject>
+  }, false>
 }
 
 // ------------------------------------------------------------ //

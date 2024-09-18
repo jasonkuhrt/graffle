@@ -6,31 +6,31 @@ import type * as $Scalar from './Scalar.ts'
 // ------------------------------------------------------------ //
 
 export namespace Root {
-  export type Mutation = $.Object$2<'Mutation', {
+  export type Mutation = $.Output.ObjectMutation<{
     addPokemon: $.Field<
       $.Output.Nullable<Object.Pokemon>,
       $.Args<{
-        attack: $Scalar.Int
-        defense: $Scalar.Int
-        hp: $Scalar.Int
-        name: $Scalar.String
-      }>
+        attack: $.Input.Field<$Scalar.Int>
+        defense: $.Input.Field<$Scalar.Int>
+        hp: $.Input.Field<$Scalar.Int>
+        name: $.Input.Field<$Scalar.String>
+      }, false>
     >
   }>
 
-  export type Query = $.Object$2<'Query', {
+  export type Query = $.Output.ObjectQuery<{
     pokemon: $.Field<$.Output.Nullable<$.Output.List<Object.Pokemon>>, null>
     pokemonByName: $.Field<
       $.Output.Nullable<$.Output.List<Object.Pokemon>>,
       $.Args<{
-        name: $Scalar.String
-      }>
+        name: $.Input.Field<$Scalar.String>
+      }, false>
     >
     trainerByName: $.Field<
       $.Output.Nullable<Object.Trainer>,
       $.Args<{
-        name: $Scalar.String
-      }>
+        name: $.Input.Field<$Scalar.String>
+      }, false>
     >
     trainers: $.Field<$.Output.Nullable<$.Output.List<Object.Trainer>>, null>
   }>

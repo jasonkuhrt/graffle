@@ -5,7 +5,7 @@ import type { SelectionSet } from '../3_SelectionSet/__.js'
 import type { ResultSet } from './__.js'
 
 type I = Index
-type RS<$selectionSet extends SelectionSet.Query<I>> = ResultSet.Query<$selectionSet, I>
+type RS<$SelectionSet extends SelectionSet.Query<I>> = ResultSet.Query<$SelectionSet, I>
 
 // dprint-ignore
 test(`general`, () => {
@@ -124,5 +124,6 @@ test(`general`, () => {
 
   // Errors
   // unknown field
-  expectTypeOf<RS<{ id2: true }>>().toEqualTypeOf<{ id2: ResultSet.Errors.UnknownFieldName<'id2', Schema.Root.Query> }>()
+  type Result =  RS<{ id2: true }>
+  expectTypeOf<Result>().toEqualTypeOf<{ id2: ResultSet.Errors.UnknownFieldName<'id2', Schema.Root.Query> }>()
 })

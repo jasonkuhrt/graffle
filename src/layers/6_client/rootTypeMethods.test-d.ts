@@ -14,9 +14,8 @@ test(`query`, () => {
   // custom scalar
   expectTypeOf(graffle.query.date).toEqualTypeOf<() => Promise<Date | null>>()
   expectTypeOf(graffle.query.dateNonNull).toEqualTypeOf<() => Promise<Date>>()
-  expectTypeOf(graffle.query.dateArg).toMatchTypeOf<(args?: { date?: Date | null }) => Promise<Date | null>>()
+  expectTypeOf(graffle.query.dateArg).toMatchTypeOf<(args?: { date?: Date | null | undefined }) => Promise<Date | null>>()
   expectTypeOf(graffle.query.dateArgNonNull).toMatchTypeOf<(args: { date: Date }) => Promise<Date | null>>()
-  const x2 = graffle.query.dateObject1({ date1: true })
   // object
   expectTypeOf(graffle.query.dateObject1({ date1: true })).resolves.toEqualTypeOf<{ date1: Date | null } | null>()
   expectTypeOf(graffle.query.dateObject1({ $scalars: true })).resolves.toEqualTypeOf<{ __typename: "DateObject1"; date1: Date | null } | null>()

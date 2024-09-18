@@ -10,10 +10,11 @@ import type { Output } from '../Output/__.js'
 export interface Index {
   name: GlobalRegistry.SchemaNames
   RootTypesPresent: readonly RootTypeName[]
+  RootUnion: Output.RootType
   Root: {
-    Query: null | Output.Object$2
-    Mutation: null | Output.Object$2
-    Subscription: null | Output.Object$2
+    Query: null | Output.ObjectQuery
+    Mutation: null | Output.ObjectMutation
+    Subscription: null | Output.ObjectSubscription
   }
   objects: Record<string, Output.Object$2>
   unions: Record<string, Output.Union>

@@ -2,15 +2,17 @@ import { isUnionType } from 'graphql'
 import { Code } from '../../../lib/Code.js'
 import { hasMutation, hasQuery, hasSubscription, unwrapToNamed } from '../../../lib/graphql.js'
 import { createCodeGenerator } from '../createCodeGenerator.js'
+import { moduleNameData } from './Data.js'
 import { moduleNameSchemaBuildtime } from './SchemaBuildtime.js'
 
-export const { generate: generateIndex, moduleName: moduleNameIndex } = createCodeGenerator(
+export const { generate: generateSchemaIndex, moduleName: moduleNameSchemaIndex } = createCodeGenerator(
   `SchemaIndex`,
   (config) => {
-    const SchemaNamespace = `Schema`
+    const SchemaBuildtimeNamespace = `Schema`
     const code = []
     code.push(`/* eslint-disable */\n`)
-    code.push(`import type * as ${SchemaNamespace} from '../${moduleNameSchemaBuildtime}.js'\n`)
+    code.push(`import type * as Data from './${moduleNameData}.js'\n`)
+    code.push(`import type * as ${SchemaBuildtimeNamespace} from './${moduleNameSchemaBuildtime}.js'\n`)
 
     const rootTypesPresence = {
       Query: hasQuery(config.typeMapByKind),
@@ -18,35 +20,40 @@ export const { generate: generateIndex, moduleName: moduleNameIndex } = createCo
       Subscription: hasSubscription(config.typeMapByKind),
     }
 
+    const rootTypesPresent = Object.entries(rootTypesPresence).filter(([_, present]) => present !== undefined).map((
+      [_],
+    ) => _)
+
     code.push(Code.export$(
       Code.interface$(
         `Index`,
         Code.objectFrom({
-          name: Code.quote(config.name),
-          RootTypesPresent: `[${
-            Object.entries(rootTypesPresence).filter(([_, present]) => present).map(([_]) => Code.quote(_)).join(`, `)
-          }]`,
+          name: `Data.Name`,
+          RootTypesPresent: `[${rootTypesPresent.map((_) => Code.quote(_)).join(`, `)}]`,
+          RootUnion: rootTypesPresent.map(_ => `${SchemaBuildtimeNamespace}.Root.${_}`).join(`|`),
           Root: {
             type: Code.objectFrom({
-              Query: rootTypesPresence.Query ? `${SchemaNamespace}.Root.Query` : null,
-              Mutation: rootTypesPresence.Mutation ? `${SchemaNamespace}.Root.Mutation` : null,
-              Subscription: rootTypesPresence.Subscription ? `${SchemaNamespace}.Root.Subscription` : null,
+              Query: rootTypesPresence.Query ? `${SchemaBuildtimeNamespace}.Root.Query` : null,
+              Mutation: rootTypesPresence.Mutation ? `${SchemaBuildtimeNamespace}.Root.Mutation` : null,
+              Subscription: rootTypesPresence.Subscription ? `${SchemaBuildtimeNamespace}.Root.Subscription` : null,
             }),
           },
           objects: Code.objectFromEntries(
-            config.typeMapByKind.GraphQLObjectType.map(_ => [_.name, `${SchemaNamespace}.Object.${_.name}`]),
+            config.typeMapByKind.GraphQLObjectType.map(_ => [_.name, `${SchemaBuildtimeNamespace}.Object.${_.name}`]),
           ),
           unions: Code.objectFromEntries(
-            config.typeMapByKind.GraphQLUnionType.map(_ => [_.name, `${SchemaNamespace}.Union.${_.name}`]),
+            config.typeMapByKind.GraphQLUnionType.map(_ => [_.name, `${SchemaBuildtimeNamespace}.Union.${_.name}`]),
           ),
           interfaces: Code.objectFromEntries(
-            config.typeMapByKind.GraphQLInterfaceType.map(_ => [_.name, `${SchemaNamespace}.Interface.${_.name}`]),
+            config.typeMapByKind.GraphQLInterfaceType.map(
+              _ => [_.name, `${SchemaBuildtimeNamespace}.Interface.${_.name}`],
+            ),
           ),
           // todo jsdoc comment saying:
           // Objects that match this pattern name: /.../
           error: Code.objectFrom({
             objects: Code.objectFromEntries(
-              config.error.objects.map(_ => [_.name, `${SchemaNamespace}.Object.${_.name}`]),
+              config.error.objects.map(_ => [_.name, `${SchemaBuildtimeNamespace}.Object.${_.name}`]),
             ),
             objectsTypename: Code.objectFromEntries(
               config.error.objects.map(_ => [_.name, `{ __typename: "${_.name}" }`]),

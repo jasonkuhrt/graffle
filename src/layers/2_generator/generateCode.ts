@@ -7,11 +7,12 @@ import { getTypeMapByKind } from '../../lib/graphql.js'
 import { generate_ } from './code/_.js'
 import { generate__ } from './code/__.js'
 import { generateClient } from './code/Client.js'
+import { generateData } from './code/Data.js'
 import { generateError } from './code/Error.js'
 import { generateGlobal } from './code/global.js'
 import { generateScalar } from './code/Scalar.js'
 import { generateSchemaBuildtime } from './code/SchemaBuildtime.js'
-import { generateIndex } from './code/SchemaIndex.js'
+import { generateSchemaIndex } from './code/SchemaIndex.js'
 import { generateRuntimeSchema } from './code/SchemaRuntime.js'
 import { generateSelect } from './code/Select.js'
 
@@ -132,10 +133,11 @@ export const generateCode = (input: Input) => {
   return [
     generate__,
     generate_,
+    generateData,
     generateClient,
     generateGlobal,
     generateError,
-    generateIndex,
+    generateSchemaIndex,
     generateScalar,
     generateSchemaBuildtime,
     generateRuntimeSchema,

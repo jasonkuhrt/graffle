@@ -1,5 +1,6 @@
 import { createCodeGenerator } from '../createCodeGenerator.js'
-import { moduleNameIndex } from './SchemaIndex.js'
+import { moduleNameData } from './Data.js'
+import { moduleNameSchemaIndex } from './SchemaIndex.js'
 
 export const { moduleName: moduleNameGlobal, generate: generateGlobal } = createCodeGenerator(
   `Global`,
@@ -11,7 +12,8 @@ export const { moduleName: moduleNameGlobal, generate: generateGlobal } = create
     const code: string[] = []
 
     code.push(
-      `import type { Index } from '../${moduleNameIndex}.js'`,
+      `import type * as Data from './${moduleNameData}.js'`,
+      `import type { Index } from './${moduleNameSchemaIndex}.js'`,
     )
 
     if (config.typeMapByKind.GraphQLScalarTypeCustom.length > 0) {
@@ -31,7 +33,7 @@ export const { moduleName: moduleNameGlobal, generate: generateGlobal } = create
       export namespace GraffleGlobalTypes {
         export interface Schemas {
           ${config.name}: {
-            name: '${config.name}'
+            name: Data.Name
             index: Index
             customScalars: {
               ${

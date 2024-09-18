@@ -1,7 +1,9 @@
 /* eslint-disable */
 
 import * as $ from '../../../../../src/entrypoints/schema.js'
+import * as Data from './Data.js'
 import * as $Scalar from './Scalar.js'
+import type { Index } from './SchemaIndex.js'
 
 export const $defaultSchemaUrl = undefined
 
@@ -11,9 +13,10 @@ export const Mutation = $.Object$(`Mutation`, {
   idNonNull: $.field($Scalar.ID),
 })
 
-export const $Index = {
-  name: 'MutationOnly' as const,
+export const $Index: Index = {
+  name: Data.Name,
   RootTypesPresent: ['Mutation'] as const,
+  RootUnion: undefined as any, // Type level only.
   Root: {
     Query: null,
     Mutation,
