@@ -116,7 +116,7 @@
     }
   },
   "devDependencies": {
-    "@arethetypeswrong/cli": "^0.16.2",
+    "@arethetypeswrong/cli": "^0.16.4",
     "@opentelemetry/api": "^1.9.0",
     "@opentelemetry/sdk-trace-base": "^1.26.0",
     "@opentelemetry/sdk-trace-node": "^1.26.0",
@@ -133,7 +133,7 @@
     "@typescript-eslint/parser": "^8.6.0",
     "doctoc": "^2.2.1",
     "dripip": "^0.10.0",
-    "es-toolkit": "^1.19.0",
+    "es-toolkit": "^1.20.0",
     "eslint": "^9.10.0",
     "eslint-config-prisma": "^0.6.0",
     "eslint-plugin-deprecation": "^3.0.0",
