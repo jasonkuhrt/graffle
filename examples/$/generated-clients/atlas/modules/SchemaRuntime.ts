@@ -1,7 +1,9 @@
 /* eslint-disable */
 
 import * as $ from '../../../../../src/entrypoints/schema.js'
+import * as Data from './Data.js'
 import * as $Scalar from './Scalar.js'
+import type { Index } from './SchemaIndex.js'
 
 export const $defaultSchemaUrl = new URL('https://countries.trevorblades.com/graphql')
 
@@ -98,8 +100,8 @@ export const Query = $.Object$(`Query`, {
   languages: $.field($.Output.List(() => Language), $.Args({ filter: $.Input.Nullable(LanguageFilterInput) })),
 })
 
-export const $Index = {
-  name: 'Atlas' as const,
+export const $Index: Index = {
+  name: Data.Name,
   RootTypesPresent: ['Query'] as const,
   Root: {
     Query,

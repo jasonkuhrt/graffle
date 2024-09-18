@@ -1,7 +1,9 @@
 /* eslint-disable */
 
 import * as $ from '../../../../../src/entrypoints/schema.js'
+import * as Data from './Data.js'
 import * as $Scalar from './Scalar.js'
+import type { Index } from './SchemaIndex.js'
 
 export const $defaultSchemaUrl = undefined
 
@@ -11,8 +13,8 @@ export const Query = $.Object$(`Query`, {
   idNonNull: $.field($Scalar.ID),
 })
 
-export const $Index = {
-  name: 'QueryOnly' as const,
+export const $Index: Index = {
+  name: Data.Name,
   RootTypesPresent: ['Query'] as const,
   Root: {
     Query,

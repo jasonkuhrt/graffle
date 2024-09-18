@@ -1,20 +1,22 @@
 import { createCodeGenerator } from '../createCodeGenerator.js'
 import { title, typeTitle } from '../helpers.js'
-import { moduleNameIndex } from './SchemaIndex.js'
+import { moduleNameData } from './Data.js'
+import { moduleNameSchemaIndex } from './SchemaIndex.js'
 
 export const { generate: generateSelect, moduleName: moduleNameSelect } = createCodeGenerator(
   `Select`,
   (config) => {
     const code: string[] = []
 
-    code.push(`import type { Index } from '../${moduleNameIndex}.js'`)
+    code.push(`import * as Data from './${moduleNameData}.js'`)
+    code.push(`import type { Index } from './${moduleNameSchemaIndex}.js'`)
     code.push(`import type { SelectionSet, ResultSet } from '${config.libraryPaths.schema}'`)
     code.push(``)
 
     code.push(
       title(`Runtime`),
       `import { createSelect } from '${config.libraryPaths.client}'`,
-      `export const Select = createSelect(\`default\`)`,
+      `export const Select = createSelect(Data.Name)`,
       ``,
       title(`Buildtime`),
       ``,

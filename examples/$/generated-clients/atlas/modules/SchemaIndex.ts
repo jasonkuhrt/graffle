@@ -1,9 +1,11 @@
 /* eslint-disable */
 
+import type * as Data from './Data.js'
+
 import type * as Schema from './SchemaBuildtime.js'
 
 export interface Index {
-  name: 'Atlas'
+  name: Data.Name
   RootTypesPresent: ['Query']
   Root: {
     Query: Schema.Root.Query

@@ -1,7 +1,9 @@
 /* eslint-disable */
 
 import * as $ from '../../../../../src/entrypoints/schema.js'
+import * as Data from './Data.js'
 import * as $Scalar from './Scalar.js'
+import type { Index } from './SchemaIndex.js'
 
 export const $defaultSchemaUrl = undefined
 
@@ -45,8 +47,8 @@ export const Query = $.Object$(`Query`, {
   trainers: $.field($.Output.Nullable($.Output.List(() => Trainer))),
 })
 
-export const $Index = {
-  name: 'Pokemon' as const,
+export const $Index: Index = {
+  name: Data.Name,
   RootTypesPresent: ['Query', 'Mutation'] as const,
   Root: {
     Query,

@@ -1,7 +1,9 @@
 /* eslint-disable */
 
 import * as $ from '../../../../../src/entrypoints/schema.js'
+import * as Data from './Data.js'
 import * as $Scalar from './Scalar.js'
+import type { Index } from './SchemaIndex.js'
 
 export const $defaultSchemaUrl = undefined
 export const ABCEnum = $.Enum(`ABCEnum`, [`A`, `B`, `C`])
@@ -227,8 +229,8 @@ export const Query = $.Object$(`Query`, {
   unionObjectNonNull: $.field(() => ObjectUnion),
 })
 
-export const $Index = {
-  name: 'default' as const,
+export const $Index: Index = {
+  name: Data.Name,
   RootTypesPresent: ['Query', 'Mutation'] as const,
   Root: {
     Query,

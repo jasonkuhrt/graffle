@@ -11,7 +11,7 @@ export const { generate: generate__, moduleName: moduleName__ } = createCodeGene
     const code: string[] = []
     const namespace = config.name === defaultName ? defaultNamespace : capitalizeFirstLetter(config.name)
     code.push(
-      `export * as ${namespace} from '../${moduleName_}.js'`,
+      `export * as ${namespace} from './${moduleName_}.js'`,
     )
     return code.join(`\n\n`)
   },

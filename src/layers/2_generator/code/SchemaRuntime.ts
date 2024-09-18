@@ -26,7 +26,9 @@ import type { AnyClass, AnyGraphQLOutputField } from '../../../lib/graphql.js'
 import { hasMutation, hasQuery, hasSubscription, unwrapToNamed, unwrapToNonNull } from '../../../lib/graphql.js'
 import { createCodeGenerator } from '../createCodeGenerator.js'
 import type { Config } from '../generateCode.js'
+import { moduleNameData } from './Data.js'
 import { moduleNameScalar } from './Scalar.js'
+import { moduleNameSchemaIndex } from './SchemaIndex.js'
 
 export const { generate: generateRuntimeSchema, moduleName: moduleNameSchemaRuntime } = createCodeGenerator(
   `SchemaRuntime`,
@@ -39,7 +41,9 @@ export const { generate: generateRuntimeSchema, moduleName: moduleNameSchemaRunt
     code.push(
       `
       import * as $ from '${config.libraryPaths.schema}'
-      import * as $Scalar from '../${moduleNameScalar}.js'
+      import * as Data from './${moduleNameData}.js'
+      import * as $Scalar from './${moduleNameScalar}.js'
+      import type { Index } from './${moduleNameSchemaIndex}.js'
     `,
     )
 
@@ -74,8 +78,8 @@ const index = (config: Config) => {
   }
   // todo input objects for decode/encode input object fields
   return `
-    export const $Index = {
-      name: "${config.name}" as const,
+    export const $Index: Index = {
+      name: Data.Name,
       RootTypesPresent: [${
     Object.entries(rootTypesPresence).filter(([_, present]) => present).map(([_]) => Code.quote(_)).join(`, `)
   }] as const,

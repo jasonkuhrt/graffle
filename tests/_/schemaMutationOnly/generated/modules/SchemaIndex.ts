@@ -1,9 +1,11 @@
 /* eslint-disable */
 
+import type * as Data from './Data.js'
+
 import type * as Schema from './SchemaBuildtime.js'
 
 export interface Index {
-  name: 'MutationOnly'
+  name: Data.Name
   RootTypesPresent: ['Mutation']
   Root: {
     Query: null

@@ -2,15 +2,17 @@ import { isUnionType } from 'graphql'
 import { Code } from '../../../lib/Code.js'
 import { hasMutation, hasQuery, hasSubscription, unwrapToNamed } from '../../../lib/graphql.js'
 import { createCodeGenerator } from '../createCodeGenerator.js'
+import { moduleNameData } from './Data.js'
 import { moduleNameSchemaBuildtime } from './SchemaBuildtime.js'
 
-export const { generate: generateIndex, moduleName: moduleNameIndex } = createCodeGenerator(
+export const { generate: generateSchemaIndex, moduleName: moduleNameSchemaIndex } = createCodeGenerator(
   `SchemaIndex`,
   (config) => {
     const SchemaNamespace = `Schema`
     const code = []
     code.push(`/* eslint-disable */\n`)
-    code.push(`import type * as ${SchemaNamespace} from '../${moduleNameSchemaBuildtime}.js'\n`)
+    code.push(`import type * as Data from './${moduleNameData}.js'\n`)
+    code.push(`import type * as ${SchemaNamespace} from './${moduleNameSchemaBuildtime}.js'\n`)
 
     const rootTypesPresence = {
       Query: hasQuery(config.typeMapByKind),
@@ -22,7 +24,7 @@ export const { generate: generateIndex, moduleName: moduleNameIndex } = createCo
       Code.interface$(
         `Index`,
         Code.objectFrom({
-          name: Code.quote(config.name),
+          name: `Data.Name`,
           RootTypesPresent: `[${
             Object.entries(rootTypesPresence).filter(([_, present]) => present).map(([_]) => Code.quote(_)).join(`, `)
           }]`,

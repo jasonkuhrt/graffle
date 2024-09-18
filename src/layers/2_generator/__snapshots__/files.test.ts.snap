@@ -50,13 +50,14 @@ export const isError = <$Value>(value: $Value): value is Include<$Value, ErrorOb
 
 exports[`schema2 5`] = `
 "import type { ResultSet, SelectionSet } from '../../../../../src/entrypoints/schema.js'
+import * as Data from './Data.js'
 import type { Index } from './SchemaIndex.js'
 
 // Runtime
 // -------
 
 import { createSelect } from '../../../../../src/entrypoints/client.js'
-export const Select = createSelect(\`default\`)
+export const Select = createSelect(Data.Name)
 
 // Buildtime
 // ---------
@@ -164,10 +165,12 @@ export namespace Select {
 exports[`schema2 6`] = `
 "/* eslint-disable */
 
+import type * as Data from './Data.js'
+
 import type * as Schema from './SchemaBuildtime.js'
 
 export interface Index {
-  name: 'default'
+  name: Data.Name
   RootTypesPresent: ['Query', 'Mutation']
   Root: {
     Query: Schema.Root.Query
@@ -568,7 +571,9 @@ exports[`schema2 9`] = `
 "/* eslint-disable */
 
 import * as $ from '../../../../../src/entrypoints/schema.js'
+import * as Data from './Data.js'
 import * as $Scalar from './Scalar.js'
+import type { Index } from './SchemaIndex.js'
 
 export const $defaultSchemaUrl = undefined
 export const ABCEnum = $.Enum(\`ABCEnum\`, [\`A\`, \`B\`, \`C\`])
@@ -794,8 +799,8 @@ export const Query = $.Object$(\`Query\`, {
   unionObjectNonNull: $.field(() => ObjectUnion),
 })
 
-export const $Index = {
-  name: 'default' as const,
+export const $Index: Index = {
+  name: Data.Name,
   RootTypesPresent: ['Query', 'Mutation'] as const,
   Root: {
     Query,

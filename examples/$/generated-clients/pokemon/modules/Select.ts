@@ -1,11 +1,12 @@
 import type { ResultSet, SelectionSet } from '../../../../../src/entrypoints/schema.js'
+import * as Data from './Data.js'
 import type { Index } from './SchemaIndex.js'
 
 // Runtime
 // -------
 
 import { createSelect } from '../../../../../src/entrypoints/client.js'
-export const Select = createSelect(`default`)
+export const Select = createSelect(Data.Name)
 
 // Buildtime
 // ---------
