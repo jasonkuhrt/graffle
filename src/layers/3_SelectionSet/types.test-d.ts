@@ -95,8 +95,15 @@ test(`Query`, () => {
   // Alias
   // todo: alt syntax?
   // assertType<Q>({ $alias: [[`abcEnum`, `enum`, true]]})
+  // assertType<Q>({ $alias: { abcEnum: ['enum', true]}})
+  // assertType<Q>({ $alias: { abcEnum: [['enum1', true], ['enum2', true]]}})
+  // assertType<Q>({ __: { abcEnum: [['enum1', true], ['enum2', true]]}})
+  // assertType<Q>({ abcEnum: ['one', true] })
+  // assertType<Q>({ abcEnum: [['one', true], ['two', true]] })
+  
   // alias: enum
   assertType<Q>({ abcEnum_as_enum: true })
+  assertType<Q>({ __typename: true })
   // alias: object
   assertType<Q>({ object_as_o: { id: true } })
   // @ts-expect-error invalid alias key format

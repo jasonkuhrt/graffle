@@ -163,10 +163,13 @@ const renderField = createCodeGenerator<{ field: GraphQLField<any, any> }>(
       const argsAnalysis = analyzeArgsNullability(field.args)
       const argsRendered = renderFieldArgs({ config, field })
       if (argsAnalysis.hasAny) {
-        const type = argsAnalysis.isAllNullable
-          ? `SelectionSet.Bases.Base | { ${argsRendered} }`
-          : `{ ${argsRendered} }`
-        code.push(Helpers.type(renderName(field), type))
+        if (argsAnalysis.isAllNullable) {
+          const type = `SelectionSet.ClientIndicator | SelectionSet.Bases.Base | { ${argsRendered} }`
+          code.push(Helpers.type(renderName(field), type))
+        } else {
+          // todo test that a directive can be passed with the intersection that otherwise cannot be.
+          code.push(Helpers.$interface(renderName(field), `SelectionSet.Bases.Base`, argsRendered))
+        }
       } else {
         code.push(Helpers.type(renderName(field), `SelectionSet.NoArgsIndicator`))
       }
@@ -256,17 +259,41 @@ const renderLookup = {
 }
 
 namespace Helpers {
+  export const $interface = (name: string, extendsClause: string | null, fields: string) => {
+    return `export interface ${name} ${extendsClause ? ` extends ${extendsClause}` : ``} { ${fields} }`
+  }
   export const type = (name: string, type: string) => {
     return `export type ${name} = ${type}`
   }
 
   export const outputField = (name: string, type: string) => {
-    return `${name}?: ${type}`
+    // const alias = `\n[\`${name}_as_\${string}\`]?: ${type}`
+    return `${name}?: ${type} | [alias:string, ${type}] | [alias:string, ${type}][]` // + alias
+    // return `${name}?: ${type}` // + alias
   }
 
-  export const __typenameField = outputField(`__typename`, `SelectionSet.NoArgsIndicator`)
+  export const __typename = (kind: 'union' | 'interface' | 'object') => {
+    return `
+      ${__typenameDoc(kind)}
+      ${outputField(`__typename`, `SelectionSet.NoArgsIndicator`)}
+    `
+  }
 
-  export const __typenameDoc = (kind: 'union' | 'interface' | 'object') => {
+  export const inlineFragment = (node: GraphQLObjectType | GraphQLUnionType | GraphQLInterfaceType) => {
+    return `
+      /**
+       * Inline fragments for field groups. 
+       *
+       * Generally a niche feature. This can be useful for example to apply an \`@include\` directive to a subset of the
+       * selection set allowing a variable to opt-in or not to that part of the selection.
+       *
+       * @see https://spec.graphql.org/draft/#sec-Inline-Fragments
+       */
+      ___?: ${renderName(node)} | ${renderName(node)}[]
+    `
+  }
+
+  const __typenameDoc = (kind: 'union' | 'interface' | 'object') => {
     const see = `@see https://graphql.org/learn/queries/#meta-fields`
     if (kind === `object`) {
       return `
@@ -286,27 +313,6 @@ namespace Helpers {
        * 
        * ${see}
        */
-    `
-  }
-
-  export const __typename = (kind: 'union' | 'interface' | 'object') => {
-    return `
-      ${__typenameDoc(kind)}
-      ${__typenameField}
-    `
-  }
-
-  export const inlineFragment = (node: GraphQLObjectType | GraphQLUnionType | GraphQLInterfaceType) => {
-    return `
-      /**
-       * Inline fragments for field groups. 
-       *
-       * Generally a niche feature. This can be useful for example to apply an \`@include\` directive to a subset of the
-       * selection set allowing a variable to opt-in or not to that part of the selection.
-       *
-       * @see https://spec.graphql.org/draft/#sec-Inline-Fragments
-       */
-      ___?: ${renderName(node)} | ${renderName(node)}[]
     `
   }
 }

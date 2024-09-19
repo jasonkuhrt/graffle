@@ -17,8 +17,8 @@ import type { SelectionSet } from '../../../../../src/entrypoints/schema.js'
 //
 
 export interface Query {
-  id?: Query.id
-  idNonNull?: Query.idNonNull
+  id?: Query.id | [alias: string, Query.id] | [alias: string, Query.id][]
+  idNonNull?: Query.idNonNull | [alias: string, Query.idNonNull] | [alias: string, Query.idNonNull][]
 
   /**
    * Inline fragments for field groups.
@@ -36,7 +36,10 @@ export interface Query {
    * @see https://graphql.org/learn/queries/#meta-fields
    */
 
-  __typename?: SelectionSet.NoArgsIndicator
+  __typename?: SelectionSet.NoArgsIndicator | [alias: string, SelectionSet.NoArgsIndicator] | [
+    alias: string,
+    SelectionSet.NoArgsIndicator,
+  ][]
 }
 
 export namespace Query {

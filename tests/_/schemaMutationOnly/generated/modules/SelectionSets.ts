@@ -17,8 +17,8 @@ import type { SelectionSet } from '../../../../../src/entrypoints/schema.js'
 //
 
 export interface Mutation {
-  id?: Mutation.id
-  idNonNull?: Mutation.idNonNull
+  id?: Mutation.id | [alias: string, Mutation.id] | [alias: string, Mutation.id][]
+  idNonNull?: Mutation.idNonNull | [alias: string, Mutation.idNonNull] | [alias: string, Mutation.idNonNull][]
 
   /**
    * Inline fragments for field groups.
@@ -36,7 +36,10 @@ export interface Mutation {
    * @see https://graphql.org/learn/queries/#meta-fields
    */
 
-  __typename?: SelectionSet.NoArgsIndicator
+  __typename?: SelectionSet.NoArgsIndicator | [alias: string, SelectionSet.NoArgsIndicator] | [
+    alias: string,
+    SelectionSet.NoArgsIndicator,
+  ][]
 }
 
 export namespace Mutation {
