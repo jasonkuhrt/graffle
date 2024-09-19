@@ -1,6 +1,6 @@
-import { isUnionType } from 'graphql'
+import { getNamedType, isUnionType } from 'graphql'
 import { Code } from '../../../lib/Code.js'
-import { hasMutation, hasQuery, hasSubscription, unwrapToNamed } from '../../../lib/graphql.js'
+import { hasMutation, hasQuery, hasSubscription } from '../../../lib/graphql.js'
 import { createModuleGenerator } from '../createCodeGenerator.js'
 import { moduleNameData } from './Data.js'
 import { moduleNameRootMethods } from './RootMethods.js'
@@ -65,7 +65,7 @@ export const { generate: generateSchemaIndex, moduleName: moduleNameSchemaIndex 
                 if (!rootType) return `${rootTypeName}: {}`
 
                 const resultFields = Object.values(rootType.getFields()).filter((field) => {
-                  const type = unwrapToNamed(field.type)
+                  const type = getNamedType(field.type)
                   return isUnionType(type)
                     && type.getTypes().some(_ => config.error.objects.some(__ => __.name === _.name))
                 }).map((field) => field.name)

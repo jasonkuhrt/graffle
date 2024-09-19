@@ -1,8 +1,10 @@
 import { assertType, expectTypeOf, test } from 'vitest'
-import type { Index } from '../../../tests/_/schema/generated/modules/SchemaIndex.js'
+import type * as SelectionSets from '../../../tests/_/schema/generated/modules/SelectionSets.js'
+// import type { Index } from '../../../tests/_/schema/generated/modules/SchemaIndex.js'
 import type { SelectionSet } from './__.js'
 
-type Q = SelectionSet.Query<Index>
+// type Q = SelectionSet.Query<Index>
+type Q = SelectionSets.Query
 
 test(`ParseAliasExpression`, () => {
   expectTypeOf<SelectionSet.ParseAliasExpression<'a_as_b'>>().toEqualTypeOf<SelectionSet.Alias<'a', 'b'>>()
@@ -36,7 +38,8 @@ test(`Query`, () => {
   assertType<Q>({ date: 0 })
   assertType<Q>({ date: 1 })
   assertType<Q>({ date: undefined })
-
+  assertType<Q>({ date: new Date(0) })
+  
   // Enum
   assertType<Q>({ abcEnum: true })
 
@@ -50,6 +53,9 @@ test(`Query`, () => {
   assertType<Q>({ id2: true })
   // @ts-expect-error no a2
   assertType<Q>({ object: { a2: true } })
+  
+  // Object Nested
+  assertType<Q>({ objectList: {  } })
 
   // Union
   assertType<Q>({ unionFooBar: { __typename: true } })
@@ -63,7 +69,7 @@ test(`Query`, () => {
   assertType<Q>({ unionFooBar: { onBar: { int2: true } } })
 
   // Union fragments Case
-  assertType<Q>({ lowerCaseUnion: { onLowerCaseObject: { id: true }, onLowerCaseObject2: { int: true } } })
+  assertType<Q>({ lowerCaseUnion: { onlowerCaseObject: { id: true }, onlowerCaseObject2: { int: true } } })
 
   // Interface
   assertType<Q>({ interface: { id: true } })
@@ -87,6 +93,8 @@ test(`Query`, () => {
   assertType<Q>({ interface: { id: true, onObject1ImplementingInterface: { $include: true } } }) // todo should REQUIRE field selection
 
   // Alias
+  // todo: alt syntax?
+  // assertType<Q>({ $alias: [[`abcEnum`, `enum`, true]]})
   // alias: enum
   assertType<Q>({ abcEnum_as_enum: true })
   // alias: object
@@ -107,6 +115,7 @@ test(`Query`, () => {
   assertType<Q>({ string: { $skip: { if: false } } })
   assertType<Q>({ string: { $skip: {} } })
   assertType<Q>({ string: { $skip: {} } })
+  assertType<Q>({ object: { string: { $skip: true } } })
   // assertType<S>({ string: skip() })
   // on object
   assertType<Q>({ object: { $skip: true, string: true } })
@@ -143,6 +152,7 @@ test(`Query`, () => {
   assertType<Q>({ object: { ___: [{ $skip: true, int: true, id: true }] } })
   // On Root (Query)
   assertType<Q>({ ___: { id: true } })
+  // @ts-expect-error no directives on root type even within a field group
   assertType<Q>({ ___: { $skip: true, id: true } })
 
   // Arguments

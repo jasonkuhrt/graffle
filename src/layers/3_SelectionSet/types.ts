@@ -30,33 +30,31 @@ type Fields<$Fields extends SomeFields, $Index extends Schema.Index> =
       // @ts-ignore excessive deep error, fixme?
       Field<$Fields[Key], $Index>
   }
-  &
-  // todo optimize?
+/**
+ * Alias support.
+ * Allow every field to also be given as a key with this pattern `<field>_as_<alias>: ...`
+ */
+// &
+// {
+//   [
+//     // It seems that non-empty string has a very high cost in TS.
+//     // Key in keyof $Fields & string as `${Key}_as_${StringNonEmpty}`
+//     Key in keyof $Fields & string as `${Key}_as_${string}`
+//   ]?:
+//    Field<$Fields[Key], $Index>
+// }
+&
+{
   /**
-   * Alias support.
-   * Allow every field to also be given as a key with this pattern `<field>_as_<alias>: ...`
-   */
-  {
-    [
-      Key in keyof $Fields as `${keyof $Fields & string}_as_${StringNonEmpty}`
-    ]?:
-     Field<$Fields[Key], $Index>
-  }
-  &
+ * Inline fragments for field groups.
+ * @see https://spec.graphql.org/draft/#sec-Inline-Fragments
+ */
+  ___?: MaybeList<Fields<$Fields, $Index> & FieldDirectives>
   /**
-   * Inline fragments for field groups.
-   * @see https://spec.graphql.org/draft/#sec-Inline-Fragments
-   */
-  {
-    ___?: MaybeList<Fields<$Fields, $Index> & FieldDirectives>
-  }
-  &
-  /**
-   * Special property to select all scalars.
-   */
-  {
-    $scalars?: ClientIndicator
-  }
+ * Special property to select all scalars.
+ */
+  $scalars?: ClientIndicator
+}
 
 export type IsSelectScalarsWildcard<SS> = SS extends { $scalars: ClientIndicatorPositive } ? true : false
 
@@ -228,7 +226,7 @@ export type Indicator<$Field extends SomeField> =
  * If a field directive is given as an indicator then it implies "select this" e.g. `true`/`1`.
  * Of course the semantics of the directive may change the derived type (e.g. `skip` means the field might not show up in the result set)
  */
-export type NoArgsIndicator = ClientIndicator | FieldDirectives
+export type NoArgsIndicator = ClientIndicator | Bases.Base
 
 type ArgsIndicator<$Args extends Schema.Args<any>> = $Args['isFieldsAllNullable'] extends true
   ? ({ $?: Args<$Args> } & FieldDirectives) | ClientIndicator
@@ -256,6 +254,17 @@ type InputFieldType<$InputType extends Schema.Input.Any> =
   $InputType extends Schema.Enum<infer _, infer $Members>       ? $Members[number] :
   $InputType extends Schema.Scalar.Any                          ? ReturnType<$InputType['codec']['decode']> :
                                                                   TSError<'InferTypeInput', 'Unknown $InputType', { $InputType: $InputType }> // never
+
+export namespace Bases {
+  export interface Base extends FieldDirectives {}
+
+  export interface ObjectLike extends Base {
+    /**
+     * Special property to select all scalars.
+     */
+    $scalars?: ClientIndicator
+  }
+}
 
 /**
  * @see https://spec.graphql.org/draft/#sec-Type-System.Directives.Built-in-Directives

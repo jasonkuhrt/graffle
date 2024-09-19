@@ -1,9 +1,12 @@
-import { type GraphQLEnumValue, isEnumType } from 'graphql'
-import { type Describable, getNodeDisplayName, isDeprecatableNode } from '../../lib/graphql.js'
+import type { GraphQLInterfaceType } from 'graphql'
+import { type GraphQLEnumValue, type GraphQLField, type GraphQLNamedType, isEnumType } from 'graphql'
+import { Code } from '../../lib/Code.js'
+import { type Describable, getNodeDisplayName, isDeprecatableNode, type TypeMapByKind } from '../../lib/graphql.js'
 import type { Config } from './generateCode.js'
 
 export const title = (title: string) => {
-  const titleDecorated = `// ${title}\n// ${`-`.repeat(title.length)}\n`
+  const border = `-`.repeat(title.length)
+  const titleDecorated = `//\n//\n// ${border}\n// ${title}\n// ${border}\n//\n//\n`
   return titleDecorated
 }
 export const typeTitle = (config: Config, typeName: string) => {
@@ -21,6 +24,9 @@ export const typeTitle = (config: Config, typeName: string) => {
 
 const defaultDescription = (node: Describable) => `There is no documentation for this ${getNodeDisplayName(node)}.`
 
+export const renderDocumentation = (config: Config, node: Describable) => {
+  return Code.TSDoc(getDocumentation(config, node))
+}
 export const getDocumentation = (config: Config, node: Describable) => {
   const generalDescription = node.description
     ?? (config.options.TSDoc.noDocPolicy === `message` ? defaultDescription(node) : null)
@@ -67,4 +73,22 @@ export const getDocumentation = (config: Config, node: Describable) => {
     .filter((_) => _ !== null)
     .join(`\n\n`)
   return content
+}
+
+/**
+ * Render the type name. Generally just a passthrough but
+ * this guards against GraphQL type or property names that
+ * would be illegal in TypeScript such as `namespace` or `interface`.
+ */
+export const renderName = (type: GraphQLNamedType | GraphQLField<any, any>) => {
+  if (Code.reservedTypeScriptInterfaceNames.includes(type.name as any)) {
+    return `$${type.name}`
+  }
+  return type.name
+}
+
+export const getInterfaceImplementors = (typeMap: TypeMapByKind, interfaceTypeSearch: GraphQLInterfaceType) => {
+  return typeMap.GraphQLObjectType.filter(objectType =>
+    objectType.getInterfaces().filter(interfaceType => interfaceType.name === interfaceTypeSearch.name).length > 0
+  )
 }

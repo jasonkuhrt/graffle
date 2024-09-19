@@ -16,7 +16,6 @@ import {
   GraphQLObjectType,
   GraphQLScalarType,
   GraphQLUnionType,
-  isListType,
   isNonNullType,
 } from 'graphql'
 import type { Errors } from './errors/__.js'
@@ -29,13 +28,33 @@ export type TypeMapByKind =
   & { GraphQLScalarTypeCustom: GraphQLScalarType<any, any>[] }
   & { GraphQLScalarTypeStandard: GraphQLScalarType<any, any>[] }
 
-export const standardScalarTypeNames = {
+export const StandardScalarTypeNames = {
   String: `String`,
   ID: `ID`,
   Int: `Int`,
   Float: `Float`,
   Boolean: `Boolean`,
 }
+
+export type StandardScalarTypeNames = keyof typeof StandardScalarTypeNames
+
+const TypeScriptPrimitiveTypeNames = {
+  string: `string`,
+  number: `number`,
+  boolean: `boolean`,
+}
+type TypeScriptPrimitiveTypeNames = keyof typeof TypeScriptPrimitiveTypeNames
+
+export const StandardScalarTypeTypeScriptMapping = {
+  String: `string`,
+  ID: `string`,
+  Int: `number`,
+  Float: `number`,
+  Boolean: `boolean`,
+} satisfies Record<
+  StandardScalarTypeNames,
+  TypeScriptPrimitiveTypeNames
+>
 
 export const RootTypeName = {
   Query: `Query`,
@@ -64,26 +83,11 @@ export type RootTypeNameToOperationName = typeof RootTypeNameToOperationName
 export type RootTypeName = keyof typeof RootTypeName
 
 export const isStandardScalarType = (type: GraphQLScalarType) => {
-  return type.name in standardScalarTypeNames
+  return type.name in StandardScalarTypeNames
 }
 
 export const isCustomScalarType = (type: GraphQLScalarType) => {
   return !isStandardScalarType(type)
-}
-
-export const unwrapToNamed = (
-  type: AnyClass,
-): AnyClass => {
-  if (isNonNullType(type)) return unwrapToNamed(unwrapToNonNull(type).ofType)
-  if (isListType(type)) return unwrapToNamed(type.ofType)
-  return type
-}
-
-export const unwrapToNonNull = (
-  type: AnyClass,
-): { ofType: AnyClass; nullable: boolean } => {
-  const [nodeUnwrapped, nullable] = type instanceof GraphQLNonNull ? [type.ofType, false] : [type, true]
-  return { ofType: nodeUnwrapped, nullable }
 }
 
 export const getTypeMapByKind = (schema: GraphQLSchema) => {
@@ -341,8 +345,31 @@ export const parseGraphQLOperationType = (request: GraphQLRequestEncoded): Opera
   return definedOperationToAnalyze.operationType
 }
 
+export const isAllArgsNonNullType = (args: readonly GraphQLArgument[]) => {
+  return args.every(_ => isNonNullType(_.type))
+}
+
 export const isAllArgsNullable = (args: readonly GraphQLArgument[]) => {
   return !args.some(_ => isNonNullType(_.type))
+}
+export const analyzeArgsNullability = (args: readonly GraphQLArgument[]) => {
+  let required = 0
+  let optional = 0
+  const total = args.length
+  args.forEach(_ => {
+    if (isNonNullType(_.type)) {
+      required++
+    } else {
+      optional++
+    }
+  })
+  return {
+    hasAny: total > 0,
+    isAllNullable: optional === total,
+    required,
+    optional,
+    total,
+  }
 }
 
 export const isAllInputObjectFieldsNullable = (node: GraphQLInputObjectType) => {

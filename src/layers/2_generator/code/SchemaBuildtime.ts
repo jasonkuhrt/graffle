@@ -5,7 +5,7 @@ import type {
   GraphQLNamedType,
   GraphQLObjectType,
 } from 'graphql'
-import { isListType, isNamedType } from 'graphql'
+import { getNullableType, isListType, isNamedType, isNullableType } from 'graphql'
 import _ from 'json-bigint'
 import { Code } from '../../../lib/Code.js'
 import type {
@@ -22,12 +22,11 @@ import {
   isGraphQLOutputField,
   type NameToClass,
   RootTypeName,
-  unwrapToNonNull,
 } from '../../../lib/graphql.js'
 import { entries, values } from '../../../lib/prelude.js'
 import { createModuleGenerator } from '../createCodeGenerator.js'
 import { type Config } from '../generateCode.js'
-import { getDocumentation } from '../helpers.js'
+import { getDocumentation, getInterfaceImplementors } from '../helpers.js'
 
 const namespaceNames = {
   GraphQLEnumType: `Enum`,
@@ -146,9 +145,7 @@ const concreteRenderers = defineConcreteRenderers({
     return Code.TSDocWithBlock(doc, source)
   },
   GraphQLInterfaceType: (config, node) => {
-    const implementors = config.typeMapByKind.GraphQLObjectType.filter(_ =>
-      _.getInterfaces().filter(_ => _.name === node.name).length > 0
-    )
+    const implementors = getInterfaceImplementors(config.typeMapByKind, node)
     return Code.TSDocWithBlock(
       getDocumentation(config, node),
       Code.export$(Code.type(
@@ -227,7 +224,8 @@ const renderInputField = (config: Config, field: AnyField): string => {
 
 const buildType = (direction: 'input' | 'output', config: Config, node: AnyClass) => {
   const ns = direction === `input` ? `Input` : `Output`
-  const { ofType: nodeInner, nullable } = unwrapToNonNull(node)
+  const nullable = isNullableType(node)
+  const nodeInner = getNullableType(node)
 
   if (isNamedType(nodeInner)) {
     const namedTypeReference = dispatchToReferenceRenderer(config, nodeInner)

@@ -29,7 +29,9 @@ export const createCodeGenerator = <$CustomInput extends object = {}>(
   codeGeneratorImplementation: CodeGeneratorImplementation<$CustomInput>,
 ): CodeGenerator<$CustomInput> => {
   return (input) => {
-    return codeGeneratorImplementation({ ...input, code: [] }).filter(_ => _ !== null).join(`\n`)
+    const code: LinesOfGeneratedCode = []
+    codeGeneratorImplementation({ ...input, code })
+    return code.filter(_ => _ !== null).map(_ => _.trim()).join(`\n`)
   }
 }
 
@@ -44,7 +46,7 @@ interface BaseInputInternal extends BaseInput {
 
 export type CodeGeneratorImplementation<$CustomInput extends object = {}> = (
   input: $CustomInput & BaseInputInternal,
-) => LinesOfGeneratedCode
+) => void
 
 type Code = string
 

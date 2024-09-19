@@ -1,14 +1,11 @@
 /* eslint-disable */
-
 import * as $ from '../../../../../src/entrypoints/schema.js'
 import * as Data from './Data.js'
 import * as $Scalar from './Scalar.js'
 import type { Index } from './SchemaIndex.js'
-
 export const $defaultSchemaUrl = undefined
 export const ABCEnum = $.Enum(`ABCEnum`, [`A`, `B`, `C`])
 export const Case = $.Enum(`Case`, [`ErrorOne`, `ErrorTwo`, `Object1`])
-
 export const InputObject = $.InputObject(`InputObject`, {
   date: $.Input.Field($.Input.Nullable($Scalar.Date)),
   dateRequired: $.Input.Field($Scalar.Date),
@@ -23,7 +20,6 @@ export const InputObjectNested = $.InputObject(`InputObjectNested`, {
 export const InputObjectNestedNonNull = $.InputObject(`InputObjectNestedNonNull`, {
   InputObject: $.Input.Field(() => InputObject),
 }, false)
-
 // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
 export const Bar = $.Object$(`Bar`, {
   int: $.field($.Output.Nullable($Scalar.Int)),
@@ -99,7 +95,6 @@ export const lowerCaseObject = $.Object$(`lowerCaseObject`, {
 export const lowerCaseObject2 = $.Object$(`lowerCaseObject2`, {
   int: $.field($.Output.Nullable($Scalar.Int)),
 })
-
 // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
 export const DateUnion = $.Union(`DateUnion`, [DateObject1, DateObject2])
 
@@ -111,7 +106,6 @@ export const Result = $.Union(`Result`, [ErrorOne, ErrorTwo, Object1])
 
 // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
 export const lowerCaseUnion = $.Union(`lowerCaseUnion`, [lowerCaseObject, lowerCaseObject2])
-
 export const DateInterface1 = $.Interface(`DateInterface1`, { date1: $.field($.Output.Nullable($Scalar.Date)) }, [
   DateObject1,
 ])
@@ -120,7 +114,6 @@ export const Interface = $.Interface(`Interface`, { id: $.field($.Output.Nullabl
   Object1ImplementingInterface,
   Object2ImplementingInterface,
 ])
-
 // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
 export const Mutation = $.Object$(`Mutation`, {
   id: $.field($.Output.Nullable($Scalar.ID)),
@@ -264,7 +257,6 @@ export const Query = $.Object$(`Query`, {
   // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
   unionObjectNonNull: $.field(() => ObjectUnion),
 })
-
 export const $Index: Index = {
   name: Data.Name,
   RootTypesPresent: ['Query', 'Mutation'] as const,

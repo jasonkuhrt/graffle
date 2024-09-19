@@ -12,7 +12,7 @@ export interface Index {
     Subscription: null
   }
   Builder: {
-    RootMethods: RootMethods.BuilderRootMethods
+    RootMethods: RootMethods.BuilderRootMethodsFn
   }
   objects: {}
   unions: {}

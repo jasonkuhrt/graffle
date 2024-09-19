@@ -16,6 +16,7 @@ import { generateSchemaBuildtime } from './code/SchemaBuildtime.js'
 import { generateSchemaIndex } from './code/SchemaIndex.js'
 import { generateRuntimeSchema } from './code/SchemaRuntime.js'
 import { generateSelect } from './code/Select.js'
+import { generateSelectionSets } from './code/SelectionSets.js'
 
 export interface OptionsInput {
   name?: string
@@ -145,6 +146,7 @@ export const generateCode = (input: Input) => {
     generateClient,
     generateGlobal,
     generateError,
+    generateSelectionSets,
     generateSchemaIndex,
     generateScalar,
     generateSchemaBuildtime,

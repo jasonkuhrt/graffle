@@ -1,29 +1,28 @@
-import type { Simplify } from 'type-fest'
-import type { ExcludeNull, GetKeyOr, SimplifyDeep } from '../../lib/prelude.js'
+import type { ExcludeNull, GetKeyOr } from '../../lib/prelude.js'
 import type { TSError } from '../../lib/TSError.js'
 import type { Schema, SomeField } from '../1_Schema/__.js'
 import type { PickScalarFields } from '../1_Schema/Output/Output.js'
 import type { SelectionSet } from '../3_SelectionSet/__.js'
 
-export type Query<$SelectionSet extends object, $Index extends Schema.Index> = Root<$SelectionSet, $Index, 'Query'>
+export type Query<$SelectionSet, $Index extends Schema.Index> = Root<$SelectionSet, $Index, 'Query'>
 
 // dprint-ignore
-export type Mutation<$SelectionSet extends object, $Index extends Schema.Index> = Root<$SelectionSet, $Index, 'Mutation'>
+export type Mutation<$SelectionSet, $Index extends Schema.Index> = Root<$SelectionSet, $Index, 'Mutation'>
 
 // dprint-ignore
-export type Subscription<$SelectionSet extends object, $Index extends Schema.Index> = Root<$SelectionSet, $Index, 'Subscription'>
+export type Subscription<$SelectionSet, $Index extends Schema.Index> = Root<$SelectionSet, $Index, 'Subscription'>
 
 export type RootViaObject<
-  $SelectionSet extends object,
+  $SelectionSet,
   $Index extends Schema.Index,
   $RootType extends Schema.Output.RootType,
 > = Root<$SelectionSet, $Index, $RootType['fields']['__typename']['type']['type']>
 
 export type Root<
-  $SelectionSet extends object,
+  $SelectionSet,
   $Index extends Schema.Index,
   $RootTypeName extends Schema.RootTypeName,
-> = SimplifyDeep<Object$<$SelectionSet, ExcludeNull<$Index['Root'][$RootTypeName]>, $Index>>
+> = Object$<$SelectionSet, ExcludeNull<$Index['Root'][$RootTypeName]>, $Index>
 
 // dprint-ignore
 export type Object$<$SelectionSet, $Node extends Schema.Output.Object$2, $Index extends Schema.Index> =
@@ -79,7 +78,7 @@ type FieldType<
   $SelectionSet,
   $Type extends Schema.Output.Any,
   $Index extends Schema.Index
-> = Simplify<
+> = 
   $Type extends Schema.__typename<infer $Value>             ? $Value :
   $Type extends Schema.Output.Nullable<infer $InnerType>    ? null | FieldType<$SelectionSet, $InnerType, $Index> :
   $Type extends Schema.Output.List<infer $InnerType>        ? Array<FieldType<$SelectionSet, $InnerType, $Index>> :
@@ -89,7 +88,6 @@ type FieldType<
   $Type extends Schema.Interface                            ? Interface<$SelectionSet,$Type,$Index> :
   $Type extends Schema.Union                                ? Union<$SelectionSet,$Type,$Index> :
                                                               TSError<'FieldType', `Unknown type`, { $Type: $Type }>
-  >
 
 // dprint-ignore
 type FieldDirectiveInclude<$SelectionSet> =

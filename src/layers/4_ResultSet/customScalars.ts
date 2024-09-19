@@ -1,5 +1,5 @@
 import type { ExecutionResult } from 'graphql'
-import { standardScalarTypeNames } from '../../lib/graphql.js'
+import { StandardScalarTypeNames } from '../../lib/graphql.js'
 import { assertArray, mapValues } from '../../lib/prelude.js'
 import type { Object$2, Schema } from '../1_Schema/__.js'
 import { Output } from '../1_Schema/__.js'
@@ -37,7 +37,7 @@ const decodeCustomScalarValue = (
   }
 
   if (typeWithoutNonNull.kind === `Scalar`) {
-    if ((typeWithoutNonNull.name in standardScalarTypeNames)) {
+    if ((typeWithoutNonNull.name in StandardScalarTypeNames)) {
       // todo test this case
       return fieldValue
     }

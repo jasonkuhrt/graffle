@@ -1,4 +1,6 @@
 import {
+  getNamedType,
+  getNullableType,
   type GraphQLArgument,
   type GraphQLEnumType,
   type GraphQLInputField,
@@ -9,6 +11,7 @@ import {
   type GraphQLOutputType,
   GraphQLScalarType,
   type GraphQLUnionType,
+  isNullableType,
 } from 'graphql'
 import {
   type GraphQLObjectType,
@@ -29,8 +32,6 @@ import {
   hasSubscription,
   isAllArgsNullable,
   isAllInputObjectFieldsNullable,
-  unwrapToNamed,
-  unwrapToNonNull,
 } from '../../../lib/graphql.js'
 import { createModuleGenerator } from '../createCodeGenerator.js'
 import type { Config } from '../generateCode.js'
@@ -115,7 +116,7 @@ const index = (config: Config) => {
       if (!rootType) return `${rootTypeName}: {}`
 
       const resultFields = Object.values(rootType.getFields()).filter((field) => {
-        const type = unwrapToNamed(field.type)
+        const type = getNamedType(field.type)
         return isUnionType(type)
           && type.getTypes().some(_ => config.error.objects.some(__ => __.name === _.name))
       }).map((field) => field.name)
@@ -185,11 +186,10 @@ const inputObject = (config: Config, type: GraphQLInputObjectType) => {
     }, ${Code.boolean(isFieldsAllNullable)})
 	`
 }
-unwrapToNamed
 
 const inputField = (config: Config, field: GraphQLInputField): string => {
   const type = buildType(`input`, config, field.type)
-  const isNeedThunk = isInputObjectType(unwrapToNamed(field.type))
+  const isNeedThunk = isInputObjectType(getNamedType(field.type))
   return `$.Input.Field(${isNeedThunk ? `() => ${type}` : type})`
 }
 
@@ -229,7 +229,8 @@ const thunk = (code: string) => `() => ${code}`
 
 const buildType = (direction: 'input' | 'output', config: Config, node: AnyClass) => {
   const ns = direction === `input` ? `Input` : `Output`
-  const { ofType: nodeInner, nullable } = unwrapToNonNull(node)
+  const nullable = isNullableType(node)
+  const nodeInner = getNullableType(node)
 
   if (isNamedType(nodeInner)) {
     const namedTypeReference = dispatchNamedType(config, nodeInner)

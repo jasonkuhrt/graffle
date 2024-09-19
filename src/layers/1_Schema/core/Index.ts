@@ -18,7 +18,7 @@ export interface Index {
     Subscription: null | Output.ObjectSubscription
   }
   Builder: {
-    RootMethods: HKT.Fn
+    RootMethods: HKT.Fn<any, any>
   }
   objects: Record<string, Output.Object$2>
   unions: Record<string, Output.Union>

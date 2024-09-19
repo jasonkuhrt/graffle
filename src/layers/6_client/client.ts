@@ -16,7 +16,7 @@ import { type InterfaceRaw, type TransportHttp } from '../5_core/types.js'
 import type { DocumentFn } from './document.js'
 import { createExtension, type Extension, type ExtensionCallBuilderMerge } from './extension.js'
 import { handleOutput, type RawResolveOutputReturnRootType } from './handleOutput.js'
-import type { BuilderRequestMethodsGeneratedRootTypes } from './RootTypeMethods.js'
+// import type { BuilderRequestMethodsGeneratedRootTypes } from './RootTypeMethods.js'
 import { type Config } from './Settings/Config.js'
 import { type InputStatic } from './Settings/Input.js'
 import type { AddIncrementalInput, WithInput } from './Settings/inputIncrementable/inputIncrementable.js'
@@ -96,8 +96,8 @@ export type BuilderRequestMethodsStatic<$Config extends Config> = {
 
 // dprint
 export type BuilderRequestMethodsGenerated<$Config extends Config, $Index extends Schema.Index> =
-  & BuilderRequestMethodsGeneratedStatic<$Config, $Index>
-  & BuilderRequestMethodsGeneratedRootTypes<$Config, $Index>
+  BuilderRequestMethodsGeneratedStatic<$Config, $Index>
+// & BuilderRequestMethodsGeneratedRootTypes<$Config, $Index>
 
 export type BuilderRequestMethodsGeneratedStatic<$Config extends Config, $Index extends Schema.Index> = {
   document: DocumentFn<$Config, $Index>

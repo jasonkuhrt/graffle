@@ -4,7 +4,6 @@ import type * as $Scalar from './Scalar.ts'
 // ------------------------------------------------------------ //
 //                             Root                             //
 // ------------------------------------------------------------ //
-
 export namespace Root {
   export type Mutation = $.Output.ObjectMutation<{
     id: $.Field<$.Output.Nullable<$Scalar.ID>, null>
@@ -181,11 +180,9 @@ export namespace Root {
     unionObjectNonNull: $.Field<Object.ObjectUnion, null>
   }>
 }
-
 // ------------------------------------------------------------ //
 //                             Enum                             //
 // ------------------------------------------------------------ //
-
 export namespace Enum {
   /**
    * Enum documentation.
@@ -199,11 +196,9 @@ export namespace Enum {
 
   export type Case = $.Enum<'Case', ['ErrorOne', 'ErrorTwo', 'Object1']>
 }
-
 // ------------------------------------------------------------ //
 //                         InputObject                          //
 // ------------------------------------------------------------ //
-
 export namespace InputObject {
   export type InputObject = $.InputObject<'InputObject', {
     date: $.Input.Field<$.Input.Nullable<$Scalar.Date>>
@@ -220,11 +215,9 @@ export namespace InputObject {
     InputObject: $.Input.Field<InputObject.InputObject>
   }, false>
 }
-
 // ------------------------------------------------------------ //
 //                          Interface                           //
 // ------------------------------------------------------------ //
-
 export namespace Interface {
   export type DateInterface1 = $.Interface<'DateInterface1', {
     date1: $.Field<$.Output.Nullable<$Scalar.Date>, null>
@@ -238,11 +231,9 @@ export namespace Interface {
     id: $.Field<$.Output.Nullable<$Scalar.ID>, null>
   }, [Object.Object1ImplementingInterface, Object.Object2ImplementingInterface]>
 }
-
 // ------------------------------------------------------------ //
 //                            Object                            //
 // ------------------------------------------------------------ //
-
 export namespace Object {
   export type Bar = $.Object$2<'Bar', {
     int: $.Field<$.Output.Nullable<$Scalar.Int>, null>
@@ -313,11 +304,9 @@ export namespace Object {
     int: $.Field<$.Output.Nullable<$Scalar.Int>, null>
   }>
 }
-
 // ------------------------------------------------------------ //
 //                            Union                             //
 // ------------------------------------------------------------ //
-
 export namespace Union {
   export type DateUnion = $.Union<'DateUnion', [Object.DateObject1, Object.DateObject2]>
 

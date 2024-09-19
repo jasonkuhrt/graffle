@@ -1,10 +1,8 @@
 /* eslint-disable */
-
 import * as $ from '../../../../../src/entrypoints/schema.js'
 import * as Data from './Data.js'
 import * as $Scalar from './Scalar.js'
 import type { Index } from './SchemaIndex.js'
-
 export const $defaultSchemaUrl = new URL('https://countries.trevorblades.com/graphql')
 
 export const ContinentFilterInput = $.InputObject(`ContinentFilterInput`, {
@@ -29,7 +27,6 @@ export const StringQueryOperatorInput = $.InputObject(`StringQueryOperatorInput`
   nin: $.Input.Field($.Input.Nullable($.Input.List($Scalar.String))),
   regex: $.Input.Field($.Input.Nullable($Scalar.String)),
 }, true)
-
 // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
 export const Continent = $.Object$(`Continent`, {
   code: $.field($Scalar.ID),
@@ -108,7 +105,6 @@ export const Query = $.Object$(`Query`, {
     $.Args({ filter: $.Input.Field($.Input.Nullable(LanguageFilterInput)) }, true),
   ),
 })
-
 export const $Index: Index = {
   name: Data.Name,
   RootTypesPresent: ['Query'] as const,
