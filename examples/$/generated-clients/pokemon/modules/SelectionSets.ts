@@ -6,8 +6,8 @@
  *     would end up with an error of `export interface Foo extends Foo ...`
  */
 
-import type { SelectionSet } from '../../../../../src/entrypoints/schema.js'
-import type { Simplify, UnionExpanded } from '../../../../../src/entrypoints/utilities-for-generated.js'
+import type { SelectionSet as $SelectionSet } from '../../../../../src/entrypoints/schema.js'
+import type * as $Utilities from '../../../../../src/entrypoints/utilities-for-generated.js'
 
 //
 //
@@ -15,9 +15,9 @@ import type { Simplify, UnionExpanded } from '../../../../../src/entrypoints/uti
 //
 //
 //
-// ---------------------
-// GraphQLRootType Types
-// ---------------------
+// ==================================================================================================
+//                                       GraphQLRootType Types
+// ==================================================================================================
 //
 //
 //
@@ -30,9 +30,9 @@ import type { Simplify, UnionExpanded } from '../../../../../src/entrypoints/uti
 //
 //
 // GRAPHQL SELECTION SET
-// OBJECT TYPE
+// OBJECT
 // --------------------------------------------------------------------------------------------------
-//                                         Mutation
+//                                              Mutation
 // --------------------------------------------------------------------------------------------------
 //
 //
@@ -40,7 +40,10 @@ import type { Simplify, UnionExpanded } from '../../../../../src/entrypoints/uti
 // ----------------------------------------| Entrypoint Interface |
 
 export interface Mutation {
-  addPokemon?: Mutation.addPokemon$Expanded | SelectionSet.Alias<Mutation.addPokemon>
+  /**
+   * Select the `addPokemon` field on the `Mutation` object. Its type is Object.
+   */
+  addPokemon?: Mutation.addPokemon$Expanded | $SelectionSet.Alias<Mutation.addPokemon>
 
   /**
    * Inline fragments for field groups.
@@ -57,8 +60,7 @@ export interface Mutation {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-
-  __typename?: SelectionSet.NoArgsIndicator$Expanded | SelectionSet.Alias<SelectionSet.NoArgsIndicator>
+  __typename?: $SelectionSet.NoArgsIndicator$Expanded | $SelectionSet.Alias<$SelectionSet.NoArgsIndicator>
 }
 
 // ----------------------------------------| Fields Interfaces |
@@ -86,9 +88,9 @@ type __Mutation = Mutation // [1]
 //
 //
 // GRAPHQL SELECTION SET
-// OBJECT TYPE
+// OBJECT
 // --------------------------------------------------------------------------------------------------
-//                                         Query
+//                                               Query
 // --------------------------------------------------------------------------------------------------
 //
 //
@@ -96,10 +98,22 @@ type __Mutation = Mutation // [1]
 // ----------------------------------------| Entrypoint Interface |
 
 export interface Query {
-  pokemon?: Query.pokemon$Expanded | SelectionSet.Alias<Query.pokemon>
-  pokemonByName?: Query.pokemonByName$Expanded | SelectionSet.Alias<Query.pokemonByName>
-  trainerByName?: Query.trainerByName$Expanded | SelectionSet.Alias<Query.trainerByName>
-  trainers?: Query.trainers$Expanded | SelectionSet.Alias<Query.trainers>
+  /**
+   * Select the `pokemon` field on the `Query` object. Its type is Object.
+   */
+  pokemon?: Query.pokemon$Expanded | $SelectionSet.Alias<Query.pokemon>
+  /**
+   * Select the `pokemonByName` field on the `Query` object. Its type is Object.
+   */
+  pokemonByName?: Query.pokemonByName$Expanded | $SelectionSet.Alias<Query.pokemonByName>
+  /**
+   * Select the `trainerByName` field on the `Query` object. Its type is Object.
+   */
+  trainerByName?: Query.trainerByName$Expanded | $SelectionSet.Alias<Query.trainerByName>
+  /**
+   * Select the `trainers` field on the `Query` object. Its type is Object.
+   */
+  trainers?: Query.trainers$Expanded | $SelectionSet.Alias<Query.trainers>
 
   /**
    * Inline fragments for field groups.
@@ -116,8 +130,7 @@ export interface Query {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-
-  __typename?: SelectionSet.NoArgsIndicator$Expanded | SelectionSet.Alias<SelectionSet.NoArgsIndicator>
+  __typename?: $SelectionSet.NoArgsIndicator$Expanded | $SelectionSet.Alias<$SelectionSet.NoArgsIndicator>
 }
 
 // ----------------------------------------| Fields Interfaces |
@@ -157,9 +170,9 @@ type __Query = Query // [1]
 //
 //
 //
-// ---------------------
-// GraphQLEnumType Types
-// ---------------------
+// ==================================================================================================
+//                                       GraphQLEnumType Types
+// ==================================================================================================
 //
 //
 //
@@ -173,9 +186,9 @@ type __Query = Query // [1]
 //
 //
 //
-// ----------------------------
-// GraphQLInputObjectType Types
-// ----------------------------
+// ==================================================================================================
+//                                    GraphQLInputObjectType Types
+// ==================================================================================================
 //
 //
 //
@@ -189,9 +202,9 @@ type __Query = Query // [1]
 //
 //
 //
-// --------------------------
-// GraphQLInterfaceType Types
-// --------------------------
+// ==================================================================================================
+//                                     GraphQLInterfaceType Types
+// ==================================================================================================
 //
 //
 //
@@ -205,9 +218,9 @@ type __Query = Query // [1]
 //
 //
 //
-// -----------------------
-// GraphQLObjectType Types
-// -----------------------
+// ==================================================================================================
+//                                      GraphQLObjectType Types
+// ==================================================================================================
 //
 //
 //
@@ -220,22 +233,40 @@ type __Query = Query // [1]
 //
 //
 // GRAPHQL SELECTION SET
-// OBJECT TYPE
+// OBJECT
 // --------------------------------------------------------------------------------------------------
-//                                         Pokemon
+//                                              Pokemon
 // --------------------------------------------------------------------------------------------------
 //
 //
 
 // ----------------------------------------| Entrypoint Interface |
 
-export interface Pokemon extends SelectionSet.Bases.ObjectLike {
-  attack?: Pokemon.attack$Expanded | SelectionSet.Alias<Pokemon.attack>
-  defense?: Pokemon.defense$Expanded | SelectionSet.Alias<Pokemon.defense>
-  hp?: Pokemon.hp$Expanded | SelectionSet.Alias<Pokemon.hp>
-  id?: Pokemon.id$Expanded | SelectionSet.Alias<Pokemon.id>
-  name?: Pokemon.name$Expanded | SelectionSet.Alias<Pokemon.name>
-  trainer?: Pokemon.trainer$Expanded | SelectionSet.Alias<Pokemon.trainer>
+export interface Pokemon extends $SelectionSet.Bases.ObjectLike {
+  /**
+   * Select the `attack` field on the `Pokemon` object. Its type is `Int` (a `Scalar`).
+   */
+  attack?: Pokemon.attack$Expanded | $SelectionSet.Alias<Pokemon.attack>
+  /**
+   * Select the `defense` field on the `Pokemon` object. Its type is `Int` (a `Scalar`).
+   */
+  defense?: Pokemon.defense$Expanded | $SelectionSet.Alias<Pokemon.defense>
+  /**
+   * Select the `hp` field on the `Pokemon` object. Its type is `Int` (a `Scalar`).
+   */
+  hp?: Pokemon.hp$Expanded | $SelectionSet.Alias<Pokemon.hp>
+  /**
+   * Select the `id` field on the `Pokemon` object. Its type is `Int` (a `Scalar`).
+   */
+  id?: Pokemon.id$Expanded | $SelectionSet.Alias<Pokemon.id>
+  /**
+   * Select the `name` field on the `Pokemon` object. Its type is `String` (a `Scalar`).
+   */
+  name?: Pokemon.name$Expanded | $SelectionSet.Alias<Pokemon.name>
+  /**
+   * Select the `trainer` field on the `Pokemon` object. Its type is Object.
+   */
+  trainer?: Pokemon.trainer$Expanded | $SelectionSet.Alias<Pokemon.trainer>
 
   /**
    * Inline fragments for field groups.
@@ -252,23 +283,32 @@ export interface Pokemon extends SelectionSet.Bases.ObjectLike {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-
-  __typename?: SelectionSet.NoArgsIndicator$Expanded | SelectionSet.Alias<SelectionSet.NoArgsIndicator>
+  __typename?: $SelectionSet.NoArgsIndicator$Expanded | $SelectionSet.Alias<$SelectionSet.NoArgsIndicator>
 }
 
 // ----------------------------------------| Fields Interfaces |
 
 export namespace Pokemon {
-  export type attack$Expanded = SelectionSet.NoArgsIndicator$Expanded
-  export type attack = SelectionSet.NoArgsIndicator
-  export type defense$Expanded = SelectionSet.NoArgsIndicator$Expanded
-  export type defense = SelectionSet.NoArgsIndicator
-  export type hp$Expanded = SelectionSet.NoArgsIndicator$Expanded
-  export type hp = SelectionSet.NoArgsIndicator
-  export type id$Expanded = SelectionSet.NoArgsIndicator$Expanded
-  export type id = SelectionSet.NoArgsIndicator
-  export type name$Expanded = SelectionSet.NoArgsIndicator$Expanded
-  export type name = SelectionSet.NoArgsIndicator
+  export type attack$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+
+  export type attack = $SelectionSet.NoArgsIndicator
+
+  export type defense$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+
+  export type defense = $SelectionSet.NoArgsIndicator
+
+  export type hp$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+
+  export type hp = $SelectionSet.NoArgsIndicator
+
+  export type id$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+
+  export type id = $SelectionSet.NoArgsIndicator
+
+  export type name$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+
+  export type name = $SelectionSet.NoArgsIndicator
+
   export interface trainer extends __Trainer {}
   export type trainer$Expanded = trainer
 }
@@ -280,19 +320,28 @@ type __Pokemon = Pokemon // [1]
 //
 //
 // GRAPHQL SELECTION SET
-// OBJECT TYPE
+// OBJECT
 // --------------------------------------------------------------------------------------------------
-//                                         Trainer
+//                                              Trainer
 // --------------------------------------------------------------------------------------------------
 //
 //
 
 // ----------------------------------------| Entrypoint Interface |
 
-export interface Trainer extends SelectionSet.Bases.ObjectLike {
-  id?: Trainer.id$Expanded | SelectionSet.Alias<Trainer.id>
-  name?: Trainer.name$Expanded | SelectionSet.Alias<Trainer.name>
-  pokemon?: Trainer.pokemon$Expanded | SelectionSet.Alias<Trainer.pokemon>
+export interface Trainer extends $SelectionSet.Bases.ObjectLike {
+  /**
+   * Select the `id` field on the `Trainer` object. Its type is `Int` (a `Scalar`).
+   */
+  id?: Trainer.id$Expanded | $SelectionSet.Alias<Trainer.id>
+  /**
+   * Select the `name` field on the `Trainer` object. Its type is `String` (a `Scalar`).
+   */
+  name?: Trainer.name$Expanded | $SelectionSet.Alias<Trainer.name>
+  /**
+   * Select the `pokemon` field on the `Trainer` object. Its type is Object.
+   */
+  pokemon?: Trainer.pokemon$Expanded | $SelectionSet.Alias<Trainer.pokemon>
 
   /**
    * Inline fragments for field groups.
@@ -309,17 +358,20 @@ export interface Trainer extends SelectionSet.Bases.ObjectLike {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-
-  __typename?: SelectionSet.NoArgsIndicator$Expanded | SelectionSet.Alias<SelectionSet.NoArgsIndicator>
+  __typename?: $SelectionSet.NoArgsIndicator$Expanded | $SelectionSet.Alias<$SelectionSet.NoArgsIndicator>
 }
 
 // ----------------------------------------| Fields Interfaces |
 
 export namespace Trainer {
-  export type id$Expanded = SelectionSet.NoArgsIndicator$Expanded
-  export type id = SelectionSet.NoArgsIndicator
-  export type name$Expanded = SelectionSet.NoArgsIndicator$Expanded
-  export type name = SelectionSet.NoArgsIndicator
+  export type id$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+
+  export type id = $SelectionSet.NoArgsIndicator
+
+  export type name$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+
+  export type name = $SelectionSet.NoArgsIndicator
+
   export interface pokemon extends __Pokemon {}
   export type pokemon$Expanded = pokemon
 }
@@ -332,9 +384,9 @@ type __Trainer = Trainer // [1]
 //
 //
 //
-// ----------------------
-// GraphQLUnionType Types
-// ----------------------
+// ==================================================================================================
+//                                       GraphQLUnionType Types
+// ==================================================================================================
 //
 //
 //

@@ -62,10 +62,10 @@ describe(`union`, () => {
 
 describe(`alias`, () => {
   test.each([
-    [s({ id_as_x: true })],
-    [s({ id_as_x: true, id_as_id2: true })],
-    [s({ id_as_x: { $skip: true } })],
-    [s({ object_as_x: { $skip: true, id: true } })],
+    [s({ id: [`x`, true] })],
+    [s({ id: [[`x`, true], [`id2`, true]] })],
+    [s({ id: [`x`, { $skip: true }] })],
+    [s({ object: [`x`, { $skip: true, id: true }] })],
   ])(...testEachArgs)
 })
 
