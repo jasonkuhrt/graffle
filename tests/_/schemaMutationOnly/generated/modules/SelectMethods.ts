@@ -1,5 +1,4 @@
 import type { ResultSet } from '../../../../../src/entrypoints/schema.js'
-import * as Data from './Data.js'
 import type { Index } from './SchemaIndex.js'
 import type * as SelectionSets from './SelectionSets.js'
 
@@ -10,25 +9,7 @@ import type * as SelectionSets from './SelectionSets.js'
 //
 //
 // ==================================================================================================
-//                                              Runtime
-// ==================================================================================================
-//
-//
-//
-//
-//
-//
-import { createSelect } from '../../../../../src/entrypoints/client.js'
-export const Select = createSelect(Data.Name)
-
-//
-//
-//
-//
-//
-//
-// ==================================================================================================
-//                                             Buildtime
+//                                      Select Methods Interface
 // ==================================================================================================
 //
 //
@@ -37,20 +18,28 @@ export const Select = createSelect(Data.Name)
 //
 //
 
-export namespace Select {
-  // Root Types
-  // ----------
-  export type Mutation<$SelectionSet extends SelectionSets.Mutation> = ResultSet.Root<$SelectionSet, Index, 'Mutation'>
-  // Object Types
-  // ------------
+export interface $SelectMethods {
+  Mutation: Mutation
+}
 
-  // -- None --
-  // Union Types
-  // -----------
+//
+//
+//
+//
+//
+//
+// ==================================================================================================
+//                                                Root
+// ==================================================================================================
+//
+//
+//
+//
+//
+//
 
-  // -- None --
-  // Interface Types
-  // ---------------
-
-  // -- None --
+export interface Mutation {
+  <$SelectionSet extends SelectionSets.Mutation>(
+    selectionSet: $SelectionSet,
+  ): ResultSet.RootViaObject<$SelectionSet, Index, Index['allTypes']['Mutation']>
 }

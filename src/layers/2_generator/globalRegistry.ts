@@ -17,6 +17,9 @@ type SomeSchema = {
   featureOptions: {
     schemaErrors: boolean
   }
+  interfaces: {
+    SelectMethods: {}
+  }
   /**
    * If the code was generated with introspection, the URL used is taken as the default schema URL.
    */
@@ -28,6 +31,9 @@ type ZeroSchema = {
   index: { name: never }
   featureOptions: {
     schemaErrors: false
+  }
+  interfaces: {
+    SelectMethods: {}
   }
   defaultSchemaUrl: null
 }
@@ -70,6 +76,12 @@ export namespace GlobalRegistry {
   // eslint-disable-next-line
   // @ts-ignore passes after generation
   export type SchemaIndexDefault = GetSchemaIndex<DefaultSchemaName>
+
+  // dprint-ignore
+  export type GetOrDefault<$Name extends SchemaNames | undefined> =
+    $Name extends SchemaNames
+      ? GraffleGlobalTypes.Schemas[$Name]
+      : GraffleGlobalTypes.Schemas[DefaultSchemaName]
 
   // dprint-ignore
   export type GetSchemaIndexOrDefault<$Name extends SchemaNames | undefined> =

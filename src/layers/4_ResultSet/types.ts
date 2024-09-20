@@ -22,10 +22,10 @@ export type Root<
   $SelectionSet,
   $Index extends Schema.Index,
   $RootTypeName extends Schema.RootTypeName,
-> = Object$<$SelectionSet, ExcludeNull<$Index['Root'][$RootTypeName]>, $Index>
+> = Object$<$SelectionSet, $Index, ExcludeNull<$Index['Root'][$RootTypeName]>>
 
 // dprint-ignore
-export type Object$<$SelectionSet, $Node extends Schema.Output.Object$2, $Index extends Schema.Index> =
+export type Object$<$SelectionSet, $Index extends Schema.Index, $Node extends Schema.Output.Object$2> =
   SelectionSet.IsSelectScalarsWildcard<$SelectionSet> extends true
     /**
      * Handle Scalars Wildcard
@@ -46,11 +46,11 @@ export type Object$<$SelectionSet, $Node extends Schema.Output.Object$2, $Index 
       }>
 
 // dprint-ignore
-export type Union<$SelectionSet, $Node extends Schema.Output.Union, $Index extends Schema.Index> =
+export type Union<$SelectionSet, $Index extends Schema.Index, $Node extends Schema.Output.Union> =
   OnTypeFragment<$SelectionSet,$Node['members'][number], $Index>
 
 // dprint-ignore
-export type Interface<$SelectionSet, $Node extends Schema.Output.Interface, $Index extends Schema.Index> =
+export type Interface<$SelectionSet, $Index extends Schema.Index, $Node extends Schema.Output.Interface> =
   OnTypeFragment<$SelectionSet, $Node['implementors'][number], $Index>
 
 // dprint-ignore
@@ -58,8 +58,8 @@ type OnTypeFragment<$SelectionSet, $Node extends Schema.Output.Object$2, $Index 
   $Node extends any // force distribution
     ? Object$<
         GetKeyOr<$SelectionSet, `on${Capitalize<$Node['fields']['__typename']['type']['type']>}`, {}> & SelectionSet.OmitOnTypeFragments<$SelectionSet>,
-        $Node,
-        $Index
+        $Index,
+        $Node
       >
     : never
 
@@ -84,9 +84,9 @@ type FieldType<
   $Type extends Schema.Output.List<infer $InnerType>        ? Array<FieldType<$SelectionSet, $InnerType, $Index>> :
   $Type extends Schema.Enum<infer _, infer $Members>        ? $Members[number] :
   $Type extends Schema.Scalar.Any                           ? ReturnType<$Type['codec']['decode']> :
-  $Type extends Schema.Object$2                             ? Object$<$SelectionSet,$Type,$Index> :
-  $Type extends Schema.Interface                            ? Interface<$SelectionSet,$Type,$Index> :
-  $Type extends Schema.Union                                ? Union<$SelectionSet,$Type,$Index> :
+  $Type extends Schema.Object$2                             ? Object$<$SelectionSet,$Index,$Type> :
+  $Type extends Schema.Interface                            ? Interface<$SelectionSet,$Index,$Type> :
+  $Type extends Schema.Union                                ? Union<$SelectionSet,$Index,$Type> :
                                                               TSError<'FieldType', `Unknown type`, { $Type: $Type }>
 
 // dprint-ignore

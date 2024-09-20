@@ -17,6 +17,7 @@ import { generateSchemaIndex } from './code/SchemaIndex.js'
 import { generateRuntimeSchema } from './code/SchemaRuntime.js'
 import { generateSelect } from './code/Select.js'
 import { generateSelectionSets } from './code/SelectionSets.js'
+import { generateSelectMethods } from './code/SelectMethods.js'
 
 export interface OptionsInput {
   name?: string
@@ -153,6 +154,7 @@ export const generateCode = (input: Input) => {
     generateRuntimeSchema,
     generateSelect,
     generateRootMethods,
+    generateSelectMethods,
   ].map(_ => _(config)).map(code => ({
     ...code,
     code: format(code.code),

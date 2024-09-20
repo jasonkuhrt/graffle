@@ -69,6 +69,10 @@ export const RootTypeName = {
   Subscription: `Subscription`,
 } as const
 
+export const isRootType = (value: unknown): value is GraphQLObjectType => {
+  return isObjectType(value) && value.name in RootTypeName
+}
+
 export type RootTypeNameQuery = typeof RootTypeName['Query']
 export type RootTypeNameMutation = typeof RootTypeName['Mutation']
 export type RootTypeNameSubscription = typeof RootTypeName['Subscription']

@@ -2,6 +2,7 @@
 import type * as Data from './Data.js'
 import type * as RootMethods from './RootMethods.js'
 import type * as Schema from './SchemaBuildtime.js'
+
 export interface Index {
   name: Data.Name
   RootTypesPresent: ['Query']
@@ -13,6 +14,9 @@ export interface Index {
   }
   Builder: {
     RootMethods: RootMethods.BuilderRootMethodsFn
+  }
+  allTypes: {
+    Query: Schema.Root.Query
   }
   objects: {}
   unions: {}

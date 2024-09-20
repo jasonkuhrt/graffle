@@ -1,6 +1,7 @@
-import type { ResultSet, SelectionSet } from '../../../../../src/entrypoints/schema.js'
+import type { ResultSet } from '../../../../../src/entrypoints/schema.js'
 import * as Data from './Data.js'
 import type { Index } from './SchemaIndex.js'
+import type * as SelectionSets from './SelectionSets.js'
 
 //
 //
@@ -39,11 +40,7 @@ export const Select = createSelect(Data.Name)
 export namespace Select {
   // Root Types
   // ----------
-  export type Query<$SelectionSet extends SelectionSet.Root<Index, 'Query'>> = ResultSet.Root<
-    $SelectionSet,
-    Index,
-    'Query'
-  >
+  export type Query<$SelectionSet extends SelectionSets.Query> = ResultSet.Root<$SelectionSet, Index, 'Query'>
   // Object Types
   // ------------
 

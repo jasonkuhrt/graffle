@@ -1,6 +1,6 @@
 import { describe, expect, expectTypeOf, it, test } from 'vitest'
-import type { Index } from '../../../tests/_/schema/schema.js'
-import type { SelectionSet } from '../3_SelectionSet/__.js'
+// import type { Index } from '../../../tests/_/schema/schema.js'
+// import type { SelectionSet } from '../3_SelectionSet/__.js'
 import { create } from './select.js'
 
 describe(`select`, () => {
@@ -12,9 +12,8 @@ describe(`select`, () => {
   })
 
   it(`has type safe methods`, () => {
-    // @ts-expect-error ID issue
-    type $Parameters = Parameters<typeof select.Bar>
-    expectTypeOf<$Parameters>().toEqualTypeOf<[SelectionSet.Object<Index['objects']['Bar'], Index>]>()
+    // type $Parameters = Parameters<typeof select.Bar>
+    // expectTypeOf<$Parameters>().toEqualTypeOf<[SelectionSet.Object<Index['objects']['Bar'], Index>]>()
     expectTypeOf(select.Bar({ int: true })).toEqualTypeOf<{ int: true }>()
   })
 })

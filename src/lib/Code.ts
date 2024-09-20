@@ -16,7 +16,7 @@ export namespace Code {
   export const fields = (fieldTypes: string[]) => fieldTypes.join(`\n`)
   export const intersection = (a: string, b: string) => `${a} & ${b}`
   export const object = (fields: string) => `{\n${fields}\n}`
-  export const objectFromEntries = (entries: [string, string][]) =>
+  export const objectFromEntries = (entries: readonly (readonly [string, string])[]) =>
     Code.objectFrom(Object.fromEntries(entries.map(([name, type]) => [name, { type }])))
   export const objectFrom = (
     object: Record<
