@@ -7,7 +7,12 @@
  */
 
 import type { SelectionSet } from '../../../../../src/entrypoints/schema.js'
+import type { Simplify, UnionExpanded } from '../../../../../src/entrypoints/utilities-for-generated.js'
 
+//
+//
+//
+//
 //
 //
 // ---------------------
@@ -15,10 +20,28 @@ import type { SelectionSet } from '../../../../../src/entrypoints/schema.js'
 // ---------------------
 //
 //
+//
+//
+//
+//
+
+//
+//
+//
+//
+// GRAPHQL SELECTION SET
+// OBJECT TYPE
+// --------------------------------------------------------------------------------------------------
+//                                         Query
+// --------------------------------------------------------------------------------------------------
+//
+//
+
+// ----------------------------------------| Entrypoint Interface |
 
 export interface Query {
-  id?: Query.id | [alias: string, Query.id] | [alias: string, Query.id][]
-  idNonNull?: Query.idNonNull | [alias: string, Query.idNonNull] | [alias: string, Query.idNonNull][]
+  id?: Query.id$Expanded | SelectionSet.Alias<Query.id>
+  idNonNull?: Query.idNonNull$Expanded | SelectionSet.Alias<Query.idNonNull>
 
   /**
    * Inline fragments for field groups.
@@ -36,14 +59,15 @@ export interface Query {
    * @see https://graphql.org/learn/queries/#meta-fields
    */
 
-  __typename?: SelectionSet.NoArgsIndicator | [alias: string, SelectionSet.NoArgsIndicator] | [
-    alias: string,
-    SelectionSet.NoArgsIndicator,
-  ][]
+  __typename?: SelectionSet.NoArgsIndicator$Expanded | SelectionSet.Alias<SelectionSet.NoArgsIndicator>
 }
 
+// ----------------------------------------| Fields Interfaces |
+
 export namespace Query {
+  export type id$Expanded = SelectionSet.NoArgsIndicator$Expanded
   export type id = SelectionSet.NoArgsIndicator
+  export type idNonNull$Expanded = SelectionSet.NoArgsIndicator$Expanded
   export type idNonNull = SelectionSet.NoArgsIndicator
 }
 
@@ -51,12 +75,24 @@ type __Query = Query // [1]
 
 //
 //
+//
+//
+//
+//
 // ---------------------
 // GraphQLEnumType Types
 // ---------------------
 //
 //
+//
+//
+//
+//
 
+//
+//
+//
+//
 //
 //
 // ----------------------------
@@ -64,7 +100,15 @@ type __Query = Query // [1]
 // ----------------------------
 //
 //
+//
+//
+//
+//
 
+//
+//
+//
+//
 //
 //
 // --------------------------
@@ -72,7 +116,15 @@ type __Query = Query // [1]
 // --------------------------
 //
 //
+//
+//
+//
+//
 
+//
+//
+//
+//
 //
 //
 // -----------------------
@@ -80,11 +132,23 @@ type __Query = Query // [1]
 // -----------------------
 //
 //
+//
+//
+//
+//
 
+//
+//
+//
+//
 //
 //
 // ----------------------
 // GraphQLUnionType Types
 // ----------------------
+//
+//
+//
+//
 //
 //

@@ -4,9 +4,17 @@ import type { Index } from './SchemaIndex.js'
 
 //
 //
+//
+//
+//
+//
 // -------
 // Runtime
 // -------
+//
+//
+//
+//
 //
 //
 import { createSelect } from '../../../../../src/entrypoints/client.js'
@@ -14,9 +22,17 @@ export const Select = createSelect(Data.Name)
 
 //
 //
+//
+//
+//
+//
 // ---------
 // Buildtime
 // ---------
+//
+//
+//
+//
 //
 //
 

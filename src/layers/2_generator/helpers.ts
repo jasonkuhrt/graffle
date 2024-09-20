@@ -6,7 +6,23 @@ import type { Config } from './generateCode.js'
 
 export const title = (title: string) => {
   const border = `-`.repeat(title.length)
-  const titleDecorated = `//\n//\n// ${border}\n// ${title}\n// ${border}\n//\n//\n`
+  const titleDecorated = `
+    //
+    //
+    //
+    //
+    //
+    //
+    // ${border}
+    // ${title}
+    // ${border}
+    //
+    //
+    //
+    //
+    //
+    //
+  `
   return titleDecorated
 }
 export const typeTitle = (config: Config, typeName: string) => {

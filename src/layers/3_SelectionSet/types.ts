@@ -1,4 +1,5 @@
-import type { ExcludeNull, MaybeList, StringNonEmpty, Values } from '../../lib/prelude.js'
+import type { Simplify } from 'type-fest'
+import type { ExcludeNull, MaybeList, StringNonEmpty, UnionExpanded, Values } from '../../lib/prelude.js'
 import type { TSError } from '../../lib/TSError.js'
 import type { OmitNullableFields, PickNullableFields, Schema, SomeField, SomeFields } from '../1_Schema/__.js'
 
@@ -151,7 +152,7 @@ export type OmitOnTypeFragments<T> = {
  * Aliases
  */
 
-export interface Alias<O extends string = string, T extends string = string> {
+export interface AliasOld<O extends string = string, T extends string = string> {
   origin: O
   target: T
 }
@@ -160,15 +161,15 @@ export interface Alias<O extends string = string, T extends string = string> {
 export type ParseAliasExpression<E> =
   E extends `${infer O}_as_${infer T}`  ? Schema.Named.NameParse<O> extends never  ? E :
                                           Schema.Named.NameParse<T> extends never  ? E :
-                                          Alias<O, T>
+                                          AliasOld<O, T>
                                         : E
 
-export type AliasNameOrigin<N> = ParseAliasExpression<N> extends Alias<infer O, any> ? O : N
+export type AliasNameOrigin<N> = ParseAliasExpression<N> extends AliasOld<infer O, any> ? O : N
 
 /**
  * Resolve the target of an alias or if is not an alias just pass through the name.
  */
-export type AliasNameTarget<N> = ParseAliasExpression<N> extends Alias<any, infer T> ? T : N
+export type AliasNameTarget<N> = ParseAliasExpression<N> extends AliasOld<any, infer T> ? T : N
 
 export type ResolveAliasTargets<SelectionSet> = {
   [Field in keyof SelectionSet as AliasNameTarget<Field>]: SelectionSet[Field]
@@ -209,9 +210,10 @@ export namespace Directive {
 /**
  * Should this field be selected?
  */
-export type ClientIndicator = ClientIndicatorPositive | ClientIndicatorNegative
-export type ClientIndicatorPositive = true | 1
-export type ClientIndicatorNegative = false | 0 | undefined
+export type ClientIndicator = UnionExpanded<ClientIndicatorPositive | ClientIndicatorNegative>
+// todo bring back 1 | 0 in addition to true|false as generator options, defaulting to off
+export type ClientIndicatorPositive = true
+export type ClientIndicatorNegative = UnionExpanded<false | undefined>
 
 export type OmitNegativeIndicators<$SelectionSet> = {
   [K in keyof $SelectionSet as $SelectionSet[K] extends ClientIndicatorNegative ? never : K]: $SelectionSet[K]
@@ -226,7 +228,8 @@ export type Indicator<$Field extends SomeField> =
  * If a field directive is given as an indicator then it implies "select this" e.g. `true`/`1`.
  * Of course the semantics of the directive may change the derived type (e.g. `skip` means the field might not show up in the result set)
  */
-export type NoArgsIndicator = ClientIndicator | Bases.Base
+export type NoArgsIndicator = ClientIndicator | FieldDirectives
+export type NoArgsIndicator$Expanded = UnionExpanded<ClientIndicator | Simplify<FieldDirectives>>
 
 type ArgsIndicator<$Args extends Schema.Args<any>> = $Args['isFieldsAllNullable'] extends true
   ? ({ $?: Args<$Args> } & FieldDirectives) | ClientIndicator
@@ -255,6 +258,50 @@ type InputFieldType<$InputType extends Schema.Input.Any> =
   $InputType extends Schema.Scalar.Any                          ? ReturnType<$InputType['codec']['decode']> :
                                                                   TSError<'InferTypeInput', 'Unknown $InputType', { $InputType: $InputType }> // never
 
+/**
+ * @see https://spec.graphql.org/draft/#sec-Type-System.Directives.Built-in-Directives
+ */
+export interface FieldDirectives {
+  /**
+   * https://spec.graphql.org/draft/#sec--skip
+   */
+  $skip?: SkipDirective
+  /**
+   * https://spec.graphql.org/draft/#sec--include
+   */
+  $include?: IncludeDirective
+  /**
+   * @see https://github.com/graphql/graphql-wg/blob/main/rfcs/DeferStream.md#defer
+   */
+  $defer?: DeferDirective
+  /**
+   * @see https://github.com/graphql/graphql-wg/blob/main/rfcs/DeferStream.md#stream
+   */
+  $stream?: StreamDirective
+}
+
+/**
+ * https://spec.graphql.org/draft/#sec--skip
+ */
+type SkipDirective = boolean | { if?: boolean }
+/**
+ * https://spec.graphql.org/draft/#sec--include
+ */
+type IncludeDirective = boolean | { if?: boolean }
+/**
+ * @see https://github.com/graphql/graphql-wg/blob/main/rfcs/DeferStream.md#defer
+ */
+type DeferDirective = boolean | { if?: boolean; label?: string }
+/**
+ * @see https://github.com/graphql/graphql-wg/blob/main/rfcs/DeferStream.md#stream
+ */
+type StreamDirective = boolean | { if?: boolean; label?: string; initialCount?: number }
+
+export type Alias<$SelectionSet> = [alias: string, $SelectionSet] | [
+  alias: string,
+  $SelectionSet,
+][]
+
 export namespace Bases {
   export interface Base extends FieldDirectives {}
 
@@ -264,26 +311,4 @@ export namespace Bases {
      */
     $scalars?: ClientIndicator
   }
-}
-
-/**
- * @see https://spec.graphql.org/draft/#sec-Type-System.Directives.Built-in-Directives
- */
-export interface FieldDirectives {
-  /**
-   * https://spec.graphql.org/draft/#sec--skip
-   */
-  $skip?: boolean | { if?: boolean }
-  /**
-   * https://spec.graphql.org/draft/#sec--include
-   */
-  $include?: boolean | { if?: boolean }
-  /**
-   * @see https://github.com/graphql/graphql-wg/blob/main/rfcs/DeferStream.md#defer
-   */
-  $defer?: boolean | { if?: boolean; label?: string }
-  /**
-   * @see https://github.com/graphql/graphql-wg/blob/main/rfcs/DeferStream.md#stream
-   */
-  $stream?: boolean | { if?: boolean; label?: string; initialCount?: number }
 }

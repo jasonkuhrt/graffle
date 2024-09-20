@@ -1,5 +1,5 @@
 // todo: generate in JSDoc how the feature maps to GQL syntax.
-// on union fields, JSDoc that mentions the syntax `on*`
+// todo: on union fields, JSDoc that mentions the syntax `on*`
 
 import type { GraphQLEnumType, GraphQLInterfaceType, GraphQLUnionType } from 'graphql'
 import {
@@ -35,7 +35,8 @@ export const { moduleName: moduleNameSelectionSets, generate: generateSelectionS
     `)
     code.push(``)
 
-    code.push(`import type { SelectionSet } from '${config.libraryPaths.schema}';`)
+    code.push(`import type { SelectionSet } from '${config.libraryPaths.schema}'`)
+    code.push(`import type { UnionExpanded, Simplify } from '${config.libraryPaths.utilitiesForGenerated}'`)
     code.push(``)
 
     entries(config.typeMapByKind).forEach(([kind, nodes]) => {
@@ -49,7 +50,7 @@ export const { moduleName: moduleNameSelectionSets, generate: generateSelectionS
       nodes.forEach(node => {
         const doc = renderDocumentation(config, node as never)
         code.push(doc)
-        code.push(renderLookup[kind]({ config, node: node as never }))
+        code.push(kindRenderLookup[kind]({ config, node: node as never }))
         code.push(``)
         code.push(`type __${renderName(node)} = ${renderName(node)} // [1]`)
         code.push(``)
@@ -107,6 +108,13 @@ const renderInterface = createCodeGenerator<{ node: GraphQLInterfaceType }>(
     const onTypesRendered = implementorTypes.map(type => Helpers.outputField(`on${type.name}`, renderName(type))).join(
       ` \n `,
     )
+
+    code.push(``)
+    code.push(`// --------------`)
+    code.push(`// Interface Type ${node.name}`)
+    code.push(`// --------------`)
+    code.push(``)
+
     code.push(`
       export interface ${renderName(node)} extends SelectionSet.Bases.ObjectLike {
         ${fieldsRendered}
@@ -131,11 +139,28 @@ const renderObject = createCodeGenerator<{ node: GraphQLObjectType }>(
     const fields = Object.values(node.getFields())
 
     const fieldSelectorsRendered = fields.map(field => {
-      return Helpers.outputField(field.name, `${renderName(node)}.${renderName(field)}`)
+      return Helpers.outputFieldAlisable(field.name, `${renderName(node)}.${renderName(field)}`)
     }).join(`\n`)
 
     const isRootType = node.name in RootTypeName
     const extendsClause = isRootType ? `` : `extends SelectionSet.Bases.ObjectLike`
+    code.push(`
+//
+//
+//
+//
+// GRAPHQL SELECTION SET
+// OBJECT TYPE
+// --------------------------------------------------------------------------------------------------
+//                                         ${node.name}
+// --------------------------------------------------------------------------------------------------
+//
+//
+    `)
+    code.push(``)
+
+    code.push(`// ----------------------------------------| Entrypoint Interface |`)
+    code.push(``)
 
     code.push(`
       export interface ${renderName(node)} ${extendsClause} {
@@ -144,6 +169,9 @@ const renderObject = createCodeGenerator<{ node: GraphQLObjectType }>(
         ${Helpers.__typename(`object`)}
       }
     `)
+    code.push(``)
+
+    code.push(`// ----------------------------------------| Fields Interfaces |`)
     code.push(``)
 
     code.push(`
@@ -155,36 +183,56 @@ const renderObject = createCodeGenerator<{ node: GraphQLObjectType }>(
   },
 )
 
+const kindRenderLookup = {
+  GraphQLInputObjectType: renderInputObject,
+  GraphQLRootType: renderObject,
+  GraphQLObjectType: renderObject,
+  GraphQLEnumType: renderEnum,
+  GraphQLInterfaceType: renderInterface,
+  GraphQLUnionType: renderUnion,
+}
+
 const renderField = createCodeGenerator<{ field: GraphQLField<any, any> }>(
   ({ config, field, code }) => {
     const namedType = getNamedType(field.type)
+    const nameRendered = renderName(field)
+
+    // code.push(``)
+    // code.push(`// -- .${nameRendered} --`)
+    // code.push(``)
 
     if (isScalarType(namedType) || isEnumType(namedType)) {
       const argsAnalysis = analyzeArgsNullability(field.args)
       const argsRendered = renderFieldArgs({ config, field })
       if (argsAnalysis.hasAny) {
         if (argsAnalysis.isAllNullable) {
-          const type = `SelectionSet.ClientIndicator | SelectionSet.Bases.Base | { ${argsRendered} }`
-          code.push(Helpers.type(renderName(field), type))
+          code.push(`type ${nameRendered}SelectionSet = Simplify<SelectionSet.Bases.Base & { ${argsRendered} }>`)
+          code.push(``)
+          code.push(
+            Helpers.type(
+              `${nameRendered}$Expanded`,
+              `UnionExpanded<SelectionSet.ClientIndicator | ${nameRendered}SelectionSet>`,
+            ),
+          )
+          code.push(``)
+          code.push(
+            Helpers.type(nameRendered, `SelectionSet.ClientIndicator | ${nameRendered}SelectionSet`),
+          )
+          code.push(``)
         } else {
           // todo test that a directive can be passed with the intersection that otherwise cannot be.
-          code.push(Helpers.$interface(renderName(field), `SelectionSet.Bases.Base`, argsRendered))
+          code.push(Helpers.$interface(nameRendered, `SelectionSet.Bases.Base`, argsRendered))
+          code.push(Helpers.type(`${nameRendered}$Expanded`, nameRendered))
         }
       } else {
-        code.push(Helpers.type(renderName(field), `SelectionSet.NoArgsIndicator`))
+        code.push(Helpers.type(`${nameRendered}$Expanded`, `SelectionSet.NoArgsIndicator$Expanded`))
+        code.push(Helpers.type(nameRendered, `SelectionSet.NoArgsIndicator`))
       }
     } else {
       const argsRendered = renderFieldArgs({ config, field })
-      const sigRendered = `export interface ${renderName(field)} extends __${renderName(namedType)}`
-      if (argsRendered) {
-        code.push(`
-          ${sigRendered} {
-          ${argsRendered}
-        }
-      `)
-      } else {
-        code.push(sigRendered + `{}`)
-      }
+      const sigRendered = `export interface ${nameRendered} extends __${renderName(namedType)}`
+      code.push(`${sigRendered} {${argsRendered ? `\n${argsRendered}\n` : ``}}`)
+      code.push(`export type ${nameRendered}$Expanded = ${nameRendered}`)
     }
   },
 )
@@ -223,7 +271,7 @@ const renderArgLike = createCodeGenerator<{ arg: GraphQLArgument | GraphQLInputF
     const typeRendered = renderArgType(arg.type)
     const doc = getDocumentation(config, arg)
     code.push(doc)
-    code.push(`${arg.name}${renderPropertyOptional(arg.type)}: ${typeRendered}`)
+    code.push(`${arg.name}${Helpers.propOpt(arg.type)}: ${typeRendered}`)
   },
 )
 
@@ -245,20 +293,13 @@ const renderArgType = (type: GraphQLType): string => {
   return `${renderName(sansNullabilityType)} ${nullableRendered}`
 }
 
-const renderPropertyOptional = (type: GraphQLType) => {
-  return isNullableType(type) ? `?` : ``
-}
-
-const renderLookup = {
-  GraphQLInputObjectType: renderInputObject,
-  GraphQLRootType: renderObject,
-  GraphQLObjectType: renderObject,
-  GraphQLEnumType: renderEnum,
-  GraphQLInterfaceType: renderInterface,
-  GraphQLUnionType: renderUnion,
-}
-
 namespace Helpers {
+  export const propOpt = (type: GraphQLType) => {
+    return isNullableType(type) ? `?` : ``
+  }
+  export const maybeList = (type: string) => {
+    return `${type} | Array<${type}>`
+  }
   export const $interface = (name: string, extendsClause: string | null, fields: string) => {
     return `export interface ${name} ${extendsClause ? ` extends ${extendsClause}` : ``} { ${fields} }`
   }
@@ -267,15 +308,18 @@ namespace Helpers {
   }
 
   export const outputField = (name: string, type: string) => {
-    // const alias = `\n[\`${name}_as_\${string}\`]?: ${type}`
-    return `${name}?: ${type} | [alias:string, ${type}] | [alias:string, ${type}][]` // + alias
-    // return `${name}?: ${type}` // + alias
+    return `${name}?: ${type}`
+  }
+
+  export const outputFieldAlisable = (name: string, type: string, aliasable: boolean = true) => {
+    const alias = aliasable ? `| SelectionSet.Alias<${type}>` : ``
+    return `${name}?: ${type}$Expanded${alias}`
   }
 
   export const __typename = (kind: 'union' | 'interface' | 'object') => {
     return `
       ${__typenameDoc(kind)}
-      ${outputField(`__typename`, `SelectionSet.NoArgsIndicator`)}
+      ${outputFieldAlisable(`__typename`, `SelectionSet.NoArgsIndicator`)}
     `
   }
 

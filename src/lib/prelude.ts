@@ -475,3 +475,5 @@ type _test = SimplifyDeep<
     }
   }>
 >
+
+export type UnionExpanded<$Union> = $Union

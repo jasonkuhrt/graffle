@@ -7,7 +7,12 @@
  */
 
 import type { SelectionSet } from '../../../../../src/entrypoints/schema.js'
+import type { Simplify, UnionExpanded } from '../../../../../src/entrypoints/utilities-for-generated.js'
 
+//
+//
+//
+//
 //
 //
 // ---------------------
@@ -15,10 +20,28 @@ import type { SelectionSet } from '../../../../../src/entrypoints/schema.js'
 // ---------------------
 //
 //
+//
+//
+//
+//
+
+//
+//
+//
+//
+// GRAPHQL SELECTION SET
+// OBJECT TYPE
+// --------------------------------------------------------------------------------------------------
+//                                         Mutation
+// --------------------------------------------------------------------------------------------------
+//
+//
+
+// ----------------------------------------| Entrypoint Interface |
 
 export interface Mutation {
-  id?: Mutation.id | [alias: string, Mutation.id] | [alias: string, Mutation.id][]
-  idNonNull?: Mutation.idNonNull | [alias: string, Mutation.idNonNull] | [alias: string, Mutation.idNonNull][]
+  id?: Mutation.id$Expanded | SelectionSet.Alias<Mutation.id>
+  idNonNull?: Mutation.idNonNull$Expanded | SelectionSet.Alias<Mutation.idNonNull>
 
   /**
    * Inline fragments for field groups.
@@ -36,143 +59,93 @@ export interface Mutation {
    * @see https://graphql.org/learn/queries/#meta-fields
    */
 
-  __typename?: SelectionSet.NoArgsIndicator | [alias: string, SelectionSet.NoArgsIndicator] | [
-    alias: string,
-    SelectionSet.NoArgsIndicator,
-  ][]
+  __typename?: SelectionSet.NoArgsIndicator$Expanded | SelectionSet.Alias<SelectionSet.NoArgsIndicator>
 }
 
+// ----------------------------------------| Fields Interfaces |
+
 export namespace Mutation {
+  export type id$Expanded = SelectionSet.NoArgsIndicator$Expanded
   export type id = SelectionSet.NoArgsIndicator
+  export type idNonNull$Expanded = SelectionSet.NoArgsIndicator$Expanded
   export type idNonNull = SelectionSet.NoArgsIndicator
 }
 
 type __Mutation = Mutation // [1]
 
+//
+//
+//
+//
+// GRAPHQL SELECTION SET
+// OBJECT TYPE
+// --------------------------------------------------------------------------------------------------
+//                                         Query
+// --------------------------------------------------------------------------------------------------
+//
+//
+
+// ----------------------------------------| Entrypoint Interface |
+
 export interface Query {
-  InputObjectNested?: Query.InputObjectNested | [alias: string, Query.InputObjectNested] | [
-    alias: string,
-    Query.InputObjectNested,
-  ][]
-  InputObjectNestedNonNull?: Query.InputObjectNestedNonNull | [alias: string, Query.InputObjectNestedNonNull] | [
-    alias: string,
-    Query.InputObjectNestedNonNull,
-  ][]
-  abcEnum?: Query.abcEnum | [alias: string, Query.abcEnum] | [alias: string, Query.abcEnum][]
-  date?: Query.date | [alias: string, Query.date] | [alias: string, Query.date][]
-  dateArg?: Query.dateArg | [alias: string, Query.dateArg] | [alias: string, Query.dateArg][]
-  dateArgInputObject?: Query.dateArgInputObject | [alias: string, Query.dateArgInputObject] | [
-    alias: string,
-    Query.dateArgInputObject,
-  ][]
-  dateArgList?: Query.dateArgList | [alias: string, Query.dateArgList] | [alias: string, Query.dateArgList][]
-  dateArgNonNull?: Query.dateArgNonNull | [alias: string, Query.dateArgNonNull] | [
-    alias: string,
-    Query.dateArgNonNull,
-  ][]
-  dateArgNonNullList?: Query.dateArgNonNullList | [alias: string, Query.dateArgNonNullList] | [
-    alias: string,
-    Query.dateArgNonNullList,
-  ][]
-  dateArgNonNullListNonNull?: Query.dateArgNonNullListNonNull | [alias: string, Query.dateArgNonNullListNonNull] | [
-    alias: string,
-    Query.dateArgNonNullListNonNull,
-  ][]
-  dateInterface1?: Query.dateInterface1 | [alias: string, Query.dateInterface1] | [
-    alias: string,
-    Query.dateInterface1,
-  ][]
-  dateList?: Query.dateList | [alias: string, Query.dateList] | [alias: string, Query.dateList][]
-  dateListNonNull?: Query.dateListNonNull | [alias: string, Query.dateListNonNull] | [
-    alias: string,
-    Query.dateListNonNull,
-  ][]
-  dateNonNull?: Query.dateNonNull | [alias: string, Query.dateNonNull] | [alias: string, Query.dateNonNull][]
-  dateObject1?: Query.dateObject1 | [alias: string, Query.dateObject1] | [alias: string, Query.dateObject1][]
-  dateUnion?: Query.dateUnion | [alias: string, Query.dateUnion] | [alias: string, Query.dateUnion][]
-  error?: Query.error | [alias: string, Query.error] | [alias: string, Query.error][]
-  id?: Query.id | [alias: string, Query.id] | [alias: string, Query.id][]
-  idNonNull?: Query.idNonNull | [alias: string, Query.idNonNull] | [alias: string, Query.idNonNull][]
-  interface?: Query.$interface | [alias: string, Query.$interface] | [alias: string, Query.$interface][]
-  interfaceNonNull?: Query.interfaceNonNull | [alias: string, Query.interfaceNonNull] | [
-    alias: string,
-    Query.interfaceNonNull,
-  ][]
-  interfaceWithArgs?: Query.interfaceWithArgs | [alias: string, Query.interfaceWithArgs] | [
-    alias: string,
-    Query.interfaceWithArgs,
-  ][]
-  listInt?: Query.listInt | [alias: string, Query.listInt] | [alias: string, Query.listInt][]
-  listIntNonNull?: Query.listIntNonNull | [alias: string, Query.listIntNonNull] | [
-    alias: string,
-    Query.listIntNonNull,
-  ][]
-  listListInt?: Query.listListInt | [alias: string, Query.listListInt] | [alias: string, Query.listListInt][]
-  listListIntNonNull?: Query.listListIntNonNull | [alias: string, Query.listListIntNonNull] | [
-    alias: string,
-    Query.listListIntNonNull,
-  ][]
-  lowerCaseUnion?: Query.lowerCaseUnion | [alias: string, Query.lowerCaseUnion] | [
-    alias: string,
-    Query.lowerCaseUnion,
-  ][]
-  object?: Query.$object | [alias: string, Query.$object] | [alias: string, Query.$object][]
-  objectList?: Query.objectList | [alias: string, Query.objectList] | [alias: string, Query.objectList][]
-  objectListNonNull?: Query.objectListNonNull | [alias: string, Query.objectListNonNull] | [
-    alias: string,
-    Query.objectListNonNull,
-  ][]
-  objectNested?: Query.objectNested | [alias: string, Query.objectNested] | [alias: string, Query.objectNested][]
-  objectNonNull?: Query.objectNonNull | [alias: string, Query.objectNonNull] | [alias: string, Query.objectNonNull][]
-  objectWithArgs?: Query.objectWithArgs | [alias: string, Query.objectWithArgs] | [
-    alias: string,
-    Query.objectWithArgs,
-  ][]
-  result?: Query.result | [alias: string, Query.result] | [alias: string, Query.result][]
-  resultNonNull?: Query.resultNonNull | [alias: string, Query.resultNonNull] | [alias: string, Query.resultNonNull][]
-  string?: Query.$string | [alias: string, Query.$string] | [alias: string, Query.$string][]
-  stringWithArgEnum?: Query.stringWithArgEnum | [alias: string, Query.stringWithArgEnum] | [
-    alias: string,
-    Query.stringWithArgEnum,
-  ][]
-  stringWithArgInputObject?: Query.stringWithArgInputObject | [alias: string, Query.stringWithArgInputObject] | [
-    alias: string,
-    Query.stringWithArgInputObject,
-  ][]
-  stringWithArgInputObjectRequired?: Query.stringWithArgInputObjectRequired | [
-    alias: string,
-    Query.stringWithArgInputObjectRequired,
-  ] | [alias: string, Query.stringWithArgInputObjectRequired][]
-  stringWithArgs?: Query.stringWithArgs | [alias: string, Query.stringWithArgs] | [
-    alias: string,
-    Query.stringWithArgs,
-  ][]
-  stringWithListArg?: Query.stringWithListArg | [alias: string, Query.stringWithListArg] | [
-    alias: string,
-    Query.stringWithListArg,
-  ][]
-  stringWithListArgRequired?: Query.stringWithListArgRequired | [alias: string, Query.stringWithListArgRequired] | [
-    alias: string,
-    Query.stringWithListArgRequired,
-  ][]
-  stringWithRequiredArg?: Query.stringWithRequiredArg | [alias: string, Query.stringWithRequiredArg] | [
-    alias: string,
-    Query.stringWithRequiredArg,
-  ][]
-  unionFooBar?: Query.unionFooBar | [alias: string, Query.unionFooBar] | [alias: string, Query.unionFooBar][]
-  unionFooBarNonNull?: Query.unionFooBarNonNull | [alias: string, Query.unionFooBarNonNull] | [
-    alias: string,
-    Query.unionFooBarNonNull,
-  ][]
-  unionFooBarWithArgs?: Query.unionFooBarWithArgs | [alias: string, Query.unionFooBarWithArgs] | [
-    alias: string,
-    Query.unionFooBarWithArgs,
-  ][]
-  unionObject?: Query.unionObject | [alias: string, Query.unionObject] | [alias: string, Query.unionObject][]
-  unionObjectNonNull?: Query.unionObjectNonNull | [alias: string, Query.unionObjectNonNull] | [
-    alias: string,
-    Query.unionObjectNonNull,
-  ][]
+  InputObjectNested?: Query.InputObjectNested$Expanded | SelectionSet.Alias<Query.InputObjectNested>
+  InputObjectNestedNonNull?:
+    | Query.InputObjectNestedNonNull$Expanded
+    | SelectionSet.Alias<Query.InputObjectNestedNonNull>
+  abcEnum?: Query.abcEnum$Expanded | SelectionSet.Alias<Query.abcEnum>
+  date?: Query.date$Expanded | SelectionSet.Alias<Query.date>
+  dateArg?: Query.dateArg$Expanded | SelectionSet.Alias<Query.dateArg>
+  dateArgInputObject?: Query.dateArgInputObject$Expanded | SelectionSet.Alias<Query.dateArgInputObject>
+  dateArgList?: Query.dateArgList$Expanded | SelectionSet.Alias<Query.dateArgList>
+  dateArgNonNull?: Query.dateArgNonNull$Expanded | SelectionSet.Alias<Query.dateArgNonNull>
+  dateArgNonNullList?: Query.dateArgNonNullList$Expanded | SelectionSet.Alias<Query.dateArgNonNullList>
+  dateArgNonNullListNonNull?:
+    | Query.dateArgNonNullListNonNull$Expanded
+    | SelectionSet.Alias<Query.dateArgNonNullListNonNull>
+  dateInterface1?: Query.dateInterface1$Expanded | SelectionSet.Alias<Query.dateInterface1>
+  dateList?: Query.dateList$Expanded | SelectionSet.Alias<Query.dateList>
+  dateListNonNull?: Query.dateListNonNull$Expanded | SelectionSet.Alias<Query.dateListNonNull>
+  dateNonNull?: Query.dateNonNull$Expanded | SelectionSet.Alias<Query.dateNonNull>
+  dateObject1?: Query.dateObject1$Expanded | SelectionSet.Alias<Query.dateObject1>
+  dateUnion?: Query.dateUnion$Expanded | SelectionSet.Alias<Query.dateUnion>
+  error?: Query.error$Expanded | SelectionSet.Alias<Query.error>
+  id?: Query.id$Expanded | SelectionSet.Alias<Query.id>
+  idNonNull?: Query.idNonNull$Expanded | SelectionSet.Alias<Query.idNonNull>
+  interface?: Query.$interface$Expanded | SelectionSet.Alias<Query.$interface>
+  interfaceNonNull?: Query.interfaceNonNull$Expanded | SelectionSet.Alias<Query.interfaceNonNull>
+  interfaceWithArgs?: Query.interfaceWithArgs$Expanded | SelectionSet.Alias<Query.interfaceWithArgs>
+  listInt?: Query.listInt$Expanded | SelectionSet.Alias<Query.listInt>
+  listIntNonNull?: Query.listIntNonNull$Expanded | SelectionSet.Alias<Query.listIntNonNull>
+  listListInt?: Query.listListInt$Expanded | SelectionSet.Alias<Query.listListInt>
+  listListIntNonNull?: Query.listListIntNonNull$Expanded | SelectionSet.Alias<Query.listListIntNonNull>
+  lowerCaseUnion?: Query.lowerCaseUnion$Expanded | SelectionSet.Alias<Query.lowerCaseUnion>
+  object?: Query.$object$Expanded | SelectionSet.Alias<Query.$object>
+  objectList?: Query.objectList$Expanded | SelectionSet.Alias<Query.objectList>
+  objectListNonNull?: Query.objectListNonNull$Expanded | SelectionSet.Alias<Query.objectListNonNull>
+  objectNested?: Query.objectNested$Expanded | SelectionSet.Alias<Query.objectNested>
+  objectNonNull?: Query.objectNonNull$Expanded | SelectionSet.Alias<Query.objectNonNull>
+  objectWithArgs?: Query.objectWithArgs$Expanded | SelectionSet.Alias<Query.objectWithArgs>
+  result?: Query.result$Expanded | SelectionSet.Alias<Query.result>
+  resultNonNull?: Query.resultNonNull$Expanded | SelectionSet.Alias<Query.resultNonNull>
+  string?: Query.$string$Expanded | SelectionSet.Alias<Query.$string>
+  stringWithArgEnum?: Query.stringWithArgEnum$Expanded | SelectionSet.Alias<Query.stringWithArgEnum>
+  stringWithArgInputObject?:
+    | Query.stringWithArgInputObject$Expanded
+    | SelectionSet.Alias<Query.stringWithArgInputObject>
+  stringWithArgInputObjectRequired?:
+    | Query.stringWithArgInputObjectRequired$Expanded
+    | SelectionSet.Alias<Query.stringWithArgInputObjectRequired>
+  stringWithArgs?: Query.stringWithArgs$Expanded | SelectionSet.Alias<Query.stringWithArgs>
+  stringWithListArg?: Query.stringWithListArg$Expanded | SelectionSet.Alias<Query.stringWithListArg>
+  stringWithListArgRequired?:
+    | Query.stringWithListArgRequired$Expanded
+    | SelectionSet.Alias<Query.stringWithListArgRequired>
+  stringWithRequiredArg?: Query.stringWithRequiredArg$Expanded | SelectionSet.Alias<Query.stringWithRequiredArg>
+  unionFooBar?: Query.unionFooBar$Expanded | SelectionSet.Alias<Query.unionFooBar>
+  unionFooBarNonNull?: Query.unionFooBarNonNull$Expanded | SelectionSet.Alias<Query.unionFooBarNonNull>
+  unionFooBarWithArgs?: Query.unionFooBarWithArgs$Expanded | SelectionSet.Alias<Query.unionFooBarWithArgs>
+  unionObject?: Query.unionObject$Expanded | SelectionSet.Alias<Query.unionObject>
+  unionObjectNonNull?: Query.unionObjectNonNull$Expanded | SelectionSet.Alias<Query.unionObjectNonNull>
 
   /**
    * Inline fragments for field groups.
@@ -190,22 +163,28 @@ export interface Query {
    * @see https://graphql.org/learn/queries/#meta-fields
    */
 
-  __typename?: SelectionSet.NoArgsIndicator | [alias: string, SelectionSet.NoArgsIndicator] | [
-    alias: string,
-    SelectionSet.NoArgsIndicator,
-  ][]
+  __typename?: SelectionSet.NoArgsIndicator$Expanded | SelectionSet.Alias<SelectionSet.NoArgsIndicator>
 }
 
+// ----------------------------------------| Fields Interfaces |
+
 export namespace Query {
-  export type InputObjectNested = SelectionSet.ClientIndicator | SelectionSet.Bases.Base | {
-    /**
-     * Arguments for `InputObjectNested` field.
-     * No arguments are required so you may omit this.
-     */
-    $?: {
-      input?: InputObjectNested | undefined | null
+  type InputObjectNestedSelectionSet = Simplify<
+    SelectionSet.Bases.Base & {
+      /**
+       * Arguments for `InputObjectNested` field.
+       * No arguments are required so you may omit this.
+       */
+      $?: {
+        input?: InputObjectNested | undefined | null
+      }
     }
-  }
+  >
+
+  export type InputObjectNested$Expanded = UnionExpanded<SelectionSet.ClientIndicator | InputObjectNestedSelectionSet>
+
+  export type InputObjectNested = SelectionSet.ClientIndicator | InputObjectNestedSelectionSet
+
   export interface InputObjectNestedNonNull extends SelectionSet.Bases.Base {
     /**
      * Arguments for `InputObjectNestedNonNull` field.
@@ -215,35 +194,59 @@ export namespace Query {
       input: InputObjectNestedNonNull
     }
   }
+  export type InputObjectNestedNonNull$Expanded = InputObjectNestedNonNull
+  export type abcEnum$Expanded = SelectionSet.NoArgsIndicator$Expanded
   export type abcEnum = SelectionSet.NoArgsIndicator
+  export type date$Expanded = SelectionSet.NoArgsIndicator$Expanded
   export type date = SelectionSet.NoArgsIndicator
-  export type dateArg = SelectionSet.ClientIndicator | SelectionSet.Bases.Base | {
-    /**
-     * Arguments for `dateArg` field.
-     * No arguments are required so you may omit this.
-     */
-    $?: {
-      date?: undefined | undefined | null
+  type dateArgSelectionSet = Simplify<
+    SelectionSet.Bases.Base & {
+      /**
+       * Arguments for `dateArg` field.
+       * No arguments are required so you may omit this.
+       */
+      $?: {
+        date?: undefined | undefined | null
+      }
     }
-  }
-  export type dateArgInputObject = SelectionSet.ClientIndicator | SelectionSet.Bases.Base | {
-    /**
-     * Arguments for `dateArgInputObject` field.
-     * No arguments are required so you may omit this.
-     */
-    $?: {
-      input?: InputObject | undefined | null
+  >
+
+  export type dateArg$Expanded = UnionExpanded<SelectionSet.ClientIndicator | dateArgSelectionSet>
+
+  export type dateArg = SelectionSet.ClientIndicator | dateArgSelectionSet
+
+  type dateArgInputObjectSelectionSet = Simplify<
+    SelectionSet.Bases.Base & {
+      /**
+       * Arguments for `dateArgInputObject` field.
+       * No arguments are required so you may omit this.
+       */
+      $?: {
+        input?: InputObject | undefined | null
+      }
     }
-  }
-  export type dateArgList = SelectionSet.ClientIndicator | SelectionSet.Bases.Base | {
-    /**
-     * Arguments for `dateArgList` field.
-     * No arguments are required so you may omit this.
-     */
-    $?: {
-      date?: Array<undefined | undefined | null> | undefined | null
+  >
+
+  export type dateArgInputObject$Expanded = UnionExpanded<SelectionSet.ClientIndicator | dateArgInputObjectSelectionSet>
+
+  export type dateArgInputObject = SelectionSet.ClientIndicator | dateArgInputObjectSelectionSet
+
+  type dateArgListSelectionSet = Simplify<
+    SelectionSet.Bases.Base & {
+      /**
+       * Arguments for `dateArgList` field.
+       * No arguments are required so you may omit this.
+       */
+      $?: {
+        date?: Array<undefined | undefined | null> | undefined | null
+      }
     }
-  }
+  >
+
+  export type dateArgList$Expanded = UnionExpanded<SelectionSet.ClientIndicator | dateArgListSelectionSet>
+
+  export type dateArgList = SelectionSet.ClientIndicator | dateArgListSelectionSet
+
   export interface dateArgNonNull extends SelectionSet.Bases.Base {
     /**
      * Arguments for `dateArgNonNull` field.
@@ -253,6 +256,7 @@ export namespace Query {
       date: undefined
     }
   }
+  export type dateArgNonNull$Expanded = dateArgNonNull
   export interface dateArgNonNullList extends SelectionSet.Bases.Base {
     /**
      * Arguments for `dateArgNonNullList` field.
@@ -262,6 +266,7 @@ export namespace Query {
       date: Array<undefined | undefined | null>
     }
   }
+  export type dateArgNonNullList$Expanded = dateArgNonNullList
   export interface dateArgNonNullListNonNull extends SelectionSet.Bases.Base {
     /**
      * Arguments for `dateArgNonNullListNonNull` field.
@@ -271,25 +276,43 @@ export namespace Query {
       date: Array<undefined | undefined | null>
     }
   }
+  export type dateArgNonNullListNonNull$Expanded = dateArgNonNullListNonNull
   export interface dateInterface1 extends __DateInterface1 {}
+  export type dateInterface1$Expanded = dateInterface1
+  export type dateList$Expanded = SelectionSet.NoArgsIndicator$Expanded
   export type dateList = SelectionSet.NoArgsIndicator
+  export type dateListNonNull$Expanded = SelectionSet.NoArgsIndicator$Expanded
   export type dateListNonNull = SelectionSet.NoArgsIndicator
+  export type dateNonNull$Expanded = SelectionSet.NoArgsIndicator$Expanded
   export type dateNonNull = SelectionSet.NoArgsIndicator
   export interface dateObject1 extends __DateObject1 {}
+  export type dateObject1$Expanded = dateObject1
   export interface dateUnion extends __DateUnion {}
-  export type error = SelectionSet.ClientIndicator | SelectionSet.Bases.Base | {
-    /**
-     * Arguments for `error` field.
-     * No arguments are required so you may omit this.
-     */
-    $?: {
-      case?: string | undefined | null
+  export type dateUnion$Expanded = dateUnion
+  type errorSelectionSet = Simplify<
+    SelectionSet.Bases.Base & {
+      /**
+       * Arguments for `error` field.
+       * No arguments are required so you may omit this.
+       */
+      $?: {
+        case?: string | undefined | null
+      }
     }
-  }
+  >
+
+  export type error$Expanded = UnionExpanded<SelectionSet.ClientIndicator | errorSelectionSet>
+
+  export type error = SelectionSet.ClientIndicator | errorSelectionSet
+
+  export type id$Expanded = SelectionSet.NoArgsIndicator$Expanded
   export type id = SelectionSet.NoArgsIndicator
+  export type idNonNull$Expanded = SelectionSet.NoArgsIndicator$Expanded
   export type idNonNull = SelectionSet.NoArgsIndicator
   export interface $interface extends __Interface {}
+  export type $interface$Expanded = $interface
   export interface interfaceNonNull extends __Interface {}
+  export type interfaceNonNull$Expanded = interfaceNonNull
   export interface interfaceWithArgs extends __Interface {
     /**
      * Arguments for `interfaceWithArgs` field.
@@ -299,16 +322,27 @@ export namespace Query {
       id: string
     }
   }
+  export type interfaceWithArgs$Expanded = interfaceWithArgs
+  export type listInt$Expanded = SelectionSet.NoArgsIndicator$Expanded
   export type listInt = SelectionSet.NoArgsIndicator
+  export type listIntNonNull$Expanded = SelectionSet.NoArgsIndicator$Expanded
   export type listIntNonNull = SelectionSet.NoArgsIndicator
+  export type listListInt$Expanded = SelectionSet.NoArgsIndicator$Expanded
   export type listListInt = SelectionSet.NoArgsIndicator
+  export type listListIntNonNull$Expanded = SelectionSet.NoArgsIndicator$Expanded
   export type listListIntNonNull = SelectionSet.NoArgsIndicator
   export interface lowerCaseUnion extends __lowerCaseUnion {}
+  export type lowerCaseUnion$Expanded = lowerCaseUnion
   export interface $object extends __Object1 {}
+  export type $object$Expanded = $object
   export interface objectList extends __Object1 {}
+  export type objectList$Expanded = objectList
   export interface objectListNonNull extends __Object1 {}
+  export type objectListNonNull$Expanded = objectListNonNull
   export interface objectNested extends __ObjectNested {}
+  export type objectNested$Expanded = objectNested
   export interface objectNonNull extends __Object1 {}
+  export type objectNonNull$Expanded = objectNonNull
   export interface objectWithArgs extends __Object1 {
     /**
      * Arguments for `objectWithArgs` field.
@@ -322,6 +356,7 @@ export namespace Query {
       string?: string | undefined | null
     }
   }
+  export type objectWithArgs$Expanded = objectWithArgs
   export interface result extends __Result {
     /**
      * Arguments for `result` field.
@@ -331,6 +366,7 @@ export namespace Query {
       case: Case
     }
   }
+  export type result$Expanded = result
   export interface resultNonNull extends __Result {
     /**
      * Arguments for `resultNonNull` field.
@@ -340,25 +376,43 @@ export namespace Query {
       case?: Case | undefined | null
     }
   }
+  export type resultNonNull$Expanded = resultNonNull
+  export type $string$Expanded = SelectionSet.NoArgsIndicator$Expanded
   export type $string = SelectionSet.NoArgsIndicator
-  export type stringWithArgEnum = SelectionSet.ClientIndicator | SelectionSet.Bases.Base | {
-    /**
-     * Arguments for `stringWithArgEnum` field.
-     * No arguments are required so you may omit this.
-     */
-    $?: {
-      ABCEnum?: ABCEnum | undefined | null
+  type stringWithArgEnumSelectionSet = Simplify<
+    SelectionSet.Bases.Base & {
+      /**
+       * Arguments for `stringWithArgEnum` field.
+       * No arguments are required so you may omit this.
+       */
+      $?: {
+        ABCEnum?: ABCEnum | undefined | null
+      }
     }
-  }
-  export type stringWithArgInputObject = SelectionSet.ClientIndicator | SelectionSet.Bases.Base | {
-    /**
-     * Arguments for `stringWithArgInputObject` field.
-     * No arguments are required so you may omit this.
-     */
-    $?: {
-      input?: InputObject | undefined | null
+  >
+
+  export type stringWithArgEnum$Expanded = UnionExpanded<SelectionSet.ClientIndicator | stringWithArgEnumSelectionSet>
+
+  export type stringWithArgEnum = SelectionSet.ClientIndicator | stringWithArgEnumSelectionSet
+
+  type stringWithArgInputObjectSelectionSet = Simplify<
+    SelectionSet.Bases.Base & {
+      /**
+       * Arguments for `stringWithArgInputObject` field.
+       * No arguments are required so you may omit this.
+       */
+      $?: {
+        input?: InputObject | undefined | null
+      }
     }
-  }
+  >
+
+  export type stringWithArgInputObject$Expanded = UnionExpanded<
+    SelectionSet.ClientIndicator | stringWithArgInputObjectSelectionSet
+  >
+
+  export type stringWithArgInputObject = SelectionSet.ClientIndicator | stringWithArgInputObjectSelectionSet
+
   export interface stringWithArgInputObjectRequired extends SelectionSet.Bases.Base {
     /**
      * Arguments for `stringWithArgInputObjectRequired` field.
@@ -368,28 +422,43 @@ export namespace Query {
       input: InputObject
     }
   }
-  export type stringWithArgs = SelectionSet.ClientIndicator | SelectionSet.Bases.Base | {
-    /**
-     * Arguments for `stringWithArgs` field.
-     * No arguments are required so you may omit this.
-     */
-    $?: {
-      boolean?: boolean | undefined | null
-      float?: number | undefined | null
-      id?: string | undefined | null
-      int?: number | undefined | null
-      string?: string | undefined | null
+  export type stringWithArgInputObjectRequired$Expanded = stringWithArgInputObjectRequired
+  type stringWithArgsSelectionSet = Simplify<
+    SelectionSet.Bases.Base & {
+      /**
+       * Arguments for `stringWithArgs` field.
+       * No arguments are required so you may omit this.
+       */
+      $?: {
+        boolean?: boolean | undefined | null
+        float?: number | undefined | null
+        id?: string | undefined | null
+        int?: number | undefined | null
+        string?: string | undefined | null
+      }
     }
-  }
-  export type stringWithListArg = SelectionSet.ClientIndicator | SelectionSet.Bases.Base | {
-    /**
-     * Arguments for `stringWithListArg` field.
-     * No arguments are required so you may omit this.
-     */
-    $?: {
-      ints?: Array<number | undefined | null> | undefined | null
+  >
+
+  export type stringWithArgs$Expanded = UnionExpanded<SelectionSet.ClientIndicator | stringWithArgsSelectionSet>
+
+  export type stringWithArgs = SelectionSet.ClientIndicator | stringWithArgsSelectionSet
+
+  type stringWithListArgSelectionSet = Simplify<
+    SelectionSet.Bases.Base & {
+      /**
+       * Arguments for `stringWithListArg` field.
+       * No arguments are required so you may omit this.
+       */
+      $?: {
+        ints?: Array<number | undefined | null> | undefined | null
+      }
     }
-  }
+  >
+
+  export type stringWithListArg$Expanded = UnionExpanded<SelectionSet.ClientIndicator | stringWithListArgSelectionSet>
+
+  export type stringWithListArg = SelectionSet.ClientIndicator | stringWithListArgSelectionSet
+
   export interface stringWithListArgRequired extends SelectionSet.Bases.Base {
     /**
      * Arguments for `stringWithListArgRequired` field.
@@ -399,6 +468,7 @@ export namespace Query {
       ints: Array<number | undefined | null>
     }
   }
+  export type stringWithListArgRequired$Expanded = stringWithListArgRequired
   export interface stringWithRequiredArg extends SelectionSet.Bases.Base {
     /**
      * Arguments for `stringWithRequiredArg` field.
@@ -408,8 +478,11 @@ export namespace Query {
       string: string
     }
   }
+  export type stringWithRequiredArg$Expanded = stringWithRequiredArg
   export interface unionFooBar extends __FooBarUnion {}
+  export type unionFooBar$Expanded = unionFooBar
   export interface unionFooBarNonNull extends __FooBarUnion {}
+  export type unionFooBarNonNull$Expanded = unionFooBarNonNull
   export interface unionFooBarWithArgs extends __FooBarUnion {
     /**
      * Arguments for `unionFooBarWithArgs` field.
@@ -419,17 +492,28 @@ export namespace Query {
       id?: string | undefined | null
     }
   }
+  export type unionFooBarWithArgs$Expanded = unionFooBarWithArgs
   export interface unionObject extends __ObjectUnion {}
+  export type unionObject$Expanded = unionObject
   export interface unionObjectNonNull extends __ObjectUnion {}
+  export type unionObjectNonNull$Expanded = unionObjectNonNull
 }
 
 type __Query = Query // [1]
 
 //
 //
+//
+//
+//
+//
 // ---------------------
 // GraphQLEnumType Types
 // ---------------------
+//
+//
+//
+//
 //
 //
 
@@ -451,9 +535,17 @@ type __Case = Case // [1]
 
 //
 //
+//
+//
+//
+//
 // ----------------------------
 // GraphQLInputObjectType Types
 // ----------------------------
+//
+//
+//
+//
 //
 //
 
@@ -480,15 +572,27 @@ type __InputObjectNestedNonNull = InputObjectNestedNonNull // [1]
 
 //
 //
+//
+//
+//
+//
 // --------------------------
 // GraphQLInterfaceType Types
 // --------------------------
 //
 //
+//
+//
+//
+//
+
+// --------------
+// Interface Type DateInterface1
+// --------------
 
 export interface DateInterface1 extends SelectionSet.Bases.ObjectLike {
-  date1?: DateInterface1.date1 | [alias: string, DateInterface1.date1] | [alias: string, DateInterface1.date1][]
-  onDateObject1?: DateObject1 | [alias: string, DateObject1] | [alias: string, DateObject1][]
+  date1?: DateInterface1.date1
+  onDateObject1?: DateObject1
 
   /**
    * Inline fragments for field groups.
@@ -507,22 +611,24 @@ export interface DateInterface1 extends SelectionSet.Bases.ObjectLike {
    * @see https://graphql.org/learn/queries/#meta-fields
    */
 
-  __typename?: SelectionSet.NoArgsIndicator | [alias: string, SelectionSet.NoArgsIndicator] | [
-    alias: string,
-    SelectionSet.NoArgsIndicator,
-  ][]
+  __typename?: SelectionSet.NoArgsIndicator$Expanded | SelectionSet.Alias<SelectionSet.NoArgsIndicator>
 }
 
 export namespace DateInterface1 {
+  export type date1$Expanded = SelectionSet.NoArgsIndicator$Expanded
   export type date1 = SelectionSet.NoArgsIndicator
 }
 
 type __DateInterface1 = DateInterface1 // [1]
 
+// --------------
+// Interface Type Error
+// --------------
+
 export interface Error extends SelectionSet.Bases.ObjectLike {
-  message?: Error.message | [alias: string, Error.message] | [alias: string, Error.message][]
-  onErrorOne?: ErrorOne | [alias: string, ErrorOne] | [alias: string, ErrorOne][]
-  onErrorTwo?: ErrorTwo | [alias: string, ErrorTwo] | [alias: string, ErrorTwo][]
+  message?: Error.message
+  onErrorOne?: ErrorOne
+  onErrorTwo?: ErrorTwo
 
   /**
    * Inline fragments for field groups.
@@ -541,28 +647,24 @@ export interface Error extends SelectionSet.Bases.ObjectLike {
    * @see https://graphql.org/learn/queries/#meta-fields
    */
 
-  __typename?: SelectionSet.NoArgsIndicator | [alias: string, SelectionSet.NoArgsIndicator] | [
-    alias: string,
-    SelectionSet.NoArgsIndicator,
-  ][]
+  __typename?: SelectionSet.NoArgsIndicator$Expanded | SelectionSet.Alias<SelectionSet.NoArgsIndicator>
 }
 
 export namespace Error {
+  export type message$Expanded = SelectionSet.NoArgsIndicator$Expanded
   export type message = SelectionSet.NoArgsIndicator
 }
 
 type __Error = Error // [1]
 
+// --------------
+// Interface Type Interface
+// --------------
+
 export interface Interface extends SelectionSet.Bases.ObjectLike {
-  id?: Interface.id | [alias: string, Interface.id] | [alias: string, Interface.id][]
-  onObject1ImplementingInterface?: Object1ImplementingInterface | [alias: string, Object1ImplementingInterface] | [
-    alias: string,
-    Object1ImplementingInterface,
-  ][]
-  onObject2ImplementingInterface?: Object2ImplementingInterface | [alias: string, Object2ImplementingInterface] | [
-    alias: string,
-    Object2ImplementingInterface,
-  ][]
+  id?: Interface.id
+  onObject1ImplementingInterface?: Object1ImplementingInterface
+  onObject2ImplementingInterface?: Object2ImplementingInterface
 
   /**
    * Inline fragments for field groups.
@@ -581,13 +683,11 @@ export interface Interface extends SelectionSet.Bases.ObjectLike {
    * @see https://graphql.org/learn/queries/#meta-fields
    */
 
-  __typename?: SelectionSet.NoArgsIndicator | [alias: string, SelectionSet.NoArgsIndicator] | [
-    alias: string,
-    SelectionSet.NoArgsIndicator,
-  ][]
+  __typename?: SelectionSet.NoArgsIndicator$Expanded | SelectionSet.Alias<SelectionSet.NoArgsIndicator>
 }
 
 export namespace Interface {
+  export type id$Expanded = SelectionSet.NoArgsIndicator$Expanded
   export type id = SelectionSet.NoArgsIndicator
 }
 
@@ -595,14 +695,36 @@ type __Interface = Interface // [1]
 
 //
 //
+//
+//
+//
+//
 // -----------------------
 // GraphQLObjectType Types
 // -----------------------
 //
 //
+//
+//
+//
+//
+
+//
+//
+//
+//
+// GRAPHQL SELECTION SET
+// OBJECT TYPE
+// --------------------------------------------------------------------------------------------------
+//                                         Bar
+// --------------------------------------------------------------------------------------------------
+//
+//
+
+// ----------------------------------------| Entrypoint Interface |
 
 export interface Bar extends SelectionSet.Bases.ObjectLike {
-  int?: Bar.int | [alias: string, Bar.int] | [alias: string, Bar.int][]
+  int?: Bar.int$Expanded | SelectionSet.Alias<Bar.int>
 
   /**
    * Inline fragments for field groups.
@@ -620,20 +742,34 @@ export interface Bar extends SelectionSet.Bases.ObjectLike {
    * @see https://graphql.org/learn/queries/#meta-fields
    */
 
-  __typename?: SelectionSet.NoArgsIndicator | [alias: string, SelectionSet.NoArgsIndicator] | [
-    alias: string,
-    SelectionSet.NoArgsIndicator,
-  ][]
+  __typename?: SelectionSet.NoArgsIndicator$Expanded | SelectionSet.Alias<SelectionSet.NoArgsIndicator>
 }
 
+// ----------------------------------------| Fields Interfaces |
+
 export namespace Bar {
+  export type int$Expanded = SelectionSet.NoArgsIndicator$Expanded
   export type int = SelectionSet.NoArgsIndicator
 }
 
 type __Bar = Bar // [1]
 
+//
+//
+//
+//
+// GRAPHQL SELECTION SET
+// OBJECT TYPE
+// --------------------------------------------------------------------------------------------------
+//                                         DateObject1
+// --------------------------------------------------------------------------------------------------
+//
+//
+
+// ----------------------------------------| Entrypoint Interface |
+
 export interface DateObject1 extends SelectionSet.Bases.ObjectLike {
-  date1?: DateObject1.date1 | [alias: string, DateObject1.date1] | [alias: string, DateObject1.date1][]
+  date1?: DateObject1.date1$Expanded | SelectionSet.Alias<DateObject1.date1>
 
   /**
    * Inline fragments for field groups.
@@ -651,20 +787,34 @@ export interface DateObject1 extends SelectionSet.Bases.ObjectLike {
    * @see https://graphql.org/learn/queries/#meta-fields
    */
 
-  __typename?: SelectionSet.NoArgsIndicator | [alias: string, SelectionSet.NoArgsIndicator] | [
-    alias: string,
-    SelectionSet.NoArgsIndicator,
-  ][]
+  __typename?: SelectionSet.NoArgsIndicator$Expanded | SelectionSet.Alias<SelectionSet.NoArgsIndicator>
 }
 
+// ----------------------------------------| Fields Interfaces |
+
 export namespace DateObject1 {
+  export type date1$Expanded = SelectionSet.NoArgsIndicator$Expanded
   export type date1 = SelectionSet.NoArgsIndicator
 }
 
 type __DateObject1 = DateObject1 // [1]
 
+//
+//
+//
+//
+// GRAPHQL SELECTION SET
+// OBJECT TYPE
+// --------------------------------------------------------------------------------------------------
+//                                         DateObject2
+// --------------------------------------------------------------------------------------------------
+//
+//
+
+// ----------------------------------------| Entrypoint Interface |
+
 export interface DateObject2 extends SelectionSet.Bases.ObjectLike {
-  date2?: DateObject2.date2 | [alias: string, DateObject2.date2] | [alias: string, DateObject2.date2][]
+  date2?: DateObject2.date2$Expanded | SelectionSet.Alias<DateObject2.date2>
 
   /**
    * Inline fragments for field groups.
@@ -682,21 +832,35 @@ export interface DateObject2 extends SelectionSet.Bases.ObjectLike {
    * @see https://graphql.org/learn/queries/#meta-fields
    */
 
-  __typename?: SelectionSet.NoArgsIndicator | [alias: string, SelectionSet.NoArgsIndicator] | [
-    alias: string,
-    SelectionSet.NoArgsIndicator,
-  ][]
+  __typename?: SelectionSet.NoArgsIndicator$Expanded | SelectionSet.Alias<SelectionSet.NoArgsIndicator>
 }
 
+// ----------------------------------------| Fields Interfaces |
+
 export namespace DateObject2 {
+  export type date2$Expanded = SelectionSet.NoArgsIndicator$Expanded
   export type date2 = SelectionSet.NoArgsIndicator
 }
 
 type __DateObject2 = DateObject2 // [1]
 
+//
+//
+//
+//
+// GRAPHQL SELECTION SET
+// OBJECT TYPE
+// --------------------------------------------------------------------------------------------------
+//                                         ErrorOne
+// --------------------------------------------------------------------------------------------------
+//
+//
+
+// ----------------------------------------| Entrypoint Interface |
+
 export interface ErrorOne extends SelectionSet.Bases.ObjectLike {
-  infoId?: ErrorOne.infoId | [alias: string, ErrorOne.infoId] | [alias: string, ErrorOne.infoId][]
-  message?: ErrorOne.message | [alias: string, ErrorOne.message] | [alias: string, ErrorOne.message][]
+  infoId?: ErrorOne.infoId$Expanded | SelectionSet.Alias<ErrorOne.infoId>
+  message?: ErrorOne.message$Expanded | SelectionSet.Alias<ErrorOne.message>
 
   /**
    * Inline fragments for field groups.
@@ -714,22 +878,37 @@ export interface ErrorOne extends SelectionSet.Bases.ObjectLike {
    * @see https://graphql.org/learn/queries/#meta-fields
    */
 
-  __typename?: SelectionSet.NoArgsIndicator | [alias: string, SelectionSet.NoArgsIndicator] | [
-    alias: string,
-    SelectionSet.NoArgsIndicator,
-  ][]
+  __typename?: SelectionSet.NoArgsIndicator$Expanded | SelectionSet.Alias<SelectionSet.NoArgsIndicator>
 }
 
+// ----------------------------------------| Fields Interfaces |
+
 export namespace ErrorOne {
+  export type infoId$Expanded = SelectionSet.NoArgsIndicator$Expanded
   export type infoId = SelectionSet.NoArgsIndicator
+  export type message$Expanded = SelectionSet.NoArgsIndicator$Expanded
   export type message = SelectionSet.NoArgsIndicator
 }
 
 type __ErrorOne = ErrorOne // [1]
 
+//
+//
+//
+//
+// GRAPHQL SELECTION SET
+// OBJECT TYPE
+// --------------------------------------------------------------------------------------------------
+//                                         ErrorTwo
+// --------------------------------------------------------------------------------------------------
+//
+//
+
+// ----------------------------------------| Entrypoint Interface |
+
 export interface ErrorTwo extends SelectionSet.Bases.ObjectLike {
-  infoInt?: ErrorTwo.infoInt | [alias: string, ErrorTwo.infoInt] | [alias: string, ErrorTwo.infoInt][]
-  message?: ErrorTwo.message | [alias: string, ErrorTwo.message] | [alias: string, ErrorTwo.message][]
+  infoInt?: ErrorTwo.infoInt$Expanded | SelectionSet.Alias<ErrorTwo.infoInt>
+  message?: ErrorTwo.message$Expanded | SelectionSet.Alias<ErrorTwo.message>
 
   /**
    * Inline fragments for field groups.
@@ -747,14 +926,15 @@ export interface ErrorTwo extends SelectionSet.Bases.ObjectLike {
    * @see https://graphql.org/learn/queries/#meta-fields
    */
 
-  __typename?: SelectionSet.NoArgsIndicator | [alias: string, SelectionSet.NoArgsIndicator] | [
-    alias: string,
-    SelectionSet.NoArgsIndicator,
-  ][]
+  __typename?: SelectionSet.NoArgsIndicator$Expanded | SelectionSet.Alias<SelectionSet.NoArgsIndicator>
 }
 
+// ----------------------------------------| Fields Interfaces |
+
 export namespace ErrorTwo {
+  export type infoInt$Expanded = SelectionSet.NoArgsIndicator$Expanded
   export type infoInt = SelectionSet.NoArgsIndicator
+  export type message$Expanded = SelectionSet.NoArgsIndicator$Expanded
   export type message = SelectionSet.NoArgsIndicator
 }
 
@@ -763,8 +943,22 @@ type __ErrorTwo = ErrorTwo // [1]
 /**
  * Object documentation.
  */
+//
+//
+//
+//
+// GRAPHQL SELECTION SET
+// OBJECT TYPE
+// --------------------------------------------------------------------------------------------------
+//                                         Foo
+// --------------------------------------------------------------------------------------------------
+//
+//
+
+// ----------------------------------------| Entrypoint Interface |
+
 export interface Foo extends SelectionSet.Bases.ObjectLike {
-  id?: Foo.id | [alias: string, Foo.id] | [alias: string, Foo.id][]
+  id?: Foo.id$Expanded | SelectionSet.Alias<Foo.id>
 
   /**
    * Inline fragments for field groups.
@@ -782,24 +976,38 @@ export interface Foo extends SelectionSet.Bases.ObjectLike {
    * @see https://graphql.org/learn/queries/#meta-fields
    */
 
-  __typename?: SelectionSet.NoArgsIndicator | [alias: string, SelectionSet.NoArgsIndicator] | [
-    alias: string,
-    SelectionSet.NoArgsIndicator,
-  ][]
+  __typename?: SelectionSet.NoArgsIndicator$Expanded | SelectionSet.Alias<SelectionSet.NoArgsIndicator>
 }
 
+// ----------------------------------------| Fields Interfaces |
+
 export namespace Foo {
+  export type id$Expanded = SelectionSet.NoArgsIndicator$Expanded
   export type id = SelectionSet.NoArgsIndicator
 }
 
 type __Foo = Foo // [1]
 
+//
+//
+//
+//
+// GRAPHQL SELECTION SET
+// OBJECT TYPE
+// --------------------------------------------------------------------------------------------------
+//                                         Object1
+// --------------------------------------------------------------------------------------------------
+//
+//
+
+// ----------------------------------------| Entrypoint Interface |
+
 export interface Object1 extends SelectionSet.Bases.ObjectLike {
-  boolean?: Object1.$boolean | [alias: string, Object1.$boolean] | [alias: string, Object1.$boolean][]
-  float?: Object1.float | [alias: string, Object1.float] | [alias: string, Object1.float][]
-  id?: Object1.id | [alias: string, Object1.id] | [alias: string, Object1.id][]
-  int?: Object1.int | [alias: string, Object1.int] | [alias: string, Object1.int][]
-  string?: Object1.$string | [alias: string, Object1.$string] | [alias: string, Object1.$string][]
+  boolean?: Object1.$boolean$Expanded | SelectionSet.Alias<Object1.$boolean>
+  float?: Object1.float$Expanded | SelectionSet.Alias<Object1.float>
+  id?: Object1.id$Expanded | SelectionSet.Alias<Object1.id>
+  int?: Object1.int$Expanded | SelectionSet.Alias<Object1.int>
+  string?: Object1.$string$Expanded | SelectionSet.Alias<Object1.$string>
 
   /**
    * Inline fragments for field groups.
@@ -817,31 +1025,43 @@ export interface Object1 extends SelectionSet.Bases.ObjectLike {
    * @see https://graphql.org/learn/queries/#meta-fields
    */
 
-  __typename?: SelectionSet.NoArgsIndicator | [alias: string, SelectionSet.NoArgsIndicator] | [
-    alias: string,
-    SelectionSet.NoArgsIndicator,
-  ][]
+  __typename?: SelectionSet.NoArgsIndicator$Expanded | SelectionSet.Alias<SelectionSet.NoArgsIndicator>
 }
 
+// ----------------------------------------| Fields Interfaces |
+
 export namespace Object1 {
+  export type $boolean$Expanded = SelectionSet.NoArgsIndicator$Expanded
   export type $boolean = SelectionSet.NoArgsIndicator
+  export type float$Expanded = SelectionSet.NoArgsIndicator$Expanded
   export type float = SelectionSet.NoArgsIndicator
+  export type id$Expanded = SelectionSet.NoArgsIndicator$Expanded
   export type id = SelectionSet.NoArgsIndicator
+  export type int$Expanded = SelectionSet.NoArgsIndicator$Expanded
   export type int = SelectionSet.NoArgsIndicator
+  export type $string$Expanded = SelectionSet.NoArgsIndicator$Expanded
   export type $string = SelectionSet.NoArgsIndicator
 }
 
 type __Object1 = Object1 // [1]
 
+//
+//
+//
+//
+// GRAPHQL SELECTION SET
+// OBJECT TYPE
+// --------------------------------------------------------------------------------------------------
+//                                         Object1ImplementingInterface
+// --------------------------------------------------------------------------------------------------
+//
+//
+
+// ----------------------------------------| Entrypoint Interface |
+
 export interface Object1ImplementingInterface extends SelectionSet.Bases.ObjectLike {
-  id?: Object1ImplementingInterface.id | [alias: string, Object1ImplementingInterface.id] | [
-    alias: string,
-    Object1ImplementingInterface.id,
-  ][]
-  int?: Object1ImplementingInterface.int | [alias: string, Object1ImplementingInterface.int] | [
-    alias: string,
-    Object1ImplementingInterface.int,
-  ][]
+  id?: Object1ImplementingInterface.id$Expanded | SelectionSet.Alias<Object1ImplementingInterface.id>
+  int?: Object1ImplementingInterface.int$Expanded | SelectionSet.Alias<Object1ImplementingInterface.int>
 
   /**
    * Inline fragments for field groups.
@@ -859,28 +1079,37 @@ export interface Object1ImplementingInterface extends SelectionSet.Bases.ObjectL
    * @see https://graphql.org/learn/queries/#meta-fields
    */
 
-  __typename?: SelectionSet.NoArgsIndicator | [alias: string, SelectionSet.NoArgsIndicator] | [
-    alias: string,
-    SelectionSet.NoArgsIndicator,
-  ][]
+  __typename?: SelectionSet.NoArgsIndicator$Expanded | SelectionSet.Alias<SelectionSet.NoArgsIndicator>
 }
 
+// ----------------------------------------| Fields Interfaces |
+
 export namespace Object1ImplementingInterface {
+  export type id$Expanded = SelectionSet.NoArgsIndicator$Expanded
   export type id = SelectionSet.NoArgsIndicator
+  export type int$Expanded = SelectionSet.NoArgsIndicator$Expanded
   export type int = SelectionSet.NoArgsIndicator
 }
 
 type __Object1ImplementingInterface = Object1ImplementingInterface // [1]
 
+//
+//
+//
+//
+// GRAPHQL SELECTION SET
+// OBJECT TYPE
+// --------------------------------------------------------------------------------------------------
+//                                         Object2ImplementingInterface
+// --------------------------------------------------------------------------------------------------
+//
+//
+
+// ----------------------------------------| Entrypoint Interface |
+
 export interface Object2ImplementingInterface extends SelectionSet.Bases.ObjectLike {
-  boolean?: Object2ImplementingInterface.$boolean | [alias: string, Object2ImplementingInterface.$boolean] | [
-    alias: string,
-    Object2ImplementingInterface.$boolean,
-  ][]
-  id?: Object2ImplementingInterface.id | [alias: string, Object2ImplementingInterface.id] | [
-    alias: string,
-    Object2ImplementingInterface.id,
-  ][]
+  boolean?: Object2ImplementingInterface.$boolean$Expanded | SelectionSet.Alias<Object2ImplementingInterface.$boolean>
+  id?: Object2ImplementingInterface.id$Expanded | SelectionSet.Alias<Object2ImplementingInterface.id>
 
   /**
    * Inline fragments for field groups.
@@ -898,22 +1127,37 @@ export interface Object2ImplementingInterface extends SelectionSet.Bases.ObjectL
    * @see https://graphql.org/learn/queries/#meta-fields
    */
 
-  __typename?: SelectionSet.NoArgsIndicator | [alias: string, SelectionSet.NoArgsIndicator] | [
-    alias: string,
-    SelectionSet.NoArgsIndicator,
-  ][]
+  __typename?: SelectionSet.NoArgsIndicator$Expanded | SelectionSet.Alias<SelectionSet.NoArgsIndicator>
 }
 
+// ----------------------------------------| Fields Interfaces |
+
 export namespace Object2ImplementingInterface {
+  export type $boolean$Expanded = SelectionSet.NoArgsIndicator$Expanded
   export type $boolean = SelectionSet.NoArgsIndicator
+  export type id$Expanded = SelectionSet.NoArgsIndicator$Expanded
   export type id = SelectionSet.NoArgsIndicator
 }
 
 type __Object2ImplementingInterface = Object2ImplementingInterface // [1]
 
+//
+//
+//
+//
+// GRAPHQL SELECTION SET
+// OBJECT TYPE
+// --------------------------------------------------------------------------------------------------
+//                                         ObjectNested
+// --------------------------------------------------------------------------------------------------
+//
+//
+
+// ----------------------------------------| Entrypoint Interface |
+
 export interface ObjectNested extends SelectionSet.Bases.ObjectLike {
-  id?: ObjectNested.id | [alias: string, ObjectNested.id] | [alias: string, ObjectNested.id][]
-  object?: ObjectNested.$object | [alias: string, ObjectNested.$object] | [alias: string, ObjectNested.$object][]
+  id?: ObjectNested.id$Expanded | SelectionSet.Alias<ObjectNested.id>
+  object?: ObjectNested.$object$Expanded | SelectionSet.Alias<ObjectNested.$object>
 
   /**
    * Inline fragments for field groups.
@@ -931,24 +1175,36 @@ export interface ObjectNested extends SelectionSet.Bases.ObjectLike {
    * @see https://graphql.org/learn/queries/#meta-fields
    */
 
-  __typename?: SelectionSet.NoArgsIndicator | [alias: string, SelectionSet.NoArgsIndicator] | [
-    alias: string,
-    SelectionSet.NoArgsIndicator,
-  ][]
+  __typename?: SelectionSet.NoArgsIndicator$Expanded | SelectionSet.Alias<SelectionSet.NoArgsIndicator>
 }
 
+// ----------------------------------------| Fields Interfaces |
+
 export namespace ObjectNested {
+  export type id$Expanded = SelectionSet.NoArgsIndicator$Expanded
   export type id = SelectionSet.NoArgsIndicator
   export interface $object extends __Object1 {}
+  export type $object$Expanded = $object
 }
 
 type __ObjectNested = ObjectNested // [1]
 
+//
+//
+//
+//
+// GRAPHQL SELECTION SET
+// OBJECT TYPE
+// --------------------------------------------------------------------------------------------------
+//                                         ObjectUnion
+// --------------------------------------------------------------------------------------------------
+//
+//
+
+// ----------------------------------------| Entrypoint Interface |
+
 export interface ObjectUnion extends SelectionSet.Bases.ObjectLike {
-  fooBarUnion?: ObjectUnion.fooBarUnion | [alias: string, ObjectUnion.fooBarUnion] | [
-    alias: string,
-    ObjectUnion.fooBarUnion,
-  ][]
+  fooBarUnion?: ObjectUnion.fooBarUnion$Expanded | SelectionSet.Alias<ObjectUnion.fooBarUnion>
 
   /**
    * Inline fragments for field groups.
@@ -966,20 +1222,34 @@ export interface ObjectUnion extends SelectionSet.Bases.ObjectLike {
    * @see https://graphql.org/learn/queries/#meta-fields
    */
 
-  __typename?: SelectionSet.NoArgsIndicator | [alias: string, SelectionSet.NoArgsIndicator] | [
-    alias: string,
-    SelectionSet.NoArgsIndicator,
-  ][]
+  __typename?: SelectionSet.NoArgsIndicator$Expanded | SelectionSet.Alias<SelectionSet.NoArgsIndicator>
 }
+
+// ----------------------------------------| Fields Interfaces |
 
 export namespace ObjectUnion {
   export interface fooBarUnion extends __FooBarUnion {}
+  export type fooBarUnion$Expanded = fooBarUnion
 }
 
 type __ObjectUnion = ObjectUnion // [1]
 
+//
+//
+//
+//
+// GRAPHQL SELECTION SET
+// OBJECT TYPE
+// --------------------------------------------------------------------------------------------------
+//                                         lowerCaseObject
+// --------------------------------------------------------------------------------------------------
+//
+//
+
+// ----------------------------------------| Entrypoint Interface |
+
 export interface lowerCaseObject extends SelectionSet.Bases.ObjectLike {
-  id?: lowerCaseObject.id | [alias: string, lowerCaseObject.id] | [alias: string, lowerCaseObject.id][]
+  id?: lowerCaseObject.id$Expanded | SelectionSet.Alias<lowerCaseObject.id>
 
   /**
    * Inline fragments for field groups.
@@ -997,20 +1267,34 @@ export interface lowerCaseObject extends SelectionSet.Bases.ObjectLike {
    * @see https://graphql.org/learn/queries/#meta-fields
    */
 
-  __typename?: SelectionSet.NoArgsIndicator | [alias: string, SelectionSet.NoArgsIndicator] | [
-    alias: string,
-    SelectionSet.NoArgsIndicator,
-  ][]
+  __typename?: SelectionSet.NoArgsIndicator$Expanded | SelectionSet.Alias<SelectionSet.NoArgsIndicator>
 }
 
+// ----------------------------------------| Fields Interfaces |
+
 export namespace lowerCaseObject {
+  export type id$Expanded = SelectionSet.NoArgsIndicator$Expanded
   export type id = SelectionSet.NoArgsIndicator
 }
 
 type __lowerCaseObject = lowerCaseObject // [1]
 
+//
+//
+//
+//
+// GRAPHQL SELECTION SET
+// OBJECT TYPE
+// --------------------------------------------------------------------------------------------------
+//                                         lowerCaseObject2
+// --------------------------------------------------------------------------------------------------
+//
+//
+
+// ----------------------------------------| Entrypoint Interface |
+
 export interface lowerCaseObject2 extends SelectionSet.Bases.ObjectLike {
-  int?: lowerCaseObject2.int | [alias: string, lowerCaseObject2.int] | [alias: string, lowerCaseObject2.int][]
+  int?: lowerCaseObject2.int$Expanded | SelectionSet.Alias<lowerCaseObject2.int>
 
   /**
    * Inline fragments for field groups.
@@ -1028,13 +1312,13 @@ export interface lowerCaseObject2 extends SelectionSet.Bases.ObjectLike {
    * @see https://graphql.org/learn/queries/#meta-fields
    */
 
-  __typename?: SelectionSet.NoArgsIndicator | [alias: string, SelectionSet.NoArgsIndicator] | [
-    alias: string,
-    SelectionSet.NoArgsIndicator,
-  ][]
+  __typename?: SelectionSet.NoArgsIndicator$Expanded | SelectionSet.Alias<SelectionSet.NoArgsIndicator>
 }
 
+// ----------------------------------------| Fields Interfaces |
+
 export namespace lowerCaseObject2 {
+  export type int$Expanded = SelectionSet.NoArgsIndicator$Expanded
   export type int = SelectionSet.NoArgsIndicator
 }
 
@@ -1042,9 +1326,17 @@ type __lowerCaseObject2 = lowerCaseObject2 // [1]
 
 //
 //
+//
+//
+//
+//
 // ----------------------
 // GraphQLUnionType Types
 // ----------------------
+//
+//
+//
+//
 //
 //
 
@@ -1069,10 +1361,7 @@ export interface DateUnion {
    * @see https://graphql.org/learn/queries/#meta-fields
    */
 
-  __typename?: SelectionSet.NoArgsIndicator | [alias: string, SelectionSet.NoArgsIndicator] | [
-    alias: string,
-    SelectionSet.NoArgsIndicator,
-  ][]
+  __typename?: SelectionSet.NoArgsIndicator$Expanded | SelectionSet.Alias<SelectionSet.NoArgsIndicator>
 }
 
 type __DateUnion = DateUnion // [1]
@@ -1101,10 +1390,7 @@ export interface FooBarUnion {
    * @see https://graphql.org/learn/queries/#meta-fields
    */
 
-  __typename?: SelectionSet.NoArgsIndicator | [alias: string, SelectionSet.NoArgsIndicator] | [
-    alias: string,
-    SelectionSet.NoArgsIndicator,
-  ][]
+  __typename?: SelectionSet.NoArgsIndicator$Expanded | SelectionSet.Alias<SelectionSet.NoArgsIndicator>
 }
 
 type __FooBarUnion = FooBarUnion // [1]
@@ -1131,10 +1417,7 @@ export interface Result {
    * @see https://graphql.org/learn/queries/#meta-fields
    */
 
-  __typename?: SelectionSet.NoArgsIndicator | [alias: string, SelectionSet.NoArgsIndicator] | [
-    alias: string,
-    SelectionSet.NoArgsIndicator,
-  ][]
+  __typename?: SelectionSet.NoArgsIndicator$Expanded | SelectionSet.Alias<SelectionSet.NoArgsIndicator>
 }
 
 type __Result = Result // [1]
@@ -1160,10 +1443,7 @@ export interface lowerCaseUnion {
    * @see https://graphql.org/learn/queries/#meta-fields
    */
 
-  __typename?: SelectionSet.NoArgsIndicator | [alias: string, SelectionSet.NoArgsIndicator] | [
-    alias: string,
-    SelectionSet.NoArgsIndicator,
-  ][]
+  __typename?: SelectionSet.NoArgsIndicator$Expanded | SelectionSet.Alias<SelectionSet.NoArgsIndicator>
 }
 
 type __lowerCaseUnion = lowerCaseUnion // [1]
