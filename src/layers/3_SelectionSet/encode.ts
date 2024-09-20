@@ -88,7 +88,6 @@ const resolveArgValue = (
       return String(argValue)
     }
     case `Scalar`: {
-      // @ts-expect-error fixme
       return JSON.stringify(schemaArgType.codec.encode(argValue))
     }
     default:
