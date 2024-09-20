@@ -1,3 +1,4 @@
+// todo jsdoc
 import { createModuleGenerator } from '../createCodeGenerator.js'
 import { renderName, title1, typeTitle } from '../helpers.js'
 import { moduleNameData } from './Data.js'
@@ -28,7 +29,7 @@ export const { generate: generateSelect, moduleName: moduleNameSelect } = create
     code.push(...config.typeMapByKind.GraphQLRootType.map((type) => {
       return `export type ${type.name}<$SelectionSet extends SelectionSets.${
         renderName(type)
-      }> = ResultSet.Root<$SelectionSet, Index, '${type.name}'>\n`
+      }> = ResultSet.Root<$SelectionSet, Index, '${type.name}'>`
     }))
 
     code.push(typeTitle(config, `Object`))
@@ -37,7 +38,7 @@ export const { generate: generateSelect, moduleName: moduleNameSelect } = create
     code.push(...config.typeMapByKind.GraphQLObjectType.map((type) => {
       return `export type ${type.name}<$SelectionSet extends SelectionSets.${
         renderName(type)
-      }> = ResultSet.Object$<$SelectionSet, Index, Index['allTypes']['${type.name}']>\n`
+      }> = ResultSet.Object$<$SelectionSet, Index, Index['allTypes']['${type.name}']>`
     }))
 
     code.push(typeTitle(config, `Union`))
@@ -45,7 +46,7 @@ export const { generate: generateSelect, moduleName: moduleNameSelect } = create
     code.push(...config.typeMapByKind.GraphQLUnionType.map((type) => {
       return `export type ${type.name}<$SelectionSet extends SelectionSets.${
         renderName(type)
-      }> = ResultSet.Union<$SelectionSet, Index, Index['allTypes']['${type.name}']>\n`
+      }> = ResultSet.Union<$SelectionSet, Index, Index['allTypes']['${type.name}']>`
     }))
 
     code.push(typeTitle(config, `Interface`))
@@ -53,7 +54,7 @@ export const { generate: generateSelect, moduleName: moduleNameSelect } = create
     code.push(...config.typeMapByKind.GraphQLInterfaceType.map((type) => {
       return `export type ${type.name}<$SelectionSet extends SelectionSets.${
         renderName(type)
-      }> = ResultSet.Interface<$SelectionSet, Index, Index['allTypes']['${type.name}']>\n`
+      }> = ResultSet.Interface<$SelectionSet, Index, Index['allTypes']['${type.name}']>`
     }))
 
     code.push(`}`) // namespace Select

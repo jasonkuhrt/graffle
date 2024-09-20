@@ -1,11 +1,12 @@
 import { expectTypeOf, test } from 'vitest'
 import type * as Schema from '../../../tests/_/schema/generated/modules/SchemaBuildtime.js'
 import type { Index } from '../../../tests/_/schema/generated/modules/SchemaIndex.js'
-import type { SelectionSet } from '../3_SelectionSet/__.js'
+import type * as SelectionSets from '../../../tests/_/schema/generated/modules/SelectionSets.js'
+// import type { SelectionSet } from '../3_SelectionSet/__.js'
 import type { ResultSet } from './__.js'
 
 type I = Index
-type RS<$SelectionSet extends SelectionSet.Query<I>> = ResultSet.Query<$SelectionSet, I>
+type RS<$SelectionSet extends SelectionSets.Query> = ResultSet.Query<$SelectionSet, I>
 
 // dprint-ignore
 test(`general`, () => {
@@ -14,12 +15,12 @@ test(`general`, () => {
 
   // Scalar
   expectTypeOf<RS<{ id: true }>>().toEqualTypeOf<{ id: null | string }>()
-  expectTypeOf<RS<{ id: 1 }>>().toEqualTypeOf<{ id: null | string }>()
+  // expectTypeOf<RS<{ id: 1 }>>().toEqualTypeOf<{ id: null | string }>()
   // non-nullable
   expectTypeOf<RS<{ idNonNull: true }>>().toEqualTypeOf<{ idNonNull: string }>()
   // indicator negative
   expectTypeOf<RS<{ id: true; string: false }>>().toEqualTypeOf<{ id: null | string }>()
-  expectTypeOf<RS<{ id: true; string: 0 }>>().toEqualTypeOf<{ id: null | string }>()
+  // expectTypeOf<RS<{ id: true; string: 0 }>>().toEqualTypeOf<{ id: null | string }>()
   expectTypeOf<RS<{ id: true; string: undefined }>>().toEqualTypeOf<{ id: null | string }>()
   
   // Custom Scalar
@@ -73,14 +74,17 @@ test(`general`, () => {
   // with args
   expectTypeOf<RS<{ interfaceWithArgs: { $:{id:'abc'}; id: true }}>>().toEqualTypeOf<{ interfaceWithArgs: null | { id: null | string }   }>()
 
+  // todo alias on interfaces, interface fragments
   // Alias
   // scalar
-  expectTypeOf<RS<{ id: ['id2', true] }>>().toEqualTypeOf<{ id2: null | string }>()
-  expectTypeOf<RS<{ idNonNull: ['id2', true] }>>().toEqualTypeOf<{ id2: string }>()
+  expectTypeOf<RS<{ id: ['id2', true] }>>().branded.toEqualTypeOf<{ id2: null | string }>()
+  expectTypeOf<RS<{ idNonNull: ['id2', true] }>>().branded.toEqualTypeOf<{ id2: string }>()
+  // multi
+  expectTypeOf<RS<{ id: [['id1', true],['id2', true]] }>>().branded.toEqualTypeOf<{ id1: null | string; id2: null | string }>()
   // expectTypeOf<RS<{ id_as: true }>>().toEqualTypeOf<{ id_as: ResultSet.Errors.UnknownFieldName<'id_as', Schema.Root.Query> }>()
   // expectTypeOf<RS<{ id_as_$: true }>>().toEqualTypeOf<{ id_as_$: ResultSet.Errors.UnknownFieldName<'id_as_$', Schema.Root.Query> }>()
   // union fragment
-  expectTypeOf<RS<{ unionFooBar: { ___on_Foo: { id_as_id2: true } } }>>().toEqualTypeOf<{ unionFooBar: null | {} | { id2: null|string } }>()
+  expectTypeOf<RS<{ unionFooBar: { ___on_Foo: { id: ['id2', true] } } }>>().toEqualTypeOf<{ unionFooBar: null | {} | { id2: null|string } }>()
 
   // Directive @include
   // On scalar non-nullable

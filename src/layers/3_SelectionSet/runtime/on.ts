@@ -1,5 +1,7 @@
 export const prefix = `___on_`
 
+export type prefix = typeof prefix
+
 export const onPattern = new RegExp(`^${prefix}(?<name>[A-Z][A-z_0-9]*)$`)
 
 export interface On {

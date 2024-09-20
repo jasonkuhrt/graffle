@@ -1,3 +1,4 @@
+// todo jsdoc
 import { getNodeNameAndKind, isRootType } from '../../../lib/graphql.js'
 import { createModuleGenerator } from '../createCodeGenerator.js'
 import { renderName, title1 } from '../helpers.js'

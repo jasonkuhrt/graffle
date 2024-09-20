@@ -1,8 +1,9 @@
-import type { ExcludeNull, GetKeyOr } from '../../lib/prelude.js'
+import type { ExcludeNull, GetKeyOr, Values, ValuesOrEmptyObject } from '../../lib/prelude.js'
 import type { TSError } from '../../lib/TSError.js'
 import type { Schema, SomeField } from '../1_Schema/__.js'
 import type { PickScalarFields } from '../1_Schema/Output/Output.js'
 import type { SelectionSet } from '../3_SelectionSet/__.js'
+import type { prefix } from '../3_SelectionSet/runtime/on.js'
 
 export type Query<$SelectionSet, $Index extends Schema.Index> = Root<$SelectionSet, $Index, 'Query'>
 
@@ -38,16 +39,72 @@ export type Object$<$SelectionSet, $Index extends Schema.Index, $Node extends Sc
      * Handle fields in regular way.
      */
     :
-      SelectionSet.ResolveAliasTargets<{
-        [K in keyof SelectionSet.OmitNegativeIndicators<$SelectionSet> & string as K extends `${K}_as_${infer s}` ? s : K]:
-          SelectionSet.AliasNameOrigin<K> extends keyof $Node['fields']
-            ? Field<$SelectionSet[K], $Node['fields'][SelectionSet.AliasNameOrigin<K>], $Index>
-            : Errors.UnknownFieldName<SelectionSet.AliasNameOrigin<K>, $Node>
-      }>
+      (
+        {
+          [K in keyof OmitAliases<SelectionSet.OmitNegativeIndicators<$SelectionSet>> & string]:
+            Field<$SelectionSet[K], $Node['fields'][SelectionSet.AliasNameOrigin<K>], $Index>
+        }
+        &
+        Aliases<$SelectionSet, $Index, $Node>
+      )
+
+type OmitAliases<$Object extends object> = {
+  [$Key in keyof $Object as $Object[$Key] extends any[] ? never : $Key]: $Object[$Key]
+}
+
+// dprint-ignore
+type Aliases<$SelectionSet, $Index extends Schema.Index, $Node extends Schema.Output.Object$2> =
+  ValuesOrEmptyObject<
+    {
+      [
+        $KeyExpression in keyof $SelectionSet as $SelectionSet[$KeyExpression] extends any[] ? $KeyExpression : never
+      ]:
+        HandleAliasExpression<$SelectionSet[$KeyExpression], $KeyExpression, $Index, $Node>
+    }
+  >
+
+// dprint-ignore
+type HandleAliasExpression<
+  $AliasExpression extends [string, any] | [string, any][],
+  $KeyExpression extends string,
+  $Index extends Schema.Index,
+  $Node extends Schema.Output.Object$2,
+> =
+  $AliasExpression extends [string, any]
+    ? HandleAliasExpressionSingle<$AliasExpression, $KeyExpression, $Index, $Node>
+    : HandleAliasExpressionMulti<$AliasExpression, $KeyExpression, $Index, $Node>
+
+type HandleAliasExpressionMulti<
+  $Aliases extends [string, any][],
+  $KeyExpression extends string,
+  $Index extends Schema.Index,
+  $Node extends Schema.Output.Object$2,
+> = mergeObjectArray<
+  {
+    [_ in keyof $Aliases]: HandleAliasExpressionSingle<$Aliases[_], $KeyExpression, $Index, $Node>
+  }
+>
+
+type HandleAliasExpressionSingle<
+  $Alias extends [string, any],
+  $KeyExpression extends string,
+  $Index extends Schema.Index,
+  $Node extends Schema.Output.Object$2,
+> = {
+  [_ in $Alias[0]]: Field<$Alias[1], $Node['fields'][$KeyExpression], $Index>
+}
+
+// todo aliases
+// SelectionSet.ResolveAliasTargets<{
+//   [K in keyof SelectionSet.OmitNegativeIndicators<$SelectionSet> & string as K extends `${K}_as_${infer s}` ? s : K]:
+//     SelectionSet.AliasNameOrigin<K> extends keyof $Node['fields']
+//       ? Field<$SelectionSet[K], $Node['fields'][SelectionSet.AliasNameOrigin<K>], $Index>
+//       : Errors.UnknownFieldName<SelectionSet.AliasNameOrigin<K>, $Node>
+// }>
 
 // dprint-ignore
 export type Union<$SelectionSet, $Index extends Schema.Index, $Node extends Schema.Output.Union> =
-  OnTypeFragment<$SelectionSet,$Node['members'][number], $Index>
+  OnTypeFragment<$SelectionSet, $Node['members'][number], $Index>
 
 // dprint-ignore
 export type Interface<$SelectionSet, $Index extends Schema.Index, $Node extends Schema.Output.Interface> =
@@ -57,7 +114,7 @@ export type Interface<$SelectionSet, $Index extends Schema.Index, $Node extends 
 type OnTypeFragment<$SelectionSet, $Node extends Schema.Output.Object$2, $Index extends Schema.Index> =
   $Node extends any // force distribution
     ? Object$<
-        GetKeyOr<$SelectionSet, `on${Capitalize<$Node['fields']['__typename']['type']['type']>}`, {}> & SelectionSet.OmitOnTypeFragments<$SelectionSet>,
+        GetKeyOr<$SelectionSet, `${prefix}${$Node['fields']['__typename']['type']['type']}`, {}> & SelectionSet.OmitOnTypeFragments<$SelectionSet>,
         $Index,
         $Node
       >
@@ -108,3 +165,7 @@ export namespace Errors {
   export type UnknownFieldName<$FieldName extends string, $Object extends Schema.Object$2 | Schema.Output.RootType> =
     TSError<'Object', `field "${$FieldName}" does not exist on object "${$Object['fields']['__typename']['type']['type']}"`>
 }
+
+type mergeObjectArray<T extends [...object[]]> = T extends [infer $First, ...infer $Rest]
+  ? $First & mergeObjectArray<$Rest>
+  : {}

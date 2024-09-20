@@ -2,6 +2,7 @@ import type { Simplify } from 'type-fest'
 import type { ExcludeNull, MaybeList, StringNonEmpty, UnionExpanded, Values } from '../../lib/prelude.js'
 import type { TSError } from '../../lib/TSError.js'
 import type { OmitNullableFields, PickNullableFields, Schema, SomeField, SomeFields } from '../1_Schema/__.js'
+import type { prefix } from './runtime/on.js'
 
 export type Query<$Index extends Schema.Index> = RootViaObject<$Index, $Index['Root']['Query']>
 
@@ -145,7 +146,7 @@ export type UnionExtractFragmentNames<T> = Values<
   }
 >
 export type OmitOnTypeFragments<T> = {
-  [$K in keyof T as $K extends `on${StringNonEmpty}` ? never : $K]: T[$K]
+  [$K in keyof T as $K extends `${prefix}${StringNonEmpty}` ? never : $K]: T[$K]
 }
 
 /**
