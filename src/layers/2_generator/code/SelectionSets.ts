@@ -15,11 +15,23 @@ import {
 } from 'graphql'
 import { getNamedType, isNullableType, isScalarType } from 'graphql'
 import { Code } from '../../../lib/Code.js'
-import { analyzeArgsNullability, RootTypeName, StandardScalarTypeTypeScriptMapping } from '../../../lib/graphql.js'
+import {
+  analyzeArgsNullability,
+  getNodeNameAndKind,
+  RootTypeName,
+  StandardScalarTypeTypeScriptMapping,
+} from '../../../lib/graphql.js'
 import type { StandardScalarTypeNames } from '../../../lib/graphql.js'
 import { entries } from '../../../lib/prelude.js'
 import { createCodeGenerator, createModuleGenerator } from '../createCodeGenerator.js'
-import { getDocumentation, getInterfaceImplementors, renderDocumentation, renderName, title } from '../helpers.js'
+import {
+  getDocumentation,
+  getInterfaceImplementors,
+  renderDocumentation,
+  renderName,
+  titleH1,
+  titleH2,
+} from '../helpers.js'
 
 export const { moduleName: moduleNameSelectionSets, generate: generateSelectionSets } = createModuleGenerator(
   `SelectionSets`,
@@ -44,12 +56,10 @@ export const { moduleName: moduleNameSelectionSets, generate: generateSelectionS
       if (kind === `GraphQLScalarTypeCustom`) return // todo
       if (kind === `GraphQLScalarTypeStandard`) return // todo
 
-      code.push(title(`${kind} Types`))
+      code.push(titleH1(`${kind} Types`))
       code.push(``)
 
       nodes.forEach(node => {
-        const doc = renderDocumentation(config, node as never)
-        code.push(doc)
         code.push(kindRenderLookup[kind]({ config, node: node as never }))
         code.push(``)
         code.push(`type __${renderName(node)} = ${renderName(node)} // [1]`)
@@ -62,8 +72,12 @@ export const { moduleName: moduleNameSelectionSets, generate: generateSelectionS
 )
 
 const renderUnion = createCodeGenerator<{ node: GraphQLUnionType }>(
-  ({ node, code }) => {
+  ({ config, node, code }) => {
+    const doc = renderDocumentation(config, node)
+    code.push(doc)
+
     const memberTypes = node.getTypes()
+    // todo: consider prefix of on_
     /**
      * @remarks It is tempting to capitalize type name so that a type name like `foobar`
      * becomes `onFoobar` instead of `onfoorbar`. However, if we capitalize it means more
@@ -81,7 +95,10 @@ const renderUnion = createCodeGenerator<{ node: GraphQLUnionType }>(
 )
 
 const renderEnum = createCodeGenerator<{ node: GraphQLEnumType }>(
-  ({ node, code }) => {
+  ({ config, node, code }) => {
+    const doc = renderDocumentation(config, node)
+    code.push(doc)
+
     const values = Object.values(node.getValues())
     code.push(Helpers.type(renderName(node), values.map((value) => Code.quote(value.name)).join(` | `)))
   },
@@ -89,6 +106,9 @@ const renderEnum = createCodeGenerator<{ node: GraphQLEnumType }>(
 
 const renderInputObject = createCodeGenerator<{ node: GraphQLInputObjectType }>(
   ({ config, node, code }) => {
+    const doc = renderDocumentation(config, node)
+    code.push(doc)
+
     const fields = Object.values(node.getFields())
     code.push(`
       export interface ${renderName(node)} {
@@ -115,6 +135,9 @@ const renderInterface = createCodeGenerator<{ node: GraphQLInterfaceType }>(
     code.push(`// --------------`)
     code.push(``)
 
+    const doc = renderDocumentation(config, node)
+    code.push(doc)
+
     code.push(`
       export interface ${renderName(node)} extends SelectionSet.Bases.ObjectLike {
         ${fieldsRendered}
@@ -138,33 +161,31 @@ const renderObject = createCodeGenerator<{ node: GraphQLObjectType }>(
   ({ config, node, code }) => {
     const fields = Object.values(node.getFields())
 
-    const fieldSelectorsRendered = fields.map(field => {
-      return Helpers.outputFieldAlisable(field.name, `${renderName(node)}.${renderName(field)}`)
-    }).join(`\n`)
-
-    const isRootType = node.name in RootTypeName
-    const extendsClause = isRootType ? `` : `extends SelectionSet.Bases.ObjectLike`
-    code.push(`
-//
-//
-//
-//
-// GRAPHQL SELECTION SET
-// OBJECT TYPE
-// --------------------------------------------------------------------------------------------------
-//                                         ${node.name}
-// --------------------------------------------------------------------------------------------------
-//
-//
-    `)
+    code.push(titleH2(node))
     code.push(``)
 
     code.push(`// ----------------------------------------| Entrypoint Interface |`)
     code.push(``)
 
+    const propertiesRendered = fields.map(field => {
+      const nodeWhat = getNodeNameAndKind(getNamedType(field.type))
+      const type = nodeWhat.kind === `Scalar` ? `\`${nodeWhat.name}\` (a \`Scalar\`)` : nodeWhat.kind
+      const doc = Code.TSDoc(`
+        Select the \`${field.name}\` field on the \`${node.name}\` object. Its type is ${type}.
+      `)
+      const propertyRendered = Helpers.outputFieldAlisable(field.name, `${renderName(node)}.${renderName(field)}`)
+      return doc + `\n` + propertyRendered
+    }).join(`\n`)
+
+    const isRootType = node.name in RootTypeName
+    const extendsClause = isRootType ? `` : `extends SelectionSet.Bases.ObjectLike`
+
+    const doc = renderDocumentation(config, node)
+    code.push(doc)
+
     code.push(`
       export interface ${renderName(node)} ${extendsClause} {
-        ${fieldSelectorsRendered}
+        ${propertiesRendered}
         ${Helpers.inlineFragment(node)}
         ${Helpers.__typename(`object`)}
       }
@@ -222,11 +243,15 @@ const renderField = createCodeGenerator<{ field: GraphQLField<any, any> }>(
         } else {
           // todo test that a directive can be passed with the intersection that otherwise cannot be.
           code.push(Helpers.$interface(nameRendered, `SelectionSet.Bases.Base`, argsRendered))
+          code.push(``)
           code.push(Helpers.type(`${nameRendered}$Expanded`, nameRendered))
+          code.push(``)
         }
       } else {
         code.push(Helpers.type(`${nameRendered}$Expanded`, `SelectionSet.NoArgsIndicator$Expanded`))
+        code.push(``)
         code.push(Helpers.type(nameRendered, `SelectionSet.NoArgsIndicator`))
+        code.push(``)
       }
     } else {
       const argsRendered = renderFieldArgs({ config, field })
@@ -324,15 +349,17 @@ namespace Helpers {
   }
 
   export const inlineFragment = (node: GraphQLObjectType | GraphQLUnionType | GraphQLInterfaceType) => {
+    const doc = Code.TSDoc(`
+      Inline fragments for field groups. 
+     
+      Generally a niche feature. This can be useful for example to apply an \`@include\` directive to a subset of the
+      selection set allowing a variable to opt-in or not to that part of the selection.
+       
+      @see https://spec.graphql.org/draft/#sec-Inline-Fragments
+    `)
+
     return `
-      /**
-       * Inline fragments for field groups. 
-       *
-       * Generally a niche feature. This can be useful for example to apply an \`@include\` directive to a subset of the
-       * selection set allowing a variable to opt-in or not to that part of the selection.
-       *
-       * @see https://spec.graphql.org/draft/#sec-Inline-Fragments
-       */
+      ${doc}
       ___?: ${renderName(node)} | ${renderName(node)}[]
     `
   }
@@ -340,23 +367,19 @@ namespace Helpers {
   const __typenameDoc = (kind: 'union' | 'interface' | 'object') => {
     const see = `@see https://graphql.org/learn/queries/#meta-fields`
     if (kind === `object`) {
-      return `
-        /**
-         * A meta field. Is the name of the type being selected.
-         * 
-         * ${see}
-         */
-      `
+      return Code.TSDoc(`
+        A meta field. Is the name of the type being selected.
+          
+        ${see}
+      `)
     }
 
     const relation = kind === `interface` ? `implementor` : `member`
-    return `
-      /**
-       * A meta field. Is the name of the type being selected. Since this is a ${kind} type and thus polymorphic,
-       * the name is one of the ${relation} type names, whichever is ultimately returned at runtime.
-       * 
-       * ${see}
-       */
-    `
+    return Code.TSDoc(`
+       A meta field. Is the name of the type being selected. Since this is a ${kind} type and thus polymorphic,
+       the name is one of the ${relation} type names, whichever is ultimately returned at runtime.
+       
+       ${see}
+    `)
   }
 }

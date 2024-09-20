@@ -1,11 +1,11 @@
-import type { GraphQLInterfaceType } from 'graphql'
+import type { GraphQLInterfaceType, GraphQLObjectType } from 'graphql'
 import { type GraphQLEnumValue, type GraphQLField, type GraphQLNamedType, isEnumType } from 'graphql'
 import { Code } from '../../lib/Code.js'
 import { type Describable, getNodeDisplayName, isDeprecatableNode, type TypeMapByKind } from '../../lib/graphql.js'
+import { borderThickFullWidth, borderThinFullWidth, centerTo } from '../../lib/text.js'
 import type { Config } from './generateCode.js'
 
-export const title = (title: string) => {
-  const border = `-`.repeat(title.length)
+export const titleH1 = (title: string) => {
   const titleDecorated = `
     //
     //
@@ -13,9 +13,9 @@ export const title = (title: string) => {
     //
     //
     //
-    // ${border}
-    // ${title}
-    // ${border}
+    // ${borderThickFullWidth}
+    // ${centerTo(borderThickFullWidth, title)}
+    // ${borderThickFullWidth}
     //
     //
     //
@@ -25,6 +25,25 @@ export const title = (title: string) => {
   `
   return titleDecorated
 }
+
+export const titleH2 = (node: GraphQLObjectType) => {
+  const title = `
+    //
+    //
+    //
+    //
+    // GRAPHQL SELECTION SET
+    // OBJECT TYPE
+    // ${borderThinFullWidth}
+    // ${centerTo(borderThinFullWidth, node.name)}
+    // ${borderThinFullWidth}
+    //
+    //
+  `.trim()
+
+  return title
+}
+
 export const typeTitle = (config: Config, typeName: string) => {
   // @ts-expect-error ignoreme
 

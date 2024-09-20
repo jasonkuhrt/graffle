@@ -1,3 +1,5 @@
+import { linesPrepend, linesTrim } from './text.js'
+
 export namespace Code {
   export const propertyAccess = (object: string, name: string) => `${object}.${name}`
   export const quote = (str: string) => `"${str}"`
@@ -37,8 +39,9 @@ export namespace Code {
   export const type = (name: string, type: string) => `type ${name} = ${type}`
   export const interface$ = (name: string, object: string) => `interface ${name} ${object}`
   export const export$ = (thing: string) => `export ${thing}`
-  export const TSDoc = (content: string | null) =>
-    content === null ? null : `/**\n${prependLines(`* `, content) || `*`}\n*/`
+  export const TSDoc = <$Content extends string | null>(content: $Content): $Content => {
+    return (content === null ? null : `/**\n${linesPrepend(`* `, linesTrim(content)) || `*`}\n*/`) as $Content
+  }
   export const TSDocWithBlock = (content: string | null, block: string) => {
     const tsDoc = TSDoc(content)
     return tsDoc === null ? block : `${tsDoc}\n${block}`
@@ -109,5 +112,3 @@ export namespace Code {
     `interface`,
   ]
 }
-
-const prependLines = (prepend: string, str: string) => str.split(`\n`).map((line) => `${prepend}${line}`).join(`\n`)

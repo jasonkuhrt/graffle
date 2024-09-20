@@ -15,9 +15,9 @@ import type { Simplify, UnionExpanded } from '../../../../../src/entrypoints/uti
 //
 //
 //
-// ---------------------
-// GraphQLRootType Types
-// ---------------------
+// ==================================================================================================
+//                                       GraphQLRootType Types
+// ==================================================================================================
 //
 //
 //
@@ -32,7 +32,7 @@ import type { Simplify, UnionExpanded } from '../../../../../src/entrypoints/uti
 // GRAPHQL SELECTION SET
 // OBJECT TYPE
 // --------------------------------------------------------------------------------------------------
-//                                         Mutation
+//                                              Mutation
 // --------------------------------------------------------------------------------------------------
 //
 //
@@ -40,7 +40,13 @@ import type { Simplify, UnionExpanded } from '../../../../../src/entrypoints/uti
 // ----------------------------------------| Entrypoint Interface |
 
 export interface Mutation {
+  /**
+   * Select the `id` field on the `Mutation` object. Its type is `ID` (a `Scalar`).
+   */
   id?: Mutation.id$Expanded | SelectionSet.Alias<Mutation.id>
+  /**
+   * Select the `idNonNull` field on the `Mutation` object. Its type is `ID` (a `Scalar`).
+   */
   idNonNull?: Mutation.idNonNull$Expanded | SelectionSet.Alias<Mutation.idNonNull>
 
   /**
@@ -58,7 +64,6 @@ export interface Mutation {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-
   __typename?: SelectionSet.NoArgsIndicator$Expanded | SelectionSet.Alias<SelectionSet.NoArgsIndicator>
 }
 
@@ -66,8 +71,11 @@ export interface Mutation {
 
 export namespace Mutation {
   export type id$Expanded = SelectionSet.NoArgsIndicator$Expanded
+
   export type id = SelectionSet.NoArgsIndicator
+
   export type idNonNull$Expanded = SelectionSet.NoArgsIndicator$Expanded
+
   export type idNonNull = SelectionSet.NoArgsIndicator
 }
 
@@ -79,9 +87,9 @@ type __Mutation = Mutation // [1]
 //
 //
 //
-// ---------------------
-// GraphQLEnumType Types
-// ---------------------
+// ==================================================================================================
+//                                       GraphQLEnumType Types
+// ==================================================================================================
 //
 //
 //
@@ -95,9 +103,9 @@ type __Mutation = Mutation // [1]
 //
 //
 //
-// ----------------------------
-// GraphQLInputObjectType Types
-// ----------------------------
+// ==================================================================================================
+//                                    GraphQLInputObjectType Types
+// ==================================================================================================
 //
 //
 //
@@ -111,9 +119,9 @@ type __Mutation = Mutation // [1]
 //
 //
 //
-// --------------------------
-// GraphQLInterfaceType Types
-// --------------------------
+// ==================================================================================================
+//                                     GraphQLInterfaceType Types
+// ==================================================================================================
 //
 //
 //
@@ -127,9 +135,9 @@ type __Mutation = Mutation // [1]
 //
 //
 //
-// -----------------------
-// GraphQLObjectType Types
-// -----------------------
+// ==================================================================================================
+//                                      GraphQLObjectType Types
+// ==================================================================================================
 //
 //
 //
@@ -143,9 +151,9 @@ type __Mutation = Mutation // [1]
 //
 //
 //
-// ----------------------
-// GraphQLUnionType Types
-// ----------------------
+// ==================================================================================================
+//                                       GraphQLUnionType Types
+// ==================================================================================================
 //
 //
 //

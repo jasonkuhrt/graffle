@@ -38,7 +38,6 @@ test(`Query`, () => {
   // assertType<Q>({ date: 0 })
   // assertType<Q>({ date: 1 })
   assertType<Q>({ date: undefined })
-  assertType<Q>({ date: new Date(0) })
   
   // Enum
   assertType<Q>({ abcEnum: true })

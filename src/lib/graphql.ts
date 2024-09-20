@@ -5,6 +5,7 @@ import type {
   GraphQLError,
   GraphQLField,
   GraphQLInputField,
+  GraphQLNamedType,
   GraphQLSchema,
 } from 'graphql'
 import {
@@ -16,7 +17,13 @@ import {
   GraphQLObjectType,
   GraphQLScalarType,
   GraphQLUnionType,
+  isEnumType,
+  isInputObjectType,
+  isInterfaceType,
   isNonNullType,
+  isObjectType,
+  isScalarType,
+  isUnionType,
 } from 'graphql'
 import type { Errors } from './errors/__.js'
 
@@ -203,26 +210,30 @@ export const isGraphQLOutputField = (object: object): object is AnyGraphQLOutput
  */
 
 export type Describable =
-  | GraphQLUnionType
-  | GraphQLObjectType
-  | GraphQLInputObjectType
+  | GraphQLNamedType
   | AnyField
-  | GraphQLInterfaceType
-  | GraphQLEnumType
 
-export const getNodeName = (node: Describable): NodeNamePlus => {
+export const getNodeNameAndKind = (
+  node: GraphQLNamedType,
+): { name: string; kind: 'Object' | 'Interface' | 'Union' | 'Enum' | 'Scalar' } => {
+  const name = node.name
+  const kind = getNodeKind(node).replace(`GraphQL`, ``).replace(`Type`, ``)
+  return { name, kind }
+}
+
+export const getNodeKind = (node: Describable): NodeNamePlus => {
   switch (true) {
-    case node instanceof GraphQLObjectType:
+    case isObjectType(node):
       return `GraphQLObjectType`
-    case node instanceof GraphQLInputObjectType:
+    case isInputObjectType(node):
       return `GraphQLInputObjectType`
-    case node instanceof GraphQLUnionType:
+    case isUnionType(node):
       return `GraphQLUnionType`
-    case node instanceof GraphQLInterfaceType:
+    case isInterfaceType(node):
       return `GraphQLInterfaceType`
-    case node instanceof GraphQLEnumType:
+    case isEnumType(node):
       return `GraphQLEnumType`
-    case node instanceof GraphQLScalarType:
+    case isScalarType(node):
       return `GraphQLScalarType`
     default:
       return `GraphQLField`
@@ -241,7 +252,7 @@ export const getNodeName = (node: Describable): NodeNamePlus => {
 // } satisfies Record<NodeName, string>
 
 export const getNodeDisplayName = (node: Describable) => {
-  return toDisplayName(getNodeName(node))
+  return toDisplayName(getNodeKind(node))
 }
 
 const toDisplayName = (nodeName: NodeNamePlus) => {

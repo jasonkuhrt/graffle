@@ -15,9 +15,9 @@ import type { Simplify, UnionExpanded } from '../../../../../src/entrypoints/uti
 //
 //
 //
-// ---------------------
-// GraphQLRootType Types
-// ---------------------
+// ==================================================================================================
+//                                       GraphQLRootType Types
+// ==================================================================================================
 //
 //
 //
@@ -32,7 +32,7 @@ import type { Simplify, UnionExpanded } from '../../../../../src/entrypoints/uti
 // GRAPHQL SELECTION SET
 // OBJECT TYPE
 // --------------------------------------------------------------------------------------------------
-//                                         Mutation
+//                                              Mutation
 // --------------------------------------------------------------------------------------------------
 //
 //
@@ -40,7 +40,13 @@ import type { Simplify, UnionExpanded } from '../../../../../src/entrypoints/uti
 // ----------------------------------------| Entrypoint Interface |
 
 export interface Mutation {
+  /**
+   * Select the `id` field on the `Mutation` object. Its type is `ID` (a `Scalar`).
+   */
   id?: Mutation.id$Expanded | SelectionSet.Alias<Mutation.id>
+  /**
+   * Select the `idNonNull` field on the `Mutation` object. Its type is `ID` (a `Scalar`).
+   */
   idNonNull?: Mutation.idNonNull$Expanded | SelectionSet.Alias<Mutation.idNonNull>
 
   /**
@@ -58,7 +64,6 @@ export interface Mutation {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-
   __typename?: SelectionSet.NoArgsIndicator$Expanded | SelectionSet.Alias<SelectionSet.NoArgsIndicator>
 }
 
@@ -66,8 +71,11 @@ export interface Mutation {
 
 export namespace Mutation {
   export type id$Expanded = SelectionSet.NoArgsIndicator$Expanded
+
   export type id = SelectionSet.NoArgsIndicator
+
   export type idNonNull$Expanded = SelectionSet.NoArgsIndicator$Expanded
+
   export type idNonNull = SelectionSet.NoArgsIndicator
 }
 
@@ -80,7 +88,7 @@ type __Mutation = Mutation // [1]
 // GRAPHQL SELECTION SET
 // OBJECT TYPE
 // --------------------------------------------------------------------------------------------------
-//                                         Query
+//                                               Query
 // --------------------------------------------------------------------------------------------------
 //
 //
@@ -88,63 +96,207 @@ type __Mutation = Mutation // [1]
 // ----------------------------------------| Entrypoint Interface |
 
 export interface Query {
+  /**
+   * Select the `InputObjectNested` field on the `Query` object. Its type is `ID` (a `Scalar`).
+   */
   InputObjectNested?: Query.InputObjectNested$Expanded | SelectionSet.Alias<Query.InputObjectNested>
+  /**
+   * Select the `InputObjectNestedNonNull` field on the `Query` object. Its type is `ID` (a `Scalar`).
+   */
   InputObjectNestedNonNull?:
     | Query.InputObjectNestedNonNull$Expanded
     | SelectionSet.Alias<Query.InputObjectNestedNonNull>
+  /**
+   * Select the `abcEnum` field on the `Query` object. Its type is Enum.
+   */
   abcEnum?: Query.abcEnum$Expanded | SelectionSet.Alias<Query.abcEnum>
+  /**
+   * Select the `date` field on the `Query` object. Its type is `Date` (a `Scalar`).
+   */
   date?: Query.date$Expanded | SelectionSet.Alias<Query.date>
+  /**
+   * Select the `dateArg` field on the `Query` object. Its type is `Date` (a `Scalar`).
+   */
   dateArg?: Query.dateArg$Expanded | SelectionSet.Alias<Query.dateArg>
+  /**
+   * Select the `dateArgInputObject` field on the `Query` object. Its type is `Date` (a `Scalar`).
+   */
   dateArgInputObject?: Query.dateArgInputObject$Expanded | SelectionSet.Alias<Query.dateArgInputObject>
+  /**
+   * Select the `dateArgList` field on the `Query` object. Its type is `Date` (a `Scalar`).
+   */
   dateArgList?: Query.dateArgList$Expanded | SelectionSet.Alias<Query.dateArgList>
+  /**
+   * Select the `dateArgNonNull` field on the `Query` object. Its type is `Date` (a `Scalar`).
+   */
   dateArgNonNull?: Query.dateArgNonNull$Expanded | SelectionSet.Alias<Query.dateArgNonNull>
+  /**
+   * Select the `dateArgNonNullList` field on the `Query` object. Its type is `Date` (a `Scalar`).
+   */
   dateArgNonNullList?: Query.dateArgNonNullList$Expanded | SelectionSet.Alias<Query.dateArgNonNullList>
+  /**
+   * Select the `dateArgNonNullListNonNull` field on the `Query` object. Its type is `Date` (a `Scalar`).
+   */
   dateArgNonNullListNonNull?:
     | Query.dateArgNonNullListNonNull$Expanded
     | SelectionSet.Alias<Query.dateArgNonNullListNonNull>
+  /**
+   * Select the `dateInterface1` field on the `Query` object. Its type is Interface.
+   */
   dateInterface1?: Query.dateInterface1$Expanded | SelectionSet.Alias<Query.dateInterface1>
+  /**
+   * Select the `dateList` field on the `Query` object. Its type is `Date` (a `Scalar`).
+   */
   dateList?: Query.dateList$Expanded | SelectionSet.Alias<Query.dateList>
+  /**
+   * Select the `dateListNonNull` field on the `Query` object. Its type is `Date` (a `Scalar`).
+   */
   dateListNonNull?: Query.dateListNonNull$Expanded | SelectionSet.Alias<Query.dateListNonNull>
+  /**
+   * Select the `dateNonNull` field on the `Query` object. Its type is `Date` (a `Scalar`).
+   */
   dateNonNull?: Query.dateNonNull$Expanded | SelectionSet.Alias<Query.dateNonNull>
+  /**
+   * Select the `dateObject1` field on the `Query` object. Its type is Object.
+   */
   dateObject1?: Query.dateObject1$Expanded | SelectionSet.Alias<Query.dateObject1>
+  /**
+   * Select the `dateUnion` field on the `Query` object. Its type is Union.
+   */
   dateUnion?: Query.dateUnion$Expanded | SelectionSet.Alias<Query.dateUnion>
+  /**
+   * Select the `error` field on the `Query` object. Its type is `String` (a `Scalar`).
+   */
   error?: Query.error$Expanded | SelectionSet.Alias<Query.error>
+  /**
+   * Select the `id` field on the `Query` object. Its type is `ID` (a `Scalar`).
+   */
   id?: Query.id$Expanded | SelectionSet.Alias<Query.id>
+  /**
+   * Select the `idNonNull` field on the `Query` object. Its type is `ID` (a `Scalar`).
+   */
   idNonNull?: Query.idNonNull$Expanded | SelectionSet.Alias<Query.idNonNull>
+  /**
+   * Select the `interface` field on the `Query` object. Its type is Interface.
+   */
   interface?: Query.$interface$Expanded | SelectionSet.Alias<Query.$interface>
+  /**
+   * Select the `interfaceNonNull` field on the `Query` object. Its type is Interface.
+   */
   interfaceNonNull?: Query.interfaceNonNull$Expanded | SelectionSet.Alias<Query.interfaceNonNull>
+  /**
+   * Select the `interfaceWithArgs` field on the `Query` object. Its type is Interface.
+   */
   interfaceWithArgs?: Query.interfaceWithArgs$Expanded | SelectionSet.Alias<Query.interfaceWithArgs>
+  /**
+   * Select the `listInt` field on the `Query` object. Its type is `Int` (a `Scalar`).
+   */
   listInt?: Query.listInt$Expanded | SelectionSet.Alias<Query.listInt>
+  /**
+   * Select the `listIntNonNull` field on the `Query` object. Its type is `Int` (a `Scalar`).
+   */
   listIntNonNull?: Query.listIntNonNull$Expanded | SelectionSet.Alias<Query.listIntNonNull>
+  /**
+   * Select the `listListInt` field on the `Query` object. Its type is `Int` (a `Scalar`).
+   */
   listListInt?: Query.listListInt$Expanded | SelectionSet.Alias<Query.listListInt>
+  /**
+   * Select the `listListIntNonNull` field on the `Query` object. Its type is `Int` (a `Scalar`).
+   */
   listListIntNonNull?: Query.listListIntNonNull$Expanded | SelectionSet.Alias<Query.listListIntNonNull>
+  /**
+   * Select the `lowerCaseUnion` field on the `Query` object. Its type is Union.
+   */
   lowerCaseUnion?: Query.lowerCaseUnion$Expanded | SelectionSet.Alias<Query.lowerCaseUnion>
+  /**
+   * Select the `object` field on the `Query` object. Its type is Object.
+   */
   object?: Query.$object$Expanded | SelectionSet.Alias<Query.$object>
+  /**
+   * Select the `objectList` field on the `Query` object. Its type is Object.
+   */
   objectList?: Query.objectList$Expanded | SelectionSet.Alias<Query.objectList>
+  /**
+   * Select the `objectListNonNull` field on the `Query` object. Its type is Object.
+   */
   objectListNonNull?: Query.objectListNonNull$Expanded | SelectionSet.Alias<Query.objectListNonNull>
+  /**
+   * Select the `objectNested` field on the `Query` object. Its type is Object.
+   */
   objectNested?: Query.objectNested$Expanded | SelectionSet.Alias<Query.objectNested>
+  /**
+   * Select the `objectNonNull` field on the `Query` object. Its type is Object.
+   */
   objectNonNull?: Query.objectNonNull$Expanded | SelectionSet.Alias<Query.objectNonNull>
+  /**
+   * Select the `objectWithArgs` field on the `Query` object. Its type is Object.
+   */
   objectWithArgs?: Query.objectWithArgs$Expanded | SelectionSet.Alias<Query.objectWithArgs>
+  /**
+   * Select the `result` field on the `Query` object. Its type is Union.
+   */
   result?: Query.result$Expanded | SelectionSet.Alias<Query.result>
+  /**
+   * Select the `resultNonNull` field on the `Query` object. Its type is Union.
+   */
   resultNonNull?: Query.resultNonNull$Expanded | SelectionSet.Alias<Query.resultNonNull>
+  /**
+   * Select the `string` field on the `Query` object. Its type is `String` (a `Scalar`).
+   */
   string?: Query.$string$Expanded | SelectionSet.Alias<Query.$string>
+  /**
+   * Select the `stringWithArgEnum` field on the `Query` object. Its type is `String` (a `Scalar`).
+   */
   stringWithArgEnum?: Query.stringWithArgEnum$Expanded | SelectionSet.Alias<Query.stringWithArgEnum>
+  /**
+   * Select the `stringWithArgInputObject` field on the `Query` object. Its type is `String` (a `Scalar`).
+   */
   stringWithArgInputObject?:
     | Query.stringWithArgInputObject$Expanded
     | SelectionSet.Alias<Query.stringWithArgInputObject>
+  /**
+   * Select the `stringWithArgInputObjectRequired` field on the `Query` object. Its type is `String` (a `Scalar`).
+   */
   stringWithArgInputObjectRequired?:
     | Query.stringWithArgInputObjectRequired$Expanded
     | SelectionSet.Alias<Query.stringWithArgInputObjectRequired>
+  /**
+   * Select the `stringWithArgs` field on the `Query` object. Its type is `String` (a `Scalar`).
+   */
   stringWithArgs?: Query.stringWithArgs$Expanded | SelectionSet.Alias<Query.stringWithArgs>
+  /**
+   * Select the `stringWithListArg` field on the `Query` object. Its type is `String` (a `Scalar`).
+   */
   stringWithListArg?: Query.stringWithListArg$Expanded | SelectionSet.Alias<Query.stringWithListArg>
+  /**
+   * Select the `stringWithListArgRequired` field on the `Query` object. Its type is `String` (a `Scalar`).
+   */
   stringWithListArgRequired?:
     | Query.stringWithListArgRequired$Expanded
     | SelectionSet.Alias<Query.stringWithListArgRequired>
+  /**
+   * Select the `stringWithRequiredArg` field on the `Query` object. Its type is `String` (a `Scalar`).
+   */
   stringWithRequiredArg?: Query.stringWithRequiredArg$Expanded | SelectionSet.Alias<Query.stringWithRequiredArg>
+  /**
+   * Select the `unionFooBar` field on the `Query` object. Its type is Union.
+   */
   unionFooBar?: Query.unionFooBar$Expanded | SelectionSet.Alias<Query.unionFooBar>
+  /**
+   * Select the `unionFooBarNonNull` field on the `Query` object. Its type is Union.
+   */
   unionFooBarNonNull?: Query.unionFooBarNonNull$Expanded | SelectionSet.Alias<Query.unionFooBarNonNull>
+  /**
+   * Select the `unionFooBarWithArgs` field on the `Query` object. Its type is Union.
+   */
   unionFooBarWithArgs?: Query.unionFooBarWithArgs$Expanded | SelectionSet.Alias<Query.unionFooBarWithArgs>
+  /**
+   * Select the `unionObject` field on the `Query` object. Its type is Object.
+   */
   unionObject?: Query.unionObject$Expanded | SelectionSet.Alias<Query.unionObject>
+  /**
+   * Select the `unionObjectNonNull` field on the `Query` object. Its type is Object.
+   */
   unionObjectNonNull?: Query.unionObjectNonNull$Expanded | SelectionSet.Alias<Query.unionObjectNonNull>
 
   /**
@@ -162,7 +314,6 @@ export interface Query {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-
   __typename?: SelectionSet.NoArgsIndicator$Expanded | SelectionSet.Alias<SelectionSet.NoArgsIndicator>
 }
 
@@ -194,11 +345,17 @@ export namespace Query {
       input: InputObjectNestedNonNull
     }
   }
+
   export type InputObjectNestedNonNull$Expanded = InputObjectNestedNonNull
+
   export type abcEnum$Expanded = SelectionSet.NoArgsIndicator$Expanded
+
   export type abcEnum = SelectionSet.NoArgsIndicator
+
   export type date$Expanded = SelectionSet.NoArgsIndicator$Expanded
+
   export type date = SelectionSet.NoArgsIndicator
+
   type dateArgSelectionSet = Simplify<
     SelectionSet.Bases.Base & {
       /**
@@ -256,7 +413,9 @@ export namespace Query {
       date: undefined
     }
   }
+
   export type dateArgNonNull$Expanded = dateArgNonNull
+
   export interface dateArgNonNullList extends SelectionSet.Bases.Base {
     /**
      * Arguments for `dateArgNonNullList` field.
@@ -266,7 +425,9 @@ export namespace Query {
       date: Array<undefined | undefined | null>
     }
   }
+
   export type dateArgNonNullList$Expanded = dateArgNonNullList
+
   export interface dateArgNonNullListNonNull extends SelectionSet.Bases.Base {
     /**
      * Arguments for `dateArgNonNullListNonNull` field.
@@ -276,15 +437,23 @@ export namespace Query {
       date: Array<undefined | undefined | null>
     }
   }
+
   export type dateArgNonNullListNonNull$Expanded = dateArgNonNullListNonNull
+
   export interface dateInterface1 extends __DateInterface1 {}
   export type dateInterface1$Expanded = dateInterface1
   export type dateList$Expanded = SelectionSet.NoArgsIndicator$Expanded
+
   export type dateList = SelectionSet.NoArgsIndicator
+
   export type dateListNonNull$Expanded = SelectionSet.NoArgsIndicator$Expanded
+
   export type dateListNonNull = SelectionSet.NoArgsIndicator
+
   export type dateNonNull$Expanded = SelectionSet.NoArgsIndicator$Expanded
+
   export type dateNonNull = SelectionSet.NoArgsIndicator
+
   export interface dateObject1 extends __DateObject1 {}
   export type dateObject1$Expanded = dateObject1
   export interface dateUnion extends __DateUnion {}
@@ -306,9 +475,13 @@ export namespace Query {
   export type error = SelectionSet.ClientIndicator | errorSelectionSet
 
   export type id$Expanded = SelectionSet.NoArgsIndicator$Expanded
+
   export type id = SelectionSet.NoArgsIndicator
+
   export type idNonNull$Expanded = SelectionSet.NoArgsIndicator$Expanded
+
   export type idNonNull = SelectionSet.NoArgsIndicator
+
   export interface $interface extends __Interface {}
   export type $interface$Expanded = $interface
   export interface interfaceNonNull extends __Interface {}
@@ -324,13 +497,21 @@ export namespace Query {
   }
   export type interfaceWithArgs$Expanded = interfaceWithArgs
   export type listInt$Expanded = SelectionSet.NoArgsIndicator$Expanded
+
   export type listInt = SelectionSet.NoArgsIndicator
+
   export type listIntNonNull$Expanded = SelectionSet.NoArgsIndicator$Expanded
+
   export type listIntNonNull = SelectionSet.NoArgsIndicator
+
   export type listListInt$Expanded = SelectionSet.NoArgsIndicator$Expanded
+
   export type listListInt = SelectionSet.NoArgsIndicator
+
   export type listListIntNonNull$Expanded = SelectionSet.NoArgsIndicator$Expanded
+
   export type listListIntNonNull = SelectionSet.NoArgsIndicator
+
   export interface lowerCaseUnion extends __lowerCaseUnion {}
   export type lowerCaseUnion$Expanded = lowerCaseUnion
   export interface $object extends __Object1 {}
@@ -378,7 +559,9 @@ export namespace Query {
   }
   export type resultNonNull$Expanded = resultNonNull
   export type $string$Expanded = SelectionSet.NoArgsIndicator$Expanded
+
   export type $string = SelectionSet.NoArgsIndicator
+
   type stringWithArgEnumSelectionSet = Simplify<
     SelectionSet.Bases.Base & {
       /**
@@ -422,7 +605,9 @@ export namespace Query {
       input: InputObject
     }
   }
+
   export type stringWithArgInputObjectRequired$Expanded = stringWithArgInputObjectRequired
+
   type stringWithArgsSelectionSet = Simplify<
     SelectionSet.Bases.Base & {
       /**
@@ -468,7 +653,9 @@ export namespace Query {
       ints: Array<number | undefined | null>
     }
   }
+
   export type stringWithListArgRequired$Expanded = stringWithListArgRequired
+
   export interface stringWithRequiredArg extends SelectionSet.Bases.Base {
     /**
      * Arguments for `stringWithRequiredArg` field.
@@ -478,7 +665,9 @@ export namespace Query {
       string: string
     }
   }
+
   export type stringWithRequiredArg$Expanded = stringWithRequiredArg
+
   export interface unionFooBar extends __FooBarUnion {}
   export type unionFooBar$Expanded = unionFooBar
   export interface unionFooBarNonNull extends __FooBarUnion {}
@@ -507,9 +696,9 @@ type __Query = Query // [1]
 //
 //
 //
-// ---------------------
-// GraphQLEnumType Types
-// ---------------------
+// ==================================================================================================
+//                                       GraphQLEnumType Types
+// ==================================================================================================
 //
 //
 //
@@ -539,9 +728,9 @@ type __Case = Case // [1]
 //
 //
 //
-// ----------------------------
-// GraphQLInputObjectType Types
-// ----------------------------
+// ==================================================================================================
+//                                    GraphQLInputObjectType Types
+// ==================================================================================================
 //
 //
 //
@@ -576,9 +765,9 @@ type __InputObjectNestedNonNull = InputObjectNestedNonNull // [1]
 //
 //
 //
-// --------------------------
-// GraphQLInterfaceType Types
-// --------------------------
+// ==================================================================================================
+//                                     GraphQLInterfaceType Types
+// ==================================================================================================
 //
 //
 //
@@ -610,12 +799,12 @@ export interface DateInterface1 extends SelectionSet.Bases.ObjectLike {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-
   __typename?: SelectionSet.NoArgsIndicator$Expanded | SelectionSet.Alias<SelectionSet.NoArgsIndicator>
 }
 
 export namespace DateInterface1 {
   export type date1$Expanded = SelectionSet.NoArgsIndicator$Expanded
+
   export type date1 = SelectionSet.NoArgsIndicator
 }
 
@@ -646,12 +835,12 @@ export interface Error extends SelectionSet.Bases.ObjectLike {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-
   __typename?: SelectionSet.NoArgsIndicator$Expanded | SelectionSet.Alias<SelectionSet.NoArgsIndicator>
 }
 
 export namespace Error {
   export type message$Expanded = SelectionSet.NoArgsIndicator$Expanded
+
   export type message = SelectionSet.NoArgsIndicator
 }
 
@@ -682,12 +871,12 @@ export interface Interface extends SelectionSet.Bases.ObjectLike {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-
   __typename?: SelectionSet.NoArgsIndicator$Expanded | SelectionSet.Alias<SelectionSet.NoArgsIndicator>
 }
 
 export namespace Interface {
   export type id$Expanded = SelectionSet.NoArgsIndicator$Expanded
+
   export type id = SelectionSet.NoArgsIndicator
 }
 
@@ -699,9 +888,9 @@ type __Interface = Interface // [1]
 //
 //
 //
-// -----------------------
-// GraphQLObjectType Types
-// -----------------------
+// ==================================================================================================
+//                                      GraphQLObjectType Types
+// ==================================================================================================
 //
 //
 //
@@ -716,7 +905,7 @@ type __Interface = Interface // [1]
 // GRAPHQL SELECTION SET
 // OBJECT TYPE
 // --------------------------------------------------------------------------------------------------
-//                                         Bar
+//                                                Bar
 // --------------------------------------------------------------------------------------------------
 //
 //
@@ -724,6 +913,9 @@ type __Interface = Interface // [1]
 // ----------------------------------------| Entrypoint Interface |
 
 export interface Bar extends SelectionSet.Bases.ObjectLike {
+  /**
+   * Select the `int` field on the `Bar` object. Its type is `Int` (a `Scalar`).
+   */
   int?: Bar.int$Expanded | SelectionSet.Alias<Bar.int>
 
   /**
@@ -741,7 +933,6 @@ export interface Bar extends SelectionSet.Bases.ObjectLike {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-
   __typename?: SelectionSet.NoArgsIndicator$Expanded | SelectionSet.Alias<SelectionSet.NoArgsIndicator>
 }
 
@@ -749,6 +940,7 @@ export interface Bar extends SelectionSet.Bases.ObjectLike {
 
 export namespace Bar {
   export type int$Expanded = SelectionSet.NoArgsIndicator$Expanded
+
   export type int = SelectionSet.NoArgsIndicator
 }
 
@@ -761,7 +953,7 @@ type __Bar = Bar // [1]
 // GRAPHQL SELECTION SET
 // OBJECT TYPE
 // --------------------------------------------------------------------------------------------------
-//                                         DateObject1
+//                                            DateObject1
 // --------------------------------------------------------------------------------------------------
 //
 //
@@ -769,6 +961,9 @@ type __Bar = Bar // [1]
 // ----------------------------------------| Entrypoint Interface |
 
 export interface DateObject1 extends SelectionSet.Bases.ObjectLike {
+  /**
+   * Select the `date1` field on the `DateObject1` object. Its type is `Date` (a `Scalar`).
+   */
   date1?: DateObject1.date1$Expanded | SelectionSet.Alias<DateObject1.date1>
 
   /**
@@ -786,7 +981,6 @@ export interface DateObject1 extends SelectionSet.Bases.ObjectLike {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-
   __typename?: SelectionSet.NoArgsIndicator$Expanded | SelectionSet.Alias<SelectionSet.NoArgsIndicator>
 }
 
@@ -794,6 +988,7 @@ export interface DateObject1 extends SelectionSet.Bases.ObjectLike {
 
 export namespace DateObject1 {
   export type date1$Expanded = SelectionSet.NoArgsIndicator$Expanded
+
   export type date1 = SelectionSet.NoArgsIndicator
 }
 
@@ -806,7 +1001,7 @@ type __DateObject1 = DateObject1 // [1]
 // GRAPHQL SELECTION SET
 // OBJECT TYPE
 // --------------------------------------------------------------------------------------------------
-//                                         DateObject2
+//                                            DateObject2
 // --------------------------------------------------------------------------------------------------
 //
 //
@@ -814,6 +1009,9 @@ type __DateObject1 = DateObject1 // [1]
 // ----------------------------------------| Entrypoint Interface |
 
 export interface DateObject2 extends SelectionSet.Bases.ObjectLike {
+  /**
+   * Select the `date2` field on the `DateObject2` object. Its type is `Date` (a `Scalar`).
+   */
   date2?: DateObject2.date2$Expanded | SelectionSet.Alias<DateObject2.date2>
 
   /**
@@ -831,7 +1029,6 @@ export interface DateObject2 extends SelectionSet.Bases.ObjectLike {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-
   __typename?: SelectionSet.NoArgsIndicator$Expanded | SelectionSet.Alias<SelectionSet.NoArgsIndicator>
 }
 
@@ -839,6 +1036,7 @@ export interface DateObject2 extends SelectionSet.Bases.ObjectLike {
 
 export namespace DateObject2 {
   export type date2$Expanded = SelectionSet.NoArgsIndicator$Expanded
+
   export type date2 = SelectionSet.NoArgsIndicator
 }
 
@@ -851,7 +1049,7 @@ type __DateObject2 = DateObject2 // [1]
 // GRAPHQL SELECTION SET
 // OBJECT TYPE
 // --------------------------------------------------------------------------------------------------
-//                                         ErrorOne
+//                                              ErrorOne
 // --------------------------------------------------------------------------------------------------
 //
 //
@@ -859,7 +1057,13 @@ type __DateObject2 = DateObject2 // [1]
 // ----------------------------------------| Entrypoint Interface |
 
 export interface ErrorOne extends SelectionSet.Bases.ObjectLike {
+  /**
+   * Select the `infoId` field on the `ErrorOne` object. Its type is `ID` (a `Scalar`).
+   */
   infoId?: ErrorOne.infoId$Expanded | SelectionSet.Alias<ErrorOne.infoId>
+  /**
+   * Select the `message` field on the `ErrorOne` object. Its type is `String` (a `Scalar`).
+   */
   message?: ErrorOne.message$Expanded | SelectionSet.Alias<ErrorOne.message>
 
   /**
@@ -877,7 +1081,6 @@ export interface ErrorOne extends SelectionSet.Bases.ObjectLike {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-
   __typename?: SelectionSet.NoArgsIndicator$Expanded | SelectionSet.Alias<SelectionSet.NoArgsIndicator>
 }
 
@@ -885,8 +1088,11 @@ export interface ErrorOne extends SelectionSet.Bases.ObjectLike {
 
 export namespace ErrorOne {
   export type infoId$Expanded = SelectionSet.NoArgsIndicator$Expanded
+
   export type infoId = SelectionSet.NoArgsIndicator
+
   export type message$Expanded = SelectionSet.NoArgsIndicator$Expanded
+
   export type message = SelectionSet.NoArgsIndicator
 }
 
@@ -899,7 +1105,7 @@ type __ErrorOne = ErrorOne // [1]
 // GRAPHQL SELECTION SET
 // OBJECT TYPE
 // --------------------------------------------------------------------------------------------------
-//                                         ErrorTwo
+//                                              ErrorTwo
 // --------------------------------------------------------------------------------------------------
 //
 //
@@ -907,7 +1113,13 @@ type __ErrorOne = ErrorOne // [1]
 // ----------------------------------------| Entrypoint Interface |
 
 export interface ErrorTwo extends SelectionSet.Bases.ObjectLike {
+  /**
+   * Select the `infoInt` field on the `ErrorTwo` object. Its type is `Int` (a `Scalar`).
+   */
   infoInt?: ErrorTwo.infoInt$Expanded | SelectionSet.Alias<ErrorTwo.infoInt>
+  /**
+   * Select the `message` field on the `ErrorTwo` object. Its type is `String` (a `Scalar`).
+   */
   message?: ErrorTwo.message$Expanded | SelectionSet.Alias<ErrorTwo.message>
 
   /**
@@ -925,7 +1137,6 @@ export interface ErrorTwo extends SelectionSet.Bases.ObjectLike {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-
   __typename?: SelectionSet.NoArgsIndicator$Expanded | SelectionSet.Alias<SelectionSet.NoArgsIndicator>
 }
 
@@ -933,16 +1144,16 @@ export interface ErrorTwo extends SelectionSet.Bases.ObjectLike {
 
 export namespace ErrorTwo {
   export type infoInt$Expanded = SelectionSet.NoArgsIndicator$Expanded
+
   export type infoInt = SelectionSet.NoArgsIndicator
+
   export type message$Expanded = SelectionSet.NoArgsIndicator$Expanded
+
   export type message = SelectionSet.NoArgsIndicator
 }
 
 type __ErrorTwo = ErrorTwo // [1]
 
-/**
- * Object documentation.
- */
 //
 //
 //
@@ -950,14 +1161,20 @@ type __ErrorTwo = ErrorTwo // [1]
 // GRAPHQL SELECTION SET
 // OBJECT TYPE
 // --------------------------------------------------------------------------------------------------
-//                                         Foo
+//                                                Foo
 // --------------------------------------------------------------------------------------------------
 //
 //
 
 // ----------------------------------------| Entrypoint Interface |
 
+/**
+ * Object documentation.
+ */
 export interface Foo extends SelectionSet.Bases.ObjectLike {
+  /**
+   * Select the `id` field on the `Foo` object. Its type is `ID` (a `Scalar`).
+   */
   id?: Foo.id$Expanded | SelectionSet.Alias<Foo.id>
 
   /**
@@ -975,7 +1192,6 @@ export interface Foo extends SelectionSet.Bases.ObjectLike {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-
   __typename?: SelectionSet.NoArgsIndicator$Expanded | SelectionSet.Alias<SelectionSet.NoArgsIndicator>
 }
 
@@ -983,6 +1199,7 @@ export interface Foo extends SelectionSet.Bases.ObjectLike {
 
 export namespace Foo {
   export type id$Expanded = SelectionSet.NoArgsIndicator$Expanded
+
   export type id = SelectionSet.NoArgsIndicator
 }
 
@@ -995,7 +1212,7 @@ type __Foo = Foo // [1]
 // GRAPHQL SELECTION SET
 // OBJECT TYPE
 // --------------------------------------------------------------------------------------------------
-//                                         Object1
+//                                              Object1
 // --------------------------------------------------------------------------------------------------
 //
 //
@@ -1003,10 +1220,25 @@ type __Foo = Foo // [1]
 // ----------------------------------------| Entrypoint Interface |
 
 export interface Object1 extends SelectionSet.Bases.ObjectLike {
+  /**
+   * Select the `boolean` field on the `Object1` object. Its type is `Boolean` (a `Scalar`).
+   */
   boolean?: Object1.$boolean$Expanded | SelectionSet.Alias<Object1.$boolean>
+  /**
+   * Select the `float` field on the `Object1` object. Its type is `Float` (a `Scalar`).
+   */
   float?: Object1.float$Expanded | SelectionSet.Alias<Object1.float>
+  /**
+   * Select the `id` field on the `Object1` object. Its type is `ID` (a `Scalar`).
+   */
   id?: Object1.id$Expanded | SelectionSet.Alias<Object1.id>
+  /**
+   * Select the `int` field on the `Object1` object. Its type is `Int` (a `Scalar`).
+   */
   int?: Object1.int$Expanded | SelectionSet.Alias<Object1.int>
+  /**
+   * Select the `string` field on the `Object1` object. Its type is `String` (a `Scalar`).
+   */
   string?: Object1.$string$Expanded | SelectionSet.Alias<Object1.$string>
 
   /**
@@ -1024,7 +1256,6 @@ export interface Object1 extends SelectionSet.Bases.ObjectLike {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-
   __typename?: SelectionSet.NoArgsIndicator$Expanded | SelectionSet.Alias<SelectionSet.NoArgsIndicator>
 }
 
@@ -1032,14 +1263,23 @@ export interface Object1 extends SelectionSet.Bases.ObjectLike {
 
 export namespace Object1 {
   export type $boolean$Expanded = SelectionSet.NoArgsIndicator$Expanded
+
   export type $boolean = SelectionSet.NoArgsIndicator
+
   export type float$Expanded = SelectionSet.NoArgsIndicator$Expanded
+
   export type float = SelectionSet.NoArgsIndicator
+
   export type id$Expanded = SelectionSet.NoArgsIndicator$Expanded
+
   export type id = SelectionSet.NoArgsIndicator
+
   export type int$Expanded = SelectionSet.NoArgsIndicator$Expanded
+
   export type int = SelectionSet.NoArgsIndicator
+
   export type $string$Expanded = SelectionSet.NoArgsIndicator$Expanded
+
   export type $string = SelectionSet.NoArgsIndicator
 }
 
@@ -1052,7 +1292,7 @@ type __Object1 = Object1 // [1]
 // GRAPHQL SELECTION SET
 // OBJECT TYPE
 // --------------------------------------------------------------------------------------------------
-//                                         Object1ImplementingInterface
+//                                    Object1ImplementingInterface
 // --------------------------------------------------------------------------------------------------
 //
 //
@@ -1060,7 +1300,13 @@ type __Object1 = Object1 // [1]
 // ----------------------------------------| Entrypoint Interface |
 
 export interface Object1ImplementingInterface extends SelectionSet.Bases.ObjectLike {
+  /**
+   * Select the `id` field on the `Object1ImplementingInterface` object. Its type is `ID` (a `Scalar`).
+   */
   id?: Object1ImplementingInterface.id$Expanded | SelectionSet.Alias<Object1ImplementingInterface.id>
+  /**
+   * Select the `int` field on the `Object1ImplementingInterface` object. Its type is `Int` (a `Scalar`).
+   */
   int?: Object1ImplementingInterface.int$Expanded | SelectionSet.Alias<Object1ImplementingInterface.int>
 
   /**
@@ -1078,7 +1324,6 @@ export interface Object1ImplementingInterface extends SelectionSet.Bases.ObjectL
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-
   __typename?: SelectionSet.NoArgsIndicator$Expanded | SelectionSet.Alias<SelectionSet.NoArgsIndicator>
 }
 
@@ -1086,8 +1331,11 @@ export interface Object1ImplementingInterface extends SelectionSet.Bases.ObjectL
 
 export namespace Object1ImplementingInterface {
   export type id$Expanded = SelectionSet.NoArgsIndicator$Expanded
+
   export type id = SelectionSet.NoArgsIndicator
+
   export type int$Expanded = SelectionSet.NoArgsIndicator$Expanded
+
   export type int = SelectionSet.NoArgsIndicator
 }
 
@@ -1100,7 +1348,7 @@ type __Object1ImplementingInterface = Object1ImplementingInterface // [1]
 // GRAPHQL SELECTION SET
 // OBJECT TYPE
 // --------------------------------------------------------------------------------------------------
-//                                         Object2ImplementingInterface
+//                                    Object2ImplementingInterface
 // --------------------------------------------------------------------------------------------------
 //
 //
@@ -1108,7 +1356,13 @@ type __Object1ImplementingInterface = Object1ImplementingInterface // [1]
 // ----------------------------------------| Entrypoint Interface |
 
 export interface Object2ImplementingInterface extends SelectionSet.Bases.ObjectLike {
+  /**
+   * Select the `boolean` field on the `Object2ImplementingInterface` object. Its type is `Boolean` (a `Scalar`).
+   */
   boolean?: Object2ImplementingInterface.$boolean$Expanded | SelectionSet.Alias<Object2ImplementingInterface.$boolean>
+  /**
+   * Select the `id` field on the `Object2ImplementingInterface` object. Its type is `ID` (a `Scalar`).
+   */
   id?: Object2ImplementingInterface.id$Expanded | SelectionSet.Alias<Object2ImplementingInterface.id>
 
   /**
@@ -1126,7 +1380,6 @@ export interface Object2ImplementingInterface extends SelectionSet.Bases.ObjectL
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-
   __typename?: SelectionSet.NoArgsIndicator$Expanded | SelectionSet.Alias<SelectionSet.NoArgsIndicator>
 }
 
@@ -1134,8 +1387,11 @@ export interface Object2ImplementingInterface extends SelectionSet.Bases.ObjectL
 
 export namespace Object2ImplementingInterface {
   export type $boolean$Expanded = SelectionSet.NoArgsIndicator$Expanded
+
   export type $boolean = SelectionSet.NoArgsIndicator
+
   export type id$Expanded = SelectionSet.NoArgsIndicator$Expanded
+
   export type id = SelectionSet.NoArgsIndicator
 }
 
@@ -1148,7 +1404,7 @@ type __Object2ImplementingInterface = Object2ImplementingInterface // [1]
 // GRAPHQL SELECTION SET
 // OBJECT TYPE
 // --------------------------------------------------------------------------------------------------
-//                                         ObjectNested
+//                                            ObjectNested
 // --------------------------------------------------------------------------------------------------
 //
 //
@@ -1156,7 +1412,13 @@ type __Object2ImplementingInterface = Object2ImplementingInterface // [1]
 // ----------------------------------------| Entrypoint Interface |
 
 export interface ObjectNested extends SelectionSet.Bases.ObjectLike {
+  /**
+   * Select the `id` field on the `ObjectNested` object. Its type is `ID` (a `Scalar`).
+   */
   id?: ObjectNested.id$Expanded | SelectionSet.Alias<ObjectNested.id>
+  /**
+   * Select the `object` field on the `ObjectNested` object. Its type is Object.
+   */
   object?: ObjectNested.$object$Expanded | SelectionSet.Alias<ObjectNested.$object>
 
   /**
@@ -1174,7 +1436,6 @@ export interface ObjectNested extends SelectionSet.Bases.ObjectLike {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-
   __typename?: SelectionSet.NoArgsIndicator$Expanded | SelectionSet.Alias<SelectionSet.NoArgsIndicator>
 }
 
@@ -1182,7 +1443,9 @@ export interface ObjectNested extends SelectionSet.Bases.ObjectLike {
 
 export namespace ObjectNested {
   export type id$Expanded = SelectionSet.NoArgsIndicator$Expanded
+
   export type id = SelectionSet.NoArgsIndicator
+
   export interface $object extends __Object1 {}
   export type $object$Expanded = $object
 }
@@ -1196,7 +1459,7 @@ type __ObjectNested = ObjectNested // [1]
 // GRAPHQL SELECTION SET
 // OBJECT TYPE
 // --------------------------------------------------------------------------------------------------
-//                                         ObjectUnion
+//                                            ObjectUnion
 // --------------------------------------------------------------------------------------------------
 //
 //
@@ -1204,6 +1467,9 @@ type __ObjectNested = ObjectNested // [1]
 // ----------------------------------------| Entrypoint Interface |
 
 export interface ObjectUnion extends SelectionSet.Bases.ObjectLike {
+  /**
+   * Select the `fooBarUnion` field on the `ObjectUnion` object. Its type is Union.
+   */
   fooBarUnion?: ObjectUnion.fooBarUnion$Expanded | SelectionSet.Alias<ObjectUnion.fooBarUnion>
 
   /**
@@ -1221,7 +1487,6 @@ export interface ObjectUnion extends SelectionSet.Bases.ObjectLike {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-
   __typename?: SelectionSet.NoArgsIndicator$Expanded | SelectionSet.Alias<SelectionSet.NoArgsIndicator>
 }
 
@@ -1241,7 +1506,7 @@ type __ObjectUnion = ObjectUnion // [1]
 // GRAPHQL SELECTION SET
 // OBJECT TYPE
 // --------------------------------------------------------------------------------------------------
-//                                         lowerCaseObject
+//                                          lowerCaseObject
 // --------------------------------------------------------------------------------------------------
 //
 //
@@ -1249,6 +1514,9 @@ type __ObjectUnion = ObjectUnion // [1]
 // ----------------------------------------| Entrypoint Interface |
 
 export interface lowerCaseObject extends SelectionSet.Bases.ObjectLike {
+  /**
+   * Select the `id` field on the `lowerCaseObject` object. Its type is `ID` (a `Scalar`).
+   */
   id?: lowerCaseObject.id$Expanded | SelectionSet.Alias<lowerCaseObject.id>
 
   /**
@@ -1266,7 +1534,6 @@ export interface lowerCaseObject extends SelectionSet.Bases.ObjectLike {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-
   __typename?: SelectionSet.NoArgsIndicator$Expanded | SelectionSet.Alias<SelectionSet.NoArgsIndicator>
 }
 
@@ -1274,6 +1541,7 @@ export interface lowerCaseObject extends SelectionSet.Bases.ObjectLike {
 
 export namespace lowerCaseObject {
   export type id$Expanded = SelectionSet.NoArgsIndicator$Expanded
+
   export type id = SelectionSet.NoArgsIndicator
 }
 
@@ -1286,7 +1554,7 @@ type __lowerCaseObject = lowerCaseObject // [1]
 // GRAPHQL SELECTION SET
 // OBJECT TYPE
 // --------------------------------------------------------------------------------------------------
-//                                         lowerCaseObject2
+//                                          lowerCaseObject2
 // --------------------------------------------------------------------------------------------------
 //
 //
@@ -1294,6 +1562,9 @@ type __lowerCaseObject = lowerCaseObject // [1]
 // ----------------------------------------| Entrypoint Interface |
 
 export interface lowerCaseObject2 extends SelectionSet.Bases.ObjectLike {
+  /**
+   * Select the `int` field on the `lowerCaseObject2` object. Its type is `Int` (a `Scalar`).
+   */
   int?: lowerCaseObject2.int$Expanded | SelectionSet.Alias<lowerCaseObject2.int>
 
   /**
@@ -1311,7 +1582,6 @@ export interface lowerCaseObject2 extends SelectionSet.Bases.ObjectLike {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-
   __typename?: SelectionSet.NoArgsIndicator$Expanded | SelectionSet.Alias<SelectionSet.NoArgsIndicator>
 }
 
@@ -1319,6 +1589,7 @@ export interface lowerCaseObject2 extends SelectionSet.Bases.ObjectLike {
 
 export namespace lowerCaseObject2 {
   export type int$Expanded = SelectionSet.NoArgsIndicator$Expanded
+
   export type int = SelectionSet.NoArgsIndicator
 }
 
@@ -1330,9 +1601,9 @@ type __lowerCaseObject2 = lowerCaseObject2 // [1]
 //
 //
 //
-// ----------------------
-// GraphQLUnionType Types
-// ----------------------
+// ==================================================================================================
+//                                       GraphQLUnionType Types
+// ==================================================================================================
 //
 //
 //
@@ -1360,7 +1631,6 @@ export interface DateUnion {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-
   __typename?: SelectionSet.NoArgsIndicator$Expanded | SelectionSet.Alias<SelectionSet.NoArgsIndicator>
 }
 
@@ -1389,7 +1659,6 @@ export interface FooBarUnion {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-
   __typename?: SelectionSet.NoArgsIndicator$Expanded | SelectionSet.Alias<SelectionSet.NoArgsIndicator>
 }
 
@@ -1416,7 +1685,6 @@ export interface Result {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-
   __typename?: SelectionSet.NoArgsIndicator$Expanded | SelectionSet.Alias<SelectionSet.NoArgsIndicator>
 }
 
@@ -1442,7 +1710,6 @@ export interface lowerCaseUnion {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-
   __typename?: SelectionSet.NoArgsIndicator$Expanded | SelectionSet.Alias<SelectionSet.NoArgsIndicator>
 }
 
