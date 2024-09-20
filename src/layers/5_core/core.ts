@@ -167,7 +167,7 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
         case `typed`: {
           // todo turn inputs into variables
           variables = undefined
-          document = SelectionSet.Print.rootTypeSelectionSet(
+          document = SelectionSet.Print.resolveRootType(
             input.context,
             getRootIndexOrThrow(input.context, input.rootTypeName),
             input.selection,

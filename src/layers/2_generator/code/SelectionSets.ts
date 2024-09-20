@@ -1,13 +1,12 @@
 // todo: generate in JSDoc how the feature maps to GQL syntax.
 // todo: on union fields, JSDoc that mentions the syntax `on*`
 
-import type { GraphQLEnumType, GraphQLInterfaceType, GraphQLUnionType } from 'graphql'
+import type { GraphQLEnumType, GraphQLInputObjectType, GraphQLInterfaceType, GraphQLUnionType } from 'graphql'
 import {
   getNullableType,
   type GraphQLArgument,
   type GraphQLField,
   type GraphQLInputField,
-  type GraphQLInputObjectType,
   type GraphQLObjectType,
   type GraphQLType,
   isEnumType,
@@ -25,6 +24,7 @@ import {
 } from '../../../lib/graphql.js'
 import type { StandardScalarTypeNames } from '../../../lib/graphql.js'
 import { entries } from '../../../lib/prelude.js'
+import { SelectionSet } from '../../3_SelectionSet/__.js'
 import { createCodeGenerator, createModuleGenerator } from '../createCodeGenerator.js'
 import {
   getDocumentation,
@@ -35,8 +35,6 @@ import {
   typeTitle2SelectionSet,
 } from '../helpers.js'
 import { moduleNameScalar } from './Scalar.js'
-
-export const fragmentOnPolymorphicTypePropertyPrefix = `___on_`
 
 export const { moduleName: moduleNameSelectionSets, generate: generateSelectionSets } = createModuleGenerator(
   `SelectionSets`,
@@ -85,17 +83,10 @@ const renderUnion = createCodeGenerator<{ node: GraphQLUnionType }>(
     code.push(doc)
 
     const memberTypes = node.getTypes()
-    // todo: consider prefix of on_
-    /**
-     * @remarks It is tempting to capitalize type name so that a type name like `foobar`
-     * becomes `onFoobar` instead of `onfoorbar`. However, if we capitalize it means more
-     * type-level (template literal) complexity in the ResultSet inference to correctly map
-     * the capitalized case back to the actually lowercase name.
-     */
     code.push(`
       export interface ${renderName(node)} {
         ${
-      memberTypes.map((type) => `${fragmentOnPolymorphicTypePropertyPrefix}${type.name}?: ${renderName(type)}`).join(
+      memberTypes.map((type) => `${SelectionSet.On.prefix}${type.name}?: ${renderName(type)}`).join(
         `\n`,
       )
     }
@@ -138,7 +129,7 @@ const renderInterface = createCodeGenerator<{ node: GraphQLInterfaceType }>(
     }).join(`\n`)
     const implementorTypes = getInterfaceImplementors(config.typeMapByKind, node)
     const onTypesRendered = implementorTypes.map(type =>
-      Helpers.outputField(`${fragmentOnPolymorphicTypePropertyPrefix}${type.name}`, renderName(type))
+      Helpers.outputField(`${SelectionSet.On.prefix}${type.name}`, renderName(type))
     ).join(
       ` \n `,
     )

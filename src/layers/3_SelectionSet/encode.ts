@@ -11,18 +11,19 @@ import { parseClientDirectiveInclude } from './runtime/directives/include.js'
 import { parseClientDirectiveSkip } from './runtime/directives/skip.js'
 import { parseClientDirectiveStream } from './runtime/directives/stream.js'
 import { parseClientFieldItem } from './runtime/FieldItem.js'
-import { parseClientFieldName, toGraphQLFieldName } from './runtime/FieldName.js'
+import { createFieldName } from './runtime/FieldName.js'
 import type { Indicator } from './runtime/indicator.js'
 import { isIndicator, isPositiveIndicator } from './runtime/indicator.js'
 import { parseClientOn, toGraphQLOn } from './runtime/on.js'
+import { normalizeAlias } from './types.js'
 
 type SpecialFields = {
   // todo - this requires having the schema at runtime to know which fields to select.
   // $scalars?: SelectionSet.Indicator
-  $include?: SelectionSet.Directive.Include['$include']
-  $skip?: SelectionSet.Directive.Skip['$skip']
-  $defer?: SelectionSet.Directive.Defer['$defer']
-  $stream?: SelectionSet.Directive.Stream['$stream']
+  $include?: SelectionSet.Directive.IncludeField['$include']
+  $skip?: SelectionSet.Directive.SkipField['$skip']
+  $defer?: SelectionSet.Directive.DeferField['$defer']
+  $stream?: SelectionSet.Directive.StreamField['$stream']
   $?: Args
 }
 
@@ -47,42 +48,14 @@ export interface Context {
   config: Config
 }
 
-export const rootTypeSelectionSet = (
+export const resolveRootType = (
   context: Context,
   rootObjectDef: Schema.Output.RootType,
   selectionSet: GraphQLObjectSelection,
   operationName: string = ``,
 ) => {
   const operationTypeName = lowerCaseFirstLetter(rootObjectDef.fields.__typename.type.type)
-  return `${operationTypeName} ${operationName} { ${
-    resolveObjectLikeFieldValue(context, rootObjectDef, selectionSet)
-  } }`
-}
-
-const resolveDirectives = (fieldValue: FieldValue) => {
-  if (isIndicator(fieldValue)) return ``
-
-  const { $include, $skip, $defer, $stream } = fieldValue
-
-  let directives = ``
-
-  if ($stream !== undefined) {
-    directives += toGraphQLDirective(parseClientDirectiveStream($stream))
-  }
-
-  if ($defer !== undefined) {
-    directives += toGraphQLDirective(parseClientDirectiveDefer($defer))
-  }
-
-  if ($include !== undefined) {
-    directives += toGraphQLDirective(parseClientDirectiveInclude($include))
-  }
-
-  if ($skip !== undefined) {
-    directives += toGraphQLDirective(parseClientDirectiveSkip($skip))
-  }
-
-  return directives
+  return `${operationTypeName} ${operationName} { ${resolveObjectLikeField(context, rootObjectDef, selectionSet)} }`
 }
 
 const resolveArgValue = (
@@ -144,6 +117,7 @@ const resolveArgs = (context: Context, schemaField: Schema.SomeField, ss: Indica
     }).join(`, `)
   })`
 }
+
 const pruneNonSelections = (ss: SS) => {
   const entries = Object.entries(ss)
   const selectEntries = entries.filter(_ => !_[0].startsWith(`$`))
@@ -174,11 +148,11 @@ const resolveFieldValue = (
   // @ts-ignore ID error
   const schemaNamedOutputType = Schema.Output.unwrapToNamed(schemaField.type) as Schema.Object$2
   return `${args} ${directives} {
-		${resolveObjectLikeFieldValue(context, readMaybeThunk(schemaNamedOutputType), selection)}
+		${resolveObjectLikeField(context, readMaybeThunk(schemaNamedOutputType), selection)}
 	}`
 }
 
-export const resolveObjectLikeFieldValue = (
+export const resolveObjectLikeField = (
   context: Context,
   schemaItem: Schema.Object$2 | Schema.Union | Schema.Interface,
   fieldValue: FieldValue,
@@ -188,22 +162,23 @@ export const resolveObjectLikeFieldValue = (
     string,
     FieldValue,
   ][]
+
   switch (schemaItem.kind) {
     case `Object`: {
       const rootTypeName = (RootTypeName as Record<string, RootTypeName>)[schemaItem.fields.__typename.type.type]
         ?? null
       return applicableSelections.map(([clientFieldName, ss]) => {
-        const fieldName = parseClientFieldName(clientFieldName)
-        const schemaField = schemaItem.fields[fieldName.actual]
+        const fieldName = createFieldName(clientFieldName)
+        const schemaField = schemaItem.fields[fieldName.value]
         if (!schemaField) throw new Error(`Field ${clientFieldName} not found in schema object`)
         /**
          * Inject __typename field for result fields that are missing it.
          */
         // dprint-ignore
-        if (rootTypeName && context.config.output.errors.schema !== false && context.schemaIndex.error.rootResultFields[rootTypeName][fieldName.actual]) {
+        if (rootTypeName && context.config.output.errors.schema !== false && context.schemaIndex.error.rootResultFields[rootTypeName][fieldName.value]) {
           (ss as Record<string, boolean>)[`__typename`] = true
         }
-        return `${toGraphQLFieldName(fieldName)} ${resolveFieldValue(context, schemaField, ss)}`
+        return resolveField(context, schemaField, { name: fieldName.value, value: ss })
       }).join(`\n`) + `\n`
     }
     case `Interface`: {
@@ -212,18 +187,18 @@ export const resolveObjectLikeFieldValue = (
 
         switch (fieldItem._tag) {
           case `FieldName`: {
-            if (fieldItem.actual === `__typename`) {
-              return `${toGraphQLFieldName(fieldItem)} ${resolveDirectives(ss)}`
+            if (fieldItem.value === `__typename`) {
+              return `${fieldItem.value} ${resolveDirectives(ss)}`
             }
-            const schemaField = schemaItem.fields[fieldItem.actual]
+            const schemaField = schemaItem.fields[fieldItem.value]
             if (!schemaField) throw new Error(`Field ${ClientFieldName} not found in schema object`)
-            return `${toGraphQLFieldName(fieldItem)} ${resolveFieldValue(context, schemaField, ss)}`
+            return resolveField(context, schemaField, { name: fieldItem.value, value: ss })
           }
           case `On`: {
             const schemaObject = context.schemaIndex[`objects`][fieldItem.typeOrFragmentName]
             if (!schemaObject) throw new Error(`Fragment ${fieldItem.typeOrFragmentName} not found in schema`)
             return `${toGraphQLOn(fieldItem)} ${resolveDirectives(ss)} { ${
-              resolveObjectLikeFieldValue(context, schemaObject, ss)
+              resolveObjectLikeField(context, schemaObject, ss)
             } }`
           }
           default: {
@@ -237,9 +212,10 @@ export const resolveObjectLikeFieldValue = (
         const fieldItem = parseClientFieldItem(fieldExpression)
         switch (fieldItem._tag) {
           case `FieldName`: {
-            if (fieldItem.actual === `__typename`) {
-              return `${toGraphQLFieldName(fieldItem)} ${resolveDirectives(ss)}`
+            if (fieldItem.value === `__typename`) {
+              return `${fieldItem.value} ${resolveDirectives(ss)}`
             }
+            console.log(fieldItem)
             // todo
             throw new Error(`todo resolve common interface fields from unions`)
           }
@@ -249,7 +225,7 @@ export const resolveObjectLikeFieldValue = (
             // if (isIndicator(ss)) throw new Error(`Union field must have selection set`)
             return `${toGraphQLOn(fieldItem)} ${resolveDirectives(ss)} { ${
               // @ts-expect-error fixme
-              resolveObjectLikeFieldValue(context, schemaObject, pruneNonSelections(ss))} }`
+              resolveObjectLikeField(context, schemaObject, pruneNonSelections(ss))} }`
           }
           default: {
             throw new Error(`Unknown field item tag`)
@@ -262,8 +238,49 @@ export const resolveObjectLikeFieldValue = (
   }
 }
 
+export const resolveField = (
+  context: Context,
+  schemaField: Schema.SomeField,
+  field: { name: string; value: FieldValue },
+): string => {
+  const aliases = normalizeAlias(field.value)
+  if (aliases) {
+    return aliases.map(alias => {
+      return `${alias[0]}: ${field.name} ${resolveFieldValue(context, schemaField, alias[1] as FieldValue)}`
+    }).join(`\n`)
+  }
+
+  return `${field.name} ${resolveFieldValue(context, schemaField, field.value)}`
+}
+
 export const resolveOn = (field: string) => {
   const on = parseClientOn(field)
   if (on) return toGraphQLOn(on)
   return field
+}
+
+const resolveDirectives = (fieldValue: FieldValue) => {
+  if (isIndicator(fieldValue)) return ``
+
+  const { $include, $skip, $defer, $stream } = fieldValue
+
+  let directives = ``
+
+  if ($stream !== undefined) {
+    directives += toGraphQLDirective(parseClientDirectiveStream($stream))
+  }
+
+  if ($defer !== undefined) {
+    directives += toGraphQLDirective(parseClientDirectiveDefer($defer))
+  }
+
+  if ($include !== undefined) {
+    directives += toGraphQLDirective(parseClientDirectiveInclude($include))
+  }
+
+  if ($skip !== undefined) {
+    directives += toGraphQLDirective(parseClientDirectiveSkip($skip))
+  }
+
+  return directives
 }

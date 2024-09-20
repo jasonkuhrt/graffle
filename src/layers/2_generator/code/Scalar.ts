@@ -1,3 +1,4 @@
+import { hasCustomScalars } from '../../../lib/graphql.js'
 import { createModuleGenerator } from '../createCodeGenerator.js'
 import { typeTitle2 } from '../helpers.js'
 
@@ -5,20 +6,21 @@ export const { generate: generateScalar, moduleName: moduleNameScalar } = create
   `Scalar`,
   ({ config, code }) => {
     // todo test case for when this is true
-    const needsDefaultCustomScalarImplementation = config.typeMapByKind.GraphQLScalarTypeCustom.length > 0
+    const needsDefaultCustomScalarImplementation = hasCustomScalars(config.typeMapByKind)
       && !config.options.customScalars
 
     const CustomScalarsNamespace = `CustomScalars`
     const StandardScalarNamespace = `StandardScalar`
 
-    const standardScalarImport = needsDefaultCustomScalarImplementation
-      ? `import * as ${StandardScalarNamespace} from '${config.libraryPaths.scalars}'`
-      : null
-    code.push(standardScalarImport)
+    if (needsDefaultCustomScalarImplementation) {
+      code.push(`import * as ${StandardScalarNamespace} from '${config.libraryPaths.scalars}'`)
+    }
 
-    code.push(`import type { Schema } from '${config.libraryPaths.schema}'`)
-    code.push(`import * as ${CustomScalarsNamespace} from '${config.importPaths.customScalarCodecs}'`)
-    code.push(``)
+    if (hasCustomScalars(config.typeMapByKind)) {
+      code.push(`import type { Schema } from '${config.libraryPaths.schema}'`)
+      code.push(`import * as ${CustomScalarsNamespace} from '${config.importPaths.customScalarCodecs}'`)
+      code.push(``)
+    }
 
     code.push(`export * from '${config.libraryPaths.scalars}'`)
     code.push(config.options.customScalars ? `export * from '${config.importPaths.customScalarCodecs}'` : ``)
@@ -32,10 +34,6 @@ export const { generate: generateScalar, moduleName: moduleNameScalar } = create
       code.push(`export type ${scalar.name}Encoded = Schema.Scalar.GetEncoded<${scalar.name}>`)
       code.push(``)
     }
-
-    // export type Date = typeof CustomScalarCodecs.Date
-    // export type DateDecoded = Schema.Scalar.GetDecoded<Date>
-    // export type DateEncoded = Schema.Scalar.GetEncoded<Date>
 
     if (needsDefaultCustomScalarImplementation) {
       console.log(

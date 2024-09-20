@@ -91,14 +91,14 @@ type FieldType<
 
 // dprint-ignore
 type FieldDirectiveInclude<$SelectionSet> =
-  $SelectionSet extends SelectionSet.Directive.Include  ? $SelectionSet extends SelectionSet.Directive.Include.Positive ?
+  $SelectionSet extends SelectionSet.Directive.IncludeField  ? $SelectionSet extends SelectionSet.Directive.Include.Positive ?
                                                           never :
                                                           null
                                                         : never
 
 // dprint-ignore
 type FieldDirectiveSkip<$SelectionSet> =
-  $SelectionSet extends SelectionSet.Directive.Skip     ? $SelectionSet extends SelectionSet.Directive.Skip.Negative ?
+  $SelectionSet extends SelectionSet.Directive.SkipField     ? $SelectionSet extends SelectionSet.Directive.Skip.Negative ?
                                                           never :
                                                           null
                                                         : never

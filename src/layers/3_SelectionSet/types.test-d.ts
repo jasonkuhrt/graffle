@@ -96,7 +96,7 @@ test(`Query`, () => {
 
 
   // Alias
-  // todo test that aliases are no supported on onX polymorphic fields
+  // todo test that aliases are no supported on ___on_X polymorphic fields
   
   // alias: enum
   assertType<Q>({ abcEnum: [`enum`, true] })
@@ -115,9 +115,9 @@ test(`Query`, () => {
   // @ts-expect-error alias invalid one too many nested arrays
   assertType<Q>({ object: [[[`o`, { id: true }]]] })
   // @ts-expect-error alias invalid on union fragment
-  assertType<Q>({ unionFooBar: { onFoo: [`onFoo2`, { id: true }] } })
+  assertType<Q>({ unionFooBar: { ___on_Foo: [`x`, { id: true }] } })
   // @ts-expect-error alias invalid on interface fragment
-  assertType<Q>({ interface: { onObject1ImplementingInterface: [`x`, { id: true }] } })
+  assertType<Q>({ interface: { ___on_Object1ImplementingInterface: [`x`, { id: true }] } })
 
   // todo: We could achieve this by using a more expensive template literal type like `${Letter}${string}`
   // Make that an opt-in feature since it will potentially decrease the IDE performance for everyone even those not benefiting much from this.

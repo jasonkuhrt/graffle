@@ -50,37 +50,37 @@ test(`general`, () => {
 
   // Union
   expectTypeOf<RS<{ unionFooBar: { __typename: true } }>>().toEqualTypeOf<{ unionFooBar: null | { __typename: "Foo" } | { __typename: "Bar" } }>()
-  expectTypeOf<RS<{ unionFooBar: { onFoo: { __typename: true } } }>>().toEqualTypeOf<{ unionFooBar: null | {} | { __typename: "Foo" } }>()
-  expectTypeOf<RS<{ unionFooBar: { onFoo: { id: true } } }>>().toEqualTypeOf<{ unionFooBar: null | {} | { id: null|string } }>()
-  expectTypeOf<RS<{ unionFooBar: { __typename: true; onFoo: { id: true } } }>>().toEqualTypeOf<{ unionFooBar: null | { __typename: "Bar" } | { __typename: "Foo"; id: null|string } }>()
+  expectTypeOf<RS<{ unionFooBar: { ___on_Foo: { __typename: true } } }>>().toEqualTypeOf<{ unionFooBar: null | {} | { __typename: "Foo" } }>()
+  expectTypeOf<RS<{ unionFooBar: { ___on_Foo: { id: true } } }>>().toEqualTypeOf<{ unionFooBar: null | {} | { id: null|string } }>()
+  expectTypeOf<RS<{ unionFooBar: { __typename: true; ___on_Foo: { id: true } } }>>().toEqualTypeOf<{ unionFooBar: null | { __typename: "Bar" } | { __typename: "Foo"; id: null|string } }>()
   // with Args
-  expectTypeOf<RS<{ unionFooBarWithArgs: { $: { id: `abc` }, onFoo: { id: true } } }>>().toEqualTypeOf<{ unionFooBarWithArgs: null | {} | { id: null|string } }>()
+  expectTypeOf<RS<{ unionFooBarWithArgs: { $: { id: `abc` }, ___on_Foo: { id: true } } }>>().toEqualTypeOf<{ unionFooBarWithArgs: null | {} | { id: null|string } }>()
 
 
   // Union fragments Case
-  expectTypeOf<RS<{ lowerCaseUnion: { __typename:true, onLowerCaseObject: { id: true }, onLowerCaseObject2: { int: true } } }>>().toEqualTypeOf<{ lowerCaseUnion: null | { __typename: 'lowerCaseObject'; id: null|string } | { __typename: 'lowerCaseObject2'; int: null|number } }>()
+  expectTypeOf<RS<{ lowerCaseUnion: { __typename:true, ___on_lowerCaseObject: { id: true }, ___on_lowerCaseObject2: { int: true } } }>>().toEqualTypeOf<{ lowerCaseUnion: null | { __typename: 'lowerCaseObject'; id: null|string } | { __typename: 'lowerCaseObject2'; int: null|number } }>()
 
 
   // Interface
-  expectTypeOf<RS<{ interface: { onObject1ImplementingInterface: { id: true }}}>>().toEqualTypeOf<{ interface: null | { id: null | string} | {} }>()
-  expectTypeOf<RS<{ interface: { onObject1ImplementingInterface: { int: true }}}>>().toEqualTypeOf<{ interface: null | { int: null | number} | {} }>()
+  expectTypeOf<RS<{ interface: { ___on_Object1ImplementingInterface: { id: true }}}>>().toEqualTypeOf<{ interface: null | { id: null | string} | {} }>()
+  expectTypeOf<RS<{ interface: { ___on_Object1ImplementingInterface: { int: true }}}>>().toEqualTypeOf<{ interface: null | { int: null | number} | {} }>()
   expectTypeOf<RS<{ interface: { id: true }}>>().toEqualTypeOf<{ interface: null | { id: null | string} }>()
-  expectTypeOf<RS<{ interface: { id: true, onObject1ImplementingInterface: { id: true } }}>>().toEqualTypeOf<{ interface: null | { id: null | string} }>()
-  expectTypeOf<RS<{ interface: { id: true, onObject1ImplementingInterface: { int: true } }}>>().toEqualTypeOf<{ interface: null | { id: null | string} | { id: null | string; int: null | number }}>()
+  expectTypeOf<RS<{ interface: { id: true, ___on_Object1ImplementingInterface: { id: true } }}>>().toEqualTypeOf<{ interface: null | { id: null | string} }>()
+  expectTypeOf<RS<{ interface: { id: true, ___on_Object1ImplementingInterface: { int: true } }}>>().toEqualTypeOf<{ interface: null | { id: null | string} | { id: null | string; int: null | number }}>()
   expectTypeOf<RS<{ interface: { __typename:true }}>>().toEqualTypeOf<{ interface: null | { __typename: 'Object1ImplementingInterface' } | { __typename: 'Object2ImplementingInterface' } }>()
-  expectTypeOf<RS<{ interface: { onObject1ImplementingInterface: { __typename: true } }}>>().toEqualTypeOf<{ interface: null | { __typename: 'Object1ImplementingInterface' } | {}}>()
+  expectTypeOf<RS<{ interface: { ___on_Object1ImplementingInterface: { __typename: true } }}>>().toEqualTypeOf<{ interface: null | { __typename: 'Object1ImplementingInterface' } | {} }>()
   expectTypeOf<RS<{ interface: { $scalars: true }}>>().toEqualTypeOf<{ interface: null | { __typename: 'Object1ImplementingInterface', id: null | string, int: null|number} | { __typename: 'Object2ImplementingInterface', id: null | string; boolean:null|boolean} }>()
   // with args
   expectTypeOf<RS<{ interfaceWithArgs: { $:{id:'abc'}; id: true }}>>().toEqualTypeOf<{ interfaceWithArgs: null | { id: null | string }   }>()
 
   // Alias
   // scalar
-  expectTypeOf<RS<{ id_as_id2: true }>>().toEqualTypeOf<{ id2: null | string }>()
-  expectTypeOf<RS<{ idNonNull_as_id2: true }>>().toEqualTypeOf<{ id2: string }>()
-  expectTypeOf<RS<{ id_as: true }>>().toEqualTypeOf<{ id_as: ResultSet.Errors.UnknownFieldName<'id_as', Schema.Root.Query> }>()
-  expectTypeOf<RS<{ id_as_$: true }>>().toEqualTypeOf<{ id_as_$: ResultSet.Errors.UnknownFieldName<'id_as_$', Schema.Root.Query> }>()
+  expectTypeOf<RS<{ id: ['id2', true] }>>().toEqualTypeOf<{ id2: null | string }>()
+  expectTypeOf<RS<{ idNonNull: ['id2', true] }>>().toEqualTypeOf<{ id2: string }>()
+  // expectTypeOf<RS<{ id_as: true }>>().toEqualTypeOf<{ id_as: ResultSet.Errors.UnknownFieldName<'id_as', Schema.Root.Query> }>()
+  // expectTypeOf<RS<{ id_as_$: true }>>().toEqualTypeOf<{ id_as_$: ResultSet.Errors.UnknownFieldName<'id_as_$', Schema.Root.Query> }>()
   // union fragment
-  expectTypeOf<RS<{ unionFooBar: { onFoo: { id_as_id2: true } } }>>().toEqualTypeOf<{ unionFooBar: null | {} | { id2: null|string } }>()
+  expectTypeOf<RS<{ unionFooBar: { ___on_Foo: { id_as_id2: true } } }>>().toEqualTypeOf<{ unionFooBar: null | {} | { id2: null|string } }>()
 
   // Directive @include
   // On scalar non-nullable

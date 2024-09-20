@@ -6,7 +6,7 @@ import { $Index as schemaIndex } from '../../../tests/_/schema/generated/modules
 import { outputConfigDefault } from '../6_client/Settings/Config.js'
 import type { SelectionSet } from './__.js'
 import type { Context } from './encode.js'
-import { rootTypeSelectionSet } from './encode.js'
+import { resolveRootType } from './encode.js'
 
 // eslint-disable-next-line
 // @ts-ignore
@@ -32,7 +32,7 @@ const testEachArgs = [
         initialInput: {} as any,
       },
     }
-    const graphqlDocumentString = rootTypeSelectionSet(context, schemaIndex[`Root`][`Query`], ss as any)
+    const graphqlDocumentString = resolveRootType(context, schemaIndex[`Root`][`Query`], ss as any)
     // Should parse, ensures is syntactically valid graphql document.
     const document = parse(graphqlDocumentString)
     const graphqlDocumentStringFormatted = print(document)
@@ -54,9 +54,9 @@ describe(`enum`, () => {
 describe(`union`, () => {
   test.each([
     [s({ unionFooBar: { __typename: true } })],
-    [s({ unionFooBar: { onBar: { int: true } } })],
-    [s({ unionFooBar: { onBar: { $skip: true, int: true } } })],
-    // s({ unionFooBar: { onBar: {} } }), // todo should be static type error
+    [s({ unionFooBar: { ___on_Bar: { int: true } } })],
+    [s({ unionFooBar: { ___on_Bar: { $skip: true, int: true } } })],
+    // s({ unionFooBar: { __on_Bar: {} } }), // todo should be static type error
   ])(...testEachArgs)
 })
 

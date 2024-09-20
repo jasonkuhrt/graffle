@@ -19,9 +19,9 @@ test(`query`, () => {
   // object
   expectTypeOf(graffle.query.dateObject1({ date1: true })).resolves.toEqualTypeOf<{ date1: Date | null } | null>()
   expectTypeOf(graffle.query.dateObject1({ $scalars: true })).resolves.toEqualTypeOf<{ __typename: "DateObject1"; date1: Date | null } | null>()
-  expectTypeOf(graffle.query.unionFooBar({ onFoo: { id: true }})).resolves.toEqualTypeOf<{} | { id: string | null } | null>()
+  expectTypeOf(graffle.query.unionFooBar({ ___on_Foo: { id: true }})).resolves.toEqualTypeOf<{} | { id: string | null } | null>()
   expectTypeOf(graffle.query.interface({ id: true })).resolves.toEqualTypeOf<null | { id: string | null }>()
-  expectTypeOf(graffle.query.interface({ onObject1ImplementingInterface: { int: true }})).resolves.toEqualTypeOf<{} | { int: number | null } | null>()
+  expectTypeOf(graffle.query.interface({ ___on_Object1ImplementingInterface: { int: true }})).resolves.toEqualTypeOf<{} | { int: number | null } | null>()
 
   // @ts-expect-error missing input selection set
   graffle.query.dateObject1()  

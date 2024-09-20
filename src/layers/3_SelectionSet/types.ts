@@ -50,7 +50,7 @@ type Fields<$Fields extends SomeFields, $Index extends Schema.Index> =
  * Inline fragments for field groups.
  * @see https://spec.graphql.org/draft/#sec-Inline-Fragments
  */
-  ___?: MaybeList<Fields<$Fields, $Index> & FieldDirectives>
+  ___?: MaybeList<Fields<$Fields, $Index> & Directive.$Fields>
   /**
  * Special property to select all scalars.
  */
@@ -85,7 +85,7 @@ export type Field_<
   $type extends Schema.__typename                         ? NoArgsIndicator :
   $type extends Schema.Scalar.Any                         ? Indicator<$Field> : // eslint-disable
   $type extends Schema.Enum                               ? Indicator<$Field> :
-  $type extends Schema.Object$2                           ? Object<$type, $Index> & ($Options['hideDirectives'] extends true ? {} : FieldDirectives) & Arguments<$Field> :
+  $type extends Schema.Object$2                           ? Object<$type, $Index> & ($Options['hideDirectives'] extends true ? {} : Directive.$Fields) & Arguments<$Field> :
   $type extends Schema.Union                              ? Union<$type, $Index> & Arguments<$Field> :
   $type extends Schema.Interface                          ? Interface<$type, $Index> & Arguments<$Field> :
                                                             TSError<'Field', '$Field case not handled', { $Field: $Field }>
@@ -111,7 +111,7 @@ type InterfaceDistributed<$Node extends Schema.Object$2, $Index extends Schema.I
   $Node extends any
     ? {
       [$typename in $Node['fields']['__typename']['type']['type'] as `on${Capitalize<$typename>}`]?:
-        Object<$Node, $Index> & FieldDirectives
+        Object<$Node, $Index> & Directive.$Fields
     }
     : never
 
@@ -125,7 +125,7 @@ type UnionDistributed<$Object extends Schema.Object$2,$Index extends Schema.Inde
   $Object extends any
   ? {
      [$typename in $Object['fields']['__typename']['type']['type'] as `on${Capitalize<$typename>}`]?:
-        Object<$Object, $Index> & FieldDirectives
+        Object<$Object, $Index> & Directive.$Fields
     }
   : never
 
@@ -176,34 +176,6 @@ export type ResolveAliasTargets<SelectionSet> = {
 }
 
 /**
- * Directives
- */
-
-// dprint-ignore
-export namespace Directive {
-  export interface Include { $include: boolean | { if?: boolean } }
-  export namespace Include {
-    export interface Positive { $include: true | { if: true } }
-    export interface Negative { $include: false | { if: false } }
-  }
-  export interface Skip { $skip: boolean | { if?: boolean } }
-  export namespace Skip {
-    export interface Positive { $skip: true | { if: true } }
-    export interface Negative { $skip: false | { if: false } }
-  }
-  export interface Defer { $defer: boolean | { if?: boolean; label?: string } }
-  export namespace Defer {
-    export interface Positive { $defer: true | { if: true } }
-    export interface Negative { $defer: false | { if: false } }
-  }
-  export interface Stream { $stream: boolean | { if?: boolean; label?: string; initialCount?: number } }
-  export namespace Stream {
-    export interface Positive { $stream: true | { if: true } }
-    export interface Negative { $stream: false | { if: false } }
-  }
-}
-
-/**
  * Indicators
  */
 
@@ -228,12 +200,12 @@ export type Indicator<$Field extends SomeField> =
  * If a field directive is given as an indicator then it implies "select this" e.g. `true`/`1`.
  * Of course the semantics of the directive may change the derived type (e.g. `skip` means the field might not show up in the result set)
  */
-export type NoArgsIndicator = ClientIndicator | FieldDirectives
-export type NoArgsIndicator$Expanded = UnionExpanded<ClientIndicator | Simplify<FieldDirectives>>
+export type NoArgsIndicator = ClientIndicator | Directive.$Fields
+export type NoArgsIndicator$Expanded = UnionExpanded<ClientIndicator | Simplify<Directive.$Fields>>
 
 type ArgsIndicator<$Args extends Schema.Args<any>> = $Args['isFieldsAllNullable'] extends true
-  ? ({ $?: Args<$Args> } & FieldDirectives) | ClientIndicator
-  : { $: Args<$Args> } & FieldDirectives
+  ? ({ $?: Args<$Args> } & Directive.$Fields) | ClientIndicator
+  : { $: Args<$Args> } & Directive.$Fields
 
 // dprint-ignore
 export type Args<$Args extends Schema.Args<any>> = ArgFields<$Args['fields']>
@@ -258,52 +230,8 @@ type InputFieldType<$InputType extends Schema.Input.Any> =
   $InputType extends Schema.Scalar.Any                          ? ReturnType<$InputType['codec']['decode']> :
                                                                   TSError<'InferTypeInput', 'Unknown $InputType', { $InputType: $InputType }> // never
 
-/**
- * @see https://spec.graphql.org/draft/#sec-Type-System.Directives.Built-in-Directives
- */
-export interface FieldDirectives {
-  /**
-   * https://spec.graphql.org/draft/#sec--skip
-   */
-  $skip?: SkipDirective
-  /**
-   * https://spec.graphql.org/draft/#sec--include
-   */
-  $include?: IncludeDirective
-  /**
-   * @see https://github.com/graphql/graphql-wg/blob/main/rfcs/DeferStream.md#defer
-   */
-  $defer?: DeferDirective
-  /**
-   * @see https://github.com/graphql/graphql-wg/blob/main/rfcs/DeferStream.md#stream
-   */
-  $stream?: StreamDirective
-}
-
-/**
- * https://spec.graphql.org/draft/#sec--skip
- */
-type SkipDirective = boolean | { if?: boolean }
-/**
- * https://spec.graphql.org/draft/#sec--include
- */
-type IncludeDirective = boolean | { if?: boolean }
-/**
- * @see https://github.com/graphql/graphql-wg/blob/main/rfcs/DeferStream.md#defer
- */
-type DeferDirective = boolean | { if?: boolean; label?: string }
-/**
- * @see https://github.com/graphql/graphql-wg/blob/main/rfcs/DeferStream.md#stream
- */
-type StreamDirective = boolean | { if?: boolean; label?: string; initialCount?: number }
-
-export type Alias<$SelectionSet> = [alias: string, $SelectionSet] | [
-  alias: string,
-  $SelectionSet,
-][]
-
 export namespace Bases {
-  export interface Base extends FieldDirectives {}
+  export interface Base extends Directive.$Fields {}
 
   export interface ObjectLike extends Base {
     /**
@@ -311,4 +239,96 @@ export namespace Bases {
      */
     $scalars?: ClientIndicator
   }
+}
+
+/**
+ * Directives
+ */
+
+// dprint-ignore
+export namespace Directive {
+/**
+ * @see https://spec.graphql.org/draft/#sec-Type-System.Directives.Built-in-Directives
+ */
+export interface $Fields {
+  /**
+   * https://spec.graphql.org/draft/#sec--skip
+   */
+  $skip?: Skip
+  /**
+   * https://spec.graphql.org/draft/#sec--include
+   */
+  $include?: Include
+  /**
+   * @see https://github.com/graphql/graphql-wg/blob/main/rfcs/DeferStream.md#defer
+   */
+  $defer?: Defer
+  /**
+   * @see https://github.com/graphql/graphql-wg/blob/main/rfcs/DeferStream.md#stream
+   */
+  $stream?: Stream
+}
+
+/**
+ * https://spec.graphql.org/draft/#sec--include
+ */
+  export type Include = boolean | { if?: boolean }
+  export interface IncludeField { $include: Include }
+  export namespace Include {
+    export interface Positive { $include: true | { if: true } }
+    export interface Negative { $include: false | { if: false } }
+  }
+
+/**
+ * https://spec.graphql.org/draft/#sec--skip
+ */
+  export type Skip = boolean | { if?: boolean }
+  export interface SkipField { $skip: Skip }
+  export namespace Skip {
+    export interface Positive { $skip: true | { if: true } }
+    export interface Negative { $skip: false | { if: false } }
+  }
+
+/**
+ * @see https://github.com/graphql/graphql-wg/blob/main/rfcs/DeferStream.md#defer
+ */
+  export type Defer = boolean | { if?: boolean; label?: string }
+  export interface DeferField { $defer: Defer }
+  export namespace Defer {
+    export interface Positive { $defer: true | { if: true } }
+    export interface Negative { $defer: false | { if: false } }
+  }
+
+/**
+ * @see https://github.com/graphql/graphql-wg/blob/main/rfcs/DeferStream.md#stream
+ */
+  export type Stream = boolean | { if?: boolean; label?: string; initialCount?: number }
+  export interface StreamField { $stream: Stream }
+  export namespace Stream {
+    export interface Positive { $stream: true | { if: true } }
+    export interface Negative { $stream: false | { if: false } }
+  }
+}
+
+export type Alias<$SelectionSet = unknown> = [alias: string, $SelectionSet] | [
+  alias: string,
+  $SelectionSet,
+][]
+
+export type AliasNormalized<$SelectionSet = unknown> = [
+  alias: string,
+  $SelectionSet,
+][]
+
+export const isAlias = (value: unknown): value is Alias<any> => {
+  return Array.isArray(value) && value.length === 2
+}
+
+export const normalizeAlias = (value: unknown): null | AliasNormalized => {
+  if (!isAlias(value)) return null
+  const isMultiAlias = Array.isArray(value[1])
+  if (isMultiAlias) {
+    return value as AliasNormalized
+  }
+  return [value] as AliasNormalized
 }

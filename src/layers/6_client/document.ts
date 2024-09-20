@@ -36,7 +36,7 @@ export const toDocumentString = (
     const schemaRootType = context.schemaIndex[`Root`][rootType]
     if (!schemaRootType) throw new Error(`Schema has no ${rootType} root type`)
 
-    const documentString = SelectionSet.Print.rootTypeSelectionSet(
+    const documentString = SelectionSet.Print.resolveRootType(
       context,
       schemaRootType,
       rootTypeDocument,

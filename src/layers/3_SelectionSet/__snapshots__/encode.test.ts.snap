@@ -548,7 +548,10 @@ exports[`$stream > Query 9`] = `
 exports[`alias > Query 1`] = `
 "
 {
-  "id_as_x": true
+  "id": [
+    "x",
+    true
+  ]
 }
 --------------
 {
@@ -560,8 +563,16 @@ exports[`alias > Query 1`] = `
 exports[`alias > Query 2`] = `
 "
 {
-  "id_as_x": true,
-  "id_as_id2": true
+  "id": [
+    [
+      "x",
+      true
+    ],
+    [
+      "id2",
+      true
+    ]
+  ]
 }
 --------------
 {
@@ -574,9 +585,12 @@ exports[`alias > Query 2`] = `
 exports[`alias > Query 3`] = `
 "
 {
-  "id_as_x": {
-    "$skip": true
-  }
+  "id": [
+    "x",
+    {
+      "$skip": true
+    }
+  ]
 }
 --------------
 {
@@ -588,10 +602,13 @@ exports[`alias > Query 3`] = `
 exports[`alias > Query 4`] = `
 "
 {
-  "object_as_x": {
-    "$skip": true,
-    "id": true
-  }
+  "object": [
+    "x",
+    {
+      "$skip": true,
+      "id": true
+    }
+  ]
 }
 --------------
 {
@@ -1021,7 +1038,7 @@ exports[`union > Query 2`] = `
 "
 {
   "unionFooBar": {
-    "onBar": {
+    "___on_Bar": {
       "int": true
     }
   }
@@ -1041,7 +1058,7 @@ exports[`union > Query 3`] = `
 "
 {
   "unionFooBar": {
-    "onBar": {
+    "___on_Bar": {
       "$skip": true,
       "int": true
     }

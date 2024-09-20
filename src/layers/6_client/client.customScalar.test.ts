@@ -38,16 +38,16 @@ test(`object field in interface`, async ({ fetch }) => {
 })
 
 describe(`object field in union`, () => {
-  test(`case 1 with __typename`, async ({ fetch }) => {
+  test.only(`case 1 with __typename`, async ({ fetch }) => {
     fetch.mockResolvedValueOnce(createResponse({ data: { dateUnion: { __typename: `DateObject1`, date1: 0 } } }))
-    expect(await client.query.$batch({ dateUnion: { __typename: true, onDateObject1: { date1: true } } }))
+    expect(await client.query.$batch({ dateUnion: { __typename: true, ___on_DateObject1: { date1: true } } }))
       .toEqual({
         dateUnion: { __typename: `DateObject1`, date1: db.date0 },
       })
   })
   test(`case 1 without __typename`, async ({ fetch }) => {
     fetch.mockResolvedValueOnce(createResponse({ data: { dateUnion: { date1: date0Encoded } } }))
-    expect(await client.query.$batch({ dateUnion: { onDateObject1: { date1: true } } })).toEqual({
+    expect(await client.query.$batch({ dateUnion: { ___on_DateObject1: { date1: true } } })).toEqual({
       dateUnion: { date1: db.date0 },
     })
   })
@@ -55,14 +55,14 @@ describe(`object field in union`, () => {
     fetch.mockResolvedValueOnce(createResponse({ data: { dateUnion: { date2: date0Encoded } } }))
     expect(
       await client.query.$batch({
-        dateUnion: { onDateObject1: { date1: true }, onDateObject2: { date2: true } },
+        dateUnion: { ___on_DateObject1: { date1: true }, ___on_DateObject2: { date2: true } },
       }),
     )
       .toEqual({ dateUnion: { date2: db.date0 } })
   })
   test(`case 2 miss`, async ({ fetch }) => {
     fetch.mockResolvedValueOnce(createResponse({ data: { dateUnion: null } }))
-    expect(await client.query.$batch({ dateUnion: { onDateObject1: { date1: true } } })).toEqual({
+    expect(await client.query.$batch({ dateUnion: { ___on_DateObject1: { date1: true } } })).toEqual({
       dateUnion: null,
     }) // dprint-ignore
   })
