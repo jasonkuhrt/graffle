@@ -1,4 +1,5 @@
 import { createModuleGenerator } from '../createCodeGenerator.js'
+import { typeTitle2 } from '../helpers.js'
 
 export const { generate: generateScalar, moduleName: moduleNameScalar } = createModuleGenerator(
   `Scalar`,
@@ -7,14 +8,34 @@ export const { generate: generateScalar, moduleName: moduleNameScalar } = create
     const needsDefaultCustomScalarImplementation = config.typeMapByKind.GraphQLScalarTypeCustom.length > 0
       && !config.options.customScalars
 
+    const CustomScalarsNamespace = `CustomScalars`
     const StandardScalarNamespace = `StandardScalar`
+
     const standardScalarImport = needsDefaultCustomScalarImplementation
       ? `import * as ${StandardScalarNamespace} from '${config.libraryPaths.scalars}'`
       : null
-
     code.push(standardScalarImport)
+
+    code.push(`import type { Schema } from '${config.libraryPaths.schema}'`)
+    code.push(`import * as ${CustomScalarsNamespace} from '${config.importPaths.customScalarCodecs}'`)
+    code.push(``)
+
     code.push(`export * from '${config.libraryPaths.scalars}'`)
     code.push(config.options.customScalars ? `export * from '${config.importPaths.customScalarCodecs}'` : ``)
+    code.push(``)
+
+    for (const scalar of config.typeMapByKind.GraphQLScalarTypeCustom) {
+      code.push(typeTitle2(`custom scalar type`)(scalar))
+      code.push(``)
+      code.push(`export type ${scalar.name} = typeof ${CustomScalarsNamespace}.${scalar.name}`)
+      code.push(`export type ${scalar.name}Decoded = Schema.Scalar.GetDecoded<${scalar.name}>`)
+      code.push(`export type ${scalar.name}Encoded = Schema.Scalar.GetEncoded<${scalar.name}>`)
+      code.push(``)
+    }
+
+    // export type Date = typeof CustomScalarCodecs.Date
+    // export type DateDecoded = Schema.Scalar.GetDecoded<Date>
+    // export type DateEncoded = Schema.Scalar.GetEncoded<Date>
 
     if (needsDefaultCustomScalarImplementation) {
       console.log(
@@ -30,7 +51,5 @@ export const { generate: generateScalar, moduleName: moduleNameScalar } = create
           }).join(`\n`),
       )
     }
-
-    return code
   },
 )

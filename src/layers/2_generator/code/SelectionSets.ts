@@ -18,6 +18,8 @@ import { Code } from '../../../lib/Code.js'
 import {
   analyzeArgsNullability,
   getNodeNameAndKind,
+  hasCustomScalars,
+  isCustomScalarType,
   RootTypeName,
   StandardScalarTypeTypeScriptMapping,
 } from '../../../lib/graphql.js'
@@ -29,9 +31,12 @@ import {
   getInterfaceImplementors,
   renderDocumentation,
   renderName,
-  titleH1,
-  titleH2,
+  title1,
+  typeTitle2SelectionSet,
 } from '../helpers.js'
+import { moduleNameScalar } from './Scalar.js'
+
+export const fragmentOnPolymorphicTypePropertyPrefix = `___on_`
 
 export const { moduleName: moduleNameSelectionSets, generate: generateSelectionSets } = createModuleGenerator(
   `SelectionSets`,
@@ -47,8 +52,11 @@ export const { moduleName: moduleNameSelectionSets, generate: generateSelectionS
     `)
     code.push(``)
 
-    code.push(`import type { SelectionSet } from '${config.libraryPaths.schema}'`)
-    code.push(`import type { UnionExpanded, Simplify } from '${config.libraryPaths.utilitiesForGenerated}'`)
+    code.push(`import type { SelectionSet as $SelectionSet } from '${config.libraryPaths.schema}'`)
+    code.push(`import type * as $Utilities from '${config.libraryPaths.utilitiesForGenerated}'`)
+    if (hasCustomScalars(config.typeMapByKind)) {
+      code.push(`import type * as $Scalar from './${moduleNameScalar}.js'`)
+    }
     code.push(``)
 
     entries(config.typeMapByKind).forEach(([kind, nodes]) => {
@@ -56,7 +64,7 @@ export const { moduleName: moduleNameSelectionSets, generate: generateSelectionS
       if (kind === `GraphQLScalarTypeCustom`) return // todo
       if (kind === `GraphQLScalarTypeStandard`) return // todo
 
-      code.push(titleH1(`${kind} Types`))
+      code.push(title1(`${kind} Types`))
       code.push(``)
 
       nodes.forEach(node => {
@@ -86,7 +94,11 @@ const renderUnion = createCodeGenerator<{ node: GraphQLUnionType }>(
      */
     code.push(`
       export interface ${renderName(node)} {
-        ${memberTypes.map((type) => `on${type.name}?: ${renderName(type)}`).join(`\n`)}
+        ${
+      memberTypes.map((type) => `${fragmentOnPolymorphicTypePropertyPrefix}${type.name}?: ${renderName(type)}`).join(
+        `\n`,
+      )
+    }
         ${Helpers.inlineFragment(node)}
         ${Helpers.__typename(`union`)}
       }
@@ -125,7 +137,9 @@ const renderInterface = createCodeGenerator<{ node: GraphQLInterfaceType }>(
       return Helpers.outputField(field.name, `${renderName(node)}.${renderName(field)}`)
     }).join(`\n`)
     const implementorTypes = getInterfaceImplementors(config.typeMapByKind, node)
-    const onTypesRendered = implementorTypes.map(type => Helpers.outputField(`on${type.name}`, renderName(type))).join(
+    const onTypesRendered = implementorTypes.map(type =>
+      Helpers.outputField(`${fragmentOnPolymorphicTypePropertyPrefix}${type.name}`, renderName(type))
+    ).join(
       ` \n `,
     )
 
@@ -139,7 +153,7 @@ const renderInterface = createCodeGenerator<{ node: GraphQLInterfaceType }>(
     code.push(doc)
 
     code.push(`
-      export interface ${renderName(node)} extends SelectionSet.Bases.ObjectLike {
+      export interface ${renderName(node)} extends $SelectionSet.Bases.ObjectLike {
         ${fieldsRendered}
         ${onTypesRendered}
         ${Helpers.inlineFragment(node)}
@@ -161,7 +175,7 @@ const renderObject = createCodeGenerator<{ node: GraphQLObjectType }>(
   ({ config, node, code }) => {
     const fields = Object.values(node.getFields())
 
-    code.push(titleH2(node))
+    code.push(typeTitle2SelectionSet(node))
     code.push(``)
 
     code.push(`// ----------------------------------------| Entrypoint Interface |`)
@@ -178,7 +192,7 @@ const renderObject = createCodeGenerator<{ node: GraphQLObjectType }>(
     }).join(`\n`)
 
     const isRootType = node.name in RootTypeName
-    const extendsClause = isRootType ? `` : `extends SelectionSet.Bases.ObjectLike`
+    const extendsClause = isRootType ? `` : `extends $SelectionSet.Bases.ObjectLike`
 
     const doc = renderDocumentation(config, node)
     code.push(doc)
@@ -227,30 +241,32 @@ const renderField = createCodeGenerator<{ field: GraphQLField<any, any> }>(
       const argsRendered = renderFieldArgs({ config, field })
       if (argsAnalysis.hasAny) {
         if (argsAnalysis.isAllNullable) {
-          code.push(`type ${nameRendered}SelectionSet = Simplify<SelectionSet.Bases.Base & { ${argsRendered} }>`)
+          code.push(
+            `type ${nameRendered}SelectionSet = $Utilities.Simplify<$SelectionSet.Bases.Base & { ${argsRendered} }>`,
+          )
           code.push(``)
           code.push(
             Helpers.type(
               `${nameRendered}$Expanded`,
-              `UnionExpanded<SelectionSet.ClientIndicator | ${nameRendered}SelectionSet>`,
+              `$Utilities.UnionExpanded<$SelectionSet.ClientIndicator | ${nameRendered}SelectionSet>`,
             ),
           )
           code.push(``)
           code.push(
-            Helpers.type(nameRendered, `SelectionSet.ClientIndicator | ${nameRendered}SelectionSet`),
+            Helpers.type(nameRendered, `$SelectionSet.ClientIndicator | ${nameRendered}SelectionSet`),
           )
           code.push(``)
         } else {
           // todo test that a directive can be passed with the intersection that otherwise cannot be.
-          code.push(Helpers.$interface(nameRendered, `SelectionSet.Bases.Base`, argsRendered))
+          code.push(Helpers.$interface(nameRendered, `$SelectionSet.Bases.Base`, argsRendered))
           code.push(``)
           code.push(Helpers.type(`${nameRendered}$Expanded`, nameRendered))
           code.push(``)
         }
       } else {
-        code.push(Helpers.type(`${nameRendered}$Expanded`, `SelectionSet.NoArgsIndicator$Expanded`))
+        code.push(Helpers.type(`${nameRendered}$Expanded`, `$SelectionSet.NoArgsIndicator$Expanded`))
         code.push(``)
-        code.push(Helpers.type(nameRendered, `SelectionSet.NoArgsIndicator`))
+        code.push(Helpers.type(nameRendered, `$SelectionSet.NoArgsIndicator`))
         code.push(``)
       }
     } else {
@@ -311,6 +327,10 @@ const renderArgType = (type: GraphQLType): string => {
   }
 
   if (isScalarType(sansNullabilityType)) {
+    if (isCustomScalarType(sansNullabilityType)) {
+      const scalarTypeRendered = `$Scalar.${sansNullabilityType.name}Decoded`
+      return `${scalarTypeRendered} ${nullableRendered}`
+    }
     const scalarTypeRendered = StandardScalarTypeTypeScriptMapping[sansNullabilityType.name as StandardScalarTypeNames]
     return `${scalarTypeRendered} ${nullableRendered}`
   }
@@ -337,14 +357,14 @@ namespace Helpers {
   }
 
   export const outputFieldAlisable = (name: string, type: string, aliasable: boolean = true) => {
-    const alias = aliasable ? `| SelectionSet.Alias<${type}>` : ``
+    const alias = aliasable ? `| $SelectionSet.Alias<${type}>` : ``
     return `${name}?: ${type}$Expanded${alias}`
   }
 
   export const __typename = (kind: 'union' | 'interface' | 'object') => {
     return `
       ${__typenameDoc(kind)}
-      ${outputFieldAlisable(`__typename`, `SelectionSet.NoArgsIndicator`)}
+      ${outputFieldAlisable(`__typename`, `$SelectionSet.NoArgsIndicator`)}
     `
   }
 

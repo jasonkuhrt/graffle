@@ -1,5 +1,5 @@
 import { createModuleGenerator } from '../createCodeGenerator.js'
-import { titleH1, typeTitle } from '../helpers.js'
+import { title1, typeTitle } from '../helpers.js'
 import { moduleNameData } from './Data.js'
 import { moduleNameSchemaIndex } from './SchemaIndex.js'
 
@@ -12,11 +12,11 @@ export const { generate: generateSelect, moduleName: moduleNameSelect } = create
     code.push(``)
 
     code.push(
-      titleH1(`Runtime`),
+      title1(`Runtime`),
       `import { createSelect } from '${config.libraryPaths.client}'`,
       `export const Select = createSelect(Data.Name)`,
       ``,
-      titleH1(`Buildtime`),
+      title1(`Buildtime`),
       ``,
       `export namespace Select {`,
       typeTitle(config, `Root`),

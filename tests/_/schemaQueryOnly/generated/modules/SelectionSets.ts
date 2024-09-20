@@ -6,8 +6,8 @@
  *     would end up with an error of `export interface Foo extends Foo ...`
  */
 
-import type { SelectionSet } from '../../../../../src/entrypoints/schema.js'
-import type { Simplify, UnionExpanded } from '../../../../../src/entrypoints/utilities-for-generated.js'
+import type { SelectionSet as $SelectionSet } from '../../../../../src/entrypoints/schema.js'
+import type * as $Utilities from '../../../../../src/entrypoints/utilities-for-generated.js'
 
 //
 //
@@ -30,7 +30,7 @@ import type { Simplify, UnionExpanded } from '../../../../../src/entrypoints/uti
 //
 //
 // GRAPHQL SELECTION SET
-// OBJECT TYPE
+// OBJECT
 // --------------------------------------------------------------------------------------------------
 //                                               Query
 // --------------------------------------------------------------------------------------------------
@@ -43,11 +43,11 @@ export interface Query {
   /**
    * Select the `id` field on the `Query` object. Its type is `ID` (a `Scalar`).
    */
-  id?: Query.id$Expanded | SelectionSet.Alias<Query.id>
+  id?: Query.id$Expanded | $SelectionSet.Alias<Query.id>
   /**
    * Select the `idNonNull` field on the `Query` object. Its type is `ID` (a `Scalar`).
    */
-  idNonNull?: Query.idNonNull$Expanded | SelectionSet.Alias<Query.idNonNull>
+  idNonNull?: Query.idNonNull$Expanded | $SelectionSet.Alias<Query.idNonNull>
 
   /**
    * Inline fragments for field groups.
@@ -64,19 +64,19 @@ export interface Query {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-  __typename?: SelectionSet.NoArgsIndicator$Expanded | SelectionSet.Alias<SelectionSet.NoArgsIndicator>
+  __typename?: $SelectionSet.NoArgsIndicator$Expanded | $SelectionSet.Alias<$SelectionSet.NoArgsIndicator>
 }
 
 // ----------------------------------------| Fields Interfaces |
 
 export namespace Query {
-  export type id$Expanded = SelectionSet.NoArgsIndicator$Expanded
+  export type id$Expanded = $SelectionSet.NoArgsIndicator$Expanded
 
-  export type id = SelectionSet.NoArgsIndicator
+  export type id = $SelectionSet.NoArgsIndicator
 
-  export type idNonNull$Expanded = SelectionSet.NoArgsIndicator$Expanded
+  export type idNonNull$Expanded = $SelectionSet.NoArgsIndicator$Expanded
 
-  export type idNonNull = SelectionSet.NoArgsIndicator
+  export type idNonNull = $SelectionSet.NoArgsIndicator
 }
 
 type __Query = Query // [1]

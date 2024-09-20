@@ -205,6 +205,10 @@ export const isGraphQLOutputField = (object: object): object is AnyGraphQLOutput
   return `args` in object
 }
 
+export const hasCustomScalars = (typeMapByKind: TypeMapByKind) => {
+  return typeMapByKind.GraphQLScalarTypeCustom.length > 0
+}
+
 /**
  * Groups
  */
@@ -217,7 +221,12 @@ export const getNodeNameAndKind = (
   node: GraphQLNamedType,
 ): { name: string; kind: 'Object' | 'Interface' | 'Union' | 'Enum' | 'Scalar' } => {
   const name = node.name
-  const kind = getNodeKind(node).replace(`GraphQL`, ``).replace(`Type`, ``)
+  const kind = getNodeKind(node).replace(`GraphQL`, ``).replace(`Type`, ``) as
+    | 'Object'
+    | 'Interface'
+    | 'Union'
+    | 'Enum'
+    | 'Scalar'
   return { name, kind }
 }
 

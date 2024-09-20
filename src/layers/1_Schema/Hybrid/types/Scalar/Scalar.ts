@@ -31,6 +31,11 @@ export const scalar = <$Name extends string, $Codec extends Codec<any, any>>(
   codec: codec as any,
 })
 
+export type GetEncoded<$Scalar> = $Scalar extends Scalar<infer _, infer _, infer $Encoded> ? $Encoded : never
+
+export type GetDecoded<$Scalar> = $Scalar extends Scalar<infer _, infer $Decoded, infer __> ? $Decoded
+  : never
+
 export interface Scalar<
   $Name extends string = string,
   $Decoded = unknown,

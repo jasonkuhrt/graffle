@@ -58,17 +58,17 @@ test(`Query`, () => {
 
   // Union
   assertType<Q>({ unionFooBar: { __typename: true } })
-  assertType<Q>({ unionFooBar: { onFoo: { __typename: true } } })
-  assertType<Q>({ unionFooBar: { onFoo: { id: true } } })
+  assertType<Q>({ unionFooBar: { ___on_Foo: { __typename: true } } })
+  assertType<Q>({ unionFooBar: { ___on_Foo: { id: true } } })
   // @ts-expect-error no b
-  assertType<Q>({ unionFooBar: { onFoo: { id2: true } } })
-  assertType<Q>({ unionFooBar: { onBar: { __typename: true } } })
-  assertType<Q>({ unionFooBar: { onBar: { int: true } } })
+  assertType<Q>({ unionFooBar: { ___on_Foo: { id2: true } } })
+  assertType<Q>({ unionFooBar: { ___on_Bar: { __typename: true } } })
+  assertType<Q>({ unionFooBar: { ___on_Bar: { int: true } } })
   // @ts-expect-error no a
-  assertType<Q>({ unionFooBar: { onBar: { int2: true } } })
+  assertType<Q>({ unionFooBar: { ___on_Bar: { int2: true } } })
 
   // Union fragments Case
-  assertType<Q>({ lowerCaseUnion: { onlowerCaseObject: { id: true }, onlowerCaseObject2: { int: true } } })
+  assertType<Q>({ lowerCaseUnion: { ___on_lowerCaseObject: { id: true }, ___on_lowerCaseObject2: { int: true } } })
 
   // Interface
   assertType<Q>({ interface: { id: true } })
@@ -84,12 +84,12 @@ test(`Query`, () => {
   assertType<Q>({ interface: { id: true, int: true } })
   // @ts-expect-error needs fragment
   assertType<Q>({ interface: { id: true, boolean: true } })
-  assertType<Q>({ interface: { id: true, onObject1ImplementingInterface: { int: true } } })
-  assertType<Q>({ interface: { id: true, onObject2ImplementingInterface: { boolean: true } } })
+  assertType<Q>({ interface: { id: true, ___on_Object1ImplementingInterface: { int: true } } })
+  assertType<Q>({ interface: { id: true, ___on_Object2ImplementingInterface: { boolean: true } } })
   // @ts-expect-error incorrect implementor name
-  assertType<Q>({ interface: { id: true, onObject1ImplementingInterface2: { int: true } } })
+  assertType<Q>({ interface: { id: true, ___on_Object1ImplementingInterface2: { int: true } } })
   // directives work on fragments
-  assertType<Q>({ interface: { id: true, onObject1ImplementingInterface: { $include: true } } }) // todo should REQUIRE field selection
+  assertType<Q>({ interface: { id: true, ___on_Object1ImplementingInterface: { $include: true } } }) // todo should REQUIRE field selection
   
 
 
@@ -144,7 +144,7 @@ test(`Query`, () => {
   assertType<Q>({ object: { $skip: true, string: true } })
   // assertType<S>({ scalars: skip().select({ a: true }) })
   // on fragment
-  assertType<Q>({ unionFooBar: { onBar: { $skip: true, int: true } } })
+  assertType<Q>({ unionFooBar: { ___on_Bar: { $skip: true, int: true } } })
   // @include
   assertType<Q>({ string: { $include: true } })
   assertType<Q>({ string: { $include: false } })
@@ -258,8 +258,8 @@ test(`Query`, () => {
   // @ts-expect-error no directives on scalars field
   assertType<Q>({ scalars: { $scalars: { $skip: true } } })
   // union fragment
-  assertType<Q>({ unionFooBar: { onBar: { $scalars: true } } })
-  assertType<Q>({ unionFooBarWithArgs: { $: { id: `abc` }, onBar: { $scalars: true } } })
+  assertType<Q>({ unionFooBar: { ___on_Bar: { $scalars: true } } })
+  assertType<Q>({ unionFooBarWithArgs: { $: { id: `abc` }, ___on_Bar: { $scalars: true } } })
 
   // assertType<S>({ scalars: select() })
 
