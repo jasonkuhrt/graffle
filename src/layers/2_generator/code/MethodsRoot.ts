@@ -11,7 +11,7 @@ export const { moduleName: moduleNameMethodsRoot, generate: generateMethodsRoot 
     code.push(
       `import type { Config, HKT, Exact, ResolveOutputReturnRootField, ResolveOutputReturnRootType } from '${config.libraryPaths.utilitiesForGenerated}';`,
     )
-    code.push(`import type { ResultSet, SelectionSet } from '${config.libraryPaths.schema}';`)
+    code.push(`import type { ResultSet } from '${config.libraryPaths.schema}';`)
     code.push(`import type { Index } from './${moduleNameSchemaIndex}.js'`)
     code.push(`import type * as SelectionSetGen from './${moduleNameSelectionSets}.js'`)
     code.push(``)
@@ -49,7 +49,7 @@ const renderRootType = createCodeGenerator<{ node: GraphQLObjectType }>(({ node,
 
   code.push(`
     export interface ${node.name}Methods<$Config extends Config> {
-      $batch: <$SelectionSet>(selectionSet: Exact<$SelectionSet, SelectionSet.${node.name}<Index>>) =>
+      $batch: <$SelectionSet>(selectionSet: Exact<$SelectionSet, SelectionSetGen.${node.name}>) =>
         Promise<
           ResolveOutputReturnRootType<
             $Config,

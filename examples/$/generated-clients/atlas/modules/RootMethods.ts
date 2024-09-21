@@ -1,4 +1,4 @@
-import type { ResultSet, SelectionSet } from '../../../../../src/entrypoints/schema.js'
+import type { ResultSet } from '../../../../../src/entrypoints/schema.js'
 import type {
   Config,
   Exact,
@@ -10,7 +10,7 @@ import type { Index } from './SchemaIndex.js'
 import type * as SelectionSetGen from './SelectionSets.js'
 
 export interface QueryMethods<$Config extends Config> {
-  $batch: <$SelectionSet>(selectionSet: Exact<$SelectionSet, SelectionSet.Query<Index>>) => Promise<
+  $batch: <$SelectionSet>(selectionSet: Exact<$SelectionSet, SelectionSetGen.Query>) => Promise<
     ResolveOutputReturnRootType<
       $Config,
       Index,

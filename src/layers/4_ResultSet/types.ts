@@ -67,9 +67,33 @@ type HandFieldExpressionAliases<$SelectionSet, $Index extends Schema.Index, $Nod
       [
         $KeyExpression in keyof $SelectionSet as $SelectionSet[$KeyExpression] extends any[] ? $KeyExpression : never
       ]:
-        HandleAliasExpression<$SelectionSet[$KeyExpression], $KeyExpression, $Index, $Node>
+        HandleAliasExpression<
+          // @ts-expect-error We know this satisfies the alias type constraint b/c of the key filtering above.
+          $SelectionSet[$KeyExpression],
+          $KeyExpression,
+          $Index,
+          $Node
+        >
     }
   >
+
+// todo could we use this since the valuesoremptyobject could drop the nevers?
+// type HandFieldExpressionAliases<$SelectionSet, $Index extends Schema.Index, $Node extends Schema.Output.Object$2> =
+// ValuesOrEmptyObject<
+//   {
+//     [$KeyExpression in keyof $SelectionSet & string]:
+//       $SelectionSet[$KeyExpression] extends any[]
+//         ?
+//           HandleAliasExpression<
+//             $SelectionSet[$KeyExpression],
+//             $KeyExpression,
+//             $Index,
+//             $Node
+//           >
+//         : never
+
+//   }
+// >
 
 // dprint-ignore
 type HandleAliasExpression<
