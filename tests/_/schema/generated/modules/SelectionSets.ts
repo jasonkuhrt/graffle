@@ -321,32 +321,34 @@ export interface Query {
 // ----------------------------------------| Fields Interfaces |
 
 export namespace Query {
-  type InputObjectNestedSelectionSet = $Utilities.Simplify<
+  export type InputObjectNested$SelectionSetArguments = {
+    input?: InputObjectNested | undefined | null
+  }
+  export type InputObjectNested$SelectionSet = $Utilities.Simplify<
     $SelectionSet.Bases.Base & {
       /**
        * Arguments for `InputObjectNested` field.
        * No arguments are required so you may omit this.
        */
-      $?: {
-        input?: InputObjectNested | undefined | null
-      }
+      $?: InputObjectNested$SelectionSetArguments
     }
   >
 
   export type InputObjectNested$Expanded = $Utilities.UnionExpanded<
-    $SelectionSet.ClientIndicator | InputObjectNestedSelectionSet
+    $SelectionSet.ClientIndicator | InputObjectNested$SelectionSet
   >
 
-  export type InputObjectNested = $SelectionSet.ClientIndicator | InputObjectNestedSelectionSet
+  export type InputObjectNested = $SelectionSet.ClientIndicator | InputObjectNested$SelectionSet
 
+  export type InputObjectNestedNonNull$SelectionSetArguments = {
+    input: InputObjectNestedNonNull
+  }
   export interface InputObjectNestedNonNull extends $SelectionSet.Bases.Base {
     /**
      * Arguments for `InputObjectNestedNonNull` field.
      * All arguments are required so you must include this.
      */
-    $: {
-      input: InputObjectNestedNonNull
-    }
+    $: InputObjectNestedNonNull$SelectionSetArguments
   }
 
   export type InputObjectNestedNonNull$Expanded = InputObjectNestedNonNull
@@ -359,88 +361,94 @@ export namespace Query {
 
   export type date = $SelectionSet.NoArgsIndicator
 
-  type dateArgSelectionSet = $Utilities.Simplify<
+  export type dateArg$SelectionSetArguments = {
+    date?: $Scalar.DateDecoded | undefined | null
+  }
+  export type dateArg$SelectionSet = $Utilities.Simplify<
     $SelectionSet.Bases.Base & {
       /**
        * Arguments for `dateArg` field.
        * No arguments are required so you may omit this.
        */
-      $?: {
-        date?: $Scalar.DateDecoded | undefined | null
-      }
+      $?: dateArg$SelectionSetArguments
     }
   >
 
-  export type dateArg$Expanded = $Utilities.UnionExpanded<$SelectionSet.ClientIndicator | dateArgSelectionSet>
+  export type dateArg$Expanded = $Utilities.UnionExpanded<$SelectionSet.ClientIndicator | dateArg$SelectionSet>
 
-  export type dateArg = $SelectionSet.ClientIndicator | dateArgSelectionSet
+  export type dateArg = $SelectionSet.ClientIndicator | dateArg$SelectionSet
 
-  type dateArgInputObjectSelectionSet = $Utilities.Simplify<
+  export type dateArgInputObject$SelectionSetArguments = {
+    input?: InputObject | undefined | null
+  }
+  export type dateArgInputObject$SelectionSet = $Utilities.Simplify<
     $SelectionSet.Bases.Base & {
       /**
        * Arguments for `dateArgInputObject` field.
        * No arguments are required so you may omit this.
        */
-      $?: {
-        input?: InputObject | undefined | null
-      }
+      $?: dateArgInputObject$SelectionSetArguments
     }
   >
 
   export type dateArgInputObject$Expanded = $Utilities.UnionExpanded<
-    $SelectionSet.ClientIndicator | dateArgInputObjectSelectionSet
+    $SelectionSet.ClientIndicator | dateArgInputObject$SelectionSet
   >
 
-  export type dateArgInputObject = $SelectionSet.ClientIndicator | dateArgInputObjectSelectionSet
+  export type dateArgInputObject = $SelectionSet.ClientIndicator | dateArgInputObject$SelectionSet
 
-  type dateArgListSelectionSet = $Utilities.Simplify<
+  export type dateArgList$SelectionSetArguments = {
+    date?: Array<$Scalar.DateDecoded | undefined | null> | undefined | null
+  }
+  export type dateArgList$SelectionSet = $Utilities.Simplify<
     $SelectionSet.Bases.Base & {
       /**
        * Arguments for `dateArgList` field.
        * No arguments are required so you may omit this.
        */
-      $?: {
-        date?: Array<$Scalar.DateDecoded | undefined | null> | undefined | null
-      }
+      $?: dateArgList$SelectionSetArguments
     }
   >
 
-  export type dateArgList$Expanded = $Utilities.UnionExpanded<$SelectionSet.ClientIndicator | dateArgListSelectionSet>
+  export type dateArgList$Expanded = $Utilities.UnionExpanded<$SelectionSet.ClientIndicator | dateArgList$SelectionSet>
 
-  export type dateArgList = $SelectionSet.ClientIndicator | dateArgListSelectionSet
+  export type dateArgList = $SelectionSet.ClientIndicator | dateArgList$SelectionSet
 
+  export type dateArgNonNull$SelectionSetArguments = {
+    date: $Scalar.DateDecoded
+  }
   export interface dateArgNonNull extends $SelectionSet.Bases.Base {
     /**
      * Arguments for `dateArgNonNull` field.
      * All arguments are required so you must include this.
      */
-    $: {
-      date: $Scalar.DateDecoded
-    }
+    $: dateArgNonNull$SelectionSetArguments
   }
 
   export type dateArgNonNull$Expanded = dateArgNonNull
 
+  export type dateArgNonNullList$SelectionSetArguments = {
+    date: Array<$Scalar.DateDecoded | undefined | null>
+  }
   export interface dateArgNonNullList extends $SelectionSet.Bases.Base {
     /**
      * Arguments for `dateArgNonNullList` field.
      * All arguments are required so you must include this.
      */
-    $: {
-      date: Array<$Scalar.DateDecoded | undefined | null>
-    }
+    $: dateArgNonNullList$SelectionSetArguments
   }
 
   export type dateArgNonNullList$Expanded = dateArgNonNullList
 
+  export type dateArgNonNullListNonNull$SelectionSetArguments = {
+    date: Array<$Scalar.DateDecoded | undefined | null>
+  }
   export interface dateArgNonNullListNonNull extends $SelectionSet.Bases.Base {
     /**
      * Arguments for `dateArgNonNullListNonNull` field.
      * All arguments are required so you must include this.
      */
-    $: {
-      date: Array<$Scalar.DateDecoded | undefined | null>
-    }
+    $: dateArgNonNullListNonNull$SelectionSetArguments
   }
 
   export type dateArgNonNullListNonNull$Expanded = dateArgNonNullListNonNull
@@ -463,21 +471,22 @@ export namespace Query {
   export type dateObject1$Expanded = dateObject1
   export interface dateUnion extends __DateUnion {}
   export type dateUnion$Expanded = dateUnion
-  type errorSelectionSet = $Utilities.Simplify<
+  export type error$SelectionSetArguments = {
+    case?: string | undefined | null
+  }
+  export type error$SelectionSet = $Utilities.Simplify<
     $SelectionSet.Bases.Base & {
       /**
        * Arguments for `error` field.
        * No arguments are required so you may omit this.
        */
-      $?: {
-        case?: string | undefined | null
-      }
+      $?: error$SelectionSetArguments
     }
   >
 
-  export type error$Expanded = $Utilities.UnionExpanded<$SelectionSet.ClientIndicator | errorSelectionSet>
+  export type error$Expanded = $Utilities.UnionExpanded<$SelectionSet.ClientIndicator | error$SelectionSet>
 
-  export type error = $SelectionSet.ClientIndicator | errorSelectionSet
+  export type error = $SelectionSet.ClientIndicator | error$SelectionSet
 
   export type id$Expanded = $SelectionSet.NoArgsIndicator$Expanded
 
@@ -567,114 +576,121 @@ export namespace Query {
 
   export type $string = $SelectionSet.NoArgsIndicator
 
-  type stringWithArgEnumSelectionSet = $Utilities.Simplify<
+  export type stringWithArgEnum$SelectionSetArguments = {
+    ABCEnum?: ABCEnum | undefined | null
+  }
+  export type stringWithArgEnum$SelectionSet = $Utilities.Simplify<
     $SelectionSet.Bases.Base & {
       /**
        * Arguments for `stringWithArgEnum` field.
        * No arguments are required so you may omit this.
        */
-      $?: {
-        ABCEnum?: ABCEnum | undefined | null
-      }
+      $?: stringWithArgEnum$SelectionSetArguments
     }
   >
 
   export type stringWithArgEnum$Expanded = $Utilities.UnionExpanded<
-    $SelectionSet.ClientIndicator | stringWithArgEnumSelectionSet
+    $SelectionSet.ClientIndicator | stringWithArgEnum$SelectionSet
   >
 
-  export type stringWithArgEnum = $SelectionSet.ClientIndicator | stringWithArgEnumSelectionSet
+  export type stringWithArgEnum = $SelectionSet.ClientIndicator | stringWithArgEnum$SelectionSet
 
-  type stringWithArgInputObjectSelectionSet = $Utilities.Simplify<
+  export type stringWithArgInputObject$SelectionSetArguments = {
+    input?: InputObject | undefined | null
+  }
+  export type stringWithArgInputObject$SelectionSet = $Utilities.Simplify<
     $SelectionSet.Bases.Base & {
       /**
        * Arguments for `stringWithArgInputObject` field.
        * No arguments are required so you may omit this.
        */
-      $?: {
-        input?: InputObject | undefined | null
-      }
+      $?: stringWithArgInputObject$SelectionSetArguments
     }
   >
 
   export type stringWithArgInputObject$Expanded = $Utilities.UnionExpanded<
-    $SelectionSet.ClientIndicator | stringWithArgInputObjectSelectionSet
+    $SelectionSet.ClientIndicator | stringWithArgInputObject$SelectionSet
   >
 
-  export type stringWithArgInputObject = $SelectionSet.ClientIndicator | stringWithArgInputObjectSelectionSet
+  export type stringWithArgInputObject = $SelectionSet.ClientIndicator | stringWithArgInputObject$SelectionSet
 
+  export type stringWithArgInputObjectRequired$SelectionSetArguments = {
+    input: InputObject
+  }
   export interface stringWithArgInputObjectRequired extends $SelectionSet.Bases.Base {
     /**
      * Arguments for `stringWithArgInputObjectRequired` field.
      * All arguments are required so you must include this.
      */
-    $: {
-      input: InputObject
-    }
+    $: stringWithArgInputObjectRequired$SelectionSetArguments
   }
 
   export type stringWithArgInputObjectRequired$Expanded = stringWithArgInputObjectRequired
 
-  type stringWithArgsSelectionSet = $Utilities.Simplify<
+  export type stringWithArgs$SelectionSetArguments = {
+    boolean?: boolean | undefined | null
+    float?: number | undefined | null
+    id?: string | undefined | null
+    int?: number | undefined | null
+    string?: string | undefined | null
+  }
+  export type stringWithArgs$SelectionSet = $Utilities.Simplify<
     $SelectionSet.Bases.Base & {
       /**
        * Arguments for `stringWithArgs` field.
        * No arguments are required so you may omit this.
        */
-      $?: {
-        boolean?: boolean | undefined | null
-        float?: number | undefined | null
-        id?: string | undefined | null
-        int?: number | undefined | null
-        string?: string | undefined | null
-      }
+      $?: stringWithArgs$SelectionSetArguments
     }
   >
 
   export type stringWithArgs$Expanded = $Utilities.UnionExpanded<
-    $SelectionSet.ClientIndicator | stringWithArgsSelectionSet
+    $SelectionSet.ClientIndicator | stringWithArgs$SelectionSet
   >
 
-  export type stringWithArgs = $SelectionSet.ClientIndicator | stringWithArgsSelectionSet
+  export type stringWithArgs = $SelectionSet.ClientIndicator | stringWithArgs$SelectionSet
 
-  type stringWithListArgSelectionSet = $Utilities.Simplify<
+  export type stringWithListArg$SelectionSetArguments = {
+    ints?: Array<number | undefined | null> | undefined | null
+  }
+  export type stringWithListArg$SelectionSet = $Utilities.Simplify<
     $SelectionSet.Bases.Base & {
       /**
        * Arguments for `stringWithListArg` field.
        * No arguments are required so you may omit this.
        */
-      $?: {
-        ints?: Array<number | undefined | null> | undefined | null
-      }
+      $?: stringWithListArg$SelectionSetArguments
     }
   >
 
   export type stringWithListArg$Expanded = $Utilities.UnionExpanded<
-    $SelectionSet.ClientIndicator | stringWithListArgSelectionSet
+    $SelectionSet.ClientIndicator | stringWithListArg$SelectionSet
   >
 
-  export type stringWithListArg = $SelectionSet.ClientIndicator | stringWithListArgSelectionSet
+  export type stringWithListArg = $SelectionSet.ClientIndicator | stringWithListArg$SelectionSet
 
+  export type stringWithListArgRequired$SelectionSetArguments = {
+    ints: Array<number | undefined | null>
+  }
   export interface stringWithListArgRequired extends $SelectionSet.Bases.Base {
     /**
      * Arguments for `stringWithListArgRequired` field.
      * All arguments are required so you must include this.
      */
-    $: {
-      ints: Array<number | undefined | null>
-    }
+    $: stringWithListArgRequired$SelectionSetArguments
   }
 
   export type stringWithListArgRequired$Expanded = stringWithListArgRequired
 
+  export type stringWithRequiredArg$SelectionSetArguments = {
+    string: string
+  }
   export interface stringWithRequiredArg extends $SelectionSet.Bases.Base {
     /**
      * Arguments for `stringWithRequiredArg` field.
      * All arguments are required so you must include this.
      */
-    $: {
-      string: string
-    }
+    $: stringWithRequiredArg$SelectionSetArguments
   }
 
   export type stringWithRequiredArg$Expanded = stringWithRequiredArg

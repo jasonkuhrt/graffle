@@ -1,6 +1,5 @@
-import type { ResultSet } from '../../../../../src/entrypoints/schema.js'
-import type { Index } from './SchemaIndex.js'
-import type * as SelectionSets from './SelectionSets.js'
+import type * as $Utilities from '../../../../../src/entrypoints/utilities-for-generated.js'
+import type * as $SelectionSets from './SelectionSets.js'
 
 //
 //
@@ -39,7 +38,5 @@ export interface $SelectMethods {
 //
 
 export interface Query {
-  <$SelectionSet extends SelectionSets.Query>(
-    selectionSet: $SelectionSet,
-  ): ResultSet.RootViaObject<$SelectionSet, Index, Index['allTypes']['Query']>
+  <$SelectionSet>(selectionSet: $Utilities.Exact<$SelectionSet, $SelectionSets.Query>): $SelectionSet
 }

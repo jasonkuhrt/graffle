@@ -1,4 +1,4 @@
-import type { ExcludeNull, GetKeyOr, Values, ValuesOrEmptyObject } from '../../lib/prelude.js'
+import type { ExcludeNull, GetKeyOr, mergeObjectArray, ValuesOrEmptyObject } from '../../lib/prelude.js'
 import type { TSError } from '../../lib/TSError.js'
 import type { Schema, SomeField } from '../1_Schema/__.js'
 import type { PickScalarFields } from '../1_Schema/Output/Output.js'
@@ -34,7 +34,7 @@ export type Object$<$SelectionSet, $Index extends Schema.Index, $Node extends Sc
     :
       (
         & HandleFieldExpressionsPlain<$SelectionSet, $Index, $Node>
-        & Aliases<$SelectionSet, $Index, $Node>
+        & HandFieldExpressionAliases<$SelectionSet, $Index, $Node>
       )
 
 // dprint-ignore
@@ -61,7 +61,7 @@ type HandleFieldExpressionScalarsWildcard<
 // }
 
 // dprint-ignore
-type Aliases<$SelectionSet, $Index extends Schema.Index, $Node extends Schema.Output.Object$2> =
+type HandFieldExpressionAliases<$SelectionSet, $Index extends Schema.Index, $Node extends Schema.Output.Object$2> =
   ValuesOrEmptyObject<
     {
       [
@@ -165,7 +165,3 @@ export namespace Errors {
   export type UnknownFieldName<$FieldName extends string, $Object extends Schema.Object$2 | Schema.Output.RootType> =
     TSError<'Object', `field "${$FieldName}" does not exist on object "${$Object['fields']['__typename']['type']['type']}"`>
 }
-
-type mergeObjectArray<T extends [...object[]]> = T extends [infer $First, ...infer $Rest]
-  ? $First & mergeObjectArray<$Rest>
-  : {}

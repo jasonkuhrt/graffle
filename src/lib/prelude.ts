@@ -479,3 +479,11 @@ type _test = SimplifyDeep<
 >
 
 export type UnionExpanded<$Union> = $Union
+
+export type mergeObjectArray<T extends [...object[]]> = T extends [infer $First, ...infer $Rest extends object[]]
+  ? $First & mergeObjectArray<$Rest>
+  : {}
+
+export const identityProxy = new Proxy({}, {
+  get: () => (value: unknown) => value,
+})

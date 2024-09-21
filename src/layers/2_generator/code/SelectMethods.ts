@@ -2,15 +2,13 @@
 import { getNodeNameAndKind, isRootType } from '../../../lib/graphql.js'
 import { createModuleGenerator } from '../createCodeGenerator.js'
 import { renderName, title1 } from '../helpers.js'
-import { moduleNameSchemaIndex } from './SchemaIndex.js'
 import { moduleNameSelectionSets } from './SelectionSets.js'
 
 export const { generate: generateSelectMethods, moduleName: moduleNameSelectMethods } = createModuleGenerator(
   `SelectMethods`,
   ({ config, code }) => {
-    code.push(`import type { Index } from './${moduleNameSchemaIndex}.js'`)
-    code.push(`import type { ResultSet } from '${config.libraryPaths.schema}'`)
-    code.push(`import type * as SelectionSets from './${moduleNameSelectionSets}.js'`)
+    code.push(`import type * as $SelectionSets from './${moduleNameSelectionSets}.js'`)
+    code.push(`import type * as $Utilities from '${config.libraryPaths.utilitiesForGenerated}'`)
     code.push(``)
 
     const graphqlTypeGroups = [
@@ -36,11 +34,6 @@ export const { generate: generateSelectMethods, moduleName: moduleNameSelectMeth
     for (const graphqlTypeGroup of graphqlTypeGroups) {
       const { kind } = getNodeNameAndKind(graphqlTypeGroup[0]!)
       const titleText = isRootType(graphqlTypeGroup[0]!) ? `Root` : kind
-      const ResultSetMethodName = isRootType(graphqlTypeGroup[0]!)
-        ? `RootViaObject`
-        : kind === `Object`
-        ? `Object$`
-        : kind
       code.push(title1(titleText))
       code.push(``)
 
@@ -48,8 +41,8 @@ export const { generate: generateSelectMethods, moduleName: moduleNameSelectMeth
         // dprint-ignore
         code.push(`
           export interface ${renderName(graphqlType)} {
-            <$SelectionSet extends SelectionSets.${renderName(graphqlType)}>(selectionSet: $SelectionSet):
-              ResultSet.${ResultSetMethodName}<$SelectionSet, Index, Index['allTypes']['${graphqlType.name}']>
+            <$SelectionSet>(selectionSet: $Utilities.Exact<$SelectionSet, $SelectionSets.${renderName(graphqlType)}>):
+              $SelectionSet
           }`
         )
         code.push(``)

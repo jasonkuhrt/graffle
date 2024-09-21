@@ -22,7 +22,9 @@ export interface QueryMethods<$Config extends Config> {
       >
     >
   >
-  InputObjectNested: <$SelectionSet>(args?: Exact<$SelectionSet, SelectionSetGen.Query.InputObjectNested>) => Promise<
+  InputObjectNested: <$SelectionSet>(
+    args?: Exact<$SelectionSet, SelectionSetGen.Query.InputObjectNested$SelectionSetArguments>,
+  ) => Promise<
     ResolveOutputReturnRootField<
       $Config,
       Index,
@@ -31,7 +33,7 @@ export interface QueryMethods<$Config extends Config> {
     >
   >
   InputObjectNestedNonNull: <$SelectionSet>(
-    args: Exact<$SelectionSet, SelectionSetGen.Query.InputObjectNestedNonNull>,
+    args: Exact<$SelectionSet, SelectionSetGen.Query.InputObjectNestedNonNull$SelectionSetArguments>,
   ) => Promise<
     ResolveOutputReturnRootField<
       $Config,
@@ -59,7 +61,7 @@ export interface QueryMethods<$Config extends Config> {
       ResultSet.Field<true, Index['Root']['Query']['fields']['date'], Index>
     >
   >
-  dateArg: <$SelectionSet>(args?: Exact<$SelectionSet, SelectionSetGen.Query.dateArg>) => Promise<
+  dateArg: <$SelectionSet>(args?: Exact<$SelectionSet, SelectionSetGen.Query.dateArg$SelectionSetArguments>) => Promise<
     ResolveOutputReturnRootField<
       $Config,
       Index,
@@ -67,7 +69,9 @@ export interface QueryMethods<$Config extends Config> {
       ResultSet.Field<true, Index['Root']['Query']['fields']['dateArg'], Index>
     >
   >
-  dateArgInputObject: <$SelectionSet>(args?: Exact<$SelectionSet, SelectionSetGen.Query.dateArgInputObject>) => Promise<
+  dateArgInputObject: <$SelectionSet>(
+    args?: Exact<$SelectionSet, SelectionSetGen.Query.dateArgInputObject$SelectionSetArguments>,
+  ) => Promise<
     ResolveOutputReturnRootField<
       $Config,
       Index,
@@ -75,7 +79,9 @@ export interface QueryMethods<$Config extends Config> {
       ResultSet.Field<true, Index['Root']['Query']['fields']['dateArgInputObject'], Index>
     >
   >
-  dateArgList: <$SelectionSet>(args?: Exact<$SelectionSet, SelectionSetGen.Query.dateArgList>) => Promise<
+  dateArgList: <$SelectionSet>(
+    args?: Exact<$SelectionSet, SelectionSetGen.Query.dateArgList$SelectionSetArguments>,
+  ) => Promise<
     ResolveOutputReturnRootField<
       $Config,
       Index,
@@ -83,7 +89,9 @@ export interface QueryMethods<$Config extends Config> {
       ResultSet.Field<true, Index['Root']['Query']['fields']['dateArgList'], Index>
     >
   >
-  dateArgNonNull: <$SelectionSet>(args: Exact<$SelectionSet, SelectionSetGen.Query.dateArgNonNull>) => Promise<
+  dateArgNonNull: <$SelectionSet>(
+    args: Exact<$SelectionSet, SelectionSetGen.Query.dateArgNonNull$SelectionSetArguments>,
+  ) => Promise<
     ResolveOutputReturnRootField<
       $Config,
       Index,
@@ -91,7 +99,9 @@ export interface QueryMethods<$Config extends Config> {
       ResultSet.Field<true, Index['Root']['Query']['fields']['dateArgNonNull'], Index>
     >
   >
-  dateArgNonNullList: <$SelectionSet>(args: Exact<$SelectionSet, SelectionSetGen.Query.dateArgNonNullList>) => Promise<
+  dateArgNonNullList: <$SelectionSet>(
+    args: Exact<$SelectionSet, SelectionSetGen.Query.dateArgNonNullList$SelectionSetArguments>,
+  ) => Promise<
     ResolveOutputReturnRootField<
       $Config,
       Index,
@@ -100,7 +110,7 @@ export interface QueryMethods<$Config extends Config> {
     >
   >
   dateArgNonNullListNonNull: <$SelectionSet>(
-    args: Exact<$SelectionSet, SelectionSetGen.Query.dateArgNonNullListNonNull>,
+    args: Exact<$SelectionSet, SelectionSetGen.Query.dateArgNonNullListNonNull$SelectionSetArguments>,
   ) => Promise<
     ResolveOutputReturnRootField<
       $Config,
@@ -157,7 +167,7 @@ export interface QueryMethods<$Config extends Config> {
       ResultSet.Field<$SelectionSet, Index['Root']['Query']['fields']['dateUnion'], Index>
     >
   >
-  error: <$SelectionSet>(args?: Exact<$SelectionSet, SelectionSetGen.Query.error>) => Promise<
+  error: <$SelectionSet>(args?: Exact<$SelectionSet, SelectionSetGen.Query.error$SelectionSetArguments>) => Promise<
     ResolveOutputReturnRootField<
       $Config,
       Index,
@@ -323,7 +333,9 @@ export interface QueryMethods<$Config extends Config> {
       ResultSet.Field<true, Index['Root']['Query']['fields']['string'], Index>
     >
   >
-  stringWithArgEnum: <$SelectionSet>(args?: Exact<$SelectionSet, SelectionSetGen.Query.stringWithArgEnum>) => Promise<
+  stringWithArgEnum: <$SelectionSet>(
+    args?: Exact<$SelectionSet, SelectionSetGen.Query.stringWithArgEnum$SelectionSetArguments>,
+  ) => Promise<
     ResolveOutputReturnRootField<
       $Config,
       Index,
@@ -332,7 +344,7 @@ export interface QueryMethods<$Config extends Config> {
     >
   >
   stringWithArgInputObject: <$SelectionSet>(
-    args?: Exact<$SelectionSet, SelectionSetGen.Query.stringWithArgInputObject>,
+    args?: Exact<$SelectionSet, SelectionSetGen.Query.stringWithArgInputObject$SelectionSetArguments>,
   ) => Promise<
     ResolveOutputReturnRootField<
       $Config,
@@ -342,7 +354,7 @@ export interface QueryMethods<$Config extends Config> {
     >
   >
   stringWithArgInputObjectRequired: <$SelectionSet>(
-    args: Exact<$SelectionSet, SelectionSetGen.Query.stringWithArgInputObjectRequired>,
+    args: Exact<$SelectionSet, SelectionSetGen.Query.stringWithArgInputObjectRequired$SelectionSetArguments>,
   ) => Promise<
     ResolveOutputReturnRootField<
       $Config,
@@ -351,7 +363,9 @@ export interface QueryMethods<$Config extends Config> {
       ResultSet.Field<true, Index['Root']['Query']['fields']['stringWithArgInputObjectRequired'], Index>
     >
   >
-  stringWithArgs: <$SelectionSet>(args?: Exact<$SelectionSet, SelectionSetGen.Query.stringWithArgs>) => Promise<
+  stringWithArgs: <$SelectionSet>(
+    args?: Exact<$SelectionSet, SelectionSetGen.Query.stringWithArgs$SelectionSetArguments>,
+  ) => Promise<
     ResolveOutputReturnRootField<
       $Config,
       Index,
@@ -359,7 +373,9 @@ export interface QueryMethods<$Config extends Config> {
       ResultSet.Field<true, Index['Root']['Query']['fields']['stringWithArgs'], Index>
     >
   >
-  stringWithListArg: <$SelectionSet>(args?: Exact<$SelectionSet, SelectionSetGen.Query.stringWithListArg>) => Promise<
+  stringWithListArg: <$SelectionSet>(
+    args?: Exact<$SelectionSet, SelectionSetGen.Query.stringWithListArg$SelectionSetArguments>,
+  ) => Promise<
     ResolveOutputReturnRootField<
       $Config,
       Index,
@@ -368,7 +384,7 @@ export interface QueryMethods<$Config extends Config> {
     >
   >
   stringWithListArgRequired: <$SelectionSet>(
-    args: Exact<$SelectionSet, SelectionSetGen.Query.stringWithListArgRequired>,
+    args: Exact<$SelectionSet, SelectionSetGen.Query.stringWithListArgRequired$SelectionSetArguments>,
   ) => Promise<
     ResolveOutputReturnRootField<
       $Config,
@@ -378,7 +394,7 @@ export interface QueryMethods<$Config extends Config> {
     >
   >
   stringWithRequiredArg: <$SelectionSet>(
-    args: Exact<$SelectionSet, SelectionSetGen.Query.stringWithRequiredArg>,
+    args: Exact<$SelectionSet, SelectionSetGen.Query.stringWithRequiredArg$SelectionSetArguments>,
   ) => Promise<
     ResolveOutputReturnRootField<
       $Config,

@@ -229,22 +229,30 @@ const renderField = createCodeGenerator<{ field: GraphQLField<any, any> }>(
 
     if (isScalarType(namedType) || isEnumType(namedType)) {
       const argsAnalysis = analyzeArgsNullability(field.args)
-      const argsRendered = renderFieldArgs({ config, field })
+      const argFieldsRendered = renderArgsFields({ config, field })
+      const argsRendered = renderFieldArgs({
+        config,
+        field,
+        argFieldsRendered: `${nameRendered}$SelectionSetArguments`,
+      })
       if (argsAnalysis.hasAny) {
+        code.push(
+          `export type ${nameRendered}$SelectionSetArguments = ${argFieldsRendered}`,
+        )
         if (argsAnalysis.isAllNullable) {
           code.push(
-            `type ${nameRendered}SelectionSet = $Utilities.Simplify<$SelectionSet.Bases.Base & { ${argsRendered} }>`,
+            `export type ${nameRendered}$SelectionSet = $Utilities.Simplify<$SelectionSet.Bases.Base & { ${argsRendered} }>`,
           )
           code.push(``)
           code.push(
             Helpers.type(
               `${nameRendered}$Expanded`,
-              `$Utilities.UnionExpanded<$SelectionSet.ClientIndicator | ${nameRendered}SelectionSet>`,
+              `$Utilities.UnionExpanded<$SelectionSet.ClientIndicator | ${nameRendered}$SelectionSet>`,
             ),
           )
           code.push(``)
           code.push(
-            Helpers.type(nameRendered, `$SelectionSet.ClientIndicator | ${nameRendered}SelectionSet`),
+            Helpers.type(nameRendered, `$SelectionSet.ClientIndicator | ${nameRendered}$SelectionSet`),
           )
           code.push(``)
         } else {
@@ -261,7 +269,8 @@ const renderField = createCodeGenerator<{ field: GraphQLField<any, any> }>(
         code.push(``)
       }
     } else {
-      const argsRendered = renderFieldArgs({ config, field })
+      const argFieldsRendered = renderArgsFields({ config, field })
+      const argsRendered = renderFieldArgs({ config, field, argFieldsRendered })
       const sigRendered = `export interface ${nameRendered} extends __${renderName(namedType)}`
       code.push(`${sigRendered} {${argsRendered ? `\n${argsRendered}\n` : ``}}`)
       code.push(`export type ${nameRendered}$Expanded = ${nameRendered}`)
@@ -269,12 +278,17 @@ const renderField = createCodeGenerator<{ field: GraphQLField<any, any> }>(
   },
 )
 
-const renderFieldArgs = createCodeGenerator<{ field: GraphQLField<any, any> }>(
-  ({ config, field, code }) => {
+const renderArgsFields = createCodeGenerator<{ field: GraphQLField<any, any> }>(({ config, field, code }) => {
+  const argFieldsRendered = field.args.map(arg => renderArgLike({ config, arg })).join(`\n`)
+  if (argFieldsRendered) {
+    code.push(`{\n${argFieldsRendered}\n}`)
+    code.push(``)
+  }
+})
+
+const renderFieldArgs = createCodeGenerator<{ field: GraphQLField<any, any>; argFieldsRendered: string }>(
+  ({ field, code, argFieldsRendered }) => {
     const argsAnalysis = analyzeArgsNullability(field.args)
-    const argFieldsRendered = field.args.map(arg => {
-      return renderArgLike({ config, arg })
-    }).join(`\n`)
 
     if (argsAnalysis.hasAny) {
       const lead = argsAnalysis.isAllNullable
@@ -290,9 +304,7 @@ const renderFieldArgs = createCodeGenerator<{ field: GraphQLField<any, any> }>(
         /**
          * Arguments for \`${field.name}\` field.${tsDocMessageAboutRequired}
          */
-        $${argsAnalysis.isAllNullable ? `?` : ``}: {
-          ${argFieldsRendered}
-        }
+        $${argsAnalysis.isAllNullable ? `?` : ``}: ${argFieldsRendered}
       `)
     }
   },

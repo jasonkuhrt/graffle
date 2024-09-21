@@ -69,17 +69,16 @@ const renderRootType = createCodeGenerator<{ node: GraphQLObjectType }>(({ node,
 const renderFieldMethods = createCodeGenerator<{ node: GraphQLObjectType }>(({ node, config, code }) => {
   for (const field of Object.values(node.getFields())) {
     const doc = renderDocumentation(config, field)
-    const fieldTypeUnwrapped = getNamedType(field.type)
     code.push(doc)
 
+    const fieldTypeUnwrapped = getNamedType(field.type)
+
     if (isScalarType(fieldTypeUnwrapped)) {
-      // todo allow scalar fields to have directives applies still for consistency.
-      //
       const isArgsAllNullable_ = isAllArgsNullable(field.args)
       const parametersCode = field.args.length > 0
         ? `<$SelectionSet>(args${isArgsAllNullable_ ? `?` : ``}: Exact<$SelectionSet, SelectionSetGen.${
           renderName(node)
-        }.${renderName(field)}>)`
+        }.${renderName(field)}$SelectionSetArguments>)`
         : `()`
 
       code.push(
@@ -94,7 +93,6 @@ const renderFieldMethods = createCodeGenerator<{ node: GraphQLObjectType }>(({ n
           >`,
       )
     } else {
-      // (selectionSet: Exact<$SelectionSet, SelectionSet.Field<Index['Root']['${node.name}']['fields']['${fieldName}'], Index>>) =>
       code.push(
         `${field.name}: <$SelectionSet>
         (selectionSet: Exact<$SelectionSet, SelectionSetGen.${renderName(node)}.${renderName(field)}>) =>

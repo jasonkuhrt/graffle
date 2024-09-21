@@ -19,6 +19,9 @@ export const $Index: Index = {
     Mutation: null,
     Subscription: null,
   },
+  allTypes: {
+    Query,
+  },
   objects: {},
   unions: {},
   interfaces: {},

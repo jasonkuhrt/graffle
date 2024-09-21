@@ -23,15 +23,24 @@ export const { generate: generateScalar, moduleName: moduleNameScalar } = create
     }
 
     code.push(`export * from '${config.libraryPaths.scalars}'`)
-    code.push(config.options.customScalars ? `export * from '${config.importPaths.customScalarCodecs}'` : ``)
+    if (config.options.customScalars) {
+      code.push(`export * from '${config.importPaths.customScalarCodecs}'`)
+      const names = config.typeMapByKind.GraphQLScalarTypeCustom.map((scalar) => scalar.name)
+      code.push(`export { ${names.join(`, `)} } from '${config.importPaths.customScalarCodecs}'`)
+    }
     code.push(``)
 
     for (const scalar of config.typeMapByKind.GraphQLScalarTypeCustom) {
       code.push(typeTitle2(`custom scalar type`)(scalar))
       code.push(``)
       code.push(`export type ${scalar.name} = typeof ${CustomScalarsNamespace}.${scalar.name}`)
-      code.push(`export type ${scalar.name}Decoded = Schema.Scalar.GetDecoded<${scalar.name}>`)
-      code.push(`export type ${scalar.name}Encoded = Schema.Scalar.GetEncoded<${scalar.name}>`)
+      code.push(
+        `// Without this we get error:
+         // "Exported type alias 'DateDecoded' has or is using private name 'Date'."`,
+      )
+      code.push(`type ${scalar.name}_ = typeof ${CustomScalarsNamespace}.${scalar.name}`)
+      code.push(`export type ${scalar.name}Decoded = Schema.Scalar.GetDecoded<${scalar.name}_>`)
+      code.push(`export type ${scalar.name}Encoded = Schema.Scalar.GetEncoded<${scalar.name}_>`)
       code.push(``)
     }
 

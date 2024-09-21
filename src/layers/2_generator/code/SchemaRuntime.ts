@@ -82,6 +82,19 @@ const index = (config: Config) => {
     Subscription: hasSubscription(config.typeMapByKind),
   }
   // todo input objects for decode/encode input object fields
+  const unions = config.typeMapByKind.GraphQLUnionType.map(type => type.name).join(`,\n`)
+  const objects = config.typeMapByKind.GraphQLObjectType.map(type => type.name).join(`,\n`)
+  const interfaces = config.typeMapByKind.GraphQLInterfaceType.map(type => type.name).join(`,\n`)
+  const roots = config.typeMapByKind.GraphQLRootType.map(type => type.name).join(`,\n`)
+  const enums = config.typeMapByKind.GraphQLEnumType.map(type => type.name).join(`,\n`)
+  const allTypes = [
+    roots,
+    unions,
+    objects,
+    interfaces,
+    enums,
+  ].filter(_ => _).join(`,\n`)
+
   return `
     export const $Index: Index = {
       name: Data.Name,
@@ -94,14 +107,17 @@ const index = (config: Config) => {
         Mutation ${rootTypesPresence.Mutation ? `` : `:null`},
         Subscription ${rootTypesPresence.Subscription ? `` : `:null`}
       },
+      allTypes: {
+        ${allTypes}
+      },
       objects: {
-        ${config.typeMapByKind.GraphQLObjectType.map(type => type.name).join(`,\n`)}
+        ${objects}
       },
       unions: {
-        ${config.typeMapByKind.GraphQLUnionType.map(type => type.name).join(`,\n`)}
+        ${unions}
       },
       interfaces: {
-        ${config.typeMapByKind.GraphQLInterfaceType.map(type => type.name).join(`,\n`)}
+        ${interfaces}
       },
       error: {
         objects: {
