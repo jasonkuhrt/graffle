@@ -18,9 +18,7 @@ export interface Index {
     Mutation: null | Output.ObjectMutation
     Subscription: null | Output.ObjectSubscription
   }
-  Builder: {
-    RootMethods: HKT.Fn<any, any>
-  }
+
   allTypes: Record<
     string,
     | Hybrid.Enum

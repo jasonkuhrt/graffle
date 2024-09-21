@@ -12,9 +12,6 @@ export interface Index {
     Mutation: Schema.Root.Mutation
     Subscription: null
   }
-  Builder: {
-    RootMethods: RootMethods.BuilderRootMethodsFn
-  }
   allTypes: {
     Mutation: Schema.Root.Mutation
   }

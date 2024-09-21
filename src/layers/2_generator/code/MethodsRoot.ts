@@ -5,7 +5,7 @@ import { renderDocumentation, renderName } from '../helpers.js'
 import { moduleNameSchemaIndex } from './SchemaIndex.js'
 import { moduleNameSelectionSets } from './SelectionSets.js'
 
-export const { moduleName: moduleNameRootMethods, generate: generateRootMethods } = createModuleGenerator(
+export const { moduleName: moduleNameMethodsRoot, generate: generateMethodsRoot } = createModuleGenerator(
   `RootMethods`,
   ({ config, code }) => {
     code.push(
@@ -34,7 +34,7 @@ export const { moduleName: moduleNameRootMethods, generate: generateRootMethods 
     code.push(``)
 
     code.push(`
-      export interface BuilderRootMethodsFn extends HKT.Fn {
+      export interface BuilderMethodsRootFn extends HKT.Fn {
         // @ts-expect-error parameter is Untyped.
         return: BuilderRootMethods<this['Params']['Config']>
       }

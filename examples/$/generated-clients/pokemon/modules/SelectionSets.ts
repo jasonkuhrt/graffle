@@ -1,11 +1,3 @@
-/**
- * [1] This type alias serves to allow field selection interfaces to extend their respective object type without
- *     name clashing between the field name and the object name.
- *
- *     For example imagine `Query.Foo` field with type also called `Foo`. Our generated interfaces for each field
- *     would end up with an error of `export interface Foo extends Foo ...`
- */
-
 import type { SelectionSet as $SelectionSet } from '../../../../../src/entrypoints/schema.js'
 import type * as $Utilities from '../../../../../src/entrypoints/utilities-for-generated.js'
 
@@ -16,7 +8,7 @@ import type * as $Utilities from '../../../../../src/entrypoints/utilities-for-g
 //
 //
 // ==================================================================================================
-//                                       GraphQLRootType Types
+//                                      GraphQLObjectType Types
 // ==================================================================================================
 //
 //
@@ -66,7 +58,7 @@ export interface Mutation {
 // ----------------------------------------| Fields Interfaces |
 
 export namespace Mutation {
-  export interface addPokemon extends __Pokemon {
+  export interface addPokemon extends _RefDefs._Pokemon {
     /**
      * Arguments for `addPokemon` field.
      * All arguments are required so you must include this.
@@ -80,8 +72,6 @@ export namespace Mutation {
   }
   export type addPokemon$Expanded = addPokemon
 }
-
-type __Mutation = Mutation // [1]
 
 //
 //
@@ -136,9 +126,9 @@ export interface Query {
 // ----------------------------------------| Fields Interfaces |
 
 export namespace Query {
-  export interface pokemon extends __Pokemon {}
+  export interface pokemon extends _RefDefs._Pokemon {}
   export type pokemon$Expanded = pokemon
-  export interface pokemonByName extends __Pokemon {
+  export interface pokemonByName extends _RefDefs._Pokemon {
     /**
      * Arguments for `pokemonByName` field.
      * All arguments are required so you must include this.
@@ -148,7 +138,7 @@ export namespace Query {
     }
   }
   export type pokemonByName$Expanded = pokemonByName
-  export interface trainerByName extends __Trainer {
+  export interface trainerByName extends _RefDefs._Trainer {
     /**
      * Arguments for `trainerByName` field.
      * All arguments are required so you must include this.
@@ -158,59 +148,9 @@ export namespace Query {
     }
   }
   export type trainerByName$Expanded = trainerByName
-  export interface trainers extends __Trainer {}
+  export interface trainers extends _RefDefs._Trainer {}
   export type trainers$Expanded = trainers
 }
-
-type __Query = Query // [1]
-
-//
-//
-//
-//
-//
-//
-// ==================================================================================================
-//                                       GraphQLEnumType Types
-// ==================================================================================================
-//
-//
-//
-//
-//
-//
-
-//
-//
-//
-//
-//
-//
-// ==================================================================================================
-//                                    GraphQLInputObjectType Types
-// ==================================================================================================
-//
-//
-//
-//
-//
-//
-
-//
-//
-//
-//
-//
-//
-// ==================================================================================================
-//                                     GraphQLInterfaceType Types
-// ==================================================================================================
-//
-//
-//
-//
-//
-//
 
 //
 //
@@ -309,11 +249,9 @@ export namespace Pokemon {
 
   export type name = $SelectionSet.NoArgsIndicator
 
-  export interface trainer extends __Trainer {}
+  export interface trainer extends _RefDefs._Trainer {}
   export type trainer$Expanded = trainer
 }
-
-type __Pokemon = Pokemon // [1]
 
 //
 //
@@ -372,24 +310,20 @@ export namespace Trainer {
 
   export type name = $SelectionSet.NoArgsIndicator
 
-  export interface pokemon extends __Pokemon {}
+  export interface pokemon extends _RefDefs._Pokemon {}
   export type pokemon$Expanded = pokemon
 }
 
-type __Trainer = Trainer // [1]
-
-//
-//
-//
-//
-//
-//
-// ==================================================================================================
-//                                       GraphQLUnionType Types
-// ==================================================================================================
-//
-//
-//
-//
-//
-//
+/**
+ * [1] These definitions serve to allow field selection interfaces to extend their respective object type without
+ *     name clashing between the field name and the object name.
+ *
+ *     For example imagine `Query.Foo` field with type also called `Foo`. Our generated interfaces for each field
+ *     would end up with an error of `export interface Foo extends Foo ...`
+ */
+export namespace _RefDefs {
+  export type _Mutation = Mutation
+  export type _Query = Query
+  export type _Pokemon = Pokemon
+  export type _Trainer = Trainer
+}

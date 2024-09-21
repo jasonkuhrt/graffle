@@ -76,7 +76,7 @@ export interface BuilderRootMethods<$Config extends Config> {
   query: QueryMethods<$Config>
 }
 
-export interface BuilderRootMethodsFn extends HKT.Fn {
+export interface BuilderMethodsRootFn extends HKT.Fn {
   // @ts-expect-error parameter is Untyped.
   return: BuilderRootMethods<this['Params']['Config']>
 }

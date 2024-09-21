@@ -8,13 +8,13 @@ import { showJson } from '../$/helpers.js'
 const atlas = Atlas.create()
 
 const countries = await atlas.document({
-  countriesQuery: {
-    query: {
-      countries_as_countries2: {
+  queries: {
+    countriesQuery: {
+      countries: [`countries2`, {
         $: { filter: { name: { in: [`Canada`, `Germany`, `Japan`] } } },
         name: true,
         continent: { name: true },
-      },
+      }],
     },
   },
 })

@@ -1,11 +1,3 @@
-/**
- * [1] This type alias serves to allow field selection interfaces to extend their respective object type without
- *     name clashing between the field name and the object name.
- *
- *     For example imagine `Query.Foo` field with type also called `Foo`. Our generated interfaces for each field
- *     would end up with an error of `export interface Foo extends Foo ...`
- */
-
 import type { SelectionSet as $SelectionSet } from '../../../../../src/entrypoints/schema.js'
 import type * as $Utilities from '../../../../../src/entrypoints/utilities-for-generated.js'
 
@@ -16,7 +8,7 @@ import type * as $Utilities from '../../../../../src/entrypoints/utilities-for-g
 //
 //
 // ==================================================================================================
-//                                       GraphQLRootType Types
+//                                      GraphQLObjectType Types
 // ==================================================================================================
 //
 //
@@ -86,7 +78,7 @@ export interface Query {
 // ----------------------------------------| Fields Interfaces |
 
 export namespace Query {
-  export interface continent extends __Continent {
+  export interface continent extends _RefDefs._Continent {
     /**
      * Arguments for `continent` field.
      * All arguments are required so you must include this.
@@ -96,27 +88,27 @@ export namespace Query {
     }
   }
   export type continent$Expanded = continent
-  export interface continents extends __Continent {
+  export interface continents extends _RefDefs._Continent {
     /**
      * Arguments for `continents` field.
      * No arguments are required so you may omit this.
      */
     $?: {
-      filter?: ContinentFilterInput | undefined | null
+      filter?: _RefDefs._ContinentFilterInput | undefined | null
     }
   }
   export type continents$Expanded = continents
-  export interface countries extends __Country {
+  export interface countries extends _RefDefs._Country {
     /**
      * Arguments for `countries` field.
      * No arguments are required so you may omit this.
      */
     $?: {
-      filter?: CountryFilterInput | undefined | null
+      filter?: _RefDefs._CountryFilterInput | undefined | null
     }
   }
   export type countries$Expanded = countries
-  export interface country extends __Country {
+  export interface country extends _RefDefs._Country {
     /**
      * Arguments for `country` field.
      * All arguments are required so you must include this.
@@ -126,7 +118,7 @@ export namespace Query {
     }
   }
   export type country$Expanded = country
-  export interface language extends __Language {
+  export interface language extends _RefDefs._Language {
     /**
      * Arguments for `language` field.
      * All arguments are required so you must include this.
@@ -136,35 +128,17 @@ export namespace Query {
     }
   }
   export type language$Expanded = language
-  export interface languages extends __Language {
+  export interface languages extends _RefDefs._Language {
     /**
      * Arguments for `languages` field.
      * No arguments are required so you may omit this.
      */
     $?: {
-      filter?: LanguageFilterInput | undefined | null
+      filter?: _RefDefs._LanguageFilterInput | undefined | null
     }
   }
   export type languages$Expanded = languages
 }
-
-type __Query = Query // [1]
-
-//
-//
-//
-//
-//
-//
-// ==================================================================================================
-//                                       GraphQLEnumType Types
-// ==================================================================================================
-//
-//
-//
-//
-//
-//
 
 //
 //
@@ -183,25 +157,19 @@ type __Query = Query // [1]
 //
 
 export interface ContinentFilterInput {
-  code?: StringQueryOperatorInput | undefined | null
+  code?: _RefDefs._StringQueryOperatorInput | undefined | null
 }
-
-type __ContinentFilterInput = ContinentFilterInput // [1]
 
 export interface CountryFilterInput {
-  code?: StringQueryOperatorInput | undefined | null
-  continent?: StringQueryOperatorInput | undefined | null
-  currency?: StringQueryOperatorInput | undefined | null
-  name?: StringQueryOperatorInput | undefined | null
+  code?: _RefDefs._StringQueryOperatorInput | undefined | null
+  continent?: _RefDefs._StringQueryOperatorInput | undefined | null
+  currency?: _RefDefs._StringQueryOperatorInput | undefined | null
+  name?: _RefDefs._StringQueryOperatorInput | undefined | null
 }
-
-type __CountryFilterInput = CountryFilterInput // [1]
 
 export interface LanguageFilterInput {
-  code?: StringQueryOperatorInput | undefined | null
+  code?: _RefDefs._StringQueryOperatorInput | undefined | null
 }
-
-type __LanguageFilterInput = LanguageFilterInput // [1]
 
 export interface StringQueryOperatorInput {
   eq?: string | undefined | null
@@ -210,24 +178,6 @@ export interface StringQueryOperatorInput {
   nin?: Array<string | undefined | null> | undefined | null
   regex?: string | undefined | null
 }
-
-type __StringQueryOperatorInput = StringQueryOperatorInput // [1]
-
-//
-//
-//
-//
-//
-//
-// ==================================================================================================
-//                                     GraphQLInterfaceType Types
-// ==================================================================================================
-//
-//
-//
-//
-//
-//
 
 //
 //
@@ -298,14 +248,12 @@ export namespace Continent {
 
   export type code = $SelectionSet.NoArgsIndicator
 
-  export interface countries extends __Country {}
+  export interface countries extends _RefDefs._Country {}
   export type countries$Expanded = countries
   export type name$Expanded = $SelectionSet.NoArgsIndicator$Expanded
 
   export type name = $SelectionSet.NoArgsIndicator
 }
-
-type __Continent = Continent // [1]
 
 //
 //
@@ -416,7 +364,7 @@ export namespace Country {
 
   export type code = $SelectionSet.NoArgsIndicator
 
-  export interface continent extends __Continent {}
+  export interface continent extends _RefDefs._Continent {}
   export type continent$Expanded = continent
   export type currencies$Expanded = $SelectionSet.NoArgsIndicator$Expanded
 
@@ -434,7 +382,7 @@ export namespace Country {
 
   export type emojiU = $SelectionSet.NoArgsIndicator
 
-  export interface languages extends __Language {}
+  export interface languages extends _RefDefs._Language {}
   export type languages$Expanded = languages
   export type name$SelectionSetArguments = {
     lang?: string | undefined | null
@@ -465,13 +413,11 @@ export namespace Country {
 
   export type phones = $SelectionSet.NoArgsIndicator
 
-  export interface states extends __State {}
+  export interface states extends _RefDefs._State {}
   export type states$Expanded = states
-  export interface subdivisions extends __Subdivision {}
+  export interface subdivisions extends _RefDefs._Subdivision {}
   export type subdivisions$Expanded = subdivisions
 }
-
-type __Country = Country // [1]
 
 //
 //
@@ -543,8 +489,6 @@ export namespace Language {
   export type rtl = $SelectionSet.NoArgsIndicator
 }
 
-type __Language = Language // [1]
-
 //
 //
 //
@@ -598,14 +542,12 @@ export namespace State {
 
   export type code = $SelectionSet.NoArgsIndicator
 
-  export interface country extends __Country {}
+  export interface country extends _RefDefs._Country {}
   export type country$Expanded = country
   export type name$Expanded = $SelectionSet.NoArgsIndicator$Expanded
 
   export type name = $SelectionSet.NoArgsIndicator
 }
-
-type __State = State // [1]
 
 //
 //
@@ -669,20 +611,22 @@ export namespace Subdivision {
   export type name = $SelectionSet.NoArgsIndicator
 }
 
-type __Subdivision = Subdivision // [1]
-
-//
-//
-//
-//
-//
-//
-// ==================================================================================================
-//                                       GraphQLUnionType Types
-// ==================================================================================================
-//
-//
-//
-//
-//
-//
+/**
+ * [1] These definitions serve to allow field selection interfaces to extend their respective object type without
+ *     name clashing between the field name and the object name.
+ *
+ *     For example imagine `Query.Foo` field with type also called `Foo`. Our generated interfaces for each field
+ *     would end up with an error of `export interface Foo extends Foo ...`
+ */
+export namespace _RefDefs {
+  export type _Query = Query
+  export type _ContinentFilterInput = ContinentFilterInput
+  export type _CountryFilterInput = CountryFilterInput
+  export type _LanguageFilterInput = LanguageFilterInput
+  export type _StringQueryOperatorInput = StringQueryOperatorInput
+  export type _Continent = Continent
+  export type _Country = Country
+  export type _Language = Language
+  export type _State = State
+  export type _Subdivision = Subdivision
+}

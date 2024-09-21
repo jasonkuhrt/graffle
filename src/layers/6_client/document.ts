@@ -1,6 +1,10 @@
 import type { MergeExclusive, NonEmptyObject } from 'type-fest'
-import { operationTypeNameToRootTypeName } from '../../lib/graphql.js'
-import type { ExcludeNull, IsMultipleKeys } from '../../lib/prelude.js'
+import {
+  operationTypeNameToRootTypeName,
+  type RootTypeNameMutation,
+  type RootTypeNameQuery,
+} from '../../lib/graphql.js'
+import type { ExcludeNull, IsMultipleKeys, Values } from '../../lib/prelude.js'
 import type { TSError } from '../../lib/TSError.js'
 import type { Schema } from '../1_Schema/__.js'
 import { SelectionSet } from '../3_SelectionSet/__.js'
@@ -8,6 +12,52 @@ import type { Context, DocumentObject } from '../3_SelectionSet/encode.js'
 import type { ResultSet } from '../4_ResultSet/__.js'
 import type { ResolveOutputReturnRootType } from './handleOutput.js'
 import type { AugmentRootTypeSelectionWithTypename, Config } from './Settings/Config.js'
+
+interface SomeDocument {
+  mutations?: Record<string, object>
+  queries?: Record<string, object>
+}
+
+// dprint-ignore
+type HasMultipleOperations<$Document extends SomeDocument> =
+  IsMultipleKeys<
+    & ('mutations' extends keyof $Document ? $Document['mutations'] : {})
+    & ('queries' extends keyof $Document ? $Document['queries'] : {})
+  >
+
+// dprint-ignore
+type GetOperationNames<$Document extends SomeDocument> = Values<
+  {
+    [$OperationType in keyof $Document]: keyof $Document[$OperationType] & string
+  }
+>
+
+// dprint-ignore
+type GetRootType2<$Document extends SomeDocument, $Name extends string> =
+  $Name extends keyof $Document['mutations'] ? RootTypeNameMutation :
+  $Name extends keyof $Document['queries'] ? RootTypeNameQuery :
+  never
+
+// dprint-ignore
+type GetOperation<$Document extends SomeDocument, $Name extends string> =
+  $Name extends keyof $Document['mutations'] ? $Document['mutations'][$Name] :
+  $Name extends keyof $Document['queries'] ? $Document['queries'][$Name] :
+  never
+
+export type DocumentRunner2<$Config extends Config, $Index extends Schema.Index, $Document extends SomeDocument> = {
+  run: <
+    $Name extends GetOperationNames<$Document>,
+    $Params extends (HasMultipleOperations<$Document> extends true ? [name: $Name] : ([] | [name: $Name | undefined])),
+  >(...params: $Params) => Promise<
+    ResolveOutputReturnRootType<
+      $Config,
+      $Index,
+      ResultSet.Root<GetOperation<$Document, $Name>, $Index, GetRootType2<$Document, $Name>>
+    >
+  >
+}
+
+// ... the below is legacy prior to generating the document signature
 
 // dprint-ignore
 export type DocumentFn<$Config extends Config, $Index extends Schema.Index> =

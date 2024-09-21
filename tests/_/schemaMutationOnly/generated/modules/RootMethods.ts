@@ -44,7 +44,7 @@ export interface BuilderRootMethods<$Config extends Config> {
   mutation: MutationMethods<$Config>
 }
 
-export interface BuilderRootMethodsFn extends HKT.Fn {
+export interface BuilderMethodsRootFn extends HKT.Fn {
   // @ts-expect-error parameter is Untyped.
   return: BuilderRootMethods<this['Params']['Config']>
 }

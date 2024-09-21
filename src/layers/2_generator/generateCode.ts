@@ -10,14 +10,15 @@ import { generateClient } from './code/Client.js'
 import { generateData } from './code/Data.js'
 import { generateError } from './code/Error.js'
 import { generateGlobal } from './code/global.js'
-import { generateRootMethods } from './code/RootMethods.js'
+import { generateMethodsDocument } from './code/MethodsDocument.js'
+import { generateMethodsRoot } from './code/MethodsRoot.js'
+import { generateMethodsSelect } from './code/MethodsSelect.js'
 import { generateScalar } from './code/Scalar.js'
 import { generateSchemaBuildtime } from './code/SchemaBuildtime.js'
 import { generateSchemaIndex } from './code/SchemaIndex.js'
 import { generateRuntimeSchema } from './code/SchemaRuntime.js'
 import { generateSelect } from './code/Select.js'
 import { generateSelectionSets } from './code/SelectionSets.js'
-import { generateSelectMethods } from './code/SelectMethods.js'
 
 export interface OptionsInput {
   name?: string
@@ -153,8 +154,9 @@ export const generateCode = (input: Input) => {
     generateSchemaBuildtime,
     generateRuntimeSchema,
     generateSelect,
-    generateRootMethods,
-    generateSelectMethods,
+    generateMethodsRoot,
+    generateMethodsSelect,
+    generateMethodsDocument,
   ].map(_ => _(config)).map(code => ({
     ...code,
     code: format(code.code),

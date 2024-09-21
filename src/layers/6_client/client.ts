@@ -4,7 +4,7 @@ import type { Errors } from '../../lib/errors/__.js'
 import { isOperationTypeName, operationTypeNameToRootTypeName, type RootTypeName } from '../../lib/graphql.js'
 import type { HKT } from '../../lib/hkt/__.js'
 import { mergeHeadersInit, mergeRequestInit } from '../../lib/http.js'
-import { type ExcludeNull, proxyGet, type SimplifyExceptError } from '../../lib/prelude.js'
+import { proxyGet, type SimplifyExceptError } from '../../lib/prelude.js'
 import type { BaseInput, BaseInput_, TypedDocumentString } from '../0_functions/types.js'
 import { Schema } from '../1_Schema/__.js'
 import { readMaybeThunk } from '../1_Schema/core/helpers.js'
@@ -13,7 +13,7 @@ import type { DocumentObject, GraphQLObjectSelection } from '../3_SelectionSet/e
 import { Core } from '../5_core/__.js'
 import { type HookDefEncode } from '../5_core/core.js'
 import { type InterfaceRaw, type TransportHttp } from '../5_core/types.js'
-import type { DocumentFn } from './document.js'
+// import type { DocumentFn } from './document.js'
 import { createExtension, type Extension, type ExtensionCallBuilderMerge } from './extension.js'
 import { handleOutput, type RawResolveOutputReturnRootType } from './handleOutput.js'
 // import type { BuilderRequestMethodsGeneratedRootTypes } from './RootTypeMethods.js'
@@ -83,7 +83,13 @@ export type BuilderRequestMethods<$Config extends Config, $Index extends null | 
   & (
     $Index extends null
       ? {}
-      : HKT.Call<ExcludeNull<$Index>['Builder']['RootMethods'], { Config: $Config }>//BuilderRequestMethodsGenerated<$Config, $Index>
+      :
+        (
+          & HKT.Call<GlobalRegistry.GetOrDefault<$Config['name']>['interfaces']['Root'], { Config: $Config }>
+          & {
+              document: HKT.Call<GlobalRegistry.GetOrDefault<$Config['name']>['interfaces']['Document'], { Config: $Config }>
+            }
+        )
   )
 
 // dprint-ignore
@@ -95,12 +101,12 @@ export type BuilderRequestMethodsStatic<$Config extends Config> = {
 }
 
 // dprint
-export type BuilderRequestMethodsGenerated<$Config extends Config, $Index extends Schema.Index> =
-  BuilderRequestMethodsGeneratedStatic<$Config, $Index>
+// export type BuilderRequestMethodsGenerated<$Config extends Config, $Index extends Schema.Index> =
+// BuilderRequestMethodsGeneratedStatic<$Config, $Index>
 // & BuilderRequestMethodsGeneratedRootTypes<$Config, $Index>
 
 export type BuilderRequestMethodsGeneratedStatic<$Config extends Config, $Index extends Schema.Index> = {
-  document: DocumentFn<$Config, $Index>
+  // document: DocumentFn<$Config, $Index>
 }
 
 // dprint-ignore

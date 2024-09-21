@@ -2,9 +2,11 @@ import { Code } from '../../../lib/Code.js'
 import { hasCustomScalars } from '../../../lib/graphql.js'
 import { createModuleGenerator } from '../createCodeGenerator.js'
 import { moduleNameData } from './Data.js'
+import { moduleNameMethodsDocument } from './MethodsDocument.js'
+import { moduleNameMethodsRoot } from './MethodsRoot.js'
+import { moduleNameSelectMethods } from './MethodsSelect.js'
 import { moduleNameScalar } from './Scalar.js'
 import { moduleNameSchemaIndex } from './SchemaIndex.js'
-import { moduleNameSelectMethods } from './SelectMethods.js'
 
 export const { moduleName: moduleNameGlobal, generate: generateGlobal } = createModuleGenerator(
   `Global`,
@@ -15,7 +17,9 @@ export const { moduleName: moduleNameGlobal, generate: generateGlobal } = create
 
     code.push(
       `import type * as Data from './${moduleNameData}.js'`,
-      `import type { $SelectMethods } from './${moduleNameSelectMethods}.js'`,
+      `import type * as MethodsSelect from './${moduleNameSelectMethods}.js'`,
+      `import type * as MethodsDocument from './${moduleNameMethodsDocument}.js'`,
+      `import type * as MethodsRoot from './${moduleNameMethodsRoot}.js'`,
       `import type { Index } from './${moduleNameSchemaIndex}.js'`,
     )
 
@@ -41,7 +45,9 @@ export const { moduleName: moduleNameGlobal, generate: generateGlobal } = create
           export interface Schemas {
             ${config.name}: {
               interfaces: {
-                SelectMethods: $SelectMethods
+                SelectMethods: MethodsSelect.$SelectMethods
+                Document: MethodsDocument.BuilderMethodsDocumentFn
+                Root: MethodsRoot.BuilderMethodsRootFn
               }
               name: Data.Name
               index: Index

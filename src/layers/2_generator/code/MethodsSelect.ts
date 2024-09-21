@@ -4,7 +4,7 @@ import { createModuleGenerator } from '../createCodeGenerator.js'
 import { renderName, title1 } from '../helpers.js'
 import { moduleNameSelectionSets } from './SelectionSets.js'
 
-export const { generate: generateSelectMethods, moduleName: moduleNameSelectMethods } = createModuleGenerator(
+export const { generate: generateMethodsSelect, moduleName: moduleNameSelectMethods } = createModuleGenerator(
   `SelectMethods`,
   ({ config, code }) => {
     code.push(`import type * as $SelectionSets from './${moduleNameSelectionSets}.js'`)

@@ -1,4 +1,5 @@
 export { type Simplify } from 'type-fest'
+export { type DocumentRunner2 } from '../layers/6_client/document.js'
 export type { ResolveOutputReturnRootField, ResolveOutputReturnRootType } from '../layers/6_client/handleOutput.js'
 export type { Config } from '../layers/6_client/Settings/Config.js'
 export { HKT } from '../lib/hkt/__.js'

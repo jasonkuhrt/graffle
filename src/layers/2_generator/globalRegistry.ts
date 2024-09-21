@@ -1,3 +1,4 @@
+import type { HKT } from '../../entrypoints/utilities-for-generated.js'
 import type { Values } from '../../lib/prelude.js'
 import type { TSError } from '../../lib/TSError.js'
 import type { Schema } from '../1_Schema/__.js'
@@ -19,6 +20,8 @@ type SomeSchema = {
   }
   interfaces: {
     SelectMethods: {}
+    RootMethods: HKT.Fn<any, any>
+    Document: HKT.Fn<any, any>
   }
   /**
    * If the code was generated with introspection, the URL used is taken as the default schema URL.
