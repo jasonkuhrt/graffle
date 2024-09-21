@@ -61,6 +61,12 @@ export const $Index: Index = {
     Mutation,
     Subscription: null,
   },
+  allTypes: {
+    Mutation,
+    Query,
+    Pokemon,
+    Trainer,
+  },
   objects: {
     Pokemon,
     Trainer,

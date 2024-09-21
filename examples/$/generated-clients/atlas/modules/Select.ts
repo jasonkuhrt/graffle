@@ -1,6 +1,7 @@
-import type { ResultSet, SelectionSet } from '../../../../../src/entrypoints/schema.js'
+import type { ResultSet } from '../../../../../src/entrypoints/schema.js'
 import * as Data from './Data.js'
 import type { Index } from './SchemaIndex.js'
+import type * as SelectionSets from './SelectionSets.js'
 
 //
 //
@@ -39,26 +40,34 @@ export const Select = createSelect(Data.Name)
 export namespace Select {
   // Root Types
   // ----------
-  export type Query<$SelectionSet extends SelectionSet.Root<Index, 'Query'>> = ResultSet.Root<
-    $SelectionSet,
-    Index,
-    'Query'
-  >
+  export type Query<$SelectionSet extends SelectionSets.Query> = ResultSet.Root<$SelectionSet, Index, 'Query'>
   // Object Types
   // ------------
-  export type Continent<$SelectionSet extends SelectionSet.Object<Index['objects']['Continent'], Index>> =
-    ResultSet.Object$<$SelectionSet, Index['objects']['Continent'], Index>
-  export type Country<$SelectionSet extends SelectionSet.Object<Index['objects']['Country'], Index>> =
-    ResultSet.Object$<$SelectionSet, Index['objects']['Country'], Index>
-  export type Language<$SelectionSet extends SelectionSet.Object<Index['objects']['Language'], Index>> =
-    ResultSet.Object$<$SelectionSet, Index['objects']['Language'], Index>
-  export type State<$SelectionSet extends SelectionSet.Object<Index['objects']['State'], Index>> = ResultSet.Object$<
+  export type Continent<$SelectionSet extends SelectionSets.Continent> = ResultSet.Object$<
     $SelectionSet,
-    Index['objects']['State'],
-    Index
+    Index,
+    Index['allTypes']['Continent']
   >
-  export type Subdivision<$SelectionSet extends SelectionSet.Object<Index['objects']['Subdivision'], Index>> =
-    ResultSet.Object$<$SelectionSet, Index['objects']['Subdivision'], Index>
+  export type Country<$SelectionSet extends SelectionSets.Country> = ResultSet.Object$<
+    $SelectionSet,
+    Index,
+    Index['allTypes']['Country']
+  >
+  export type Language<$SelectionSet extends SelectionSets.Language> = ResultSet.Object$<
+    $SelectionSet,
+    Index,
+    Index['allTypes']['Language']
+  >
+  export type State<$SelectionSet extends SelectionSets.State> = ResultSet.Object$<
+    $SelectionSet,
+    Index,
+    Index['allTypes']['State']
+  >
+  export type Subdivision<$SelectionSet extends SelectionSets.Subdivision> = ResultSet.Object$<
+    $SelectionSet,
+    Index,
+    Index['allTypes']['Subdivision']
+  >
   // Union Types
   // -----------
 

@@ -1,11 +1,3 @@
-/**
- * [1] This type alias serves to allow field selection interfaces to extend their respective object type without
- *     name clashing between the field name and the object name.
- *
- *     For example imagine `Query.Foo` field with type also called `Foo`. Our generated interfaces for each field
- *     would end up with an error of `export interface Foo extends Foo ...`
- */
-
 import type { SelectionSet as $SelectionSet } from '../../../../../src/entrypoints/schema.js'
 import type * as $Utilities from '../../../../../src/entrypoints/utilities-for-generated.js'
 import type * as $Scalar from './Scalar.js'
@@ -17,7 +9,7 @@ import type * as $Scalar from './Scalar.js'
 //
 //
 // ==================================================================================================
-//                                       GraphQLRootType Types
+//                                      GraphQLObjectType Types
 // ==================================================================================================
 //
 //
@@ -79,8 +71,6 @@ export namespace Mutation {
 
   export type idNonNull = $SelectionSet.NoArgsIndicator
 }
-
-type __Mutation = Mutation // [1]
 
 //
 //
@@ -322,7 +312,7 @@ export interface Query {
 
 export namespace Query {
   export type InputObjectNested$SelectionSetArguments = {
-    input?: InputObjectNested | undefined | null
+    input?: _RefDefs._InputObjectNested | undefined | null
   }
   export type InputObjectNested$SelectionSet = $Utilities.Simplify<
     $SelectionSet.Bases.Base & {
@@ -341,7 +331,7 @@ export namespace Query {
   export type InputObjectNested = $SelectionSet.ClientIndicator | InputObjectNested$SelectionSet
 
   export type InputObjectNestedNonNull$SelectionSetArguments = {
-    input: InputObjectNestedNonNull
+    input: _RefDefs._InputObjectNestedNonNull
   }
   export interface InputObjectNestedNonNull extends $SelectionSet.Bases.Base {
     /**
@@ -379,7 +369,7 @@ export namespace Query {
   export type dateArg = $SelectionSet.ClientIndicator | dateArg$SelectionSet
 
   export type dateArgInputObject$SelectionSetArguments = {
-    input?: InputObject | undefined | null
+    input?: _RefDefs._InputObject | undefined | null
   }
   export type dateArgInputObject$SelectionSet = $Utilities.Simplify<
     $SelectionSet.Bases.Base & {
@@ -453,7 +443,7 @@ export namespace Query {
 
   export type dateArgNonNullListNonNull$Expanded = dateArgNonNullListNonNull
 
-  export interface dateInterface1 extends __DateInterface1 {}
+  export interface dateInterface1 extends _RefDefs._DateInterface1 {}
   export type dateInterface1$Expanded = dateInterface1
   export type dateList$Expanded = $SelectionSet.NoArgsIndicator$Expanded
 
@@ -467,9 +457,9 @@ export namespace Query {
 
   export type dateNonNull = $SelectionSet.NoArgsIndicator
 
-  export interface dateObject1 extends __DateObject1 {}
+  export interface dateObject1 extends _RefDefs._DateObject1 {}
   export type dateObject1$Expanded = dateObject1
-  export interface dateUnion extends __DateUnion {}
+  export interface dateUnion extends _RefDefs._DateUnion {}
   export type dateUnion$Expanded = dateUnion
   export type error$SelectionSetArguments = {
     case?: string | undefined | null
@@ -496,11 +486,11 @@ export namespace Query {
 
   export type idNonNull = $SelectionSet.NoArgsIndicator
 
-  export interface $interface extends __Interface {}
+  export interface $interface extends _RefDefs._Interface {}
   export type $interface$Expanded = $interface
-  export interface interfaceNonNull extends __Interface {}
+  export interface interfaceNonNull extends _RefDefs._Interface {}
   export type interfaceNonNull$Expanded = interfaceNonNull
-  export interface interfaceWithArgs extends __Interface {
+  export interface interfaceWithArgs extends _RefDefs._Interface {
     /**
      * Arguments for `interfaceWithArgs` field.
      * All arguments are required so you must include this.
@@ -526,19 +516,19 @@ export namespace Query {
 
   export type listListIntNonNull = $SelectionSet.NoArgsIndicator
 
-  export interface lowerCaseUnion extends __lowerCaseUnion {}
+  export interface lowerCaseUnion extends _RefDefs._lowerCaseUnion {}
   export type lowerCaseUnion$Expanded = lowerCaseUnion
-  export interface $object extends __Object1 {}
+  export interface $object extends _RefDefs._Object1 {}
   export type $object$Expanded = $object
-  export interface objectList extends __Object1 {}
+  export interface objectList extends _RefDefs._Object1 {}
   export type objectList$Expanded = objectList
-  export interface objectListNonNull extends __Object1 {}
+  export interface objectListNonNull extends _RefDefs._Object1 {}
   export type objectListNonNull$Expanded = objectListNonNull
-  export interface objectNested extends __ObjectNested {}
+  export interface objectNested extends _RefDefs._ObjectNested {}
   export type objectNested$Expanded = objectNested
-  export interface objectNonNull extends __Object1 {}
+  export interface objectNonNull extends _RefDefs._Object1 {}
   export type objectNonNull$Expanded = objectNonNull
-  export interface objectWithArgs extends __Object1 {
+  export interface objectWithArgs extends _RefDefs._Object1 {
     /**
      * Arguments for `objectWithArgs` field.
      * No arguments are required so you may omit this.
@@ -552,23 +542,23 @@ export namespace Query {
     }
   }
   export type objectWithArgs$Expanded = objectWithArgs
-  export interface result extends __Result {
+  export interface result extends _RefDefs._Result {
     /**
      * Arguments for `result` field.
      * All arguments are required so you must include this.
      */
     $: {
-      case: Case
+      case: _RefDefs._Case
     }
   }
   export type result$Expanded = result
-  export interface resultNonNull extends __Result {
+  export interface resultNonNull extends _RefDefs._Result {
     /**
      * Arguments for `resultNonNull` field.
      * No arguments are required so you may omit this.
      */
     $?: {
-      case?: Case | undefined | null
+      case?: _RefDefs._Case | undefined | null
     }
   }
   export type resultNonNull$Expanded = resultNonNull
@@ -577,7 +567,7 @@ export namespace Query {
   export type $string = $SelectionSet.NoArgsIndicator
 
   export type stringWithArgEnum$SelectionSetArguments = {
-    ABCEnum?: ABCEnum | undefined | null
+    ABCEnum?: _RefDefs._ABCEnum | undefined | null
   }
   export type stringWithArgEnum$SelectionSet = $Utilities.Simplify<
     $SelectionSet.Bases.Base & {
@@ -596,7 +586,7 @@ export namespace Query {
   export type stringWithArgEnum = $SelectionSet.ClientIndicator | stringWithArgEnum$SelectionSet
 
   export type stringWithArgInputObject$SelectionSetArguments = {
-    input?: InputObject | undefined | null
+    input?: _RefDefs._InputObject | undefined | null
   }
   export type stringWithArgInputObject$SelectionSet = $Utilities.Simplify<
     $SelectionSet.Bases.Base & {
@@ -615,7 +605,7 @@ export namespace Query {
   export type stringWithArgInputObject = $SelectionSet.ClientIndicator | stringWithArgInputObject$SelectionSet
 
   export type stringWithArgInputObjectRequired$SelectionSetArguments = {
-    input: InputObject
+    input: _RefDefs._InputObject
   }
   export interface stringWithArgInputObjectRequired extends $SelectionSet.Bases.Base {
     /**
@@ -695,11 +685,11 @@ export namespace Query {
 
   export type stringWithRequiredArg$Expanded = stringWithRequiredArg
 
-  export interface unionFooBar extends __FooBarUnion {}
+  export interface unionFooBar extends _RefDefs._FooBarUnion {}
   export type unionFooBar$Expanded = unionFooBar
-  export interface unionFooBarNonNull extends __FooBarUnion {}
+  export interface unionFooBarNonNull extends _RefDefs._FooBarUnion {}
   export type unionFooBarNonNull$Expanded = unionFooBarNonNull
-  export interface unionFooBarWithArgs extends __FooBarUnion {
+  export interface unionFooBarWithArgs extends _RefDefs._FooBarUnion {
     /**
      * Arguments for `unionFooBarWithArgs` field.
      * No arguments are required so you may omit this.
@@ -709,13 +699,11 @@ export namespace Query {
     }
   }
   export type unionFooBarWithArgs$Expanded = unionFooBarWithArgs
-  export interface unionObject extends __ObjectUnion {}
+  export interface unionObject extends _RefDefs._ObjectUnion {}
   export type unionObject$Expanded = unionObject
-  export interface unionObjectNonNull extends __ObjectUnion {}
+  export interface unionObjectNonNull extends _RefDefs._ObjectUnion {}
   export type unionObjectNonNull$Expanded = unionObjectNonNull
 }
-
-type __Query = Query // [1]
 
 //
 //
@@ -743,11 +731,7 @@ type __Query = Query // [1]
  */
 export type ABCEnum = 'A' | 'B' | 'C'
 
-type __ABCEnum = ABCEnum // [1]
-
 export type Case = 'ErrorOne' | 'ErrorTwo' | 'Object1'
-
-type __Case = Case // [1]
 
 //
 //
@@ -772,19 +756,13 @@ export interface InputObject {
   idRequired: string
 }
 
-type __InputObject = InputObject // [1]
-
 export interface InputObjectNested {
-  InputObject?: InputObject | undefined | null
+  InputObject?: _RefDefs._InputObject | undefined | null
 }
-
-type __InputObjectNested = InputObjectNested // [1]
 
 export interface InputObjectNestedNonNull {
-  InputObject: InputObject
+  InputObject: _RefDefs._InputObject
 }
-
-type __InputObjectNestedNonNull = InputObjectNestedNonNull // [1]
 
 //
 //
@@ -835,8 +813,6 @@ export namespace DateInterface1 {
   export type date1 = $SelectionSet.NoArgsIndicator
 }
 
-type __DateInterface1 = DateInterface1 // [1]
-
 // --------------
 // Interface Type Error
 // --------------
@@ -871,8 +847,6 @@ export namespace Error {
   export type message = $SelectionSet.NoArgsIndicator
 }
 
-type __Error = Error // [1]
-
 // --------------
 // Interface Type Interface
 // --------------
@@ -906,8 +880,6 @@ export namespace Interface {
 
   export type id = $SelectionSet.NoArgsIndicator
 }
-
-type __Interface = Interface // [1]
 
 //
 //
@@ -971,8 +943,6 @@ export namespace Bar {
   export type int = $SelectionSet.NoArgsIndicator
 }
 
-type __Bar = Bar // [1]
-
 //
 //
 //
@@ -1019,8 +989,6 @@ export namespace DateObject1 {
   export type date1 = $SelectionSet.NoArgsIndicator
 }
 
-type __DateObject1 = DateObject1 // [1]
-
 //
 //
 //
@@ -1066,8 +1034,6 @@ export namespace DateObject2 {
 
   export type date2 = $SelectionSet.NoArgsIndicator
 }
-
-type __DateObject2 = DateObject2 // [1]
 
 //
 //
@@ -1123,8 +1089,6 @@ export namespace ErrorOne {
   export type message = $SelectionSet.NoArgsIndicator
 }
 
-type __ErrorOne = ErrorOne // [1]
-
 //
 //
 //
@@ -1179,8 +1143,6 @@ export namespace ErrorTwo {
   export type message = $SelectionSet.NoArgsIndicator
 }
 
-type __ErrorTwo = ErrorTwo // [1]
-
 //
 //
 //
@@ -1229,8 +1191,6 @@ export namespace Foo {
 
   export type id = $SelectionSet.NoArgsIndicator
 }
-
-type __Foo = Foo // [1]
 
 //
 //
@@ -1310,8 +1270,6 @@ export namespace Object1 {
   export type $string = $SelectionSet.NoArgsIndicator
 }
 
-type __Object1 = Object1 // [1]
-
 //
 //
 //
@@ -1365,8 +1323,6 @@ export namespace Object1ImplementingInterface {
 
   export type int = $SelectionSet.NoArgsIndicator
 }
-
-type __Object1ImplementingInterface = Object1ImplementingInterface // [1]
 
 //
 //
@@ -1422,8 +1378,6 @@ export namespace Object2ImplementingInterface {
   export type id = $SelectionSet.NoArgsIndicator
 }
 
-type __Object2ImplementingInterface = Object2ImplementingInterface // [1]
-
 //
 //
 //
@@ -1473,11 +1427,9 @@ export namespace ObjectNested {
 
   export type id = $SelectionSet.NoArgsIndicator
 
-  export interface $object extends __Object1 {}
+  export interface $object extends _RefDefs._Object1 {}
   export type $object$Expanded = $object
 }
-
-type __ObjectNested = ObjectNested // [1]
 
 //
 //
@@ -1520,11 +1472,9 @@ export interface ObjectUnion extends $SelectionSet.Bases.ObjectLike {
 // ----------------------------------------| Fields Interfaces |
 
 export namespace ObjectUnion {
-  export interface fooBarUnion extends __FooBarUnion {}
+  export interface fooBarUnion extends _RefDefs._FooBarUnion {}
   export type fooBarUnion$Expanded = fooBarUnion
 }
-
-type __ObjectUnion = ObjectUnion // [1]
 
 //
 //
@@ -1572,8 +1522,6 @@ export namespace lowerCaseObject {
   export type id = $SelectionSet.NoArgsIndicator
 }
 
-type __lowerCaseObject = lowerCaseObject // [1]
-
 //
 //
 //
@@ -1620,8 +1568,6 @@ export namespace lowerCaseObject2 {
   export type int = $SelectionSet.NoArgsIndicator
 }
 
-type __lowerCaseObject2 = lowerCaseObject2 // [1]
-
 //
 //
 //
@@ -1661,8 +1607,6 @@ export interface DateUnion {
   __typename?: $SelectionSet.NoArgsIndicator$Expanded | $SelectionSet.Alias<$SelectionSet.NoArgsIndicator>
 }
 
-type __DateUnion = DateUnion // [1]
-
 /**
  * Union documentation.
  */
@@ -1689,8 +1633,6 @@ export interface FooBarUnion {
   __typename?: $SelectionSet.NoArgsIndicator$Expanded | $SelectionSet.Alias<$SelectionSet.NoArgsIndicator>
 }
 
-type __FooBarUnion = FooBarUnion // [1]
-
 export interface Result {
   ___on_ErrorOne?: ErrorOne
   ___on_ErrorTwo?: ErrorTwo
@@ -1715,8 +1657,6 @@ export interface Result {
   __typename?: $SelectionSet.NoArgsIndicator$Expanded | $SelectionSet.Alias<$SelectionSet.NoArgsIndicator>
 }
 
-type __Result = Result // [1]
-
 export interface lowerCaseUnion {
   ___on_lowerCaseObject?: lowerCaseObject
   ___on_lowerCaseObject2?: lowerCaseObject2
@@ -1740,4 +1680,39 @@ export interface lowerCaseUnion {
   __typename?: $SelectionSet.NoArgsIndicator$Expanded | $SelectionSet.Alias<$SelectionSet.NoArgsIndicator>
 }
 
-type __lowerCaseUnion = lowerCaseUnion // [1]
+/**
+ * [1] These definitions serve to allow field selection interfaces to extend their respective object type without
+ *     name clashing between the field name and the object name.
+ *
+ *     For example imagine `Query.Foo` field with type also called `Foo`. Our generated interfaces for each field
+ *     would end up with an error of `export interface Foo extends Foo ...`
+ */
+export namespace _RefDefs {
+  export type _Mutation = Mutation
+  export type _Query = Query
+  export type _ABCEnum = ABCEnum
+  export type _Case = Case
+  export type _InputObject = InputObject
+  export type _InputObjectNested = InputObjectNested
+  export type _InputObjectNestedNonNull = InputObjectNestedNonNull
+  export type _DateInterface1 = DateInterface1
+  export type _Error = Error
+  export type _Interface = Interface
+  export type _Bar = Bar
+  export type _DateObject1 = DateObject1
+  export type _DateObject2 = DateObject2
+  export type _ErrorOne = ErrorOne
+  export type _ErrorTwo = ErrorTwo
+  export type _Foo = Foo
+  export type _Object1 = Object1
+  export type _Object1ImplementingInterface = Object1ImplementingInterface
+  export type _Object2ImplementingInterface = Object2ImplementingInterface
+  export type _ObjectNested = ObjectNested
+  export type _ObjectUnion = ObjectUnion
+  export type _lowerCaseObject = lowerCaseObject
+  export type _lowerCaseObject2 = lowerCaseObject2
+  export type _DateUnion = DateUnion
+  export type _FooBarUnion = FooBarUnion
+  export type _Result = Result
+  export type _lowerCaseUnion = lowerCaseUnion
+}

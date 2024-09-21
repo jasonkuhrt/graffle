@@ -436,21 +436,22 @@ export namespace Country {
 
   export interface languages extends __Language {}
   export type languages$Expanded = languages
-  type nameSelectionSet = $Utilities.Simplify<
+  export type name$SelectionSetArguments = {
+    lang?: string | undefined | null
+  }
+  export type name$SelectionSet = $Utilities.Simplify<
     $SelectionSet.Bases.Base & {
       /**
        * Arguments for `name` field.
        * No arguments are required so you may omit this.
        */
-      $?: {
-        lang?: string | undefined | null
-      }
+      $?: name$SelectionSetArguments
     }
   >
 
-  export type name$Expanded = $Utilities.UnionExpanded<$SelectionSet.ClientIndicator | nameSelectionSet>
+  export type name$Expanded = $Utilities.UnionExpanded<$SelectionSet.ClientIndicator | name$SelectionSet>
 
-  export type name = $SelectionSet.ClientIndicator | nameSelectionSet
+  export type name = $SelectionSet.ClientIndicator | name$SelectionSet
 
   export type native$Expanded = $SelectionSet.NoArgsIndicator$Expanded
 

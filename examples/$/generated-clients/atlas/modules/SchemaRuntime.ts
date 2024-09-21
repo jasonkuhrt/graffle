@@ -114,6 +114,14 @@ export const $Index: Index = {
     Mutation: null,
     Subscription: null,
   },
+  allTypes: {
+    Query,
+    Continent,
+    Country,
+    Language,
+    State,
+    Subdivision,
+  },
   objects: {
     Continent,
     Country,

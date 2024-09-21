@@ -2,6 +2,7 @@
 import type * as Data from './Data.js'
 import type * as RootMethods from './RootMethods.js'
 import type * as Schema from './SchemaBuildtime.js'
+
 export interface Index {
   name: Data.Name
   RootTypesPresent: ['Query', 'Mutation']
@@ -13,6 +14,12 @@ export interface Index {
   }
   Builder: {
     RootMethods: RootMethods.BuilderRootMethodsFn
+  }
+  allTypes: {
+    Mutation: Schema.Root.Mutation
+    Query: Schema.Root.Query
+    Pokemon: Schema.Object.Pokemon
+    Trainer: Schema.Object.Trainer
   }
   objects: {
     Pokemon: Schema.Object.Pokemon

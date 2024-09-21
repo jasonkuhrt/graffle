@@ -225,7 +225,7 @@ export const getNodeNameAndKind = (
   node: GraphQLNamedType,
 ): { name: string; kind: 'Object' | 'Interface' | 'Union' | 'Enum' | 'Scalar' } => {
   const name = node.name
-  const kind = getNodeKind(node).replace(`GraphQL`, ``).replace(`Type`, ``) as
+  const kind = getNodeKindOld(node).replace(`GraphQL`, ``).replace(`Type`, ``) as
     | 'Object'
     | 'Interface'
     | 'Union'
@@ -234,7 +234,26 @@ export const getNodeNameAndKind = (
   return { name, kind }
 }
 
-export const getNodeKind = (node: Describable): NodeNamePlus => {
+export const getNodeKind = <$Node extends GraphQLNamedType>(node: $Node): ClassToName<$Node> => {
+  switch (true) {
+    case isObjectType(node):
+      return `GraphQLObjectType` as ClassToName<$Node>
+    case isInputObjectType(node):
+      return `GraphQLInputObjectType` as ClassToName<$Node>
+    case isUnionType(node):
+      return `GraphQLUnionType` as ClassToName<$Node>
+    case isInterfaceType(node):
+      return `GraphQLInterfaceType` as ClassToName<$Node>
+    case isEnumType(node):
+      return `GraphQLEnumType` as ClassToName<$Node>
+    case isScalarType(node):
+      return `GraphQLScalarType` as ClassToName<$Node>
+    default:
+      throw new Error(`Unknown node kind: ${String(node)}`)
+  }
+}
+
+export const getNodeKindOld = (node: Describable): NodeNamePlus => {
   switch (true) {
     case isObjectType(node):
       return `GraphQLObjectType`
@@ -265,7 +284,7 @@ export const getNodeKind = (node: Describable): NodeNamePlus => {
 // } satisfies Record<NodeName, string>
 
 export const getNodeDisplayName = (node: Describable) => {
-  return toDisplayName(getNodeKind(node))
+  return toDisplayName(getNodeKindOld(node))
 }
 
 const toDisplayName = (nodeName: NodeNamePlus) => {

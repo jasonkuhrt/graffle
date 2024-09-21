@@ -1,11 +1,3 @@
-/**
- * [1] This type alias serves to allow field selection interfaces to extend their respective object type without
- *     name clashing between the field name and the object name.
- *
- *     For example imagine `Query.Foo` field with type also called `Foo`. Our generated interfaces for each field
- *     would end up with an error of `export interface Foo extends Foo ...`
- */
-
 import type { SelectionSet as $SelectionSet } from '../../../../../src/entrypoints/schema.js'
 import type * as $Utilities from '../../../../../src/entrypoints/utilities-for-generated.js'
 
@@ -16,7 +8,7 @@ import type * as $Utilities from '../../../../../src/entrypoints/utilities-for-g
 //
 //
 // ==================================================================================================
-//                                       GraphQLRootType Types
+//                                      GraphQLObjectType Types
 // ==================================================================================================
 //
 //
@@ -79,84 +71,13 @@ export namespace Query {
   export type idNonNull = $SelectionSet.NoArgsIndicator
 }
 
-type __Query = Query // [1]
-
-//
-//
-//
-//
-//
-//
-// ==================================================================================================
-//                                       GraphQLEnumType Types
-// ==================================================================================================
-//
-//
-//
-//
-//
-//
-
-//
-//
-//
-//
-//
-//
-// ==================================================================================================
-//                                    GraphQLInputObjectType Types
-// ==================================================================================================
-//
-//
-//
-//
-//
-//
-
-//
-//
-//
-//
-//
-//
-// ==================================================================================================
-//                                     GraphQLInterfaceType Types
-// ==================================================================================================
-//
-//
-//
-//
-//
-//
-
-//
-//
-//
-//
-//
-//
-// ==================================================================================================
-//                                      GraphQLObjectType Types
-// ==================================================================================================
-//
-//
-//
-//
-//
-//
-
-//
-//
-//
-//
-//
-//
-// ==================================================================================================
-//                                       GraphQLUnionType Types
-// ==================================================================================================
-//
-//
-//
-//
-//
-//
+/**
+ * [1] These definitions serve to allow field selection interfaces to extend their respective object type without
+ *     name clashing between the field name and the object name.
+ *
+ *     For example imagine `Query.Foo` field with type also called `Foo`. Our generated interfaces for each field
+ *     would end up with an error of `export interface Foo extends Foo ...`
+ */
+export namespace _RefDefs {
+  export type _Query = Query
+}

@@ -1,7 +1,13 @@
 // todo: generate in JSDoc how the feature maps to GQL syntax.
 // todo: on union fields, JSDoc that mentions the syntax `on*`
 
-import type { GraphQLEnumType, GraphQLInputObjectType, GraphQLInterfaceType, GraphQLUnionType } from 'graphql'
+import type {
+  GraphQLEnumType,
+  GraphQLInputObjectType,
+  GraphQLInterfaceType,
+  GraphQLNamedType,
+  GraphQLUnionType,
+} from 'graphql'
 import {
   getNullableType,
   type GraphQLArgument,
@@ -16,6 +22,7 @@ import { getNamedType, isNullableType, isScalarType } from 'graphql'
 import { Code } from '../../../lib/Code.js'
 import {
   analyzeArgsNullability,
+  getNodeKind,
   getNodeNameAndKind,
   hasCustomScalars,
   isCustomScalarType,
@@ -23,7 +30,6 @@ import {
   StandardScalarTypeTypeScriptMapping,
 } from '../../../lib/graphql.js'
 import type { StandardScalarTypeNames } from '../../../lib/graphql.js'
-import { entries } from '../../../lib/prelude.js'
 import { SelectionSet } from '../../3_SelectionSet/__.js'
 import { createCodeGenerator, createModuleGenerator } from '../createCodeGenerator.js'
 import {
@@ -39,15 +45,6 @@ import { moduleNameScalar } from './Scalar.js'
 export const { moduleName: moduleNameSelectionSets, generate: generateSelectionSets } = createModuleGenerator(
   `SelectionSets`,
   ({ config, code }) => {
-    code.push(`
-      /**
-       * [1] This type alias serves to allow field selection interfaces to extend their respective object type without
-       *     name clashing between the field name and the object name.
-       * 
-       *     For example imagine \`Query.Foo\` field with type also called \`Foo\`. Our generated interfaces for each field
-       *     would end up with an error of \`export interface Foo extends Foo ...\`
-       */
-    `)
     code.push(``)
 
     code.push(`import type { SelectionSet as $SelectionSet } from '${config.libraryPaths.schema}'`)
@@ -57,10 +54,17 @@ export const { moduleName: moduleNameSelectionSets, generate: generateSelectionS
     }
     code.push(``)
 
-    entries(config.typeMapByKind).forEach(([kind, nodes]) => {
-      if (kind === `GraphQLScalarType`) return
-      if (kind === `GraphQLScalarTypeCustom`) return // todo
-      if (kind === `GraphQLScalarTypeStandard`) return // todo
+    const typesToRender = [
+      config.typeMapByKind.GraphQLRootType,
+      config.typeMapByKind.GraphQLEnumType,
+      config.typeMapByKind.GraphQLInputObjectType,
+      config.typeMapByKind.GraphQLInterfaceType,
+      config.typeMapByKind.GraphQLObjectType,
+      config.typeMapByKind.GraphQLUnionType,
+    ].filter(_ => _.length > 0)
+
+    typesToRender.forEach((nodes) => {
+      const kind = getNodeKind(nodes[0]!)
 
       code.push(title1(`${kind} Types`))
       code.push(``)
@@ -68,12 +72,34 @@ export const { moduleName: moduleNameSelectionSets, generate: generateSelectionS
       nodes.forEach(node => {
         code.push(kindRenderLookup[kind]({ config, node: node as never }))
         code.push(``)
-        code.push(`type __${renderName(node)} = ${renderName(node)} // [1]`)
-        code.push(``)
       })
     })
 
+    code.push(`
+      /**
+       * [1] These definitions serve to allow field selection interfaces to extend their respective object type without
+       *     name clashing between the field name and the object name.
+       * 
+       *     For example imagine \`Query.Foo\` field with type also called \`Foo\`. Our generated interfaces for each field
+       *     would end up with an error of \`export interface Foo extends Foo ...\`
+       */
+    `)
+    code.push(renderRefDefs({ config, nodes: typesToRender.flat() }))
+
     // console.log(code.join(`\n`))
+  },
+)
+
+const renderRefDefs = createCodeGenerator<{ nodes: GraphQLNamedType[] }>(
+  ({ nodes, code }) => {
+    const refDefsRendered = nodes.map(node => `export type _${renderName(node)} = ${renderName(node)}`).join(`\n`)
+    const namespaceRendered = `
+      export namespace _RefDefs {
+        ${refDefsRendered}
+      }
+    `
+    code.push(namespaceRendered)
+    code.push(``)
   },
 )
 
@@ -235,6 +261,7 @@ const renderField = createCodeGenerator<{ field: GraphQLField<any, any> }>(
         field,
         argFieldsRendered: `${nameRendered}$SelectionSetArguments`,
       })
+
       if (argsAnalysis.hasAny) {
         code.push(
           `export type ${nameRendered}$SelectionSetArguments = ${argFieldsRendered}`,
@@ -271,7 +298,7 @@ const renderField = createCodeGenerator<{ field: GraphQLField<any, any> }>(
     } else {
       const argFieldsRendered = renderArgsFields({ config, field })
       const argsRendered = renderFieldArgs({ config, field, argFieldsRendered })
-      const sigRendered = `export interface ${nameRendered} extends __${renderName(namedType)}`
+      const sigRendered = `export interface ${nameRendered} extends _RefDefs._${renderName(namedType)}`
       code.push(`${sigRendered} {${argsRendered ? `\n${argsRendered}\n` : ``}}`)
       code.push(`export type ${nameRendered}$Expanded = ${nameRendered}`)
     }
@@ -338,7 +365,7 @@ const renderArgType = (type: GraphQLType): string => {
     return `${scalarTypeRendered} ${nullableRendered}`
   }
 
-  return `${renderName(sansNullabilityType)} ${nullableRendered}`
+  return `_RefDefs._${renderName(sansNullabilityType)} ${nullableRendered}`
 }
 
 namespace Helpers {
