@@ -1,19 +1,7 @@
-import { assertType, expectTypeOf, test } from 'vitest'
+import { assertType, test } from 'vitest'
 import type * as SelectionSets from '../../../tests/_/schema/generated/modules/SelectionSets.js'
-// import type { Index } from '../../../tests/_/schema/generated/modules/SchemaIndex.js'
-import type { SelectionSet } from './__.js'
 
-// type Q = SelectionSet.Query<Index>
 type Q = SelectionSets.Query
-
-test(`ParseAliasExpression`, () => {
-  expectTypeOf<SelectionSet.ParseAliasExpression<'a_as_b'>>().toEqualTypeOf<SelectionSet.AliasOld<'a', 'b'>>()
-  expectTypeOf<SelectionSet.ParseAliasExpression<'a'>>().toEqualTypeOf<'a'>()
-  expectTypeOf<SelectionSet.ParseAliasExpression<'$'>>().toEqualTypeOf<'$'>()
-  expectTypeOf<SelectionSet.ParseAliasExpression<'a_as_$'>>().toEqualTypeOf<'a_as_$'>()
-  expectTypeOf<SelectionSet.ParseAliasExpression<'$_as_b'>>().toEqualTypeOf<'$_as_b'>()
-  expectTypeOf<SelectionSet.ParseAliasExpression<'1_as_2'>>().toEqualTypeOf<'1_as_2'>()
-})
 
 // dprint-ignore
 test(`Query`, () => {

@@ -4,6 +4,7 @@ import type { Schema, SomeField } from '../1_Schema/__.js'
 import type { PickScalarFields } from '../1_Schema/Output/Output.js'
 import type { SelectionSet } from '../3_SelectionSet/__.js'
 import type { prefix } from '../3_SelectionSet/runtime/on.js'
+import type { PickPositiveNonAliasIndicators } from '../3_SelectionSet/types.js'
 
 export type Query<$SelectionSet, $Index extends Schema.Index> = Root<$SelectionSet, $Index, 'Query'>
 
@@ -28,29 +29,36 @@ export type Root<
 // dprint-ignore
 export type Object$<$SelectionSet, $Index extends Schema.Index, $Node extends Schema.Output.Object$2> =
   SelectionSet.IsSelectScalarsWildcard<$SelectionSet> extends true
-    /**
-     * Handle Scalars Wildcard
-     */
-    ?
-      {
-        [$Key in keyof PickScalarFields<$Node>]: Field<$SelectionSet, $Node['fields'][$Key], $Index>
-      }
-    /**
-     * Handle fields in regular way.
-     */
+    // todo what about when scalars wildcard is combined with other fields like relations?
+    ? HandleFieldExpressionScalarsWildcard<$SelectionSet, $Index,$Node>
     :
       (
-        {
-          [K in keyof OmitAliases<SelectionSet.OmitNegativeIndicators<$SelectionSet>> & string]:
-            Field<$SelectionSet[K], $Node['fields'][SelectionSet.AliasNameOrigin<K>], $Index>
-        }
-        &
-        Aliases<$SelectionSet, $Index, $Node>
+        & HandleFieldExpressionsPlain<$SelectionSet, $Index, $Node>
+        & Aliases<$SelectionSet, $Index, $Node>
       )
 
-type OmitAliases<$Object extends object> = {
-  [$Key in keyof $Object as $Object[$Key] extends any[] ? never : $Key]: $Object[$Key]
+// dprint-ignore
+type HandleFieldExpressionsPlain<$SelectionSet, $Index extends Schema.Index, $Node extends Schema.Output.Object$2> = {
+  [$FieldExpression in keyof PickPositiveNonAliasIndicators<$SelectionSet> & string]:
+    $FieldExpression extends keyof $Node['fields']
+      ? Field<$SelectionSet[$FieldExpression], $Node['fields'][$FieldExpression], $Index>
+      : Errors.UnknownFieldName<$FieldExpression, $Node>
 }
+
+/**
+ * Handle Scalars Wildcard
+ */
+type HandleFieldExpressionScalarsWildcard<
+  $SelectionSet,
+  $Index extends Schema.Index,
+  $Node extends Schema.Output.Object$2,
+> = {
+  [$Key in keyof PickScalarFields<$Node>]: Field<$SelectionSet, $Node['fields'][$Key], $Index>
+}
+
+// type OmitAliases<$Object extends object> = {
+//   [$Key in keyof $Object as $Object[$Key] extends any[] ? never : $Key]: $Object[$Key]
+// }
 
 // dprint-ignore
 type Aliases<$SelectionSet, $Index extends Schema.Index, $Node extends Schema.Output.Object$2> =
@@ -93,14 +101,6 @@ type HandleAliasExpressionSingle<
 > = {
   [_ in $Alias[0]]: Field<$Alias[1], $Node['fields'][$KeyExpression], $Index>
 }
-
-// todo aliases
-// SelectionSet.ResolveAliasTargets<{
-//   [K in keyof SelectionSet.OmitNegativeIndicators<$SelectionSet> & string as K extends `${K}_as_${infer s}` ? s : K]:
-//     SelectionSet.AliasNameOrigin<K> extends keyof $Node['fields']
-//       ? Field<$SelectionSet[K], $Node['fields'][SelectionSet.AliasNameOrigin<K>], $Index>
-//       : Errors.UnknownFieldName<SelectionSet.AliasNameOrigin<K>, $Node>
-// }>
 
 // dprint-ignore
 export type Union<$SelectionSet, $Index extends Schema.Index, $Node extends Schema.Output.Union> =

@@ -2,7 +2,6 @@ import { expectTypeOf, test } from 'vitest'
 import type * as Schema from '../../../tests/_/schema/generated/modules/SchemaBuildtime.js'
 import type { Index } from '../../../tests/_/schema/generated/modules/SchemaIndex.js'
 import type * as SelectionSets from '../../../tests/_/schema/generated/modules/SelectionSets.js'
-// import type { SelectionSet } from '../3_SelectionSet/__.js'
 import type { ResultSet } from './__.js'
 
 type I = Index
@@ -70,7 +69,7 @@ test(`general`, () => {
   expectTypeOf<RS<{ interface: { id: true, ___on_Object1ImplementingInterface: { int: true } }}>>().toEqualTypeOf<{ interface: null | { id: null | string} | { id: null | string; int: null | number }}>()
   expectTypeOf<RS<{ interface: { __typename:true }}>>().toEqualTypeOf<{ interface: null | { __typename: 'Object1ImplementingInterface' } | { __typename: 'Object2ImplementingInterface' } }>()
   expectTypeOf<RS<{ interface: { ___on_Object1ImplementingInterface: { __typename: true } }}>>().toEqualTypeOf<{ interface: null | { __typename: 'Object1ImplementingInterface' } | {} }>()
-  expectTypeOf<RS<{ interface: { $scalars: true }}>>().toEqualTypeOf<{ interface: null | { __typename: 'Object1ImplementingInterface', id: null | string, int: null|number} | { __typename: 'Object2ImplementingInterface', id: null | string; boolean:null|boolean} }>()
+  expectTypeOf<RS<{ interface: { $scalars: true }}>>().branded.toEqualTypeOf<{ interface: null | { __typename: 'Object1ImplementingInterface', id: null | string, int: null|number} | { __typename: 'Object2ImplementingInterface', id: null | string; boolean:null|boolean} }>()
   // with args
   expectTypeOf<RS<{ interfaceWithArgs: { $:{id:'abc'}; id: true }}>>().toEqualTypeOf<{ interfaceWithArgs: null | { id: null | string }   }>()
 
@@ -84,7 +83,7 @@ test(`general`, () => {
   // expectTypeOf<RS<{ id_as: true }>>().toEqualTypeOf<{ id_as: ResultSet.Errors.UnknownFieldName<'id_as', Schema.Root.Query> }>()
   // expectTypeOf<RS<{ id_as_$: true }>>().toEqualTypeOf<{ id_as_$: ResultSet.Errors.UnknownFieldName<'id_as_$', Schema.Root.Query> }>()
   // union fragment
-  expectTypeOf<RS<{ unionFooBar: { ___on_Foo: { id: ['id2', true] } } }>>().toEqualTypeOf<{ unionFooBar: null | {} | { id2: null|string } }>()
+  expectTypeOf<RS<{ unionFooBar: { ___on_Foo: { id: ['id2', true] } } }>>().branded.toEqualTypeOf<{ unionFooBar: null | {} | { id2: null|string } }>()
 
   // Directive @include
   // On scalar non-nullable
@@ -127,7 +126,8 @@ test(`general`, () => {
   expectTypeOf<RS<{ stringWithArgs: { $: { string: '' } } }>>().toEqualTypeOf<{ stringWithArgs: null | string }>()
 
   // Errors
-  // unknown field
+  // @ts-expect-error invalid query
   type Result =  RS<{ id2: true }>
+  // unknown field
   expectTypeOf<Result>().toEqualTypeOf<{ id2: ResultSet.Errors.UnknownFieldName<'id2', Schema.Root.Query> }>()
 })

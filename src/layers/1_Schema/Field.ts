@@ -4,6 +4,8 @@ import type { Hybrid } from './Hybrid/__.js'
 import type { Output } from './Output/__.js'
 
 export type Field<$Type extends Output.Any, $Args extends Args<any> | null> = {
+  // todo when generating schema keep track of the unwrapped type too to avoid IDE runtime cost to calcualte it
+  // typeUnwrapped: $NamedType
   type: $Type
   args: $Args
 }

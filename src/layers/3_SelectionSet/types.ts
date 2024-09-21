@@ -150,33 +150,6 @@ export type OmitOnTypeFragments<T> = {
 }
 
 /**
- * Aliases
- */
-
-export interface AliasOld<O extends string = string, T extends string = string> {
-  origin: O
-  target: T
-}
-
-// dprint-ignore
-export type ParseAliasExpression<E> =
-  E extends `${infer O}_as_${infer T}`  ? Schema.Named.NameParse<O> extends never  ? E :
-                                          Schema.Named.NameParse<T> extends never  ? E :
-                                          AliasOld<O, T>
-                                        : E
-
-export type AliasNameOrigin<N> = ParseAliasExpression<N> extends AliasOld<infer O, any> ? O : N
-
-/**
- * Resolve the target of an alias or if is not an alias just pass through the name.
- */
-export type AliasNameTarget<N> = ParseAliasExpression<N> extends AliasOld<any, infer T> ? T : N
-
-export type ResolveAliasTargets<SelectionSet> = {
-  [Field in keyof SelectionSet as AliasNameTarget<Field>]: SelectionSet[Field]
-}
-
-/**
  * Indicators
  */
 
@@ -190,6 +163,17 @@ export type ClientIndicatorNegative = UnionExpanded<false | undefined>
 
 export type OmitNegativeIndicators<$SelectionSet> = {
   [K in keyof $SelectionSet as $SelectionSet[K] extends ClientIndicatorNegative ? never : K]: $SelectionSet[K]
+}
+
+// dprint-ignore
+export type PickPositiveNonAliasIndicators<$SelectionSet> = {
+  [
+    $FieldExpression in keyof $SelectionSet as $SelectionSet[$FieldExpression] extends ClientIndicatorNegative
+      ? never
+      : $SelectionSet[$FieldExpression] extends any[]
+      ? never
+       : $FieldExpression
+  ]: $SelectionSet[$FieldExpression]
 }
 
 // dprint-ignore
