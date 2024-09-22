@@ -77,11 +77,42 @@ const resolveRawParameters = (parameters: RawParameters) => {
   return parameters[0]
 }
 
+// dprint
+// export type BuilderRequestMethodsGenerated<$Config extends Config, $Index extends Schema.Index> =
+// BuilderRequestMethodsGeneratedStatic<$Config, $Index>
+// & BuilderRequestMethodsGeneratedRootTypes<$Config, $Index>
+
+// export type BuilderRequestMethodsGeneratedStatic<$Config extends Config, $Index extends Schema.Index> = {
+// document: DocumentFn<$Config, $Index>
+// }
+
 // dprint-ignore
-export type BuilderRequestMethods<$Config extends Config, $Index extends null | Schema.Index >=
+export type Client<$MaybeIndex extends Schema.Index | null, $Config extends Config, $AdditionalMethods = unknown> =
+  & $AdditionalMethods
+  & BuilderRequestMethods<$Config, $MaybeIndex>
+  & {
+      internal: {
+        config: $Config
+      }
+      // eslint-disable-next-line
+      // @ts-ignore passes after generation
+      with: <$Input extends WithInput<$Config>>(input: $Input) =>
+        // eslint-disable-next-line
+        // @ts-ignore passes after generation
+        Client<$MaybeIndex, AddIncrementalInput<$Config, $Input>>
+      use: <$Extension extends Extension>(extension: $Extension) =>
+        Client<$MaybeIndex, $Config, $AdditionalMethods & ExtensionCallBuilderMerge<$Extension, { Index:$MaybeIndex, Config:$Config, AdditionalMethods:$AdditionalMethods }>> 
+      anyware: (anyware: Anyware.Extension2<Core.Core<$Config>>) =>
+        Client<$MaybeIndex, $Config, $AdditionalMethods> 
+      retry: (extension: Anyware.Extension2<Core.Core, { retrying: true }>) =>
+        Client<$MaybeIndex, $Config>
+    }
+
+// dprint-ignore
+export type BuilderRequestMethods<$Config extends Config, $MaybeIndex extends null | Schema.Index >=
   & BuilderRequestMethodsStatic<$Config>
   & (
-    $Index extends null
+    $MaybeIndex extends null
       ? {}
       :
         (
@@ -99,37 +130,6 @@ export type BuilderRequestMethodsStatic<$Config extends Config> = {
   rawString: <$Data extends Record<string, any>, $Variables>(input: BaseInput<TypedDocumentString<$Data, $Variables>>) =>
       Promise<RawResolveOutputReturnRootType<$Config, $Data>>
 }
-
-// dprint
-// export type BuilderRequestMethodsGenerated<$Config extends Config, $Index extends Schema.Index> =
-// BuilderRequestMethodsGeneratedStatic<$Config, $Index>
-// & BuilderRequestMethodsGeneratedRootTypes<$Config, $Index>
-
-export type BuilderRequestMethodsGeneratedStatic<$Config extends Config, $Index extends Schema.Index> = {
-  // document: DocumentFn<$Config, $Index>
-}
-
-// dprint-ignore
-export type Client<$Index extends Schema.Index | null, $Config extends Config, $AdditionalMethods = unknown> =
-  & $AdditionalMethods
-  & BuilderRequestMethods<$Config, $Index>
-  & {
-      internal: {
-        config: $Config
-      }
-      // eslint-disable-next-line
-      // @ts-ignore passes after generation
-      with: <$Input extends WithInput<$Config>>(input: $Input) =>
-        // eslint-disable-next-line
-        // @ts-ignore passes after generation
-        Client<$Index, AddIncrementalInput<$Config, $Input>>
-      use: <$Extension extends Extension>(extension: $Extension) =>
-        Client<$Index, $Config, $AdditionalMethods & ExtensionCallBuilderMerge<$Extension, { Index:$Index, Config:$Config, AdditionalMethods:$AdditionalMethods }>> 
-      anyware: (anyware: Anyware.Extension2<Core.Core<$Config>>) =>
-        Client<$Index, $Config, $AdditionalMethods> 
-      retry: (extension: Anyware.Extension2<Core.Core, { retrying: true }>) =>
-        Client<$Index, $Config>
-    }
 
 // dprint-ignore
 type Create = <$Input extends InputStatic<GlobalRegistry.SchemaUnion>>(input: $Input) =>

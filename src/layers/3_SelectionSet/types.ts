@@ -317,3 +317,5 @@ export const normalizeAlias = (value: unknown): null | AliasNormalized => {
   }
   return [value] as AliasNormalized
 }
+
+export type TypenameSelection = { __typename: true }

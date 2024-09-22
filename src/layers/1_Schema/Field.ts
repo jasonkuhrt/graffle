@@ -24,6 +24,7 @@ export const field = <$Type extends Output.Any, $Args extends null | Args<any> =
 type FieldType =
   | Hybrid.Enum
   | Hybrid.Scalar.Any
+  // | Output.__typename
   | Output.List<any>
   | Output.Nullable<any>
   | Output.Object$2<string, any>

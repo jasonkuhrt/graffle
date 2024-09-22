@@ -1,3 +1,4 @@
+import type { Simplify } from 'type-fest'
 import type { ExcludeNull, GetKeyOr, mergeObjectArray, ValuesOrEmptyObject } from '../../lib/prelude.js'
 import type { TSError } from '../../lib/TSError.js'
 import type { Schema, SomeField } from '../1_Schema/__.js'
@@ -6,6 +7,12 @@ import type { SelectionSet } from '../3_SelectionSet/__.js'
 import type { prefix } from '../3_SelectionSet/runtime/on.js'
 import type { PickPositiveNonAliasIndicators } from '../3_SelectionSet/types.js'
 
+export type RootViaObject<
+  $SelectionSet,
+  $Index extends Schema.Index,
+  $RootType extends Schema.Output.RootType,
+> = Root<$SelectionSet, $Index, $RootType['fields']['__typename']['type']['type']>
+
 export type Query<$SelectionSet, $Index extends Schema.Index> = Root<$SelectionSet, $Index, 'Query'>
 
 // dprint-ignore
@@ -13,12 +20,6 @@ export type Mutation<$SelectionSet, $Index extends Schema.Index> = Root<$Selecti
 
 // dprint-ignore
 export type Subscription<$SelectionSet, $Index extends Schema.Index> = Root<$SelectionSet, $Index, 'Subscription'>
-
-export type RootViaObject<
-  $SelectionSet,
-  $Index extends Schema.Index,
-  $RootType extends Schema.Output.RootType,
-> = Root<$SelectionSet, $Index, $RootType['fields']['__typename']['type']['type']>
 
 export type Root<
   $SelectionSet,
@@ -146,13 +147,15 @@ type OnTypeFragment<$SelectionSet, $Node extends Schema.Output.Object$2, $Index 
 
 // dprint-ignore
 export type Field<$SelectionSet, $Field extends SomeField, $Index extends Schema.Index> =
-  $SelectionSet extends SelectionSet.Directive.Include.Negative | SelectionSet.Directive.Skip.Positive ?
-     null :
-     (
-        | FieldDirectiveInclude<$SelectionSet>
-        | FieldDirectiveSkip<$SelectionSet>
-        | FieldType<Omit<$SelectionSet, '$'>, $Field['type'], $Index>
-      )
+  Simplify<
+    $SelectionSet extends SelectionSet.Directive.Include.Negative | SelectionSet.Directive.Skip.Positive ?
+       null :
+       (
+          | FieldDirectiveInclude<$SelectionSet>
+          | FieldDirectiveSkip<$SelectionSet>
+          | FieldType<Omit<$SelectionSet, '$'>, $Field['type'], $Index>
+        )
+  >
 
 // dprint-ignore
 type FieldType<

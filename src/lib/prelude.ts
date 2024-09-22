@@ -487,3 +487,12 @@ export type mergeObjectArray<T extends [...object[]]> = T extends [infer $First,
 export const identityProxy = new Proxy({}, {
   get: () => (value: unknown) => value,
 })
+
+// todo just for tets, move to test lib
+
+export type IsEqual<A, B> = A extends B ? B extends A ? true : false : false
+
+export type AssertIsEqual<A, B> = IsEqual<A, B> extends true ? true : never
+
+export const AssertIsEqual = <A, B>(..._: AssertIsEqual<A, B> extends never ? [failure: `Types are not equal`] : []) =>
+  undefined
