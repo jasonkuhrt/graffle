@@ -48,6 +48,19 @@ describe(`document with two queries`, () => {
     // @ts-expect-error
     await expect(run(`boo`)).rejects.toMatchObject({ errors: [{ message: `Unknown operation named "boo".` }] })
   })
+  test(`error if no operations provided`, () => {
+    expect(() => {
+      // TODO use a pretty type error instead of never
+      // @ts-expect-error empty-object not allowed
+      graffle.document({})
+    }).toThrowErrorMatchingInlineSnapshot(`
+      {
+        "errors": [
+          [Error: Document has no operations.],
+        ],
+      }
+    `)
+  })
   test.skip(`error if invalid name in document`, async () => {
     // // todo
     // // @ts-expect-error

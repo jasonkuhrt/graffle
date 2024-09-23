@@ -1,4 +1,4 @@
-import type { IsUnknown, Simplify } from 'type-fest'
+import type { IsEmptyObject, IsUnknown, Simplify } from 'type-fest'
 import type { ConditionalSimplify, ConditionalSimplifyDeep } from 'type-fest/source/conditional-simplify.js'
 
 /* eslint-disable */
@@ -92,6 +92,7 @@ export const entries = <T extends Record<string, any>>(obj: T) => Object.entries
 
 export const values = <T extends Record<string, unknown>>(obj: T): T[keyof T][] => Object.values(obj) as T[keyof T][]
 
+export type ExactNonEmpty<$Value, $Constraint> = IsEmptyObject<$Value> extends true ? never : Exact<$Value, $Constraint>
 // dprint-ignore
 export type Exact<$Value, $Constraint> =
   (

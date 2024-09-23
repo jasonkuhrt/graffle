@@ -6,18 +6,6 @@ import type { Core } from '../5_core/__.js'
 import type { Client, Context } from './client.js'
 import type { Config } from './Settings/Config.js'
 
-// type ParametersFn = {
-//   Config: unknown
-//   Index: unknown
-//   AdditionalMethods: unknown
-// }
-
-// export type CallBuilderMerge<$Extension extends Extension, $Params extends ParametersFn> =
-//   ($Extension & { params: $Params })['builderMerge']
-
-// export type CallBuilderConfig<$Extension extends Extension, $Params extends ParametersFn> =
-//   ($Extension & { params: $Params })['builderConfig']
-
 export interface TypeHooks {
   /**
    * TODO
@@ -56,7 +44,7 @@ interface Base {
       context: Context
       path: string[]
       property: string
-      client: Client<{ SchemaIndex: null; Config: Config }>
+      client: Client<{ schemaIndex: null; config: Config }>
     },
   ) => unknown
 }

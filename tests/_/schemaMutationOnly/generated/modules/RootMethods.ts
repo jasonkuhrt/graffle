@@ -55,5 +55,5 @@ export interface BuilderMethodsRoot<$Config extends Utils.Config> {
 
 export interface BuilderMethodsRootFn extends Utils.HKT.Fn {
   // @ts-expect-error parameter is Untyped.
-  return: BuilderMethodsRoot<this['params']['Config']>
+  return: BuilderMethodsRoot<this['params']['config']>
 }

@@ -10,7 +10,7 @@ export const createResponse = (body: object) =>
 
 interface Fixtures {
   fetch: Mock<(request: Request) => Promise<Response>>
-  graffle: Client<{ Config: Config; SchemaIndex: null }>
+  graffle: Client<{ config: Config; schemaIndex: null }>
 }
 
 export const test = testBase.extend<Fixtures>({

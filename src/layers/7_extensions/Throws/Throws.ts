@@ -8,14 +8,14 @@ export const Throws = () => {
   return createExtension<ThrowsExtension>({
     name: `Throws`,
     onBuilderGet: ({ client, property, path }) => {
-      if (property !== `throw` || path.length !== 0) return undefined
+      if (property !== `throws` || path.length !== 0) return undefined
 
       // todo redesign input to allow to force throw always
       // todo pull pre-configured config from core
       const throwsifiedInput: WithInput = {
         output: {
           envelope: {
-            enabled: client._.context.Config.output.envelope.enabled,
+            enabled: client._.context.config.output.envelope.enabled,
             // @ts-expect-error
             errors: { execution: false, other: false, schema: false },
           },
@@ -42,7 +42,7 @@ interface Throws<$Args extends FnParametersProperty> {
    * TODO
    */
   // @ts-expect-error fixme
-  (): IncrementWthNewConfig<$Args, OrThrowifyConfig<$Args['state']['context']['Config']>>
+  (): IncrementWthNewConfig<$Args, OrThrowifyConfig<$Args['state']['context']['config']>>
 }
 
 type OrThrowifyConfig<$BuilderConfig extends BuilderConfig> = ConfigManager.Set<

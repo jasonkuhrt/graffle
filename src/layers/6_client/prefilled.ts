@@ -41,8 +41,8 @@ export type CreatePrefilled =
 		// @ts-ignore passes after generation
  		Client<{
 			// @ts-expect-error fixme - TS cannot figure out that name input meets constraint
-			Config: InputToConfig<$Input & { name: $Name }>,
-			SchemaIndex: GlobalRegistry.GetSchemaIndexOrDefault<$Name>
+			config: InputToConfig<$Input & { name: $Name }>,
+			schemaIndex: GlobalRegistry.GetSchemaIndexOrDefault<$Name>
 		}>
 
 // dprint-ignore

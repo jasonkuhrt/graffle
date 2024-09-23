@@ -1,3 +1,4 @@
+import console from 'console'
 import { type ExecutionResult, GraphQLSchema, type TypedQueryDocumentNode } from 'graphql'
 import type { Anyware } from '../../lib/anyware/__.js'
 import type { Errors } from '../../lib/errors/__.js'
@@ -79,8 +80,8 @@ const resolveRawParameters = (parameters: RawParameters) => {
 }
 
 export type ClientContext = {
-  Config: Config
-  SchemaIndex: Schema.Index | null
+  config: Config
+  schemaIndex: Schema.Index | null
 }
 
 export type FnClient<$Context extends ClientContext = ClientContext> = Fluent.Create<$Context>
@@ -149,7 +150,7 @@ export type Internal<$Args extends FnParametersMerge> = {
  */
 export interface Anyware_<$Args extends FnParametersProperty> {
   (
-    anyware: Anyware.Extension2<Core.Core<$Args['state']['context']['Config']>>,
+    anyware: Anyware.Extension2<Core.Core<$Args['state']['context']['config']>>,
   ): Fluent.IncrementNothing<$Args>
 }
 
@@ -173,40 +174,40 @@ export interface Retry<$Args extends FnParametersProperty> {
  * TODO With Docs.
  */
 export interface With<$Args extends FnParametersProperty> {
-  <$Input extends WithInput<$Args['state']['context']['Config']>>(
+  <$Input extends WithInput<$Args['state']['context']['config']>>(
     input: $Input,
     // todo fixme
     // eslint-disable-next-line
     // @ts-ignore Passes after generation
-  ): IncrementWthNewConfig<$Args, AddIncrementalInput<$Args['state']['context']['Config'], $Input>>
+  ): IncrementWthNewConfig<$Args, AddIncrementalInput<$Args['state']['context']['config'], $Input>>
 }
 
 export type IncrementWthNewConfig<
   $Parameters extends FnParametersProperty,
-  $ConfigNew extends ClientContext['Config'],
+  $ConfigNew extends ClientContext['config'],
 > = Fluent.IncrementWthNewContext<
   $Parameters,
   {
-    SchemaIndex: $Parameters['state']['context']['SchemaIndex']
-    Config: $ConfigNew
+    schemaIndex: $Parameters['state']['context']['schemaIndex']
+    config: $ConfigNew
   }
 >
 
 // dprint-ignore
 export type BuilderRequestMethods<$Context extends ClientContext>=
-  & BuilderRequestMethodsStatic<$Context['Config']>
+  & BuilderRequestMethodsStatic<$Context['config']>
   & (
-    $Context['SchemaIndex'] extends null
+    $Context['schemaIndex'] extends null
       ? {}
       :
         (
           // eslint-disable-next-line
           // @ts-ignore Passes after generation
-          & HKT.Call<GlobalRegistry.GetOrDefault<$Context['Config']['name']>['interfaces']['Root'], $Context>
+          & HKT.Call<GlobalRegistry.GetOrDefault<$Context['config']['name']>['interfaces']['Root'], $Context>
           & {
               // eslint-disable-next-line
               // @ts-ignore Passes after generation
-              document: HKT.Call<GlobalRegistry.GetOrDefault<$Context['Config']['name']>['interfaces']['Document'], $Context>
+              document: HKT.Call<GlobalRegistry.GetOrDefault<$Context['config']['name']>['interfaces']['Document'], $Context>
             }
         )
   )
@@ -224,8 +225,8 @@ type Create = <$Input extends InputStatic<GlobalRegistry.SchemaUnion>>(input: $I
   // eslint-disable-next-line
   // @ts-ignore fixme
   Client<{
-    Config: InputToConfig<$Input>,
-    SchemaIndex: $Input['schemaIndex'] extends Schema.Index
+    config: InputToConfig<$Input>,
+    schemaIndex: $Input['schemaIndex'] extends Schema.Index
       ? GlobalRegistry.GetSchemaIndexOrDefault<$Input['name']>
       : null
   }>
@@ -371,8 +372,10 @@ const createWithState = (
 
   // @ts-expect-error ignoreme
   const clientDirect: Client = {
-    internal: {
-      config: context.config,
+    _: {
+      context: {
+        config: context.config,
+      },
     },
     raw: async (...args: RawParameters) => {
       const input = resolveRawParameters(args)
@@ -433,7 +436,35 @@ const createWithState = (
 
     Object.assign(clientDirect, {
       document: (documentObject: DocumentObject) => {
-        const hasMultipleOperations = Object.keys(documentObject).length > 1
+        const queryOperationNames = Object.keys(documentObject.queries ?? {})
+        const mutationOperationNames = Object.keys(documentObject.mutations ?? {})
+        const operationNames = [
+          ...queryOperationNames,
+          ...mutationOperationNames,
+        ]
+
+        // todo test case for this
+        const conflictingOperationNames = queryOperationNames.filter(_ => mutationOperationNames.includes(_))
+
+        if (conflictingOperationNames.length > 0) {
+          throw {
+            errors: [
+              new Error(`Document has multiple uses of operation name(s): ${conflictingOperationNames.join(`, `)}.`),
+            ],
+          }
+        }
+
+        const hasMultipleOperations = operationNames.length > 1
+
+        const hasNoOperations = operationNames.length === 0
+
+        if (hasNoOperations) {
+          throw {
+            errors: [new Error(`Document has no operations.`)],
+          }
+        }
+
+        const defaultOperationName = operationNames[0]!
 
         const processInput = (maybeOperationName: string) => {
           if (!maybeOperationName && hasMultipleOperations) {
@@ -441,22 +472,18 @@ const createWithState = (
               errors: [new Error(`Must provide operation name if query contains multiple operations.`)],
             }
           }
-          if (maybeOperationName && !(maybeOperationName in documentObject)) {
+          if (maybeOperationName && !(operationNames.includes(maybeOperationName))) {
             throw {
               errors: [new Error(`Unknown operation named "${maybeOperationName}".`)],
             }
           }
-          const operationName = maybeOperationName ? maybeOperationName : Object.keys(documentObject)[0]!
-          const rootTypeSelection = documentObject[operationName]
-          if (!rootTypeSelection) throw new Error(`Operation with name ${operationName} not found.`)
-          const operationTypeName = Object.keys(rootTypeSelection)[0]
-          if (!isOperationTypeName(operationTypeName)) throw new Error(`Operation has no selection set.`)
-          // @ts-expect-error
-          const selection = rootTypeSelection[operationTypeName] as GraphQLObjectSelection
+          const operationName = maybeOperationName ? maybeOperationName : defaultOperationName
+          const rootTypeName = queryOperationNames.includes(operationName) ? `Query` : `Mutation`
+          const selection = documentObject[rootTypeName === `Query` ? `queries` : `mutations`]![operationName]!
           return {
-            rootTypeName: operationTypeNameToRootTypeName[operationTypeName],
+            rootTypeName,
             selection,
-          }
+          } as const
         }
 
         return {

@@ -6,7 +6,7 @@ import { Throws } from './Throws.js'
 
 const graffle = Graffle.create({ schema }).use(Throws())
 
-describe(`document(...).runOrThrow()`, () => {
+describe(`document`, () => {
   describe(`query result field`, () => {
     test(`with __typename`, async () => {
       const result = graffle.throws().document({
@@ -45,7 +45,7 @@ test(`.rawOrThrow() throws if errors array non-empty`, async () => {
   )
 })
 
-describe(`orThrow`, () => {
+describe(`$batch`, () => {
   test(`success`, async () => {
     await expect(graffle.throws().query.$batch({ id: true })).resolves.toMatchObject({ id: db.id })
   })
@@ -54,7 +54,7 @@ describe(`orThrow`, () => {
   })
 })
 
-describe(`orThrow`, () => {
+describe(`root field`, () => {
   test(`without error`, async () => {
     await expect(graffle.throws().query.objectWithArgs({ $: { id: `x` }, id: true })).resolves.toEqual({
       id: `x`,

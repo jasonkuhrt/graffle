@@ -8,7 +8,7 @@ interface DocumentInput {
 }
 
 export interface Document<$Config extends Utilities.Config> {
-  <$Document>(document: Utilities.Exact<$Document, DocumentInput>): Utilities.DocumentRunner2<
+  <$Document>(document: Utilities.Exact<$Document, DocumentInput>): Utilities.DocumentRunner<
     $Config,
     Index,
     // @ts-expect-error We use Exact instead of constraint on this function. TypeScript does not see that as
@@ -19,5 +19,5 @@ export interface Document<$Config extends Utilities.Config> {
 
 export interface BuilderMethodsDocumentFn extends Utilities.HKT.Fn {
   // @ts-expect-error parameter is Untyped.
-  return: Document<this['params']['Config']>
+  return: Document<this['params']['config']>
 }

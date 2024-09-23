@@ -37,7 +37,7 @@ export const { moduleName: moduleNameMethodsRoot, generate: generateMethodsRoot 
     code.push(`
       export interface BuilderMethodsRootFn extends Utils.HKT.Fn {
         // @ts-expect-error parameter is Untyped.
-        return: BuilderMethodsRoot<this['params']['Config']>
+        return: BuilderMethodsRoot<this['params']['config']>
       }
     `)
 

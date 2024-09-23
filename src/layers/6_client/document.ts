@@ -43,7 +43,7 @@ type GetOperation<$Document extends SomeDocument, $Name extends string> =
   never
 
 // dprint-ignore
-export type DocumentRunner2<$Config extends Config, $Index extends Schema.Index, $Document extends SomeDocument> = {
+export type DocumentRunner<$Config extends Config, $Index extends Schema.Index, $Document extends SomeDocument> = {
   run: <
     $Name extends GetOperationNames<$Document>,
     $Params extends (HasMultipleOperations<$Document> extends true ? [name: $Name] : ([] | [name: $Name | undefined])),
@@ -66,16 +66,26 @@ export type DocumentRunner2<$Config extends Config, $Index extends Schema.Index,
     >
 }
 
-// ... the below is legacy prior to generating the document signature
-
 export const toDocumentString = (
   context: Context,
   document: DocumentObject,
 ) => {
-  return Object.entries(document).map(([operationName, operationDocument]) => {
-    const operationType = `query` in operationDocument ? `query` : `mutation`
+  const operations = [
+    ...(Object.entries(document.queries || {}).map(([operationName, selectionSet]) => ({
+      operationName,
+      selectionSet,
+      operationType: `query` as const,
+    }))),
+    ...(Object.entries(document.mutations || {}).map(([operationName, selectionSet]) => ({
+      operationName,
+      selectionSet,
+      operationType: `mutation` as const,
+    }))),
+  ]
+
+  return operations.map(({ operationName, selectionSet, operationType }) => {
     const rootType = operationTypeNameToRootTypeName[operationType]
-    const rootTypeDocument = (operationDocument as any)[operationType] as SelectionSet.Print.GraphQLObjectSelection
+    const rootTypeDocument = selectionSet
 
     const schemaRootType = context.schemaIndex[`Root`][rootType]
     if (!schemaRootType) throw new Error(`Schema has no ${rootType} root type`)
@@ -86,6 +96,8 @@ export const toDocumentString = (
       rootTypeDocument,
       operationName,
     )
+
+    console.log(documentString)
     return documentString
   }).join(`\n\n`)
 }
