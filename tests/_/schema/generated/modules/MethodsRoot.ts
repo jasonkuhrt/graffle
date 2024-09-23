@@ -3,22 +3,13 @@ import type * as Utils from '../../../../../src/entrypoints/utilities-for-genera
 import type { Index } from './SchemaIndex.js'
 import type * as SelectionSet from './SelectionSets.js'
 
-type Aug<
-  $Config extends Utils.Config,
-  $RootTypeName extends Index['RootTypesPresent'][number],
-  $Selection,
-> = Utils.ConfigGetOutputError<$Config, 'schema'> extends 'throw'
-  ? (keyof $Selection & Index['error']['rootResultFields'][$RootTypeName]) extends never ? $Selection
-  : $Selection & Utils.SelectionSet.TypenameSelection
-  : $Selection
-
 export interface QueryMethods<$Config extends Utils.Config> {
   $batch: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query>) => Promise<
     Utils.ResolveOutputReturnRootType<
       $Config,
       Index,
       ResultSet.Query<
-        Aug<$Config, 'Query', $SelectionSet>,
+        Utils.Aug<$Config, 'Query', $SelectionSet>,
         Index
       >
     >
@@ -474,7 +465,7 @@ export interface MutationMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       ResultSet.Mutation<
-        Aug<$Config, 'Mutation', $SelectionSet>,
+        Utils.Aug<$Config, 'Mutation', $SelectionSet>,
         Index
       >
     >

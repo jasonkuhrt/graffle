@@ -4,8 +4,8 @@ import { createModuleGenerator } from '../createCodeGenerator.js'
 import { renderName, title1 } from '../helpers.js'
 import { moduleNameSelectionSets } from './SelectionSets.js'
 
-export const { generate: generateMethodsSelect, moduleName: moduleNameSelectMethods } = createModuleGenerator(
-  `SelectMethods`,
+export const { generate: generateMethodsSelect, moduleName: moduleNameMethodsSelect } = createModuleGenerator(
+  `MethodsSelect`,
   ({ config, code }) => {
     code.push(`import type * as $SelectionSets from './${moduleNameSelectionSets}.js'`)
     code.push(`import type * as $Utilities from '${config.libraryPaths.utilitiesForGenerated}'`)
@@ -21,7 +21,7 @@ export const { generate: generateMethodsSelect, moduleName: moduleNameSelectMeth
     code.push(title1(`Select Methods Interface`))
     code.push(``)
 
-    code.push(`export interface $SelectMethods {`)
+    code.push(`export interface $MethodsSelect {`)
     for (const graphqlTypeGroup of graphqlTypeGroups) {
       for (const graphqlType of graphqlTypeGroup) {
         // dprint-ignore

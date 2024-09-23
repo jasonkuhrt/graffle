@@ -19,8 +19,8 @@ type SomeSchema = {
     schemaErrors: boolean
   }
   interfaces: {
-    SelectMethods: {}
-    RootMethods: HKT.Fn
+    MethodsSelect: {}
+    MethodsRoot: HKT.Fn
     Document: HKT.Fn
   }
   /**
@@ -36,7 +36,7 @@ type ZeroSchema = {
     schemaErrors: false
   }
   interfaces: {
-    SelectMethods: {}
+    MethodsSelect: {}
   }
   defaultSchemaUrl: null
 }
@@ -83,7 +83,11 @@ export namespace GlobalRegistry {
   // dprint-ignore
   export type GetOrDefault<$Name extends SchemaNames | undefined> =
     $Name extends SchemaNames
+      // eslint-disable-next-line
+      // @ts-ignore passes after generation
       ? GraffleGlobalTypes.Schemas[$Name]
+      // eslint-disable-next-line
+      // @ts-ignore passes after generation
       : GraffleGlobalTypes.Schemas[DefaultSchemaName]
 
   // dprint-ignore

@@ -1,3 +1,4 @@
+// todo remove use of Utils.Aug when schema errors not in use
 // todo jsdoc
 import { hasMutation, hasQuery } from '../../../lib/graphql.js'
 import { createModuleGenerator } from '../createCodeGenerator.js'

@@ -1,12 +1,13 @@
+// todo remove use of Utils.Aug when schema errors not in use
 import { getNamedType, type GraphQLObjectType, isScalarType } from 'graphql'
 import { isAllArgsNullable, RootTypeNameToOperationName } from '../../../lib/graphql.js'
 import { createCodeGenerator, createModuleGenerator } from '../createCodeGenerator.js'
 import { renderDocumentation, renderName } from '../helpers.js'
 import { moduleNameSchemaIndex } from './SchemaIndex.js'
 import { moduleNameSelectionSets } from './SelectionSets.js'
-// { Config, HKT, Exact, ResolveOutputReturnRootField, ResolveOutputReturnRootType }
+
 export const { moduleName: moduleNameMethodsRoot, generate: generateMethodsRoot } = createModuleGenerator(
-  `RootMethods`,
+  `MethodsRoot`,
   ({ config, code }) => {
     code.push(`import type * as Utils  from '${config.libraryPaths.utilitiesForGenerated}';`)
     code.push(`import type { ResultSet } from '${config.libraryPaths.schema}';`)
@@ -14,18 +15,6 @@ export const { moduleName: moduleNameMethodsRoot, generate: generateMethodsRoot 
     code.push(`import type * as SelectionSet from './${moduleNameSelectionSets}.js'`)
     code.push(``)
 
-    // todo remove when schema errors not in use
-    code.push(`
-      type Aug<
-        $Config extends Utils.Config,
-        $RootTypeName extends Index['RootTypesPresent'][number],
-        $Selection,
-      > = Utils.ConfigGetOutputError<$Config, 'schema'> extends 'throw'
-        ? (keyof $Selection & Index['error']['rootResultFields'][$RootTypeName]) extends never
-          ? $Selection
-          : $Selection & Utils.SelectionSet.TypenameSelection
-        : $Selection
-    `)
     code.push(``)
 
     config.rootTypesPresent.forEach(node => {
@@ -34,7 +23,7 @@ export const { moduleName: moduleNameMethodsRoot, generate: generateMethodsRoot 
     })
 
     code.push(`
-      export interface BuilderRootMethods<$Config extends Utils.Config> {
+      export interface BuilderMethodsRoot<$Config extends Utils.Config> {
         ${
       config.typeMapByKind.GraphQLRootType.map(node => {
         const operationName = RootTypeNameToOperationName[node.name as keyof typeof RootTypeNameToOperationName]
@@ -48,7 +37,7 @@ export const { moduleName: moduleNameMethodsRoot, generate: generateMethodsRoot 
     code.push(`
       export interface BuilderMethodsRootFn extends Utils.HKT.Fn {
         // @ts-expect-error parameter is Untyped.
-        return: BuilderRootMethods<this['params']['Config']>
+        return: BuilderMethodsRoot<this['params']['Config']>
       }
     `)
 
@@ -67,7 +56,7 @@ const renderRootType = createCodeGenerator<{ node: GraphQLObjectType }>(({ node,
             $Config,
             Index,
             ResultSet.${node.name}<
-              Aug<$Config, '${node.name}', $SelectionSet>,
+              Utils.Aug<$Config, '${node.name}', $SelectionSet>,
               Index
             >
           >

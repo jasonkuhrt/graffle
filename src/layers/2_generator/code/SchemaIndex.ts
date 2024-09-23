@@ -10,11 +10,11 @@ export const { generate: generateSchemaIndex, moduleName: moduleNameSchemaIndex 
   `SchemaIndex`,
   ({ config, code }) => {
     const SchemaBuildtimeNamespace = `Schema`
-    const RootMethodsNamespace = `RootMethods`
+    const MethodsRootNamespace = `MethodsRoot`
     code.push(`/* eslint-disable */`)
     code.push(`import type * as Data from './${moduleNameData}.js'`)
     code.push(`import type * as ${SchemaBuildtimeNamespace} from './${moduleNameSchemaBuildtime}.js'`)
-    code.push(`import type * as ${RootMethodsNamespace} from './${moduleNameMethodsRoot}.js'`)
+    code.push(`import type * as ${MethodsRootNamespace} from './${moduleNameMethodsRoot}.js'`)
     code.push(``)
 
     const rootTypesPresence = {

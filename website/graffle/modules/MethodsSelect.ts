@@ -1,4 +1,4 @@
-import type * as $Utilities from '../../../../../src/entrypoints/utilities-for-generated.js'
+import type * as $Utilities from 'graffle/utilities-for-generated'
 import type * as $SelectionSets from './SelectionSets.js'
 
 //
@@ -18,10 +18,12 @@ import type * as $SelectionSets from './SelectionSets.js'
 //
 
 export interface $MethodsSelect {
-  Mutation: Mutation
   Query: Query
-  Pokemon: Pokemon
-  Trainer: Trainer
+  Continent: Continent
+  Country: Country
+  Language: Language
+  State: State
+  Subdivision: Subdivision
 }
 
 //
@@ -39,10 +41,6 @@ export interface $MethodsSelect {
 //
 //
 //
-
-export interface Mutation {
-  <$SelectionSet>(selectionSet: $Utilities.Exact<$SelectionSet, $SelectionSets.Mutation>): $SelectionSet
-}
 
 export interface Query {
   <$SelectionSet>(selectionSet: $Utilities.Exact<$SelectionSet, $SelectionSets.Query>): $SelectionSet
@@ -64,10 +62,22 @@ export interface Query {
 //
 //
 
-export interface Pokemon {
-  <$SelectionSet>(selectionSet: $Utilities.Exact<$SelectionSet, $SelectionSets.Pokemon>): $SelectionSet
+export interface Continent {
+  <$SelectionSet>(selectionSet: $Utilities.Exact<$SelectionSet, $SelectionSets.Continent>): $SelectionSet
 }
 
-export interface Trainer {
-  <$SelectionSet>(selectionSet: $Utilities.Exact<$SelectionSet, $SelectionSets.Trainer>): $SelectionSet
+export interface Country {
+  <$SelectionSet>(selectionSet: $Utilities.Exact<$SelectionSet, $SelectionSets.Country>): $SelectionSet
+}
+
+export interface Language {
+  <$SelectionSet>(selectionSet: $Utilities.Exact<$SelectionSet, $SelectionSets.Language>): $SelectionSet
+}
+
+export interface State {
+  <$SelectionSet>(selectionSet: $Utilities.Exact<$SelectionSet, $SelectionSets.State>): $SelectionSet
+}
+
+export interface Subdivision {
+  <$SelectionSet>(selectionSet: $Utilities.Exact<$SelectionSet, $SelectionSets.Subdivision>): $SelectionSet
 }

@@ -1,7 +1,6 @@
 /* eslint-disable */
-
 import type * as Data from './Data.js'
-
+import type * as MethodsRoot from './MethodsRoot.js'
 import type * as Schema from './SchemaBuildtime.js'
 
 export interface Index {
@@ -12,6 +11,12 @@ export interface Index {
     Query: Schema.Root.Query
     Mutation: Schema.Root.Mutation
     Subscription: null
+  }
+  allTypes: {
+    Mutation: Schema.Root.Mutation
+    Query: Schema.Root.Query
+    Pokemon: Schema.Object.Pokemon
+    Trainer: Schema.Object.Trainer
   }
   objects: {
     Pokemon: Schema.Object.Pokemon

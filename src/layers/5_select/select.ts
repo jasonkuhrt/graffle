@@ -5,7 +5,7 @@ import type { GlobalRegistry } from '../2_generator/globalRegistry.js'
 type Create = <$Name extends GlobalRegistry.SchemaNames>(name: $Name) =>
   // eslint-disable-next-line
   // @ts-ignore passes after generation
-  GlobalRegistry.GetOrDefault<$Name>['interfaces']['SelectMethods']
+  GlobalRegistry.GetOrDefault<$Name>['interfaces']['MethodsSelect']
 
 export const create: Create = (_name) => identityProxy as any
 

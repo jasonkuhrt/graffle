@@ -175,6 +175,9 @@ interface Retry<$Args extends FnParametersProperty> {
 export interface With<$Args extends FnParametersProperty> {
   <$Input extends WithInput<$Args['state']['context']['Config']>>(
     input: $Input,
+    // todo fixme
+    // eslint-disable-next-line
+    // @ts-ignore Passes after generation
   ): IncrementWthNewConfig<$Args, AddIncrementalInput<$Args['state']['context']['Config'], $Input>>
 }
 
@@ -197,8 +200,12 @@ export type BuilderRequestMethods<$Context extends ClientContext>=
       ? {}
       :
         (
+          // eslint-disable-next-line
+          // @ts-ignore Passes after generation
           & HKT.Call<GlobalRegistry.GetOrDefault<$Context['Config']['name']>['interfaces']['Root'], $Context>
           & {
+              // eslint-disable-next-line
+              // @ts-ignore Passes after generation
               document: HKT.Call<GlobalRegistry.GetOrDefault<$Context['Config']['name']>['interfaces']['Document'], $Context>
             }
         )

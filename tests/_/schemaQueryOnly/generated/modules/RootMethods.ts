@@ -49,11 +49,11 @@ export interface QueryMethods<$Config extends Utils.Config> {
   >
 }
 
-export interface BuilderRootMethods<$Config extends Utils.Config> {
+export interface BuilderMethodsRoot<$Config extends Utils.Config> {
   query: QueryMethods<$Config>
 }
 
 export interface BuilderMethodsRootFn extends Utils.HKT.Fn {
   // @ts-expect-error parameter is Untyped.
-  return: BuilderRootMethods<this['params']['Config']>
+  return: BuilderMethodsRoot<this['params']['Config']>
 }

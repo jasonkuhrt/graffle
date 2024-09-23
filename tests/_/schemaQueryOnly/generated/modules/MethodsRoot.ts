@@ -3,22 +3,13 @@ import type * as Utils from '../../../../../src/entrypoints/utilities-for-genera
 import type { Index } from './SchemaIndex.js'
 import type * as SelectionSet from './SelectionSets.js'
 
-type Aug<
-  $Config extends Utils.Config,
-  $RootTypeName extends Index['RootTypesPresent'][number],
-  $Selection,
-> = Utils.ConfigGetOutputError<$Config, 'schema'> extends 'throw'
-  ? (keyof $Selection & Index['error']['rootResultFields'][$RootTypeName]) extends never ? $Selection
-  : $Selection & Utils.SelectionSet.TypenameSelection
-  : $Selection
-
-export interface MutationMethods<$Config extends Utils.Config> {
-  $batch: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Mutation>) => Promise<
+export interface QueryMethods<$Config extends Utils.Config> {
+  $batch: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query>) => Promise<
     Utils.ResolveOutputReturnRootType<
       $Config,
       Index,
-      ResultSet.Mutation<
-        Aug<$Config, 'Mutation', $SelectionSet>,
+      ResultSet.Query<
+        Utils.Aug<$Config, 'Query', $SelectionSet>,
         Index
       >
     >
@@ -28,7 +19,7 @@ export interface MutationMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       '__typename',
-      'Mutation'
+      'Query'
     >
   >
   id: () => Promise<
@@ -36,7 +27,7 @@ export interface MutationMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'id',
-      ResultSet.Field<true, Index['Root']['Mutation']['fields']['id'], Index>
+      ResultSet.Field<true, Index['Root']['Query']['fields']['id'], Index>
     >
   >
   idNonNull: () => Promise<
@@ -44,13 +35,13 @@ export interface MutationMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'idNonNull',
-      ResultSet.Field<true, Index['Root']['Mutation']['fields']['idNonNull'], Index>
+      ResultSet.Field<true, Index['Root']['Query']['fields']['idNonNull'], Index>
     >
   >
 }
 
 export interface BuilderMethodsRoot<$Config extends Utils.Config> {
-  mutation: MutationMethods<$Config>
+  query: QueryMethods<$Config>
 }
 
 export interface BuilderMethodsRootFn extends Utils.HKT.Fn {

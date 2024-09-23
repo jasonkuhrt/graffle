@@ -4,7 +4,7 @@ import { createModuleGenerator } from '../createCodeGenerator.js'
 import { moduleNameData } from './Data.js'
 import { moduleNameMethodsDocument } from './MethodsDocument.js'
 import { moduleNameMethodsRoot } from './MethodsRoot.js'
-import { moduleNameSelectMethods } from './MethodsSelect.js'
+import { moduleNameMethodsSelect } from './MethodsSelect.js'
 import { moduleNameScalar } from './Scalar.js'
 import { moduleNameSchemaIndex } from './SchemaIndex.js'
 
@@ -17,7 +17,7 @@ export const { moduleName: moduleNameGlobal, generate: generateGlobal } = create
 
     code.push(
       `import type * as Data from './${moduleNameData}.js'`,
-      `import type * as MethodsSelect from './${moduleNameSelectMethods}.js'`,
+      `import type * as MethodsSelect from './${moduleNameMethodsSelect}.js'`,
       `import type * as MethodsDocument from './${moduleNameMethodsDocument}.js'`,
       `import type * as MethodsRoot from './${moduleNameMethodsRoot}.js'`,
       `import type { Index } from './${moduleNameSchemaIndex}.js'`,
@@ -45,7 +45,7 @@ export const { moduleName: moduleNameGlobal, generate: generateGlobal } = create
           export interface Schemas {
             ${config.name}: {
               interfaces: {
-                SelectMethods: MethodsSelect.$SelectMethods
+                MethodsSelect: MethodsSelect.$MethodsSelect
                 Document: MethodsDocument.BuilderMethodsDocumentFn
                 Root: MethodsRoot.BuilderMethodsRootFn
               }

@@ -17,7 +17,7 @@ import type * as $SelectionSets from './SelectionSets.js'
 //
 //
 
-export interface $SelectMethods {
+export interface $MethodsSelect {
   Query: Query
   Continent: Continent
   Country: Country
