@@ -3,12 +3,12 @@ import { createResponse, test } from '../../../tests/_/helpers.js'
 import { Graffle as Graffle2 } from '../../../tests/_/schema/generated/__.js'
 import { schema } from '../../../tests/_/schema/schema.js'
 import { Graffle } from '../../entrypoints/main.js'
-import { OrThrow } from '../7_extensions/OrThrow/OrThrow.js'
+import { Throws } from '../7_extensions/Throws/Throws.js'
 
 const endpoint = new URL(`https://foo.io/api/graphql`)
 
 describe(`without schemaIndex only raw is available`, () => {
-  const graffle = Graffle.create({ schema: endpoint }).use(OrThrow())
+  const graffle = Graffle.create({ schema: endpoint }).use(Throws())
 
   test(`unavailable methods`, () => {
     // @ts-expect-error

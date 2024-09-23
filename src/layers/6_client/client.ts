@@ -2,6 +2,7 @@ import { type ExecutionResult, GraphQLSchema, type TypedQueryDocumentNode } from
 import type { Anyware } from '../../lib/anyware/__.js'
 import type { Errors } from '../../lib/errors/__.js'
 import type { Fluent } from '../../lib/fluent/__.js'
+import type { FnProperty, ToFnPropertyObject } from '../../lib/fluent/Fluent.js'
 import { isOperationTypeName, operationTypeNameToRootTypeName, type RootTypeName } from '../../lib/graphql.js'
 import type { HKT } from '../../lib/hkt/__.js'
 import { mergeHeadersInit, mergeRequestInit } from '../../lib/http.js'
@@ -77,18 +78,18 @@ const resolveRawParameters = (parameters: RawParameters) => {
   return parameters[0]
 }
 
-type ClientContext = {
+export type ClientContext = {
   Config: Config
   SchemaIndex: Schema.Index | null
 }
 
-type FnClient<$Context extends ClientContext = ClientContext> = Fluent.Create<$Context>
+export type FnClient<$Context extends ClientContext = ClientContext> = Fluent.Create<$Context>
 
-type FnClientState = Fluent.State<ClientContext>
+export type FnClientState = Fluent.State<ClientContext>
 
-type FnParametersProperty = Fluent.FnParametersProperty<FnClient, FnClientState>
+export type FnParametersProperty = Fluent.FnParametersProperty<FnClient, FnClientState>
 
-type FnParametersMerge = Fluent.ParametersFnMerge<FnClientState['context']>
+export type FnParametersMerge = Fluent.ParametersFnMerge<FnClientState['context']>
 
 export type Client<$Context extends ClientContext> = Fluent.Materialize<
   Fluent.AddMany<
@@ -157,8 +158,7 @@ export interface Anyware_<$Args extends FnParametersProperty> {
  */
 interface Use<$Args extends FnParametersProperty> {
   <$Extension extends Extension>(extension?: $Extension): Fluent.IncrementUsingMerge<$Args, {
-    // call extension to allow it to add methods
-    // methods: $Extension['methods']
+    properties: $Extension['property'] extends FnProperty ? ToFnPropertyObject<$Extension['property']> : {}
   }>
 }
 

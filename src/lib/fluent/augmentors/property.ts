@@ -1,6 +1,10 @@
 import type { HKT } from '../../hkt/__.js'
 import type { FnCallFluent, FnFluent, State } from '../Fluent.js'
 
+export type ToFnPropertyObject<$PropertyFn extends FnProperty> = {
+  [_ in $PropertyFn['name']]: $PropertyFn
+}
+
 // dprint-ignore
 export type AddFnProperty<$FluentFn extends FnFluent<any>, $State extends State, $PropertyFn extends FnProperty> =
     FnCallFluent<
@@ -8,9 +12,7 @@ export type AddFnProperty<$FluentFn extends FnFluent<any>, $State extends State,
       {
         properties:
           & $State['properties']
-          & {
-            [_ in $PropertyFn['name']]: $PropertyFn
-          }
+          & ToFnPropertyObject<$PropertyFn>
         // Passthrough
         context: $State['context']
         merges: $State['merges']
