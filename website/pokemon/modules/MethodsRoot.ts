@@ -4,16 +4,18 @@ import type { Index } from './SchemaIndex.js'
 import type * as SelectionSet from './SelectionSets.js'
 
 export interface QueryMethods<$Config extends Utils.Config> {
+  // todo Use a static type here?
   $batch: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query>) => Promise<
     Utils.ResolveOutputReturnRootType<
       $Config,
       Index,
       ResultSet.Query<
-        Utils.Aug<$Config, 'Query', $SelectionSet>,
+        Utils.AddTypenameToSelectedRootTypeResultFields<$Config, Index, 'Query', $SelectionSet>,
         Index
       >
     >
   >
+  // todo Use a static type here?
   __typename: () => Promise<
     Utils.ResolveOutputReturnRootField<
       $Config,
@@ -57,16 +59,18 @@ export interface QueryMethods<$Config extends Utils.Config> {
 }
 
 export interface MutationMethods<$Config extends Utils.Config> {
+  // todo Use a static type here?
   $batch: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Mutation>) => Promise<
     Utils.ResolveOutputReturnRootType<
       $Config,
       Index,
       ResultSet.Mutation<
-        Utils.Aug<$Config, 'Mutation', $SelectionSet>,
+        Utils.AddTypenameToSelectedRootTypeResultFields<$Config, Index, 'Mutation', $SelectionSet>,
         Index
       >
     >
   >
+  // todo Use a static type here?
   __typename: () => Promise<
     Utils.ResolveOutputReturnRootField<
       $Config,

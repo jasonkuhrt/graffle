@@ -7,6 +7,6 @@ export type {
   ResolveOutputReturnRootType,
 } from '../layers/6_client/handleOutput.js'
 export type { Config } from '../layers/6_client/Settings/Config.js'
-export { type Aug } from '../layers/6_client/types.js'
+export { type AddTypenameToSelectedRootTypeResultFields } from '../layers/6_client/Settings/Config.js'
 export { HKT } from '../lib/hkt/__.js'
 export { type Exact, type UnionExpanded } from '../lib/prelude.js'

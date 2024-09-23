@@ -295,17 +295,20 @@ export interface $Fields {
   }
 }
 
-export type Alias<$SelectionSet = unknown> = [alias: string, $SelectionSet] | [
-  alias: string,
-  $SelectionSet,
-][]
+export type AliasInputOne<$SelectionSet = unknown> = [alias: string, selectionSet: $SelectionSet]
+
+export type AliasInputMultiple<$SelectionSet = unknown> = [
+  ...AliasInputOne<$SelectionSet>[],
+]
+
+export type AliasInput<$SelectionSet = unknown> = AliasInputOne<$SelectionSet> | AliasInputMultiple<$SelectionSet>
 
 export type AliasNormalized<$SelectionSet = unknown> = [
   alias: string,
-  $SelectionSet,
+  selectionSet: $SelectionSet,
 ][]
 
-export const isAlias = (value: unknown): value is Alias<any> => {
+export const isAlias = (value: unknown): value is AliasInput<any> => {
   return Array.isArray(value) && value.length === 2
 }
 

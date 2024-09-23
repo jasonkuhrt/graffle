@@ -35,11 +35,11 @@ export interface Query {
   /**
    * Select the `id` field on the `Query` object. Its type is `ID` (a `Scalar`).
    */
-  id?: Query.id$Expanded | $SelectionSet.Alias<Query.id>
+  id?: Query.id$Expanded | $SelectionSet.AliasInput<Query.id>
   /**
    * Select the `idNonNull` field on the `Query` object. Its type is `ID` (a `Scalar`).
    */
-  idNonNull?: Query.idNonNull$Expanded | $SelectionSet.Alias<Query.idNonNull>
+  idNonNull?: Query.idNonNull$Expanded | $SelectionSet.AliasInput<Query.idNonNull>
 
   /**
    * Inline fragments for field groups.
@@ -56,7 +56,7 @@ export interface Query {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-  __typename?: $SelectionSet.NoArgsIndicator$Expanded | $SelectionSet.Alias<$SelectionSet.NoArgsIndicator>
+  __typename?: $SelectionSet.NoArgsIndicator$Expanded | $SelectionSet.AliasInput<$SelectionSet.NoArgsIndicator>
 }
 
 // ----------------------------------------| Fields Interfaces |

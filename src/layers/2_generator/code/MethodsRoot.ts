@@ -50,17 +50,19 @@ const renderRootType = createCodeGenerator<{ node: GraphQLObjectType }>(({ node,
 
   code.push(`
     export interface ${node.name}Methods<$Config extends Utils.Config> {
+      // todo Use a static type here?
       $batch: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.${node.name}>) =>
         Promise<
           Utils.ResolveOutputReturnRootType<
             $Config,
             Index,
             ResultSet.${node.name}<
-              Utils.Aug<$Config, '${node.name}', $SelectionSet>,
+              Utils.AddTypenameToSelectedRootTypeResultFields<$Config, Index, '${node.name}', $SelectionSet>,
               Index
             >
           >
         >
+      // todo Use a static type here?
       __typename: () =>
         Promise<
           Utils.ResolveOutputReturnRootField<

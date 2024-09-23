@@ -35,11 +35,11 @@ export interface Mutation {
   /**
    * Select the `id` field on the `Mutation` object. Its type is `ID` (a `Scalar`).
    */
-  id?: Mutation.id$Expanded | $SelectionSet.Alias<Mutation.id>
+  id?: Mutation.id$Expanded | $SelectionSet.AliasInput<Mutation.id>
   /**
    * Select the `idNonNull` field on the `Mutation` object. Its type is `ID` (a `Scalar`).
    */
-  idNonNull?: Mutation.idNonNull$Expanded | $SelectionSet.Alias<Mutation.idNonNull>
+  idNonNull?: Mutation.idNonNull$Expanded | $SelectionSet.AliasInput<Mutation.idNonNull>
 
   /**
    * Inline fragments for field groups.
@@ -56,7 +56,7 @@ export interface Mutation {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-  __typename?: $SelectionSet.NoArgsIndicator$Expanded | $SelectionSet.Alias<$SelectionSet.NoArgsIndicator>
+  __typename?: $SelectionSet.NoArgsIndicator$Expanded | $SelectionSet.AliasInput<$SelectionSet.NoArgsIndicator>
 }
 
 // ----------------------------------------| Fields Interfaces |

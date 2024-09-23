@@ -387,7 +387,7 @@ namespace Helpers {
   }
 
   export const outputFieldAlisable = (name: string, type: string, aliasable: boolean = true) => {
-    const alias = aliasable ? `| $SelectionSet.Alias<${type}>` : ``
+    const alias = aliasable ? `| $SelectionSet.AliasInput<${type}>` : ``
     return `${name}?: ${type}$Expanded${alias}`
   }
 

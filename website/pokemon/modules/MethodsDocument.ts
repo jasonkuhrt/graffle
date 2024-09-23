@@ -19,5 +19,5 @@ export interface Document<$Config extends Utilities.Config> {
 
 export interface BuilderMethodsDocumentFn extends Utilities.HKT.Fn {
   // @ts-expect-error parameter is Untyped.
-  return: Document<this['Params']['Config']>
+  return: Document<this['params']['Config']>
 }

@@ -156,7 +156,7 @@ export interface Anyware_<$Args extends FnParametersProperty> {
 /**
  * TODO Use Docs.
  */
-interface Use<$Args extends FnParametersProperty> {
+export interface Use<$Args extends FnParametersProperty> {
   <$Extension extends Extension>(extension?: $Extension): Fluent.IncrementUsingMerge<$Args, {
     properties: $Extension['property'] extends FnProperty ? ToFnPropertyObject<$Extension['property']> : {}
   }>
@@ -165,7 +165,7 @@ interface Use<$Args extends FnParametersProperty> {
 /**
  * TODO Retry Docs.
  */
-interface Retry<$Args extends FnParametersProperty> {
+export interface Retry<$Args extends FnParametersProperty> {
   (extension: Anyware.Extension2<Core.Core, { retrying: true }>): Fluent.IncrementNothing<$Args>
 }
 

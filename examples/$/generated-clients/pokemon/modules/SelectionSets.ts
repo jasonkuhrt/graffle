@@ -35,7 +35,7 @@ export interface Mutation {
   /**
    * Select the `addPokemon` field on the `Mutation` object. Its type is Object.
    */
-  addPokemon?: Mutation.addPokemon$Expanded | $SelectionSet.Alias<Mutation.addPokemon>
+  addPokemon?: Mutation.addPokemon$Expanded | $SelectionSet.AliasInput<Mutation.addPokemon>
 
   /**
    * Inline fragments for field groups.
@@ -52,7 +52,7 @@ export interface Mutation {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-  __typename?: $SelectionSet.NoArgsIndicator$Expanded | $SelectionSet.Alias<$SelectionSet.NoArgsIndicator>
+  __typename?: $SelectionSet.NoArgsIndicator$Expanded | $SelectionSet.AliasInput<$SelectionSet.NoArgsIndicator>
 }
 
 // ----------------------------------------| Fields Interfaces |
@@ -91,19 +91,19 @@ export interface Query {
   /**
    * Select the `pokemon` field on the `Query` object. Its type is Object.
    */
-  pokemon?: Query.pokemon$Expanded | $SelectionSet.Alias<Query.pokemon>
+  pokemon?: Query.pokemon$Expanded | $SelectionSet.AliasInput<Query.pokemon>
   /**
    * Select the `pokemonByName` field on the `Query` object. Its type is Object.
    */
-  pokemonByName?: Query.pokemonByName$Expanded | $SelectionSet.Alias<Query.pokemonByName>
+  pokemonByName?: Query.pokemonByName$Expanded | $SelectionSet.AliasInput<Query.pokemonByName>
   /**
    * Select the `trainerByName` field on the `Query` object. Its type is Object.
    */
-  trainerByName?: Query.trainerByName$Expanded | $SelectionSet.Alias<Query.trainerByName>
+  trainerByName?: Query.trainerByName$Expanded | $SelectionSet.AliasInput<Query.trainerByName>
   /**
    * Select the `trainers` field on the `Query` object. Its type is Object.
    */
-  trainers?: Query.trainers$Expanded | $SelectionSet.Alias<Query.trainers>
+  trainers?: Query.trainers$Expanded | $SelectionSet.AliasInput<Query.trainers>
 
   /**
    * Inline fragments for field groups.
@@ -120,7 +120,7 @@ export interface Query {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-  __typename?: $SelectionSet.NoArgsIndicator$Expanded | $SelectionSet.Alias<$SelectionSet.NoArgsIndicator>
+  __typename?: $SelectionSet.NoArgsIndicator$Expanded | $SelectionSet.AliasInput<$SelectionSet.NoArgsIndicator>
 }
 
 // ----------------------------------------| Fields Interfaces |
@@ -186,27 +186,27 @@ export interface Pokemon extends $SelectionSet.Bases.ObjectLike {
   /**
    * Select the `attack` field on the `Pokemon` object. Its type is `Int` (a `Scalar`).
    */
-  attack?: Pokemon.attack$Expanded | $SelectionSet.Alias<Pokemon.attack>
+  attack?: Pokemon.attack$Expanded | $SelectionSet.AliasInput<Pokemon.attack>
   /**
    * Select the `defense` field on the `Pokemon` object. Its type is `Int` (a `Scalar`).
    */
-  defense?: Pokemon.defense$Expanded | $SelectionSet.Alias<Pokemon.defense>
+  defense?: Pokemon.defense$Expanded | $SelectionSet.AliasInput<Pokemon.defense>
   /**
    * Select the `hp` field on the `Pokemon` object. Its type is `Int` (a `Scalar`).
    */
-  hp?: Pokemon.hp$Expanded | $SelectionSet.Alias<Pokemon.hp>
+  hp?: Pokemon.hp$Expanded | $SelectionSet.AliasInput<Pokemon.hp>
   /**
    * Select the `id` field on the `Pokemon` object. Its type is `Int` (a `Scalar`).
    */
-  id?: Pokemon.id$Expanded | $SelectionSet.Alias<Pokemon.id>
+  id?: Pokemon.id$Expanded | $SelectionSet.AliasInput<Pokemon.id>
   /**
    * Select the `name` field on the `Pokemon` object. Its type is `String` (a `Scalar`).
    */
-  name?: Pokemon.name$Expanded | $SelectionSet.Alias<Pokemon.name>
+  name?: Pokemon.name$Expanded | $SelectionSet.AliasInput<Pokemon.name>
   /**
    * Select the `trainer` field on the `Pokemon` object. Its type is Object.
    */
-  trainer?: Pokemon.trainer$Expanded | $SelectionSet.Alias<Pokemon.trainer>
+  trainer?: Pokemon.trainer$Expanded | $SelectionSet.AliasInput<Pokemon.trainer>
 
   /**
    * Inline fragments for field groups.
@@ -223,7 +223,7 @@ export interface Pokemon extends $SelectionSet.Bases.ObjectLike {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-  __typename?: $SelectionSet.NoArgsIndicator$Expanded | $SelectionSet.Alias<$SelectionSet.NoArgsIndicator>
+  __typename?: $SelectionSet.NoArgsIndicator$Expanded | $SelectionSet.AliasInput<$SelectionSet.NoArgsIndicator>
 }
 
 // ----------------------------------------| Fields Interfaces |
@@ -271,15 +271,15 @@ export interface Trainer extends $SelectionSet.Bases.ObjectLike {
   /**
    * Select the `id` field on the `Trainer` object. Its type is `Int` (a `Scalar`).
    */
-  id?: Trainer.id$Expanded | $SelectionSet.Alias<Trainer.id>
+  id?: Trainer.id$Expanded | $SelectionSet.AliasInput<Trainer.id>
   /**
    * Select the `name` field on the `Trainer` object. Its type is `String` (a `Scalar`).
    */
-  name?: Trainer.name$Expanded | $SelectionSet.Alias<Trainer.name>
+  name?: Trainer.name$Expanded | $SelectionSet.AliasInput<Trainer.name>
   /**
    * Select the `pokemon` field on the `Trainer` object. Its type is Object.
    */
-  pokemon?: Trainer.pokemon$Expanded | $SelectionSet.Alias<Trainer.pokemon>
+  pokemon?: Trainer.pokemon$Expanded | $SelectionSet.AliasInput<Trainer.pokemon>
 
   /**
    * Inline fragments for field groups.
@@ -296,7 +296,7 @@ export interface Trainer extends $SelectionSet.Bases.ObjectLike {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-  __typename?: $SelectionSet.NoArgsIndicator$Expanded | $SelectionSet.Alias<$SelectionSet.NoArgsIndicator>
+  __typename?: $SelectionSet.NoArgsIndicator$Expanded | $SelectionSet.AliasInput<$SelectionSet.NoArgsIndicator>
 }
 
 // ----------------------------------------| Fields Interfaces |
