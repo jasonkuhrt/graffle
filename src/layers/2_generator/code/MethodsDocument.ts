@@ -22,7 +22,7 @@ export const { generate: generateMethodsDocument, moduleName: moduleNameMethodsD
     code.push(``)
 
     code.push(`export interface Document<$Config extends Utilities.Config> {
-			<$Document>(document: Utilities.Exact<$Document, DocumentInput>): Utilities.DocumentRunner<
+			<$Document>(document: Utilities.ExactNonEmpty<$Document, DocumentInput>): Utilities.DocumentRunner<
 				$Config,
 				Index,
 				// @ts-expect-error We use Exact instead of constraint on this function. TypeScript does not see that as
