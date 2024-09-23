@@ -14,14 +14,16 @@ export type WithInput<$Context extends IncrementableInputContext = Incrementable
       output?: OutputInput<$Context>
     }
   & (
-      $Context['transport'] extends TransportMemory
+      $Context['transport']['type'] extends TransportMemory
       ? { transport?: never }
       : { transport?: TransportHttpInput }
     )
 
 export type IncrementableInputContext = {
   name: GlobalRegistry.SchemaNames
-  transport: Transport
+  transport: {
+    type: Transport
+  }
 }
 
 // dprint-ignore

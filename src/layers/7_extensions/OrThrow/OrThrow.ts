@@ -32,6 +32,7 @@ interface OrThrowExtension extends Extension {
 }
 
 interface BuilderChain extends HKT.Fn {
+  // @ts-expect-error untyped params
   return: BuilderChain_<this['params']>
 }
 

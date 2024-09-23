@@ -82,87 +82,110 @@ type ClientContext = {
   SchemaIndex: Schema.Index | null
 }
 
+type FnClient<$Context extends ClientContext = ClientContext> = Fluent.Create<$Context>
+
+type FnClientState = Fluent.State<ClientContext>
+
+type FnParametersProperty = Fluent.FnParametersProperty<FnClient, FnClientState>
+
+type FnParametersMerge = Fluent.ParametersFnMerge<FnClientState['context']>
+
 export type Client<$Context extends ClientContext> = Fluent.Materialize<
   Fluent.AddMany<
     Fluent.Create<$Context>,
     [
-      AnywareFn,
-      RetryFn,
-      WithFn,
+      FnInternal,
+      FnRequestMethods,
+      FnRetry,
+      FnWith,
       UseFn,
-      InternalFn,
-      RequestMethodsFn,
+      FnAnyware,
     ]
   >
 >
 
-export interface InternalFn extends Fluent.MergeFn {
+export interface UseFn extends Fluent.FnProperty<`use`> {
+  // @ts-expect-error untyped params
+  return: Use<this['params']>
+}
+
+export interface FnRetry extends Fluent.FnProperty<`retry`> {
+  // @ts-expect-error untyped params
+  return: Retry<this['params']>
+}
+
+export interface FnInternal extends Fluent.FnMerge {
   // @ts-expect-error untyped params
   return: Internal<this['params']>
 }
 
-export type Internal<$Params extends ClientContext> = {
-  _: {
-    context: $Params
-  }
-}
-
-export interface RequestMethodsFn extends Fluent.MergeFn<ClientContext> {
+export interface FnRequestMethods extends Fluent.FnMerge {
+  // @ts-expect-error untyped params
   return: BuilderRequestMethods<this['params']>
 }
 
-export interface AnywareFn extends Fluent.PropertyFn<`anyware`, ClientContext> {
-  return:
-    /**
-     * TODO Anyware Docs.
-     */
-    (
-      anyware: Anyware.Extension2<Core.Core<this['params']['State']['Context']['Config']>>,
-    ) => Fluent.IncrementNothing<this['params']>
+export interface FnWith extends Fluent.FnProperty<`with`> {
+  // @ts-expect-error untyped params
+  return: With<this['params']>
 }
 
-export interface UseFn extends Fluent.PropertyFn<`use`, ClientContext> {
-  return:
-    /**
-     * TODO Use Docs.
-     */
-    <$Extension extends Extension>(extension?: $Extension) => Fluent.IncrementUsingMerge<this['params'], {
-      // call extension to allow it to add methods
-      // methods: $Extension['methods']
-    }>
+export interface FnAnyware extends Fluent.FnProperty<`anyware`> {
+  // @ts-expect-error untyped params
+  return: Anyware_<this['params']>
 }
 
-export interface RetryFn extends Fluent.PropertyFn<`retry`, ClientContext> {
-  return:
-    /**
-     * TODO Retry Docs.
-     */
-    (
-      extension: Anyware.Extension2<Core.Core, { retrying: true }>,
-    ) => Fluent.IncrementNothing<this['params']>
+/**
+ * TODO
+ */
+export type Internal<$Args extends FnParametersMerge> = {
+  _: {
+    context: $Args
+  }
 }
 
-export interface WithFn extends Fluent.PropertyFn<`with`, ClientContext> {
-  return:
-    /**
-     * TODO With Docs.
-     */
-    <$Input extends WithInput<this['params']['State']['Context']['Config']>>(
-      input: $Input,
-    ) => IncrementWthNewConfig<
-      this['params'],
-      AddIncrementalInput<this['params']['State']['Context']['Config'], $Input>
-    >
+/**
+ * TODO Anyware Docs.
+ */
+export interface Anyware_<$Args extends FnParametersProperty> {
+  (
+    anyware: Anyware.Extension2<Core.Core<$Args['state']['context']['Config']>>,
+  ): Fluent.IncrementNothing<$Args>
+}
+
+/**
+ * TODO Use Docs.
+ */
+interface Use<$Args extends FnParametersProperty> {
+  <$Extension extends Extension>(extension?: $Extension): Fluent.IncrementUsingMerge<$Args, {
+    // call extension to allow it to add methods
+    // methods: $Extension['methods']
+  }>
+}
+
+/**
+ * TODO Retry Docs.
+ */
+interface Retry<$Args extends FnParametersProperty> {
+  (extension: Anyware.Extension2<Core.Core, { retrying: true }>): Fluent.IncrementNothing<$Args>
+}
+
+/**
+ * TODO With Docs.
+ */
+export interface With<$Args extends FnParametersProperty> {
+  <$Input extends WithInput<$Args['state']['context']['Config']>>(
+    input: $Input,
+  ): IncrementWthNewConfig<$Args, AddIncrementalInput<$Args['state']['context']['Config'], $Input>>
 }
 
 export type IncrementWthNewConfig<
-  $Params extends Fluent.PropertyFnParams<ClientContext>,
-  $NewConfig extends ClientContext['Config'],
+  $Parameters extends FnParametersProperty,
+  $ConfigNew extends ClientContext['Config'],
 > = Fluent.IncrementWthNewContext<
-  $Params,
+  $Parameters,
   {
-    SchemaIndex: $Params['State']['Context']['SchemaIndex']
-    Config: $NewConfig
+    SchemaIndex: $Parameters['state']['context']['SchemaIndex']
+    Config: $ConfigNew
   }
 >
 

@@ -20,8 +20,8 @@ type SomeSchema = {
   }
   interfaces: {
     SelectMethods: {}
-    RootMethods: HKT.Fn<any, any>
-    Document: HKT.Fn<any, any>
+    RootMethods: HKT.Fn
+    Document: HKT.Fn
   }
   /**
    * If the code was generated with introspection, the URL used is taken as the default schema URL.

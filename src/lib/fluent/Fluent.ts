@@ -1,87 +1,93 @@
 import type { Simplify } from 'type-fest'
 import type { HKT } from '../hkt/__.js'
-import type { AddMergeFn, MaterializeMerges, MergeFn } from './augmentors/merge.js'
-import type { AddPropertyFn, MaterializeProperties, PropertyFn, PropertyFnParams } from './augmentors/property.js'
+import type { AddFnMerge, FnMerge, MaterializeMerges } from './augmentors/merge.js'
+import type { AddFnProperty, FnParametersProperty, FnProperty, MaterializeProperties } from './augmentors/property.js'
 
 export * from './augmentors/merge.js'
 export * from './augmentors/property.js'
 
 export type Context = object
 
-export interface State<$Context extends Context = Context> {
-  Merges: [...MergeFn[]]
-  Properties: Record<string, PropertyFn>
-  Context: $Context
+export interface State<
+  $Context extends Context = Context,
+  $Properties extends Record<string, FnProperty> = Record<string, FnProperty>,
+  $Merges extends [...FnMerge[]] = [...FnMerge[]],
+> {
+  context: $Context
+  properties: $Properties
+  merges: $Merges
 }
 
 interface StateInitial {
-  Merges: []
-  Properties: {}
-  Context: {}
+  merges: []
+  properties: {}
+  context: {}
 }
 
-export interface FluentFn<$StateCurrent extends State = StateInitial> extends HKT.Fn {
+export interface FnFluent<$StateCurrent extends State = StateInitial> extends HKT.Fn {
   StateCurrent: $StateCurrent
-  // @ts-expect-error cannot type HKT.Fn params
-  return: FluentFn<this['params']>
+  // @ts-expect-error untyped params
+  return: FnFluent<this['params']>
 }
 
-export type CallFluentFn<$FluentFn extends FluentFn, $State extends State> = HKT.Call<$FluentFn, $State>
+export type FnCallFluent<$FnFluent extends FnFluent, $State extends State> = HKT.Call<$FnFluent, $State>
 
-export type Create<$Context> = FluentFn<StateInitial & { Context: $Context }>
+export type Create<$Context = Context> = FnFluent<StateInitial & { context: $Context }>
 
 // dprint-ignore
-export type Materialize<$FluentFn extends FluentFn<any>> =
-  $FluentFn extends FluentFn<infer $State>
+export type Materialize<$FluentFn extends FnFluent<any>> =
+  $FluentFn extends FnFluent<infer $State>
     ? Simplify<
       & MaterializeProperties<$FluentFn, $State>
-      & MaterializeMerges<$State['Merges'], $State>
+      & MaterializeMerges<$State['merges'], $State>
+      // & { $$DEBUG: Simplify<$State> }
     >
     : never
 
 // --- Fluent Augmentation Helpers ---
-type AugmentationFn = PropertyFn | MergeFn
+
+type FnAugmentation = FnProperty | FnMerge
 
 // dprint-ignore
-export type Add<$FluentFn extends FluentFn<any>, $AugmentationFn extends AugmentationFn> =
+export type Add<$FnFluent extends FnFluent<any>, $FnAugmentation extends FnAugmentation> =
   // todo this works but leads to infinite depth error in AddMany. Could hurt perf. Avoiding for now.
   // $FluentFn extends FluentFn<infer $State extends State> ?
 
-    $AugmentationFn extends MergeFn     ? AddMergeFn   <$FluentFn, $FluentFn['StateCurrent'], $AugmentationFn> :
-    $AugmentationFn extends PropertyFn  ? AddPropertyFn<$FluentFn, $FluentFn['StateCurrent'], $AugmentationFn> :
+    $FnAugmentation extends FnMerge     ? AddFnMerge   <$FnFluent, $FnFluent['StateCurrent'], $FnAugmentation> :
+    $FnAugmentation extends FnProperty  ? AddFnProperty<$FnFluent, $FnFluent['StateCurrent'], $FnAugmentation> :
                                           never
 // : never
 
 // dprint-ignore
-export type AddMany<$FluentFn extends FluentFn<any>, $AugmentationFns extends [...AugmentationFn[]]> =
-	$AugmentationFns extends [infer $FirstAugmentationFn extends AugmentationFn, ...infer $RestAugmentationFns extends AugmentationFn[]]
-		? AddMany<Add<$FluentFn, $FirstAugmentationFn>, $RestAugmentationFns>
-		: $FluentFn
+export type AddMany<$FnFluent extends FnFluent<any>, $AugmentationFns extends [...FnAugmentation[]]> =
+	$AugmentationFns extends [infer $FirstAugmentationFn extends FnAugmentation, ...infer $RestAugmentationFns extends FnAugmentation[]]
+		? AddMany<Add<$FnFluent, $FirstAugmentationFn>, $RestAugmentationFns>
+		: $FnFluent
 
 // --- Property Implementation Helpers ---
 
-export type IncrementNothing<$Params extends PropertyFnParams> = Materialize<$Params['FluentFn']>
+export type IncrementNothing<$Args extends FnParametersProperty> = Materialize<$Args['fnFluent']>
 
 export type IncrementUsingMerge<
-  $Params extends PropertyFnParams,
+  $Params extends FnParametersProperty,
   $NewState extends {
-    Properties?: State['Properties']
-    Context?: State['Context']
+    properties?: State['properties']
+    context?: State['context']
   },
 > = Materialize<
-  CallFluentFn<$Params['FluentFn'], $Params['State'] & $NewState>
+  FnCallFluent<$Params['fnFluent'], $Params['state'] & $NewState>
 >
 
 export type IncrementWthNewContext<
-  $Params extends PropertyFnParams,
-  $NewContext extends State['Context'],
+  $Params extends FnParametersProperty,
+  $NewContext extends State['context'],
 > = Materialize<
-  CallFluentFn<
-    $Params['FluentFn'],
+  FnCallFluent<
+    $Params['fnFluent'],
     {
-      Context: $NewContext
-      Properties: $Params['State']['Properties']
-      Merges: $Params['State']['Merges']
+      context: $NewContext
+      properties: $Params['state']['properties']
+      merges: $Params['state']['merges']
     }
   >
 >

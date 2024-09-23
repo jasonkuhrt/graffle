@@ -5,20 +5,16 @@ import type { Core } from '../5_core/__.js'
 import type { Client, Context } from './client.js'
 import type { Config } from './Settings/Config.js'
 
-export interface ExtensionBuilderPassthrough extends Extension {
-  return: this['params']['AdditionalMethods']
-}
-
-type TypeCallParams = {
+type ParametersFn = {
   Config: unknown
   Index: unknown
   AdditionalMethods: unknown
 }
 
-export type CallBuilderMerge<$Extension extends Extension, $Params extends TypeCallParams> =
+export type CallBuilderMerge<$Extension extends Extension, $Params extends ParametersFn> =
   ($Extension & { params: $Params })['builderMerge']
 
-export type CallBuilderConfig<$Extension extends Extension, $Params extends TypeCallParams> =
+export type CallBuilderConfig<$Extension extends Extension, $Params extends ParametersFn> =
   ($Extension & { params: $Params })['builderConfig']
 
 export interface TypeHooks {
@@ -33,7 +29,7 @@ export interface TypeHooks {
   builderChain: {}
 }
 
-export interface Extension extends Base, Fn<TypeCallParams>, TypeHooks {}
+export interface Extension extends Base, Fn, TypeHooks {}
 
 interface Base {
   /**
@@ -71,7 +67,7 @@ interface Base {
 
 export const createExtension = <$Extension extends Extension = Extension>(
   // type hooks
-  extension: Omit<HKT.Remove<$Extension>, keyof TypeHooks>,
+  extension: Omit<HKT.UnFn<$Extension>, keyof TypeHooks>,
 ): $Extension => {
   return extension as $Extension
 }

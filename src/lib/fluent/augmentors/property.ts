@@ -1,39 +1,39 @@
 import type { HKT } from '../../hkt/__.js'
-import type { CallFluentFn, Context, FluentFn, State } from '../Fluent.js'
+import type { FnCallFluent, FnFluent, State } from '../Fluent.js'
 
 // dprint-ignore
-export type AddPropertyFn<$FluentFn extends FluentFn<any>, $State extends State, $PropertyFn extends PropertyFn> =
-    CallFluentFn<
+export type AddFnProperty<$FluentFn extends FnFluent<any>, $State extends State, $PropertyFn extends FnProperty> =
+    FnCallFluent<
       $FluentFn,
       {
-        Properties:
-          & $State['Properties']
+        properties:
+          & $State['properties']
           & {
             [_ in $PropertyFn['name']]: $PropertyFn
           }
         // Passthrough
-        Context: $State['Context']
-        Merges: $State['Merges']
+        context: $State['context']
+        merges: $State['merges']
       }
   >
 
-export type MaterializeProperties<$FluentFn extends FluentFn, $State extends State> = {
-  [$PropertyName in keyof $State['Properties']]: CallPropertyFn<
-    $State['Properties'][$PropertyName],
-    { FluentFn: $FluentFn; State: $State }
+export type MaterializeProperties<$FluentFn extends FnFluent, $State extends State> = {
+  [$PropertyName in keyof $State['properties']]: FnCallProperty<
+    $State['properties'][$PropertyName],
+    FnParametersProperty<$FluentFn, $State>
   >
 }
 
-export interface PropertyFn<$Name extends string = string, _$Context extends Context = Context> extends HKT.Fn {
+export interface FnProperty<$Name extends string = string> extends HKT.Fn {
   name: $Name
 }
 
-export type CallPropertyFn<$PropertyFn extends PropertyFn, $Params extends PropertyFnParams> = HKT.Call<
+export type FnCallProperty<$PropertyFn extends FnProperty, $Params extends FnParametersProperty> = HKT.Call<
   $PropertyFn,
   $Params
 >
 
-export type PropertyFnParams<$Context extends Context = Context> = {
-  FluentFn: FluentFn
-  State: State<$Context>
+export type FnParametersProperty<$FnFluent extends FnFluent<any> = FnFluent, $State extends State = State> = {
+  fnFluent: $FnFluent
+  state: $State
 }

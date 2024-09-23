@@ -63,7 +63,7 @@ export type InputBase<$Schema extends GlobalRegistry.SchemaUnion> =
         )
       // eslint-disable-next-line
       // @ts-ignore passes after generation
-      & WithInput<{ name: $Schema['name']; transport: 'http' }>
+      & WithInput<{ name: $Schema['name']; transport: { type: 'http'} }>
     )
   | (
       & (
@@ -79,5 +79,5 @@ export type InputBase<$Schema extends GlobalRegistry.SchemaUnion> =
         )
       // eslint-disable-next-line
       // @ts-ignore passes after generation
-      & WithInput<{ name: $Schema['name']; transport: 'memory' }>
+      & WithInput<{ name: $Schema['name']; transport: { type: 'memory'} }>
     )
