@@ -9,17 +9,31 @@ export interface ExtensionBuilderPassthrough extends Extension {
   return: this['params']['AdditionalMethods']
 }
 
-type TypeCallParams = { Config: unknown; Index: unknown; AdditionalMethods: unknown }
+type TypeCallParams = {
+  Config: unknown
+  Index: unknown
+  AdditionalMethods: unknown
+}
 
-export type ExtensionCallBuilderMerge<$Extension extends Extension, $Params extends TypeCallParams> =
+export type CallBuilderMerge<$Extension extends Extension, $Params extends TypeCallParams> =
   ($Extension & { params: $Params })['builderMerge']
 
-export interface Extension extends Base, Fn<TypeCallParams> {
+export type CallBuilderConfig<$Extension extends Extension, $Params extends TypeCallParams> =
+  ($Extension & { params: $Params })['builderConfig']
+
+export interface TypeHooks {
   /**
    * todo
    */
   builderMerge: {}
+  /**
+   * todo
+   */
+  builderConfig: never
+  builderChain: {}
 }
+
+export interface Extension extends Base, Fn<TypeCallParams>, TypeHooks {}
 
 interface Base {
   /**
@@ -55,10 +69,9 @@ interface Base {
   ) => unknown
 }
 
-type ToBase<$Extension extends Extension> = Omit<HKT.Remove<$Extension>, 'builderMerge'>
-
 export const createExtension = <$Extension extends Extension = Extension>(
-  extension: ToBase<$Extension>,
+  // type hooks
+  extension: Omit<HKT.Remove<$Extension>, keyof TypeHooks>,
 ): $Extension => {
   return extension as $Extension
 }

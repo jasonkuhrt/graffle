@@ -1,58 +1,42 @@
-import {
-  type BuilderConfig,
-  type BuilderRequestMethods,
-  createExtension,
-  type Extension,
-  type WithInput,
-} from '../../../entrypoints/main.js'
-import { type ConfigManager, getValueAtPath, type SuffixMethodsDeep } from '../../../lib/prelude.js'
-import { type Config, createConfig, type Input } from './config.js'
+import { type BuilderConfig, createExtension, type Extension, type WithInput } from '../../../entrypoints/main.js'
+import type { HKT } from '../../../entrypoints/utilities-for-generated.js'
+import { type ConfigManager, getValueAtPath } from '../../../lib/prelude.js'
 
-export const OrThrow = <const $Input extends Input>(input?: $Input) => {
-  const config = createConfig(input)
-
-  return createExtension<OrThrowExtension<createConfig<$Input>>>({
+export const OrThrow = () => {
+  return createExtension<OrThrowExtension>({
     name: `OrThrow`,
-    onBuilderGet: ({ client, property, path }) => {
-      if (!property.endsWith(config.suffix)) return
-
-      // todo redesign input to allow to force throw always
-      // todo pull pre-configured config from core
-      const orThrowifiedInput: WithInput = {
-        output: {
-          envelope: {
-            enabled: client.internal.config.output.envelope.enabled,
-            // @ts-expect-error
-            errors: { execution: false, other: false, schema: false },
-          },
-          // @ts-expect-error
-          errors: { execution: `throw`, other: `throw`, schema: `throw` },
-        },
-      }
-
-      return (...args: [...unknown[]]) => {
-        const redirectedPath = [...path, property.slice(0, config.suffix.length * -1)]
-        const clientReconfigured = client.with(orThrowifiedInput)
-        const value = getValueAtPath(clientReconfigured, redirectedPath)
-        const valueType = typeof value
-        if (valueType !== `function`) {
-          throw new Error(`Expected function at path ${redirectedPath.join(`.`)} but got ${valueType}`)
-        }
-        return (value as any)(...args)
-      }
-    },
+    //   onBuilderGet: ({ client, property, path }) => {
+    //     if (property === 'throw' && path.length === 0) {
+    //     // todo redesign input to allow to force throw always
+    //     // todo pull pre-configured config from core
+    //     const orThrowifiedInput: WithInput = {
+    //       output: {
+    //         envelope: {
+    //           enabled: client.internal.config.output.envelope.enabled,
+    //           // @ts-expect-error
+    //           errors: { execution: false, other: false, schema: false },
+    //         },
+    //         // @ts-expect-error
+    //         errors: { execution: `throw`, other: `throw`, schema: `throw` },
+    //       },
+    //     }
+    //     return (builder) => {
+    //       return builder(/*...*/)
+    //     }
+    //   },
   })
 }
 
-interface OrThrowExtension<$Input extends Config> extends Extension {
-  builderMerge: SuffixMethodsDeep<
-    $Input['suffix'],
-    BuilderRequestMethods<
-      // @ts-expect-error fixme
-      OrThrowifyConfig<this['params']['Config']>,
-      this['params']['Index']
-    >
-  >
+interface OrThrowExtension extends Extension {
+  builderChain: BuilderChain
+}
+
+interface BuilderChain extends HKT.Fn {
+  return: BuilderChain_<this['params']>
+}
+
+interface BuilderChain_<$Params extends { BuilderFn: HKT.Fn; BuilderParams: {} }> {
+  throw: () => HKT.Call<$Params['BuilderFn'], $Params['BuilderParams']>
 }
 
 type OrThrowifyConfig<$BuilderConfig extends BuilderConfig> = ConfigManager.Set<

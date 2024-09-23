@@ -452,17 +452,17 @@ export type SuffixKeyNames<$Suffix extends string, $Object extends object> = {
 }
 
 // dprint-ignore
-export type SuffixMethodsDeep<$Suffix extends string, $Object> = {
-  [
-    $Key in keyof $Object & string
-    as $Object[$Key] extends AnyFunction
-      ? `${$Key}${$Suffix}`
-      : $Key
-  ]:
-    IsPlainObject<$Object[$Key]> extends true
-      ? SuffixMethodsDeep<$Suffix, $Object[$Key]>
-      : $Object[$Key]
-}
+// export type SuffixMethodsDeep<$Suffix extends string, $Object> = {
+//   [
+//     $Key in keyof $Object & string
+//     as $Object[$Key] extends AnyFunction
+//       ? `${$Key}${$Suffix}`
+//       : $Key
+//   ]:
+//     IsPlainObject<$Object[$Key]> extends true
+//       ? SuffixMethodsDeep<$Suffix, $Object[$Key]>
+//       : $Object[$Key]
+// }
 
 type AnyFunction = (...args: any[]) => any
 
@@ -480,7 +480,7 @@ type _test = SimplifyDeep<
 
 export type UnionExpanded<$Union> = $Union
 
-export type mergeObjectArray<T extends [...object[]]> = T extends [infer $First, ...infer $Rest extends object[]]
+export type mergeObjectArray<T extends [...any[]]> = T extends [infer $First, ...infer $Rest extends any[]]
   ? $First & mergeObjectArray<$Rest>
   : {}
 

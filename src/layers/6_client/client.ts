@@ -1,6 +1,7 @@
 import { type ExecutionResult, GraphQLSchema, type TypedQueryDocumentNode } from 'graphql'
 import type { Anyware } from '../../lib/anyware/__.js'
 import type { Errors } from '../../lib/errors/__.js'
+import type { Fluent } from '../../lib/fluent/__.js'
 import { isOperationTypeName, operationTypeNameToRootTypeName, type RootTypeName } from '../../lib/graphql.js'
 import type { HKT } from '../../lib/hkt/__.js'
 import { mergeHeadersInit, mergeRequestInit } from '../../lib/http.js'
@@ -13,10 +14,8 @@ import type { DocumentObject, GraphQLObjectSelection } from '../3_SelectionSet/e
 import { Core } from '../5_core/__.js'
 import { type HookDefEncode } from '../5_core/core.js'
 import { type InterfaceRaw, type TransportHttp } from '../5_core/types.js'
-// import type { DocumentFn } from './document.js'
-import { createExtension, type Extension, type ExtensionCallBuilderMerge } from './extension.js'
+import { createExtension, type Extension } from './extension.js'
 import { handleOutput, type RawResolveOutputReturnRootType } from './handleOutput.js'
-// import type { BuilderRequestMethodsGeneratedRootTypes } from './RootTypeMethods.js'
 import { type Config } from './Settings/Config.js'
 import { type InputStatic } from './Settings/Input.js'
 import type { AddIncrementalInput, WithInput } from './Settings/inputIncrementable/inputIncrementable.js'
@@ -69,6 +68,7 @@ type RawParameters = [BaseInput_]
 //   options?: Omit<BaseInput, 'document'>,
 // ]
 //
+
 const resolveRawParameters = (parameters: RawParameters) => {
   // return parameters.length === 2
   // ? { document: parameters[0], ...parameters[1] }
@@ -77,36 +77,67 @@ const resolveRawParameters = (parameters: RawParameters) => {
   return parameters[0]
 }
 
-// dprint
-// export type BuilderRequestMethodsGenerated<$Config extends Config, $Index extends Schema.Index> =
-// BuilderRequestMethodsGeneratedStatic<$Config, $Index>
-// & BuilderRequestMethodsGeneratedRootTypes<$Config, $Index>
+type Client = Fluent.Materialize<
+  Fluent.AddMany<
+    Fluent.Empty,
+    [
+      AnywareFn,
+      RetryFn,
+      WithFn,
+      UseFn,
+      RequestMethods,
+    ]
+  >
+>
 
-// export type BuilderRequestMethodsGeneratedStatic<$Config extends Config, $Index extends Schema.Index> = {
-// document: DocumentFn<$Config, $Index>
-// }
+interface RequestMethods extends Fluent.MergeFn {
+  // return: BuilderRequestMethods<this['params']>
+  return: { x: { y: 1 } }
+}
 
-// dprint-ignore
-export type Client<$MaybeIndex extends Schema.Index | null, $Config extends Config, $AdditionalMethods = unknown> =
-  & $AdditionalMethods
-  & BuilderRequestMethods<$Config, $MaybeIndex>
-  & {
-      internal: {
-        config: $Config
-      }
-      // eslint-disable-next-line
-      // @ts-ignore passes after generation
-      with: <$Input extends WithInput<$Config>>(input: $Input) =>
-        // eslint-disable-next-line
-        // @ts-ignore passes after generation
-        Client<$MaybeIndex, AddIncrementalInput<$Config, $Input>>
-      use: <$Extension extends Extension>(extension: $Extension) =>
-        Client<$MaybeIndex, $Config, $AdditionalMethods & ExtensionCallBuilderMerge<$Extension, { Index:$MaybeIndex, Config:$Config, AdditionalMethods:$AdditionalMethods }>> 
-      anyware: (anyware: Anyware.Extension2<Core.Core<$Config>>) =>
-        Client<$MaybeIndex, $Config, $AdditionalMethods> 
-      retry: (extension: Anyware.Extension2<Core.Core, { retrying: true }>) =>
-        Client<$MaybeIndex, $Config>
-    }
+interface AnywareFn extends Fluent.PropertyFn<`anyware`> {
+  return:
+    /**
+     * TODO Anyware Docs.
+     */
+    (
+      anyware: Anyware.Extension2<Core.Core<this['params']['Config']>>,
+    ) => Fluent.IncrementNothing<this['params']>
+}
+
+interface UseFn extends Fluent.PropertyFn<`use`> {
+  return:
+    /**
+     * TODO Use Docs.
+     */
+    <$Extension extends Extension>(extension?: $Extension) => Fluent.IncrementUsingMerge<this['params'], {
+      // call extension to allow it to add methods
+      // methods: $Extension['methods']
+    }>
+}
+
+interface RetryFn extends Fluent.PropertyFn<`retry`> {
+  return:
+    /**
+     * TODO Retry Docs.
+     */
+    (
+      extension: Anyware.Extension2<Core.Core, { retrying: true }>,
+    ) => Fluent.IncrementNothing<this['params']>
+}
+
+interface WithFn extends Fluent.PropertyFn<`with`> {
+  return:
+    /**
+     * TODO With Docs.
+     */
+    <$Input extends WithInput<this['params']['Config']>>(
+      input: $Input,
+    ) => Fluent.IncrementWthNewConfig<
+      this['params'],
+      AddIncrementalInput<this['params']['Config'], $Input>
+    >
+}
 
 // dprint-ignore
 export type BuilderRequestMethods<$Config extends Config, $MaybeIndex extends null | Schema.Index >=
@@ -406,3 +437,13 @@ const createWithState = (
 // const updateContextConfig = <$Context extends Context>(context: $Context, config: Config): $Context => {
 //   return { ...context, config: { ...context.config, ...config } }
 // }
+
+// demo, delete me
+
+declare const client: Client
+
+client.anyware
+client.retry
+client.with({}).anyware(({ encode }) => encode()).with
+client.use
+client.x.y
