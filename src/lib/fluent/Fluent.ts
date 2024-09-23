@@ -9,13 +9,13 @@ export * from './augmentors/property.js'
 export interface State {
   Merges: [...MergeFn[]]
   Properties: Record<string, PropertyFn>
-  Config: object
+  Context: object
 }
 
 interface StateInitial {
   Merges: []
   Properties: {}
-  Config: {}
+  Context: {}
 }
 
 export interface FluentFn<$StateCurrent extends State = StateInitial> extends HKT.Fn {
@@ -26,7 +26,7 @@ export interface FluentFn<$StateCurrent extends State = StateInitial> extends HK
 
 export type CallFluentFn<$FluentFn extends FluentFn, $State extends State> = HKT.Call<$FluentFn, $State>
 
-export type Empty = FluentFn
+export type Create<$Context> = FluentFn<StateInitial & { Context: $Context }>
 
 // dprint-ignore
 export type Materialize<$FluentFn extends FluentFn<any>> =
@@ -64,7 +64,7 @@ export type IncrementUsingMerge<
   $Params extends PropertyFnParams,
   $NewState extends {
     Properties?: State['Properties']
-    Config?: State['Config']
+    Context?: State['Context']
   },
 > = Materialize<
   CallFluentFn<$Params['FluentFn'], $Params['State'] & $NewState>
@@ -72,12 +72,12 @@ export type IncrementUsingMerge<
 
 export type IncrementWthNewConfig<
   $Params extends PropertyFnParams,
-  $NewConfig extends State['Config'],
+  $NewContext extends State['Context'],
 > = Materialize<
   CallFluentFn<
     $Params['FluentFn'],
     {
-      Config: $NewConfig
+      Context: $NewContext
       Properties: $Params['State']['Properties']
       Merges: $Params['State']['Merges']
     }

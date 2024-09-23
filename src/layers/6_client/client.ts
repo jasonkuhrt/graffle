@@ -77,35 +77,50 @@ const resolveRawParameters = (parameters: RawParameters) => {
   return parameters[0]
 }
 
-type Client = Fluent.Materialize<
+type ClientContext = {
+  Config: Config
+  SchemaIndex: Schema.Index | null
+}
+
+export type Client<$Context extends ClientContext> = Fluent.Materialize<
   Fluent.AddMany<
-    Fluent.Empty,
+    Fluent.Create<$Context>,
     [
       AnywareFn,
       RetryFn,
       WithFn,
       UseFn,
-      RequestMethods,
+      RequestMethodsFn,
+      InternalFn,
     ]
   >
 >
 
-interface RequestMethods extends Fluent.MergeFn {
-  // return: BuilderRequestMethods<this['params']>
-  return: { x: { y: 1 } }
+export interface InternalFn extends Fluent.MergeFn {
+  return: Internal<this['params']>
 }
 
-interface AnywareFn extends Fluent.PropertyFn<`anyware`> {
+export type Internal<$Params extends ClientContext> = {
+  _: {
+    context: $Params
+  }
+}
+
+export interface RequestMethodsFn extends Fluent.MergeFn {
+  return: BuilderRequestMethods<this['params']>
+}
+
+export interface AnywareFn extends Fluent.PropertyFn<`anyware`> {
   return:
     /**
      * TODO Anyware Docs.
      */
     (
-      anyware: Anyware.Extension2<Core.Core<this['params']['Config']>>,
+      anyware: Anyware.Extension2<Core.Core<this['params']['Context']['Config']>>,
     ) => Fluent.IncrementNothing<this['params']>
 }
 
-interface UseFn extends Fluent.PropertyFn<`use`> {
+export interface UseFn extends Fluent.PropertyFn<`use`> {
   return:
     /**
      * TODO Use Docs.
@@ -116,7 +131,7 @@ interface UseFn extends Fluent.PropertyFn<`use`> {
     }>
 }
 
-interface RetryFn extends Fluent.PropertyFn<`retry`> {
+export interface RetryFn extends Fluent.PropertyFn<`retry`> {
   return:
     /**
      * TODO Retry Docs.
@@ -126,30 +141,30 @@ interface RetryFn extends Fluent.PropertyFn<`retry`> {
     ) => Fluent.IncrementNothing<this['params']>
 }
 
-interface WithFn extends Fluent.PropertyFn<`with`> {
+export interface WithFn extends Fluent.PropertyFn<`with`> {
   return:
     /**
      * TODO With Docs.
      */
-    <$Input extends WithInput<this['params']['Config']>>(
+    <$Input extends WithInput<this['params']['Context']['Config']>>(
       input: $Input,
     ) => Fluent.IncrementWthNewConfig<
       this['params'],
-      AddIncrementalInput<this['params']['Config'], $Input>
+      AddIncrementalInput<this['params']['Context']['Config'], $Input>
     >
 }
 
 // dprint-ignore
-export type BuilderRequestMethods<$Config extends Config, $MaybeIndex extends null | Schema.Index >=
-  & BuilderRequestMethodsStatic<$Config>
+export type BuilderRequestMethods<$Context extends ClientContext>=
+  & BuilderRequestMethodsStatic<$Context['Config']>
   & (
-    $MaybeIndex extends null
+    $Context['SchemaIndex'] extends null
       ? {}
       :
         (
-          & HKT.Call<GlobalRegistry.GetOrDefault<$Config['name']>['interfaces']['Root'], { Config: $Config }>
+          & HKT.Call<GlobalRegistry.GetOrDefault<$Context['Config']['name']>['interfaces']['Root'], $Context>
           & {
-              document: HKT.Call<GlobalRegistry.GetOrDefault<$Config['name']>['interfaces']['Document'], { Config: $Config }>
+              document: HKT.Call<GlobalRegistry.GetOrDefault<$Context['Config']['name']>['interfaces']['Document'], $Context>
             }
         )
   )
@@ -164,18 +179,14 @@ export type BuilderRequestMethodsStatic<$Config extends Config> = {
 
 // dprint-ignore
 type Create = <$Input extends InputStatic<GlobalRegistry.SchemaUnion>>(input: $Input) =>
-  Client<
-    // eslint-disable-next-line
-    // @ts-ignore passes after generation
-    $Input['schemaIndex'] extends Schema.Index
-       // v-- TypeScript does not understand this type satisfies the Index constraint.
-       // v   It does after generation.
+  // eslint-disable-next-line
+  // @ts-ignore fixme
+  Client<{
+    Config: InputToConfig<$Input>,
+    SchemaIndex: $Input['schemaIndex'] extends Schema.Index
       ? GlobalRegistry.GetSchemaIndexOrDefault<$Input['name']>
-      : null,
-    // eslint-disable-next-line
-    // @ts-ignore fixme
-    InputToConfig<$Input>
-  >
+      : null
+  }>
 
 export const create: Create = (input) => {
   const initialState = {
@@ -437,13 +448,3 @@ const createWithState = (
 // const updateContextConfig = <$Context extends Context>(context: $Context, config: Config): $Context => {
 //   return { ...context, config: { ...context.config, ...config } }
 // }
-
-// demo, delete me
-
-declare const client: Client
-
-client.anyware
-client.retry
-client.with({}).anyware(({ encode }) => encode()).with
-client.use
-client.x.y

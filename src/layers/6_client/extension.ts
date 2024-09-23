@@ -64,7 +64,7 @@ interface Base {
       context: Context
       path: string[]
       property: string
-      client: Client<null, Config>
+      client: Client<{ SchemaIndex: null; Config: Config }>
     },
   ) => unknown
 }

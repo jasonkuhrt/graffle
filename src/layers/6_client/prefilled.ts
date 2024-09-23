@@ -39,7 +39,11 @@ export type CreatePrefilled =
 	) =>
 		// eslint-disable-next-line
 		// @ts-ignore passes after generation
-		Client<GlobalRegistry.GetSchemaIndexOrDefault<$Name>, InputToConfig<$Input & { name: $Name }>>
+ 		Client<{
+			// @ts-expect-error fixme - TS cannot figure out that name input meets constraint
+			Config: InputToConfig<$Input & { name: $Name }>,
+			SchemaIndex: GlobalRegistry.GetSchemaIndexOrDefault<$Name>
+		}>
 
 // dprint-ignore
 export type InputPrefilled<$Schema extends GlobalRegistry.SchemaUnion> =

@@ -6,6 +6,10 @@ export interface MergeFn extends HKT.Fn {
   Kind: 'MergeFn'
 }
 
+export type MergeFnParams = {
+  Context: State['Context']
+}
+
 // dprint-ignore
 export type AddMergeFn<$FluentFn extends FluentFn<any>, $State extends State, $MergeFn extends MergeFn> =
   CallFluentFn<
@@ -13,13 +17,13 @@ export type AddMergeFn<$FluentFn extends FluentFn<any>, $State extends State, $M
     {
       Merges: [...$State['Merges'], $MergeFn]
       // Passthrough
-      Config: $State['Config']
+      Context: $State['Context']
       Properties: $State['Properties']
     }
   >
 
-export type MaterializeMerges<$Merges extends [...MergeFn[]], $Config extends State['Config']> = mergeObjectArray<
+export type MaterializeMerges<$Merges extends [...MergeFn[]], $State extends State> = mergeObjectArray<
   {
-    [$Index in keyof $Merges]: HKT.Call<$Merges[$Index], { Config: $Config }>
+    [$Index in keyof $Merges]: HKT.Call<$Merges[$Index], $State['Context']>
   }
 >

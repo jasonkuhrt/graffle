@@ -12,7 +12,7 @@ export type AddPropertyFn<$FluentFn extends FluentFn<any>, $State extends State,
             [_ in $PropertyFn['name']]: $PropertyFn
           }
         // Passthrough
-        Config: $State['Config']
+        Context: $State['Context']
         Merges: $State['Merges']
       }
   >
