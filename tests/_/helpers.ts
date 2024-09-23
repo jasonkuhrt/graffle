@@ -1,6 +1,7 @@
 import type { Mock } from 'vitest'
 import { test as testBase, vi } from 'vitest'
 import { Graffle } from '../../src/entrypoints/main.js'
+import type { Config } from '../../src/entrypoints/utilities-for-generated.js'
 import type { Client } from '../../src/layers/6_client/client.js'
 import { CONTENT_TYPE_REC } from '../../src/lib/graphqlHTTP.js'
 
@@ -9,7 +10,7 @@ export const createResponse = (body: object) =>
 
 interface Fixtures {
   fetch: Mock<(request: Request) => Promise<Response>>
-  graffle: Client<any>
+  graffle: Client<{ Config: Config; SchemaIndex: null }>
 }
 
 export const test = testBase.extend<Fixtures>({
@@ -24,6 +25,7 @@ export const test = testBase.extend<Fixtures>({
   },
   graffle: async ({ fetch: _ }, use) => {
     const graffle = Graffle.create({ schema: new URL(`https://foo.io/api/graphql`) })
+    // @ts-expect-error fixme
     await use(graffle)
   },
 })

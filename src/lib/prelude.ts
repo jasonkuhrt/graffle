@@ -1,6 +1,5 @@
 import type { IsUnknown, Simplify } from 'type-fest'
 import type { ConditionalSimplify, ConditionalSimplifyDeep } from 'type-fest/source/conditional-simplify.js'
-import type { IsPlainObject } from 'type-fest/source/internal/object.js'
 
 /* eslint-disable */
 export type RemoveIndex<T> = {
@@ -450,33 +449,6 @@ export const getValueAtPath = <T, Path extends readonly string[]>(
 export type SuffixKeyNames<$Suffix extends string, $Object extends object> = {
   [$Key in keyof $Object & string as `${$Key}${$Suffix}`]: $Object[$Key]
 }
-
-// dprint-ignore
-// export type SuffixMethodsDeep<$Suffix extends string, $Object> = {
-//   [
-//     $Key in keyof $Object & string
-//     as $Object[$Key] extends AnyFunction
-//       ? `${$Key}${$Suffix}`
-//       : $Key
-//   ]:
-//     IsPlainObject<$Object[$Key]> extends true
-//       ? SuffixMethodsDeep<$Suffix, $Object[$Key]>
-//       : $Object[$Key]
-// }
-
-type AnyFunction = (...args: any[]) => any
-
-type _test = SimplifyDeep<
-  SuffixMethodsDeep<'Foo', {
-    a: () => void
-    b: {
-      c: () => void
-      d: {
-        e: () => void
-      }
-    }
-  }>
->
 
 export type UnionExpanded<$Union> = $Union
 

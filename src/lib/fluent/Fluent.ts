@@ -6,10 +6,10 @@ import type { AddPropertyFn, MaterializeProperties, PropertyFn, PropertyFnParams
 export * from './augmentors/merge.js'
 export * from './augmentors/property.js'
 
-export interface State {
+export interface State<$Context extends object = object> {
   Merges: [...MergeFn[]]
   Properties: Record<string, PropertyFn>
-  Context: object
+  Context: $Context
 }
 
 interface StateInitial {
@@ -70,7 +70,7 @@ export type IncrementUsingMerge<
   CallFluentFn<$Params['FluentFn'], $Params['State'] & $NewState>
 >
 
-export type IncrementWthNewConfig<
+export type IncrementWthNewContext<
   $Params extends PropertyFnParams,
   $NewContext extends State['Context'],
 > = Materialize<

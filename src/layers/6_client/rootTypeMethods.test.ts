@@ -2,9 +2,8 @@ import { describe, expect, test } from 'vitest'
 import { db } from '../../../tests/_/db.js'
 import { Graffle } from '../../../tests/_/schema/generated/__.js'
 import * as Schema from '../../../tests/_/schema/schema.js'
-import { OrThrow } from '../7_extensions/OrThrow/OrThrow.js'
 
-const graffle = Graffle.create({ schema: Schema.schema }).use(OrThrow())
+const graffle = Graffle.create({ schema: Schema.schema })
 
 // dprint-ignore
 describe(`query`, () => {
@@ -36,13 +35,5 @@ describe(`query`, () => {
   })
   test(`interface instance not found`, async () => {
     await expect(graffle.query.interface({ ___on_Object2ImplementingInterface: { boolean: true } })).resolves.toEqual({})
-  })
-  describe(`orThrow`, () => {
-    test(`without error`, async () => {
-      await expect(graffle.query.objectWithArgsOrThrow({ $: { id: `x` }, id: true })).resolves.toEqual({ id: `x`, __typename: `Object1` })
-    })
-    test(`with error`, async () => {
-      await expect(graffle.query.errorOrThrow()).rejects.toMatchObject(db.errorAggregate)
-    })
   })
 })

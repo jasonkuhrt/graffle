@@ -90,13 +90,14 @@ export type Client<$Context extends ClientContext> = Fluent.Materialize<
       RetryFn,
       WithFn,
       UseFn,
-      RequestMethodsFn,
       InternalFn,
+      RequestMethodsFn,
     ]
   >
 >
 
 export interface InternalFn extends Fluent.MergeFn {
+  // @ts-expect-error untyped params
   return: Internal<this['params']>
 }
 
@@ -107,6 +108,7 @@ export type Internal<$Params extends ClientContext> = {
 }
 
 export interface RequestMethodsFn extends Fluent.MergeFn {
+  // @ts-expect-error untyped params
   return: BuilderRequestMethods<this['params']>
 }
 
@@ -116,7 +118,9 @@ export interface AnywareFn extends Fluent.PropertyFn<`anyware`> {
      * TODO Anyware Docs.
      */
     (
-      anyware: Anyware.Extension2<Core.Core<this['params']['Context']['Config']>>,
+      // @ts-expect-error untyped params
+      anyware: Anyware.Extension2<Core.Core<this['params']['State']['Context']['Config']>>,
+      // @ts-expect-error untyped params
     ) => Fluent.IncrementNothing<this['params']>
 }
 
@@ -125,6 +129,7 @@ export interface UseFn extends Fluent.PropertyFn<`use`> {
     /**
      * TODO Use Docs.
      */
+    // @ts-expect-error untyped params
     <$Extension extends Extension>(extension?: $Extension) => Fluent.IncrementUsingMerge<this['params'], {
       // call extension to allow it to add methods
       // methods: $Extension['methods']
@@ -138,6 +143,7 @@ export interface RetryFn extends Fluent.PropertyFn<`retry`> {
      */
     (
       extension: Anyware.Extension2<Core.Core, { retrying: true }>,
+      // @ts-expect-error untyped params
     ) => Fluent.IncrementNothing<this['params']>
 }
 
@@ -146,13 +152,43 @@ export interface WithFn extends Fluent.PropertyFn<`with`> {
     /**
      * TODO With Docs.
      */
-    <$Input extends WithInput<this['params']['Context']['Config']>>(
+    // @ts-expect-error untyped params
+    <$Input extends WithInput<$Params['State']['Context']['Config']>>(
       input: $Input,
-    ) => Fluent.IncrementWthNewConfig<
+    ) => IncrementWthNewConfig<
+      // @ts-expect-error untyped params
       this['params'],
-      AddIncrementalInput<this['params']['Context']['Config'], $Input>
+      // @ts-expect-error untyped params
+      AddIncrementalInput<this['params']['State']['Context']['Config'], $Input>
     >
 }
+
+export type IncrementWthNewConfig<
+  $Params extends Fluent.PropertyFnParams<ClientContext>,
+  $NewConfig extends ClientContext['Config'],
+> = Fluent.IncrementWthNewContext<
+  $Params,
+  {
+    SchemaIndex: $Params['State']['Context']['SchemaIndex']
+    Config: $NewConfig
+  }
+>
+
+// export interface With<$Params extends Fluent.PropertyFnParams<ClientContext>> {
+//   return:
+//     /**
+//      * TODO With Docs.
+//      */
+//     <$Input extends WithInput<$Params['State']['Context']['Config']>>(
+//       input: $Input,
+//     ) => Fluent.IncrementWthNewContext<
+//       $Params,
+//       {
+//         SchemaIndex: $Params['State']['Context']['SchemaIndex']
+//         Config: AddIncrementalInput<$Params['State']['Context']['Config'], $Input>
+//       }
+//     >
+// }
 
 // dprint-ignore
 export type BuilderRequestMethods<$Context extends ClientContext>=

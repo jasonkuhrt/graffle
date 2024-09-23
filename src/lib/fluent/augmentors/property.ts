@@ -33,7 +33,7 @@ export type CallPropertyFn<$PropertyFn extends PropertyFn, $Params extends Prope
   $Params
 >
 
-export type PropertyFnParams = {
+export type PropertyFnParams<$Context extends object = object> = {
   FluentFn: FluentFn
-  State: State
+  State: State<$Context>
 }
