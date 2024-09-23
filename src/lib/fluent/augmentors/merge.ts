@@ -1,14 +1,12 @@
 import type { HKT } from '../../hkt/__.js'
 import type { mergeObjectArray } from '../../prelude.js'
-import type { CallFluentFn, FluentFn, State } from '../Fluent.js'
+import type { CallFluentFn, Context, FluentFn, State } from '../Fluent.js'
 
-export interface MergeFn extends HKT.Fn {
+export interface MergeFn<_$Context extends Context = Context> extends HKT.Fn {
   Kind: 'MergeFn'
 }
 
-export type MergeFnParams = {
-  Context: State['Context']
-}
+export type MergeFnParams<$Context extends Context = Context> = $Context
 
 // dprint-ignore
 export type AddMergeFn<$FluentFn extends FluentFn<any>, $State extends State, $MergeFn extends MergeFn> =

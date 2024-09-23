@@ -5,7 +5,6 @@ bench.baseline(() => null)
 
 bench(`query.countries`, async () => {
   const atlas = Atlas.create()
-  atlas._.context.Config.name
   await atlas.query.countries({
     $: { filter: { name: { in: [`Canada`, `Germany`, `Japan`] } } },
     name: true,

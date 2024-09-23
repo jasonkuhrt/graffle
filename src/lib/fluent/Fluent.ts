@@ -6,7 +6,9 @@ import type { AddPropertyFn, MaterializeProperties, PropertyFn, PropertyFnParams
 export * from './augmentors/merge.js'
 export * from './augmentors/property.js'
 
-export interface State<$Context extends object = object> {
+export type Context = object
+
+export interface State<$Context extends Context = Context> {
   Merges: [...MergeFn[]]
   Properties: Record<string, PropertyFn>
   Context: $Context
