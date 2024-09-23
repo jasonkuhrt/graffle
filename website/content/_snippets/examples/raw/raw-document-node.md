@@ -3,13 +3,13 @@
 
 <!-- dprint-ignore-start -->
 ```ts twoslash
-import { Opentelemetry, OrThrow } from 'graffle/extensions'
+import { Opentelemetry, Throws } from 'graffle/extensions'
 import { gql, Graffle } from 'graffle'
 
 const graffle = Graffle.create({
   schema: `https://countries.trevorblades.com/graphql`,
 })
-  .use(OrThrow())
+  .use(Throws())
   .use(Opentelemetry())
 
 const data = await graffle.raw({
