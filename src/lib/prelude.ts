@@ -468,8 +468,9 @@ export type IsEqual<A, B> = A extends B ? B extends A ? true : false : false
 
 export type AssertIsEqual<A, B> = IsEqual<A, B> extends true ? true : never
 
-export const AssertIsEqual = <A, B>(..._: AssertIsEqual<A, B> extends never ? [failure: `Types are not equal`] : []) =>
-  undefined
+export const AssertIsEqual = <A, B>(
+  ..._: AssertIsEqual<A, B> extends never ? [reason: { message: `Type B not equal to A`; A: A }] : []
+) => undefined
 
 export type IfExtendsElse<$Type, $Extends, $Else> = $Type extends $Extends ? $Type : $Else
 
@@ -485,17 +486,19 @@ export type HasOptionalProperty<$Object extends object, $Property extends keyof 
   $Object[$Property] ? false
   : true
 
+export type Push<T extends any[], V> = [...T, V]
+
 // dprint-ignore
-export type IsHasMultipleKeys<$Type> =
-  keyof $Type extends never
-    ? false
-    : keyof $Type extends infer K
-      ? K extends string
-        ? keyof { [P in keyof $Type]: 1 } extends `${string}${string}`
-          ? true
-          : false
-        : false
-      : false
+export type UnionToTuple<$Union, L = LastOf<$Union>, N = [$Union] extends [never] ? true : false> =
+  true extends N
+    ? []
+    : Push<UnionToTuple<Exclude<$Union, L>>, L>
+
+export type IsTupleMultiple<T> = T extends [unknown, unknown, ...unknown[]] ? true : false
+
+// export type CountKeys<T> = keyof T extends never ? 0 : UnionToTuple<keyof T>['length']
+// export type IsMultipleKeys<T> = IsMultiple<CountKeys<T>>
+// export type IsMultiple<T> = T extends 0 ? false : T extends 1 ? false : true
 
 // dprint-ignore
 export type FirstNonUnknownNever<T extends any[]> = 

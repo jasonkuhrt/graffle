@@ -1,4 +1,4 @@
-import type { IsUnknown } from 'type-fest'
+import type { UnionToTuple } from 'type-fest'
 import {
   type OperationType,
   operationTypeNameToRootTypeName,
@@ -6,7 +6,7 @@ import {
   type RootTypeNameMutation,
   type RootTypeNameQuery,
 } from '../../lib/graphql.js'
-import type { All, FirstNonUnknownNever, IsHasMultipleKeys, IsKeyInObjectOptional, Values } from '../../lib/prelude.js'
+import type { FirstNonUnknownNever, IsKeyInObjectOptional, IsTupleMultiple, Values } from '../../lib/prelude.js'
 import type { Schema } from '../1_Schema/__.js'
 import { SelectionSet } from '../3_SelectionSet/__.js'
 import type { Context, DocumentObject } from '../3_SelectionSet/encode.js'
@@ -27,12 +27,12 @@ interface SomeDocument {
 
 // --- Utility Types To Work With Documents ---
 
-// dprint-ignore
-type IsHasMultipleOperations<$Document extends SomeDocument> =
-  All<[
-    IsHasMultipleKeys<$Document[OperationType.Query]>,
-    IsHasMultipleKeys<$Document[OperationType.Mutation]>,
-  ]>
+// // dprint-ignore
+// type IsHasMultipleOperations<$Document extends SomeDocument> =
+//   All<[
+//     IsHasMultipleKeys<$Document[OperationType.Query]>,
+//     IsHasMultipleKeys<$Document[OperationType.Mutation]>,
+//   ]>
 
 // dprint-ignore
 type GetOperationNames<$Document extends SomeDocument> = Values<
@@ -59,24 +59,29 @@ type GetOperation<$Document extends SomeDocument, $Name extends string> =
 // -- Interface --
 //
 // dprint-ignore
-export type DocumentRunner<$Config extends Config, $Index extends Schema.Index, $Document extends SomeDocument> = {
+export type DocumentRunner<
+  $$Config extends Config,
+  $$Index extends Schema.Index,
+  $$Document extends SomeDocument,
+  $$Name extends GetOperationNames<$$Document> = GetOperationNames<$$Document>
+> = {
   run: <
-    $Name extends GetOperationNames<$Document>,
-    $Params extends (IsHasMultipleOperations<$Document> extends true ? [name: $Name] : ([] | [name: $Name | undefined])),
+    $Name extends $$Name,
+    $Params extends (IsTupleMultiple<UnionToTuple<$$Name>> extends true ? [name: $Name] : ([] | [name: $Name | undefined])),
   >(...params: $Params) =>
     Promise<
       ResolveOutputReturnRootType<
-        $Config,
-        $Index,
+        $$Config,
+        $$Index,
         ResultSet.Root<
           AddTypenameToSelectedRootTypeResultFields<
-            $Config,
-            $Index,
-            GetRootTypeNameOfOperation<$Document, $Name>,
-            GetOperation<$Document, $Name>
+            $$Config,
+            $$Index,
+            GetRootTypeNameOfOperation<$$Document, $Name>,
+            GetOperation<$$Document, $Name>
           >,
-          $Index,
-          GetRootTypeNameOfOperation<$Document, $Name>
+          $$Index,
+          GetRootTypeNameOfOperation<$$Document, $Name>
         >
       >
     >

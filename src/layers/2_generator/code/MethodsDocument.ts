@@ -15,8 +15,8 @@ export const { generate: generateMethodsDocument, moduleName: moduleNameMethodsD
 
     code.push(
       `interface DocumentInput {`,
-      hasQuery(config.typeMapByKind) ? `query: Record<string, SelectionSets.Query>` : null,
-      hasMutation(config.typeMapByKind) ? `mutation: Record<string, SelectionSets.Mutation>` : null,
+      hasQuery(config.typeMapByKind) ? `query?: Record<string, SelectionSets.Query>` : null,
+      hasMutation(config.typeMapByKind) ? `mutation?: Record<string, SelectionSets.Mutation>` : null,
       `}`,
     )
     code.push(``)
