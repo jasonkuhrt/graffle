@@ -1,13 +1,11 @@
-import { type ExecutionResult, GraphQLSchema, type TypedQueryDocumentNode } from 'graphql'
+import { type ExecutionResult, GraphQLSchema } from 'graphql'
 import type { Anyware } from '../../lib/anyware/__.js'
 import type { Errors } from '../../lib/errors/__.js'
 import type { Fluent } from '../../lib/fluent/__.js'
-import type { FnProperty, ToFnPropertyObject } from '../../lib/fluent/Fluent.js'
 import { type RootTypeName, RootTypeNameToOperationName } from '../../lib/graphql.js'
-import type { HKT } from '../../lib/hkt/__.js'
 import { mergeHeadersInit, mergeRequestInit } from '../../lib/http.js'
-import { proxyGet, type SimplifyExceptError } from '../../lib/prelude.js'
-import type { BaseInput, BaseInput_, TypedDocumentString } from '../0_functions/types.js'
+import { proxyGet } from '../../lib/prelude.js'
+import type { BaseInput_ } from '../0_functions/types.js'
 import { Schema } from '../1_Schema/__.js'
 import { readMaybeThunk } from '../1_Schema/core/helpers.js'
 import type { DocumentObject, GraphQLObjectSelection } from '../2_SelectionSet/print.js'
@@ -16,10 +14,17 @@ import { Core } from '../5_core/__.js'
 import { type HookDefEncode } from '../5_core/core.js'
 import { type InterfaceRaw, type TransportHttp } from '../5_core/types.js'
 import { createExtension, type Extension } from './extension.js'
-import { handleOutput, type RawResolveOutputReturnRootType } from './handleOutput.js'
+import type { ClientContext, FnParametersProperty } from './fluent.js'
+import { handleOutput } from './handleOutput.js'
+import type { FnAnyware } from './properties/anyware.js'
+import type { FnInternal } from './properties/internal.js'
+import type { FnRequestMethods } from './properties/requestMethods.js'
+import type { FnRetry } from './properties/retry.js'
+import type { UseFn } from './properties/use.js'
+import type { FnWith } from './properties/with.js'
 import { type Config } from './Settings/Config.js'
 import { type InputStatic } from './Settings/Input.js'
-import type { AddIncrementalInput, WithInput } from './Settings/inputIncrementable/inputIncrementable.js'
+import type { WithInput } from './Settings/inputIncrementable/inputIncrementable.js'
 import { type InputToConfig, inputToConfig } from './Settings/InputToConfig.js'
 
 /**
@@ -49,8 +54,10 @@ export type GraffleExecutionResultVar<$Config extends Config = Config> =
   )
   | ErrorsOther
 
-export type SelectionSetOrIndicator = 0 | 1 | boolean | object
+// todo get type from selectionset module
+export type SelectionSetOrIndicator = boolean | object
 
+// todo get type from selectionset module
 export type SelectionSetOrArgs = object
 
 export interface Context {
@@ -78,19 +85,6 @@ const resolveRawParameters = (parameters: RawParameters) => {
   return parameters[0]
 }
 
-export type ClientContext = {
-  config: Config
-  schemaIndex: Schema.Index | null
-}
-
-export type FnClient<$Context extends ClientContext = ClientContext> = Fluent.Create<$Context>
-
-export type FnClientState = Fluent.State<ClientContext>
-
-export type FnParametersProperty = Fluent.FnParametersProperty<FnClient, FnClientState>
-
-export type FnParametersMerge = Fluent.ParametersFnMerge<FnClientState['context']>
-
 export type Client<$Context extends ClientContext> = Fluent.Materialize<
   Fluent.AddMany<
     Fluent.Create<$Context>,
@@ -105,82 +99,6 @@ export type Client<$Context extends ClientContext> = Fluent.Materialize<
   >
 >
 
-export interface UseFn extends Fluent.FnProperty<`use`> {
-  // @ts-expect-error untyped params
-  return: Use<this['params']>
-}
-
-export interface FnRetry extends Fluent.FnProperty<`retry`> {
-  // @ts-expect-error untyped params
-  return: Retry<this['params']>
-}
-
-export interface FnInternal extends Fluent.FnMerge {
-  // @ts-expect-error untyped params
-  return: Internal<this['params']>
-}
-
-export interface FnRequestMethods extends Fluent.FnMerge {
-  // @ts-expect-error untyped params
-  return: BuilderRequestMethods<this['params']>
-}
-
-export interface FnWith extends Fluent.FnProperty<`with`> {
-  // @ts-expect-error untyped params
-  return: With<this['params']>
-}
-
-export interface FnAnyware extends Fluent.FnProperty<`anyware`> {
-  // @ts-expect-error untyped params
-  return: Anyware_<this['params']>
-}
-
-/**
- * TODO
- */
-export type Internal<$Args extends FnParametersMerge> = {
-  _: {
-    context: $Args
-  }
-}
-
-/**
- * TODO Anyware Docs.
- */
-export interface Anyware_<$Args extends FnParametersProperty> {
-  (
-    anyware: Anyware.Extension2<Core.Core<$Args['state']['context']['config']>>,
-  ): Fluent.IncrementNothing<$Args>
-}
-
-/**
- * TODO Use Docs.
- */
-export interface Use<$Args extends FnParametersProperty> {
-  <$Extension extends Extension>(extension?: $Extension): Fluent.IncrementUsingMerge<$Args, {
-    properties: $Extension['property'] extends FnProperty ? ToFnPropertyObject<$Extension['property']> : {}
-  }>
-}
-
-/**
- * TODO Retry Docs.
- */
-export interface Retry<$Args extends FnParametersProperty> {
-  (extension: Anyware.Extension2<Core.Core, { retrying: true }>): Fluent.IncrementNothing<$Args>
-}
-
-/**
- * TODO With Docs.
- */
-export interface With<$Args extends FnParametersProperty> {
-  <$Input extends WithInput<$Args['state']['context']['config']>>(
-    input: $Input,
-    // todo fixme
-    // eslint-disable-next-line
-    // @ts-ignore Passes after generation
-  ): IncrementWthNewConfig<$Args, AddIncrementalInput<$Args['state']['context']['config'], $Input>>
-}
-
 export type IncrementWthNewConfig<
   $Parameters extends FnParametersProperty,
   $ConfigNew extends ClientContext['config'],
@@ -191,33 +109,6 @@ export type IncrementWthNewConfig<
     config: $ConfigNew
   }
 >
-
-// dprint-ignore
-export type BuilderRequestMethods<$Context extends ClientContext>=
-  & BuilderRequestMethodsStatic<$Context['config']>
-  & (
-    $Context['schemaIndex'] extends null
-      ? {}
-      :
-        (
-          // eslint-disable-next-line
-          // @ts-ignore Passes after generation
-          & HKT.Call<GlobalRegistry.GetOrDefault<$Context['config']['name']>['interfaces']['Root'], $Context>
-          & {
-              // eslint-disable-next-line
-              // @ts-ignore Passes after generation
-              document: HKT.Call<GlobalRegistry.GetOrDefault<$Context['config']['name']>['interfaces']['Document'], $Context>
-            }
-        )
-  )
-
-// dprint-ignore
-export type BuilderRequestMethodsStatic<$Config extends Config> = {
-  raw: <$Data extends Record<string, any>, $Variables>(input: BaseInput<TypedQueryDocumentNode<$Data, $Variables>>) =>
-      Promise<SimplifyExceptError<RawResolveOutputReturnRootType<$Config, $Data>>>
-  rawString: <$Data extends Record<string, any>, $Variables>(input: BaseInput<TypedDocumentString<$Data, $Variables>>) =>
-      Promise<RawResolveOutputReturnRootType<$Config, $Data>>
-}
 
 // dprint-ignore
 type Create = <$Input extends InputStatic<GlobalRegistry.SchemaUnion>>(input: $Input) =>
@@ -500,7 +391,3 @@ const createWithState = (
 
   return clientProxy
 }
-
-// const updateContextConfig = <$Context extends Context>(context: $Context, config: Config): $Context => {
-//   return { ...context, config: { ...context.config, ...config } }
-// }
