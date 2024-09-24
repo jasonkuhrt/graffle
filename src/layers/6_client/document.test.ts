@@ -9,7 +9,7 @@ const graffle = Graffle.create({ schema })
 
 describe(`document with two queries`, () => {
   const withTwo = graffle.document({
-    queries: {
+    query: {
       foo: { id: true },
       bar: { idNonNull: true },
     },
@@ -64,7 +64,7 @@ describe(`document with two queries`, () => {
   test.skip(`error if invalid name in document`, async () => {
     // // todo
     // // @ts-expect-error
-    // const { run } = graffle.document({ queries: { foo$: { id: true } } })
+    // const { run } = graffle.document({ query: { foo$: { id: true } } })
     // await expect(run(`foo$`)).rejects.toMatchObject({
     //   errors: [{ message: `Syntax Error: Expected "{", found "$".` }],
     // })
@@ -72,30 +72,30 @@ describe(`document with two queries`, () => {
 })
 
 test(`document with one query`, async () => {
-  const { run } = graffle.document({ queries: { foo: { id: true } } })
+  const { run } = graffle.document({ query: { foo: { id: true } } })
   await expect(run(`foo`)).resolves.toEqual({ id: db.id1 })
   await expect(run()).resolves.toEqual({ id: db.id1 })
   await expect(run(undefined)).resolves.toEqual({ id: db.id1 })
 })
 
 test(`document with one mutation`, async () => {
-  const { run } = graffle.document({ mutations: { foo: { id: true } } })
+  const { run } = graffle.document({ mutation: { foo: { id: true } } })
   await expect(run(`foo`)).resolves.toEqual({ id: db.id1 })
   await expect(run()).resolves.toEqual({ id: db.id1 })
   await expect(run(undefined)).resolves.toEqual({ id: db.id1 })
 })
 
 test(`error`, async () => {
-  const { run } = graffle.document({ queries: { foo: { error: true } } })
+  const { run } = graffle.document({ query: { foo: { error: true } } })
   await expect(run()).rejects.toMatchObject({ errors: [{ message: `Something went wrong.` }] })
 })
 
 test(`document with one mutation and one query`, async () => {
   const { run } = graffle.document({
-    mutations: {
+    mutation: {
       foo: { id: true },
     },
-    queries: {
+    query: {
       bar: { idNonNull: true },
     },
   })

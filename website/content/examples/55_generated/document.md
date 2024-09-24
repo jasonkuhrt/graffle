@@ -13,7 +13,7 @@ import { Graffle as Atlas } from './graffle/__.js'
 const atlas = Atlas.create()
 
 const countries = await atlas.document({
-  queries: {
+  query: {
     countriesQuery: {
       countries: [`countries2`, {
         $: { filter: { name: { in: [`Canada`, `Germany`, `Japan`] } } },

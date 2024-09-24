@@ -3,7 +3,7 @@ import type { Index } from './SchemaIndex.js'
 import type * as SelectionSets from './SelectionSets.js'
 
 interface DocumentInput {
-  queries?: Record<string, SelectionSets.Query>
+  query?: Record<string, SelectionSets.Query>
 }
 
 export interface Document<$Config extends Utilities.Config> {

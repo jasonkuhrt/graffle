@@ -95,7 +95,7 @@ const graffle = Graffle.create()
 // ---cut---
 const data /* [2] */ = await graffle
   .document({ // [1]
-    queries: { // Operation
+    query: { // Operation
       demoQuery: { // Operation name
         continents: { // Query field selection
           name: true, // Continent field selection

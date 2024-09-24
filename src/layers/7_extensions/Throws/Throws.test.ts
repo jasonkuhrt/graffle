@@ -10,20 +10,20 @@ describe(`document`, () => {
   describe(`query result field`, () => {
     test(`with __typename`, async () => {
       const result = graffle.throws().document({
-        queries: { x: { resultNonNull: { $: { case: `ErrorOne` }, __typename: true } } },
+        query: { x: { resultNonNull: { $: { case: `ErrorOne` }, __typename: true } } },
       })
         .run()
       await expect(result).rejects.toMatchInlineSnapshot(`[Error: Failure on field resultNonNull: ErrorOne]`)
     })
     test(`without __typename`, async () => {
-      const result = graffle.throws().document({ queries: { x: { resultNonNull: { $: { case: `ErrorOne` } } } } }).run()
+      const result = graffle.throws().document({ query: { x: { resultNonNull: { $: { case: `ErrorOne` } } } } }).run()
       await expect(result).rejects.toMatchInlineSnapshot(
         `[Error: Failure on field resultNonNull: ErrorOne]`,
       )
     })
     test.todo(`multiple via alias`, async () => {
       const result = graffle.throws().document({
-        queries: {
+        query: {
           x: {
             resultNonNull: [
               [`resultNonNull`, { $: { case: `ErrorOne` } }],

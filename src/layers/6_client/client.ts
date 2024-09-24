@@ -3,7 +3,7 @@ import type { Anyware } from '../../lib/anyware/__.js'
 import type { Errors } from '../../lib/errors/__.js'
 import type { Fluent } from '../../lib/fluent/__.js'
 import type { FnProperty, ToFnPropertyObject } from '../../lib/fluent/Fluent.js'
-import { type RootTypeName } from '../../lib/graphql.js'
+import { type RootTypeName, RootTypeNameToOperationName } from '../../lib/graphql.js'
 import type { HKT } from '../../lib/hkt/__.js'
 import { mergeHeadersInit, mergeRequestInit } from '../../lib/http.js'
 import { proxyGet, type SimplifyExceptError } from '../../lib/prelude.js'
@@ -423,8 +423,8 @@ const createWithState = (
 
     Object.assign(clientDirect, {
       document: (documentObject: DocumentObject) => {
-        const queryOperationNames = Object.keys(documentObject.queries ?? {})
-        const mutationOperationNames = Object.keys(documentObject.mutations ?? {})
+        const queryOperationNames = Object.keys(documentObject.query ?? {})
+        const mutationOperationNames = Object.keys(documentObject.mutation ?? {})
         const operationNames = [
           ...queryOperationNames,
           ...mutationOperationNames,
@@ -466,7 +466,7 @@ const createWithState = (
           }
           const operationName = maybeOperationName ? maybeOperationName : defaultOperationName
           const rootTypeName = queryOperationNames.includes(operationName) ? `Query` : `Mutation`
-          const selection = documentObject[rootTypeName === `Query` ? `queries` : `mutations`]![operationName]!
+          const selection = documentObject[RootTypeNameToOperationName[rootTypeName]]![operationName]!
           return {
             rootTypeName,
             selection,

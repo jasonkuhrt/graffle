@@ -8,16 +8,16 @@ const graffle = Graffle.create({ schema }).use(Throws())
 describe(`document`, () => {
   describe(`query result field`, () => {
     test(`with __typename`, async () => {
-      const result = await graffle.throws().document({ queries: { x: { resultNonNull: { __typename: true } } } }).run()
+      const result = await graffle.throws().document({ query: { x: { resultNonNull: { __typename: true } } } }).run()
       expectTypeOf(result).toEqualTypeOf<{ resultNonNull: { __typename: 'Object1' } }>()
     })
     test(`without __typename`, async () => {
-      const result = await graffle.throws().document({ queries: { x: { resultNonNull: {} } } }).run()
+      const result = await graffle.throws().document({ query: { x: { resultNonNull: {} } } }).run()
       expectTypeOf(result).toEqualTypeOf<{ resultNonNull: { __typename: 'Object1' } }>()
     })
     test(`multiple via alias`, async () => {
       const result = await graffle.throws().document({
-        queries: { x: { resultNonNull: [[`resultNonNull`, {}], [`x`, {}]] } },
+        query: { x: { resultNonNull: [[`resultNonNull`, {}], [`x`, {}]] } },
       })
         .run()
       expectTypeOf(result).toEqualTypeOf<

@@ -69,6 +69,7 @@
   },
   "homepage": "https://github.com/jasonkuhrt/graffle",
   "scripts": {
+    "gen:graffle": "pnpm gen:test:schema && pnpm gen:examples:clients && pnpm build && cd website && pnpm gen:graffle",
     "graffle": "tsx ./src/cli/generate.ts",
     "gen:test:schema": "tsx tests/_/schemaGenerate.ts",
     "gen:examples": "tsx scripts/generate-examples-derivatives/generate.ts && pnpm format",

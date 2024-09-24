@@ -18,13 +18,13 @@ test(`requires input`, () => {
 
 describe(`input`, () => {
   test(`document with one query`, () => {
-    const run = graffle.document({ queries: { foo: { id: true } } }).run
+    const run = graffle.document({ query: { foo: { id: true } } }).run
     expectTypeOf(run).toMatchTypeOf<(...params: ['foo'] | [] | [undefined]) => Promise<any>>()
   })
 
   test(`document with two queries`, () => {
     const run = graffle.document({
-      queries: {
+      query: {
         foo: { id: true },
         bar: { id: true },
       },
@@ -37,10 +37,10 @@ describe(`input`, () => {
       schema: SchemaQueryOnly.schema,
     })
     queryOnly.document({
-      queries: { foo: { id: true } },
+      query: { foo: { id: true } },
       // todo
       // // @ts-expect-error mutation not in schema
-      // mutations: { foo: { id: true } },
+      // mutation: { foo: { id: true } },
     })
     const mutationOnly = MutationOnly.create({
       schema: SchemaMutationOnly.schema,
@@ -56,21 +56,21 @@ describe(`input`, () => {
 describe(`document(...).run()`, () => {
   test(`document with one query`, () => {
     {
-      const result = graffle.document({ queries: { x: { id: true } } }).run()
+      const result = graffle.document({ query: { x: { id: true } } }).run()
       expectTypeOf(result).resolves.toEqualTypeOf<{ id: string | null }>()
     }
     {
-      const result = graffle.document({ queries: { x: { id: true } } }).run(`x`)
+      const result = graffle.document({ query: { x: { id: true } } }).run(`x`)
       expectTypeOf(result).resolves.toEqualTypeOf<{ id: string | null }>()
     }
     {
-      const result = graffle.document({ queries: { x: { id: true } } }).run(undefined)
+      const result = graffle.document({ query: { x: { id: true } } }).run(undefined)
       expectTypeOf(result).resolves.toEqualTypeOf<{ id: string | null }>()
     }
   })
   test(`document with two queries`, () => {
     const result = graffle.document({
-      queries: {
+      query: {
         foo: { id: true },
         bar: { id: true },
       },
