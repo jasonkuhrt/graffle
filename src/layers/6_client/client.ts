@@ -11,7 +11,7 @@ import type { BaseInput, BaseInput_, TypedDocumentString } from '../0_functions/
 import { Schema } from '../1_Schema/__.js'
 import { readMaybeThunk } from '../1_Schema/core/helpers.js'
 import type { GlobalRegistry } from '../2_generator/globalRegistry.js'
-import type { DocumentObject, GraphQLObjectSelection } from '../3_SelectionSet/encode.js'
+import type { DocumentObject, GraphQLObjectSelection } from '../3_SelectionSet/print.js'
 import { Core } from '../5_core/__.js'
 import { type HookDefEncode } from '../5_core/core.js'
 import { type InterfaceRaw, type TransportHttp } from '../5_core/types.js'

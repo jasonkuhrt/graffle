@@ -4,8 +4,8 @@ import { db } from '../../../tests/_/db.js'
 import { $Index as schemaIndex } from '../../../tests/_/schema/generated/modules/SchemaRuntime.js'
 import type * as SelectionSets from '../../../tests/_/schema/generated/modules/SelectionSets.js'
 import { outputConfigDefault } from '../6_client/Settings/Config.js'
-import type { Context } from './encode.js'
-import { resolveRootType } from './encode.js'
+import type { Context } from './print.js'
+import { resolveRootType } from './print.js'
 
 // eslint-disable-next-line
 // @ts-ignore

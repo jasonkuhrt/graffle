@@ -1,3 +1,3 @@
-export const isSpecialFieldName = (fieldName: string) => fieldName.startsWith(`$`)
+export const isClientKey = (fieldName: string) => fieldName.startsWith(`$`)
 
-export const isSelectFieldName = (fieldName: string) => !isSpecialFieldName(fieldName)
+export const isSelectFieldName = (fieldName: string) => !isClientKey(fieldName)

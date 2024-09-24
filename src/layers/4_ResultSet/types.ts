@@ -4,7 +4,6 @@ import type { TSError } from '../../lib/TSError.js'
 import type { Schema, SomeField } from '../1_Schema/__.js'
 import type { PickScalarFields } from '../1_Schema/Output/Output.js'
 import type { SelectionSet } from '../3_SelectionSet/__.js'
-import type { prefix } from '../3_SelectionSet/runtime/on.js'
 import type { PickPositiveNonAliasIndicators } from '../3_SelectionSet/types.js'
 
 export type RootViaObject<
@@ -128,18 +127,18 @@ type HandleAliasExpressionSingle<
 }
 
 // dprint-ignore
-export type Union<$SelectionSet, $Index extends Schema.Index, $Node extends Schema.Output.Union> =
+export type Union<$SelectionSet extends SelectionSet.Any, $Index extends Schema.Index, $Node extends Schema.Output.Union> =
   OnTypeFragment<$SelectionSet, $Node['members'][number], $Index>
 
 // dprint-ignore
-export type Interface<$SelectionSet, $Index extends Schema.Index, $Node extends Schema.Output.Interface> =
+export type Interface<$SelectionSet extends SelectionSet.Any, $Index extends Schema.Index, $Node extends Schema.Output.Interface> =
   OnTypeFragment<$SelectionSet, $Node['implementors'][number], $Index>
 
 // dprint-ignore
-type OnTypeFragment<$SelectionSet, $Node extends Schema.Output.Object$2, $Index extends Schema.Index> =
+type OnTypeFragment<$SelectionSet extends SelectionSet.Any, $Node extends Schema.Output.Object$2, $Index extends Schema.Index> =
   $Node extends any // force distribution
     ? Object$<
-        GetKeyOr<$SelectionSet, `${prefix}${$Node['fields']['__typename']['type']['type']}`, {}> & SelectionSet.OmitOnTypeFragments<$SelectionSet>,
+        GetKeyOr<$SelectionSet, `${SelectionSet.On.KeyPrefix}${$Node['fields']['__typename']['type']['type']}`, {}> & SelectionSet.On.OmitOnTypeFragments<$SelectionSet>,
         $Index,
         $Node
       >
@@ -148,7 +147,7 @@ type OnTypeFragment<$SelectionSet, $Node extends Schema.Output.Object$2, $Index 
 // dprint-ignore
 export type Field<$SelectionSet, $Field extends SomeField, $Index extends Schema.Index> =
   Simplify<
-    $SelectionSet extends SelectionSet.Directive.Include.Negative | SelectionSet.Directive.Skip.Positive ?
+    $SelectionSet extends SelectionSet.Directive.Include.FieldStates.Negative | SelectionSet.Directive.Skip.FieldStates.Positive ?
        null :
        (
           | FieldDirectiveInclude<$SelectionSet>
@@ -159,7 +158,7 @@ export type Field<$SelectionSet, $Field extends SomeField, $Index extends Schema
 
 // dprint-ignore
 type FieldType<
-  $SelectionSet,
+  $SelectionSet extends SelectionSet.Any,
   $Type extends Schema.Output.Any,
   $Index extends Schema.Index
 > = 
@@ -168,21 +167,21 @@ type FieldType<
   $Type extends Schema.Output.List<infer $InnerType>        ? Array<FieldType<$SelectionSet, $InnerType, $Index>> :
   $Type extends Schema.Enum<infer _, infer $Members>        ? $Members[number] :
   $Type extends Schema.Scalar.Any                           ? ReturnType<$Type['codec']['decode']> :
-  $Type extends Schema.Object$2                             ? Object$<$SelectionSet,$Index,$Type> :
-  $Type extends Schema.Interface                            ? Interface<$SelectionSet,$Index,$Type> :
-  $Type extends Schema.Union                                ? Union<$SelectionSet,$Index,$Type> :
+  $Type extends Schema.Object$2                             ? Object$<$SelectionSet, $Index, $Type> :
+  $Type extends Schema.Interface                            ? Interface<$SelectionSet, $Index, $Type> :
+  $Type extends Schema.Union                                ? Union<$SelectionSet, $Index, $Type> :
                                                               TSError<'FieldType', `Unknown type`, { $Type: $Type }>
 
 // dprint-ignore
 type FieldDirectiveInclude<$SelectionSet> =
-  $SelectionSet extends SelectionSet.Directive.IncludeField  ? $SelectionSet extends SelectionSet.Directive.Include.Positive ?
+  $SelectionSet extends SelectionSet.Directive.Include.Field  ? $SelectionSet extends SelectionSet.Directive.Include.FieldStates.Positive ?
                                                           never :
                                                           null
                                                         : never
 
 // dprint-ignore
 type FieldDirectiveSkip<$SelectionSet> =
-  $SelectionSet extends SelectionSet.Directive.SkipField     ? $SelectionSet extends SelectionSet.Directive.Skip.Negative ?
+  $SelectionSet extends SelectionSet.Directive.Skip.Field     ? $SelectionSet extends SelectionSet.Directive.Skip.FieldStates.Negative ?
                                                           never :
                                                           null
                                                         : never

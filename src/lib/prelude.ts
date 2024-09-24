@@ -1,6 +1,7 @@
 import type { IsEmptyObject, IsNever, IsUnknown, Simplify } from 'type-fest'
 
 import type { ConditionalSimplify, ConditionalSimplifyDeep } from 'type-fest/source/conditional-simplify.js'
+import type { ExcludeUndefined } from 'type-fest/source/required-deep.js'
 
 /* eslint-disable */
 export type RemoveIndex<T> = {
@@ -91,6 +92,10 @@ export const isRecordLikeObject = (value: unknown): value is Record<string, unkn
 
 export const entries = <T extends Record<string, any>>(obj: T) => Object.entries(obj) as [keyof T, T[keyof T]][]
 
+// dprint-ignore
+export const entriesStrict = <T extends Record<string, any>>(obj: T): { [K in keyof T]: [K, ExcludeUndefined<T[K]>] }[keyof T][] =>
+  Object.entries(obj).filter(([_, value]) => value !== undefined) as any
+
 export const values = <T extends Record<string, unknown>>(obj: T): T[keyof T][] => Object.values(obj) as T[keyof T][]
 
 export type ExactNonEmpty<$Value, $Constraint> = IsEmptyObject<$Value> extends true ? never : Exact<$Value, $Constraint>
@@ -175,11 +180,11 @@ export type LetterUpper =
   | 'Y'
   | 'Z'
 
-export type StringNonEmpty = `${Letter}${string}`
+// export type StringNonEmpty = `${Letter}${string}`
 
-export type MaybeList<T> = T | T[]
+// export type MaybeList<T> = T | T[]
 
-export type NotEmptyObject<T> = keyof T extends never ? never : T
+// export type NotEmptyObject<T> = keyof T extends never ? never : T
 
 export type Values<T> = T[keyof T]
 
@@ -452,6 +457,9 @@ export type SuffixKeyNames<$Suffix extends string, $Object extends object> = {
   [$Key in keyof $Object & string as `${$Key}${$Suffix}`]: $Object[$Key]
 }
 
+/**
+ * Force intellisense to show the given union type expanded. E.g. given `Foo = A | B` then show `A | B` instead of `Foo`.
+ */
 export type UnionExpanded<$Union> = $Union
 
 export type mergeObjectArray<T extends [...any[]]> = T extends [infer $First, ...infer $Rest extends any[]]
@@ -469,7 +477,12 @@ export type IsEqual<A, B> = A extends B ? B extends A ? true : false : false
 export type AssertIsEqual<A, B> = IsEqual<A, B> extends true ? true : never
 
 export const AssertIsEqual = <A, B>(
-  ..._: AssertIsEqual<A, B> extends never ? [reason: { message: `Type B not equal to A`; A: A }] : []
+  ..._: IsEqual<A, B> extends false ? [reason: {
+      message: `Types not equal`
+      A: SimplifyDeep<A>
+      B: SimplifyDeep<B>
+    }]
+    : []
 ) => undefined
 
 export type IfExtendsElse<$Type, $Extends, $Else> = $Type extends $Extends ? $Type : $Else
@@ -535,5 +548,12 @@ export type IsKeyInObject<T extends object, K extends string> =
     ? true
     : false
 
-// type Test = IsKeyInObject<{a: 1}, 'a'> // true
-// type Test2 = IsKeyInObject<{a: 1}, 'b'> // false
+export type OmitKeysWithPrefix<$Object extends object, $Prefix extends string> = {
+  [
+    $Key in keyof $Object as $Key extends `${$Prefix}${infer $Suffix extends string}`
+      ? $Suffix extends '' ? $Key : never
+      : $Key
+  ]: $Object[$Key]
+}
+AssertIsEqual<OmitKeysWithPrefix<{ a: 1; b: 2 }, 'a'>, { a: 1; b: 2 }>()
+AssertIsEqual<OmitKeysWithPrefix<{ foo_a: 1; b: 2 }, 'foo'>, { b: 2 }>()
