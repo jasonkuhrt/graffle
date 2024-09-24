@@ -10,7 +10,7 @@ import type { FirstNonUnknownNever, IsKeyInObjectOptional, IsTupleMultiple, Valu
 import type { Schema } from '../1_Schema/__.js'
 import { SelectionSet } from '../2_SelectionSet/__.js'
 import type { Context, DocumentObject } from '../2_SelectionSet/print.js'
-import type { ResultSet } from '../4_ResultSet/__.js'
+import type { ResultSet } from '../3_ResultSet/__.js'
 import type { ResolveOutputReturnRootType } from './handleOutput.js'
 import type { AddTypenameToSelectedRootTypeResultFields, Config } from './Settings/Config.js'
 

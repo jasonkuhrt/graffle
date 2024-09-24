@@ -21,7 +21,7 @@ import { execute } from '../0_functions/execute.js'
 import type { Schema } from '../1_Schema/__.js'
 import { SelectionSet } from '../2_SelectionSet/__.js'
 import type { GraphQLObjectSelection } from '../2_SelectionSet/print.js'
-import * as Result from '../4_ResultSet/customScalars.js'
+import * as Result from '../3_ResultSet/customScalars.js'
 import type { GraffleExecutionResultVar } from '../6_client/client.js'
 import type { Config } from '../6_client/Settings/Config.js'
 import {
