@@ -1,4 +1,3 @@
-import type { HKT } from '../../../entrypoints/utilities-for-generated.js'
 import type { RootTypeName } from '../../../lib/graphql.js'
 import type { GlobalRegistry } from '../../2_generator/globalRegistry.js'
 import type { Hybrid } from '../Hybrid/__.js'
