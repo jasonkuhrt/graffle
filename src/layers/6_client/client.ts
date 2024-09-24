@@ -3,7 +3,6 @@ import type { Anyware } from '../../lib/anyware/__.js'
 import type { Errors } from '../../lib/errors/__.js'
 import type { Fluent } from '../../lib/fluent/__.js'
 import { type RootTypeName, RootTypeNameToOperationName } from '../../lib/graphql.js'
-import { mergeHeadersInit, mergeRequestInit } from '../../lib/http.js'
 import { proxyGet } from '../../lib/prelude.js'
 import type { BaseInput_ } from '../0_functions/types.js'
 import { Schema } from '../1_Schema/__.js'
@@ -13,18 +12,17 @@ import type { GlobalRegistry } from '../4_generator/globalRegistry.js'
 import { Core } from '../5_core/__.js'
 import { type HookDefEncode } from '../5_core/core.js'
 import { type InterfaceRaw, type TransportHttp } from '../5_core/types.js'
-import { createExtension, type Extension } from './extension/extension.js'
-import type { UseFn } from './extension/use.js'
-import type { ClientContext, FnParametersProperty } from './fluent.js'
+import { type Extension } from './extension/extension.js'
+import { type UseFn, useProperties } from './extension/use.js'
+import type { ClientContext, CreateState, FnParametersProperty } from './fluent.js'
 import { handleOutput } from './handleOutput.js'
-import type { FnAnyware } from './properties/anyware.js'
+import { anywareProperties, type FnAnyware } from './properties/anyware.js'
 import type { FnInternal } from './properties/internal.js'
-import type { FnRetry } from './properties/retry.js'
-import type { FnWith } from './properties/with.js'
+import { type FnRetry, retryProperties } from './properties/retry.js'
+import { type FnWith, withProperties } from './properties/with.js'
 import type { FnRequestMethods } from './requestMethods/requestMethods.js'
 import { type Config } from './Settings/Config.js'
 import { type InputStatic } from './Settings/Input.js'
-import type { WithInput } from './Settings/inputIncrementable/inputIncrementable.js'
 import { type InputToConfig, inputToConfig } from './Settings/InputToConfig.js'
 
 /**
@@ -130,15 +128,17 @@ export const create: Create = (input) => {
   return createWithState(initialState)
 }
 
-interface CreateState {
-  input: InputStatic<GlobalRegistry.SchemaUnion>
-  retry: Anyware.Extension2<Core.Core, { retrying: true }> | null
-  extensions: Extension[]
-}
-
 const createWithState = (
   state: CreateState,
 ) => {
+  // todo lazily compute config, not every fluent call uses it.
+  const context: Context = {
+    retry: state.retry,
+    extensions: state.extensions,
+    // @ts-expect-error fixme
+    config: inputToConfig(state.input),
+  }
+
   /**
    * @remarks Without generation the type of returnMode can be `ReturnModeTypeBase` which leads
    * TS to think some errors below are invalid checks because of a non-present member.
@@ -226,13 +226,6 @@ const createWithState = (
     })
   }
 
-  const context: Context = {
-    retry: state.retry,
-    extensions: state.extensions,
-    // @ts-expect-error fixme
-    config: inputToConfig(state.input),
-  }
-
   const run = async (context: Context, initialInput: HookDefEncode<Config>['input']) => {
     const result = await Core.anyware.run({
       initialInput,
@@ -269,40 +262,15 @@ const createWithState = (
     },
     raw: async (...args: RawParameters) => {
       const input = resolveRawParameters(args)
-      // const contextWithOutputSet = updateContextConfig(context, { ...context.config, output: traditionalGraphqlOutput })
       return await runRaw(context, input)
     },
     rawString: async (...args: RawParameters) => {
       return await clientDirect.raw(...args)
     },
-    with: (input: WithInput) => {
-      return createWithState({
-        ...state,
-        // @ts-expect-error fixme
-        input: {
-          ...state.input,
-          output: input.output,
-          transport: {
-            ...state.input.transport,
-            ...input.transport,
-            headers: mergeHeadersInit(state.input.transport?.headers, input.transport?.headers),
-            raw: mergeRequestInit(state.input.transport?.raw, input.transport?.raw),
-          },
-        },
-      })
-    },
-    use: (extension: Extension) => {
-      return createWithState({ ...state, extensions: [...state.extensions, extension] })
-    },
-    anyware: (anyware: Anyware.Extension2<Core.Core>) => {
-      return createWithState({
-        ...state,
-        extensions: [...state.extensions, createExtension({ name: `InlineAnyware`, onRequest: anyware })],
-      })
-    },
-    retry: (anyware: Anyware.Extension2<Core.Core, { retrying: true }>) => {
-      return createWithState({ ...state, retry: anyware })
-    },
+    ...withProperties(createWithState, state),
+    ...useProperties(createWithState, state),
+    ...anywareProperties(createWithState, state),
+    ...retryProperties(createWithState, state),
   }
 
   // todo extract this into constructor "create typed client"

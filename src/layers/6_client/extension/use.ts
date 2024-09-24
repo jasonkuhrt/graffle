@@ -1,5 +1,5 @@
 import type { Fluent } from '../../../lib/fluent/__.js'
-import type { FnParametersProperty } from '../fluent.js'
+import { defineProperties, type FnParametersProperty } from '../fluent.js'
 import type { Extension } from './extension.js'
 
 export interface UseFn extends Fluent.FnProperty<`use`> {
@@ -16,3 +16,14 @@ export interface Use<$Args extends FnParametersProperty> {
       : {}
   }>
 }
+
+export const useProperties = defineProperties((builder, state) => {
+  return {
+    use: (extension: Extension) => {
+      return builder({
+        ...state,
+        extensions: [...state.extensions, extension],
+      })
+    },
+  }
+})
