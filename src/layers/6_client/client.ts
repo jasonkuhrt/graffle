@@ -1,13 +1,10 @@
-import { type ExecutionResult, GraphQLSchema, type TypedQueryDocumentNode } from 'graphql'
+import { type ExecutionResult, GraphQLSchema } from 'graphql'
 import type { Anyware } from '../../lib/anyware/__.js'
 import type { Errors } from '../../lib/errors/__.js'
 import type { Fluent } from '../../lib/fluent/__.js'
-import type { FnProperty, ToFnPropertyObject } from '../../lib/fluent/Fluent.js'
 import { type RootTypeName, RootTypeNameToOperationName } from '../../lib/graphql.js'
-import type { HKT } from '../../lib/hkt/__.js'
-import { mergeHeadersInit, mergeRequestInit } from '../../lib/http.js'
-import { proxyGet, type SimplifyExceptError } from '../../lib/prelude.js'
-import type { BaseInput, BaseInput_, TypedDocumentString } from '../0_functions/types.js'
+import { proxyGet } from '../../lib/prelude.js'
+import type { BaseInput_ } from '../0_functions/types.js'
 import { Schema } from '../1_Schema/__.js'
 import { readMaybeThunk } from '../1_Schema/core/helpers.js'
 import type { DocumentObject, GraphQLObjectSelection } from '../2_SelectionSet/print.js'
@@ -15,11 +12,17 @@ import type { GlobalRegistry } from '../4_generator/globalRegistry.js'
 import { Core } from '../5_core/__.js'
 import { type HookDefEncode } from '../5_core/core.js'
 import { type InterfaceRaw, type TransportHttp } from '../5_core/types.js'
-import { createExtension, type Extension } from './extension.js'
-import { handleOutput, type RawResolveOutputReturnRootType } from './handleOutput.js'
+import { type Extension } from './extension/extension.js'
+import { type UseFn, useProperties } from './extension/use.js'
+import type { ClientContext, CreateState, FnParametersProperty } from './fluent.js'
+import { handleOutput } from './handleOutput.js'
+import { anywareProperties, type FnAnyware } from './properties/anyware.js'
+import type { FnInternal } from './properties/internal.js'
+import { type FnRetry, retryProperties } from './properties/retry.js'
+import { type FnWith, withProperties } from './properties/with.js'
+import type { FnRequestMethods } from './requestMethods/requestMethods.js'
 import { type Config } from './Settings/Config.js'
 import { type InputStatic } from './Settings/Input.js'
-import type { AddIncrementalInput, WithInput } from './Settings/inputIncrementable/inputIncrementable.js'
 import { type InputToConfig, inputToConfig } from './Settings/InputToConfig.js'
 
 /**
@@ -49,8 +52,10 @@ export type GraffleExecutionResultVar<$Config extends Config = Config> =
   )
   | ErrorsOther
 
-export type SelectionSetOrIndicator = 0 | 1 | boolean | object
+// todo get type from selectionset module
+export type SelectionSetOrIndicator = boolean | object
 
+// todo get type from selectionset module
 export type SelectionSetOrArgs = object
 
 export interface Context {
@@ -78,19 +83,6 @@ const resolveRawParameters = (parameters: RawParameters) => {
   return parameters[0]
 }
 
-export type ClientContext = {
-  config: Config
-  schemaIndex: Schema.Index | null
-}
-
-export type FnClient<$Context extends ClientContext = ClientContext> = Fluent.Create<$Context>
-
-export type FnClientState = Fluent.State<ClientContext>
-
-export type FnParametersProperty = Fluent.FnParametersProperty<FnClient, FnClientState>
-
-export type FnParametersMerge = Fluent.ParametersFnMerge<FnClientState['context']>
-
 export type Client<$Context extends ClientContext> = Fluent.Materialize<
   Fluent.AddMany<
     Fluent.Create<$Context>,
@@ -105,82 +97,6 @@ export type Client<$Context extends ClientContext> = Fluent.Materialize<
   >
 >
 
-export interface UseFn extends Fluent.FnProperty<`use`> {
-  // @ts-expect-error untyped params
-  return: Use<this['params']>
-}
-
-export interface FnRetry extends Fluent.FnProperty<`retry`> {
-  // @ts-expect-error untyped params
-  return: Retry<this['params']>
-}
-
-export interface FnInternal extends Fluent.FnMerge {
-  // @ts-expect-error untyped params
-  return: Internal<this['params']>
-}
-
-export interface FnRequestMethods extends Fluent.FnMerge {
-  // @ts-expect-error untyped params
-  return: BuilderRequestMethods<this['params']>
-}
-
-export interface FnWith extends Fluent.FnProperty<`with`> {
-  // @ts-expect-error untyped params
-  return: With<this['params']>
-}
-
-export interface FnAnyware extends Fluent.FnProperty<`anyware`> {
-  // @ts-expect-error untyped params
-  return: Anyware_<this['params']>
-}
-
-/**
- * TODO
- */
-export type Internal<$Args extends FnParametersMerge> = {
-  _: {
-    context: $Args
-  }
-}
-
-/**
- * TODO Anyware Docs.
- */
-export interface Anyware_<$Args extends FnParametersProperty> {
-  (
-    anyware: Anyware.Extension2<Core.Core<$Args['state']['context']['config']>>,
-  ): Fluent.IncrementNothing<$Args>
-}
-
-/**
- * TODO Use Docs.
- */
-export interface Use<$Args extends FnParametersProperty> {
-  <$Extension extends Extension>(extension?: $Extension): Fluent.IncrementUsingMerge<$Args, {
-    properties: $Extension['property'] extends FnProperty ? ToFnPropertyObject<$Extension['property']> : {}
-  }>
-}
-
-/**
- * TODO Retry Docs.
- */
-export interface Retry<$Args extends FnParametersProperty> {
-  (extension: Anyware.Extension2<Core.Core, { retrying: true }>): Fluent.IncrementNothing<$Args>
-}
-
-/**
- * TODO With Docs.
- */
-export interface With<$Args extends FnParametersProperty> {
-  <$Input extends WithInput<$Args['state']['context']['config']>>(
-    input: $Input,
-    // todo fixme
-    // eslint-disable-next-line
-    // @ts-ignore Passes after generation
-  ): IncrementWthNewConfig<$Args, AddIncrementalInput<$Args['state']['context']['config'], $Input>>
-}
-
 export type IncrementWthNewConfig<
   $Parameters extends FnParametersProperty,
   $ConfigNew extends ClientContext['config'],
@@ -191,33 +107,6 @@ export type IncrementWthNewConfig<
     config: $ConfigNew
   }
 >
-
-// dprint-ignore
-export type BuilderRequestMethods<$Context extends ClientContext>=
-  & BuilderRequestMethodsStatic<$Context['config']>
-  & (
-    $Context['schemaIndex'] extends null
-      ? {}
-      :
-        (
-          // eslint-disable-next-line
-          // @ts-ignore Passes after generation
-          & HKT.Call<GlobalRegistry.GetOrDefault<$Context['config']['name']>['interfaces']['Root'], $Context>
-          & {
-              // eslint-disable-next-line
-              // @ts-ignore Passes after generation
-              document: HKT.Call<GlobalRegistry.GetOrDefault<$Context['config']['name']>['interfaces']['Document'], $Context>
-            }
-        )
-  )
-
-// dprint-ignore
-export type BuilderRequestMethodsStatic<$Config extends Config> = {
-  raw: <$Data extends Record<string, any>, $Variables>(input: BaseInput<TypedQueryDocumentNode<$Data, $Variables>>) =>
-      Promise<SimplifyExceptError<RawResolveOutputReturnRootType<$Config, $Data>>>
-  rawString: <$Data extends Record<string, any>, $Variables>(input: BaseInput<TypedDocumentString<$Data, $Variables>>) =>
-      Promise<RawResolveOutputReturnRootType<$Config, $Data>>
-}
 
 // dprint-ignore
 type Create = <$Input extends InputStatic<GlobalRegistry.SchemaUnion>>(input: $Input) =>
@@ -239,15 +128,17 @@ export const create: Create = (input) => {
   return createWithState(initialState)
 }
 
-interface CreateState {
-  input: InputStatic<GlobalRegistry.SchemaUnion>
-  retry: Anyware.Extension2<Core.Core, { retrying: true }> | null
-  extensions: Extension[]
-}
-
 const createWithState = (
   state: CreateState,
 ) => {
+  // todo lazily compute config, not every fluent call uses it.
+  const context: Context = {
+    retry: state.retry,
+    extensions: state.extensions,
+    // @ts-expect-error fixme
+    config: inputToConfig(state.input),
+  }
+
   /**
    * @remarks Without generation the type of returnMode can be `ReturnModeTypeBase` which leads
    * TS to think some errors below are invalid checks because of a non-present member.
@@ -335,13 +226,6 @@ const createWithState = (
     })
   }
 
-  const context: Context = {
-    retry: state.retry,
-    extensions: state.extensions,
-    // @ts-expect-error fixme
-    config: inputToConfig(state.input),
-  }
-
   const run = async (context: Context, initialInput: HookDefEncode<Config>['input']) => {
     const result = await Core.anyware.run({
       initialInput,
@@ -378,40 +262,15 @@ const createWithState = (
     },
     raw: async (...args: RawParameters) => {
       const input = resolveRawParameters(args)
-      // const contextWithOutputSet = updateContextConfig(context, { ...context.config, output: traditionalGraphqlOutput })
       return await runRaw(context, input)
     },
     rawString: async (...args: RawParameters) => {
       return await clientDirect.raw(...args)
     },
-    with: (input: WithInput) => {
-      return createWithState({
-        ...state,
-        // @ts-expect-error fixme
-        input: {
-          ...state.input,
-          output: input.output,
-          transport: {
-            ...state.input.transport,
-            ...input.transport,
-            headers: mergeHeadersInit(state.input.transport?.headers, input.transport?.headers),
-            raw: mergeRequestInit(state.input.transport?.raw, input.transport?.raw),
-          },
-        },
-      })
-    },
-    use: (extension: Extension) => {
-      return createWithState({ ...state, extensions: [...state.extensions, extension] })
-    },
-    anyware: (anyware: Anyware.Extension2<Core.Core>) => {
-      return createWithState({
-        ...state,
-        extensions: [...state.extensions, createExtension({ name: `InlineAnyware`, onRequest: anyware })],
-      })
-    },
-    retry: (anyware: Anyware.Extension2<Core.Core, { retrying: true }>) => {
-      return createWithState({ ...state, retry: anyware })
-    },
+    ...withProperties(createWithState, state),
+    ...useProperties(createWithState, state),
+    ...anywareProperties(createWithState, state),
+    ...retryProperties(createWithState, state),
   }
 
   // todo extract this into constructor "create typed client"
@@ -500,7 +359,3 @@ const createWithState = (
 
   return clientProxy
 }
-
-// const updateContextConfig = <$Context extends Context>(context: $Context, config: Config): $Context => {
-//   return { ...context, config: { ...context.config, ...config } }
-// }

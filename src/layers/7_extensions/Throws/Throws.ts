@@ -2,7 +2,8 @@ import { type BuilderConfig, createExtension, type Extension, type WithInput } f
 // todo: no deep imports, rethink these utilities and/or how they are exported from the graffle package.
 import type { Fluent } from '../../../lib/fluent/__.js'
 import { type ConfigManager } from '../../../lib/prelude.js'
-import type { FnParametersProperty, IncrementWthNewConfig } from '../../6_client/client.js'
+import type { IncrementWthNewConfig } from '../../6_client/client.js'
+import type { FnParametersProperty } from '../../6_client/fluent.js'
 
 export const Throws = () => {
   return createExtension<ThrowsExtension>({

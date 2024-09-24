@@ -1,10 +1,10 @@
 import { describe, expectTypeOf, test } from 'vitest'
-import { Graffle } from '../../../tests/_/schema/generated/__.js'
-import * as Schema from '../../../tests/_/schema/schema.js'
-import { MutationOnly } from '../../../tests/_/schemaMutationOnly/generated/__.js'
-import * as SchemaMutationOnly from '../../../tests/_/schemaMutationOnly/schema.js'
-import { QueryOnly } from '../../../tests/_/schemaQueryOnly/generated/__.js'
-import * as SchemaQueryOnly from '../../../tests/_/schemaQueryOnly/schema.js'
+import { Graffle } from '../../../../tests/_/schema/generated/__.js'
+import * as Schema from '../../../../tests/_/schema/schema.js'
+import { MutationOnly } from '../../../../tests/_/schemaMutationOnly/generated/__.js'
+import * as SchemaMutationOnly from '../../../../tests/_/schemaMutationOnly/schema.js'
+import { QueryOnly } from '../../../../tests/_/schemaQueryOnly/generated/__.js'
+import * as SchemaQueryOnly from '../../../../tests/_/schemaQueryOnly/schema.js'
 
 const graffle = Graffle.create({ schema: Schema.schema })
 
