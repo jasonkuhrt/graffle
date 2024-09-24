@@ -38,7 +38,7 @@ test(`object field in interface`, async ({ fetch }) => {
 })
 
 describe(`object field in union`, () => {
-  test.only(`case 1 with __typename`, async ({ fetch }) => {
+  test(`case 1 with __typename`, async ({ fetch }) => {
     fetch.mockResolvedValueOnce(createResponse({ data: { dateUnion: { __typename: `DateObject1`, date1: 0 } } }))
     expect(await client.query.$batch({ dateUnion: { __typename: true, ___on_DateObject1: { date1: true } } }))
       .toEqual({
