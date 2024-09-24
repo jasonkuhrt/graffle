@@ -3,8 +3,8 @@ import type { ExcludeNull, GetKeyOr, mergeObjectArray, ValuesOrEmptyObject } fro
 import type { TSError } from '../../lib/TSError.js'
 import type { Schema, SomeField } from '../1_Schema/__.js'
 import type { PickScalarFields } from '../1_Schema/Output/Output.js'
-import type { SelectionSet } from '../3_SelectionSet/__.js'
-import type { PickPositiveNonAliasIndicators } from '../3_SelectionSet/types.js'
+import type { SelectionSet } from '../2_SelectionSet/__.js'
+import type { PickPositiveNonAliasIndicators } from '../2_SelectionSet/types.js'
 
 export type RootViaObject<
   $SelectionSet,

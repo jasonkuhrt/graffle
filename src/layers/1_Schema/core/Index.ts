@@ -1,5 +1,5 @@
 import type { RootTypeName } from '../../../lib/graphql.js'
-import type { GlobalRegistry } from '../../2_generator/globalRegistry.js'
+import type { GlobalRegistry } from '../../4_generator/globalRegistry.js'
 import type { Hybrid } from '../Hybrid/__.js'
 import type { Output } from '../Output/__.js'
 

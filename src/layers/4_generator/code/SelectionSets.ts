@@ -30,7 +30,7 @@ import {
   StandardScalarTypeTypeScriptMapping,
 } from '../../../lib/graphql.js'
 import type { StandardScalarTypeNames } from '../../../lib/graphql.js'
-import { SelectionSet } from '../../3_SelectionSet/__.js'
+import { SelectionSet } from '../../2_SelectionSet/__.js'
 import { createCodeGenerator, createModuleGenerator } from '../createCodeGenerator.js'
 import {
   getDocumentation,
