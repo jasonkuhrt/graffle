@@ -1,4 +1,5 @@
-import type { IsEmptyObject, IsUnknown, Simplify } from 'type-fest'
+import type { IsEmptyObject, IsNever, IsUnknown, Simplify } from 'type-fest'
+
 import type { ConditionalSimplify, ConditionalSimplifyDeep } from 'type-fest/source/conditional-simplify.js'
 
 /* eslint-disable */
@@ -192,16 +193,16 @@ export type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) ex
 
 export type LastOf<T> = UnionToIntersection<T extends any ? () => T : never> extends () => infer R ? R : never
 
-// TS4.0+
-export type Push<T extends any[], V> = [...T, V]
+// // TS4.0+
+// export type Push<T extends any[], V> = [...T, V]
 
-// TS4.1+
-export type UnionToTuple<T, L = LastOf<T>, N = [T] extends [never] ? true : false> = true extends N ? []
-  : Push<UnionToTuple<Exclude<T, L>>, L>
+// // TS4.1+
+// export type UnionToTuple<T, L = LastOf<T>, N = [T] extends [never] ? true : false> = true extends N ? []
+//   : Push<UnionToTuple<Exclude<T, L>>, L>
 
-export type CountKeys<T> = keyof T extends never ? 0 : UnionToTuple<keyof T>['length']
-export type IsMultipleKeys<T> = IsMultiple<CountKeys<T>>
-export type IsMultiple<T> = T extends 0 ? false : T extends 1 ? false : true
+// export type IsMultipleKeys<T> = IsMultiple<CountKeys<T>>
+// export type CountKeys<T> = keyof T extends never ? 0 : UnionToTuple<keyof T>['length']
+// export type IsMultiple<T> = T extends 0 ? false : T extends 1 ? false : true
 
 export type ExcludeNull<T> = Exclude<T, null>
 
@@ -469,3 +470,67 @@ export type AssertIsEqual<A, B> = IsEqual<A, B> extends true ? true : never
 
 export const AssertIsEqual = <A, B>(..._: AssertIsEqual<A, B> extends never ? [failure: `Types are not equal`] : []) =>
   undefined
+
+export type IfExtendsElse<$Type, $Extends, $Else> = $Type extends $Extends ? $Type : $Else
+
+// dprint-ignore
+export type PickOptionalPropertyOrFallback<$Object extends object, $Property extends keyof $Object, $Fallback> =
+  undefined extends $Object[$Property]
+    ? $Fallback
+    : $Object[$Property]
+
+export type All<$Tuple extends [...boolean[]]> = $Tuple[number] extends true ? false : true
+
+export type HasOptionalProperty<$Object extends object, $Property extends keyof $Object> = undefined extends
+  $Object[$Property] ? false
+  : true
+
+// dprint-ignore
+export type IsHasMultipleKeys<$Type> =
+  keyof $Type extends never
+    ? false
+    : keyof $Type extends infer K
+      ? K extends string
+        ? keyof { [P in keyof $Type]: 1 } extends `${string}${string}`
+          ? true
+          : false
+        : false
+      : false
+
+// dprint-ignore
+export type FirstNonUnknownNever<T extends any[]> = 
+  T extends [infer First, ...infer Rest] 
+    ? IsUnknown<First> extends true 
+      ? FirstNonUnknownNever<Rest>
+      : IsNever<First> extends true
+        ? FirstNonUnknownNever<Rest>
+        : First
+  : never
+
+// type Test1 = FirstNonUnknownNever<[unknown, never, 'x', number]> // string
+// type Test2 = FirstNonUnknownNever<[never, 1, unknown, number, boolean]> // number
+// type Test3 = FirstNonUnknownNever<[unknown, never]> // never
+// type Test4 = FirstNonUnknownNever<[never, unknown, boolean, never]> // boolean
+
+type Optional<T> = T | undefined
+type IsCanBeOptional<T> = undefined extends T ? true : false
+
+// dprint-ignore
+export type IsKeyInObjectOptional<T extends Optional<object>, K extends string> =
+  IsCanBeOptional<T> extends true
+    ? false
+    : IsKeyInObject<
+        // @ts-expect-error TS thinks undefined could be here,
+        // it cannot because we checked with IsCanBeOptional.
+        T,
+        K
+      >
+
+// dprint-ignore
+export type IsKeyInObject<T extends object, K extends string> =
+  K extends keyof T
+    ? true
+    : false
+
+// type Test = IsKeyInObject<{a: 1}, 'a'> // true
+// type Test2 = IsKeyInObject<{a: 1}, 'b'> // false

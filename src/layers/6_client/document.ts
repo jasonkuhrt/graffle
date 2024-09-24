@@ -1,9 +1,12 @@
+import type { IsUnknown } from 'type-fest'
 import {
+  type OperationType,
   operationTypeNameToRootTypeName,
+  OperationTypes,
   type RootTypeNameMutation,
   type RootTypeNameQuery,
 } from '../../lib/graphql.js'
-import type { IsMultipleKeys, Values } from '../../lib/prelude.js'
+import type { All, FirstNonUnknownNever, IsHasMultipleKeys, IsKeyInObjectOptional, Values } from '../../lib/prelude.js'
 import type { Schema } from '../1_Schema/__.js'
 import { SelectionSet } from '../3_SelectionSet/__.js'
 import type { Context, DocumentObject } from '../3_SelectionSet/encode.js'
@@ -11,17 +14,25 @@ import type { ResultSet } from '../4_ResultSet/__.js'
 import type { ResolveOutputReturnRootType } from './handleOutput.js'
 import type { AddTypenameToSelectedRootTypeResultFields, Config } from './Settings/Config.js'
 
-interface SomeDocument {
-  mutations?: Record<string, object>
-  queries?: Record<string, object>
+type OperationName = string
+
+interface SomeDocumentOperation {
+  [k: string]: object
 }
 
+interface SomeDocument {
+  mutation?: SomeDocumentOperation
+  query?: SomeDocumentOperation
+}
+
+// --- Utility Types To Work With Documents ---
+
 // dprint-ignore
-type HasMultipleOperations<$Document extends SomeDocument> =
-  IsMultipleKeys<
-    & ('mutations' extends keyof $Document ? $Document['mutations'] : {})
-    & ('queries' extends keyof $Document ? $Document['queries'] : {})
-  >
+type IsHasMultipleOperations<$Document extends SomeDocument> =
+  All<[
+    IsHasMultipleKeys<$Document[OperationType.Query]>,
+    IsHasMultipleKeys<$Document[OperationType.Mutation]>,
+  ]>
 
 // dprint-ignore
 type GetOperationNames<$Document extends SomeDocument> = Values<
@@ -31,22 +42,27 @@ type GetOperationNames<$Document extends SomeDocument> = Values<
 >
 
 // dprint-ignore
-type GetRootTypeName<$Document extends SomeDocument, $Name extends string> =
-  $Name extends keyof $Document['mutations'] ? RootTypeNameMutation :
-  $Name extends keyof $Document['queries'] ? RootTypeNameQuery :
-  never
+type GetRootTypeNameOfOperation<$Document extends SomeDocument, $Name extends OperationName> =
+  IsKeyInObjectOptional<$Document[OperationType.Mutation], $Name> extends true  ? RootTypeNameMutation :
+  IsKeyInObjectOptional<$Document[OperationType.Query], $Name> extends true     ? RootTypeNameQuery    :
+                                                                                  never
 
 // dprint-ignore
 type GetOperation<$Document extends SomeDocument, $Name extends string> =
-  $Name extends keyof $Document['mutations'] ? $Document['mutations'][$Name] :
-  $Name extends keyof $Document['queries'] ? $Document['queries'][$Name] :
-  never
+  FirstNonUnknownNever<[
+    // @ts-expect-error could be unknown
+    $Document[OperationType.Mutation][$Name],
+    // @ts-expect-error could be unknown
+    $Document[OperationType.Query][$Name]
+  ]>
 
+// -- Interface --
+//
 // dprint-ignore
 export type DocumentRunner<$Config extends Config, $Index extends Schema.Index, $Document extends SomeDocument> = {
   run: <
     $Name extends GetOperationNames<$Document>,
-    $Params extends (HasMultipleOperations<$Document> extends true ? [name: $Name] : ([] | [name: $Name | undefined])),
+    $Params extends (IsHasMultipleOperations<$Document> extends true ? [name: $Name] : ([] | [name: $Name | undefined])),
   >(...params: $Params) =>
     Promise<
       ResolveOutputReturnRootType<
@@ -56,11 +72,11 @@ export type DocumentRunner<$Config extends Config, $Index extends Schema.Index, 
           AddTypenameToSelectedRootTypeResultFields<
             $Config,
             $Index,
-            GetRootTypeName<$Document, $Name>,
+            GetRootTypeNameOfOperation<$Document, $Name>,
             GetOperation<$Document, $Name>
           >,
           $Index,
-          GetRootTypeName<$Document, $Name>
+          GetRootTypeNameOfOperation<$Document, $Name>
         >
       >
     >
@@ -71,15 +87,15 @@ export const toDocumentString = (
   document: DocumentObject,
 ) => {
   const operations = [
-    ...(Object.entries(document.queries || {}).map(([operationName, selectionSet]) => ({
+    ...(Object.entries(document.query || {}).map(([operationName, selectionSet]) => ({
       operationName,
       selectionSet,
-      operationType: `query` as const,
+      operationType: OperationTypes.query,
     }))),
-    ...(Object.entries(document.mutations || {}).map(([operationName, selectionSet]) => ({
+    ...(Object.entries(document.mutation || {}).map(([operationName, selectionSet]) => ({
       operationName,
       selectionSet,
-      operationType: `mutation` as const,
+      operationType: OperationTypes.mutation,
     }))),
   ]
 

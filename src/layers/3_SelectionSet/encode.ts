@@ -32,8 +32,8 @@ type Args = { [k: string]: ArgValue }
 type ArgValue = string | boolean | null | number | Args
 
 export type DocumentObject = {
-  queries?: Record<string, GraphQLObjectSelection>
-  mutations?: Record<string, GraphQLObjectSelection>
+  query?: Record<string, GraphQLObjectSelection>
+  mutation?: Record<string, GraphQLObjectSelection>
 }
 
 export type GraphQLRootSelection = { query: GraphQLObjectSelection } | { mutation: GraphQLObjectSelection }

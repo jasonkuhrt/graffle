@@ -317,6 +317,12 @@ export const OperationTypes = {
   subscription: `subscription`,
 } as const
 
+export namespace OperationType {
+  export type Query = typeof OperationTypes['query']
+  export type Mutation = typeof OperationTypes['mutation']
+  export type Subscription = typeof OperationTypes['subscription']
+}
+
 type OperationTypeQuery = typeof OperationTypes['query']
 type OperationTypeMutation = typeof OperationTypes['mutation']
 type OperationTypeSubscription = typeof OperationTypes['subscription']
