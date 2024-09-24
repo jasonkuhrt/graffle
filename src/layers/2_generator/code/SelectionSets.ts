@@ -274,12 +274,12 @@ const renderField = createCodeGenerator<{ field: GraphQLField<any, any> }>(
           code.push(
             Helpers.type(
               `${nameRendered}$Expanded`,
-              `$Utilities.UnionExpanded<$SelectionSet.ClientIndicator | ${nameRendered}$SelectionSet>`,
+              `$Utilities.UnionExpanded<$SelectionSet.Indicator.ClientIndicator | ${nameRendered}$SelectionSet>`,
             ),
           )
           code.push(``)
           code.push(
-            Helpers.type(nameRendered, `$SelectionSet.ClientIndicator | ${nameRendered}$SelectionSet`),
+            Helpers.type(nameRendered, `$SelectionSet.Indicator.ClientIndicator | ${nameRendered}$SelectionSet`),
           )
           code.push(``)
         } else {
@@ -290,9 +290,9 @@ const renderField = createCodeGenerator<{ field: GraphQLField<any, any> }>(
           code.push(``)
         }
       } else {
-        code.push(Helpers.type(`${nameRendered}$Expanded`, `$SelectionSet.NoArgsIndicator$Expanded`))
+        code.push(Helpers.type(`${nameRendered}$Expanded`, `$SelectionSet.Indicator.NoArgsIndicator$Expanded`))
         code.push(``)
-        code.push(Helpers.type(nameRendered, `$SelectionSet.NoArgsIndicator`))
+        code.push(Helpers.type(nameRendered, `$SelectionSet.Indicator.NoArgsIndicator`))
         code.push(``)
       }
     } else {
@@ -394,7 +394,7 @@ namespace Helpers {
   export const __typename = (kind: 'union' | 'interface' | 'object') => {
     return `
       ${__typenameDoc(kind)}
-      ${outputFieldAlisable(`__typename`, `$SelectionSet.NoArgsIndicator`)}
+      ${outputFieldAlisable(`__typename`, `$SelectionSet.Indicator.NoArgsIndicator`)}
     `
   }
 

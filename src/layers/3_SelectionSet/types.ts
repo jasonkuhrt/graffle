@@ -1,54 +1,26 @@
-import type { Simplify } from 'type-fest'
-import type { ExcludeNull, UnionExpanded } from '../../lib/prelude.js'
 import type { TSError } from '../../lib/TSError.js'
-import type { OmitNullableFields, PickNullableFields, Schema, SomeField } from '../1_Schema/__.js'
+import type { OmitNullableFields, PickNullableFields, Schema } from '../1_Schema/__.js'
+import type { Indicator } from './_indicator.js'
 import type { Directive } from './Directive/__.js'
 
 export type Any = object
 
-export type IsSelectScalarsWildcard<SS> = SS extends { $scalars: ClientIndicatorPositive } ? true : false
-
-/**
- * Should this field be selected?
- */
-export type ClientIndicator = UnionExpanded<ClientIndicatorPositive | ClientIndicatorNegative>
-
-// todo bring back 1 | 0 in addition to true|false as generator options, defaulting to off
-export type ClientIndicatorPositive = true
-
-export type ClientIndicatorNegative = UnionExpanded<false | undefined>
+export type IsSelectScalarsWildcard<SS> = SS extends { $scalars: Indicator.ClientIndicatorPositive } ? true : false
 
 export type OmitNegativeIndicators<$SelectionSet> = {
-  [K in keyof $SelectionSet as $SelectionSet[K] extends ClientIndicatorNegative ? never : K]: $SelectionSet[K]
+  [K in keyof $SelectionSet as $SelectionSet[K] extends Indicator.ClientIndicatorNegative ? never : K]: $SelectionSet[K]
 }
 
 // dprint-ignore
 export type PickPositiveNonAliasIndicators<$SelectionSet> = {
   [
-    $FieldExpression in keyof $SelectionSet as $SelectionSet[$FieldExpression] extends ClientIndicatorNegative
+    $FieldExpression in keyof $SelectionSet as $SelectionSet[$FieldExpression] extends Indicator.ClientIndicatorNegative
       ? never
       : $SelectionSet[$FieldExpression] extends any[]
       ? never
        : $FieldExpression
   ]: $SelectionSet[$FieldExpression]
 }
-
-// dprint-ignore
-export type Indicator<$Field extends SomeField> =
-  $Field['args'] extends null ? NoArgsIndicator : ArgsIndicator<ExcludeNull<$Field['args']>>
-
-/**
- * Field selection in general, with directives support too.
- * If a field directive is given as an indicator then it implies "select this" e.g. `true`/`1`.
- * Of course the semantics of the directive may change the derived type (e.g. `skip` means the field might not show up in the result set)
- */
-export type NoArgsIndicator = ClientIndicator | Directive.$Fields
-
-export type NoArgsIndicator$Expanded = UnionExpanded<ClientIndicator | Simplify<Directive.$Fields>>
-
-type ArgsIndicator<$Args extends Schema.Args<any>> = $Args['isFieldsAllNullable'] extends true
-  ? ({ $?: Args<$Args> } & Directive.$Fields) | ClientIndicator
-  : { $: Args<$Args> } & Directive.$Fields
 
 // dprint-ignore
 export type Args<$Args extends Schema.Args<any>> = ArgFields<$Args['fields']>
@@ -80,7 +52,7 @@ export namespace Bases {
     /**
      * Special property to select all scalars.
      */
-    $scalars?: ClientIndicator
+    $scalars?: Indicator.ClientIndicator
   }
 }
 

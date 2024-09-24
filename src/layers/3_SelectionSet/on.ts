@@ -1,5 +1,5 @@
-import type { OmitKeysWithPrefix } from '../../../lib/prelude.js'
-import type { Any } from '../types.js'
+import type { OmitKeysWithPrefix } from '../../lib/prelude.js'
+import type { Any } from './types.js'
 
 export const prefix = `___on_`
 

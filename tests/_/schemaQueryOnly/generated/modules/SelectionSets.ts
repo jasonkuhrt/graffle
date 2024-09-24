@@ -56,19 +56,21 @@ export interface Query {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-  __typename?: $SelectionSet.NoArgsIndicator$Expanded | $SelectionSet.AliasInput<$SelectionSet.NoArgsIndicator>
+  __typename?:
+    | $SelectionSet.Indicator.NoArgsIndicator$Expanded
+    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 // ----------------------------------------| Fields Interfaces |
 
 export namespace Query {
-  export type id$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type id$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type id = $SelectionSet.NoArgsIndicator
+  export type id = $SelectionSet.Indicator.NoArgsIndicator
 
-  export type idNonNull$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type idNonNull$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type idNonNull = $SelectionSet.NoArgsIndicator
+  export type idNonNull = $SelectionSet.Indicator.NoArgsIndicator
 }
 
 /**
