@@ -1,10 +1,10 @@
 /* eslint-disable */
 import { describe, expectTypeOf } from 'vitest'
-import { test } from '../../../tests/_/helpers.js'
-import { Graffle } from '../../../tests/_/schema/generated/__.js'
-import { schema } from '../../../tests/_/schema/schema.js'
-import type { TypedDocumentString } from '../0_functions/types.js'
-import type { Envelope, RawResolveOutputReturnRootType } from './handleOutput.js'
+import { test } from '../../../../tests/_/helpers.js'
+import { Graffle } from '../../../../tests/_/schema/generated/__.js'
+import { schema } from '../../../../tests/_/schema/schema.js'
+import type { TypedDocumentString } from '../../0_functions/types.js'
+import type { Envelope, RawResolveOutputReturnRootType } from '../handleOutput.js'
 
 const g = Graffle.create({ schema })
 

@@ -1,6 +1,6 @@
 import type { Fluent } from '../../../lib/fluent/__.js'
-import type { Extension } from '../extension.js'
 import type { FnParametersProperty } from '../fluent.js'
+import type { Extension } from './extension.js'
 
 export interface UseFn extends Fluent.FnProperty<`use`> {
   // @ts-expect-error untyped params

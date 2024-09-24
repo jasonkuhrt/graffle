@@ -1,9 +1,15 @@
 import type { DocumentTypeDecoration } from '@graphql-typed-document-node/core'
 import type { DocumentNode, TypedQueryDocumentNode } from 'graphql'
 import type { HasRequiredKeys, IsEmptyObject } from 'type-fest'
-import type { StandardScalarVariables } from '../../lib/graphql.js'
+import type { SomeData, StandardScalarVariables } from '../../lib/graphql.js'
 import type { Negate } from '../../lib/prelude.js'
-import type { DocumentInput, OperationNameInput } from '../6_client/types.js'
+
+export type DocumentInput<$Data extends SomeData = SomeData, V = any> =
+  | string
+  | TypedDocumentString<$Data, V>
+  | TypedQueryDocumentNode<$Data, V>
+
+type OperationNameInput = string
 
 export type BaseInput_ = {
   document: DocumentNode | string

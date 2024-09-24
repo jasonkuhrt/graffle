@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect } from 'vitest'
-import { test } from '../../../tests/_/helpers.js'
-import { Graffle } from '../../../tests/_/schema/generated/__.js'
-import { schema } from '../../../tests/_/schema/schema.js'
-import { createExtension } from './extension.js'
+import { test } from '../../../../tests/_/helpers.js'
+import { Graffle } from '../../../../tests/_/schema/generated/__.js'
+import { schema } from '../../../../tests/_/schema/schema.js'
+import { createExtension } from '../extension/extension.js'
 
 // todo test with custom scalars
 

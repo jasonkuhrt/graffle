@@ -1,5 +1,5 @@
 import { trace, type Tracer } from '@opentelemetry/api'
-import { createExtension } from '../../6_client/extension.js'
+import { createExtension } from '../../6_client/extension/extension.js'
 import { createConfig, type Input } from './config.js'
 
 const name = `Opentelemetry`

@@ -1,10 +1,10 @@
 /* eslint-disable */
 import { describe, expect } from 'vitest'
-import { db } from '../../../tests/_/db.js'
-import { createResponse, test } from '../../../tests/_/helpers.js'
-import { Graffle } from '../../../tests/_/schema/generated/__.js'
-import { oops } from '../../lib/anyware/specHelpers.js'
-import { Throws } from '../7_extensions/Throws/Throws.js'
+import { db } from '../../../../tests/_/db.js'
+import { createResponse, test } from '../../../../tests/_/helpers.js'
+import { Graffle } from '../../../../tests/_/schema/generated/__.js'
+import { oops } from '../../../lib/anyware/specHelpers.js'
+import { Throws } from '../../7_extensions/Throws/Throws.js'
 
 const client = Graffle.create({ schema: 'https://foo', output: { defaults: { errorChannel: 'return' } } })
 const headers = { 'x-foo': 'bar' }
