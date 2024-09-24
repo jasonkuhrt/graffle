@@ -72,7 +72,9 @@ export interface Query {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-  __typename?: $SelectionSet.NoArgsIndicator$Expanded | $SelectionSet.AliasInput<$SelectionSet.NoArgsIndicator>
+  __typename?:
+    | $SelectionSet.Indicator.NoArgsIndicator$Expanded
+    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 // ----------------------------------------| Fields Interfaces |
@@ -238,21 +240,23 @@ export interface Continent extends $SelectionSet.Bases.ObjectLike {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-  __typename?: $SelectionSet.NoArgsIndicator$Expanded | $SelectionSet.AliasInput<$SelectionSet.NoArgsIndicator>
+  __typename?:
+    | $SelectionSet.Indicator.NoArgsIndicator$Expanded
+    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 // ----------------------------------------| Fields Interfaces |
 
 export namespace Continent {
-  export type code$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type code$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type code = $SelectionSet.NoArgsIndicator
+  export type code = $SelectionSet.Indicator.NoArgsIndicator
 
   export interface countries extends _RefDefs._Country {}
   export type countries$Expanded = countries
-  export type name$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type name$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type name = $SelectionSet.NoArgsIndicator
+  export type name = $SelectionSet.Indicator.NoArgsIndicator
 }
 
 //
@@ -346,41 +350,43 @@ export interface Country extends $SelectionSet.Bases.ObjectLike {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-  __typename?: $SelectionSet.NoArgsIndicator$Expanded | $SelectionSet.AliasInput<$SelectionSet.NoArgsIndicator>
+  __typename?:
+    | $SelectionSet.Indicator.NoArgsIndicator$Expanded
+    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 // ----------------------------------------| Fields Interfaces |
 
 export namespace Country {
-  export type awsRegion$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type awsRegion$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type awsRegion = $SelectionSet.NoArgsIndicator
+  export type awsRegion = $SelectionSet.Indicator.NoArgsIndicator
 
-  export type capital$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type capital$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type capital = $SelectionSet.NoArgsIndicator
+  export type capital = $SelectionSet.Indicator.NoArgsIndicator
 
-  export type code$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type code$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type code = $SelectionSet.NoArgsIndicator
+  export type code = $SelectionSet.Indicator.NoArgsIndicator
 
   export interface continent extends _RefDefs._Continent {}
   export type continent$Expanded = continent
-  export type currencies$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type currencies$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type currencies = $SelectionSet.NoArgsIndicator
+  export type currencies = $SelectionSet.Indicator.NoArgsIndicator
 
-  export type currency$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type currency$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type currency = $SelectionSet.NoArgsIndicator
+  export type currency = $SelectionSet.Indicator.NoArgsIndicator
 
-  export type emoji$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type emoji$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type emoji = $SelectionSet.NoArgsIndicator
+  export type emoji = $SelectionSet.Indicator.NoArgsIndicator
 
-  export type emojiU$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type emojiU$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type emojiU = $SelectionSet.NoArgsIndicator
+  export type emojiU = $SelectionSet.Indicator.NoArgsIndicator
 
   export interface languages extends _RefDefs._Language {}
   export type languages$Expanded = languages
@@ -397,21 +403,21 @@ export namespace Country {
     }
   >
 
-  export type name$Expanded = $Utilities.UnionExpanded<$SelectionSet.ClientIndicator | name$SelectionSet>
+  export type name$Expanded = $Utilities.UnionExpanded<$SelectionSet.Indicator.ClientIndicator | name$SelectionSet>
 
-  export type name = $SelectionSet.ClientIndicator | name$SelectionSet
+  export type name = $SelectionSet.Indicator.ClientIndicator | name$SelectionSet
 
-  export type native$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type native$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type native = $SelectionSet.NoArgsIndicator
+  export type native = $SelectionSet.Indicator.NoArgsIndicator
 
-  export type phone$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type phone$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type phone = $SelectionSet.NoArgsIndicator
+  export type phone = $SelectionSet.Indicator.NoArgsIndicator
 
-  export type phones$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type phones$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type phones = $SelectionSet.NoArgsIndicator
+  export type phones = $SelectionSet.Indicator.NoArgsIndicator
 
   export interface states extends _RefDefs._State {}
   export type states$Expanded = states
@@ -466,27 +472,29 @@ export interface Language extends $SelectionSet.Bases.ObjectLike {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-  __typename?: $SelectionSet.NoArgsIndicator$Expanded | $SelectionSet.AliasInput<$SelectionSet.NoArgsIndicator>
+  __typename?:
+    | $SelectionSet.Indicator.NoArgsIndicator$Expanded
+    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 // ----------------------------------------| Fields Interfaces |
 
 export namespace Language {
-  export type code$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type code$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type code = $SelectionSet.NoArgsIndicator
+  export type code = $SelectionSet.Indicator.NoArgsIndicator
 
-  export type name$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type name$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type name = $SelectionSet.NoArgsIndicator
+  export type name = $SelectionSet.Indicator.NoArgsIndicator
 
-  export type native$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type native$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type native = $SelectionSet.NoArgsIndicator
+  export type native = $SelectionSet.Indicator.NoArgsIndicator
 
-  export type rtl$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type rtl$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type rtl = $SelectionSet.NoArgsIndicator
+  export type rtl = $SelectionSet.Indicator.NoArgsIndicator
 }
 
 //
@@ -532,21 +540,23 @@ export interface State extends $SelectionSet.Bases.ObjectLike {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-  __typename?: $SelectionSet.NoArgsIndicator$Expanded | $SelectionSet.AliasInput<$SelectionSet.NoArgsIndicator>
+  __typename?:
+    | $SelectionSet.Indicator.NoArgsIndicator$Expanded
+    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 // ----------------------------------------| Fields Interfaces |
 
 export namespace State {
-  export type code$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type code$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type code = $SelectionSet.NoArgsIndicator
+  export type code = $SelectionSet.Indicator.NoArgsIndicator
 
   export interface country extends _RefDefs._Country {}
   export type country$Expanded = country
-  export type name$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type name$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type name = $SelectionSet.NoArgsIndicator
+  export type name = $SelectionSet.Indicator.NoArgsIndicator
 }
 
 //
@@ -592,23 +602,25 @@ export interface Subdivision extends $SelectionSet.Bases.ObjectLike {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-  __typename?: $SelectionSet.NoArgsIndicator$Expanded | $SelectionSet.AliasInput<$SelectionSet.NoArgsIndicator>
+  __typename?:
+    | $SelectionSet.Indicator.NoArgsIndicator$Expanded
+    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 // ----------------------------------------| Fields Interfaces |
 
 export namespace Subdivision {
-  export type code$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type code$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type code = $SelectionSet.NoArgsIndicator
+  export type code = $SelectionSet.Indicator.NoArgsIndicator
 
-  export type emoji$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type emoji$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type emoji = $SelectionSet.NoArgsIndicator
+  export type emoji = $SelectionSet.Indicator.NoArgsIndicator
 
-  export type name$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type name$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type name = $SelectionSet.NoArgsIndicator
+  export type name = $SelectionSet.Indicator.NoArgsIndicator
 }
 
 /**

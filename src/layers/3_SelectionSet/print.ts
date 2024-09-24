@@ -1,29 +1,20 @@
 import { RootTypeName } from '../../lib/graphql.js'
-import { assertArray, assertObject, lowerCaseFirstLetter } from '../../lib/prelude.js'
+import { assertArray, assertObject, entriesStrict, lowerCaseFirstLetter } from '../../lib/prelude.js'
 import { Schema } from '../1_Schema/__.js'
 import { readMaybeThunk } from '../1_Schema/core/helpers.js'
 import type { Config } from '../6_client/Settings/Config.js'
-import type { SelectionSet } from './__.js'
+import { Directive } from './Directive/__.js'
 import { isSelectFieldName } from './helpers.js'
-import { parseClientDirectiveDefer } from './runtime/directives/defer.js'
-import { toGraphQLDirective } from './runtime/directives/directive.js'
-import { parseClientDirectiveInclude } from './runtime/directives/include.js'
-import { parseClientDirectiveSkip } from './runtime/directives/skip.js'
-import { parseClientDirectiveStream } from './runtime/directives/stream.js'
+import type { Indicator } from './indicator.js'
+import { isIndicator, isPositiveIndicator } from './indicator.js'
+import { parseClientOn, toGraphQLOn } from './on.js'
 import { parseClientFieldItem } from './runtime/FieldItem.js'
 import { createFieldName } from './runtime/FieldName.js'
-import type { Indicator } from './runtime/indicator.js'
-import { isIndicator, isPositiveIndicator } from './runtime/indicator.js'
-import { parseClientOn, toGraphQLOn } from './runtime/on.js'
 import { normalizeAlias } from './types.js'
 
-type SpecialFields = {
+interface SpecialFields extends Directive.$Fields {
   // todo - this requires having the schema at runtime to know which fields to select.
   // $scalars?: SelectionSet.Indicator
-  $include?: SelectionSet.Directive.IncludeField['$include']
-  $skip?: SelectionSet.Directive.SkipField['$skip']
-  $defer?: SelectionSet.Directive.DeferField['$defer']
-  $stream?: SelectionSet.Directive.StreamField['$stream']
   $?: Args
 }
 
@@ -256,34 +247,23 @@ export const resolveField = (
   return `${field.name} ${resolveFieldValue(context, schemaField, field.value)}`
 }
 
-export const resolveOn = (field: string) => {
+export const resolveOn = (field: string): string => {
   const on = parseClientOn(field)
   if (on) return toGraphQLOn(on)
   return field
 }
 
-const resolveDirectives = (fieldValue: FieldValue) => {
+const resolveDirectives = (fieldValue: FieldValue): string => {
   if (isIndicator(fieldValue)) return ``
 
-  const { $include, $skip, $defer, $stream } = fieldValue
-
-  let directives = ``
-
-  if ($stream !== undefined) {
-    directives += toGraphQLDirective(parseClientDirectiveStream($stream))
-  }
-
-  if ($defer !== undefined) {
-    directives += toGraphQLDirective(parseClientDirectiveDefer($defer))
-  }
-
-  if ($include !== undefined) {
-    directives += toGraphQLDirective(parseClientDirectiveInclude($include))
-  }
-
-  if ($skip !== undefined) {
-    directives += toGraphQLDirective(parseClientDirectiveSkip($skip))
-  }
-
-  return directives
+  return entriesStrict({
+    $skip: fieldValue.$skip,
+    $include: fieldValue.$include,
+    $defer: fieldValue.$defer,
+    $stream: fieldValue.$stream,
+  }).reduce((code, [field, input]) => {
+    const def = Directive.fieldToDef[field]
+    code += Directive.Print.toGraphQLDirective(def.create(input))
+    return code
+  }, ``)
 }

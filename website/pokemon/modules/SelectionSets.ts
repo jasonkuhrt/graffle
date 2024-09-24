@@ -52,7 +52,9 @@ export interface Mutation {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-  __typename?: $SelectionSet.NoArgsIndicator$Expanded | $SelectionSet.AliasInput<$SelectionSet.NoArgsIndicator>
+  __typename?:
+    | $SelectionSet.Indicator.NoArgsIndicator$Expanded
+    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 // ----------------------------------------| Fields Interfaces |
@@ -120,7 +122,9 @@ export interface Query {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-  __typename?: $SelectionSet.NoArgsIndicator$Expanded | $SelectionSet.AliasInput<$SelectionSet.NoArgsIndicator>
+  __typename?:
+    | $SelectionSet.Indicator.NoArgsIndicator$Expanded
+    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 // ----------------------------------------| Fields Interfaces |
@@ -223,31 +227,33 @@ export interface Pokemon extends $SelectionSet.Bases.ObjectLike {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-  __typename?: $SelectionSet.NoArgsIndicator$Expanded | $SelectionSet.AliasInput<$SelectionSet.NoArgsIndicator>
+  __typename?:
+    | $SelectionSet.Indicator.NoArgsIndicator$Expanded
+    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 // ----------------------------------------| Fields Interfaces |
 
 export namespace Pokemon {
-  export type attack$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type attack$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type attack = $SelectionSet.NoArgsIndicator
+  export type attack = $SelectionSet.Indicator.NoArgsIndicator
 
-  export type defense$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type defense$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type defense = $SelectionSet.NoArgsIndicator
+  export type defense = $SelectionSet.Indicator.NoArgsIndicator
 
-  export type hp$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type hp$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type hp = $SelectionSet.NoArgsIndicator
+  export type hp = $SelectionSet.Indicator.NoArgsIndicator
 
-  export type id$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type id$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type id = $SelectionSet.NoArgsIndicator
+  export type id = $SelectionSet.Indicator.NoArgsIndicator
 
-  export type name$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type name$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type name = $SelectionSet.NoArgsIndicator
+  export type name = $SelectionSet.Indicator.NoArgsIndicator
 
   export interface trainer extends _RefDefs._Trainer {}
   export type trainer$Expanded = trainer
@@ -296,19 +302,21 @@ export interface Trainer extends $SelectionSet.Bases.ObjectLike {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-  __typename?: $SelectionSet.NoArgsIndicator$Expanded | $SelectionSet.AliasInput<$SelectionSet.NoArgsIndicator>
+  __typename?:
+    | $SelectionSet.Indicator.NoArgsIndicator$Expanded
+    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 // ----------------------------------------| Fields Interfaces |
 
 export namespace Trainer {
-  export type id$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type id$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type id = $SelectionSet.NoArgsIndicator
+  export type id = $SelectionSet.Indicator.NoArgsIndicator
 
-  export type name$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type name$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type name = $SelectionSet.NoArgsIndicator
+  export type name = $SelectionSet.Indicator.NoArgsIndicator
 
   export interface pokemon extends _RefDefs._Pokemon {}
   export type pokemon$Expanded = pokemon

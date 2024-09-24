@@ -1,6 +1,9 @@
+import type { OmitKeysWithPrefix } from '../../lib/prelude.js'
+import type { Any } from './types.js'
+
 export const prefix = `___on_`
 
-export type prefix = typeof prefix
+export type KeyPrefix = typeof prefix
 
 export const onPattern = new RegExp(`^${prefix}(?<name>[A-Z][A-z_0-9]*)$`)
 
@@ -24,3 +27,5 @@ export const parseClientOn = (field: string): null | On => {
 export const toGraphQLOn = (on: On) => {
   return `...on ${on.typeOrFragmentName}`
 }
+
+export type OmitOnTypeFragments<$Object extends Any> = OmitKeysWithPrefix<$Object, KeyPrefix>

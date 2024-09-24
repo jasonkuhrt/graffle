@@ -57,19 +57,21 @@ export interface Mutation {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-  __typename?: $SelectionSet.NoArgsIndicator$Expanded | $SelectionSet.AliasInput<$SelectionSet.NoArgsIndicator>
+  __typename?:
+    | $SelectionSet.Indicator.NoArgsIndicator$Expanded
+    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 // ----------------------------------------| Fields Interfaces |
 
 export namespace Mutation {
-  export type id$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type id$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type id = $SelectionSet.NoArgsIndicator
+  export type id = $SelectionSet.Indicator.NoArgsIndicator
 
-  export type idNonNull$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type idNonNull$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type idNonNull = $SelectionSet.NoArgsIndicator
+  export type idNonNull = $SelectionSet.Indicator.NoArgsIndicator
 }
 
 //
@@ -305,7 +307,9 @@ export interface Query {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-  __typename?: $SelectionSet.NoArgsIndicator$Expanded | $SelectionSet.AliasInput<$SelectionSet.NoArgsIndicator>
+  __typename?:
+    | $SelectionSet.Indicator.NoArgsIndicator$Expanded
+    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 // ----------------------------------------| Fields Interfaces |
@@ -325,10 +329,10 @@ export namespace Query {
   >
 
   export type InputObjectNested$Expanded = $Utilities.UnionExpanded<
-    $SelectionSet.ClientIndicator | InputObjectNested$SelectionSet
+    $SelectionSet.Indicator.ClientIndicator | InputObjectNested$SelectionSet
   >
 
-  export type InputObjectNested = $SelectionSet.ClientIndicator | InputObjectNested$SelectionSet
+  export type InputObjectNested = $SelectionSet.Indicator.ClientIndicator | InputObjectNested$SelectionSet
 
   export type InputObjectNestedNonNull$SelectionSetArguments = {
     input: _RefDefs._InputObjectNestedNonNull
@@ -343,13 +347,13 @@ export namespace Query {
 
   export type InputObjectNestedNonNull$Expanded = InputObjectNestedNonNull
 
-  export type abcEnum$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type abcEnum$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type abcEnum = $SelectionSet.NoArgsIndicator
+  export type abcEnum = $SelectionSet.Indicator.NoArgsIndicator
 
-  export type date$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type date$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type date = $SelectionSet.NoArgsIndicator
+  export type date = $SelectionSet.Indicator.NoArgsIndicator
 
   export type dateArg$SelectionSetArguments = {
     date?: $Scalar.DateDecoded | undefined | null
@@ -364,9 +368,11 @@ export namespace Query {
     }
   >
 
-  export type dateArg$Expanded = $Utilities.UnionExpanded<$SelectionSet.ClientIndicator | dateArg$SelectionSet>
+  export type dateArg$Expanded = $Utilities.UnionExpanded<
+    $SelectionSet.Indicator.ClientIndicator | dateArg$SelectionSet
+  >
 
-  export type dateArg = $SelectionSet.ClientIndicator | dateArg$SelectionSet
+  export type dateArg = $SelectionSet.Indicator.ClientIndicator | dateArg$SelectionSet
 
   export type dateArgInputObject$SelectionSetArguments = {
     input?: _RefDefs._InputObject | undefined | null
@@ -382,10 +388,10 @@ export namespace Query {
   >
 
   export type dateArgInputObject$Expanded = $Utilities.UnionExpanded<
-    $SelectionSet.ClientIndicator | dateArgInputObject$SelectionSet
+    $SelectionSet.Indicator.ClientIndicator | dateArgInputObject$SelectionSet
   >
 
-  export type dateArgInputObject = $SelectionSet.ClientIndicator | dateArgInputObject$SelectionSet
+  export type dateArgInputObject = $SelectionSet.Indicator.ClientIndicator | dateArgInputObject$SelectionSet
 
   export type dateArgList$SelectionSetArguments = {
     date?: Array<$Scalar.DateDecoded | undefined | null> | undefined | null
@@ -400,9 +406,11 @@ export namespace Query {
     }
   >
 
-  export type dateArgList$Expanded = $Utilities.UnionExpanded<$SelectionSet.ClientIndicator | dateArgList$SelectionSet>
+  export type dateArgList$Expanded = $Utilities.UnionExpanded<
+    $SelectionSet.Indicator.ClientIndicator | dateArgList$SelectionSet
+  >
 
-  export type dateArgList = $SelectionSet.ClientIndicator | dateArgList$SelectionSet
+  export type dateArgList = $SelectionSet.Indicator.ClientIndicator | dateArgList$SelectionSet
 
   export type dateArgNonNull$SelectionSetArguments = {
     date: $Scalar.DateDecoded
@@ -445,17 +453,17 @@ export namespace Query {
 
   export interface dateInterface1 extends _RefDefs._DateInterface1 {}
   export type dateInterface1$Expanded = dateInterface1
-  export type dateList$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type dateList$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type dateList = $SelectionSet.NoArgsIndicator
+  export type dateList = $SelectionSet.Indicator.NoArgsIndicator
 
-  export type dateListNonNull$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type dateListNonNull$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type dateListNonNull = $SelectionSet.NoArgsIndicator
+  export type dateListNonNull = $SelectionSet.Indicator.NoArgsIndicator
 
-  export type dateNonNull$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type dateNonNull$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type dateNonNull = $SelectionSet.NoArgsIndicator
+  export type dateNonNull = $SelectionSet.Indicator.NoArgsIndicator
 
   export interface dateObject1 extends _RefDefs._DateObject1 {}
   export type dateObject1$Expanded = dateObject1
@@ -474,17 +482,17 @@ export namespace Query {
     }
   >
 
-  export type error$Expanded = $Utilities.UnionExpanded<$SelectionSet.ClientIndicator | error$SelectionSet>
+  export type error$Expanded = $Utilities.UnionExpanded<$SelectionSet.Indicator.ClientIndicator | error$SelectionSet>
 
-  export type error = $SelectionSet.ClientIndicator | error$SelectionSet
+  export type error = $SelectionSet.Indicator.ClientIndicator | error$SelectionSet
 
-  export type id$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type id$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type id = $SelectionSet.NoArgsIndicator
+  export type id = $SelectionSet.Indicator.NoArgsIndicator
 
-  export type idNonNull$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type idNonNull$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type idNonNull = $SelectionSet.NoArgsIndicator
+  export type idNonNull = $SelectionSet.Indicator.NoArgsIndicator
 
   export interface $interface extends _RefDefs._Interface {}
   export type $interface$Expanded = $interface
@@ -500,21 +508,21 @@ export namespace Query {
     }
   }
   export type interfaceWithArgs$Expanded = interfaceWithArgs
-  export type listInt$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type listInt$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type listInt = $SelectionSet.NoArgsIndicator
+  export type listInt = $SelectionSet.Indicator.NoArgsIndicator
 
-  export type listIntNonNull$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type listIntNonNull$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type listIntNonNull = $SelectionSet.NoArgsIndicator
+  export type listIntNonNull = $SelectionSet.Indicator.NoArgsIndicator
 
-  export type listListInt$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type listListInt$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type listListInt = $SelectionSet.NoArgsIndicator
+  export type listListInt = $SelectionSet.Indicator.NoArgsIndicator
 
-  export type listListIntNonNull$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type listListIntNonNull$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type listListIntNonNull = $SelectionSet.NoArgsIndicator
+  export type listListIntNonNull = $SelectionSet.Indicator.NoArgsIndicator
 
   export interface lowerCaseUnion extends _RefDefs._lowerCaseUnion {}
   export type lowerCaseUnion$Expanded = lowerCaseUnion
@@ -562,9 +570,9 @@ export namespace Query {
     }
   }
   export type resultNonNull$Expanded = resultNonNull
-  export type $string$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type $string$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type $string = $SelectionSet.NoArgsIndicator
+  export type $string = $SelectionSet.Indicator.NoArgsIndicator
 
   export type stringWithArgEnum$SelectionSetArguments = {
     ABCEnum?: _RefDefs._ABCEnum | undefined | null
@@ -580,10 +588,10 @@ export namespace Query {
   >
 
   export type stringWithArgEnum$Expanded = $Utilities.UnionExpanded<
-    $SelectionSet.ClientIndicator | stringWithArgEnum$SelectionSet
+    $SelectionSet.Indicator.ClientIndicator | stringWithArgEnum$SelectionSet
   >
 
-  export type stringWithArgEnum = $SelectionSet.ClientIndicator | stringWithArgEnum$SelectionSet
+  export type stringWithArgEnum = $SelectionSet.Indicator.ClientIndicator | stringWithArgEnum$SelectionSet
 
   export type stringWithArgInputObject$SelectionSetArguments = {
     input?: _RefDefs._InputObject | undefined | null
@@ -599,10 +607,10 @@ export namespace Query {
   >
 
   export type stringWithArgInputObject$Expanded = $Utilities.UnionExpanded<
-    $SelectionSet.ClientIndicator | stringWithArgInputObject$SelectionSet
+    $SelectionSet.Indicator.ClientIndicator | stringWithArgInputObject$SelectionSet
   >
 
-  export type stringWithArgInputObject = $SelectionSet.ClientIndicator | stringWithArgInputObject$SelectionSet
+  export type stringWithArgInputObject = $SelectionSet.Indicator.ClientIndicator | stringWithArgInputObject$SelectionSet
 
   export type stringWithArgInputObjectRequired$SelectionSetArguments = {
     input: _RefDefs._InputObject
@@ -635,10 +643,10 @@ export namespace Query {
   >
 
   export type stringWithArgs$Expanded = $Utilities.UnionExpanded<
-    $SelectionSet.ClientIndicator | stringWithArgs$SelectionSet
+    $SelectionSet.Indicator.ClientIndicator | stringWithArgs$SelectionSet
   >
 
-  export type stringWithArgs = $SelectionSet.ClientIndicator | stringWithArgs$SelectionSet
+  export type stringWithArgs = $SelectionSet.Indicator.ClientIndicator | stringWithArgs$SelectionSet
 
   export type stringWithListArg$SelectionSetArguments = {
     ints?: Array<number | undefined | null> | undefined | null
@@ -654,10 +662,10 @@ export namespace Query {
   >
 
   export type stringWithListArg$Expanded = $Utilities.UnionExpanded<
-    $SelectionSet.ClientIndicator | stringWithListArg$SelectionSet
+    $SelectionSet.Indicator.ClientIndicator | stringWithListArg$SelectionSet
   >
 
-  export type stringWithListArg = $SelectionSet.ClientIndicator | stringWithListArg$SelectionSet
+  export type stringWithListArg = $SelectionSet.Indicator.ClientIndicator | stringWithListArg$SelectionSet
 
   export type stringWithListArgRequired$SelectionSetArguments = {
     ints: Array<number | undefined | null>
@@ -804,13 +812,15 @@ export interface DateInterface1 extends $SelectionSet.Bases.ObjectLike {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-  __typename?: $SelectionSet.NoArgsIndicator$Expanded | $SelectionSet.AliasInput<$SelectionSet.NoArgsIndicator>
+  __typename?:
+    | $SelectionSet.Indicator.NoArgsIndicator$Expanded
+    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 export namespace DateInterface1 {
-  export type date1$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type date1$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type date1 = $SelectionSet.NoArgsIndicator
+  export type date1 = $SelectionSet.Indicator.NoArgsIndicator
 }
 
 // --------------
@@ -838,13 +848,15 @@ export interface Error extends $SelectionSet.Bases.ObjectLike {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-  __typename?: $SelectionSet.NoArgsIndicator$Expanded | $SelectionSet.AliasInput<$SelectionSet.NoArgsIndicator>
+  __typename?:
+    | $SelectionSet.Indicator.NoArgsIndicator$Expanded
+    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 export namespace Error {
-  export type message$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type message$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type message = $SelectionSet.NoArgsIndicator
+  export type message = $SelectionSet.Indicator.NoArgsIndicator
 }
 
 // --------------
@@ -872,13 +884,15 @@ export interface Interface extends $SelectionSet.Bases.ObjectLike {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-  __typename?: $SelectionSet.NoArgsIndicator$Expanded | $SelectionSet.AliasInput<$SelectionSet.NoArgsIndicator>
+  __typename?:
+    | $SelectionSet.Indicator.NoArgsIndicator$Expanded
+    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 export namespace Interface {
-  export type id$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type id$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type id = $SelectionSet.NoArgsIndicator
+  export type id = $SelectionSet.Indicator.NoArgsIndicator
 }
 
 //
@@ -932,15 +946,17 @@ export interface Bar extends $SelectionSet.Bases.ObjectLike {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-  __typename?: $SelectionSet.NoArgsIndicator$Expanded | $SelectionSet.AliasInput<$SelectionSet.NoArgsIndicator>
+  __typename?:
+    | $SelectionSet.Indicator.NoArgsIndicator$Expanded
+    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 // ----------------------------------------| Fields Interfaces |
 
 export namespace Bar {
-  export type int$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type int$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type int = $SelectionSet.NoArgsIndicator
+  export type int = $SelectionSet.Indicator.NoArgsIndicator
 }
 
 //
@@ -978,15 +994,17 @@ export interface DateObject1 extends $SelectionSet.Bases.ObjectLike {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-  __typename?: $SelectionSet.NoArgsIndicator$Expanded | $SelectionSet.AliasInput<$SelectionSet.NoArgsIndicator>
+  __typename?:
+    | $SelectionSet.Indicator.NoArgsIndicator$Expanded
+    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 // ----------------------------------------| Fields Interfaces |
 
 export namespace DateObject1 {
-  export type date1$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type date1$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type date1 = $SelectionSet.NoArgsIndicator
+  export type date1 = $SelectionSet.Indicator.NoArgsIndicator
 }
 
 //
@@ -1024,15 +1042,17 @@ export interface DateObject2 extends $SelectionSet.Bases.ObjectLike {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-  __typename?: $SelectionSet.NoArgsIndicator$Expanded | $SelectionSet.AliasInput<$SelectionSet.NoArgsIndicator>
+  __typename?:
+    | $SelectionSet.Indicator.NoArgsIndicator$Expanded
+    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 // ----------------------------------------| Fields Interfaces |
 
 export namespace DateObject2 {
-  export type date2$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type date2$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type date2 = $SelectionSet.NoArgsIndicator
+  export type date2 = $SelectionSet.Indicator.NoArgsIndicator
 }
 
 //
@@ -1074,19 +1094,21 @@ export interface ErrorOne extends $SelectionSet.Bases.ObjectLike {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-  __typename?: $SelectionSet.NoArgsIndicator$Expanded | $SelectionSet.AliasInput<$SelectionSet.NoArgsIndicator>
+  __typename?:
+    | $SelectionSet.Indicator.NoArgsIndicator$Expanded
+    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 // ----------------------------------------| Fields Interfaces |
 
 export namespace ErrorOne {
-  export type infoId$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type infoId$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type infoId = $SelectionSet.NoArgsIndicator
+  export type infoId = $SelectionSet.Indicator.NoArgsIndicator
 
-  export type message$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type message$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type message = $SelectionSet.NoArgsIndicator
+  export type message = $SelectionSet.Indicator.NoArgsIndicator
 }
 
 //
@@ -1128,19 +1150,21 @@ export interface ErrorTwo extends $SelectionSet.Bases.ObjectLike {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-  __typename?: $SelectionSet.NoArgsIndicator$Expanded | $SelectionSet.AliasInput<$SelectionSet.NoArgsIndicator>
+  __typename?:
+    | $SelectionSet.Indicator.NoArgsIndicator$Expanded
+    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 // ----------------------------------------| Fields Interfaces |
 
 export namespace ErrorTwo {
-  export type infoInt$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type infoInt$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type infoInt = $SelectionSet.NoArgsIndicator
+  export type infoInt = $SelectionSet.Indicator.NoArgsIndicator
 
-  export type message$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type message$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type message = $SelectionSet.NoArgsIndicator
+  export type message = $SelectionSet.Indicator.NoArgsIndicator
 }
 
 //
@@ -1181,15 +1205,17 @@ export interface Foo extends $SelectionSet.Bases.ObjectLike {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-  __typename?: $SelectionSet.NoArgsIndicator$Expanded | $SelectionSet.AliasInput<$SelectionSet.NoArgsIndicator>
+  __typename?:
+    | $SelectionSet.Indicator.NoArgsIndicator$Expanded
+    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 // ----------------------------------------| Fields Interfaces |
 
 export namespace Foo {
-  export type id$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type id$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type id = $SelectionSet.NoArgsIndicator
+  export type id = $SelectionSet.Indicator.NoArgsIndicator
 }
 
 //
@@ -1243,31 +1269,33 @@ export interface Object1 extends $SelectionSet.Bases.ObjectLike {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-  __typename?: $SelectionSet.NoArgsIndicator$Expanded | $SelectionSet.AliasInput<$SelectionSet.NoArgsIndicator>
+  __typename?:
+    | $SelectionSet.Indicator.NoArgsIndicator$Expanded
+    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 // ----------------------------------------| Fields Interfaces |
 
 export namespace Object1 {
-  export type $boolean$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type $boolean$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type $boolean = $SelectionSet.NoArgsIndicator
+  export type $boolean = $SelectionSet.Indicator.NoArgsIndicator
 
-  export type float$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type float$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type float = $SelectionSet.NoArgsIndicator
+  export type float = $SelectionSet.Indicator.NoArgsIndicator
 
-  export type id$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type id$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type id = $SelectionSet.NoArgsIndicator
+  export type id = $SelectionSet.Indicator.NoArgsIndicator
 
-  export type int$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type int$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type int = $SelectionSet.NoArgsIndicator
+  export type int = $SelectionSet.Indicator.NoArgsIndicator
 
-  export type $string$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type $string$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type $string = $SelectionSet.NoArgsIndicator
+  export type $string = $SelectionSet.Indicator.NoArgsIndicator
 }
 
 //
@@ -1309,19 +1337,21 @@ export interface Object1ImplementingInterface extends $SelectionSet.Bases.Object
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-  __typename?: $SelectionSet.NoArgsIndicator$Expanded | $SelectionSet.AliasInput<$SelectionSet.NoArgsIndicator>
+  __typename?:
+    | $SelectionSet.Indicator.NoArgsIndicator$Expanded
+    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 // ----------------------------------------| Fields Interfaces |
 
 export namespace Object1ImplementingInterface {
-  export type id$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type id$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type id = $SelectionSet.NoArgsIndicator
+  export type id = $SelectionSet.Indicator.NoArgsIndicator
 
-  export type int$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type int$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type int = $SelectionSet.NoArgsIndicator
+  export type int = $SelectionSet.Indicator.NoArgsIndicator
 }
 
 //
@@ -1365,19 +1395,21 @@ export interface Object2ImplementingInterface extends $SelectionSet.Bases.Object
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-  __typename?: $SelectionSet.NoArgsIndicator$Expanded | $SelectionSet.AliasInput<$SelectionSet.NoArgsIndicator>
+  __typename?:
+    | $SelectionSet.Indicator.NoArgsIndicator$Expanded
+    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 // ----------------------------------------| Fields Interfaces |
 
 export namespace Object2ImplementingInterface {
-  export type $boolean$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type $boolean$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type $boolean = $SelectionSet.NoArgsIndicator
+  export type $boolean = $SelectionSet.Indicator.NoArgsIndicator
 
-  export type id$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type id$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type id = $SelectionSet.NoArgsIndicator
+  export type id = $SelectionSet.Indicator.NoArgsIndicator
 }
 
 //
@@ -1419,15 +1451,17 @@ export interface ObjectNested extends $SelectionSet.Bases.ObjectLike {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-  __typename?: $SelectionSet.NoArgsIndicator$Expanded | $SelectionSet.AliasInput<$SelectionSet.NoArgsIndicator>
+  __typename?:
+    | $SelectionSet.Indicator.NoArgsIndicator$Expanded
+    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 // ----------------------------------------| Fields Interfaces |
 
 export namespace ObjectNested {
-  export type id$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type id$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type id = $SelectionSet.NoArgsIndicator
+  export type id = $SelectionSet.Indicator.NoArgsIndicator
 
   export interface $object extends _RefDefs._Object1 {}
   export type $object$Expanded = $object
@@ -1468,7 +1502,9 @@ export interface ObjectUnion extends $SelectionSet.Bases.ObjectLike {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-  __typename?: $SelectionSet.NoArgsIndicator$Expanded | $SelectionSet.AliasInput<$SelectionSet.NoArgsIndicator>
+  __typename?:
+    | $SelectionSet.Indicator.NoArgsIndicator$Expanded
+    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 // ----------------------------------------| Fields Interfaces |
@@ -1513,15 +1549,17 @@ export interface lowerCaseObject extends $SelectionSet.Bases.ObjectLike {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-  __typename?: $SelectionSet.NoArgsIndicator$Expanded | $SelectionSet.AliasInput<$SelectionSet.NoArgsIndicator>
+  __typename?:
+    | $SelectionSet.Indicator.NoArgsIndicator$Expanded
+    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 // ----------------------------------------| Fields Interfaces |
 
 export namespace lowerCaseObject {
-  export type id$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type id$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type id = $SelectionSet.NoArgsIndicator
+  export type id = $SelectionSet.Indicator.NoArgsIndicator
 }
 
 //
@@ -1559,15 +1597,17 @@ export interface lowerCaseObject2 extends $SelectionSet.Bases.ObjectLike {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-  __typename?: $SelectionSet.NoArgsIndicator$Expanded | $SelectionSet.AliasInput<$SelectionSet.NoArgsIndicator>
+  __typename?:
+    | $SelectionSet.Indicator.NoArgsIndicator$Expanded
+    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 // ----------------------------------------| Fields Interfaces |
 
 export namespace lowerCaseObject2 {
-  export type int$Expanded = $SelectionSet.NoArgsIndicator$Expanded
+  export type int$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
-  export type int = $SelectionSet.NoArgsIndicator
+  export type int = $SelectionSet.Indicator.NoArgsIndicator
 }
 
 //
@@ -1606,7 +1646,9 @@ export interface DateUnion {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-  __typename?: $SelectionSet.NoArgsIndicator$Expanded | $SelectionSet.AliasInput<$SelectionSet.NoArgsIndicator>
+  __typename?:
+    | $SelectionSet.Indicator.NoArgsIndicator$Expanded
+    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 /**
@@ -1632,7 +1674,9 @@ export interface FooBarUnion {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-  __typename?: $SelectionSet.NoArgsIndicator$Expanded | $SelectionSet.AliasInput<$SelectionSet.NoArgsIndicator>
+  __typename?:
+    | $SelectionSet.Indicator.NoArgsIndicator$Expanded
+    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 export interface Result {
@@ -1656,7 +1700,9 @@ export interface Result {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-  __typename?: $SelectionSet.NoArgsIndicator$Expanded | $SelectionSet.AliasInput<$SelectionSet.NoArgsIndicator>
+  __typename?:
+    | $SelectionSet.Indicator.NoArgsIndicator$Expanded
+    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 export interface lowerCaseUnion {
@@ -1679,7 +1725,9 @@ export interface lowerCaseUnion {
    *
    * @see https://graphql.org/learn/queries/#meta-fields
    */
-  __typename?: $SelectionSet.NoArgsIndicator$Expanded | $SelectionSet.AliasInput<$SelectionSet.NoArgsIndicator>
+  __typename?:
+    | $SelectionSet.Indicator.NoArgsIndicator$Expanded
+    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 /**
