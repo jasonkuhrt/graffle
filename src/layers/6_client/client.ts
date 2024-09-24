@@ -381,21 +381,9 @@ const createWithState = (
       // const contextWithOutputSet = updateContextConfig(context, { ...context.config, output: traditionalGraphqlOutput })
       return await runRaw(context, input)
     },
-    // rawOrThrow: async (...args: RawParameters) => {
-    //   const input = resolveRawParameters(args)
-    //   const contextWithOutputSet = updateContextConfig(context, {
-    //     ...context.config,
-    //     output: traditionalGraphqlOutputThrowing,
-    //   })
-    //   return await runRaw(contextWithOutputSet, input)
-    // },
     rawString: async (...args: RawParameters) => {
       return await clientDirect.raw(...args)
     },
-    // rawStringOrThrow: async (...args: RawParameters) => {
-    //   // eslint-disable-next-line
-    //   return await client.rawOrThrow(...args)
-    // },
     with: (input: WithInput) => {
       return createWithState({
         ...state,

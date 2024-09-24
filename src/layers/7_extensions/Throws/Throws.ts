@@ -42,10 +42,10 @@ interface Throws<$Args extends FnParametersProperty> {
    * TODO
    */
   // @ts-expect-error fixme
-  (): IncrementWthNewConfig<$Args, OrThrowifyConfig<$Args['state']['context']['config']>>
+  (): IncrementWthNewConfig<$Args, ThrowsifyConfig<$Args['state']['context']['config']>>
 }
 
-type OrThrowifyConfig<$BuilderConfig extends BuilderConfig> = ConfigManager.Set<
+type ThrowsifyConfig<$BuilderConfig extends BuilderConfig> = ConfigManager.Set<
   $BuilderConfig,
   ['output', 'errors'],
   { other: 'throw'; execution: 'throw'; schema: 'throw' }

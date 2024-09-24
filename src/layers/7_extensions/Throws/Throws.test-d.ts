@@ -5,7 +5,7 @@ import { Throws } from './Throws.js'
 
 const graffle = Graffle.create({ schema }).use(Throws())
 
-describe(`documentOrThrow(...).run()`, () => {
+describe(`document`, () => {
   describe(`query result field`, () => {
     test(`with __typename`, async () => {
       const result = await graffle.throws().document({ queries: { x: { resultNonNull: { __typename: true } } } }).run()
