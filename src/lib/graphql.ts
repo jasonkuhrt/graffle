@@ -5,6 +5,7 @@ import type {
   GraphQLError,
   GraphQLField,
   GraphQLInputField,
+  GraphQLNamedType,
   GraphQLSchema,
 } from 'graphql'
 import {
@@ -16,8 +17,13 @@ import {
   GraphQLObjectType,
   GraphQLScalarType,
   GraphQLUnionType,
-  isListType,
+  isEnumType,
+  isInputObjectType,
+  isInterfaceType,
   isNonNullType,
+  isObjectType,
+  isScalarType,
+  isUnionType,
 } from 'graphql'
 import type { Errors } from './errors/__.js'
 
@@ -29,7 +35,7 @@ export type TypeMapByKind =
   & { GraphQLScalarTypeCustom: GraphQLScalarType<any, any>[] }
   & { GraphQLScalarTypeStandard: GraphQLScalarType<any, any>[] }
 
-export const standardScalarTypeNames = {
+export const StandardScalarTypeNames = {
   String: `String`,
   ID: `ID`,
   Int: `Int`,
@@ -37,11 +43,35 @@ export const standardScalarTypeNames = {
   Boolean: `Boolean`,
 }
 
+export type StandardScalarTypeNames = keyof typeof StandardScalarTypeNames
+
+const TypeScriptPrimitiveTypeNames = {
+  string: `string`,
+  number: `number`,
+  boolean: `boolean`,
+}
+type TypeScriptPrimitiveTypeNames = keyof typeof TypeScriptPrimitiveTypeNames
+
+export const StandardScalarTypeTypeScriptMapping = {
+  String: `string`,
+  ID: `string`,
+  Int: `number`,
+  Float: `number`,
+  Boolean: `boolean`,
+} satisfies Record<
+  StandardScalarTypeNames,
+  TypeScriptPrimitiveTypeNames
+>
+
 export const RootTypeName = {
   Query: `Query`,
   Mutation: `Mutation`,
   Subscription: `Subscription`,
 } as const
+
+export const isRootType = (value: unknown): value is GraphQLObjectType => {
+  return isObjectType(value) && value.name in RootTypeName
+}
 
 export type RootTypeNameQuery = typeof RootTypeName['Query']
 export type RootTypeNameMutation = typeof RootTypeName['Mutation']
@@ -64,26 +94,11 @@ export type RootTypeNameToOperationName = typeof RootTypeNameToOperationName
 export type RootTypeName = keyof typeof RootTypeName
 
 export const isStandardScalarType = (type: GraphQLScalarType) => {
-  return type.name in standardScalarTypeNames
+  return type.name in StandardScalarTypeNames
 }
 
 export const isCustomScalarType = (type: GraphQLScalarType) => {
   return !isStandardScalarType(type)
-}
-
-export const unwrapToNamed = (
-  type: AnyClass,
-): AnyClass => {
-  if (isNonNullType(type)) return unwrapToNamed(unwrapToNonNull(type).ofType)
-  if (isListType(type)) return unwrapToNamed(type.ofType)
-  return type
-}
-
-export const unwrapToNonNull = (
-  type: AnyClass,
-): { ofType: AnyClass; nullable: boolean } => {
-  const [nodeUnwrapped, nullable] = type instanceof GraphQLNonNull ? [type.ofType, false] : [type, true]
-  return { ofType: nodeUnwrapped, nullable }
 }
 
 export const getTypeMapByKind = (schema: GraphQLSchema) => {
@@ -194,31 +209,63 @@ export const isGraphQLOutputField = (object: object): object is AnyGraphQLOutput
   return `args` in object
 }
 
+export const hasCustomScalars = (typeMapByKind: TypeMapByKind) => {
+  return typeMapByKind.GraphQLScalarTypeCustom.length > 0
+}
+
 /**
  * Groups
  */
 
 export type Describable =
-  | GraphQLUnionType
-  | GraphQLObjectType
-  | GraphQLInputObjectType
+  | GraphQLNamedType
   | AnyField
-  | GraphQLInterfaceType
-  | GraphQLEnumType
 
-export const getNodeName = (node: Describable): NodeNamePlus => {
+export const getNodeNameAndKind = (
+  node: GraphQLNamedType,
+): { name: string; kind: 'Object' | 'Interface' | 'Union' | 'Enum' | 'Scalar' } => {
+  const name = node.name
+  const kind = getNodeKindOld(node).replace(`GraphQL`, ``).replace(`Type`, ``) as
+    | 'Object'
+    | 'Interface'
+    | 'Union'
+    | 'Enum'
+    | 'Scalar'
+  return { name, kind }
+}
+
+export const getNodeKind = <$Node extends GraphQLNamedType>(node: $Node): ClassToName<$Node> => {
   switch (true) {
-    case node instanceof GraphQLObjectType:
+    case isObjectType(node):
+      return `GraphQLObjectType` as ClassToName<$Node>
+    case isInputObjectType(node):
+      return `GraphQLInputObjectType` as ClassToName<$Node>
+    case isUnionType(node):
+      return `GraphQLUnionType` as ClassToName<$Node>
+    case isInterfaceType(node):
+      return `GraphQLInterfaceType` as ClassToName<$Node>
+    case isEnumType(node):
+      return `GraphQLEnumType` as ClassToName<$Node>
+    case isScalarType(node):
+      return `GraphQLScalarType` as ClassToName<$Node>
+    default:
+      throw new Error(`Unknown node kind: ${String(node)}`)
+  }
+}
+
+export const getNodeKindOld = (node: Describable): NodeNamePlus => {
+  switch (true) {
+    case isObjectType(node):
       return `GraphQLObjectType`
-    case node instanceof GraphQLInputObjectType:
+    case isInputObjectType(node):
       return `GraphQLInputObjectType`
-    case node instanceof GraphQLUnionType:
+    case isUnionType(node):
       return `GraphQLUnionType`
-    case node instanceof GraphQLInterfaceType:
+    case isInterfaceType(node):
       return `GraphQLInterfaceType`
-    case node instanceof GraphQLEnumType:
+    case isEnumType(node):
       return `GraphQLEnumType`
-    case node instanceof GraphQLScalarType:
+    case isScalarType(node):
       return `GraphQLScalarType`
     default:
       return `GraphQLField`
@@ -237,7 +284,7 @@ export const getNodeName = (node: Describable): NodeNamePlus => {
 // } satisfies Record<NodeName, string>
 
 export const getNodeDisplayName = (node: Describable) => {
-  return toDisplayName(getNodeName(node))
+  return toDisplayName(getNodeKindOld(node))
 }
 
 const toDisplayName = (nodeName: NodeNamePlus) => {
@@ -341,8 +388,31 @@ export const parseGraphQLOperationType = (request: GraphQLRequestEncoded): Opera
   return definedOperationToAnalyze.operationType
 }
 
+export const isAllArgsNonNullType = (args: readonly GraphQLArgument[]) => {
+  return args.every(_ => isNonNullType(_.type))
+}
+
 export const isAllArgsNullable = (args: readonly GraphQLArgument[]) => {
   return !args.some(_ => isNonNullType(_.type))
+}
+export const analyzeArgsNullability = (args: readonly GraphQLArgument[]) => {
+  let required = 0
+  let optional = 0
+  const total = args.length
+  args.forEach(_ => {
+    if (isNonNullType(_.type)) {
+      required++
+    } else {
+      optional++
+    }
+  })
+  return {
+    hasAny: total > 0,
+    isAllNullable: optional === total,
+    required,
+    optional,
+    total,
+  }
 }
 
 export const isAllInputObjectFieldsNullable = (node: GraphQLInputObjectType) => {

@@ -9,8 +9,10 @@ const graffle = Graffle.create({ schema })
 
 describe(`document with two queries`, () => {
   const withTwo = graffle.document({
-    foo: { query: { id: true } },
-    bar: { query: { idNonNull: true } },
+    queries: {
+      foo: { id: true },
+      bar: { idNonNull: true },
+    },
   })
 
   // TODO move nextjs test to somewhere else
@@ -46,41 +48,55 @@ describe(`document with two queries`, () => {
     // @ts-expect-error
     await expect(run(`boo`)).rejects.toMatchObject({ errors: [{ message: `Unknown operation named "boo".` }] })
   })
+  test(`error if no operations provided`, () => {
+    expect(() => {
+      // TODO use a pretty type error instead of never
+      // @ts-expect-error empty-object not allowed
+      graffle.document({})
+    }).toThrowErrorMatchingInlineSnapshot(`
+      {
+        "errors": [
+          [Error: Document has no operations.],
+        ],
+      }
+    `)
+  })
   test.skip(`error if invalid name in document`, async () => {
-    // @ts-expect-error
-    const { run } = graffle.document({ foo$: { query: { id: true } } })
-    await expect(run(`foo$`)).rejects.toMatchObject({
-      errors: [{ message: `Syntax Error: Expected "{", found "$".` }],
-    })
+    // // todo
+    // // @ts-expect-error
+    // const { run } = graffle.document({ queries: { foo$: { id: true } } })
+    // await expect(run(`foo$`)).rejects.toMatchObject({
+    //   errors: [{ message: `Syntax Error: Expected "{", found "$".` }],
+    // })
   })
 })
 
 test(`document with one query`, async () => {
-  const { run } = graffle.document({ foo: { query: { id: true } } })
+  const { run } = graffle.document({ queries: { foo: { id: true } } })
   await expect(run(`foo`)).resolves.toEqual({ id: db.id1 })
   await expect(run()).resolves.toEqual({ id: db.id1 })
   await expect(run(undefined)).resolves.toEqual({ id: db.id1 })
 })
 
 test(`document with one mutation`, async () => {
-  const { run } = graffle.document({ foo: { mutation: { id: true } } })
+  const { run } = graffle.document({ mutations: { foo: { id: true } } })
   await expect(run(`foo`)).resolves.toEqual({ id: db.id1 })
   await expect(run()).resolves.toEqual({ id: db.id1 })
   await expect(run(undefined)).resolves.toEqual({ id: db.id1 })
 })
 
 test(`error`, async () => {
-  const { run } = graffle.document({ foo: { query: { error: true } } })
+  const { run } = graffle.document({ queries: { foo: { error: true } } })
   await expect(run()).rejects.toMatchObject({ errors: [{ message: `Something went wrong.` }] })
 })
 
 test(`document with one mutation and one query`, async () => {
   const { run } = graffle.document({
-    foo: {
-      mutation: { id: true },
+    mutations: {
+      foo: { id: true },
     },
-    bar: {
-      query: { idNonNull: true },
+    queries: {
+      bar: { idNonNull: true },
     },
   })
   await expect(run(`foo`)).resolves.toEqual({ id: db.id1 })

@@ -1,6 +1,8 @@
-import type { ExcludeNull, MaybeList, StringNonEmpty, Values } from '../../lib/prelude.js'
+import type { Simplify } from 'type-fest'
+import type { ExcludeNull, MaybeList, StringNonEmpty, UnionExpanded, Values } from '../../lib/prelude.js'
 import type { TSError } from '../../lib/TSError.js'
 import type { OmitNullableFields, PickNullableFields, Schema, SomeField, SomeFields } from '../1_Schema/__.js'
+import type { prefix } from './runtime/on.js'
 
 export type Query<$Index extends Schema.Index> = RootViaObject<$Index, $Index['Root']['Query']>
 
@@ -30,33 +32,31 @@ type Fields<$Fields extends SomeFields, $Index extends Schema.Index> =
       // @ts-ignore excessive deep error, fixme?
       Field<$Fields[Key], $Index>
   }
-  &
-  // todo optimize?
+/**
+ * Alias support.
+ * Allow every field to also be given as a key with this pattern `<field>_as_<alias>: ...`
+ */
+// &
+// {
+//   [
+//     // It seems that non-empty string has a very high cost in TS.
+//     // Key in keyof $Fields & string as `${Key}_as_${StringNonEmpty}`
+//     Key in keyof $Fields & string as `${Key}_as_${string}`
+//   ]?:
+//    Field<$Fields[Key], $Index>
+// }
+&
+{
   /**
-   * Alias support.
-   * Allow every field to also be given as a key with this pattern `<field>_as_<alias>: ...`
-   */
-  {
-    [
-      Key in keyof $Fields as `${keyof $Fields & string}_as_${StringNonEmpty}`
-    ]?:
-     Field<$Fields[Key], $Index>
-  }
-  &
+ * Inline fragments for field groups.
+ * @see https://spec.graphql.org/draft/#sec-Inline-Fragments
+ */
+  ___?: MaybeList<Fields<$Fields, $Index> & Directive.$Fields>
   /**
-   * Inline fragments for field groups.
-   * @see https://spec.graphql.org/draft/#sec-Inline-Fragments
-   */
-  {
-    ___?: MaybeList<Fields<$Fields, $Index> & FieldDirectives>
-  }
-  &
-  /**
-   * Special property to select all scalars.
-   */
-  {
-    $scalars?: ClientIndicator
-  }
+ * Special property to select all scalars.
+ */
+  $scalars?: ClientIndicator
+}
 
 export type IsSelectScalarsWildcard<SS> = SS extends { $scalars: ClientIndicatorPositive } ? true : false
 
@@ -86,7 +86,7 @@ export type Field_<
   $type extends Schema.__typename                         ? NoArgsIndicator :
   $type extends Schema.Scalar.Any                         ? Indicator<$Field> : // eslint-disable
   $type extends Schema.Enum                               ? Indicator<$Field> :
-  $type extends Schema.Object$2                           ? Object<$type, $Index> & ($Options['hideDirectives'] extends true ? {} : FieldDirectives) & Arguments<$Field> :
+  $type extends Schema.Object$2                           ? Object<$type, $Index> & ($Options['hideDirectives'] extends true ? {} : Directive.$Fields) & Arguments<$Field> :
   $type extends Schema.Union                              ? Union<$type, $Index> & Arguments<$Field> :
   $type extends Schema.Interface                          ? Interface<$type, $Index> & Arguments<$Field> :
                                                             TSError<'Field', '$Field case not handled', { $Field: $Field }>
@@ -112,7 +112,7 @@ type InterfaceDistributed<$Node extends Schema.Object$2, $Index extends Schema.I
   $Node extends any
     ? {
       [$typename in $Node['fields']['__typename']['type']['type'] as `on${Capitalize<$typename>}`]?:
-        Object<$Node, $Index> & FieldDirectives
+        Object<$Node, $Index> & Directive.$Fields
     }
     : never
 
@@ -126,7 +126,7 @@ type UnionDistributed<$Object extends Schema.Object$2,$Index extends Schema.Inde
   $Object extends any
   ? {
      [$typename in $Object['fields']['__typename']['type']['type'] as `on${Capitalize<$typename>}`]?:
-        Object<$Object, $Index> & FieldDirectives
+        Object<$Object, $Index> & Directive.$Fields
     }
   : never
 
@@ -146,62 +146,7 @@ export type UnionExtractFragmentNames<T> = Values<
   }
 >
 export type OmitOnTypeFragments<T> = {
-  [$K in keyof T as $K extends `on${StringNonEmpty}` ? never : $K]: T[$K]
-}
-
-/**
- * Aliases
- */
-
-export interface Alias<O extends string = string, T extends string = string> {
-  origin: O
-  target: T
-}
-
-// dprint-ignore
-export type ParseAliasExpression<E> =
-  E extends `${infer O}_as_${infer T}`  ? Schema.Named.NameParse<O> extends never  ? E :
-                                          Schema.Named.NameParse<T> extends never  ? E :
-                                          Alias<O, T>
-                                        : E
-
-export type AliasNameOrigin<N> = ParseAliasExpression<N> extends Alias<infer O, any> ? O : N
-
-/**
- * Resolve the target of an alias or if is not an alias just pass through the name.
- */
-export type AliasNameTarget<N> = ParseAliasExpression<N> extends Alias<any, infer T> ? T : N
-
-export type ResolveAliasTargets<SelectionSet> = {
-  [Field in keyof SelectionSet as AliasNameTarget<Field>]: SelectionSet[Field]
-}
-
-/**
- * Directives
- */
-
-// dprint-ignore
-export namespace Directive {
-  export interface Include { $include: boolean | { if?: boolean } }
-  export namespace Include {
-    export interface Positive { $include: true | { if: true } }
-    export interface Negative { $include: false | { if: false } }
-  }
-  export interface Skip { $skip: boolean | { if?: boolean } }
-  export namespace Skip {
-    export interface Positive { $skip: true | { if: true } }
-    export interface Negative { $skip: false | { if: false } }
-  }
-  export interface Defer { $defer: boolean | { if?: boolean; label?: string } }
-  export namespace Defer {
-    export interface Positive { $defer: true | { if: true } }
-    export interface Negative { $defer: false | { if: false } }
-  }
-  export interface Stream { $stream: boolean | { if?: boolean; label?: string; initialCount?: number } }
-  export namespace Stream {
-    export interface Positive { $stream: true | { if: true } }
-    export interface Negative { $stream: false | { if: false } }
-  }
+  [$K in keyof T as $K extends `${prefix}${StringNonEmpty}` ? never : $K]: T[$K]
 }
 
 /**
@@ -211,12 +156,24 @@ export namespace Directive {
 /**
  * Should this field be selected?
  */
-export type ClientIndicator = ClientIndicatorPositive | ClientIndicatorNegative
-export type ClientIndicatorPositive = true | 1
-export type ClientIndicatorNegative = false | 0 | undefined
+export type ClientIndicator = UnionExpanded<ClientIndicatorPositive | ClientIndicatorNegative>
+// todo bring back 1 | 0 in addition to true|false as generator options, defaulting to off
+export type ClientIndicatorPositive = true
+export type ClientIndicatorNegative = UnionExpanded<false | undefined>
 
 export type OmitNegativeIndicators<$SelectionSet> = {
   [K in keyof $SelectionSet as $SelectionSet[K] extends ClientIndicatorNegative ? never : K]: $SelectionSet[K]
+}
+
+// dprint-ignore
+export type PickPositiveNonAliasIndicators<$SelectionSet> = {
+  [
+    $FieldExpression in keyof $SelectionSet as $SelectionSet[$FieldExpression] extends ClientIndicatorNegative
+      ? never
+      : $SelectionSet[$FieldExpression] extends any[]
+      ? never
+       : $FieldExpression
+  ]: $SelectionSet[$FieldExpression]
 }
 
 // dprint-ignore
@@ -228,11 +185,12 @@ export type Indicator<$Field extends SomeField> =
  * If a field directive is given as an indicator then it implies "select this" e.g. `true`/`1`.
  * Of course the semantics of the directive may change the derived type (e.g. `skip` means the field might not show up in the result set)
  */
-export type NoArgsIndicator = ClientIndicator | FieldDirectives
+export type NoArgsIndicator = ClientIndicator | Directive.$Fields
+export type NoArgsIndicator$Expanded = UnionExpanded<ClientIndicator | Simplify<Directive.$Fields>>
 
 type ArgsIndicator<$Args extends Schema.Args<any>> = $Args['isFieldsAllNullable'] extends true
-  ? ({ $?: Args<$Args> } & FieldDirectives) | ClientIndicator
-  : { $: Args<$Args> } & FieldDirectives
+  ? ({ $?: Args<$Args> } & Directive.$Fields) | ClientIndicator
+  : { $: Args<$Args> } & Directive.$Fields
 
 // dprint-ignore
 export type Args<$Args extends Schema.Args<any>> = ArgFields<$Args['fields']>
@@ -257,24 +215,110 @@ type InputFieldType<$InputType extends Schema.Input.Any> =
   $InputType extends Schema.Scalar.Any                          ? ReturnType<$InputType['codec']['decode']> :
                                                                   TSError<'InferTypeInput', 'Unknown $InputType', { $InputType: $InputType }> // never
 
+export namespace Bases {
+  export interface Base extends Directive.$Fields {}
+
+  export interface ObjectLike extends Base {
+    /**
+     * Special property to select all scalars.
+     */
+    $scalars?: ClientIndicator
+  }
+}
+
+/**
+ * Directives
+ */
+
+// dprint-ignore
+export namespace Directive {
 /**
  * @see https://spec.graphql.org/draft/#sec-Type-System.Directives.Built-in-Directives
  */
-export interface FieldDirectives {
+export interface $Fields {
   /**
    * https://spec.graphql.org/draft/#sec--skip
    */
-  $skip?: boolean | { if?: boolean }
+  $skip?: Skip
   /**
    * https://spec.graphql.org/draft/#sec--include
    */
-  $include?: boolean | { if?: boolean }
+  $include?: Include
   /**
    * @see https://github.com/graphql/graphql-wg/blob/main/rfcs/DeferStream.md#defer
    */
-  $defer?: boolean | { if?: boolean; label?: string }
+  $defer?: Defer
   /**
    * @see https://github.com/graphql/graphql-wg/blob/main/rfcs/DeferStream.md#stream
    */
-  $stream?: boolean | { if?: boolean; label?: string; initialCount?: number }
+  $stream?: Stream
 }
+
+/**
+ * https://spec.graphql.org/draft/#sec--include
+ */
+  export type Include = boolean | { if?: boolean }
+  export interface IncludeField { $include: Include }
+  export namespace Include {
+    export interface Positive { $include: true | { if: true } }
+    export interface Negative { $include: false | { if: false } }
+  }
+
+/**
+ * https://spec.graphql.org/draft/#sec--skip
+ */
+  export type Skip = boolean | { if?: boolean }
+  export interface SkipField { $skip: Skip }
+  export namespace Skip {
+    export interface Positive { $skip: true | { if: true } }
+    export interface Negative { $skip: false | { if: false } }
+  }
+
+/**
+ * @see https://github.com/graphql/graphql-wg/blob/main/rfcs/DeferStream.md#defer
+ */
+  export type Defer = boolean | { if?: boolean; label?: string }
+  export interface DeferField { $defer: Defer }
+  export namespace Defer {
+    export interface Positive { $defer: true | { if: true } }
+    export interface Negative { $defer: false | { if: false } }
+  }
+
+/**
+ * @see https://github.com/graphql/graphql-wg/blob/main/rfcs/DeferStream.md#stream
+ */
+  export type Stream = boolean | { if?: boolean; label?: string; initialCount?: number }
+  export interface StreamField { $stream: Stream }
+  export namespace Stream {
+    export interface Positive { $stream: true | { if: true } }
+    export interface Negative { $stream: false | { if: false } }
+  }
+}
+
+export type AliasInputOne<$SelectionSet = unknown> = [alias: string, selectionSet: $SelectionSet]
+
+export type AliasInputMultiple<$SelectionSet = unknown> = [
+  ...AliasInputOne<$SelectionSet>[],
+]
+
+export type AliasInput<$SelectionSet = unknown> = AliasInputOne<$SelectionSet> | AliasInputMultiple<$SelectionSet>
+
+export type AliasNormalized<$SelectionSet = unknown> = [
+  alias: string,
+  selectionSet: $SelectionSet,
+][]
+
+export const isAlias = (value: unknown): value is AliasInput<any> => {
+  return Array.isArray(value) && value.length === 2
+}
+
+export const normalizeAlias = (value: unknown): null | AliasNormalized => {
+  if (!isAlias(value)) return null
+  const isMultiAlias = Array.isArray(value[1])
+  if (isMultiAlias) {
+    return value as AliasNormalized
+  }
+  return [value] as AliasNormalized
+}
+
+export type TypenameSelection = { __typename: true }

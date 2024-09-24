@@ -28,8 +28,13 @@ export const scalar = <$Name extends string, $Codec extends Codec<any, any>>(
 ): Scalar<$Name, $Codec> => ({
   kind: ScalarKind,
   name: name,
-  codec: codec as any,
+  codec: codec,
 })
+
+export type GetEncoded<$Scalar> = $Scalar extends Scalar<infer _, infer _, infer $Encoded> ? $Encoded : never
+
+export type GetDecoded<$Scalar> = $Scalar extends Scalar<infer _, infer $Decoded, infer __> ? $Decoded
+  : never
 
 export interface Scalar<
   $Name extends string = string,

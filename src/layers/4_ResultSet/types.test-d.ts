@@ -1,112 +1,115 @@
-import { expectTypeOf, test } from 'vitest'
+import { test } from 'vitest'
 import type * as Schema from '../../../tests/_/schema/generated/modules/SchemaBuildtime.js'
 import type { Index } from '../../../tests/_/schema/generated/modules/SchemaIndex.js'
-import type { SelectionSet } from '../3_SelectionSet/__.js'
+import type * as SelectionSets from '../../../tests/_/schema/generated/modules/SelectionSets.js'
+import { AssertIsEqual } from '../../lib/prelude.js'
 import type { ResultSet } from './__.js'
 
 type I = Index
-type RS<$SelectionSet extends SelectionSet.Query<I>> = ResultSet.Query<$SelectionSet, I>
+type RS<$SelectionSet extends SelectionSets.Query> = ResultSet.Query<$SelectionSet, I>
 
 // dprint-ignore
 test(`general`, () => {
-  // __typename
-  expectTypeOf<RS<{ __typename: true }>>().toEqualTypeOf<{ __typename: 'Query' }>()
+  AssertIsEqual<RS<{ __typename: true }>, { __typename: 'Query' }>()
 
   // Scalar
-  expectTypeOf<RS<{ id: true }>>().toEqualTypeOf<{ id: null | string }>()
-  expectTypeOf<RS<{ id: 1 }>>().toEqualTypeOf<{ id: null | string }>()
+  AssertIsEqual<RS<{ id: true }>, { id: null | string }>()
+  // AssertIsEqual<RS<{ id: 1 }>, { id: null | string }>()
   // non-nullable
-  expectTypeOf<RS<{ idNonNull: true }>>().toEqualTypeOf<{ idNonNull: string }>()
+  AssertIsEqual<RS<{ idNonNull: true }>, { idNonNull: string }>()
   // indicator negative
-  expectTypeOf<RS<{ id: true; string: false }>>().toEqualTypeOf<{ id: null | string }>()
-  expectTypeOf<RS<{ id: true; string: 0 }>>().toEqualTypeOf<{ id: null | string }>()
-  expectTypeOf<RS<{ id: true; string: undefined }>>().toEqualTypeOf<{ id: null | string }>()
+  AssertIsEqual<RS<{ id: true; string: false }>, { id: null | string }>()
+  // AssertIsEqual<RS<{ id: true; string: 0 }>, { id: null | string }>()
+  AssertIsEqual<RS<{ id: true; string: undefined }>, { id: null | string }>()
   
   // Custom Scalar
-  expectTypeOf<RS<{ date: true }>>().toEqualTypeOf<{ date: null | Date }>()
+  AssertIsEqual<RS<{ date: true }>, { date: null | Date }>()
 
   // List
-  expectTypeOf<RS<{ listIntNonNull: true }>>().toEqualTypeOf<{ listIntNonNull: number[] }>()
-  expectTypeOf<RS<{ listInt: true }>>().toEqualTypeOf<{ listInt: null|(null|number)[] }>()
-  expectTypeOf<RS<{ listListIntNonNull: true }>>().toEqualTypeOf<{ listListIntNonNull: number[][] }>()
-  expectTypeOf<RS<{ listListInt: true }>>().toEqualTypeOf<{ listListInt: null|((null|(null|number)[])[]) }>()
+  AssertIsEqual<RS<{ listIntNonNull: true }>, { listIntNonNull: number[] }>()
+  AssertIsEqual<RS<{ listInt: true }>, { listInt: null|(null|number)[] }>()
+  AssertIsEqual<RS<{ listListIntNonNull: true }>, { listListIntNonNull: number[][] }>()
+  AssertIsEqual<RS<{ listListInt: true }>, { listListInt: null|((null|(null|number)[])[]) }>()
 
   // Enum
-  expectTypeOf<RS<{ abcEnum: true }>>().toEqualTypeOf<{ abcEnum: null|'A'|'B'|'C' }>()
+  AssertIsEqual<RS<{ abcEnum: true }>, { abcEnum: null|'A'|'B'|'C' }>()
 
   // Object
-  expectTypeOf<RS<{ object: { id: true } }>>().toEqualTypeOf<{ object: null | { id: string | null } }>()
+  AssertIsEqual<RS<{ object: { id: true } }>, { object: null | { id: string | null } }>()
   // non-nullable
-  expectTypeOf<RS<{ objectNonNull: { id: true } }>>().toEqualTypeOf<{ objectNonNull: { id: string | null } }>()
+  AssertIsEqual<RS<{ objectNonNull: { id: true } }>, { objectNonNull: { id: string | null } }>()
   // with args
-  expectTypeOf<RS<{ objectWithArgs: { $: { id: 'abc' }; id: true }}>>().toEqualTypeOf<{ objectWithArgs: null | { id: string | null } }>()
+  AssertIsEqual<RS<{ objectWithArgs: { $: { id: 'abc' }; id: true }}>, { objectWithArgs: null | { id: string | null } }>()
 
   // scalars-wildcard
-  expectTypeOf<RS<{ objectNonNull: { $scalars: true } }>>().toEqualTypeOf<{ objectNonNull: { __typename: "Object1"; string: null|string; int: null|number; float: null|number; boolean: null|boolean; id: null|string } }>()
+  AssertIsEqual<RS<{ objectNonNull: { $scalars: true } }>, { objectNonNull: { __typename: "Object1"; string: null|string; int: null|number; float: null|number; boolean: null|boolean; id: null|string } }>()
   // scalars-wildcard with nested object
-  expectTypeOf<RS<{ objectNested: { $scalars: true } }>>().toEqualTypeOf<{ objectNested: null | { __typename: "ObjectNested"; id: null|string } }>()
+  AssertIsEqual<RS<{ objectNested: { $scalars: true } }>, { objectNested: null | { __typename: "ObjectNested"; id: null|string } }>()
   // __typename
-  expectTypeOf<RS<{ objectNonNull: { __typename: true } }>>().toEqualTypeOf<{ objectNonNull: { __typename: "Object1" } }>()
+  AssertIsEqual<RS<{ objectNonNull: { __typename: true } }>, { objectNonNull: { __typename: "Object1" } }>()
 
   // Union
-  expectTypeOf<RS<{ unionFooBar: { __typename: true } }>>().toEqualTypeOf<{ unionFooBar: null | { __typename: "Foo" } | { __typename: "Bar" } }>()
-  expectTypeOf<RS<{ unionFooBar: { onFoo: { __typename: true } } }>>().toEqualTypeOf<{ unionFooBar: null | {} | { __typename: "Foo" } }>()
-  expectTypeOf<RS<{ unionFooBar: { onFoo: { id: true } } }>>().toEqualTypeOf<{ unionFooBar: null | {} | { id: null|string } }>()
-  expectTypeOf<RS<{ unionFooBar: { __typename: true; onFoo: { id: true } } }>>().toEqualTypeOf<{ unionFooBar: null | { __typename: "Bar" } | { __typename: "Foo"; id: null|string } }>()
+  AssertIsEqual<RS<{ unionFooBar: { __typename: true } }>, { unionFooBar: null | { __typename: "Foo" } | { __typename: "Bar" } }>()
+  AssertIsEqual<RS<{ unionFooBar: { ___on_Foo: { __typename: true } } }>, { unionFooBar: null | {} | { __typename: "Foo" } }>()
+  AssertIsEqual<RS<{ unionFooBar: { ___on_Foo: { id: true } } }>, { unionFooBar: null | {} | { id: null|string } }>()
+  AssertIsEqual<RS<{ unionFooBar: { __typename: true; ___on_Foo: { id: true } } }>, { unionFooBar: null | { __typename: "Bar" } | { __typename: "Foo"; id: null|string } }>()
   // with Args
-  expectTypeOf<RS<{ unionFooBarWithArgs: { $: { id: `abc` }, onFoo: { id: true } } }>>().toEqualTypeOf<{ unionFooBarWithArgs: null | {} | { id: null|string } }>()
+  AssertIsEqual<RS<{ unionFooBarWithArgs: { $: { id: `abc` }, ___on_Foo: { id: true } } }>, { unionFooBarWithArgs: null | {} | { id: null|string } }>()
 
 
   // Union fragments Case
-  expectTypeOf<RS<{ lowerCaseUnion: { __typename:true, onLowerCaseObject: { id: true }, onLowerCaseObject2: { int: true } } }>>().toEqualTypeOf<{ lowerCaseUnion: null | { __typename: 'lowerCaseObject'; id: null|string } | { __typename: 'lowerCaseObject2'; int: null|number } }>()
+  AssertIsEqual<RS<{ lowerCaseUnion: { __typename:true, ___on_lowerCaseObject: { id: true }, ___on_lowerCaseObject2: { int: true } } }>, { lowerCaseUnion: null | { __typename: 'lowerCaseObject'; id: null|string } | { __typename: 'lowerCaseObject2'; int: null|number } }>()
 
 
   // Interface
-  expectTypeOf<RS<{ interface: { onObject1ImplementingInterface: { id: true }}}>>().toEqualTypeOf<{ interface: null | { id: null | string} | {} }>()
-  expectTypeOf<RS<{ interface: { onObject1ImplementingInterface: { int: true }}}>>().toEqualTypeOf<{ interface: null | { int: null | number} | {} }>()
-  expectTypeOf<RS<{ interface: { id: true }}>>().toEqualTypeOf<{ interface: null | { id: null | string} }>()
-  expectTypeOf<RS<{ interface: { id: true, onObject1ImplementingInterface: { id: true } }}>>().toEqualTypeOf<{ interface: null | { id: null | string} }>()
-  expectTypeOf<RS<{ interface: { id: true, onObject1ImplementingInterface: { int: true } }}>>().toEqualTypeOf<{ interface: null | { id: null | string} | { id: null | string; int: null | number }}>()
-  expectTypeOf<RS<{ interface: { __typename:true }}>>().toEqualTypeOf<{ interface: null | { __typename: 'Object1ImplementingInterface' } | { __typename: 'Object2ImplementingInterface' } }>()
-  expectTypeOf<RS<{ interface: { onObject1ImplementingInterface: { __typename: true } }}>>().toEqualTypeOf<{ interface: null | { __typename: 'Object1ImplementingInterface' } | {}}>()
-  expectTypeOf<RS<{ interface: { $scalars: true }}>>().toEqualTypeOf<{ interface: null | { __typename: 'Object1ImplementingInterface', id: null | string, int: null|number} | { __typename: 'Object2ImplementingInterface', id: null | string; boolean:null|boolean} }>()
+  AssertIsEqual<RS<{ interface: { ___on_Object1ImplementingInterface: { id: true }}}>, { interface: null | { id: null | string} | {} }>()
+  AssertIsEqual<RS<{ interface: { ___on_Object1ImplementingInterface: { int: true }}}>, { interface: null | { int: null | number} | {} }>()
+  AssertIsEqual<RS<{ interface: { id: true }}>, { interface: null | { id: null | string} }>()
+  AssertIsEqual<RS<{ interface: { id: true, ___on_Object1ImplementingInterface: { id: true } }}>, { interface: null | { id: null | string} }>()
+  AssertIsEqual<RS<{ interface: { id: true, ___on_Object1ImplementingInterface: { int: true } }}>, { interface: null | { id: null | string} | { id: null | string; int: null | number }}>()
+  AssertIsEqual<RS<{ interface: { __typename:true }}>, { interface: null | { __typename: 'Object1ImplementingInterface' } | { __typename: 'Object2ImplementingInterface' } }>()
+  AssertIsEqual<RS<{ interface: { ___on_Object1ImplementingInterface: { __typename: true } }}>, { interface: null | { __typename: 'Object1ImplementingInterface' } | {} }>()
+  AssertIsEqual<RS<{ interface: { $scalars: true }}>, { interface: null | { __typename: 'Object1ImplementingInterface', id: null | string, int: null|number} | { __typename: 'Object2ImplementingInterface', id: null | string; boolean:null|boolean} }>()
   // with args
-  expectTypeOf<RS<{ interfaceWithArgs: { $:{id:'abc'}; id: true }}>>().toEqualTypeOf<{ interfaceWithArgs: null | { id: null | string }   }>()
+  AssertIsEqual<RS<{ interfaceWithArgs: { $:{id:'abc'}; id: true }}>, { interfaceWithArgs: null | { id: null | string }   }>()
 
+  // todo alias on interfaces, interface fragments
   // Alias
   // scalar
-  expectTypeOf<RS<{ id_as_id2: true }>>().toEqualTypeOf<{ id2: null | string }>()
-  expectTypeOf<RS<{ idNonNull_as_id2: true }>>().toEqualTypeOf<{ id2: string }>()
-  expectTypeOf<RS<{ id_as: true }>>().toEqualTypeOf<{ id_as: ResultSet.Errors.UnknownFieldName<'id_as', Schema.Root.Query> }>()
-  expectTypeOf<RS<{ id_as_$: true }>>().toEqualTypeOf<{ id_as_$: ResultSet.Errors.UnknownFieldName<'id_as_$', Schema.Root.Query> }>()
+  AssertIsEqual<RS<{ id: ['id2', true] }>, { id2: null | string }>()
+  AssertIsEqual<RS<{ idNonNull: ['id2', true] }>, { id2: string }>()
+  // multi
+  AssertIsEqual<RS<{ id: [['id1', true],['id2', true]] }>, { id1: null | string; id2: null | string }>()
+  // AssertIsEqual<RS<{ id_as: true }>, { id_as: ResultSet.Errors.UnknownFieldName<'id_as', Schema.Root.Query> }>()
+  // AssertIsEqual<RS<{ id_as_$: true }>, { id_as_$: ResultSet.Errors.UnknownFieldName<'id_as_$', Schema.Root.Query> }>()
   // union fragment
-  expectTypeOf<RS<{ unionFooBar: { onFoo: { id_as_id2: true } } }>>().toEqualTypeOf<{ unionFooBar: null | {} | { id2: null|string } }>()
+  AssertIsEqual<RS<{ unionFooBar: { ___on_Foo: { id: ['id2', true] } } }>, { unionFooBar: null | {} | { id2: null|string } }>()
 
   // Directive @include
   // On scalar non-nullable
-  expectTypeOf<RS<{ idNonNull: { $include: boolean } }>>().toEqualTypeOf<{ idNonNull: null|string }>()
-  expectTypeOf<RS<{ idNonNull: { $include: {if:boolean} } }>>().toEqualTypeOf<{ idNonNull: null|string }>()
-  expectTypeOf<RS<{ idNonNull: { $include: true } }>>().toEqualTypeOf<{ idNonNull: string }>()
-  expectTypeOf<RS<{ idNonNull: { $include: {if:true} } }>>().toEqualTypeOf<{ idNonNull: string }>()
-  expectTypeOf<RS<{ idNonNull: { $include: false } }>>().toEqualTypeOf<{ idNonNull: null }>()
-  expectTypeOf<RS<{ idNonNull: { $include: {if:false} } }>>().toEqualTypeOf<{ idNonNull: null }>()
+  AssertIsEqual<RS<{ idNonNull: { $include: boolean } }>, { idNonNull: null|string }>()
+  AssertIsEqual<RS<{ idNonNull: { $include: {if:boolean} } }>, { idNonNull: null|string }>()
+  AssertIsEqual<RS<{ idNonNull: { $include: true } }>, { idNonNull: string }>()
+  AssertIsEqual<RS<{ idNonNull: { $include: {if:true} } }>, { idNonNull: string }>()
+  AssertIsEqual<RS<{ idNonNull: { $include: false } }>, { idNonNull: null }>()
+  AssertIsEqual<RS<{ idNonNull: { $include: {if:false} } }>, { idNonNull: null }>()
   // On scalar nullable
-  expectTypeOf<RS<{ id: { $include: boolean } }>>().toEqualTypeOf<{ id: null|string }>()
-  expectTypeOf<RS<{ id: { $include: false } }>>().toEqualTypeOf<{ id: null }>()
-  expectTypeOf<RS<{ id: { $include: true } }>>().toEqualTypeOf<{ id: null|string }>()
+  AssertIsEqual<RS<{ id: { $include: boolean } }>, { id: null|string }>()
+  AssertIsEqual<RS<{ id: { $include: false } }>, { id: null }>()
+  AssertIsEqual<RS<{ id: { $include: true } }>, { id: null|string }>()
 
   // Directive @skip
   // On scalar non-nullable
-  expectTypeOf<RS<{ idNonNull: { $skip: boolean } }>>().toEqualTypeOf<{ idNonNull: null|string }>()
-  expectTypeOf<RS<{ idNonNull: { $skip: {if:boolean} } }>>().toEqualTypeOf<{ idNonNull: null|string }>()
-  expectTypeOf<RS<{ idNonNull: { $skip: true } }>>().toEqualTypeOf<{ idNonNull: null }>()
-  expectTypeOf<RS<{ idNonNull: { $skip: {if:true} } }>>().toEqualTypeOf<{ idNonNull: null }>()
-  expectTypeOf<RS<{ idNonNull: { $skip: false } }>>().toEqualTypeOf<{ idNonNull: string }>()
-  expectTypeOf<RS<{ idNonNull: { $skip: {if:false} } }>>().toEqualTypeOf<{ idNonNull: string }>()
+  AssertIsEqual<RS<{ idNonNull: { $skip: boolean } }>, { idNonNull: null|string }>()
+  AssertIsEqual<RS<{ idNonNull: { $skip: {if:boolean} } }>, { idNonNull: null|string }>()
+  AssertIsEqual<RS<{ idNonNull: { $skip: true } }>, { idNonNull: null }>()
+  AssertIsEqual<RS<{ idNonNull: { $skip: {if:true} } }>, { idNonNull: null }>()
+  AssertIsEqual<RS<{ idNonNull: { $skip: false } }>, { idNonNull: string }>()
+  AssertIsEqual<RS<{ idNonNull: { $skip: {if:false} } }>, { idNonNull: string }>()
   // On scalar nullable
-  expectTypeOf<RS<{ id: { $skip: boolean } }>>().toEqualTypeOf<{ id: null|string }>()
-  expectTypeOf<RS<{ id: { $skip: false } }>>().toEqualTypeOf<{ id: null|string }>()
-  expectTypeOf<RS<{ id: { $skip: true } }>>().toEqualTypeOf<{ id: null }>()
+  AssertIsEqual<RS<{ id: { $skip: boolean } }>, { id: null|string }>()
+  AssertIsEqual<RS<{ id: { $skip: false } }>, { id: null|string }>()
+  AssertIsEqual<RS<{ id: { $skip: true } }>, { id: null }>()
 
   // Directive @defer
   // todo
@@ -119,11 +122,12 @@ test(`general`, () => {
 
   // Arguments
   // scalar
-  expectTypeOf<RS<{ stringWithArgs: true }>>().toEqualTypeOf<{ stringWithArgs: null | string }>()
-  expectTypeOf<RS<{ stringWithArgs: { $: { string: '' } } }>>().toEqualTypeOf<{ stringWithArgs: null | string }>()
+  AssertIsEqual<RS<{ stringWithArgs: true }>, { stringWithArgs: null | string }>()
+  AssertIsEqual<RS<{ stringWithArgs: { $: { string: '' } } }>, { stringWithArgs: null | string }>()
 
   // Errors
-  // unknown field
+  // @ts-expect-error invalid query
   type Result =  RS<{ id2: true }>
-  expectTypeOf<Result>().toEqualTypeOf<{ id2: ResultSet.Errors.UnknownFieldName<'id2', Schema.Root.Query> }>()
+  // unknown field
+  AssertIsEqual<Result, { id2: ResultSet.Errors.UnknownFieldName<'id2', Schema.Root.Query> }>()
 })

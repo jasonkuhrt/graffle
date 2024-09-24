@@ -11,15 +11,15 @@ import type { Client } from '../../6_client/client.js'
 import type { Config, OutputConfigDefault } from '../../6_client/Settings/Config.js'
 
 let schemaServer: SchemaServer
-let graffle: Client<
-  any,
-  {
+let graffle: Client<{
+  config: {
     transport: { type: 'http'; config: Config['transport']['config'] }
     output: OutputConfigDefault
     initialInput: { schema: URL }
     name: 'default'
   }
->
+  schemaIndex: null
+}>
 
 beforeAll(async () => {
   schemaServer = await serveSchema({ schema })

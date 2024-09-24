@@ -1,5 +1,6 @@
 import type { RootTypeName } from '../../../lib/graphql.js'
 import type { GlobalRegistry } from '../../2_generator/globalRegistry.js'
+import type { Hybrid } from '../Hybrid/__.js'
 import type { Output } from '../Output/__.js'
 
 /**
@@ -16,6 +17,16 @@ export interface Index {
     Mutation: null | Output.ObjectMutation
     Subscription: null | Output.ObjectSubscription
   }
+
+  allTypes: Record<
+    string,
+    | Hybrid.Enum
+    | Output.ObjectQuery
+    | Output.ObjectMutation
+    | Output.Object$2
+    | Output.Union
+    | Output.Interface
+  >
   objects: Record<string, Output.Object$2>
   unions: Record<string, Output.Union>
   interfaces: Record<string, Output.Interface>

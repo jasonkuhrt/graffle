@@ -1,25 +1,19 @@
 import type { Anyware } from '../../lib/anyware/__.js'
+import type { FnProperty } from '../../lib/fluent/Fluent.js'
 import type { HKT } from '../../lib/hkt/__.js'
 import type { Fn } from '../../lib/hkt/hkt.js'
 import type { Core } from '../5_core/__.js'
 import type { Client, Context } from './client.js'
 import type { Config } from './Settings/Config.js'
 
-export interface ExtensionBuilderPassthrough extends Extension {
-  return: this['params']['AdditionalMethods']
-}
-
-type TypeCallParams = { Config: unknown; Index: unknown; AdditionalMethods: unknown }
-
-export type ExtensionCallBuilderMerge<$Extension extends Extension, $Params extends TypeCallParams> =
-  ($Extension & { params: $Params })['builderMerge']
-
-export interface Extension extends Base, Fn<TypeCallParams> {
+export interface TypeHooks {
   /**
-   * todo
+   * TODO
    */
-  builderMerge: {}
+  property?: FnProperty
 }
+
+export interface Extension extends Base, Fn, TypeHooks {}
 
 interface Base {
   /**
@@ -50,15 +44,14 @@ interface Base {
       context: Context
       path: string[]
       property: string
-      client: Client<null, Config>
+      client: Client<{ schemaIndex: null; config: Config }>
     },
   ) => unknown
 }
 
-type ToBase<$Extension extends Extension> = Omit<HKT.Remove<$Extension>, 'builderMerge'>
-
 export const createExtension = <$Extension extends Extension = Extension>(
-  extension: ToBase<$Extension>,
+  // type hooks
+  extension: Omit<HKT.UnFn<$Extension>, keyof TypeHooks>,
 ): $Extension => {
   return extension as $Extension
 }

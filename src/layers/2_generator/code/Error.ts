@@ -1,10 +1,8 @@
-import { createCodeGenerator } from '../createCodeGenerator.js'
+import { createModuleGenerator } from '../createCodeGenerator.js'
 
-export const { generate: generateError, moduleName: moduleNameError } = createCodeGenerator(
+export const { generate: generateError, moduleName: moduleNameError } = createModuleGenerator(
   `Error`,
-  (config) => {
-    const code: string[] = []
-
+  ({ config, code }) => {
     code.push(
       `type Include<T, U> = Exclude<T, Exclude<T, U>>`,
       `type ObjectWithTypeName = { __typename: string }`,
@@ -27,6 +25,6 @@ export const { generate: generateError, moduleName: moduleNameError } = createCo
     }`,
     )
 
-    return code.join(`\n\n`)
+    return code
   },
 )

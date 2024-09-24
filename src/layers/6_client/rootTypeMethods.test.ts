@@ -2,9 +2,8 @@ import { describe, expect, test } from 'vitest'
 import { db } from '../../../tests/_/db.js'
 import { Graffle } from '../../../tests/_/schema/generated/__.js'
 import * as Schema from '../../../tests/_/schema/schema.js'
-import { OrThrow } from '../7_extensions/OrThrow/OrThrow.js'
 
-const graffle = Graffle.create({ schema: Schema.schema }).use(OrThrow())
+const graffle = Graffle.create({ schema: Schema.schema })
 
 // dprint-ignore
 describe(`query`, () => {
@@ -23,26 +22,18 @@ describe(`query`, () => {
     await expect(graffle.query.objectWithArgs({ $: { id: `x` }, id: true })).resolves.toEqual({ id: `x` })
   })
   test(`union found`, async () => {
-    await expect(graffle.query.unionFooBar({ onFoo: { id: true } })).resolves.toEqual({ id: db.id })
+    await expect(graffle.query.unionFooBar({ ___on_Foo: { id: true } })).resolves.toEqual({ id: db.id })
   })
   test(`union not found`, async () => {
-    await expect(graffle.query.unionFooBar({ onBar: { int: true } })).resolves.toEqual({})
+    await expect(graffle.query.unionFooBar({ ___on_Bar: { int: true } })).resolves.toEqual({})
   })
   test(`interface fields`, async () => {
     await expect(graffle.query.interface({ id: true })).resolves.toEqual({ id: db.id })
   })
   test(`interface instance found`, async () => {
-    await expect(graffle.query.interface({ onObject1ImplementingInterface: { int: true } })).resolves.toEqual({ int: db.int })
+    await expect(graffle.query.interface({ ___on_Object1ImplementingInterface: { int: true } })).resolves.toEqual({ int: db.int })
   })
   test(`interface instance not found`, async () => {
-    await expect(graffle.query.interface({ onObject2ImplementingInterface: { boolean: true } })).resolves.toEqual({})
-  })
-  describe(`orThrow`, () => {
-    test(`without error`, async () => {
-      await expect(graffle.query.objectWithArgsOrThrow({ $: { id: `x` }, id: true })).resolves.toEqual({ id: `x`, __typename: `Object1` })
-    })
-    test(`with error`, async () => {
-      await expect(graffle.query.errorOrThrow()).rejects.toMatchObject(db.errorAggregate)
-    })
+    await expect(graffle.query.interface({ ___on_Object2ImplementingInterface: { boolean: true } })).resolves.toEqual({})
   })
 })

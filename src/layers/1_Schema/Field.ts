@@ -4,6 +4,8 @@ import type { Hybrid } from './Hybrid/__.js'
 import type { Output } from './Output/__.js'
 
 export type Field<$Type extends Output.Any, $Args extends Args<any> | null> = {
+  // todo when generating schema keep track of the unwrapped type too to avoid IDE runtime cost to calcualte it
+  // typeUnwrapped: $NamedType
   type: $Type
   args: $Args
 }
@@ -22,6 +24,7 @@ export const field = <$Type extends Output.Any, $Args extends null | Args<any> =
 type FieldType =
   | Hybrid.Enum
   | Hybrid.Scalar.Any
+  // | Output.__typename
   | Output.List<any>
   | Output.Nullable<any>
   | Output.Object$2<string, any>

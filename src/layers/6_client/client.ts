@@ -1,7 +1,10 @@
 import { type ExecutionResult, GraphQLSchema, type TypedQueryDocumentNode } from 'graphql'
 import type { Anyware } from '../../lib/anyware/__.js'
 import type { Errors } from '../../lib/errors/__.js'
-import { isOperationTypeName, operationTypeNameToRootTypeName, type RootTypeName } from '../../lib/graphql.js'
+import type { Fluent } from '../../lib/fluent/__.js'
+import type { FnProperty, ToFnPropertyObject } from '../../lib/fluent/Fluent.js'
+import { type RootTypeName } from '../../lib/graphql.js'
+import type { HKT } from '../../lib/hkt/__.js'
 import { mergeHeadersInit, mergeRequestInit } from '../../lib/http.js'
 import { proxyGet, type SimplifyExceptError } from '../../lib/prelude.js'
 import type { BaseInput, BaseInput_, TypedDocumentString } from '../0_functions/types.js'
@@ -12,10 +15,8 @@ import type { DocumentObject, GraphQLObjectSelection } from '../3_SelectionSet/e
 import { Core } from '../5_core/__.js'
 import { type HookDefEncode } from '../5_core/core.js'
 import { type InterfaceRaw, type TransportHttp } from '../5_core/types.js'
-import type { DocumentFn } from './document.js'
-import { createExtension, type Extension, type ExtensionCallBuilderMerge } from './extension.js'
+import { createExtension, type Extension } from './extension.js'
 import { handleOutput, type RawResolveOutputReturnRootType } from './handleOutput.js'
-import type { BuilderRequestMethodsGeneratedRootTypes } from './RootTypeMethods.js'
 import { type Config } from './Settings/Config.js'
 import { type InputStatic } from './Settings/Input.js'
 import type { AddIncrementalInput, WithInput } from './Settings/inputIncrementable/inputIncrementable.js'
@@ -68,6 +69,7 @@ type RawParameters = [BaseInput_]
 //   options?: Omit<BaseInput, 'document'>,
 // ]
 //
+
 const resolveRawParameters = (parameters: RawParameters) => {
   // return parameters.length === 2
   // ? { document: parameters[0], ...parameters[1] }
@@ -76,16 +78,139 @@ const resolveRawParameters = (parameters: RawParameters) => {
   return parameters[0]
 }
 
+export type ClientContext = {
+  config: Config
+  schemaIndex: Schema.Index | null
+}
+
+export type FnClient<$Context extends ClientContext = ClientContext> = Fluent.Create<$Context>
+
+export type FnClientState = Fluent.State<ClientContext>
+
+export type FnParametersProperty = Fluent.FnParametersProperty<FnClient, FnClientState>
+
+export type FnParametersMerge = Fluent.ParametersFnMerge<FnClientState['context']>
+
+export type Client<$Context extends ClientContext> = Fluent.Materialize<
+  Fluent.AddMany<
+    Fluent.Create<$Context>,
+    [
+      FnInternal,
+      FnRequestMethods,
+      FnRetry,
+      FnWith,
+      UseFn,
+      FnAnyware,
+    ]
+  >
+>
+
+export interface UseFn extends Fluent.FnProperty<`use`> {
+  // @ts-expect-error untyped params
+  return: Use<this['params']>
+}
+
+export interface FnRetry extends Fluent.FnProperty<`retry`> {
+  // @ts-expect-error untyped params
+  return: Retry<this['params']>
+}
+
+export interface FnInternal extends Fluent.FnMerge {
+  // @ts-expect-error untyped params
+  return: Internal<this['params']>
+}
+
+export interface FnRequestMethods extends Fluent.FnMerge {
+  // @ts-expect-error untyped params
+  return: BuilderRequestMethods<this['params']>
+}
+
+export interface FnWith extends Fluent.FnProperty<`with`> {
+  // @ts-expect-error untyped params
+  return: With<this['params']>
+}
+
+export interface FnAnyware extends Fluent.FnProperty<`anyware`> {
+  // @ts-expect-error untyped params
+  return: Anyware_<this['params']>
+}
+
+/**
+ * TODO
+ */
+export type Internal<$Args extends FnParametersMerge> = {
+  _: {
+    context: $Args
+  }
+}
+
+/**
+ * TODO Anyware Docs.
+ */
+export interface Anyware_<$Args extends FnParametersProperty> {
+  (
+    anyware: Anyware.Extension2<Core.Core<$Args['state']['context']['config']>>,
+  ): Fluent.IncrementNothing<$Args>
+}
+
+/**
+ * TODO Use Docs.
+ */
+export interface Use<$Args extends FnParametersProperty> {
+  <$Extension extends Extension>(extension?: $Extension): Fluent.IncrementUsingMerge<$Args, {
+    properties: $Extension['property'] extends FnProperty ? ToFnPropertyObject<$Extension['property']> : {}
+  }>
+}
+
+/**
+ * TODO Retry Docs.
+ */
+export interface Retry<$Args extends FnParametersProperty> {
+  (extension: Anyware.Extension2<Core.Core, { retrying: true }>): Fluent.IncrementNothing<$Args>
+}
+
+/**
+ * TODO With Docs.
+ */
+export interface With<$Args extends FnParametersProperty> {
+  <$Input extends WithInput<$Args['state']['context']['config']>>(
+    input: $Input,
+    // todo fixme
+    // eslint-disable-next-line
+    // @ts-ignore Passes after generation
+  ): IncrementWthNewConfig<$Args, AddIncrementalInput<$Args['state']['context']['config'], $Input>>
+}
+
+export type IncrementWthNewConfig<
+  $Parameters extends FnParametersProperty,
+  $ConfigNew extends ClientContext['config'],
+> = Fluent.IncrementWthNewContext<
+  $Parameters,
+  {
+    schemaIndex: $Parameters['state']['context']['schemaIndex']
+    config: $ConfigNew
+  }
+>
+
 // dprint-ignore
-export type BuilderRequestMethods<$Config extends Config, $Index extends null | Schema.Index >=
-  & BuilderRequestMethodsStatic<$Config>
+export type BuilderRequestMethods<$Context extends ClientContext>=
+  & BuilderRequestMethodsStatic<$Context['config']>
   & (
-    $Index extends Schema.Index
-      ? BuilderRequestMethodsGenerated<$Config, $Index>
-      : {}
+    $Context['schemaIndex'] extends null
+      ? {}
+      :
+        (
+          // eslint-disable-next-line
+          // @ts-ignore Passes after generation
+          & HKT.Call<GlobalRegistry.GetOrDefault<$Context['config']['name']>['interfaces']['Root'], $Context>
+          & {
+              // eslint-disable-next-line
+              // @ts-ignore Passes after generation
+              document: HKT.Call<GlobalRegistry.GetOrDefault<$Context['config']['name']>['interfaces']['Document'], $Context>
+            }
+        )
   )
 
-// todo no config needed?
 // dprint-ignore
 export type BuilderRequestMethodsStatic<$Config extends Config> = {
   raw: <$Data extends Record<string, any>, $Variables>(input: BaseInput<TypedQueryDocumentNode<$Data, $Variables>>) =>
@@ -94,63 +219,16 @@ export type BuilderRequestMethodsStatic<$Config extends Config> = {
       Promise<RawResolveOutputReturnRootType<$Config, $Data>>
 }
 
-// dprint
-export type BuilderRequestMethodsGenerated<$Config extends Config, $Index extends Schema.Index> =
-  & BuilderRequestMethodsGeneratedStatic<$Config, $Index>
-  & BuilderRequestMethodsGeneratedRootTypes<$Config, $Index>
-
-export type BuilderRequestMethodsGeneratedStatic<$Config extends Config, $Index extends Schema.Index> = {
-  document: DocumentFn<$Config, $Index>
-}
-
-// dprint-ignore
-export type Client<$Index extends Schema.Index | null, $Config extends Config, $AdditionalMethods = unknown> =
-  {
-    internal: {
-      config: $Config
-    }
-  }
-  & $AdditionalMethods
-  & BuilderRequestMethodsStatic<$Config>
-  & (
-      $Index extends Schema.Index
-      // todo OmitDeeply
-      ? ClientTyped<$Index, $Config>
-      : {}  
-    )
-  & {
-      // eslint-disable-next-line
-      // @ts-ignore passes after generation
-      with: <$Input extends WithInput<$Config>>(input: $Input) =>
-        // eslint-disable-next-line
-        // @ts-ignore passes after generation
-        Client<$Index, AddIncrementalInput<$Config, $Input>>
-      use: <$Extension extends Extension>(extension: $Extension) =>
-        Client<$Index, $Config, $AdditionalMethods & ExtensionCallBuilderMerge<$Extension, { Index:$Index, Config:$Config, AdditionalMethods:$AdditionalMethods }>> 
-      anyware: (anyware: Anyware.Extension2<Core.Core<$Config>>) =>
-        Client<$Index, $Config, $AdditionalMethods> 
-      retry: (extension: Anyware.Extension2<Core.Core, { retrying: true }>) =>
-        Client<$Index, $Config>
-    }
-
-export type ClientTyped<$Index extends Schema.Index, $Config extends Config> =
-  & BuilderRequestMethodsGeneratedStatic<$Config, $Index>
-  & BuilderRequestMethodsGeneratedRootTypes<$Config, $Index>
-
 // dprint-ignore
 type Create = <$Input extends InputStatic<GlobalRegistry.SchemaUnion>>(input: $Input) =>
-  Client<
-    // eslint-disable-next-line
-    // @ts-ignore passes after generation
-    $Input['schemaIndex'] extends Schema.Index
-       // v-- TypeScript does not understand this type satisfies the Index constraint.
-       // v   It does after generation.
+  // eslint-disable-next-line
+  // @ts-ignore fixme
+  Client<{
+    config: InputToConfig<$Input>,
+    schemaIndex: $Input['schemaIndex'] extends Schema.Index
       ? GlobalRegistry.GetSchemaIndexOrDefault<$Input['name']>
-      : null,
-    // eslint-disable-next-line
-    // @ts-ignore fixme
-    InputToConfig<$Input>
-  >
+      : null
+  }>
 
 export const create: Create = (input) => {
   const initialState = {
@@ -293,29 +371,19 @@ const createWithState = (
 
   // @ts-expect-error ignoreme
   const clientDirect: Client = {
-    internal: {
-      config: context.config,
+    _: {
+      context: {
+        config: context.config,
+      },
     },
     raw: async (...args: RawParameters) => {
       const input = resolveRawParameters(args)
       // const contextWithOutputSet = updateContextConfig(context, { ...context.config, output: traditionalGraphqlOutput })
       return await runRaw(context, input)
     },
-    // rawOrThrow: async (...args: RawParameters) => {
-    //   const input = resolveRawParameters(args)
-    //   const contextWithOutputSet = updateContextConfig(context, {
-    //     ...context.config,
-    //     output: traditionalGraphqlOutputThrowing,
-    //   })
-    //   return await runRaw(contextWithOutputSet, input)
-    // },
     rawString: async (...args: RawParameters) => {
       return await clientDirect.raw(...args)
     },
-    // rawStringOrThrow: async (...args: RawParameters) => {
-    //   // eslint-disable-next-line
-    //   return await client.rawOrThrow(...args)
-    // },
     with: (input: WithInput) => {
       return createWithState({
         ...state,
@@ -355,7 +423,35 @@ const createWithState = (
 
     Object.assign(clientDirect, {
       document: (documentObject: DocumentObject) => {
-        const hasMultipleOperations = Object.keys(documentObject).length > 1
+        const queryOperationNames = Object.keys(documentObject.queries ?? {})
+        const mutationOperationNames = Object.keys(documentObject.mutations ?? {})
+        const operationNames = [
+          ...queryOperationNames,
+          ...mutationOperationNames,
+        ]
+
+        // todo test case for this
+        const conflictingOperationNames = queryOperationNames.filter(_ => mutationOperationNames.includes(_))
+
+        if (conflictingOperationNames.length > 0) {
+          throw {
+            errors: [
+              new Error(`Document has multiple uses of operation name(s): ${conflictingOperationNames.join(`, `)}.`),
+            ],
+          }
+        }
+
+        const hasMultipleOperations = operationNames.length > 1
+
+        const hasNoOperations = operationNames.length === 0
+
+        if (hasNoOperations) {
+          throw {
+            errors: [new Error(`Document has no operations.`)],
+          }
+        }
+
+        const defaultOperationName = operationNames[0]!
 
         const processInput = (maybeOperationName: string) => {
           if (!maybeOperationName && hasMultipleOperations) {
@@ -363,22 +459,18 @@ const createWithState = (
               errors: [new Error(`Must provide operation name if query contains multiple operations.`)],
             }
           }
-          if (maybeOperationName && !(maybeOperationName in documentObject)) {
+          if (maybeOperationName && !(operationNames.includes(maybeOperationName))) {
             throw {
               errors: [new Error(`Unknown operation named "${maybeOperationName}".`)],
             }
           }
-          const operationName = maybeOperationName ? maybeOperationName : Object.keys(documentObject)[0]!
-          const rootTypeSelection = documentObject[operationName]
-          if (!rootTypeSelection) throw new Error(`Operation with name ${operationName} not found.`)
-          const operationTypeName = Object.keys(rootTypeSelection)[0]
-          if (!isOperationTypeName(operationTypeName)) throw new Error(`Operation has no selection set.`)
-          // @ts-expect-error
-          const selection = rootTypeSelection[operationTypeName] as GraphQLObjectSelection
+          const operationName = maybeOperationName ? maybeOperationName : defaultOperationName
+          const rootTypeName = queryOperationNames.includes(operationName) ? `Query` : `Mutation`
+          const selection = documentObject[rootTypeName === `Query` ? `queries` : `mutations`]![operationName]!
           return {
-            rootTypeName: operationTypeNameToRootTypeName[operationTypeName],
+            rootTypeName,
             selection,
-          }
+          } as const
         }
 
         return {
@@ -404,9 +496,9 @@ const createWithState = (
     }
 
     return undefined
-  }) as any as Client<any, any>
+  }) as any
 
-  return clientProxy as any
+  return clientProxy
 }
 
 // const updateContextConfig = <$Context extends Context>(context: $Context, config: Config): $Context => {

@@ -1,4 +1,6 @@
 import {
+  getNamedType,
+  getNullableType,
   type GraphQLArgument,
   type GraphQLEnumType,
   type GraphQLInputField,
@@ -9,6 +11,7 @@ import {
   type GraphQLOutputType,
   GraphQLScalarType,
   type GraphQLUnionType,
+  isNullableType,
 } from 'graphql'
 import {
   type GraphQLObjectType,
@@ -29,22 +32,16 @@ import {
   hasSubscription,
   isAllArgsNullable,
   isAllInputObjectFieldsNullable,
-  unwrapToNamed,
-  unwrapToNonNull,
 } from '../../../lib/graphql.js'
-import { createCodeGenerator } from '../createCodeGenerator.js'
+import { createModuleGenerator } from '../createCodeGenerator.js'
 import type { Config } from '../generateCode.js'
 import { moduleNameData } from './Data.js'
 import { moduleNameScalar } from './Scalar.js'
 import { moduleNameSchemaIndex } from './SchemaIndex.js'
 
-export const { generate: generateRuntimeSchema, moduleName: moduleNameSchemaRuntime } = createCodeGenerator(
+export const { generate: generateRuntimeSchema, moduleName: moduleNameSchemaRuntime } = createModuleGenerator(
   `SchemaRuntime`,
-  (
-    config,
-  ) => {
-    const code: string[] = []
-
+  ({ config, code }) => {
     code.push(`/* eslint-disable */\n`)
     code.push(
       `
@@ -74,7 +71,7 @@ export const { generate: generateRuntimeSchema, moduleName: moduleNameSchemaRunt
       index(config),
     )
 
-    return code.join(`\n`)
+    return code
   },
 )
 
@@ -85,6 +82,19 @@ const index = (config: Config) => {
     Subscription: hasSubscription(config.typeMapByKind),
   }
   // todo input objects for decode/encode input object fields
+  const unions = config.typeMapByKind.GraphQLUnionType.map(type => type.name).join(`,\n`)
+  const objects = config.typeMapByKind.GraphQLObjectType.map(type => type.name).join(`,\n`)
+  const interfaces = config.typeMapByKind.GraphQLInterfaceType.map(type => type.name).join(`,\n`)
+  const roots = config.typeMapByKind.GraphQLRootType.map(type => type.name).join(`,\n`)
+  const enums = config.typeMapByKind.GraphQLEnumType.map(type => type.name).join(`,\n`)
+  const allTypes = [
+    roots,
+    unions,
+    objects,
+    interfaces,
+    enums,
+  ].filter(_ => _).join(`,\n`)
+
   return `
     export const $Index: Index = {
       name: Data.Name,
@@ -97,14 +107,17 @@ const index = (config: Config) => {
         Mutation ${rootTypesPresence.Mutation ? `` : `:null`},
         Subscription ${rootTypesPresence.Subscription ? `` : `:null`}
       },
+      allTypes: {
+        ${allTypes}
+      },
       objects: {
-        ${config.typeMapByKind.GraphQLObjectType.map(type => type.name).join(`,\n`)}
+        ${objects}
       },
       unions: {
-        ${config.typeMapByKind.GraphQLUnionType.map(type => type.name).join(`,\n`)}
+        ${unions}
       },
       interfaces: {
-        ${config.typeMapByKind.GraphQLInterfaceType.map(type => type.name).join(`,\n`)}
+        ${interfaces}
       },
       error: {
         objects: {
@@ -119,7 +132,7 @@ const index = (config: Config) => {
       if (!rootType) return `${rootTypeName}: {}`
 
       const resultFields = Object.values(rootType.getFields()).filter((field) => {
-        const type = unwrapToNamed(field.type)
+        const type = getNamedType(field.type)
         return isUnionType(type)
           && type.getTypes().some(_ => config.error.objects.some(__ => __.name === _.name))
       }).map((field) => field.name)
@@ -189,11 +202,10 @@ const inputObject = (config: Config, type: GraphQLInputObjectType) => {
     }, ${Code.boolean(isFieldsAllNullable)})
 	`
 }
-unwrapToNamed
 
 const inputField = (config: Config, field: GraphQLInputField): string => {
   const type = buildType(`input`, config, field.type)
-  const isNeedThunk = isInputObjectType(unwrapToNamed(field.type))
+  const isNeedThunk = isInputObjectType(getNamedType(field.type))
   return `$.Input.Field(${isNeedThunk ? `() => ${type}` : type})`
 }
 
@@ -233,7 +245,8 @@ const thunk = (code: string) => `() => ${code}`
 
 const buildType = (direction: 'input' | 'output', config: Config, node: AnyClass) => {
   const ns = direction === `input` ? `Input` : `Output`
-  const { ofType: nodeInner, nullable } = unwrapToNonNull(node)
+  const nullable = isNullableType(node)
+  const nodeInner = getNullableType(node)
 
   if (isNamedType(nodeInner)) {
     const namedTypeReference = dispatchNamedType(config, nodeInner)

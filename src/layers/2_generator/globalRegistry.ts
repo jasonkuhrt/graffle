@@ -1,3 +1,4 @@
+import type { HKT } from '../../entrypoints/utilities-for-generated.js'
 import type { Values } from '../../lib/prelude.js'
 import type { TSError } from '../../lib/TSError.js'
 import type { Schema } from '../1_Schema/__.js'
@@ -17,6 +18,11 @@ type SomeSchema = {
   featureOptions: {
     schemaErrors: boolean
   }
+  interfaces: {
+    MethodsSelect: {}
+    MethodsRoot: HKT.Fn
+    Document: HKT.Fn
+  }
   /**
    * If the code was generated with introspection, the URL used is taken as the default schema URL.
    */
@@ -28,6 +34,9 @@ type ZeroSchema = {
   index: { name: never }
   featureOptions: {
     schemaErrors: false
+  }
+  interfaces: {
+    MethodsSelect: {}
   }
   defaultSchemaUrl: null
 }
@@ -70,6 +79,16 @@ export namespace GlobalRegistry {
   // eslint-disable-next-line
   // @ts-ignore passes after generation
   export type SchemaIndexDefault = GetSchemaIndex<DefaultSchemaName>
+
+  // dprint-ignore
+  export type GetOrDefault<$Name extends SchemaNames | undefined> =
+    $Name extends SchemaNames
+      // eslint-disable-next-line
+      // @ts-ignore passes after generation
+      ? GraffleGlobalTypes.Schemas[$Name]
+      // eslint-disable-next-line
+      // @ts-ignore passes after generation
+      : GraffleGlobalTypes.Schemas[DefaultSchemaName]
 
   // dprint-ignore
   export type GetSchemaIndexOrDefault<$Name extends SchemaNames | undefined> =

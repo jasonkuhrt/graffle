@@ -155,24 +155,20 @@ export type ResolveOutputReturnRootType<$Config extends Config, $Index extends S
    | (
         $Config['output']['envelope']['enabled'] extends true
           ? Envelope<$Config, IfConfiguredStripSchemaErrorsFromDataRootType<$Config, $Index, $Data>>
-          : Simplify<IfConfiguredStripSchemaErrorsFromDataRootType<$Config, $Index, $Data>>
+          : IfConfiguredStripSchemaErrorsFromDataRootType<$Config, $Index, $Data>
      )
  >
 
 // dprint-ignore
-export type ResolveOutputReturnRootField<$Config extends Config, $Index extends Schema.Index, $Data, $DataRaw = undefined> =
-  SimplifyExceptError<
+export type ResolveOutputReturnRootField<$Config extends Config, $Index extends Schema.Index, $RootFieldName extends string, $Data> =
     | IfConfiguredGetOutputErrorReturns<$Config>
     | (
         $Config['output']['envelope']['enabled'] extends true
           // todo: a typed execution result that allows for additional error types.
           // currently it is always graphql execution error however envelope configuration can put more errors into that.
-          ? Envelope<$Config, $DataRaw extends undefined
-              ? Simplify<IfConfiguredStripSchemaErrorsFromDataRootField<$Config, $Index, $Data>>
-              : Simplify<IfConfiguredStripSchemaErrorsFromDataRootType<$Config, $Index, $DataRaw>>>
-          : Simplify<IfConfiguredStripSchemaErrorsFromDataRootField<$Config, $Index, $Data>>
+          ? Envelope<$Config, IfConfiguredStripSchemaErrorsFromDataRootType<$Config, $Index, { [_ in $RootFieldName]: $Data }>>
+          : IfConfiguredStripSchemaErrorsFromDataRootField<$Config, $Index, $Data>
       )
-  >
 
 // dprint-ignore
 type IfConfiguredGetOutputErrorReturns<$Config extends Config> =

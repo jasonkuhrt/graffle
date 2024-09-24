@@ -93,6 +93,6 @@ mutation {
 Example:
 
 ```ts
-const result = await client.mutation.fooOrThrow({ onBar: { id } })
+const result = await client.throws().mutation.foo({ onBar: { id } })
 result // type is narrowed to just Bar case.
 ```

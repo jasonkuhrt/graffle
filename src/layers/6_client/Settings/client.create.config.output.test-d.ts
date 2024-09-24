@@ -5,6 +5,7 @@ import { expectTypeOf, test } from 'vitest'
 import { Graffle } from '../../../../tests/_/schema/generated/__.js'
 import { schema } from '../../../../tests/_/schema/schema.js'
 import { type GraphQLExecutionResultError } from '../../../lib/graphql.js'
+import { AssertIsEqual } from '../../../lib/prelude.js'
 import type { ErrorsOther } from '../client.js'
 import type { Envelope } from '../handleOutput.js'
 
@@ -81,7 +82,8 @@ describe('.envelope', () => {
       expectTypeOf(g.query.resultNonNull(resultFieldSelect)).resolves.toEqualTypeOf<ResultFieldMethodResultEnabled>()
     })
     test('query.$batch', () => {
-      expectTypeOf(g.query.$batch({ __typename: true, idNonNull: true })).resolves.toEqualTypeOf<ExecutionResult<{ __typename: 'Query'; idNonNull: string }>>()
+      const result = g.query.$batch({ __typename: true, idNonNull: true })
+      AssertIsEqual<typeof result, ExecutionResult<{ __typename: 'Query'; idNonNull: string }>>
     })
   })
   test('object enables it', async () => {
@@ -181,7 +183,7 @@ describe('.errors.schema', () => {
   })
   describe('envelope.schema', () => {
     const g = G({ schema, output: { envelope: { errors: { schema: true } }, errors: { schema: 'return' } } })
-    type Config = typeof g.internal.config
+    type Config = typeof g._.context.config
     test('query.<resultFieldMethod>', async () => {
       // todo: once we have execution result with type variable errors, then enhance this test to assert that the result errors come through in the errors field.
       expectTypeOf(g.query.resultNonNull(resultFieldSelect)).resolves.toEqualTypeOf<

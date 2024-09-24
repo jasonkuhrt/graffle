@@ -4,7 +4,7 @@ import { Graffle } from '../../../tests/_/schema/generated/__.js'
 import { isError } from '../../../tests/_/schema/generated/modules/Error.js'
 import * as Schema from '../../../tests/_/schema/schema.js'
 
-const graffle = Graffle.create({ schema: Schema.schema })
+const graffle = Graffle.create({ schema: Schema.schema, output: { errors: { schema: false } } })
 
 test('isError utility function narrows for error objects', async () => {
   const result = await graffle.query.result({ $: { case: 'Object1' }, __typename: true })

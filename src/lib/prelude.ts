@@ -1,6 +1,5 @@
-import type { IsUnknown, Simplify } from 'type-fest'
+import type { IsEmptyObject, IsUnknown, Simplify } from 'type-fest'
 import type { ConditionalSimplify, ConditionalSimplifyDeep } from 'type-fest/source/conditional-simplify.js'
-import type { IsPlainObject } from 'type-fest/source/internal/object.js'
 
 /* eslint-disable */
 export type RemoveIndex<T> = {
@@ -93,6 +92,7 @@ export const entries = <T extends Record<string, any>>(obj: T) => Object.entries
 
 export const values = <T extends Record<string, unknown>>(obj: T): T[keyof T][] => Object.values(obj) as T[keyof T][]
 
+export type ExactNonEmpty<$Value, $Constraint> = IsEmptyObject<$Value> extends true ? never : Exact<$Value, $Constraint>
 // dprint-ignore
 export type Exact<$Value, $Constraint> =
   (
@@ -181,6 +181,8 @@ export type MaybeList<T> = T | T[]
 export type NotEmptyObject<T> = keyof T extends never ? never : T
 
 export type Values<T> = T[keyof T]
+
+export type ValuesOrEmptyObject<T> = keyof T extends never ? {} : T[keyof T]
 
 export type GetKeyOr<T, Key, Or> = Key extends keyof T ? T[Key] : Or
 
@@ -449,29 +451,21 @@ export type SuffixKeyNames<$Suffix extends string, $Object extends object> = {
   [$Key in keyof $Object & string as `${$Key}${$Suffix}`]: $Object[$Key]
 }
 
-// dprint-ignore
-export type SuffixMethodsDeep<$Suffix extends string, $Object> = {
-  [
-    $Key in keyof $Object & string
-    as $Object[$Key] extends AnyFunction
-      ? `${$Key}${$Suffix}`
-      : $Key
-  ]:
-    IsPlainObject<$Object[$Key]> extends true
-      ? SuffixMethodsDeep<$Suffix, $Object[$Key]>
-      : $Object[$Key]
-}
+export type UnionExpanded<$Union> = $Union
 
-type AnyFunction = (...args: any[]) => any
+export type mergeObjectArray<T extends [...any[]]> = T extends [infer $First, ...infer $Rest extends any[]]
+  ? $First & mergeObjectArray<$Rest>
+  : {}
 
-type _test = SimplifyDeep<
-  SuffixMethodsDeep<'Foo', {
-    a: () => void
-    b: {
-      c: () => void
-      d: {
-        e: () => void
-      }
-    }
-  }>
->
+export const identityProxy = new Proxy({}, {
+  get: () => (value: unknown) => value,
+})
+
+// todo just for tets, move to test lib
+
+export type IsEqual<A, B> = A extends B ? B extends A ? true : false : false
+
+export type AssertIsEqual<A, B> = IsEqual<A, B> extends true ? true : never
+
+export const AssertIsEqual = <A, B>(..._: AssertIsEqual<A, B> extends never ? [failure: `Types are not equal`] : []) =>
+  undefined

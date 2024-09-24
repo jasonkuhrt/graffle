@@ -1,3 +1,5 @@
+import { linesPrepend, linesTrim } from './text.js'
+
 export namespace Code {
   export const propertyAccess = (object: string, name: string) => `${object}.${name}`
   export const quote = (str: string) => `"${str}"`
@@ -14,7 +16,7 @@ export namespace Code {
   export const fields = (fieldTypes: string[]) => fieldTypes.join(`\n`)
   export const intersection = (a: string, b: string) => `${a} & ${b}`
   export const object = (fields: string) => `{\n${fields}\n}`
-  export const objectFromEntries = (entries: [string, string][]) =>
+  export const objectFromEntries = (entries: readonly (readonly [string, string])[]) =>
     Code.objectFrom(Object.fromEntries(entries.map(([name, type]) => [name, { type }])))
   export const objectFrom = (
     object: Record<
@@ -37,8 +39,14 @@ export namespace Code {
   export const type = (name: string, type: string) => `type ${name} = ${type}`
   export const interface$ = (name: string, object: string) => `interface ${name} ${object}`
   export const export$ = (thing: string) => `export ${thing}`
-  export const TSDoc = (content: string | null, block: string) =>
-    content === null ? block : `/**\n${prependLines(`* `, content) || `*`}\n*/\n${block}`
+  export const TSDoc = <$Content extends string | null>(content: $Content): $Content => {
+    return (content === null ? null : `/**\n${linesPrepend(`* `, linesTrim(content)) || `*`}\n*/`) as $Content
+  }
+  export const TSDocWithBlock = (content: string | null, block: string) => {
+    const tsDoc = TSDoc(content)
+    return tsDoc === null ? block : `${tsDoc}\n${block}`
+  }
+
   export const namespace = (name: string, content: string) => `namespace ${name} ${Code.object(content)}`
   export const group = (...content: string[]) => content.join(`\n`)
   export const commentSectionTitle = (title: string) => {
@@ -48,6 +56,59 @@ export namespace Code {
     const titleSuffixSpace = ` `.repeat(lineSize - (titlePrefixSpace.length + title.length))
     return `\n\n// ${line} //\n// ${titlePrefixSpace + title + titleSuffixSpace} //\n// ${line} //\n\n`
   }
-}
 
-const prependLines = (prepend: string, str: string) => str.split(`\n`).map((line) => `${prepend}${line}`).join(`\n`)
+  export const reservedTypeScriptInterfaceNames = [
+    `break`,
+    `case`,
+    `catch`,
+    `class`,
+    `const`,
+    `continue`,
+    `debugger`,
+    `default`,
+    `delete`,
+    `do`,
+    `else`,
+    `enum`,
+    `export`,
+    `extends`,
+    `false`,
+    `finally`,
+    `for`,
+    `function`,
+    `if`,
+    `import`,
+    `in`,
+    `instanceof`,
+    `new`,
+    `null`,
+    `return`,
+    `super`,
+    `switch`,
+    `this`,
+    `throw`,
+    `true`,
+    `try`,
+    `typeof`,
+    `var`,
+    `void`,
+    `while`,
+    `with`,
+    `implements`,
+    `any`,
+    `boolean`,
+    `never`,
+    `number`,
+    `object`,
+    `string`,
+    `symbol`,
+    `undefined`,
+    `unknown`,
+    `bigint`,
+    `break`,
+    `with`,
+    `break`,
+    `of`,
+    `interface`,
+  ]
+}

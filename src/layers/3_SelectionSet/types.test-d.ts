@@ -1,17 +1,7 @@
-import { assertType, expectTypeOf, test } from 'vitest'
-import type { Index } from '../../../tests/_/schema/generated/modules/SchemaIndex.js'
-import type { SelectionSet } from './__.js'
+import { assertType, test } from 'vitest'
+import type * as SelectionSets from '../../../tests/_/schema/generated/modules/SelectionSets.js'
 
-type Q = SelectionSet.Query<Index>
-
-test(`ParseAliasExpression`, () => {
-  expectTypeOf<SelectionSet.ParseAliasExpression<'a_as_b'>>().toEqualTypeOf<SelectionSet.Alias<'a', 'b'>>()
-  expectTypeOf<SelectionSet.ParseAliasExpression<'a'>>().toEqualTypeOf<'a'>()
-  expectTypeOf<SelectionSet.ParseAliasExpression<'$'>>().toEqualTypeOf<'$'>()
-  expectTypeOf<SelectionSet.ParseAliasExpression<'a_as_$'>>().toEqualTypeOf<'a_as_$'>()
-  expectTypeOf<SelectionSet.ParseAliasExpression<'$_as_b'>>().toEqualTypeOf<'$_as_b'>()
-  expectTypeOf<SelectionSet.ParseAliasExpression<'1_as_2'>>().toEqualTypeOf<'1_as_2'>()
-})
+type Q = SelectionSets.Query
 
 // dprint-ignore
 test(`Query`, () => {
@@ -24,8 +14,8 @@ test(`Query`, () => {
   assertType<Q>({ id: true })
   assertType<Q>({ id: true })
   assertType<Q>({ id: false })
-  assertType<Q>({ id: 1 })
-  assertType<Q>({ id: 0 })
+  // assertType<Q>({ id: 1 })
+  // assertType<Q>({ id: 0 })
   assertType<Q>({ id: undefined })
   // non-null
   assertType<Q>({ idNonNull: true })
@@ -33,10 +23,10 @@ test(`Query`, () => {
   // Custom Scalar
   assertType<Q>({ date: true })
   assertType<Q>({ date: false })
-  assertType<Q>({ date: 0 })
-  assertType<Q>({ date: 1 })
+  // assertType<Q>({ date: 0 })
+  // assertType<Q>({ date: 1 })
   assertType<Q>({ date: undefined })
-
+  
   // Enum
   assertType<Q>({ abcEnum: true })
 
@@ -50,20 +40,23 @@ test(`Query`, () => {
   assertType<Q>({ id2: true })
   // @ts-expect-error no a2
   assertType<Q>({ object: { a2: true } })
+  
+  // Object Nested
+  assertType<Q>({ objectList: {  } })
 
   // Union
   assertType<Q>({ unionFooBar: { __typename: true } })
-  assertType<Q>({ unionFooBar: { onFoo: { __typename: true } } })
-  assertType<Q>({ unionFooBar: { onFoo: { id: true } } })
+  assertType<Q>({ unionFooBar: { ___on_Foo: { __typename: true } } })
+  assertType<Q>({ unionFooBar: { ___on_Foo: { id: true } } })
   // @ts-expect-error no b
-  assertType<Q>({ unionFooBar: { onFoo: { id2: true } } })
-  assertType<Q>({ unionFooBar: { onBar: { __typename: true } } })
-  assertType<Q>({ unionFooBar: { onBar: { int: true } } })
+  assertType<Q>({ unionFooBar: { ___on_Foo: { id2: true } } })
+  assertType<Q>({ unionFooBar: { ___on_Bar: { __typename: true } } })
+  assertType<Q>({ unionFooBar: { ___on_Bar: { int: true } } })
   // @ts-expect-error no a
-  assertType<Q>({ unionFooBar: { onBar: { int2: true } } })
+  assertType<Q>({ unionFooBar: { ___on_Bar: { int2: true } } })
 
   // Union fragments Case
-  assertType<Q>({ lowerCaseUnion: { onLowerCaseObject: { id: true }, onLowerCaseObject2: { int: true } } })
+  assertType<Q>({ lowerCaseUnion: { ___on_lowerCaseObject: { id: true }, ___on_lowerCaseObject2: { int: true } } })
 
   // Interface
   assertType<Q>({ interface: { id: true } })
@@ -79,24 +72,50 @@ test(`Query`, () => {
   assertType<Q>({ interface: { id: true, int: true } })
   // @ts-expect-error needs fragment
   assertType<Q>({ interface: { id: true, boolean: true } })
-  assertType<Q>({ interface: { id: true, onObject1ImplementingInterface: { int: true } } })
-  assertType<Q>({ interface: { id: true, onObject2ImplementingInterface: { boolean: true } } })
+  assertType<Q>({ interface: { id: true, ___on_Object1ImplementingInterface: { int: true } } })
+  assertType<Q>({ interface: { id: true, ___on_Object2ImplementingInterface: { boolean: true } } })
   // @ts-expect-error incorrect implementor name
-  assertType<Q>({ interface: { id: true, onObject1ImplementingInterface2: { int: true } } })
+  assertType<Q>({ interface: { id: true, ___on_Object1ImplementingInterface2: { int: true } } })
   // directives work on fragments
-  assertType<Q>({ interface: { id: true, onObject1ImplementingInterface: { $include: true } } }) // todo should REQUIRE field selection
+  assertType<Q>({ interface: { id: true, ___on_Object1ImplementingInterface: { $include: true } } }) // todo should REQUIRE field selection
+  
+
+
+
 
   // Alias
+  // todo test that aliases are no supported on ___on_X polymorphic fields
+  
   // alias: enum
-  assertType<Q>({ abcEnum_as_enum: true })
+  assertType<Q>({ abcEnum: [`enum`, true] })
+  assertType<Q>({ __typename: [`kind`, true] })
+  assertType<Q>({ __typename: [`f`, true] })
   // alias: object
-  assertType<Q>({ object_as_o: { id: true } })
-  // @ts-expect-error invalid alias key format
-  assertType<Q>({ object_as_: { id: true } })
-  // @ts-expect-error invalid alias key format
-  assertType<Q>({ object_as: { id: true } })
-  // @ts-expect-error invalid alias key format
-  assertType<Q>({ object2_as_o: { id: true } })
+  assertType<Q>({ object: [`o`, { id: true }] })
+  // alias multiple 1
+  assertType<Q>({ object: [[`o`, { id: true }]] })
+  // alias multiple 2
+  assertType<Q>({ object: [[`o1`, { id: true }], [`o2`, { id: true }]] })
+  // alias complex
+  assertType<Q>({ objectNested: [[`o1`, { object: {___: {id: true}} }], [`o2`, { id: {$skip:true} }]] })
+  // alias Nested
+  assertType<Q>({ object: [`object2`, { id: [`id2`, true] }] })
+  // @ts-expect-error alias invalid one too many nested arrays
+  assertType<Q>({ object: [[[`o`, { id: true }]]] })
+  // @ts-expect-error alias invalid on union fragment
+  assertType<Q>({ unionFooBar: { ___on_Foo: [`x`, { id: true }] } })
+  // @ts-expect-error alias invalid on interface fragment
+  assertType<Q>({ interface: { ___on_Object1ImplementingInterface: [`x`, { id: true }] } })
+
+  // todo: We could achieve this by using a more expensive template literal type like `${Letter}${string}`
+  // Make that an opt-in feature since it will potentially decrease the IDE performance for everyone even those not benefiting much from this.
+  // //@ts-expect-error invalid alias key format
+  // assertType<Q>({ object: [``, { id: true }] })
+  
+  // We would have to pass the input through to Q so that it could parse the identifier. This would be complex and probably not worth it.
+  // Maybe this will get easier one day.
+  // // @ts-expect-error invalid alias key format
+  // assertType<Q>({ object: [`$$`, { id: true }] })
 
   // directives
   // @skip
@@ -107,12 +126,13 @@ test(`Query`, () => {
   assertType<Q>({ string: { $skip: { if: false } } })
   assertType<Q>({ string: { $skip: {} } })
   assertType<Q>({ string: { $skip: {} } })
+  assertType<Q>({ object: { string: { $skip: true } } })
   // assertType<S>({ string: skip() })
   // on object
   assertType<Q>({ object: { $skip: true, string: true } })
   // assertType<S>({ scalars: skip().select({ a: true }) })
   // on fragment
-  assertType<Q>({ unionFooBar: { onBar: { $skip: true, int: true } } })
+  assertType<Q>({ unionFooBar: { ___on_Bar: { $skip: true, int: true } } })
   // @include
   assertType<Q>({ string: { $include: true } })
   assertType<Q>({ string: { $include: false } })
@@ -143,6 +163,7 @@ test(`Query`, () => {
   assertType<Q>({ object: { ___: [{ $skip: true, int: true, id: true }] } })
   // On Root (Query)
   assertType<Q>({ ___: { id: true } })
+  // @ts-expect-error no directives on root type even within a field group
   assertType<Q>({ ___: { $skip: true, id: true } })
 
   // Arguments
@@ -161,6 +182,7 @@ test(`Query`, () => {
       id: true,
     },
   })
+  assertType<Q>({ id: true })
   // builder interface
   // assertType<S>({ foo: args({ ... }) })
   // all-optional on scalar
@@ -224,8 +246,8 @@ test(`Query`, () => {
   // @ts-expect-error no directives on scalars field
   assertType<Q>({ scalars: { $scalars: { $skip: true } } })
   // union fragment
-  assertType<Q>({ unionFooBar: { onBar: { $scalars: true } } })
-  assertType<Q>({ unionFooBarWithArgs: { $: { id: `abc` }, onBar: { $scalars: true } } })
+  assertType<Q>({ unionFooBar: { ___on_Bar: { $scalars: true } } })
+  assertType<Q>({ unionFooBarWithArgs: { $: { id: `abc` }, ___on_Bar: { $scalars: true } } })
 
   // assertType<S>({ scalars: select() })
 

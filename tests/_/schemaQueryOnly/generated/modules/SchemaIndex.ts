@@ -1,7 +1,6 @@
 /* eslint-disable */
-
 import type * as Data from './Data.js'
-
+import type * as MethodsRoot from './MethodsRoot.js'
 import type * as Schema from './SchemaBuildtime.js'
 
 export interface Index {
@@ -12,6 +11,9 @@ export interface Index {
     Query: Schema.Root.Query
     Mutation: null
     Subscription: null
+  }
+  allTypes: {
+    Query: Schema.Root.Query
   }
   objects: {}
   unions: {}

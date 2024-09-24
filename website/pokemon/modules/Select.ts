@@ -1,46 +1,63 @@
-import type { ResultSet, SelectionSet } from 'graffle/schema'
+import type { ResultSet } from 'graffle/schema'
 import * as Data from './Data.js'
 import type { Index } from './SchemaIndex.js'
+import type * as SelectionSets from './SelectionSets.js'
 
-// Runtime
-// -------
-
+//
+//
+//
+//
+//
+//
+// ==================================================================================================
+//                                              Runtime
+// ==================================================================================================
+//
+//
+//
+//
+//
+//
 import { createSelect } from 'graffle/client'
 export const Select = createSelect(Data.Name)
 
-// Buildtime
-// ---------
+//
+//
+//
+//
+//
+//
+// ==================================================================================================
+//                                             Buildtime
+// ==================================================================================================
+//
+//
+//
+//
+//
+//
 
 export namespace Select {
   // Root Types
   // ----------
-
-  export type Mutation<$SelectionSet extends SelectionSet.Root<Index, 'Mutation'>> = ResultSet.Root<
-    $SelectionSet,
-    Index,
-    'Mutation'
-  >
-
-  export type Query<$SelectionSet extends SelectionSet.Root<Index, 'Query'>> = ResultSet.Root<
-    $SelectionSet,
-    Index,
-    'Query'
-  >
-
+  export type Mutation<$SelectionSet extends SelectionSets.Mutation> = ResultSet.Root<$SelectionSet, Index, 'Mutation'>
+  export type Query<$SelectionSet extends SelectionSets.Query> = ResultSet.Root<$SelectionSet, Index, 'Query'>
   // Object Types
   // ------------
-
-  export type Pokemon<$SelectionSet extends SelectionSet.Object<Index['objects']['Pokemon'], Index>> =
-    ResultSet.Object$<$SelectionSet, Index['objects']['Pokemon'], Index>
-
-  export type Trainer<$SelectionSet extends SelectionSet.Object<Index['objects']['Trainer'], Index>> =
-    ResultSet.Object$<$SelectionSet, Index['objects']['Trainer'], Index>
-
+  export type Pokemon<$SelectionSet extends SelectionSets.Pokemon> = ResultSet.Object$<
+    $SelectionSet,
+    Index,
+    Index['allTypes']['Pokemon']
+  >
+  export type Trainer<$SelectionSet extends SelectionSets.Trainer> = ResultSet.Object$<
+    $SelectionSet,
+    Index,
+    Index['allTypes']['Trainer']
+  >
   // Union Types
   // -----------
 
   // -- None --
-
   // Interface Types
   // ---------------
 

@@ -35,6 +35,7 @@ export interface Input {
     client?: string
     schema?: string
     scalars?: string
+    utilitiesForGenerated?: string
   }
 }
 

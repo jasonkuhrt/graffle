@@ -1,18 +1,21 @@
-import { isUnionType } from 'graphql'
+import { getNamedType, isUnionType } from 'graphql'
 import { Code } from '../../../lib/Code.js'
-import { hasMutation, hasQuery, hasSubscription, unwrapToNamed } from '../../../lib/graphql.js'
-import { createCodeGenerator } from '../createCodeGenerator.js'
+import { hasMutation, hasQuery, hasSubscription } from '../../../lib/graphql.js'
+import { createModuleGenerator } from '../createCodeGenerator.js'
 import { moduleNameData } from './Data.js'
+import { moduleNameMethodsRoot } from './MethodsRoot.js'
 import { moduleNameSchemaBuildtime } from './SchemaBuildtime.js'
 
-export const { generate: generateSchemaIndex, moduleName: moduleNameSchemaIndex } = createCodeGenerator(
+export const { generate: generateSchemaIndex, moduleName: moduleNameSchemaIndex } = createModuleGenerator(
   `SchemaIndex`,
-  (config) => {
+  ({ config, code }) => {
     const SchemaBuildtimeNamespace = `Schema`
-    const code = []
-    code.push(`/* eslint-disable */\n`)
-    code.push(`import type * as Data from './${moduleNameData}.js'\n`)
-    code.push(`import type * as ${SchemaBuildtimeNamespace} from './${moduleNameSchemaBuildtime}.js'\n`)
+    const MethodsRootNamespace = `MethodsRoot`
+    code.push(`/* eslint-disable */`)
+    code.push(`import type * as Data from './${moduleNameData}.js'`)
+    code.push(`import type * as ${SchemaBuildtimeNamespace} from './${moduleNameSchemaBuildtime}.js'`)
+    code.push(`import type * as ${MethodsRootNamespace} from './${moduleNameMethodsRoot}.js'`)
+    code.push(``)
 
     const rootTypesPresence = {
       Query: hasQuery(config.typeMapByKind),
@@ -20,17 +23,30 @@ export const { generate: generateSchemaIndex, moduleName: moduleNameSchemaIndex 
       Subscription: hasSubscription(config.typeMapByKind),
     }
 
-    const rootTypesPresent = Object.entries(rootTypesPresence).filter(([_, present]) => present !== undefined).map((
-      [_],
-    ) => _)
+    const root = config.typeMapByKind.GraphQLRootType.map(_ =>
+      [_.name, `${SchemaBuildtimeNamespace}.Root.${_.name}`] as const
+    )
+
+    const objects = config.typeMapByKind.GraphQLObjectType.map(_ =>
+      [_.name, `${SchemaBuildtimeNamespace}.Object.${_.name}`] as const
+    )
+    const unions = config.typeMapByKind.GraphQLUnionType.map(_ =>
+      [_.name, `${SchemaBuildtimeNamespace}.Union.${_.name}`] as const
+    )
+    const interfaces = config.typeMapByKind.GraphQLInterfaceType.map(
+      _ => [_.name, `${SchemaBuildtimeNamespace}.Interface.${_.name}`] as const,
+    )
+    const enums = config.typeMapByKind.GraphQLEnumType.map(
+      _ => [_.name, `${SchemaBuildtimeNamespace}.Enum.${_.name}`] as const,
+    )
 
     code.push(Code.export$(
       Code.interface$(
         `Index`,
         Code.objectFrom({
           name: `Data.Name`,
-          RootTypesPresent: `[${rootTypesPresent.map((_) => Code.quote(_)).join(`, `)}]`,
-          RootUnion: rootTypesPresent.map(_ => `${SchemaBuildtimeNamespace}.Root.${_}`).join(`|`),
+          RootTypesPresent: `[${config.rootTypesPresent.map((_) => Code.quote(_.name)).join(`, `)}]`,
+          RootUnion: config.rootTypesPresent.map(_ => `${SchemaBuildtimeNamespace}.Root.${_.name}`).join(`|`),
           Root: {
             type: Code.objectFrom({
               Query: rootTypesPresence.Query ? `${SchemaBuildtimeNamespace}.Root.Query` : null,
@@ -38,17 +54,16 @@ export const { generate: generateSchemaIndex, moduleName: moduleNameSchemaIndex 
               Subscription: rootTypesPresence.Subscription ? `${SchemaBuildtimeNamespace}.Root.Subscription` : null,
             }),
           },
-          objects: Code.objectFromEntries(
-            config.typeMapByKind.GraphQLObjectType.map(_ => [_.name, `${SchemaBuildtimeNamespace}.Object.${_.name}`]),
-          ),
-          unions: Code.objectFromEntries(
-            config.typeMapByKind.GraphQLUnionType.map(_ => [_.name, `${SchemaBuildtimeNamespace}.Union.${_.name}`]),
-          ),
-          interfaces: Code.objectFromEntries(
-            config.typeMapByKind.GraphQLInterfaceType.map(
-              _ => [_.name, `${SchemaBuildtimeNamespace}.Interface.${_.name}`],
-            ),
-          ),
+          allTypes: Code.objectFromEntries([
+            ...root,
+            ...enums,
+            ...objects,
+            ...unions,
+            ...interfaces,
+          ]),
+          objects: Code.objectFromEntries(objects),
+          unions: Code.objectFromEntries(unions),
+          interfaces: Code.objectFromEntries(interfaces),
           // todo jsdoc comment saying:
           // Objects that match this pattern name: /.../
           error: Code.objectFrom({
@@ -64,7 +79,7 @@ export const { generate: generateSchemaIndex, moduleName: moduleNameSchemaIndex 
                 if (!rootType) return `${rootTypeName}: {}`
 
                 const resultFields = Object.values(rootType.getFields()).filter((field) => {
-                  const type = unwrapToNamed(field.type)
+                  const type = getNamedType(field.type)
                   return isUnionType(type)
                     && type.getTypes().some(_ => config.error.objects.some(__ => __.name === _.name))
                 }).map((field) => field.name)
@@ -78,6 +93,6 @@ export const { generate: generateSchemaIndex, moduleName: moduleNameSchemaIndex 
       ),
     ))
 
-    return code.join(`\n`)
+    return code
   },
 )

@@ -4,13 +4,14 @@ import { db } from '../../../tests/_/db.js'
 import { createResponse, test } from '../../../tests/_/helpers.js'
 import { Graffle } from '../../../tests/_/schema/generated/__.js'
 import { oops } from '../../lib/anyware/specHelpers.js'
-import { OrThrow } from '../7_extensions/OrThrow/OrThrow.js'
+import { Throws } from '../7_extensions/Throws/Throws.js'
 
 const client = Graffle.create({ schema: 'https://foo', output: { defaults: { errorChannel: 'return' } } })
 const headers = { 'x-foo': 'bar' }
 
 test('using an extension returns a copy of the client', () => {
-  const client2 = client.use(OrThrow())
+  const client2 = client.use(Throws())
+  // @ts-expect-error fixme
   expect(client2 !== client).toBe(true)
 })
 

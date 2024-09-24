@@ -4,7 +4,6 @@ import type * as $Scalar from './Scalar.ts'
 // ------------------------------------------------------------ //
 //                             Root                             //
 // ------------------------------------------------------------ //
-
 export namespace Root {
   export type Query = $.Output.ObjectQuery<{
     continent: $.Field<
@@ -45,19 +44,15 @@ export namespace Root {
     >
   }>
 }
-
 // ------------------------------------------------------------ //
 //                             Enum                             //
 // ------------------------------------------------------------ //
-
 export namespace Enum {
   // -- no types --
 }
-
 // ------------------------------------------------------------ //
 //                         InputObject                          //
 // ------------------------------------------------------------ //
-
 export namespace InputObject {
   export type ContinentFilterInput = $.InputObject<'ContinentFilterInput', {
     code: $.Input.Field<$.Input.Nullable<InputObject.StringQueryOperatorInput>>
@@ -82,19 +77,15 @@ export namespace InputObject {
     regex: $.Input.Field<$.Input.Nullable<$Scalar.String>>
   }, true>
 }
-
 // ------------------------------------------------------------ //
 //                          Interface                           //
 // ------------------------------------------------------------ //
-
 export namespace Interface {
   // -- no types --
 }
-
 // ------------------------------------------------------------ //
 //                            Object                            //
 // ------------------------------------------------------------ //
-
 export namespace Object {
   export type Continent = $.Object$2<'Continent', {
     code: $.Field<$Scalar.ID, null>
@@ -144,11 +135,9 @@ export namespace Object {
     name: $.Field<$Scalar.String, null>
   }>
 }
-
 // ------------------------------------------------------------ //
 //                            Union                             //
 // ------------------------------------------------------------ //
-
 export namespace Union {
   // -- no types --
 }

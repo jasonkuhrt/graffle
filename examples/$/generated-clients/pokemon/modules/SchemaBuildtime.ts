@@ -4,7 +4,6 @@ import type * as $Scalar from './Scalar.ts'
 // ------------------------------------------------------------ //
 //                             Root                             //
 // ------------------------------------------------------------ //
-
 export namespace Root {
   export type Mutation = $.Output.ObjectMutation<{
     addPokemon: $.Field<
@@ -35,35 +34,27 @@ export namespace Root {
     trainers: $.Field<$.Output.Nullable<$.Output.List<Object.Trainer>>, null>
   }>
 }
-
 // ------------------------------------------------------------ //
 //                             Enum                             //
 // ------------------------------------------------------------ //
-
 export namespace Enum {
   // -- no types --
 }
-
 // ------------------------------------------------------------ //
 //                         InputObject                          //
 // ------------------------------------------------------------ //
-
 export namespace InputObject {
   // -- no types --
 }
-
 // ------------------------------------------------------------ //
 //                          Interface                           //
 // ------------------------------------------------------------ //
-
 export namespace Interface {
   // -- no types --
 }
-
 // ------------------------------------------------------------ //
 //                            Object                            //
 // ------------------------------------------------------------ //
-
 export namespace Object {
   export type Pokemon = $.Object$2<'Pokemon', {
     attack: $.Field<$.Output.Nullable<$Scalar.Int>, null>
@@ -80,11 +71,9 @@ export namespace Object {
     pokemon: $.Field<$.Output.Nullable<$.Output.List<Object.Pokemon>>, null>
   }>
 }
-
 // ------------------------------------------------------------ //
 //                            Union                             //
 // ------------------------------------------------------------ //
-
 export namespace Union {
   // -- no types --
 }

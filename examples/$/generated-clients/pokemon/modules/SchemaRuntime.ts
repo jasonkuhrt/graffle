@@ -1,10 +1,8 @@
 /* eslint-disable */
-
 import * as $ from '../../../../../src/entrypoints/schema.js'
 import * as Data from './Data.js'
 import * as $Scalar from './Scalar.js'
 import type { Index } from './SchemaIndex.js'
-
 export const $defaultSchemaUrl = undefined
 
 // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
@@ -54,7 +52,6 @@ export const Query = $.Object$(`Query`, {
   // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
   trainers: $.field($.Output.Nullable($.Output.List(() => Trainer))),
 })
-
 export const $Index: Index = {
   name: Data.Name,
   RootTypesPresent: ['Query', 'Mutation'] as const,
@@ -63,6 +60,12 @@ export const $Index: Index = {
     Query,
     Mutation,
     Subscription: null,
+  },
+  allTypes: {
+    Mutation,
+    Query,
+    Pokemon,
+    Trainer,
   },
   objects: {
     Pokemon,

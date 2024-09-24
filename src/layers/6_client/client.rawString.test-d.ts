@@ -17,7 +17,7 @@ describe(`TypedDocumentString with just data (no variables)`, () => {
 
   test(`envelope data is typed`, () => {
     expectTypeOf(g.rawString({ document })).resolves.toEqualTypeOf<
-      RawResolveOutputReturnRootType<typeof g.internal.config, { id: string }>
+      RawResolveOutputReturnRootType<typeof g._.context.config, { id: string }>
     >()
   })
   test('variables are not allowed to be passed in', () => {
@@ -35,7 +35,7 @@ describe(`TypedQueryDocumentNode with data and optional variables`, () => {
 
   // dprint-ignore
   test(`envelope data is typed`, () => {
-    expectTypeOf(g.rawString({ document })).resolves.toEqualTypeOf<RawResolveOutputReturnRootType<typeof g.internal.config, { id: string }>>()
+    expectTypeOf(g.rawString({ document })).resolves.toEqualTypeOf<RawResolveOutputReturnRootType<typeof g._.context.config, { id: string }>>()
   })
   test('variables are typed and allowed to be passed in or omitted', () => {
     // Expect no type errors below

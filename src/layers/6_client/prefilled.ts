@@ -20,7 +20,7 @@ export const createPrefilled: CreatePrefilled = (name, schemaIndex, schemaUrl) =
 
 // dprint-ignore
 export type CreatePrefilled =
-<$Name extends GlobalRegistry.SchemaNames>(name: $Name, schemaIndex: Schema.Index, schemaUrl?: URL) =>
+<const $Name extends GlobalRegistry.SchemaNames>(name: $Name, schemaIndex: Schema.Index, schemaUrl?: URL) =>
 	<
 		// eslint-disable-next-line
 		// @ts-ignore passes after generation
@@ -39,7 +39,11 @@ export type CreatePrefilled =
 	) =>
 		// eslint-disable-next-line
 		// @ts-ignore passes after generation
-		Client<GlobalRegistry.GetSchemaIndexOrDefault<$Name>, InputToConfig<$Input>>
+ 		Client<{
+			// @ts-expect-error fixme - TS cannot figure out that name input meets constraint
+			config: InputToConfig<$Input & { name: $Name }>,
+			schemaIndex: GlobalRegistry.GetSchemaIndexOrDefault<$Name>
+		}>
 
 // dprint-ignore
 export type InputPrefilled<$Schema extends GlobalRegistry.SchemaUnion> =
