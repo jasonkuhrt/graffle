@@ -4,8 +4,8 @@ import { assertArray, mapValues } from '../../lib/prelude.js'
 import type { Object$2, Schema } from '../1_Schema/__.js'
 import { Output } from '../1_Schema/__.js'
 import { readMaybeThunk } from '../1_Schema/core/helpers.js'
-import type { GraphQLObject } from '../4_ResultSet/runtime.js'
-import { assertGraphQLObject } from '../4_ResultSet/runtime.js'
+import type { GraphQLObject } from '../3_ResultSet/runtime.js'
+import { assertGraphQLObject } from '../3_ResultSet/runtime.js'
 
 export const decode = <$Data extends ExecutionResult['data']>(index: Schema.Object$2, data: $Data): $Data => {
   if (!data) return data

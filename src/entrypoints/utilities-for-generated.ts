@@ -1,5 +1,5 @@
 export { type Simplify } from 'type-fest'
-export * from '../layers/3_SelectionSet/__.js'
+export * from '../layers/2_SelectionSet/__.js'
 export { type DocumentRunner } from '../layers/6_client/document.js'
 export type {
   ConfigGetOutputError,

@@ -41,7 +41,7 @@ type GetVariablesInputFromDocumentNode<$Document extends TypedQueryDocumentNode>
       : { variables?: VariablesOf<$Document> }
     : {}
 
-export type HasVariables<$Document extends TypedQueryDocumentNode | TypedDocumentString> = Negate<
+type HasVariables<$Document extends TypedQueryDocumentNode | TypedDocumentString> = Negate<
   IsEmptyObject<VariablesOf<$Document>>
 >
 

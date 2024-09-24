@@ -1,6 +1,6 @@
 import type { IsUnknown } from 'type-fest'
 import type { ConfigManager } from '../../../lib/prelude.js'
-import type { GlobalRegistry } from '../../2_generator/globalRegistry.js'
+import type { GlobalRegistry } from '../../4_generator/globalRegistry.js'
 import { Transport, type TransportHttp, type TransportMemory } from '../../5_core/types.js'
 import { defaultMethodMode } from '../transportHttp/request.js'
 import { type Config, outputConfigDefault } from './Config.js'

@@ -1,1 +1,1 @@
-export { generateFiles as generate } from '../layers/2_generator/files.js'
+export { generateFiles as generate } from '../layers/4_generator/files.js'

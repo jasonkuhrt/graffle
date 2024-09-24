@@ -1,4 +1,4 @@
-import type { GlobalRegistry } from '../../../../2_generator/globalRegistry.js'
+import type { GlobalRegistry } from '../../../../4_generator/globalRegistry.js'
 import type { Codec } from './codec.js'
 import { JavaScriptScalarCodecs } from './nativeScalarCodecs.js'
 

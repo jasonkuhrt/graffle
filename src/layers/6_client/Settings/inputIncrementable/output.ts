@@ -1,4 +1,4 @@
-import type { GlobalRegistry } from '../../../2_generator/globalRegistry.js'
+import type { GlobalRegistry } from '../../../4_generator/globalRegistry.js'
 import type { OutputChannel, OutputChannelConfig } from '../Config.js'
 import type { InputOutputEnvelopeLonghand } from '../Input.js'
 import type { IncrementableInputContext } from './inputIncrementable.js'
