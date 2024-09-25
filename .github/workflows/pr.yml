@@ -47,7 +47,7 @@ jobs:
       matrix:
         node: [20, 22]
         environment: [jsdom, node]
-    name: Node ${{ matrix.node }} @env ${{matrix.environment}}
+    name: test unit Node ${{ matrix.node }} @env ${{matrix.environment}}
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
@@ -61,7 +61,7 @@ jobs:
       matrix:
         node: [20, 22]
         environment: [jsdom, node]
-    name: Node ${{ matrix.node }} @env ${{matrix.environment}}
+    name: test examples Node ${{ matrix.node }} @env ${{matrix.environment}}
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
