@@ -10,7 +10,6 @@ export const serveSchema = async (input: { schema: GraphQLSchema; log?: boolean 
     schema,
     context: (initialContext) => {
       const tenant = initialContext.request.headers.get(`tenant`)
-      console.log(`tenant:`, tenant)
       return {
         tenant,
       }
