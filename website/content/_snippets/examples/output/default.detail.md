@@ -22,8 +22,7 @@ console.log(pokemons)
   { name: 'Pikachu' },
   { name: 'Charizard' },
   { name: 'Squirtle' },
-  { name: 'Bulbasaur' },
-  { name: 'Nano' }
+  { name: 'Bulbasaur' }
 ]
 ```
 <!-- dprint-ignore-end -->

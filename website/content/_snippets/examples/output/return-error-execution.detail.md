@@ -46,12 +46,12 @@ try {
 <!-- dprint-ignore-start -->
 ```txt
 ContextualAggregateError: One or more errors in the execution result.
-    at handleOutput (/some/path/to/handleOutput.ts:XX:XX)
-    at run (/some/path/to/client.ts:XX:XX)
+    at handleOutput (/some/path/to/handleOutput.ts:XX:XX:19)
+    at run (/some/path/to/client.ts:XX:XX:12)
     at process.processTicksAndRejections (node:internal/process/task_queues:XX:XX)
-    at async executeRootType (/some/path/to/client.ts:XX:XX)
-    at async executeRootTypeField (/some/path/to/client.ts:XX:XX)
-    at async <anonymous> (/some/path/to/output_return-error_return-error-execution__return-error-execution.ts:XX:XX) {
+    at async executeRootType (/some/path/to/client.ts:XX:XX:12)
+    at async executeRootTypeField (/some/path/to/client.ts:XX:XX:20)
+    at async <anonymous> (/some/path/to/output_return-error_return-error-execution__return-error-execution.ts:XX:XX:16) {
   context: {},
   cause: undefined,
   errors: [
@@ -68,12 +68,12 @@ ContextualAggregateError: One or more errors in the execution result.
         ]
       }
     ]
-        at <anonymous> (/some/path/to/graphqlHTTP.ts:XX:XX)
+        at <anonymous> (/some/path/to/graphqlHTTP.ts:XX:XX:47)
         at Array.map (<anonymous>)
-        at parseExecutionResult (/some/path/to/graphqlHTTP.ts:XX:XX)
-        at Object.unpack (/some/path/to/core.ts:XX:XX)
+        at parseExecutionResult (/some/path/to/graphqlHTTP.ts:XX:XX:28)
+        at Object.unpack (/some/path/to/core.ts:XX:XX:26)
         at process.processTicksAndRejections (node:internal/process/task_queues:XX:XX)
-        at async runHook (/some/path/to/runHook.ts:XX:XX) {
+        at async runHook (/some/path/to/runHook.ts:XX:XX:16) {
       path: [ 'addPokemon' ],
       locations: undefined,
       extensions: [Object: null prototype] {}
@@ -85,21 +85,21 @@ ContextualAggregateError: One or more errors in the execution result.
 <!-- dprint-ignore-start -->
 ```txt
 ContextualError: There was an error in the extension "anonymous" (use named functions to improve this error message) while running hook "encode".
-    at runPipeline (/some/path/to/runPipeline.ts:XX:XX)
+    at runPipeline (/some/path/to/runPipeline.ts:XX:XX:18)
     at process.processTicksAndRejections (node:internal/process/task_queues:XX:XX)
-    at async Object.run (/some/path/to/main.ts:XX:XX)
-    at async run (/some/path/to/client.ts:XX:XX)
-    at async executeRootType (/some/path/to/client.ts:XX:XX)
-    at async executeRootTypeField (/some/path/to/client.ts:XX:XX)
-    at async <anonymous> (/some/path/to/output_return-error_return-error-execution__return-error-execution.ts:XX:XX) {
+    at async Object.run (/some/path/to/main.ts:XX:XX:22)
+    at async run (/some/path/to/client.ts:XX:XX:20)
+    at async executeRootType (/some/path/to/client.ts:XX:XX:12)
+    at async executeRootTypeField (/some/path/to/client.ts:XX:XX:20)
+    at async <anonymous> (/some/path/to/output_return-error_return-error-execution__return-error-execution.ts:XX:XX:3) {
   context: {
     hookName: 'encode',
     source: 'extension',
     extensionName: 'anonymous'
   },
   cause: Error: Something went wrong.
-      at <anonymous> (/some/path/to/output_return-error_return-error-execution__return-error-execution.ts:XX:XX)
-      at applyBody (/some/path/to/main.ts:XX:XX)
+      at <anonymous> (/some/path/to/output_return-error_return-error-execution__return-error-execution.ts:XX:XX:13)
+      at applyBody (/some/path/to/main.ts:XX:XX:28)
       at process.processTicksAndRejections (node:internal/process/task_queues:XX:XX)
 }
 ```
