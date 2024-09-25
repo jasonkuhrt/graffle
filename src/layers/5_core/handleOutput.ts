@@ -5,20 +5,21 @@ import { Errors } from '../../lib/errors/__.js'
 import type { GraphQLExecutionResultError } from '../../lib/graphql.js'
 import { isRecordLikeObject, type SimplifyExceptError, type Values } from '../../lib/prelude.js'
 import type { Schema } from '../1_Schema/__.js'
-import { Transport } from '../5_core/types.js'
-import type { Context, ErrorsOther, GraffleExecutionResultVar, TypedContext } from './client.js'
+import type { Context, ErrorsOther, GraffleExecutionResultVar, TypedContext } from '../6_client/client.js'
 import {
   type Config,
   type ErrorCategory,
   isContextConfigTraditionalGraphQLOutput,
   type OutputChannelConfig,
   readConfigErrorCategoryOutputChannel,
-} from './Settings/Config.js'
+} from '../6_client/Settings/Config.js'
+import { type Result, resultReturn, resultThrow } from './hooks.js'
+import { Transport } from './types.js'
 
 export const handleOutput = (
   context: Context,
   result: GraffleExecutionResultVar,
-) => {
+): Result => {
   // If core errors caused by an abort error then raise it as a direct error.
   // This is an expected possible error. Possible when user cancels a request.
   if (context.config.transport.type === Transport.http && result instanceof Error && isAbortError(result.cause)) {
@@ -26,8 +27,8 @@ export const handleOutput = (
   }
 
   if (isContextConfigTraditionalGraphQLOutput(context.config)) {
-    if (result instanceof Error) throw result
-    return result
+    if (result instanceof Error) return resultThrow(result)
+    return resultReturn(result)
   }
 
   const c = context.config.output
@@ -51,10 +52,10 @@ export const handleOutput = (
   const isReturnSchema = readConfigErrorCategoryOutputChannel(context.config, `schema`) === `return`
 
   if (result instanceof Error) {
-    if (isThrowOther) throw result
-    if (isReturnOther) return result
+    if (isThrowOther) return resultThrow(result)
+    if (isReturnOther) return resultReturn(result)
     // todo not a graphql execution error class instance
-    return isEnvelope ? { errors: [result] } : result
+    return resultReturn(isEnvelope ? { errors: [result] } : result)
   }
 
   if (result.errors && result.errors.length > 0) {
@@ -63,15 +64,15 @@ export const handleOutput = (
       {},
       result.errors,
     )
-    if (isThrowExecution) throw error
-    if (isReturnExecution) return error
-    return isEnvelope ? result : error
+    if (isThrowExecution) return resultThrow(error)
+    if (isReturnExecution) return resultReturn(error)
+    return resultReturn(isEnvelope ? { ...result, errors: [...result.errors ?? [], error] } : error)
   }
 
   {
     if (isTypedContext(context)) {
       if (c.errors.schema !== false) {
-        if (!isRecordLikeObject(result.data)) throw new Error(`Expected data to be an object.`)
+        if (!isRecordLikeObject(result.data)) return resultThrow(new Error(`Expected data to be an object.`))
         const schemaErrors = Object.entries(result.data).map(([rootFieldName, rootFieldValue]) => {
           // todo this check would be nice but it doesn't account for aliases right now. To achieve this we would
           // need to have the selection set available to use and then do a costly analysis for all fields that were aliases.
@@ -81,8 +82,12 @@ export const handleOutput = (
           // if (!isResultField) return null
           // if (!isPlainObject(rootFieldValue)) return new Error(`Expected result field to be an object.`)
           if (!isRecordLikeObject(rootFieldValue)) return null
+
           const __typename = rootFieldValue[`__typename`]
-          if (typeof __typename !== `string`) throw new Error(`Expected __typename to be selected and a string.`)
+          if (typeof __typename !== `string`) {
+            return new Error(`Expected __typename to be selected and a string.`)
+          }
+
           const isErrorObject = Boolean(
             context.schemaIndex.error.objectsTypename[__typename],
           )
@@ -102,19 +107,19 @@ export const handleOutput = (
           )
           : null
         if (error) {
-          if (isThrowSchema) throw error
+          if (isThrowSchema) return resultThrow(error)
           if (isReturnSchema) {
-            return isEnvelope ? { ...result, errors: [...result.errors ?? [], error] } : error
+            return resultReturn(isEnvelope ? { ...result, errors: [...result.errors ?? [], error] } : error)
           }
         }
       }
     }
 
     if (isEnvelope) {
-      return result
+      return resultReturn(result)
     }
 
-    return result.data
+    return resultReturn(result.data)
   }
 }
 

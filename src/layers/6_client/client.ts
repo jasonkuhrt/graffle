@@ -10,12 +10,10 @@ import { readMaybeThunk } from '../1_Schema/core/helpers.js'
 import type { DocumentObject, GraphQLObjectSelection } from '../2_SelectionSet/print.js'
 import type { GlobalRegistry } from '../4_generator/globalRegistry.js'
 import { Core } from '../5_core/__.js'
-import { type HookDefEncode } from '../5_core/core.js'
 import { type InterfaceRaw, type TransportHttp } from '../5_core/types.js'
 import { type Extension } from './extension/extension.js'
 import { type UseFn, useProperties } from './extension/use.js'
 import type { ClientContext, CreateState, FnParametersProperty } from './fluent.js'
-import { handleOutput } from './handleOutput.js'
 import { anywareProperties, type FnAnyware } from './properties/anyware.js'
 import type { FnInternal } from './properties/internal.js'
 import { type FnRetry, retryProperties } from './properties/retry.js'
@@ -166,7 +164,7 @@ const createWithState = (
         interface: interface_,
         schemaIndex: context.schemaIndex,
       },
-    } as HookDefEncode<Config>['input']
+    } as Core.Hooks.HookDefEncode<Config>['input']
     return await run(context, initialInput)
   }
 
@@ -226,14 +224,16 @@ const createWithState = (
     })
   }
 
-  const run = async (context: Context, initialInput: HookDefEncode<Config>['input']) => {
+  const run = async (context: Context, initialInput: Core.Hooks.HookDefEncode<Config>['input']) => {
     const result = await Core.anyware.run({
       initialInput,
       retryingExtension: context.retry as any,
       extensions: context.extensions.filter(_ => _.onRequest !== undefined).map(_ => _.onRequest!) as any,
-    }) as GraffleExecutionResultVar
-
-    return handleOutput(context, result)
+    })
+    // todo is this case possible/correct?
+    if (result instanceof Error) throw result
+    if (result.type === `throw`) throw result.value
+    return result.value
   }
 
   const runRaw = async (context: Context, rawInput: BaseInput_) => {
@@ -249,7 +249,7 @@ const createWithState = (
       },
       variables: rawInput.variables,
       operationName: rawInput.operationName,
-    } as HookDefEncode<Config>['input']
+    } as Core.Hooks.HookDefEncode<Config>['input']
     return await run(context, initialInput)
   }
 
