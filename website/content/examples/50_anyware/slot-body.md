@@ -11,14 +11,14 @@ This example shows how to use the `body` slot on the `pack` hook.
 import { Graffle } from 'graffle'
 
 const graffle = Graffle
-  .create({ schema: `https://countries.trevorblades.com/graphql` })
+  .create({ schema: `http://localhost:3000/graphql` })
   .anyware(async ({ pack }) => {
     return await pack({
       using: {
         body: (graphqlRequest) => {
           return JSON.stringify({
             ...graphqlRequest,
-            operationName: `queryContinents`,
+            operationName: `trainers`,
           })
         },
       },
@@ -27,14 +27,14 @@ const graffle = Graffle
 
 const result = await graffle.rawString({
   document: `
-    query queryContinents {
-      continents { name }
+    query pokemon {
+      trainers { name }
     }
-    query queryCountries {
-      countries { name }
+    query trainers {
+      pokemon { name }
     }
   `,
-  operationName: `queryCountries`,
+  operationName: `pokemon`,
 })
 
 console.log(result)
@@ -46,14 +46,11 @@ console.log(result)
 <!-- dprint-ignore-start -->
 ```txt
 {
-  continents: [
-    { name: 'Africa' },
-    { name: 'Antarctica' },
-    { name: 'Asia' },
-    { name: 'Europe' },
-    { name: 'North America' },
-    { name: 'Oceania' },
-    { name: 'South America' }
+  pokemon: [
+    { name: 'Pikachu' },
+    { name: 'Charizard' },
+    { name: 'Squirtle' },
+    { name: 'Bulbasaur' }
   ]
 }
 ```

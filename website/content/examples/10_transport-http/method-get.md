@@ -36,55 +36,16 @@ await graffle.rawString({ document: `query { pokemonByName(name:"Nano") { hp } }
 
 <!-- dprint-ignore-start -->
 ```txt
-{
-  methodMode: 'getReads',
-  headers: Headers {
-    accept: 'application/graphql-response+json; charset=utf-8, application/json; charset=utf-8',
-    'content-type': 'application/json'
-  },
-  signal: undefined,
-  method: 'post',
-  url: URL {
-    href: 'http://localhost:3000/graphql',
-    origin: 'http://localhost:3000',
-    protocol: 'http:',
-    username: '',
-    password: '',
-    host: 'localhost:3000',
-    hostname: 'localhost',
-    port: '3000',
-    pathname: '/graphql',
-    search: '',
-    searchParams: URLSearchParams {},
-    hash: ''
-  },
-  body: '{"query":"mutation { addPokemon(attack:0, defense:0, hp:1, name:\\"Nano\\") { name } }"}'
-}
-```
-<!-- dprint-ignore-end -->
-<!-- dprint-ignore-start -->
-```txt
-{
-  methodMode: 'getReads',
-  headers: Headers {
-    accept: 'application/graphql-response+json; charset=utf-8, application/json; charset=utf-8'
-  },
-  signal: undefined,
-  method: 'get',
-  url: URL {
-    href: 'http://localhost:3000/graphql?query=query+%7B+pokemonByName%28name%3A%22Nano%22%29+%7B+hp+%7D+%7D',
-    origin: 'http://localhost:3000',
-    protocol: 'http:',
-    username: '',
-    password: '',
-    host: 'localhost:3000',
-    hostname: 'localhost',
-    port: '3000',
-    pathname: '/graphql',
-    search: '?query=query+%7B+pokemonByName%28name%3A%22Nano%22%29+%7B+hp+%7D+%7D',
-    searchParams: URLSearchParams { 'query' => 'query { pokemonByName(name:"Nano") { hp } }' },
-    hash: ''
-  }
-}
+/some/path/to/transport-http_method-get.ts:7
+import { serveSchema, show } from '../$/helpers.js'
+         ^
+
+SyntaxError: The requested module '../$/helpers.js' does not provide an export named 'serveSchema'
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:XX:XX)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:XX:XX)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:XX:XX)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:XX:XX)
+
+Node.js vXX.XX.XX
 ```
 <!-- dprint-ignore-end -->

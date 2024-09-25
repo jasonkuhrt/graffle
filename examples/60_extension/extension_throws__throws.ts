@@ -3,21 +3,21 @@
  */
 
 import { Throws } from '../../src/entrypoints/extensions.js'
-import { Atlas } from '../$/generated-clients/atlas/__.js'
+import { Pokemon } from '../$/generated-clients/pokemon/__.js'
 import { interceptAndShowUncaughtErrors, show } from '../$/show.js'
 
 interceptAndShowUncaughtErrors()
 
-const atlas = Atlas
+const pokemon = Pokemon
   .create({ output: { defaults: { errorChannel: `return` } } })
   .use(Throws())
   .anyware(({ encode: _ }) => {
     throw new Error(`Something went wrong.`)
   })
 
-const result1 = await atlas.query.continents({ name: true })
+const result1 = await pokemon.query.pokemons({ name: true })
 show(result1)
 
-const result2 = await atlas.throws().query.continents({ name: true })
+const result2 = await pokemon.throws().query.pokemons({ name: true })
 //                                          ^^^^^^^
 result2 // This line will never be reached because of thrown error.

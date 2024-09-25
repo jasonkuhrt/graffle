@@ -5,26 +5,24 @@
 
 <!-- dprint-ignore-start -->
 ```ts twoslash
-import { Graffle as Atlas } from './graffle/__.js'
+// ---cut---
+import { Pokemon } from './pokemon/__.js'
 
-const atlas = Atlas.create()
+const pokemon = Pokemon.create()
 
-const continents = await atlas.query.continents({ name: true })
+const pokemons = await pokemon.query.pokemons({ name: true })
 
-console.log(continents)
+console.log(pokemons)
 ```
 <!-- dprint-ignore-end -->
 
 <!-- dprint-ignore-start -->
 ```txt
 [
-  { name: 'Africa' },
-  { name: 'Antarctica' },
-  { name: 'Asia' },
-  { name: 'Europe' },
-  { name: 'North America' },
-  { name: 'Oceania' },
-  { name: 'South America' }
+  { name: 'Pikachu' },
+  { name: 'Charizard' },
+  { name: 'Squirtle' },
+  { name: 'Bulbasaur' }
 ]
 ```
 <!-- dprint-ignore-end -->

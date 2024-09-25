@@ -1,8 +1,8 @@
 ---------------------------------------- SHOW ----------------------------------------
 {
-  "countries": [
+  "pokemon": [
     {
-      "name": "Canada Mocked!"
+      "name": "Pokemon Mocked!"
     }
   ]
 }

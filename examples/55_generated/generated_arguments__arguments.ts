@@ -2,15 +2,15 @@
  * This example shows how to use the TypeScript interface for GraphQL arguments.
  */
 
-import { Atlas } from '../$/generated-clients/atlas/__.js'
+import { Pokemon } from '../$/generated-clients/pokemon/__.js'
 import { showJson } from '../$/helpers.js'
 
-const atlas = Atlas.create()
+const atlas = Pokemon.create()
 
-const countries = await atlas.query.countries({
-  $: { filter: { name: { in: [`Canada`, `Germany`, `Japan`] } } },
+const pokemons = await atlas.query.pokemons({
+  $: { filter: { name: { in: [`Pikachu`, `Charizard`] } } },
   name: true,
-  continent: { name: true },
+  trainer: { name: true },
 })
 
-showJson(countries)
+showJson(pokemons)

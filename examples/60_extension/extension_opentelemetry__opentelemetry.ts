@@ -1,7 +1,7 @@
 import { ConsoleSpanExporter, SimpleSpanProcessor } from '@opentelemetry/sdk-trace-base'
 import { NodeTracerProvider } from '@opentelemetry/sdk-trace-node'
 import { Opentelemetry } from '../../src/entrypoints/extensions.js'
-import { Atlas } from '../$/generated-clients/atlas/__.js'
+import { Pokemon } from '../$/generated-clients/pokemon/__.js'
 import { interceptAndShowOutput, show } from '../$/helpers.js'
 
 interceptAndShowOutput()
@@ -15,6 +15,6 @@ const provider = new NodeTracerProvider()
 provider.addSpanProcessor(processor)
 provider.register()
 
-const graffle = Atlas.create().use(Opentelemetry())
-const data = await graffle.rawString({ document: `query { continents { name } }` })
+const graffle = Pokemon.create().use(Opentelemetry())
+const data = await graffle.rawString({ document: `query { pokemons { name } }` })
 show(data)

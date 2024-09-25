@@ -176,7 +176,7 @@ const transformRewriteHelperImports = (example: Example) => {
   const newContent = example.file.content
     .replaceAll(/^import.*\$\/helpers.*$\n/gm, ``)
     .replaceAll(`documentQueryContinents`, `{ document: \`${documentQueryContinents.document}\` }`)
-    .replaceAll(`publicGraphQLSchemaEndpoints.Atlas`, `\`${publicGraphQLSchemaEndpoints.Atlas}\``)
+    .replaceAll(`publicGraphQLSchemaEndpoints.Pokemon`, `\`${publicGraphQLSchemaEndpoints.Pokemon}\``)
     .replaceAll(/interceptAndShowOutput.*\n\n?/g, ``)
     .replaceAll(/interceptAndShowUncaughtErrors.*\n\n?/g, ``)
     .replaceAll(/showJson|show/g, consoleLog)

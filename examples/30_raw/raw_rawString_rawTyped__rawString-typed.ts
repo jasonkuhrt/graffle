@@ -8,7 +8,7 @@ import { Graffle, type TypedDocumentString } from '../../src/entrypoints/main.js
 import { publicGraphQLSchemaEndpoints, show } from '../$/helpers.js'
 
 const graffle = Graffle.create({
-  schema: publicGraphQLSchemaEndpoints.Atlas,
+  schema: publicGraphQLSchemaEndpoints.Pokemon,
 })
 
 /**
@@ -18,15 +18,29 @@ const graffle = Graffle.create({
  * @see https://github.com/jasonkuhrt/graffle/issues/997
  */
 type Document = TypedDocumentString<
-  { countries: { name: string; continent: { name: string } }[] },
-  { filter: string[] }
+  {
+    pokemonByName: {
+      id: string
+      name: string
+      hp: number
+      attack: number
+      defense: number
+      trainer: {
+        name: string
+      }
+    }
+  },
+  { name: string }
 >
 
 const document: Document = /* gql */ `
-  query countries ($filter: [String!]) {
-    countries (filter: { name: { in: $filter } }) {
+  query pokemonByName ($name: String!) {
+    pokemonByName (name: $name) {
       name
-      continent {
+      hp
+      attack
+      defense
+      trainer {
         name
       }
     }
@@ -35,7 +49,7 @@ const document: Document = /* gql */ `
 
 const data = await graffle.rawString({
   document,
-  variables: { filter: [`Canada`, `Germany`, `Japan`] },
+  variables: { name: `Pikachu` },
 })
 
-show(data?.countries)
+show(data?.pokemonByName)

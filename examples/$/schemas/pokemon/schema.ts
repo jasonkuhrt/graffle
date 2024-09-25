@@ -1,22 +1,9 @@
 import SchemaBuilder from '@pothos/core'
 import SimpleObjectsPlugin from '@pothos/plugin-simple-objects'
 import ZodPlugin from '@pothos/plugin-zod'
+import { DB } from './data.js'
 
-type Trainer = {
-  id: number
-  name: string
-}
-
-type Pokemon = {
-  id: number
-  name: string
-  hp: number
-  attack: number
-  defense: number
-  trainerId: number | null // Nullable, as a Pokémon may not be captured by a trainer
-}
-
-const builder = new SchemaBuilder<{
+export const builder = new SchemaBuilder<{
   Scalars: {
     Date: {
       Input: Date
@@ -27,19 +14,14 @@ const builder = new SchemaBuilder<{
   plugins: [SimpleObjectsPlugin, ZodPlugin],
 })
 
-type Database = {
-  trainers: Trainer[]
-  pokemon: Pokemon[]
-}
-
-const Trainer = builder.objectRef<Trainer>(`Trainer`).implement({
+const Trainer = builder.objectRef<DB.Trainer>(`Trainer`).implement({
   fields: (t) => ({
     id: t.int({ resolve: (trainer) => trainer.id }),
     name: t.string({ resolve: (trainer) => trainer.name }),
   }),
 })
 
-const Pokemon = builder.objectRef<Pokemon>(`Pokemon`).implement({
+const Pokemon = builder.objectRef<DB.Pokemon>(`Pokemon`).implement({
   fields: (t) => ({
     id: t.int({ resolve: (pokemon) => pokemon.id }),
     name: t.string({ resolve: (pokemon) => pokemon.name }),
@@ -49,7 +31,7 @@ const Pokemon = builder.objectRef<Pokemon>(`Pokemon`).implement({
     trainer: t.field({
       type: Trainer,
       nullable: true,
-      resolve: (pokemon) => database.trainers.find((t) => t.id === pokemon.trainerId) || null,
+      resolve: (pokemon) => DB.data.trainers.find((t) => t.id === pokemon.trainerId) || null,
     }),
   }),
 })
@@ -57,17 +39,51 @@ const Pokemon = builder.objectRef<Pokemon>(`Pokemon`).implement({
 builder.objectFields(Trainer, t => ({
   pokemon: t.field({
     type: t.listRef(Pokemon),
-    resolve: (trainer) => database.pokemon.filter((p) => p.trainerId === trainer.id),
+    resolve: (trainer) => DB.data.pokemon.filter((p) => p.trainerId === trainer.id),
   }),
 }))
 
 builder.queryType()
 builder.mutationType()
 
+const StringFilter = builder.inputType(`StringFilter`, {
+  // todo refactor using oneOf
+  fields: (t) => ({
+    contains: t.string(),
+    in: t.stringList(),
+  }),
+})
+
+const PokemonFilter = builder.inputType(`PokemonFilter`, {
+  fields: (t) => ({
+    name: t.field({ type: StringFilter }),
+  }),
+})
+
+builder.queryField(`pokemons`, (t) =>
+  t.field({
+    args: {
+      filter: t.arg({ type: PokemonFilter, required: false }),
+    },
+    type: [Pokemon],
+    resolve: (_, args) =>
+      DB.data.pokemon.filter((p) => {
+        if (args.filter?.name) {
+          if (args.filter.name.contains) {
+            return p.name.includes(args.filter.name.contains)
+          }
+          if (args.filter.name.in) {
+            return args.filter.name.in.includes(p.name)
+          }
+        }
+        return true
+      }),
+  }))
+
 builder.queryField(`pokemon`, (t) =>
   t.field({
     type: [Pokemon],
-    resolve: () => database.pokemon,
+    resolve: () => DB.data.pokemon,
   }))
 
 builder.queryField(`pokemonByName`, (t) =>
@@ -76,13 +92,13 @@ builder.queryField(`pokemonByName`, (t) =>
     args: {
       name: t.arg.string({ required: true }),
     },
-    resolve: (_, { name }) => database.pokemon.filter((p) => p.name.includes(name)),
+    resolve: (_, { name }) => DB.data.pokemon.filter((p) => p.name.includes(name)),
   }))
 
 builder.queryField(`trainers`, (t) =>
   t.field({
     type: [Trainer],
-    resolve: () => database.trainers,
+    resolve: () => DB.data.trainers,
   }))
 
 builder.queryField(`trainerByName`, (t) =>
@@ -91,7 +107,7 @@ builder.queryField(`trainerByName`, (t) =>
     args: {
       name: t.arg.string({ required: true }),
     },
-    resolve: (_, { name }) => database.trainers.find((t) => t.name.includes(name)) || null,
+    resolve: (_, { name }) => DB.data.trainers.find((t) => t.name.includes(name)) || null,
   }))
 
 builder.mutationField(`addPokemon`, (t) =>
@@ -108,39 +124,22 @@ builder.mutationField(`addPokemon`, (t) =>
     },
     resolve: (_, { name, hp, attack, defense }) => {
       const newPokemon = {
-        id: database.pokemon.length + 1,
+        id: DB.data.pokemon.length + 1,
         name,
         hp,
         attack,
         defense,
         trainerId: null,
       }
-      database.pokemon.push(newPokemon)
+      DB.data.pokemon.push(newPokemon)
       return newPokemon
     },
   }))
 
 const schema = builder.toSchema()
 
-const databaseSeedData = (database: Database) => {
-  const ash = { id: 1, name: `Ash` }
-  const misty = { id: 2, name: `Misty` }
+DB.seed()
 
-  database.trainers.push(ash, misty)
+export { DB } from './data.js'
 
-  database.pokemon.push(
-    { id: 1, name: `Pikachu`, hp: 35, attack: 55, defense: 40, trainerId: 1 },
-    { id: 2, name: `Charizard`, hp: 78, attack: 84, defense: 78, trainerId: 1 },
-    { id: 3, name: `Squirtle`, hp: 44, attack: 48, defense: 65, trainerId: 2 },
-    { id: 4, name: `Bulbasaur`, hp: 45, attack: 49, defense: 49, trainerId: null },
-  )
-}
-
-const database: Database = {
-  trainers: [],
-  pokemon: [],
-}
-
-databaseSeedData(database)
-
-export { database, schema }
+export { schema }

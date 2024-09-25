@@ -8,9 +8,10 @@ This example shows how to configure output to throw errors even when using the e
 
 <!-- dprint-ignore-start -->
 ```ts twoslash
-import { Graffle as Atlas } from './graffle/__.js'
+// ---cut---
+import { Pokemon } from './pokemon/__.js'
 
-const atlas = Atlas
+const pokemon = Pokemon
   .create({
     output: {
       envelope: {
@@ -26,7 +27,7 @@ const atlas = Atlas
   //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   })
 
-await atlas.query.continents({ name: true })
+await pokemon.query.pokemons({ name: true })
 ```
 <!-- dprint-ignore-end -->
 

@@ -11,11 +11,21 @@ type Pokemon {
   trainer: Trainer
 }
 
+input PokemonFilter {
+  name: StringFilter
+}
+
 type Query {
   pokemon: [Pokemon!]
   pokemonByName(name: String!): [Pokemon!]
+  pokemons(filter: PokemonFilter): [Pokemon!]
   trainerByName(name: String!): Trainer
   trainers: [Trainer!]
+}
+
+input StringFilter {
+  contains: String
+  in: [String!]
 }
 
 type Trainer {

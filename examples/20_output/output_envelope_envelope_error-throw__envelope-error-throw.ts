@@ -2,10 +2,10 @@
  * This example shows how to configure output to throw errors even when using the envelope.
  */
 
-import { Atlas } from '../$/generated-clients/atlas/__.js'
+import { Pokemon } from '../$/generated-clients/pokemon/__.js'
 
 // dprint-ignore
-const atlas = Atlas
+const pokemon = Pokemon
   .create({
     output: {
       envelope: {
@@ -21,4 +21,4 @@ const atlas = Atlas
   //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   })
 
-await atlas.query.continents({ name: true })
+await pokemon.query.pokemons({ name: true })

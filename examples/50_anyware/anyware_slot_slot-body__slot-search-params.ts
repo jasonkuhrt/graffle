@@ -5,7 +5,7 @@ import { Graffle } from '../../src/entrypoints/main.js'
 import { publicGraphQLSchemaEndpoints, show } from '../$/helpers.js'
 
 const graffle = Graffle
-  .create({ schema: publicGraphQLSchemaEndpoints.Atlas, transport: { methodMode: `getReads` } })
+  .create({ schema: publicGraphQLSchemaEndpoints.Pokemon, transport: { methodMode: `getReads` } })
   .anyware(async ({ pack }) => {
     return await pack({
       using: {
@@ -21,11 +21,11 @@ const graffle = Graffle
 
 const result = await graffle.rawString({
   document: `
-    query queryContinents {
-      continents { name }
+    query trainers {
+      pokemon { name }
     }
-    query queryCountries {
-      countries { name }
+    query pokemon {
+      trainers { name }
     }
   `,
   operationName: `queryCountries`,

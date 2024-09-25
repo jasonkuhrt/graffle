@@ -6,7 +6,8 @@
 import { ConsoleSpanExporter, SimpleSpanProcessor } from '@opentelemetry/sdk-trace-base'
 import { NodeTracerProvider } from '@opentelemetry/sdk-trace-node'
 import { Opentelemetry } from 'graffle/extensions'
-import { Graffle as Atlas } from './graffle/__.js'
+// ---cut---
+import { Pokemon } from './pokemon/__.js'
 
 // Setup Opentelemetry
 // 1. Initialize the OpenTelemetry provider
@@ -17,8 +18,8 @@ const provider = new NodeTracerProvider()
 provider.addSpanProcessor(processor)
 provider.register()
 
-const graffle = Atlas.create().use(Opentelemetry())
-const data = await graffle.rawString({ document: `query { continents { name } }` })
+const graffle = Pokemon.create().use(Opentelemetry())
+const data = await graffle.rawString({ document: `query { pokemons { name } }` })
 console.log(data)
 ```
 <!-- dprint-ignore-end -->
@@ -35,14 +36,14 @@ console.log(data)
     }
   },
   instrumentationScope: { name: 'graffle', version: undefined, schemaUrl: undefined },
-  traceId: '25a6871e121b641919b4f45c9c0f412f',
-  parentId: '91b2295c3b4a4fdf',
+  traceId: 'c5f25ff275c5b93f8b449276f717fc13',
+  parentId: '13003b2f2f9a4ff2',
   traceState: undefined,
   name: 'encode',
-  id: '7bfe65fcf63a9023',
+  id: 'f3ff371fe1bef1ca',
   kind: 0,
-  timestamp: 1727123048044000,
-  duration: 515.625,
+  timestamp: 1727281386082000,
+  duration: 538.666,
   attributes: {},
   status: { code: 0 },
   events: [],
@@ -62,14 +63,14 @@ console.log(data)
     }
   },
   instrumentationScope: { name: 'graffle', version: undefined, schemaUrl: undefined },
-  traceId: '25a6871e121b641919b4f45c9c0f412f',
-  parentId: '91b2295c3b4a4fdf',
+  traceId: 'c5f25ff275c5b93f8b449276f717fc13',
+  parentId: '13003b2f2f9a4ff2',
   traceState: undefined,
   name: 'pack',
-  id: 'a77d3455d400d50a',
+  id: 'b797bd4b5025740c',
   kind: 0,
-  timestamp: 1727123048047000,
-  duration: 1161.958,
+  timestamp: 1727281386084000,
+  duration: 10937.125,
   attributes: {},
   status: { code: 0 },
   events: [],
@@ -89,14 +90,14 @@ console.log(data)
     }
   },
   instrumentationScope: { name: 'graffle', version: undefined, schemaUrl: undefined },
-  traceId: '25a6871e121b641919b4f45c9c0f412f',
-  parentId: '91b2295c3b4a4fdf',
+  traceId: 'c5f25ff275c5b93f8b449276f717fc13',
+  parentId: '13003b2f2f9a4ff2',
   traceState: undefined,
   name: 'exchange',
-  id: '9a0469d2c31d411a',
+  id: '27575781ef1f8330',
   kind: 0,
-  timestamp: 1727123048048000,
-  duration: 310238.417,
+  timestamp: 1727281386096000,
+  duration: 24997.292,
   attributes: {},
   status: { code: 0 },
   events: [],
@@ -116,14 +117,14 @@ console.log(data)
     }
   },
   instrumentationScope: { name: 'graffle', version: undefined, schemaUrl: undefined },
-  traceId: '25a6871e121b641919b4f45c9c0f412f',
-  parentId: '91b2295c3b4a4fdf',
+  traceId: 'c5f25ff275c5b93f8b449276f717fc13',
+  parentId: '13003b2f2f9a4ff2',
   traceState: undefined,
   name: 'unpack',
-  id: '127f5a96cdef9239',
+  id: '7e94dd6d8a361a37',
   kind: 0,
-  timestamp: 1727123048359000,
-  duration: 2267.291,
+  timestamp: 1727281386121000,
+  duration: 1137.041,
   attributes: {},
   status: { code: 0 },
   events: [],
@@ -143,14 +144,14 @@ console.log(data)
     }
   },
   instrumentationScope: { name: 'graffle', version: undefined, schemaUrl: undefined },
-  traceId: '25a6871e121b641919b4f45c9c0f412f',
-  parentId: '91b2295c3b4a4fdf',
+  traceId: 'c5f25ff275c5b93f8b449276f717fc13',
+  parentId: '13003b2f2f9a4ff2',
   traceState: undefined,
   name: 'decode',
-  id: '389d7fce6967d138',
+  id: '58e7d558cc44fc3d',
   kind: 0,
-  timestamp: 1727123048361000,
-  duration: 116,
+  timestamp: 1727281386122000,
+  duration: 187.875,
   attributes: {},
   status: { code: 0 },
   events: [],
@@ -170,14 +171,14 @@ console.log(data)
     }
   },
   instrumentationScope: { name: 'graffle', version: undefined, schemaUrl: undefined },
-  traceId: '25a6871e121b641919b4f45c9c0f412f',
+  traceId: 'c5f25ff275c5b93f8b449276f717fc13',
   parentId: undefined,
   traceState: undefined,
   name: 'request',
-  id: '91b2295c3b4a4fdf',
+  id: '13003b2f2f9a4ff2',
   kind: 0,
-  timestamp: 1727123048044000,
-  duration: 317860.125,
+  timestamp: 1727281386081000,
+  duration: 41221.625,
   attributes: {},
   status: { code: 0 },
   events: [],
@@ -188,14 +189,11 @@ console.log(data)
 <!-- dprint-ignore-start -->
 ```txt
 {
-  continents: [
-    { name: 'Africa' },
-    { name: 'Antarctica' },
-    { name: 'Asia' },
-    { name: 'Europe' },
-    { name: 'North America' },
-    { name: 'Oceania' },
-    { name: 'South America' }
+  pokemons: [
+    { name: 'Pikachu' },
+    { name: 'Charizard' },
+    { name: 'Squirtle' },
+    { name: 'Bulbasaur' }
   ]
 }
 ```

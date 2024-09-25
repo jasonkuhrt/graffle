@@ -9,7 +9,7 @@ import { Graffle } from 'graffle'
 
 const graffle = Graffle
   .create({
-    schema: `https://countries.trevorblades.com/graphql`,
+    schema: `http://localhost:3000/graphql`,
     transport: {
       headers: {
         authorization: `Bearer MY_TOKEN`,
@@ -30,7 +30,7 @@ const graffle = Graffle
     return exchange()
   })
 
-await graffle.rawString({ document: `{ languages { code } }` })
+await graffle.rawString({ document: `{ pokemons { name } }` })
 ```
 <!-- dprint-ignore-end -->
 

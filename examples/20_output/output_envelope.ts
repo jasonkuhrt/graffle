@@ -2,15 +2,15 @@
  * This example shows how to configure output to use the envelope.
  */
 
-import { Atlas } from '../$/generated-clients/atlas/__.js'
+import { Pokemon } from '../$/generated-clients/pokemon/__.js'
 import { show } from '../$/helpers.js'
 
-const atlas = Atlas.create({
+const pokemon = Pokemon.create({
   output: {
     envelope: true,
   },
 })
 
-const result = await atlas.query.continents({ name: true })
+const result = await pokemon.query.pokemons({ name: true })
 
 show(result)

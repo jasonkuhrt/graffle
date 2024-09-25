@@ -2,11 +2,11 @@
  * This example shows the default output behavior.
  */
 
-import { Atlas } from '../$/generated-clients/atlas/__.js'
+import { Pokemon } from '../$/generated-clients/pokemon/__.js'
 import { show } from '../$/helpers.js'
 
-const atlas = Atlas.create()
+const pokemon = Pokemon.create()
 
-const continents = await atlas.query.continents({ name: true })
+const pokemons = await pokemon.query.pokemons({ name: true })
 
-show(continents)
+show(pokemons)

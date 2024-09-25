@@ -5,23 +5,24 @@
 
 <!-- dprint-ignore-start -->
 ```ts twoslash
-import { Graffle as Atlas } from './graffle/__.js'
+// ---cut---
+import { Pokemon } from './pokemon/__.js'
 
-const atlas = Atlas.create()
+const pokemon = Pokemon.create()
 
-const countries = await atlas.document({
+const pokemons = await pokemon.document({
   query: {
-    countriesQuery: {
-      countries: [`countries2`, {
-        $: { filter: { name: { in: [`Canada`, `Germany`, `Japan`] } } },
+    pokemonsQuery: {
+      pokemons: [`pokemons2`, {
+        $: { filter: { name: { in: [`Pikachu`, `Charizard`] } } },
         name: true,
-        continent: { name: true },
+        trainer: { name: true },
       }],
     },
   },
 })
 
-console.log(countries)
+console.log(pokemons)
 ```
 <!-- dprint-ignore-end -->
 

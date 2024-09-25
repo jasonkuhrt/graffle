@@ -5,7 +5,7 @@ import { Graffle } from '../../src/entrypoints/main.js'
 import { publicGraphQLSchemaEndpoints, show } from '../$/helpers.js'
 
 const graffle = Graffle
-  .create({ schema: publicGraphQLSchemaEndpoints.Atlas })
+  .create({ schema: publicGraphQLSchemaEndpoints.Pokemon })
   .anyware(async ({ exchange }) => {
     return await exchange({
       using: {

@@ -6,6 +6,7 @@ export default tsEslint.config({
     'examples/55_generated/generated_document__document.ts',
     'eslint.config.js',
     'vite.config.ts',
+    'vitest*.config.ts',
     '**/generated/**/*',
     '**/$/**/*',
     'legacy/**/*',

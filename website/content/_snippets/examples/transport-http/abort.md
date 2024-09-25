@@ -9,7 +9,7 @@ const abortController = new AbortController()
 //    ^^^^^^^^^^^^^^^
 
 const graffle = Graffle.create({
-  schema: `https://countries.trevorblades.com/graphql`,
+  schema: `http://localhost:3000/graphql`,
 })
 
 const resultPromise = graffle
@@ -18,7 +18,7 @@ const resultPromise = graffle
   .rawString({
     document: `
       {
-        countries {
+        pokemon {
           name
         }
       }

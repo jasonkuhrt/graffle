@@ -1,10 +1,7 @@
 ---------------------------------------- SHOW ----------------------------------------
 [
-  { name: 'Africa' },
-  { name: 'Antarctica' },
-  { name: 'Asia' },
-  { name: 'Europe' },
-  { name: 'North America' },
-  { name: 'Oceania' },
-  { name: 'South America' }
+  { name: 'Pikachu' },
+  { name: 'Charizard' },
+  { name: 'Squirtle' },
+  { name: 'Bulbasaur' }
 ]
