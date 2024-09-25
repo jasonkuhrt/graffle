@@ -7,7 +7,7 @@ import { Graffle } from '../../src/entrypoints/main.js'
 import { publicGraphQLSchemaEndpoints } from '../$/helpers.js'
 
 Graffle
-  .create({ schema: publicGraphQLSchemaEndpoints.Atlas })
+  .create({ schema: publicGraphQLSchemaEndpoints.Pokemon })
   // Notice how we **start** with the `exchange` hook, skipping the `encode` and `pack` hooks.
   .anyware(async ({ exchange }) => {
     //              ^^^^^^^^

@@ -40,6 +40,14 @@ export interface QueryMethods<$Config extends Utils.Config> {
       ResultSet.Field<$SelectionSet, Index['Root']['Query']['fields']['pokemonByName'], Index>
     >
   >
+  pokemons: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.pokemons>) => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      'pokemons',
+      ResultSet.Field<$SelectionSet, Index['Root']['Query']['fields']['pokemons'], Index>
+    >
+  >
   trainerByName: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.trainerByName>) => Promise<
     Utils.ResolveOutputReturnRootField<
       $Config,

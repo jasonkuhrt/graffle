@@ -13,7 +13,7 @@ until your reach your desired one.
 import { Graffle } from 'graffle'
 
 Graffle
-  .create({ schema: `https://countries.trevorblades.com/graphql` })
+  .create({ schema: `http://localhost:3000/graphql` })
   // Notice how we **start** with the `exchange` hook, skipping the `encode` and `pack` hooks.
   .anyware(async ({ exchange }) => {
     //              ^^^^^^^^

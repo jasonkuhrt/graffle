@@ -7,7 +7,7 @@ import { gql, Graffle } from '../../src/entrypoints/main.js'
 import { publicGraphQLSchemaEndpoints, show } from '../$/helpers.js'
 
 const graffle = Graffle.create({
-  schema: publicGraphQLSchemaEndpoints.Atlas,
+  schema: publicGraphQLSchemaEndpoints.Pokemon,
 })
 
 /*************************************** Variation 1 ***************************************
@@ -19,20 +19,35 @@ const graffle = Graffle.create({
  */
 
 {
-  const document = gql<{ countries: { name: string; continent: { name: string } }[] }, { filter: string[] }>`
-    query countries ($filter: [String!]) {
-      countries (filter: { name: { in: $filter } }) {
+  const document = gql<
+    {
+      pokemonByName: {
+        id: string
+        name: string
+        hp: number
+        attack: number
+        defense: number
+        trainer: { name: string }
+      }
+    },
+    { name: string }
+  >`
+    query ($name: String!) {
+      pokemonByName (name: $name) {
         name
-        continent {
+        hp
+        attack
+        defense
+        trainer {
           name
         }
       }
     }
   `
 
-  const data = await graffle.raw({ document, variables: { filter: [`Canada`, `Germany`, `Japan`] } })
+  const data = await graffle.raw({ document, variables: { name: `Pikachu` } })
 
-  show(data?.countries)
+  show(data?.pokemonByName)
 }
 
 /*************************************** Variation 2 ***************************************
@@ -45,22 +60,34 @@ const graffle = Graffle.create({
 
 {
   type Document = TypedQueryDocumentNode<
-    { countries: { name: string; continent: { name: string } }[] },
-    { filter: string[] }
+    {
+      pokemonByName: {
+        id: string
+        name: string
+        hp: number
+        attack: number
+        defense: number
+        trainer: { name: string }
+      }
+    },
+    { name: string }
   >
 
   const document: Document = gql`
-    query countries ($filter: [String!]) {
-      countries (filter: { name: { in: $filter } }) {
+    query ($name: String!) {
+      pokemonByName (name: $name) {
         name
-        continent {
+        hp
+        attack
+        defense
+        trainer {
           name
         }
       }
     }
   `
 
-  const data = await graffle.raw({ document, variables: { filter: [`Canada`, `Germany`, `Japan`] } })
+  const data = await graffle.raw({ document, variables: { name: `Pikachu` } })
 
-  show(data?.countries)
+  show(data?.pokemonByName)
 }

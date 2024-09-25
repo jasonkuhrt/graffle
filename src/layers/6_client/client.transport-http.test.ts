@@ -1,6 +1,7 @@
 import { describe, expect, expectTypeOf } from 'vitest'
-import { Atlas } from '../../../examples/$/generated-clients/atlas/__.js'
+import { Pokemon } from '../../../examples/$/generated-clients/pokemon/__.js'
 import { createResponse, test } from '../../../tests/_/helpers.js'
+import { serveSchema } from '../../../tests/_/lib/serveSchema.js'
 import { Graffle } from '../../entrypoints/main.js'
 import { ACCEPT_REC, CONTENT_TYPE_REC } from '../../lib/graphqlHTTP.js'
 import { Transport } from '../5_core/types.js'
@@ -31,9 +32,13 @@ test(`anyware hooks are typed to http transport`, () => {
   })
 })
 
+import { schema as schemaPokemon } from '../../../examples/$/schemas/pokemon/schema.js'
+
 test(`when envelope is used then response property is present even if relying on schema url default`, async () => {
-  const atlas = Atlas.create({ output: { envelope: true } })
-  const result = await atlas.query.continents({ name: true })
+  const service = await serveSchema({ schema: schemaPokemon })
+  const atlas = Pokemon.create({ output: { envelope: true } })
+  const result = await atlas.query.pokemons({ name: true })
+  await service.stop()
   expectTypeOf(result.response).toEqualTypeOf<Response>()
 })
 

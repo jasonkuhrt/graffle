@@ -1,27 +1,24 @@
 ---------------------------------------- SHOW ----------------------------------------
 {
   data: {
-    continents: [
-      { name: 'Africa' },
-      { name: 'Antarctica' },
-      { name: 'Asia' },
-      { name: 'Europe' },
-      { name: 'North America' },
-      { name: 'Oceania' },
-      { name: 'South America' }
+    pokemons: [
+      { name: 'Pikachu' },
+      { name: 'Charizard' },
+      { name: 'Squirtle' },
+      { name: 'Bulbasaur' }
     ]
   },
   errors: undefined,
   extensions: undefined,
   response: Response {
     status: 200,
-    statusText: '',
+    statusText: 'OK',
     headers: DYNAMIC_VALUE,
     body: ReadableStream { locked: true, state: 'closed', supportsBYOB: true },
     bodyUsed: true,
     ok: true,
     redirected: false,
     type: 'basic',
-    url: 'https://countries.trevorblades.com/graphql'
+    url: 'http://localhost:3000/graphql'
   }
 }

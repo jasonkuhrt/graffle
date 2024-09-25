@@ -6,12 +6,12 @@ import { Graffle } from '../../src/entrypoints/main.js'
 import { publicGraphQLSchemaEndpoints, show } from '../$/helpers.js'
 
 const graffle = Graffle.create({
-  schema: publicGraphQLSchemaEndpoints.Atlas,
+  schema: publicGraphQLSchemaEndpoints.Pokemon,
 })
 
 const document = /* gql */ `
   {
-    countries {
+    pokemon {
       name
     }
   }	

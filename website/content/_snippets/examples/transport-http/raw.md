@@ -7,7 +7,7 @@ import { Graffle } from 'graffle'
 
 const graffle = Graffle
   .create({
-    schema: `https://countries.trevorblades.com/graphql`,
+    schema: `http://localhost:3000/graphql`,
     transport: {
       raw: {
         mode: `cors`,
@@ -19,7 +19,7 @@ const graffle = Graffle
     return exchange()
   })
 
-await graffle.rawString({ document: `{ languages { code } }` })
+await graffle.rawString({ document: `{ pokemons { name } }` })
 ```
 <!-- dprint-ignore-end -->
 
@@ -34,8 +34,8 @@ await graffle.rawString({ document: `{ languages { code } }` })
   signal: undefined,
   mode: 'cors',
   method: 'post',
-  url: 'https://countries.trevorblades.com/graphql',
-  body: '{"query":"{ languages { code } }"}'
+  url: 'http://localhost:3000/graphql',
+  body: '{"query":"{ pokemons { name } }"}'
 }
 ```
 <!-- dprint-ignore-end -->

@@ -3,14 +3,10 @@
  */
 
 import { Pokemon } from '../$/generated-clients/pokemon/__.js'
-import { serveSchema, show } from '../$/helpers.js'
-import { schema } from '../$/schemas/pokemon/schema.js'
-
-const server = await serveSchema({ schema: schema })
+import { show } from '../$/show.js'
 
 const pokemon = Pokemon
   .create({
-    schema: server.url,
     output: {
       envelope: false,
       errors: {
@@ -41,5 +37,3 @@ try {
 } catch (error) {
   show(error)
 }
-
-await server.stop()

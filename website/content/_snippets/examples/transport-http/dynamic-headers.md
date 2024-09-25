@@ -7,7 +7,7 @@ import { Graffle } from 'graffle'
 
 const graffle = Graffle
   .create({
-    schema: `https://countries.trevorblades.com/graphql`,
+    schema: `http://localhost:3000/graphql`,
   })
   .anyware(async ({ pack }) => {
     return await pack({
@@ -25,7 +25,7 @@ const graffle = Graffle
     return exchange()
   })
 
-await graffle.rawString({ document: `{ languages { code } }` })
+await graffle.rawString({ document: `{ pokemons { name } }` })
 ```
 <!-- dprint-ignore-end -->
 
@@ -36,12 +36,12 @@ await graffle.rawString({ document: `{ languages { code } }` })
   headers: Headers {
     accept: 'application/graphql-response+json; charset=utf-8, application/json; charset=utf-8',
     'content-type': 'application/json',
-    'x-sent-at-time': '1727123047413'
+    'x-sent-at-time': '1727285962935'
   },
   signal: undefined,
   method: 'post',
-  url: 'https://countries.trevorblades.com/graphql',
-  body: '{"query":"{ languages { code } }"}'
+  url: 'http://localhost:3000/graphql',
+  body: '{"query":"{ pokemons { name } }"}'
 }
 ```
 <!-- dprint-ignore-end -->

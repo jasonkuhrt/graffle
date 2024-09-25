@@ -8,17 +8,17 @@ import { showJson } from '../$/helpers.js'
 import { publicGraphQLSchemaEndpoints } from '../$/helpers.js'
 
 const graffle = Graffle
-  .create({ schema: publicGraphQLSchemaEndpoints.Atlas })
+  .create({ schema: publicGraphQLSchemaEndpoints.Pokemon })
   .anyware(({ exchange }) =>
     exchange({
       using: {
         fetch: async () => {
-          return new Response(JSON.stringify({ data: { countries: [{ name: `Canada Mocked!` }] } }))
+          return new Response(JSON.stringify({ data: { pokemon: [{ name: `Pokemon Mocked!` }] } }))
         },
       },
     })
   )
 
-const data = await graffle.rawString({ document: `{ countries { name } }` })
+const data = await graffle.rawString({ document: `{ pokemon { name } }` })
 
 showJson(data)

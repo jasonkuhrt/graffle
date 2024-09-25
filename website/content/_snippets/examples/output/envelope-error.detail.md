@@ -5,9 +5,10 @@
 
 <!-- dprint-ignore-start -->
 ```ts twoslash
-import { Graffle as Atlas } from './graffle/__.js'
+// ---cut---
+import { Pokemon } from './pokemon/__.js'
 
-const atlas = Atlas
+const pokemon = Pokemon
   .create({
     output: {
       envelope: {
@@ -24,7 +25,7 @@ const atlas = Atlas
   //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   })
 
-const result = await atlas.query.continents({ name: true })
+const result = await pokemon.query.pokemons({ name: true })
 
 console.log(result)
 ```

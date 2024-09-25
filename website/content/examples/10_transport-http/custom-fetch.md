@@ -11,18 +11,18 @@ This examples shows how to leverage the extension system to override the "exchan
 import { Graffle } from 'graffle'
 
 const graffle = Graffle
-  .create({ schema: `https://countries.trevorblades.com/graphql` })
+  .create({ schema: `http://localhost:3000/graphql` })
   .anyware(({ exchange }) =>
     exchange({
       using: {
         fetch: async () => {
-          return new Response(JSON.stringify({ data: { countries: [{ name: `Canada Mocked!` }] } }))
+          return new Response(JSON.stringify({ data: { pokemon: [{ name: `Pokemon Mocked!` }] } }))
         },
       },
     })
   )
 
-const data = await graffle.rawString({ document: `{ countries { name } }` })
+const data = await graffle.rawString({ document: `{ pokemon { name } }` })
 
 console.log(data)
 ```
@@ -33,9 +33,9 @@ console.log(data)
 <!-- dprint-ignore-start -->
 ```json
 {
-  "countries": [
+  "pokemon": [
     {
-      "name": "Canada Mocked!"
+      "name": "Pokemon Mocked!"
     }
   ]
 }

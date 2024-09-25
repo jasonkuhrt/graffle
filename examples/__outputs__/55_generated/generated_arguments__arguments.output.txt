@@ -1,21 +1,15 @@
 ---------------------------------------- SHOW ----------------------------------------
 [
   {
-    "name": "Canada",
-    "continent": {
-      "name": "North America"
+    "name": "Pikachu",
+    "trainer": {
+      "name": "Ash"
     }
   },
   {
-    "name": "Germany",
-    "continent": {
-      "name": "Europe"
-    }
-  },
-  {
-    "name": "Japan",
-    "continent": {
-      "name": "Asia"
+    "name": "Charizard",
+    "trainer": {
+      "name": "Ash"
     }
   }
 ]

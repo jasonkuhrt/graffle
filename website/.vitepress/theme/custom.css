@@ -301,3 +301,18 @@ details .plugin-tabs--content  {
 details .plugin-tabs--content > div:not(:last-of-type) {
   margin-bottom:1rem!important;
 }
+
+.icon {
+  filter: sepia(0.75);
+  background:hsla(0,0%,0%,0.025)!important;
+}
+
+.dark .icon {
+  background:hsla(0,0%,100%,0.025)!important;
+}
+
+/* Sponsorship Button */
+
+:root {
+  --vp-c-sponsor: var(--vp-c-brand-3);
+}

@@ -13,7 +13,6 @@ import { Pokemon } from './pokemon/__.js'
 
 const pokemon = Pokemon
   .create({
-    schema: `http://localhost:3000/graphql`,
     output: {
       envelope: false,
       errors: {

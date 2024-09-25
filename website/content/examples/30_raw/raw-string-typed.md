@@ -13,7 +13,7 @@ of automation would generate the types for you.
 import { Graffle, type TypedDocumentString } from 'graffle'
 
 const graffle = Graffle.create({
-  schema: `https://countries.trevorblades.com/graphql`,
+  schema: `http://localhost:3000/graphql`,
 })
 
 /**
@@ -23,15 +23,29 @@ const graffle = Graffle.create({
  * @see https://github.com/jasonkuhrt/graffle/issues/997
  */
 type Document = TypedDocumentString<
-  { countries: { name: string; continent: { name: string } }[] },
-  { filter: string[] }
+  {
+    pokemonByName: {
+      id: string
+      name: string
+      hp: number
+      attack: number
+      defense: number
+      trainer: {
+        name: string
+      }
+    }
+  },
+  { name: string }
 >
 
 const document: Document = /* gql */ `
-  query countries ($filter: [String!]) {
-    countries (filter: { name: { in: $filter } }) {
+  query pokemonByName ($name: String!) {
+    pokemonByName (name: $name) {
       name
-      continent {
+      hp
+      attack
+      defense
+      trainer {
         name
       }
     }
@@ -40,10 +54,10 @@ const document: Document = /* gql */ `
 
 const data = await graffle.rawString({
   document,
-  variables: { filter: [`Canada`, `Germany`, `Japan`] },
+  variables: { name: `Pikachu` },
 })
 
-console.log(data?.countries)
+console.log(data?.pokemonByName)
 ```
 <!-- dprint-ignore-end -->
 
@@ -52,9 +66,13 @@ console.log(data?.countries)
 <!-- dprint-ignore-start -->
 ```txt
 [
-  { name: 'Canada', continent: { name: 'North America' } },
-  { name: 'Germany', continent: { name: 'Europe' } },
-  { name: 'Japan', continent: { name: 'Asia' } }
+  {
+    name: 'Pikachu',
+    hp: 35,
+    attack: 55,
+    defense: 40,
+    trainer: { name: 'Ash' }
+  }
 ]
 ```
 <!-- dprint-ignore-end -->

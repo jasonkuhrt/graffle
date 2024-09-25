@@ -5,15 +5,16 @@
 
 <!-- dprint-ignore-start -->
 ```ts twoslash
-import { Graffle as Atlas } from './graffle/__.js'
+// ---cut---
+import { Pokemon } from './pokemon/__.js'
 
-const atlas = Atlas.create({
+const pokemon = Pokemon.create({
   output: {
     envelope: true,
   },
 })
 
-const result = await atlas.query.continents({ name: true })
+const result = await pokemon.query.pokemons({ name: true })
 
 console.log(result)
 ```
@@ -23,54 +24,32 @@ console.log(result)
 ```txt
 {
   data: {
-    continents: [
-      { name: 'Africa' },
-      { name: 'Antarctica' },
-      { name: 'Asia' },
-      { name: 'Europe' },
-      { name: 'North America' },
-      { name: 'Oceania' },
-      { name: 'South America' }
+    pokemons: [
+      { name: 'Pikachu' },
+      { name: 'Charizard' },
+      { name: 'Squirtle' },
+      { name: 'Bulbasaur' },
+      { name: 'Nano' }
     ]
   },
   errors: undefined,
   extensions: undefined,
   response: Response {
     status: 200,
-    statusText: '',
+    statusText: 'OK',
     headers: Headers {
-      connection: 'keep-alive',
-      'content-length': '119',
-      'x-served-by': 'cache-yul1970023-YUL',
-      'accept-ranges': 'bytes',
-      date: 'Sun, 08 Sep 2024 18:13:26 GMT',
       'content-type': 'application/graphql-response+json; charset=utf-8',
-      'access-control-max-age': '600',
-      'access-control-expose-headers': '*',
-      'access-control-allow-credentials': 'true',
-      vary: 'Accept-Encoding',
-      'access-control-allow-methods': 'POST, GET, HEAD, OPTIONS',
-      'access-control-allow-headers': '*',
-      'alt-svc': 'h3=":443"; ma=86400',
-      'access-control-allow-origin': '*',
-      'x-powered-by': 'Stellate',
-      age: '1303842',
-      'cache-control': 'public, s-maxage=2628000, stale-while-revalidate=2628000',
-      'x-cache': 'HIT',
-      'x-cache-hits': '115',
-      'gcdn-cache': 'HIT',
-      'stellate-rate-limit-budget-remaining': '46',
-      'stellate-rate-limit-rules': '"IP limit";type="RequestCount";budget=50;limited=?0;remaining=46;refill=60',
-      'stellate-rate-limit-decision': 'pass',
-      'stellate-rate-limit-budget-required': '5',
-      'content-encoding': 'br'
+      'content-length': '120',
+      date: 'Wed, 25 Sep 2024 17:39:23 GMT',
+      connection: 'keep-alive',
+      'keep-alive': 'timeout=5'
     },
     body: ReadableStream { locked: true, state: 'closed', supportsBYOB: true },
     bodyUsed: true,
     ok: true,
     redirected: false,
     type: 'basic',
-    url: 'https://countries.trevorblades.com/graphql'
+    url: 'http://localhost:3000/graphql'
   }
 }
 ```

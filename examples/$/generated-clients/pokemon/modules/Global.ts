@@ -19,7 +19,10 @@ declare global {
         featureOptions: {
           schemaErrors: true
         }
-        defaultSchemaUrl: null
+        /**
+         * http://localhost:3000/graphql
+         */
+        defaultSchemaUrl: string
       }
     }
   }

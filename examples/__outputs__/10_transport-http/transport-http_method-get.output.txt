@@ -3,7 +3,8 @@
   methodMode: 'getReads',
   headers: Headers {
     accept: 'application/graphql-response+json; charset=utf-8, application/json; charset=utf-8',
-    'content-type': 'application/json'
+    'content-type': 'application/json',
+    tenant: 'nano'
   },
   signal: undefined,
   method: 'post',
@@ -27,7 +28,8 @@
 {
   methodMode: 'getReads',
   headers: Headers {
-    accept: 'application/graphql-response+json; charset=utf-8, application/json; charset=utf-8'
+    accept: 'application/graphql-response+json; charset=utf-8, application/json; charset=utf-8',
+    tenant: 'nano'
   },
   signal: undefined,
   method: 'get',

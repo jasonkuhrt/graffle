@@ -25,6 +25,12 @@ export namespace Root {
         name: $.Input.Field<$Scalar.String>
       }, false>
     >
+    pokemons: $.Field<
+      $.Output.Nullable<$.Output.List<Object.Pokemon>>,
+      $.Args<{
+        filter: $.Input.Field<$.Input.Nullable<InputObject.PokemonFilter>>
+      }, true>
+    >
     trainerByName: $.Field<
       $.Output.Nullable<Object.Trainer>,
       $.Args<{
@@ -44,7 +50,14 @@ export namespace Enum {
 //                         InputObject                          //
 // ------------------------------------------------------------ //
 export namespace InputObject {
-  // -- no types --
+  export type PokemonFilter = $.InputObject<'PokemonFilter', {
+    name: $.Input.Field<$.Input.Nullable<InputObject.StringFilter>>
+  }, true>
+
+  export type StringFilter = $.InputObject<'StringFilter', {
+    contains: $.Input.Field<$.Input.Nullable<$Scalar.String>>
+    in: $.Input.Field<$.Input.Nullable<$.Input.List<$Scalar.String>>>
+  }, true>
 }
 // ------------------------------------------------------------ //
 //                          Interface                           //

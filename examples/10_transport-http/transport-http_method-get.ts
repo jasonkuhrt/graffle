@@ -4,15 +4,14 @@
  */
 
 import { Pokemon } from '../$/generated-clients/pokemon/__.js'
-import { serveSchema, show } from '../$/helpers.js'
-import { schema } from '../$/schemas/pokemon/schema.js'
-
-const server = await serveSchema({ schema })
+import { show } from '../$/helpers.js'
 
 const graffle = Pokemon
   .create({
-    schema: server.url,
-    transport: { methodMode: `getReads` }, // [!code highlight]
+    transport: {
+      methodMode: `getReads`, // [!code highlight]
+      headers: { tenant: `nano` },
+    },
   })
   .anyware(async ({ exchange }) => {
     show(exchange.input.request)
@@ -26,5 +25,3 @@ await graffle.rawString({ document: `mutation { addPokemon(attack:0, defense:0, 
 // The following request will use an HTTP GET method because it
 // is using a "query" type of operation.
 await graffle.rawString({ document: `query { pokemonByName(name:"Nano") { hp } }` })
-
-await server.stop()

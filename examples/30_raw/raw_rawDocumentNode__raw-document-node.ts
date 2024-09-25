@@ -7,15 +7,15 @@ import { gql, Graffle } from '../../src/entrypoints/main.js'
 import { publicGraphQLSchemaEndpoints, show } from '../$/helpers.js'
 
 const graffle = Graffle.create({
-  schema: publicGraphQLSchemaEndpoints.Atlas,
+  schema: publicGraphQLSchemaEndpoints.Pokemon,
 })
   .use(Throws())
   .use(Opentelemetry())
 
 const data = await graffle.raw({
   document: gql`
-    query countries ($filter: [String!]) {
-      countries (filter: { name: { in: $filter } }) {
+    query pokemonByName ($Name: String!) {
+      pokemonByName (name: $Name) {
         name
         continent {
           name
@@ -23,7 +23,7 @@ const data = await graffle.raw({
       }
     }
   `,
-  variables: { filter: [`Canada`, `Germany`, `Japan`] },
+  variables: { name: `Pikachu` },
 })
 
 show(data)

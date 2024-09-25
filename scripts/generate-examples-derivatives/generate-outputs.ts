@@ -1,5 +1,7 @@
 import * as FS from 'node:fs/promises'
 import * as Path from 'node:path'
+import { schema } from '../../examples/$/schemas/pokemon/schema.js'
+import { serveSchema } from '../../tests/_/lib/serveSchema.js'
 import { deleteFiles } from '../lib/deleteFiles.js'
 import { directories, readExampleFiles, runExample } from './helpers.js'
 
@@ -20,6 +22,7 @@ export const getOutputEncoderFilePathFromExampleFilePath = (filePath: string) =>
 }
 
 export const generateOutputs = async () => {
+  const service = await serveSchema({ schema: schema, log: true })
   const exampleFiles = await readExampleFiles()
 
   // Handle case of renaming or deleting examples.
@@ -38,6 +41,8 @@ export const generateOutputs = async () => {
     await FS.writeFile(filePath, content)
     console.log(`Got and stored output at`, filePath)
   }))
+
+  await service.stop()
 
   console.log(`Generated an output for each example.`)
 }

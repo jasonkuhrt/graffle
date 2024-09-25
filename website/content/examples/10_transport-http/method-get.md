@@ -14,8 +14,10 @@ import { Pokemon } from './pokemon/__.js'
 
 const graffle = Pokemon
   .create({
-    schema: `http://localhost:3000/graphql`,
-    transport: { methodMode: `getReads` }, // [!code highlight]
+    transport: {
+      methodMode: `getReads`, // [!code highlight]
+      headers: { tenant: `nano` },
+    },
   })
   .anyware(async ({ exchange }) => {
     console.log(exchange.input.request)
@@ -40,7 +42,8 @@ await graffle.rawString({ document: `query { pokemonByName(name:"Nano") { hp } }
   methodMode: 'getReads',
   headers: Headers {
     accept: 'application/graphql-response+json; charset=utf-8, application/json; charset=utf-8',
-    'content-type': 'application/json'
+    'content-type': 'application/json',
+    tenant: 'nano'
   },
   signal: undefined,
   method: 'post',
@@ -67,7 +70,8 @@ await graffle.rawString({ document: `query { pokemonByName(name:"Nano") { hp } }
 {
   methodMode: 'getReads',
   headers: Headers {
-    accept: 'application/graphql-response+json; charset=utf-8, application/json; charset=utf-8'
+    accept: 'application/graphql-response+json; charset=utf-8, application/json; charset=utf-8',
+    tenant: 'nano'
   },
   signal: undefined,
   method: 'get',

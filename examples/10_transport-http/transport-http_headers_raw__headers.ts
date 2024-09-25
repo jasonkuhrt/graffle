@@ -8,7 +8,7 @@ import { publicGraphQLSchemaEndpoints } from '../$/helpers.js'
 
 const graffle = Graffle
   .create({
-    schema: publicGraphQLSchemaEndpoints.Atlas,
+    schema: publicGraphQLSchemaEndpoints.Pokemon,
     transport: {
       headers: {
         authorization: `Bearer MY_TOKEN`,
@@ -29,4 +29,4 @@ const graffle = Graffle
     return exchange()
   })
 
-await graffle.rawString({ document: `{ languages { code } }` })
+await graffle.rawString({ document: `{ pokemons { name } }` })

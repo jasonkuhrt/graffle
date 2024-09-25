@@ -2,11 +2,11 @@
  * This example shows how to configure output to have errors returned instead of e.g. thrown.
  */
 
-import { Atlas } from '../$/generated-clients/atlas/__.js'
+import { Pokemon } from '../$/generated-clients/pokemon/__.js'
 import { show } from '../$/helpers.js'
 
 // dprint-ignore
-const atlas = Atlas
+const pokemon = Pokemon
   .create({
     output: {
       envelope: false,
@@ -21,8 +21,8 @@ const atlas = Atlas
 //  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 
   })
 
-const continents = await atlas.query.continents({ name: true })
-type _continents = typeof continents
+const pokemons = await pokemon.query.pokemons({ name: true })
+type _pokemons = typeof pokemons
 //   ^?
 
-show(continents)
+show(pokemons)

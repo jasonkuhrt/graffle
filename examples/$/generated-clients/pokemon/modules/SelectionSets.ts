@@ -99,6 +99,10 @@ export interface Query {
    */
   pokemonByName?: Query.pokemonByName$Expanded | $SelectionSet.AliasInput<Query.pokemonByName>
   /**
+   * Select the `pokemons` field on the `Query` object. Its type is Object.
+   */
+  pokemons?: Query.pokemons$Expanded | $SelectionSet.AliasInput<Query.pokemons>
+  /**
    * Select the `trainerByName` field on the `Query` object. Its type is Object.
    */
   trainerByName?: Query.trainerByName$Expanded | $SelectionSet.AliasInput<Query.trainerByName>
@@ -142,6 +146,16 @@ export namespace Query {
     }
   }
   export type pokemonByName$Expanded = pokemonByName
+  export interface pokemons extends _RefDefs._Pokemon {
+    /**
+     * Arguments for `pokemons` field.
+     * No arguments are required so you may omit this.
+     */
+    $?: {
+      filter?: _RefDefs._PokemonFilter | undefined | null
+    }
+  }
+  export type pokemons$Expanded = pokemons
   export interface trainerByName extends _RefDefs._Trainer {
     /**
      * Arguments for `trainerByName` field.
@@ -154,6 +168,31 @@ export namespace Query {
   export type trainerByName$Expanded = trainerByName
   export interface trainers extends _RefDefs._Trainer {}
   export type trainers$Expanded = trainers
+}
+
+//
+//
+//
+//
+//
+//
+// ==================================================================================================
+//                                    GraphQLInputObjectType Types
+// ==================================================================================================
+//
+//
+//
+//
+//
+//
+
+export interface PokemonFilter {
+  name?: _RefDefs._StringFilter | undefined | null
+}
+
+export interface StringFilter {
+  contains?: string | undefined | null
+  in?: Array<string | undefined | null> | undefined | null
 }
 
 //
@@ -332,6 +371,8 @@ export namespace Trainer {
 export namespace _RefDefs {
   export type _Mutation = Mutation
   export type _Query = Query
+  export type _PokemonFilter = PokemonFilter
+  export type _StringFilter = StringFilter
   export type _Pokemon = Pokemon
   export type _Trainer = Trainer
 }

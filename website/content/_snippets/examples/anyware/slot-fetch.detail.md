@@ -8,7 +8,7 @@
 import { Graffle } from 'graffle'
 
 const graffle = Graffle
-  .create({ schema: `https://countries.trevorblades.com/graphql` })
+  .create({ schema: `http://localhost:3000/graphql` })
   .anyware(async ({ exchange }) => {
     return await exchange({
       using: {

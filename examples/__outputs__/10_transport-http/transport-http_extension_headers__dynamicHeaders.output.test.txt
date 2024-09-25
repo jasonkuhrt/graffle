@@ -8,6 +8,6 @@
   },
   signal: undefined,
   method: 'post',
-  url: 'https://countries.trevorblades.com/graphql',
-  body: '{"query":"{ languages { code } }"}'
+  url: 'http://localhost:3000/graphql',
+  body: '{"query":"{ pokemons { name } }"}'
 }
