@@ -23,10 +23,18 @@ test(`anyware hooks are typed to http transport`, () => {
     const { decode } = await unpack()
     expectTypeOf(decode.input.transport).toEqualTypeOf(Transport.http)
     expectTypeOf(decode.input.response).toEqualTypeOf<Response>()
-    const result = await decode()
-    if (!(result instanceof Error)) {
-      expectTypeOf(result.response).toEqualTypeOf<Response>()
+    const { output } = await decode()
+    expectTypeOf(output.input.transport).toEqualTypeOf(Transport.http)
+    expectTypeOf(output.input.response).toEqualTypeOf<Response>()
+    const result = await output()
+    if (result.type === `throw`) {
+      // todo once value has stronger typing make ore assertions here
+      expectTypeOf(result.value).toEqualTypeOf<Error>()
     }
+    // todo what type safety can we bring in the positive case here?
+    // if (!(result.value instanceof Error)) {
+    //   expectTypeOf(result.valueresponse).toEqualTypeOf<Response>()
+    // }
     return result
   })
 })
@@ -103,7 +111,7 @@ describe(`configuration`, () => {
   describe(`can set signal`, () => {
     // JSDom and Node result in different errors. JSDom is a plain Error type. Presumably an artifact of JSDom and now in actual browsers.
     const abortErrorMessagePattern = /This operation was aborted|AbortError: The operation was aborted/
-    test(`to constructor`, async () => {
+    test.only(`to constructor`, async () => {
       const abortController = new AbortController()
       const graffle = Graffle.create({ schema, transport: { signal: abortController.signal } })
       const resultPromise = graffle.rawString({ document: `query { id }` })

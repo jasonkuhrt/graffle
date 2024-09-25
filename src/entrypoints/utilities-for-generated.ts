@@ -4,7 +4,7 @@ export type {
   ConfigGetOutputError,
   ResolveOutputReturnRootField,
   ResolveOutputReturnRootType,
-} from '../layers/5_core/handleOutput.js'
+} from '../layers/6_client/handleOutput.js'
 export { type DocumentRunner } from '../layers/6_client/requestMethods/document.js'
 export type { Config } from '../layers/6_client/Settings/Config.js'
 export { type AddTypenameToSelectedRootTypeResultFields } from '../layers/6_client/Settings/Config.js'

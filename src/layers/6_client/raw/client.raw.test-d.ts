@@ -3,8 +3,8 @@ import { describe, expectTypeOf } from 'vitest'
 import { test } from '../../../../tests/_/helpers.js'
 import { Graffle } from '../../../../tests/_/schema/generated/__.js'
 import { schema } from '../../../../tests/_/schema/schema.js'
-import type { RawResolveOutputReturnRootType } from '../../5_core/handleOutput.js'
 import { gql } from '../../6_helpers/gql.js'
+import type { RawResolveOutputReturnRootType } from '../handleOutput.js'
 
 const g = Graffle.create({ schema })
 

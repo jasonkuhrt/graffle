@@ -1,7 +1,7 @@
 import type { TypedQueryDocumentNode } from 'graphql'
 import type { SimplifyExceptError } from '../../../lib/prelude.js'
 import type { BaseInput, TypedDocumentString } from '../../0_functions/types.js'
-import type { RawResolveOutputReturnRootType } from '../../5_core/handleOutput.js'
+import type { RawResolveOutputReturnRootType } from '../handleOutput.js'
 import type { Config } from '../Settings/Config.js'
 
 // dprint-ignore

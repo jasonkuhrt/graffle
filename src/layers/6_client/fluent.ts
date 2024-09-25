@@ -20,13 +20,13 @@ export type FnParametersProperty = Fluent.FnParametersProperty<FnClient, FnClien
 
 export type FnParametersMerge = Fluent.ParametersFnMerge<FnClientState['context']>
 
-export type Builder = (input: CreateState) => Builder
+export type Builder = (state: State) => Builder
 
 type PropertyDefinitions = Record<string, ((...args: any[]) => Builder)>
 
 export const defineProperties = (
-  definition: (builder: Builder, state: CreateState) => PropertyDefinitions,
-): (builder: Builder, state: CreateState) => PropertyDefinitions => {
+  definition: (builder: Builder, state: State) => PropertyDefinitions,
+): (builder: Builder, state: State) => PropertyDefinitions => {
   return (builder, state) => {
     return definition(builder, state) as any
   }
@@ -46,7 +46,7 @@ export const defineProperties = (
 //   }
 // }
 
-export interface CreateState {
+export interface State {
   input: InputStatic<GlobalRegistry.SchemaUnion>
   retry: Anyware.Extension2<Core.Core, { retrying: true }> | null
   extensions: Extension[]

@@ -1,4 +1,4 @@
-import { print } from 'graphql'
+import { type ExecutionResult, print } from 'graphql'
 import { Anyware } from '../../lib/anyware/__.js'
 import {
   OperationTypeAccessTypeMap,
@@ -13,10 +13,11 @@ import {
   postRequestHeadersRec,
 } from '../../lib/graphqlHTTP.js'
 import { mergeRequestInit, searchParamsAppendAll } from '../../lib/http.js'
-import { casesExhausted, throwNull } from '../../lib/prelude.js'
+import { casesExhausted, getOptionalNullablePropertyOrThrow, throwNull } from '../../lib/prelude.js'
 import { execute } from '../0_functions/execute.js'
 import { SelectionSet } from '../2_SelectionSet/__.js'
 import * as CustomScalars from '../3_ResultSet/customScalars.js'
+import type { GraffleExecutionResultVar } from '../6_client/client.js'
 import type { Config } from '../6_client/Settings/Config.js'
 import {
   type CoreExchangeGetRequest,
@@ -24,17 +25,9 @@ import {
   MethodMode,
   type MethodModeGetReads,
 } from '../6_client/transportHttp/request.js'
-import { handleOutput } from './handleOutput.js'
-import { type HookMap, hookNamesOrderedBySequence, type HookSequence, type Result } from './hooks.js'
-import type { ContextInterfaceTyped } from './types.js'
+import { type HookMap, hookNamesOrderedBySequence, type HookSequence } from './hooks.js'
 
-const getRootIndexOrThrow = (context: ContextInterfaceTyped, rootTypeName: string) => {
-  // @ts-expect-error
-
-  const rootIndex = context.schemaIndex.Root[rootTypeName]
-  if (!rootIndex) throw new Error(`Root type not found: ${rootTypeName}`)
-  return rootIndex
-}
+type Result = ExecutionResult
 
 export const anyware = Anyware.create<HookSequence, HookMap, Result>({
   hookNamesOrderedBySequence,
@@ -59,7 +52,7 @@ export const anyware = Anyware.create<HookSequence, HookMap, Result>({
           variables = undefined
           document = SelectionSet.Print.resolveRootType(
             input.context,
-            getRootIndexOrThrow(input.context, input.rootTypeName),
+            getOptionalNullablePropertyOrThrow(input.context.schemaIndex.Root, input.rootTypeName),
             input.selection,
           )
           break
@@ -225,21 +218,15 @@ export const anyware = Anyware.create<HookSequence, HookMap, Result>({
           // 1. Generate a map of possible custom scalar paths (tree structure)
           // 2. When traversing the result, skip keys that are not in the map
           const dataDecoded = CustomScalars.decode(
-            getRootIndexOrThrow(input.context, input.rootTypeName),
+            getOptionalNullablePropertyOrThrow(input.context.schemaIndex.Root, input.rootTypeName),
             input.result.data,
           )
           switch (input.transport) {
             case `memory`: {
-              return {
-                ...input,
-                result: { ...input.result, data: dataDecoded },
-              }
+              return { ...input.result, data: dataDecoded }
             }
             case `http`: {
-              return {
-                ...input,
-                result: { ...input.result, data: dataDecoded, response: input.response },
-              }
+              return { ...input.result, data: dataDecoded, response: input.response }
             }
             default:
               throw casesExhausted(input)
@@ -248,10 +235,6 @@ export const anyware = Anyware.create<HookSequence, HookMap, Result>({
         default:
           throw casesExhausted(input)
       }
-    },
-    output: ({ input }) => {
-      const output = handleOutput(input.context, input.result)
-      return output
     },
   },
   // todo expose return handling as part of the pipeline?
@@ -262,5 +245,5 @@ export const anyware = Anyware.create<HookSequence, HookMap, Result>({
 export type Core<$Config extends Config = Config> = Anyware.Core<
   HookSequence,
   HookMap<$Config>,
-  Result
+  GraffleExecutionResultVar<$Config>
 >

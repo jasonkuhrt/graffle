@@ -6,8 +6,8 @@ import { Graffle } from '../../../../tests/_/schema/generated/__.js'
 import { schema } from '../../../../tests/_/schema/schema.js'
 import { type GraphQLExecutionResultError } from '../../../lib/graphql.js'
 import { AssertIsEqual } from '../../../lib/prelude.js'
-import type { Envelope } from '../../5_core/handleOutput.js'
 import type { ErrorsOther } from '../client.js'
+import type { Envelope } from '../handleOutput.js'
 
 const G = Graffle.create
 

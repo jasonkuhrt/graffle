@@ -1,5 +1,4 @@
 import { type ExecutionResult, GraphQLSchema } from 'graphql'
-import type { Anyware } from '../../lib/anyware/__.js'
 import type { Errors } from '../../lib/errors/__.js'
 import type { Fluent } from '../../lib/fluent/__.js'
 import { type RootTypeName, RootTypeNameToOperationName } from '../../lib/graphql.js'
@@ -11,9 +10,8 @@ import type { DocumentObject, GraphQLObjectSelection } from '../2_SelectionSet/p
 import type { GlobalRegistry } from '../4_generator/globalRegistry.js'
 import { Core } from '../5_core/__.js'
 import { type InterfaceRaw, type TransportHttp } from '../5_core/types.js'
-import { type Extension } from './extension/extension.js'
 import { type UseFn, useProperties } from './extension/use.js'
-import type { ClientContext, CreateState, FnParametersProperty } from './fluent.js'
+import type { ClientContext, FnParametersProperty, State } from './fluent.js'
 import { anywareProperties, type FnAnyware } from './properties/anyware.js'
 import type { FnInternal } from './properties/internal.js'
 import { type FnRetry, retryProperties } from './properties/retry.js'
@@ -56,22 +54,16 @@ export type SelectionSetOrIndicator = boolean | object
 // todo get type from selectionset module
 export type SelectionSetOrArgs = object
 
-export interface Context {
-  retry: null | Anyware.Extension2<Core.Core, { retrying: true }>
-  extensions: Extension[]
+export interface RequestContext {
   config: Config
+  state: State
 }
 
-export type TypedContext = Context & {
+export interface InterfaceTypedRequestContext extends RequestContext {
   schemaIndex: Schema.Index
 }
 
 type RawParameters = [BaseInput_]
-// | [
-//   document: BaseInput['document'],
-//   options?: Omit<BaseInput, 'document'>,
-// ]
-//
 
 const resolveRawParameters = (parameters: RawParameters) => {
   // return parameters.length === 2
@@ -127,14 +119,13 @@ export const create: Create = (input) => {
 }
 
 const createWithState = (
-  state: CreateState,
+  state: State,
 ) => {
   // todo lazily compute config, not every fluent call uses it.
-  const context: Context = {
-    retry: state.retry,
-    extensions: state.extensions,
+  const context: RequestContext = {
     // @ts-expect-error fixme
     config: inputToConfig(state.input),
+    state,
   }
 
   /**
@@ -146,30 +137,25 @@ const createWithState = (
   // const returnMode = input.returnMode ?? `data` as ReturnModeType
 
   const executeRootType = async (
-    context: TypedContext,
+    context: InterfaceTypedRequestContext,
     rootTypeName: RootTypeName,
     rootTypeSelectionSet: GraphQLObjectSelection,
   ) => {
     const transport = state.input.schema instanceof GraphQLSchema ? `memory` : `http`
     const interface_ = `typed`
-    const initialInput = {
+    const anywareInitialInput = {
       interface: interface_,
       transport,
       selection: rootTypeSelectionSet,
       rootTypeName,
       schema: state.input.schema,
-      context: {
-        config: context.config,
-        transportInputOptions: state.input.transport,
-        interface: interface_,
-        schemaIndex: context.schemaIndex,
-      },
+      context,
     } as Core.Hooks.HookDefEncode<Config>['input']
-    return await run(context, initialInput)
+    return await run(context, anywareInitialInput)
   }
 
   const executeRootTypeField = async (
-    context: TypedContext,
+    context: InterfaceTypedRequestContext,
     rootTypeName: RootTypeName,
     rootTypeFieldName: string,
     argsOrSelectionSet?: object,
@@ -207,7 +193,7 @@ const createWithState = (
       : result[rootTypeFieldName]
   }
 
-  const createRootTypeMethods = (context: TypedContext, rootTypeName: RootTypeName) => {
+  const createRootTypeMethods = (context: InterfaceTypedRequestContext, rootTypeName: RootTypeName) => {
     return new Proxy({}, {
       get: (_, key) => {
         if (typeof key === `symbol`) throw new Error(`Symbols not supported.`)
@@ -224,19 +210,16 @@ const createWithState = (
     })
   }
 
-  const run = async (context: Context, initialInput: Core.Hooks.HookDefEncode<Config>['input']) => {
+  const run = async (context: RequestContext, initialInput: Core.Hooks.HookDefEncode<Config>['input']) => {
     const result = await Core.anyware.run({
       initialInput,
-      retryingExtension: context.retry as any,
-      extensions: context.extensions.filter(_ => _.onRequest !== undefined).map(_ => _.onRequest!) as any,
+      retryingExtension: context.state.retry as any,
+      extensions: context.state.extensions.filter(_ => _.onRequest !== undefined).map(_ => _.onRequest!) as any,
     })
-    // todo is this case possible/correct?
-    if (result instanceof Error) throw result
-    if (result.type === `throw`) throw result.value
-    return result.value
+    return result
   }
 
-  const runRaw = async (context: Context, rawInput: BaseInput_) => {
+  const runRaw = async (context: RequestContext, rawInput: BaseInput_) => {
     const interface_: InterfaceRaw = `raw`
     const transport = state.input.schema instanceof GraphQLSchema ? `memory` : `http`
     const initialInput = {
@@ -244,9 +227,7 @@ const createWithState = (
       transport,
       document: rawInput.document,
       schema: state.input.schema,
-      context: {
-        config: context.config,
-      },
+      context,
       variables: rawInput.variables,
       operationName: rawInput.operationName,
     } as Core.Hooks.HookDefEncode<Config>['input']
@@ -275,7 +256,7 @@ const createWithState = (
 
   // todo extract this into constructor "create typed client"
   if (state.input.schemaIndex) {
-    const typedContext: TypedContext = {
+    const typedContext: InterfaceTypedRequestContext = {
       ...context,
       schemaIndex: state.input.schemaIndex,
     }

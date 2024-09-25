@@ -3,26 +3,20 @@ import type { GraphQLRequestEncoded, GraphQLRequestInput, StandardScalarVariable
 import type { getRequestEncodeSearchParameters, postRequestEncodeBody } from '../../lib/graphqlHTTP.js'
 import type { Schema } from '../1_Schema/__.js'
 import type { GraphQLObjectSelection } from '../2_SelectionSet/print.js'
+import type { InterfaceTypedRequestContext, RequestContext } from '../6_client/client.js'
 import type { Config } from '../6_client/Settings/Config.js'
 import type { CoreExchangeGetRequest, CoreExchangePostRequest } from '../6_client/transportHttp/request.js'
-import type {
-  ContextInterfaceRaw,
-  ContextInterfaceTyped,
-  InterfaceRaw,
-  InterfaceTyped,
-  TransportHttp,
-  TransportMemory,
-} from './types.js'
+import type { InterfaceRaw, InterfaceTyped, TransportHttp, TransportMemory } from './types.js'
 
 type InterfaceInput<TypedProperties = {}, RawProperties = {}> =
   | ({
     interface: InterfaceTyped
-    context: ContextInterfaceTyped
+    context: InterfaceTypedRequestContext
     rootTypeName: Schema.RootTypeName
   } & TypedProperties)
   | ({
     interface: InterfaceRaw
-    context: ContextInterfaceRaw
+    context: RequestContext
   } & RawProperties)
 
 // dprint-ignore
@@ -111,24 +105,6 @@ export type HookDefOutput<$Config extends Config> = {
     & InterfaceInput
     & TransportInput<$Config, { response: Response }>
 }
-
-export type Result = ResultThrow | ResultReturn
-export type ResultThrow = {
-  type: 'throw'
-  value: Error
-}
-export const resultThrow = (error: Error): ResultThrow => ({
-  type: `throw`,
-  value: error,
-})
-export type ResultReturn = {
-  type: 'return'
-  value: unknown // could be _many_ things depending on the return mode and request method used etc.
-}
-export const resultReturn = (value: unknown): ResultReturn => ({
-  type: `return`,
-  value,
-})
 
 export type HookMap<$Config extends Config = Config> = {
   encode: HookDefEncode<$Config>

@@ -3,7 +3,7 @@ import type { IsTupleMultiple } from '../../../lib/prelude.js'
 import type { Schema } from '../../1_Schema/__.js'
 import type { ResultSet } from '../../3_ResultSet/__.js'
 import type { Document } from '../../4_document/__.js'
-import type { ResolveOutputReturnRootType } from '../../5_core/handleOutput.js'
+import type { ResolveOutputReturnRootType } from '../handleOutput.js'
 import type { AddTypenameToSelectedRootTypeResultFields, Config } from '../Settings/Config.js'
 
 // dprint-ignore

@@ -1,25 +1,23 @@
 import type { GraphQLError } from 'graphql'
 import type { Simplify } from 'type-fest'
-import type { ConditionalSimplify } from 'type-fest/source/conditional-simplify.js'
 import { Errors } from '../../lib/errors/__.js'
 import type { GraphQLExecutionResultError } from '../../lib/graphql.js'
 import { isRecordLikeObject, type SimplifyExceptError, type Values } from '../../lib/prelude.js'
 import type { Schema } from '../1_Schema/__.js'
-import type { Context, ErrorsOther, GraffleExecutionResultVar, TypedContext } from '../6_client/client.js'
+import { Transport } from '../5_core/types.js'
+import type { ErrorsOther, GraffleExecutionResultVar, InterfaceTypedRequestContext, RequestContext } from './client.js'
 import {
   type Config,
   type ErrorCategory,
   isContextConfigTraditionalGraphQLOutput,
   type OutputChannelConfig,
   readConfigErrorCategoryOutputChannel,
-} from '../6_client/Settings/Config.js'
-import { type Result, resultReturn, resultThrow } from './hooks.js'
-import { Transport } from './types.js'
+} from './Settings/Config.js'
 
 export const handleOutput = (
-  context: Context,
+  context: RequestContext,
   result: GraffleExecutionResultVar,
-): Result => {
+) => {
   // If core errors caused by an abort error then raise it as a direct error.
   // This is an expected possible error. Possible when user cancels a request.
   if (context.config.transport.type === Transport.http && result instanceof Error && isAbortError(result.cause)) {
@@ -27,8 +25,8 @@ export const handleOutput = (
   }
 
   if (isContextConfigTraditionalGraphQLOutput(context.config)) {
-    if (result instanceof Error) return resultThrow(result)
-    return resultReturn(result)
+    if (result instanceof Error) throw result
+    return result
   }
 
   const c = context.config.output
@@ -52,10 +50,10 @@ export const handleOutput = (
   const isReturnSchema = readConfigErrorCategoryOutputChannel(context.config, `schema`) === `return`
 
   if (result instanceof Error) {
-    if (isThrowOther) return resultThrow(result)
-    if (isReturnOther) return resultReturn(result)
+    if (isThrowOther) throw result
+    if (isReturnOther) return result
     // todo not a graphql execution error class instance
-    return resultReturn(isEnvelope ? { errors: [result] } : result)
+    return isEnvelope ? { errors: [result] } : result
   }
 
   if (result.errors && result.errors.length > 0) {
@@ -64,63 +62,61 @@ export const handleOutput = (
       {},
       result.errors,
     )
-    if (isThrowExecution) return resultThrow(error)
-    if (isReturnExecution) return resultReturn(error)
-    return resultReturn(isEnvelope ? { ...result, errors: [...result.errors ?? [], error] } : error)
+    if (isThrowExecution) throw error
+    if (isReturnExecution) return error
+    return isEnvelope ? { ...result, errors: [...result.errors ?? [], error] } : error
   }
 
-  {
-    if (isTypedContext(context)) {
-      if (c.errors.schema !== false) {
-        if (!isRecordLikeObject(result.data)) return resultThrow(new Error(`Expected data to be an object.`))
-        const schemaErrors = Object.entries(result.data).map(([rootFieldName, rootFieldValue]) => {
-          // todo this check would be nice but it doesn't account for aliases right now. To achieve this we would
-          // need to have the selection set available to use and then do a costly analysis for all fields that were aliases.
-          // So costly that we would probably instead want to create an index of them on the initial encoding step and
-          // then make available down stream. Also, note, here, the hardcoding of Query, needs to be any root type.
-          // const isResultField = Boolean(schemaIndex.error.rootResultFields.Query[rootFieldName])
-          // if (!isResultField) return null
-          // if (!isPlainObject(rootFieldValue)) return new Error(`Expected result field to be an object.`)
-          if (!isRecordLikeObject(rootFieldValue)) return null
+  if (isTypedContext(context)) {
+    if (c.errors.schema !== false) {
+      if (!isRecordLikeObject(result.data)) throw new Error(`Expected data to be an object.`)
+      const schemaErrors = Object.entries(result.data).map(([rootFieldName, rootFieldValue]) => {
+        // todo this check would be nice but it doesn't account for aliases right now. To achieve this we would
+        // need to have the selection set available to use and then do a costly analysis for all fields that were aliases.
+        // So costly that we would probably instead want to create an index of them on the initial encoding step and
+        // then make available down stream. Also, note, here, the hardcoding of Query, needs to be any root type.
+        // const isResultField = Boolean(schemaIndex.error.rootResultFields.Query[rootFieldName])
+        // if (!isResultField) return null
+        // if (!isPlainObject(rootFieldValue)) return new Error(`Expected result field to be an object.`)
+        if (!isRecordLikeObject(rootFieldValue)) return null
 
-          const __typename = rootFieldValue[`__typename`]
-          if (typeof __typename !== `string`) {
-            return new Error(`Expected __typename to be selected and a string.`)
-          }
+        const __typename = rootFieldValue[`__typename`]
+        if (typeof __typename !== `string`) {
+          return new Error(`Expected __typename to be selected and a string.`)
+        }
 
-          const isErrorObject = Boolean(
-            context.schemaIndex.error.objectsTypename[__typename],
-          )
-          if (!isErrorObject) return null
-          // todo extract message
-          // todo allow mapping error instances to schema errors
-          return new Error(`Failure on field ${rootFieldName}: ${__typename}`)
-        }).filter((_): _ is Error => _ !== null)
+        const isErrorObject = Boolean(
+          context.schemaIndex.error.objectsTypename[__typename],
+        )
+        if (!isErrorObject) return null
+        // todo extract message
+        // todo allow mapping error instances to schema errors
+        return new Error(`Failure on field ${rootFieldName}: ${__typename}`)
+      }).filter((_): _ is Error => _ !== null)
 
-        const error = (schemaErrors.length === 1)
-          ? schemaErrors[0]!
-          : schemaErrors.length > 0
-          ? new Errors.ContextualAggregateError(
-            `Two or more schema errors in the execution result.`,
-            {},
-            schemaErrors,
-          )
-          : null
-        if (error) {
-          if (isThrowSchema) return resultThrow(error)
-          if (isReturnSchema) {
-            return resultReturn(isEnvelope ? { ...result, errors: [...result.errors ?? [], error] } : error)
-          }
+      const error = (schemaErrors.length === 1)
+        ? schemaErrors[0]!
+        : schemaErrors.length > 0
+        ? new Errors.ContextualAggregateError(
+          `Two or more schema errors in the execution result.`,
+          {},
+          schemaErrors,
+        )
+        : null
+      if (error) {
+        if (isThrowSchema) throw error
+        if (isReturnSchema) {
+          return isEnvelope ? { ...result, errors: [...result.errors ?? [], error] } : error
         }
       }
     }
-
-    if (isEnvelope) {
-      return resultReturn(result)
-    }
-
-    return resultReturn(result.data)
   }
+
+  if (isEnvelope) {
+    return result
+  }
+
+  return result.data
 }
 
 const isAbortError = (error: any): error is DOMException & { name: 'AbortError' } => {
@@ -130,7 +126,11 @@ const isAbortError = (error: any): error is DOMException & { name: 'AbortError' 
     || (error instanceof Error && error.message.startsWith(`AbortError:`))
 }
 
-const isTypedContext = (context: Context): context is TypedContext => `schemaIndex` in context
+const isTypedContext = (context: RequestContext): context is InterfaceTypedRequestContext => `schemaIndex` in context
+
+/**
+ * Types for output handling.
+ */
 
 // dprint-ignore
 export type RawResolveOutputReturnRootType<$Config extends Config, $Data> =
@@ -192,7 +192,7 @@ type IfConfiguredStripSchemaErrorsFromDataRootField<$Config extends Config, $Ind
     : ExcludeSchemaErrors<$Index, $Data>
 
 // dprint-ignore
-export type ExcludeSchemaErrors<$Index extends Schema.Index, $Data> =
+type ExcludeSchemaErrors<$Index extends Schema.Index, $Data> =
   Exclude<
     $Data,
     $Index['error']['objectsTypename'][keyof $Index['error']['objectsTypename']]
@@ -205,12 +205,12 @@ export type ConfigGetOutputError<$Config extends Config, $ErrorCategory extends 
     : ConfigResolveOutputErrorChannel<$Config, $Config['output']['errors'][$ErrorCategory]>
 
 // dprint-ignore
-export type ConfigGetOutputEnvelopeErrorChannel<$Config extends Config, $ErrorCategory extends ErrorCategory> =
+type ConfigGetOutputEnvelopeErrorChannel<$Config extends Config, $ErrorCategory extends ErrorCategory> =
   $Config['output']['envelope']['errors'][$ErrorCategory] extends true
     ? false
     : ConfigResolveOutputErrorChannel<$Config, $Config['output']['errors'][$ErrorCategory]>
 
-export type ConfigResolveOutputErrorChannel<$Config extends Config, $Channel extends OutputChannelConfig | false> =
+type ConfigResolveOutputErrorChannel<$Config extends Config, $Channel extends OutputChannelConfig | false> =
   $Channel extends 'default' ? $Config['output']['defaults']['errorChannel']
     : $Channel extends false ? false
     : $Channel
@@ -251,7 +251,3 @@ type IsEnvelopeWithoutErrors<$Config extends Config> =
       ? true
     : false
   : false
-
-export type SimplifyOutput<O> = ConditionalSimplify<O, Error | Response>
-
-export type SimplifyOutputUnion<T> = T extends any ? SimplifyOutput<T> : never
