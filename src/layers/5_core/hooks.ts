@@ -38,7 +38,7 @@ type TransportInput<$Config extends Config, $HttpProperties = {}, $MemoryPropert
         : never
     )
 
-export const hookNamesOrderedBySequence = [`encode`, `pack`, `exchange`, `unpack`, `decode`, `output`] as const
+export const hookNamesOrderedBySequence = [`encode`, `pack`, `exchange`, `unpack`, `decode`] as const
 
 export type HookSequence = typeof hookNamesOrderedBySequence
 
@@ -99,18 +99,10 @@ export type HookDefDecode<$Config extends Config> = {
     & TransportInput<$Config, { response: Response }>
 }
 
-export type HookDefOutput<$Config extends Config> = {
-  input:
-    & { result: ExecutionResult }
-    & InterfaceInput
-    & TransportInput<$Config, { response: Response }>
-}
-
 export type HookMap<$Config extends Config = Config> = {
   encode: HookDefEncode<$Config>
   pack: HookDefPack<$Config>
   exchange: HookDefExchange<$Config>
   unpack: HookDefUnpack<$Config>
   decode: HookDefDecode<$Config>
-  output: HookDefOutput<$Config>
 }
