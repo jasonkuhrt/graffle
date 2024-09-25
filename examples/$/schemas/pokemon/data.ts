@@ -29,16 +29,16 @@ export namespace DatabaseServer {
     $default: newDatabase(),
   }
 
-  export const tenant = (scope?: string): Database => {
-    if (!scope) {
+  export const tenant = (tenantName?: string): Database => {
+    if (!tenantName) {
       return databases['$default']!
     }
 
-    let database = databases[scope]
+    let database = databases[tenantName]
 
     if (!database) {
       database = newDatabase()
-      databases[scope] = database
+      databases[tenantName] = database
     }
 
     return database

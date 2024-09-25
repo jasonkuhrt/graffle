@@ -127,16 +127,16 @@ builder.mutationField(`addPokemon`, (t) =>
       attack: t.arg.int({ required: true }),
       defense: t.arg.int({ required: true }),
     },
-    resolve: (_, { name, hp, attack, defense }) => {
+    resolve: (_, { name, hp, attack, defense }, ctx) => {
       const newPokemon = {
-        id: DatabaseServer.tenant().pokemon.length + 1,
+        id: DatabaseServer.tenant(ctx.tenant).pokemon.length + 1,
         name,
         hp,
         attack,
         defense,
         trainerId: null,
       }
-      DatabaseServer.tenant().pokemon.push(newPokemon)
+      DatabaseServer.tenant(ctx.tenant).pokemon.push(newPokemon)
       return newPokemon
     },
   }))
