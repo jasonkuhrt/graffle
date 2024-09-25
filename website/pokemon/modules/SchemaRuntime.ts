@@ -3,8 +3,16 @@ import * as $ from 'graffle/schema'
 import * as Data from './Data.js'
 import * as $Scalar from './Scalar.js'
 import type { Index } from './SchemaIndex.js'
-export const $defaultSchemaUrl = undefined
+export const $defaultSchemaUrl = new URL('http://localhost:3000/graphql')
 
+export const PokemonFilter = $.InputObject(`PokemonFilter`, {
+  name: $.Input.Field(() => $.Input.Nullable(StringFilter)),
+}, true)
+
+export const StringFilter = $.InputObject(`StringFilter`, {
+  contains: $.Input.Field($.Input.Nullable($Scalar.String)),
+  in: $.Input.Field($.Input.Nullable($.Input.List($Scalar.String))),
+}, true)
 // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
 export const Pokemon = $.Object$(`Pokemon`, {
   attack: $.field($.Output.Nullable($Scalar.Int)),
@@ -46,6 +54,11 @@ export const Query = $.Object$(`Query`, {
   pokemonByName: $.field(
     $.Output.Nullable($.Output.List(() => Pokemon)),
     $.Args({ name: $.Input.Field($Scalar.String) }, false),
+  ),
+  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
+  pokemons: $.field(
+    $.Output.Nullable($.Output.List(() => Pokemon)),
+    $.Args({ filter: $.Input.Field($.Input.Nullable(PokemonFilter)) }, true),
   ),
   // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
   trainerByName: $.field($.Output.Nullable(() => Trainer), $.Args({ name: $.Input.Field($Scalar.String) }, false)),
