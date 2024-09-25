@@ -1,9 +1,6 @@
-import type { DocumentNode, ExecutionResult, GraphQLSchema } from 'graphql'
-import { print } from 'graphql'
+import { type ExecutionResult, print } from 'graphql'
 import { Anyware } from '../../lib/anyware/__.js'
 import {
-  type GraphQLRequestEncoded,
-  type GraphQLRequestInput,
   OperationTypeAccessTypeMap,
   parseGraphQLOperationType,
   type StandardScalarVariables,
@@ -16,12 +13,10 @@ import {
   postRequestHeadersRec,
 } from '../../lib/graphqlHTTP.js'
 import { mergeRequestInit, searchParamsAppendAll } from '../../lib/http.js'
-import { casesExhausted, throwNull } from '../../lib/prelude.js'
+import { casesExhausted, getOptionalNullablePropertyOrThrow, throwNull } from '../../lib/prelude.js'
 import { execute } from '../0_functions/execute.js'
-import type { Schema } from '../1_Schema/__.js'
 import { SelectionSet } from '../2_SelectionSet/__.js'
-import type { GraphQLObjectSelection } from '../2_SelectionSet/print.js'
-import * as Result from '../3_ResultSet/customScalars.js'
+import * as CustomScalars from '../3_ResultSet/customScalars.js'
 import type { GraffleExecutionResultVar } from '../6_client/client.js'
 import type { Config } from '../6_client/Settings/Config.js'
 import {
@@ -30,121 +25,7 @@ import {
   MethodMode,
   type MethodModeGetReads,
 } from '../6_client/transportHttp/request.js'
-import type {
-  ContextInterfaceRaw,
-  ContextInterfaceTyped,
-  InterfaceRaw,
-  InterfaceTyped,
-  TransportHttp,
-  TransportMemory,
-} from './types.js'
-
-const getRootIndexOrThrow = (context: ContextInterfaceTyped, rootTypeName: string) => {
-  // @ts-expect-error
-
-  const rootIndex = context.schemaIndex.Root[rootTypeName]
-  if (!rootIndex) throw new Error(`Root type not found: ${rootTypeName}`)
-  return rootIndex
-}
-
-type InterfaceInput<TypedProperties = {}, RawProperties = {}> =
-  | ({
-    interface: InterfaceTyped
-    context: ContextInterfaceTyped
-    rootTypeName: Schema.RootTypeName
-  } & TypedProperties)
-  | ({
-    interface: InterfaceRaw
-    context: ContextInterfaceRaw
-  } & RawProperties)
-
-// dprint-ignore
-
-type TransportInput<$Config extends Config, $HttpProperties = {}, $MemoryProperties = {}> =
-  | (
-      TransportHttp extends $Config['transport']['type']
-        ? ({
-            transport: TransportHttp
-            
-          } & $HttpProperties)
-        : never
-    )
-  | (
-      TransportMemory extends $Config['transport']['type']
-        ? ({
-          transport: TransportMemory
-        } & $MemoryProperties)
-        : never
-    )
-
-export const hookNamesOrderedBySequence = [`encode`, `pack`, `exchange`, `unpack`, `decode`] as const
-
-export type HookSequence = typeof hookNamesOrderedBySequence
-
-export type HookDefEncode<$Config extends Config> = {
-  input:
-    & InterfaceInput<{ selection: GraphQLObjectSelection }, GraphQLRequestInput>
-    & TransportInput<$Config, { schema: string | URL }, { schema: GraphQLSchema }>
-}
-
-export type HookDefPack<$Config extends Config> = {
-  input:
-    & GraphQLRequestEncoded
-    & InterfaceInput
-    // todo why is headers here but not other http request properties?
-    & TransportInput<$Config, { url: string | URL; headers?: HeadersInit }, {
-      schema: GraphQLSchema
-    }>
-  slots: {
-    /**
-     * When request will be sent using GET this slot is called to create the value that will be used for the HTTP Search Parameters.
-     */
-    searchParams: getRequestEncodeSearchParameters
-    /**
-     * When request will be sent using POST this slot is called to create the value that will be used for the HTTP body.
-     */
-    body: postRequestEncodeBody
-  }
-}
-
-export type HookDefExchange<$Config extends Config> = {
-  slots: {
-    fetch: (request: Request) => Response | Promise<Response>
-  }
-  input:
-    & InterfaceInput
-    & TransportInput<$Config, {
-      request: CoreExchangePostRequest | CoreExchangeGetRequest
-    }, {
-      schema: GraphQLSchema
-      query: string | DocumentNode
-      variables?: StandardScalarVariables
-      operationName?: string
-    }>
-}
-
-export type HookDefUnpack<$Config extends Config> = {
-  input:
-    & InterfaceInput
-    & TransportInput<$Config, { response: Response }, {
-      result: ExecutionResult
-    }>
-}
-
-export type HookDefDecode<$Config extends Config> = {
-  input:
-    & { result: ExecutionResult }
-    & InterfaceInput
-    & TransportInput<$Config, { response: Response }>
-}
-
-export type HookMap<$Config extends Config = Config> = {
-  encode: HookDefEncode<$Config>
-  pack: HookDefPack<$Config>
-  exchange: HookDefExchange<$Config>
-  unpack: HookDefUnpack<$Config>
-  decode: HookDefDecode<$Config>
-}
+import { type HookMap, hookNamesOrderedBySequence, type HookSequence } from './hooks.js'
 
 export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
   hookNamesOrderedBySequence,
@@ -169,7 +50,7 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
           variables = undefined
           document = SelectionSet.Print.resolveRootType(
             input.context,
-            getRootIndexOrThrow(input.context, input.rootTypeName),
+            getOptionalNullablePropertyOrThrow(input.context.schemaIndex.Root, input.rootTypeName),
             input.selection,
           )
           break
@@ -346,7 +227,10 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
           // todo optimize
           // 1. Generate a map of possible custom scalar paths (tree structure)
           // 2. When traversing the result, skip keys that are not in the map
-          const dataDecoded = Result.decode(getRootIndexOrThrow(input.context, input.rootTypeName), input.result.data)
+          const dataDecoded = CustomScalars.decode(
+            getOptionalNullablePropertyOrThrow(input.context.schemaIndex.Root, input.rootTypeName),
+            input.result.data,
+          )
           switch (input.transport) {
             case `memory`: {
               return { ...input.result, data: dataDecoded }

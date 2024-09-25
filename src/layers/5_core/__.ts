@@ -1,1 +1,1 @@
-export * as Core from './core.js'
+export * as Core from './_.js'

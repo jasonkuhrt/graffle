@@ -210,6 +210,7 @@ export type LastOf<T> = UnionToIntersection<T extends any ? () => T : never> ext
 // export type IsMultiple<T> = T extends 0 ? false : T extends 1 ? false : true
 
 export type ExcludeNull<T> = Exclude<T, null>
+export type ExcludeNullAndUndefined<T> = Exclude<T, null | undefined>
 
 export const mapValues = <
   $Obj extends Record<string, any>,
@@ -555,5 +556,18 @@ export type OmitKeysWithPrefix<$Object extends object, $Prefix extends string> =
       : $Key
   ]: $Object[$Key]
 }
+
 AssertIsEqual<OmitKeysWithPrefix<{ a: 1; b: 2 }, 'a'>, { a: 1; b: 2 }>()
 AssertIsEqual<OmitKeysWithPrefix<{ foo_a: 1; b: 2 }, 'foo'>, { b: 2 }>()
+
+export const getOptionalNullablePropertyOrThrow = <
+  $Record extends { [_ in keyof $Record]: unknown },
+  $Key extends keyof $Record,
+>(
+  record: $Record,
+  key: $Key,
+): ExcludeNullAndUndefined<$Record[$Key]> => {
+  const value = record[key]
+  if (value === undefined || value === null) throw new Error(`Key not found: ${String(key)}`)
+  return value as ExcludeNullAndUndefined<$Record[$Key]>
+}
