@@ -41,7 +41,7 @@ jobs:
       - name: Build Website
         working-directory: website
         run:  pnpm build
-  test:
+  test-unit:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -54,4 +54,18 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
       - run: pnpm build
-      - run: pnpm test -- --environment ${{ matrix.environment }}
+      - run: pnpm test:unit -- --environment ${{ matrix.environment }}
+  test-examples:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [20, 22]
+        environment: [jsdom, node]
+    name: Node ${{ matrix.node }} @env ${{matrix.environment}}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+        with:
+          node-version: ${{ matrix.node }}
+      - run: pnpm build
+      - run: pnpm test:examples -- --environment ${{ matrix.environment }}
