@@ -1,4 +1,4 @@
-export namespace DB {
+export namespace DatabaseServer {
   export interface Trainer {
     id: number
     name: string
@@ -18,18 +18,37 @@ export namespace DB {
     pokemon: Pokemon[]
   }
 
-  export const data: Database = {
+  const defaultDatabase: Database = {
     trainers: [],
     pokemon: [],
   }
 
-  export const seed = () => {
+  const databases: Record<string, Database> = {
+    $default: defaultDatabase,
+  }
+
+  export const tenant = (scope?: string) => {
+    if (!scope) {
+      return defaultDatabase
+    }
+
+    let database = databases[scope]
+
+    if (!database) {
+      database = structuredClone(defaultDatabase)
+      databases[scope] = database
+    }
+
+    return database
+  }
+
+  export const seed = (database: Database) => {
     const ash = { id: 1, name: `Ash` }
     const misty = { id: 2, name: `Misty` }
 
-    data.trainers.push(ash, misty)
+    database.trainers.push(ash, misty)
 
-    data.pokemon.push(
+    database.pokemon.push(
       { id: 1, name: `Pikachu`, hp: 35, attack: 55, defense: 40, trainerId: 1 },
       { id: 2, name: `Charizard`, hp: 78, attack: 84, defense: 78, trainerId: 1 },
       { id: 3, name: `Squirtle`, hp: 44, attack: 48, defense: 65, trainerId: 2 },

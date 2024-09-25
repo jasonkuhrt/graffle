@@ -6,7 +6,18 @@ import { createServer } from 'node:http'
 
 export const serveSchema = async (input: { schema: GraphQLSchema; log?: boolean }) => {
   const { schema } = input
-  const yoga = createYoga({ schema, logging: false, maskedErrors: false })
+  const yoga = createYoga({
+    schema,
+    context: (initialContext) => {
+      const tenant = initialContext.request.headers.get(`tenant`)
+      console.log(`tenant:`, tenant)
+      return {
+        tenant,
+      }
+    },
+    logging: false,
+    maskedErrors: false,
+  })
   const server = createServer(yoga) // eslint-disable-line
   const port = await getPort({ port: [3000, 3001, 3002, 3003, 3004] })
   const url = new URL(`http://localhost:${String(port)}/graphql`)

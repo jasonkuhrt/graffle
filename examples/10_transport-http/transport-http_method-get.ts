@@ -8,7 +8,10 @@ import { show } from '../$/helpers.js'
 
 const graffle = Pokemon
   .create({
-    transport: { methodMode: `getReads` }, // [!code highlight]
+    transport: {
+      methodMode: `getReads`, // [!code highlight]
+      headers: { tenant: `nano` },
+    },
   })
   .anyware(async ({ exchange }) => {
     show(exchange.input.request)

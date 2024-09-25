@@ -1,9 +1,12 @@
 import SchemaBuilder from '@pothos/core'
 import SimpleObjectsPlugin from '@pothos/plugin-simple-objects'
 import ZodPlugin from '@pothos/plugin-zod'
-import { DB } from './data.js'
+import { DatabaseServer } from './data.js'
 
 export const builder = new SchemaBuilder<{
+  Context: {
+    tenant?: string
+  }
   Scalars: {
     Date: {
       Input: Date
@@ -14,14 +17,14 @@ export const builder = new SchemaBuilder<{
   plugins: [SimpleObjectsPlugin, ZodPlugin],
 })
 
-const Trainer = builder.objectRef<DB.Trainer>(`Trainer`).implement({
+const Trainer = builder.objectRef<DatabaseServer.Trainer>(`Trainer`).implement({
   fields: (t) => ({
     id: t.int({ resolve: (trainer) => trainer.id }),
     name: t.string({ resolve: (trainer) => trainer.name }),
   }),
 })
 
-const Pokemon = builder.objectRef<DB.Pokemon>(`Pokemon`).implement({
+const Pokemon = builder.objectRef<DatabaseServer.Pokemon>(`Pokemon`).implement({
   fields: (t) => ({
     id: t.int({ resolve: (pokemon) => pokemon.id }),
     name: t.string({ resolve: (pokemon) => pokemon.name }),
@@ -31,7 +34,8 @@ const Pokemon = builder.objectRef<DB.Pokemon>(`Pokemon`).implement({
     trainer: t.field({
       type: Trainer,
       nullable: true,
-      resolve: (pokemon) => DB.data.trainers.find((t) => t.id === pokemon.trainerId) || null,
+      resolve: (pokemon, _, ctx) =>
+        DatabaseServer.tenant(ctx.tenant).trainers.find((t) => t.id === pokemon.trainerId) || null,
     }),
   }),
 })
@@ -39,7 +43,7 @@ const Pokemon = builder.objectRef<DB.Pokemon>(`Pokemon`).implement({
 builder.objectFields(Trainer, t => ({
   pokemon: t.field({
     type: t.listRef(Pokemon),
-    resolve: (trainer) => DB.data.pokemon.filter((p) => p.trainerId === trainer.id),
+    resolve: (trainer, _, ctx) => DatabaseServer.tenant(ctx.tenant).pokemon.filter((p) => p.trainerId === trainer.id),
   }),
 }))
 
@@ -66,8 +70,8 @@ builder.queryField(`pokemons`, (t) =>
       filter: t.arg({ type: PokemonFilter, required: false }),
     },
     type: [Pokemon],
-    resolve: (_, args) =>
-      DB.data.pokemon.filter((p) => {
+    resolve: (_, args, ctx) =>
+      DatabaseServer.tenant(ctx.tenant).pokemon.filter((p) => {
         if (args.filter?.name) {
           if (args.filter.name.contains) {
             return p.name.includes(args.filter.name.contains)
@@ -83,7 +87,7 @@ builder.queryField(`pokemons`, (t) =>
 builder.queryField(`pokemon`, (t) =>
   t.field({
     type: [Pokemon],
-    resolve: () => DB.data.pokemon,
+    resolve: (_, __, ctx) => DatabaseServer.tenant(ctx.tenant).pokemon,
   }))
 
 builder.queryField(`pokemonByName`, (t) =>
@@ -92,13 +96,13 @@ builder.queryField(`pokemonByName`, (t) =>
     args: {
       name: t.arg.string({ required: true }),
     },
-    resolve: (_, { name }) => DB.data.pokemon.filter((p) => p.name.includes(name)),
+    resolve: (_, { name }, ctx) => DatabaseServer.tenant(ctx.tenant).pokemon.filter((p) => p.name.includes(name)),
   }))
 
 builder.queryField(`trainers`, (t) =>
   t.field({
     type: [Trainer],
-    resolve: () => DB.data.trainers,
+    resolve: (_, __, ctx) => DatabaseServer.tenant(ctx.tenant).trainers,
   }))
 
 builder.queryField(`trainerByName`, (t) =>
@@ -107,7 +111,8 @@ builder.queryField(`trainerByName`, (t) =>
     args: {
       name: t.arg.string({ required: true }),
     },
-    resolve: (_, { name }) => DB.data.trainers.find((t) => t.name.includes(name)) || null,
+    resolve: (_, { name }, ctx) =>
+      DatabaseServer.tenant(ctx.tenant).trainers.find((t) => t.name.includes(name)) || null,
   }))
 
 builder.mutationField(`addPokemon`, (t) =>
@@ -124,22 +129,22 @@ builder.mutationField(`addPokemon`, (t) =>
     },
     resolve: (_, { name, hp, attack, defense }) => {
       const newPokemon = {
-        id: DB.data.pokemon.length + 1,
+        id: DatabaseServer.tenant().pokemon.length + 1,
         name,
         hp,
         attack,
         defense,
         trainerId: null,
       }
-      DB.data.pokemon.push(newPokemon)
+      DatabaseServer.tenant().pokemon.push(newPokemon)
       return newPokemon
     },
   }))
 
 const schema = builder.toSchema()
 
-DB.seed()
+DatabaseServer.seed(DatabaseServer.tenant())
 
-export { DB } from './data.js'
+export { DatabaseServer } from './data.js'
 
 export { schema }
