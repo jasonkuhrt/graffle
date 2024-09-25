@@ -18,24 +18,26 @@ export namespace DatabaseServer {
     pokemon: Pokemon[]
   }
 
-  const defaultDatabase: Database = {
+  const emptyDatabase: Database = {
     trainers: [],
     pokemon: [],
   }
 
+  const newDatabase = (): Database => structuredClone(emptyDatabase)
+
   const databases: Record<string, Database> = {
-    $default: defaultDatabase,
+    $default: newDatabase(),
   }
 
-  export const tenant = (scope?: string) => {
+  export const tenant = (scope?: string): Database => {
     if (!scope) {
-      return defaultDatabase
+      return databases['$default']!
     }
 
     let database = databases[scope]
 
     if (!database) {
-      database = structuredClone(defaultDatabase)
+      database = newDatabase()
       databases[scope] = database
     }
 
