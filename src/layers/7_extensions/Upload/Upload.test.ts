@@ -6,11 +6,11 @@ import { schema } from '../../../../tests/_/schemaUpload/schema.js'
 import { Graffle } from '../../../entrypoints/main.js'
 import { Upload } from './Upload.js'
 
-import { type SchemaServer, serveSchema } from '../../../../examples/$/helpers.js'
+import { type SchemaService, serveSchema } from '../../../../tests/_/lib/serveSchema.js'
 import type { Client } from '../../6_client/client.js'
 import type { Config, OutputConfigDefault } from '../../6_client/Settings/Config.js'
 
-let schemaServer: SchemaServer
+let schemaServer: SchemaService
 let graffle: Client<{
   config: {
     transport: { type: 'http'; config: Config['transport']['config'] }
