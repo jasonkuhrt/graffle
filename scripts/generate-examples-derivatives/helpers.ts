@@ -199,7 +199,7 @@ export const runExample = async (filePath: string) => {
 
 export const rewriteDynamicError = (value: string) => {
   return value
-    .replaceAll(/\/.*\/(.+)\.ts/g, `/some/path/to/$1.ts`)
+    .replaceAll(/\/.*\/(.+)\.ts(:?:\d+)?/g, `/some/path/to/$1.ts:XX:XX`)
     // When Node.js process exits via an uncaught thrown error, version is printed at bottom.
     .replaceAll(/Node\.js v.+/g, `Node.js vXX.XX.XX`)
     .replaceAll(/(.+):\d+:\d+\)/g, `$1:XX:XX)`)

@@ -3,7 +3,7 @@ import { partitionAndAggregateErrors } from '../errors/ContextualAggregateError.
 import type { Deferred, FindValueAfter, IsLastValue, MaybePromise } from '../prelude.js'
 import { casesExhausted, createDeferred } from '../prelude.js'
 import { getEntrypoint } from './getEntrypoint.js'
-import type { HookResultErrorExtension } from './runHook.js'
+import type { HookResultError, HookResultErrorExtension } from './runHook.js'
 import { runPipeline } from './runPipeline.js'
 
 type HookSequence = readonly [string, ...string[]]
@@ -134,6 +134,8 @@ export type Core<
       >
     }
   }
+  passthroughErrorInstanceOf?: CoreInput['passthroughErrorInstanceOf']
+  passthroughErrorWith?: CoreInput['passthroughErrorWith']
 }
 
 export type CoreInput<
@@ -162,6 +164,22 @@ export type CoreInput<
         >
       }
   }
+  /**
+   * If a hook results in a thrown error but is an instance of one of these classes then return it as-is
+   * rather than wrapping it in a ContextualError.
+   *
+   * This can be useful when there are known kinds of errors such as Abort Errors from AbortController
+   * which are actually a signaling mechanism.
+   */
+  passthroughErrorInstanceOf?: Function[]
+  /**
+   * If a hook results in a thrown error but returns true from this function then return the error as-is
+   * rather than wrapping it in a ContextualError.
+   *
+   * This can be useful when there are known kinds of errors such as Abort Errors from AbortController
+   * which are actually a signaling mechanism.
+   */
+  passthroughErrorWith?: (signal: HookResultError) => boolean
 }
 
 export type HookName = string

@@ -29,8 +29,15 @@ type $Core = ReturnType<typeof createAnyware> & {
   }
 }
 
+export const createHook = <$Slots extends object, $Input extends object, $Result = unknown>(
+  $Hook: {
+    slots: $Slots
+    run: (input: { input: $Input; slots: $Slots }) => $Result
+  },
+) => $Hook
+
 export const createAnyware = () => {
-  const a = {
+  const a = createHook({
     slots: {
       append: vi.fn().mockImplementation((hookName: string) => {
         return hookName
@@ -43,8 +50,8 @@ export const createAnyware = () => {
       const extra = slots.appendExtra(`a`)
       return { value: input.value + `+` + slots.append(`a`) + extra }
     }),
-  }
-  const b = {
+  })
+  const b = createHook({
     slots: {
       append: vi.fn().mockImplementation((hookName: string) => {
         return hookName
@@ -57,7 +64,7 @@ export const createAnyware = () => {
       const extra = slots.appendExtra(`b`)
       return { value: input.value + `+` + slots.append(`b`) + extra }
     }),
-  }
+  })
 
   return Anyware.create<['a', 'b'], Anyware.HookMap<['a', 'b']>, Input>({
     hookNamesOrderedBySequence: [`a`, `b`],

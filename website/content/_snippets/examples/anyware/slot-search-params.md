@@ -38,28 +38,28 @@ console.log(result)
 
 <!-- dprint-ignore-start -->
 ```txt
-/some/path/to/runPipeline.ts:84
+/some/path/to/runPipeline.ts:XX:XX
           return new ContextualError(message, { hookName: signal.hookName, source: signal.source }, signal.error)
                  ^
 
 
 ContextualError: There was an error in the core implementation of hook "pack".
-    at runPipeline (/some/path/to/runPipeline.ts:XX:XX)
-    at async runPipeline (/some/path/to/runPipeline.ts:XX:XX)
-    at async Object.run (/some/path/to/main.ts:XX:XX)
-    at async run (/some/path/to/client.ts:XX:XX)
-    at async runRaw (/some/path/to/client.ts:XX:XX)
-    at async Object.raw (/some/path/to/client.ts:XX:XX)
-    at async Proxy.rawString (/some/path/to/client.ts:XX:XX)
-    at async <anonymous> (/some/path/to/anyware_slot_slot-body__slot-search-params.ts:XX:XX) {
+    at runPipeline (/some/path/to/runPipeline.ts:XX:XX:18)
+    at async runPipeline (/some/path/to/runPipeline.ts:XX:XX:14)
+    at async Object.run (/some/path/to/main.ts:XX:XX:22)
+    at async run (/some/path/to/client.ts:XX:XX:20)
+    at async runRaw (/some/path/to/client.ts:XX:XX:12)
+    at async Object.raw (/some/path/to/client.ts:XX:XX:14)
+    at async Proxy.rawString (/some/path/to/client.ts:XX:XX:14)
+    at async <anonymous> (/some/path/to/anyware_slot_slot-body__slot-search-params.ts:XX:XX:16) {
   context: { hookName: 'pack', source: 'implementation' },
   cause: Error: Unexpected null value.
-      at throwNull (/some/path/to/prelude.ts:XX:XX)
-      at Object.run (/some/path/to/core.ts:XX:XX)
-      at runHook (/some/path/to/runHook.ts:XX:XX)
-      at <anonymous> (/some/path/to/runHook.ts:XX:XX)
-      at <anonymous> (/some/path/to/anyware_slot_slot-body__slot-search-params.ts:XX:XX)
-      at applyBody (/some/path/to/main.ts:XX:XX)
+      at throwNull (/some/path/to/prelude.ts:XX:XX:29)
+      at Object.run (/some/path/to/core.ts:XX:XX:35)
+      at runHook (/some/path/to/runHook.ts:XX:XX:37)
+      at <anonymous> (/some/path/to/runHook.ts:XX:XX:14)
+      at <anonymous> (/some/path/to/anyware_slot_slot-body__slot-search-params.ts:XX:XX:18)
+      at applyBody (/some/path/to/main.ts:XX:XX:28)
 }
 
 Node.js vXX.XX.XX
