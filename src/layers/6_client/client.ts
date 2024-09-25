@@ -12,6 +12,7 @@ import { Core } from '../5_core/__.js'
 import { type InterfaceRaw, type TransportHttp } from '../5_core/types.js'
 import { type UseFn, useProperties } from './extension/use.js'
 import type { ClientContext, FnParametersProperty, State } from './fluent.js'
+import { handleOutput } from './handleOutput.js'
 import { anywareProperties, type FnAnyware } from './properties/anyware.js'
 import type { FnInternal } from './properties/internal.js'
 import { type FnRetry, retryProperties } from './properties/retry.js'
@@ -216,7 +217,7 @@ const createWithState = (
       retryingExtension: context.state.retry as any,
       extensions: context.state.extensions.filter(_ => _.onRequest !== undefined).map(_ => _.onRequest!) as any,
     })
-    return result
+    return handleOutput(context, result)
   }
 
   const runRaw = async (context: RequestContext, rawInput: BaseInput_) => {
