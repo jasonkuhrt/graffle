@@ -211,7 +211,19 @@ export const anyware = Anyware.create<HookSequence, HookMap, Result>({
       switch (input.interface) {
         // todo this depends on the return mode
         case `raw`: {
-          return input
+          switch (input.transport) {
+            case `http`: {
+              return {
+                ...input.result,
+                response: input.response,
+              }
+            }
+            case `memory`: {
+              return input.result
+            }
+            default:
+              throw casesExhausted(input)
+          }
         }
         case `typed`: {
           // todo optimize
