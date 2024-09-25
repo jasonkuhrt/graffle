@@ -3,8 +3,9 @@
 import { describe, expect, test, vi } from 'vitest'
 import { Errors } from '../errors/__.js'
 import type { ContextualError } from '../errors/ContextualError.js'
+import { Anyware } from './__.js'
 import { createRetryingExtension } from './main.js'
-import { core, oops, run, runWithOptions } from './specHelpers.js'
+import { core, createHook, type Input, oops, run, runWithOptions } from './specHelpers.js'
 
 describe(`no extensions`, () => {
   test(`passthrough to implementation`, async () => {
@@ -242,6 +243,54 @@ describe(`errors`, () => {
         "hookName": "a",
       }
     `)
+  })
+  describe('certain errors can be configured to be re-thrown without wrapping error', () => {
+    class SpecialError1 extends Error {}
+    class SpecialError2 extends Error {}
+    const a = createHook({
+      slots: {},
+      run: ({ input }: { slots: object; input: { throws: Error } }) => {
+        if (input.throws) throw input.throws
+      },
+    })
+
+    test('via passthroughErrorInstanceOf (one)', async () => {
+      const anyware = Anyware.create<['a'], Anyware.HookMap<['a']>>({
+        hookNamesOrderedBySequence: [`a`],
+        hooks: { a },
+        passthroughErrorInstanceOf: [SpecialError1],
+      })
+      // dprint-ignore
+      expect(anyware.run({ initialInput: { throws: new Error('oops') }, extensions: [] })).resolves.toBeInstanceOf(Errors.ContextualError)
+      // dprint-ignore
+      expect(anyware.run({ initialInput: { throws: new SpecialError1('oops') }, extensions: [] })).resolves.toBeInstanceOf(SpecialError1)
+    })
+    test('via passthroughErrorInstanceOf (multiple)', async () => {
+      const anyware = Anyware.create<['a'], Anyware.HookMap<['a']>>({
+        hookNamesOrderedBySequence: [`a`],
+        hooks: { a },
+        passthroughErrorInstanceOf: [SpecialError1, SpecialError2],
+      })
+      // dprint-ignore
+      expect(anyware.run({ initialInput: { throws: new Error('oops') }, extensions: [] })).resolves.toBeInstanceOf(Errors.ContextualError)
+      // dprint-ignore
+      expect(anyware.run({ initialInput: { throws: new SpecialError2('oops') }, extensions: [] })).resolves.toBeInstanceOf(SpecialError2)
+    })
+    test('via passthroughWith', async () => {
+      const anyware = Anyware.create<['a'], Anyware.HookMap<['a']>>({
+        hookNamesOrderedBySequence: [`a`],
+        hooks: { a },
+        // todo type-safe hook name according to values passed to constructor
+        // todo type-tests on signal { hookName, source, error }
+        passthroughErrorWith: (signal) => {
+          return signal.error instanceof SpecialError1
+        },
+      })
+      // dprint-ignore
+      expect(anyware.run({ initialInput: { throws: new Error('oops') }, extensions: [] })).resolves.toBeInstanceOf(Errors.ContextualError)
+      // dprint-ignore
+      expect(anyware.run({ initialInput: { throws: new SpecialError1('oops') }, extensions: [] })).resolves.toBeInstanceOf(SpecialError1)
+    })
   })
 })
 

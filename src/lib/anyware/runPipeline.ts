@@ -62,6 +62,20 @@ export const runPipeline = async (
     }
     case `error`: {
       debug(`signal: error`)
+      signal
+
+      if (core.passthroughErrorWith) {
+        if (core.passthroughErrorWith(signal)) {
+          return signal.error as any // todo change return type to be unknown since this function could permit anything?
+        }
+      }
+
+      if (core.passthroughErrorInstanceOf) {
+        if (core.passthroughErrorInstanceOf.some(_ => signal.error instanceof _)) {
+          return signal.error as any // todo change return type to include object... given this instanceof permits that?
+        }
+      }
+
       const wasAsync = asyncErrorDeferred.isResolved()
       // todo type test for this possible return value
       switch (signal.source) {
@@ -73,6 +87,7 @@ export const runPipeline = async (
           const message = wasAsync
             ? `There was an error in the extension "${signal.extensionName}"${nameTip}.`
             : `There was an error in the extension "${signal.extensionName}"${nameTip} while running hook "${signal.hookName}".`
+
           return new ContextualError(message, {
             hookName: signal.hookName,
             source: signal.source,

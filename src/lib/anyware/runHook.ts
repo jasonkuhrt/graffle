@@ -10,9 +10,19 @@ export type HookResultErrorAsync = Deferred<HookResultErrorExtension>
 export type HookResult =
   | { type: 'completed'; result: unknown; nextExtensionsStack: readonly Extension[] }
   | { type: 'shortCircuited'; result: unknown }
-  | { type: 'error'; hookName: string; source: 'user'; error: Errors.ContextualError; extensionName: string }
+  | HookResultErrorUser
   | HookResultErrorImplementation
   | HookResultErrorExtension
+
+export type HookResultError = HookResultErrorExtension | HookResultErrorImplementation | HookResultErrorUser
+
+export type HookResultErrorUser = {
+  type: 'error'
+  hookName: string
+  source: 'user'
+  error: Errors.ContextualError
+  extensionName: string
+}
 
 export type HookResultErrorExtension = {
   type: 'error'

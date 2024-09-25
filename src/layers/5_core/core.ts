@@ -28,6 +28,14 @@ import {
 import { type HookMap, hookNamesOrderedBySequence, type HookSequence } from './hooks.js'
 
 export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
+  // If core errors caused by an abort error then raise it as a direct error.
+  // This is an expected possible error. Possible when user cancels a request.
+  passthroughErrorWith: (signal) => {
+    // todo have anyware propagate the input that was passed to the hook that failed.
+    // it will give us a bit more confidence that we're only allowing this abort error for fetch requests stuff
+    // context.config.transport.type === Transport.http
+    return signal.hookName === `exchange` && isAbortError(signal.error)
+  },
   hookNamesOrderedBySequence,
   hooks: {
     encode: ({ input }) => {
@@ -257,3 +265,10 @@ export type Core<$Config extends Config = Config> = Anyware.Core<
   HookMap<$Config>,
   GraffleExecutionResultVar<$Config>
 >
+
+const isAbortError = (error: any): error is DOMException & { name: 'AbortError' } => {
+  return (error instanceof DOMException && error.name === `AbortError`)
+    // Under test with JSDOM, the error must be checked this way.
+    // todo look for an open issue with JSDOM to link here, is this just artifact of JSDOM or is it a real issue that happens in browsers?
+    || (error instanceof Error && error.message.startsWith(`AbortError:`))
+}

@@ -3,7 +3,7 @@ import { partitionAndAggregateErrors } from '../errors/ContextualAggregateError.
 import type { Deferred, FindValueAfter, IsLastValue, MaybePromise } from '../prelude.js'
 import { casesExhausted, createDeferred } from '../prelude.js'
 import { getEntrypoint } from './getEntrypoint.js'
-import type { HookResultErrorExtension } from './runHook.js'
+import type { HookResultError, HookResultErrorExtension } from './runHook.js'
 import { runPipeline } from './runPipeline.js'
 
 type HookSequence = readonly [string, ...string[]]
@@ -134,6 +134,8 @@ export type Core<
       >
     }
   }
+  passthroughErrorInstanceOf?: CoreInput['passthroughErrorInstanceOf']
+  passthroughErrorWith?: CoreInput['passthroughErrorWith']
 }
 
 export type CoreInput<
@@ -162,6 +164,8 @@ export type CoreInput<
         >
       }
   }
+  passthroughErrorInstanceOf?: Function[]
+  passthroughErrorWith?: (signal: HookResultError) => boolean
 }
 
 export type HookName = string

@@ -4,7 +4,6 @@ import { Errors } from '../../lib/errors/__.js'
 import type { GraphQLExecutionResultError } from '../../lib/graphql.js'
 import { isRecordLikeObject, type SimplifyExceptError, type Values } from '../../lib/prelude.js'
 import type { Schema } from '../1_Schema/__.js'
-import { Transport } from '../5_core/types.js'
 import type { ErrorsOther, GraffleExecutionResultVar, InterfaceTypedRequestContext, RequestContext } from './client.js'
 import {
   type Config,
@@ -18,12 +17,6 @@ export const handleOutput = (
   context: RequestContext,
   result: GraffleExecutionResultVar,
 ) => {
-  // If core errors caused by an abort error then raise it as a direct error.
-  // This is an expected possible error. Possible when user cancels a request.
-  if (context.config.transport.type === Transport.http && result instanceof Error && isAbortError(result.cause)) {
-    result = result.cause
-  }
-
   if (isContextConfigTraditionalGraphQLOutput(context.config)) {
     if (result instanceof Error) throw result
     return result
@@ -117,13 +110,6 @@ export const handleOutput = (
   }
 
   return result.data
-}
-
-const isAbortError = (error: any): error is DOMException & { name: 'AbortError' } => {
-  return (error instanceof DOMException && error.name === `AbortError`)
-    // Under test with JSDOM, the error must be checked this way.
-    // todo look for an open issue with JSDOM to link here, is this just artifact of JSDOM or is it a real issue that happens in browsers?
-    || (error instanceof Error && error.message.startsWith(`AbortError:`))
 }
 
 const isTypedContext = (context: RequestContext): context is InterfaceTypedRequestContext => `schemaIndex` in context
