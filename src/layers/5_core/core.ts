@@ -27,9 +27,7 @@ import {
 } from '../6_client/transportHttp/request.js'
 import { type HookMap, hookNamesOrderedBySequence, type HookSequence } from './hooks.js'
 
-type Result = ExecutionResult
-
-export const anyware = Anyware.create<HookSequence, HookMap, Result>({
+export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
   hookNamesOrderedBySequence,
   hooks: {
     encode: ({ input }) => {
