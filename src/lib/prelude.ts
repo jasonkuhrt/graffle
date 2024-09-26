@@ -214,7 +214,7 @@ export type ExcludeNullAndUndefined<T> = Exclude<T, null | undefined>
 
 export const mapValues = <
   $Obj extends Record<string, any>,
-  $Fn extends (value: $Obj[keyof $Obj], key: keyof $Obj) => any,
+  $Fn extends (value: $Obj[keyof $Obj], key: keyof $Obj & string) => any,
 >(
   object: $Obj,
   fn: $Fn,

@@ -37,6 +37,8 @@ const indicator = {
   ...positiveIndicator,
 }
 
+export type Any = ClientIndicator | (Directive.$Fields & { $?: Schema.Args<any> })
+
 /**
  * Field selection in general, with directives support too.
  * If a field directive is given as an indicator then it implies "select this" e.g. `true`/`1`.
@@ -46,9 +48,11 @@ export type NoArgsIndicator = ClientIndicator | Directive.$Fields
 
 export type NoArgsIndicator$Expanded = UnionExpanded<ClientIndicator | Simplify<Directive.$Fields>>
 
-export type ArgsIndicator<$Args extends Schema.Args<any>> = $Args['isFieldsAllNullable'] extends true
-  ? ({ $?: Args<$Args> } & Directive.$Fields) | ClientIndicator
-  : { $: Args<$Args> } & Directive.$Fields
+// dprint-ignore
+export type ArgsIndicator<$Args extends Schema.Args<any>> =
+  $Args['isFieldsAllNullable'] extends true
+    ? ({ $?: Args<$Args> } & Directive.$Fields) | ClientIndicator
+    : { $: Args<$Args> } & Directive.$Fields
 
 // dprint-ignore
 export type IndicatorForField<$Field extends SomeField> =

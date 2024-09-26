@@ -1,5 +1,4 @@
 import type { OmitKeysWithPrefix } from '../../lib/prelude.js'
-import type { Any } from './types.js'
 
 export const prefix = `___on_`
 
@@ -28,4 +27,8 @@ export const toGraphQLOn = (on: On) => {
   return `...on ${on.typeOrFragmentName}`
 }
 
-export type OmitOnTypeFragments<$Object extends Any> = OmitKeysWithPrefix<$Object, KeyPrefix>
+export type OmitOnTypeFragments<$Object> = OmitKeysWithPrefix<
+  // @ts-expect-error fixme
+  $Object,
+  KeyPrefix
+>
