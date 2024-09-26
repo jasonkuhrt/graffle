@@ -14,6 +14,7 @@ const pokemon = Pokemon.create()
 
 const pokemons = await pokemon.query.$batch({
   ___: {
+    // $skip: true,
     // $defer: true,
     pokemons: {
       name: true,
