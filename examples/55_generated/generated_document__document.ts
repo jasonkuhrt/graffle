@@ -39,6 +39,6 @@ const pokemons = await pokemon.document({
     },
   },
 })
-  .run('makeSomeNewPokemons')
+  .run('pokemonsAndTrainers')
 
 showJson(pokemons)

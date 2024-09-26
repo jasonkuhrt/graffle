@@ -1,9 +1,25 @@
 ---------------------------------------- SHOW ----------------------------------------
 {
-  "addAngryPikachu": {
-    "name": "AngryPikachu"
-  },
-  "addAngryCharizard": {
-    "name": "AngryCharizard"
-  }
+  "trainers": [
+    {
+      "name": "Ash"
+    },
+    {
+      "name": "Misty"
+    }
+  ],
+  "pokemons": [
+    {
+      "name": "Pikachu",
+      "trainer": {
+        "name": "Ash"
+      }
+    },
+    {
+      "name": "Charizard",
+      "trainer": {
+        "name": "Ash"
+      }
+    }
+  ]
 }
