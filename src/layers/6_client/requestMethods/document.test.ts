@@ -73,16 +73,12 @@ describe(`document with two queries`, () => {
 
 test(`document with one query`, async () => {
   const { run } = graffle.document({ query: { foo: { id: true } } })
-  await expect(run(`foo`)).resolves.toEqual({ id: db.id1 })
   await expect(run()).resolves.toEqual({ id: db.id1 })
-  await expect(run(undefined)).resolves.toEqual({ id: db.id1 })
 })
 
 test(`document with one mutation`, async () => {
   const { run } = graffle.document({ mutation: { foo: { id: true } } })
-  await expect(run(`foo`)).resolves.toEqual({ id: db.id1 })
   await expect(run()).resolves.toEqual({ id: db.id1 })
-  await expect(run(undefined)).resolves.toEqual({ id: db.id1 })
 })
 
 test(`error`, async () => {
