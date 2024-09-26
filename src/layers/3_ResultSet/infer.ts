@@ -10,15 +10,29 @@ export type RootViaObject<
   $SelectionSet,
   $Index extends Schema.Index,
   $RootType extends Schema.Output.RootType,
-> = Root<$SelectionSet, $Index, $RootType['fields']['__typename']['type']['type']>
+> = Root<
+  $SelectionSet,
+  $Index,
+  $RootType['fields']['__typename']['type']['type']
+>
 
-export type Query<$SelectionSet, $Index extends Schema.Index> = Root<$SelectionSet, $Index, 'Query'>
+export type Query<$SelectionSet, $Index extends Schema.Index> = Root<
+  $SelectionSet,
+  $Index,
+  'Query'
+>
 
-// dprint-ignore
-export type Mutation<$SelectionSet, $Index extends Schema.Index> = Root<$SelectionSet, $Index, 'Mutation'>
+export type Mutation<$SelectionSet, $Index extends Schema.Index> = Root<
+  $SelectionSet,
+  $Index,
+  'Mutation'
+>
 
-// dprint-ignore
-export type Subscription<$SelectionSet, $Index extends Schema.Index> = Root<$SelectionSet, $Index, 'Subscription'>
+export type Subscription<$SelectionSet, $Index extends Schema.Index> = Root<
+  $SelectionSet,
+  $Index,
+  'Subscription'
+>
 
 export type Root<
   $SelectionSet,
@@ -38,7 +52,7 @@ export type Object$<$SelectionSet, $Index extends Schema.Index, $Node extends Sc
       )
 
 // dprint-ignore
-type HandleFieldExpressionsPlain<$SelectionSet, $Index extends Schema.Index, $Node extends Schema.Output.Object$2> = {
+type HandleFieldExpressionsPlain<$SelectionSet , $Index extends Schema.Index, $Node extends Schema.Output.Object$2> = {
   [$FieldExpression in keyof PickPositiveNonAliasIndicators<$SelectionSet> & string]:
     $FieldExpression extends keyof $Node['fields']
       ? Field<$SelectionSet[$FieldExpression], $Node['fields'][$FieldExpression], $Index>
@@ -127,15 +141,15 @@ type HandleAliasExpressionSingle<
 }
 
 // dprint-ignore
-export type Union<$SelectionSet extends SelectionSet.Any, $Index extends Schema.Index, $Node extends Schema.Output.Union> =
+export type Union<$SelectionSet, $Index extends Schema.Index, $Node extends Schema.Output.Union> =
   OnTypeFragment<$SelectionSet, $Node['members'][number], $Index>
 
 // dprint-ignore
-export type Interface<$SelectionSet extends SelectionSet.Any, $Index extends Schema.Index, $Node extends Schema.Output.Interface> =
+export type Interface<$SelectionSet, $Index extends Schema.Index, $Node extends Schema.Output.Interface> =
   OnTypeFragment<$SelectionSet, $Node['implementors'][number], $Index>
 
 // dprint-ignore
-type OnTypeFragment<$SelectionSet extends SelectionSet.Any, $Node extends Schema.Output.Object$2, $Index extends Schema.Index> =
+type OnTypeFragment<$SelectionSet, $Node extends Schema.Output.Object$2, $Index extends Schema.Index> =
   $Node extends any // force distribution
     ? Object$<
         GetKeyOr<$SelectionSet, `${SelectionSet.On.KeyPrefix}${$Node['fields']['__typename']['type']['type']}`, {}> & SelectionSet.On.OmitOnTypeFragments<$SelectionSet>,
@@ -158,7 +172,7 @@ export type Field<$SelectionSet, $Field extends SomeField, $Index extends Schema
 
 // dprint-ignore
 type FieldType<
-  $SelectionSet extends SelectionSet.Any,
+  $SelectionSet,
   $Type extends Schema.Output.Any,
   $Index extends Schema.Index
 > = 

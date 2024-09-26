@@ -29,6 +29,7 @@ export type DocumentObject = {
 
 export type GraphQLRootSelection = { query: GraphQLObjectSelection } | { mutation: GraphQLObjectSelection }
 
+// todo duplicaets the ObjectLike type in other module
 export type GraphQLObjectSelection = Record<string, Indicator | SS>
 
 export type SS = {

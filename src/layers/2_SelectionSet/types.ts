@@ -3,7 +3,13 @@ import type { OmitNullableFields, PickNullableFields, Schema } from '../1_Schema
 import type { Indicator } from './_indicator.js'
 import type { Directive } from './Directive/__.js'
 
-export type Any = object
+export type ObjectLike = {
+  [fieldName: string]: Any
+}
+
+export type Any = AnyExceptAlias | AliasInput
+
+export type AnyExceptAlias = ObjectLike | Indicator.Any
 
 export type IsSelectScalarsWildcard<SS> = SS extends { $scalars: Indicator.ClientIndicatorPositive } ? true : false
 
@@ -62,15 +68,17 @@ export namespace Bases {
 
 // dprint-ignore
 
-export type AliasInputOne<$SelectionSet = unknown> = [alias: string, selectionSet: $SelectionSet]
+export type AliasInputOne<$SelectionSet = AnyExceptAlias> = [alias: string, selectionSet: $SelectionSet]
 
-export type AliasInputMultiple<$SelectionSet = unknown> = [
+export type AliasInputMultiple<$SelectionSet = AnyExceptAlias> = [
   ...AliasInputOne<$SelectionSet>[],
 ]
 
-export type AliasInput<$SelectionSet = unknown> = AliasInputOne<$SelectionSet> | AliasInputMultiple<$SelectionSet>
+export type AliasInput<$SelectionSet = AnyExceptAlias> =
+  | AliasInputOne<$SelectionSet>
+  | AliasInputMultiple<$SelectionSet>
 
-export type AliasNormalized<$SelectionSet = unknown> = [
+export type AliasNormalized<$SelectionSet = AnyExceptAlias> = [
   alias: string,
   selectionSet: $SelectionSet,
 ][]

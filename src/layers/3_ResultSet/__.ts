@@ -1,1 +1,1 @@
-export * as ResultSet from './types.js'
+export * as ResultSet from './infer.js'
