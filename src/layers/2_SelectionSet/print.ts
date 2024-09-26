@@ -1,4 +1,3 @@
-import { group } from 'console'
 import { RootTypeName } from '../../lib/graphql.js'
 import { assertArray, assertObject, entriesStrict, lowerCaseFirstLetter } from '../../lib/prelude.js'
 import { Schema } from '../1_Schema/__.js'
