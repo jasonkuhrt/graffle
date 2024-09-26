@@ -1,9 +1,15 @@
+input DateFilter {
+  gte: Float
+  lte: Float
+}
+
 type Mutation {
   addPokemon(attack: Int!, defense: Int!, hp: Int!, name: String!): Pokemon
 }
 
 type Pokemon {
   attack: Int
+  birthday: Int
   defense: Int
   hp: Int
   id: Int
@@ -12,6 +18,7 @@ type Pokemon {
 }
 
 input PokemonFilter {
+  birthday: DateFilter
   name: StringFilter
 }
 

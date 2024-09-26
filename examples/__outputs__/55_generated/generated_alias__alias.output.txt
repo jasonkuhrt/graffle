@@ -1,0 +1,16 @@
+---------------------------------------- SHOW ----------------------------------------
+{
+  "elderPokemons": [
+    {
+      "name": "Pikachu"
+    },
+    {
+      "name": "Squirtle"
+    }
+  ],
+  "babyPokemons": [
+    {
+      "name": "Charizard"
+    }
+  ]
+}

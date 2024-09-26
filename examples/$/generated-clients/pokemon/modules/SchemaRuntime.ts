@@ -5,7 +5,13 @@ import * as $Scalar from './Scalar.js'
 import type { Index } from './SchemaIndex.js'
 export const $defaultSchemaUrl = new URL('http://localhost:3000/graphql')
 
+export const DateFilter = $.InputObject(`DateFilter`, {
+  gte: $.Input.Field($.Input.Nullable($Scalar.Float)),
+  lte: $.Input.Field($.Input.Nullable($Scalar.Float)),
+}, true)
+
 export const PokemonFilter = $.InputObject(`PokemonFilter`, {
+  birthday: $.Input.Field(() => $.Input.Nullable(DateFilter)),
   name: $.Input.Field(() => $.Input.Nullable(StringFilter)),
 }, true)
 
@@ -16,6 +22,7 @@ export const StringFilter = $.InputObject(`StringFilter`, {
 // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
 export const Pokemon = $.Object$(`Pokemon`, {
   attack: $.field($.Output.Nullable($Scalar.Int)),
+  birthday: $.field($.Output.Nullable($Scalar.Int)),
   defense: $.field($.Output.Nullable($Scalar.Int)),
   hp: $.field($.Output.Nullable($Scalar.Int)),
   id: $.field($.Output.Nullable($Scalar.Int)),

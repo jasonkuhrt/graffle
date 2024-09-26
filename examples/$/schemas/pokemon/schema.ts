@@ -31,6 +31,7 @@ const Pokemon = builder.objectRef<DatabaseServer.Pokemon>(`Pokemon`).implement({
     hp: t.int({ resolve: (pokemon) => pokemon.hp }),
     attack: t.int({ resolve: (pokemon) => pokemon.attack }),
     defense: t.int({ resolve: (pokemon) => pokemon.defense }),
+    birthday: t.int({ resolve: (pokemon) => pokemon.birthday }),
     trainer: t.field({
       type: Trainer,
       nullable: true,
@@ -58,9 +59,17 @@ const StringFilter = builder.inputType(`StringFilter`, {
   }),
 })
 
+const DateFilter = builder.inputType(`DateFilter`, {
+  fields: (t) => ({
+    lte: t.float(),
+    gte: t.float(),
+  }),
+})
+
 const PokemonFilter = builder.inputType(`PokemonFilter`, {
   fields: (t) => ({
     name: t.field({ type: StringFilter }),
+    birthday: t.field({ type: DateFilter }),
   }),
 })
 
@@ -78,6 +87,14 @@ builder.queryField(`pokemons`, (t) =>
           }
           if (args.filter.name.in) {
             return args.filter.name.in.includes(p.name)
+          }
+        }
+        if (args.filter?.birthday) {
+          if (args.filter.birthday.lte) {
+            return p.birthday <= args.filter.birthday.lte
+          }
+          if (args.filter.birthday.gte) {
+            return p.birthday >= args.filter.birthday.gte
           }
         }
         return true
@@ -135,6 +152,7 @@ builder.mutationField(`addPokemon`, (t) =>
         attack,
         defense,
         trainerId: null,
+        birthday: new Date().getTime(),
       }
       DatabaseServer.tenant(ctx.tenant).pokemon.push(newPokemon)
       return newPokemon

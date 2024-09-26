@@ -4,7 +4,7 @@ aside: false
 
 # Document
 
-This example shows how to use the TypeScript interface for whole GraphQL documents.
+This example shows how to write whole GraphQL documents in the TypeScript interface.
 
 <!-- dprint-ignore-start -->
 ```ts twoslash
