@@ -1,0 +1,116 @@
+/* Examples */
+
+/* Revealable Inline Code Examples */
+
+details a {
+  opacity:0.25;
+}
+
+details a:before {
+  content: '⤤ ';
+  font-size: 1.25rem;
+}
+
+details {
+  padding: 0!important;
+  background: none!important;
+}
+
+.ExampleSnippet > div:not(:last-of-type),
+details > div:not(:last-of-type) {
+  margin-bottom:1rem!important;
+}
+
+details summary  {
+  padding: 0.5rem 0;
+  margin: 0!important;
+}
+
+details .plugin-tabs  {
+  margin-top: 0!important;
+  background: none!important;
+}
+
+details .plugin-tabs--tab-list {
+  padding: 0!important;
+  margin-bottom: 1rem;
+}
+
+details .plugin-tabs--tab-list button:first-child {
+  margin-left: -10px;
+}
+
+details .plugin-tabs--content  {
+  padding: 0!important;
+}
+
+
+
+details .plugin-tabs--content > div:not(:last-of-type) {
+  margin-bottom:1rem!important;
+}
+
+/* Link Roundup To Examples */
+
+.ExampleLinks {
+	opacity: 0.6;
+	font-size: 0.7rem;
+}
+
+.ExampleLinksSeparator {
+
+	display: inline-block;
+	margin: auto 0.25rem;
+}
+
+.ExampleLinksSeparator:before {
+	content: '•'
+}
+
+.ExampleLinksTitleSeparator {
+	display: inline-block;
+	margin: auto 0.25rem;
+}
+
+/* The following styles fix dark theme styling for floating-vue popups in twoslash */
+
+.v-popper--theme-dropdown .v-popper__inner {
+	box-shadow: none;
+	border-radius: 3px;
+}
+
+.dark .v-popper--theme-dropdown .v-popper__inner {
+	background-color: hsl(0, 0%, 8%);
+	border-color: rgb(33, 33, 33);
+}
+
+.dark .v-popper--theme-dropdown .v-popper__arrow-inner {
+	border-bottom-color: hsl(0,0%,8%);
+}
+
+.dark .v-popper--theme-dropdown .v-popper__arrow-outer {
+	/* border-color: black; */
+	border-color: rgb(33, 33, 33);
+}
+
+/* Improve Code Blocks */
+
+:root {
+	/* --vp-code-line-highlight-color: hsla(57.82, 100%, 63%, 0.37); */
+	--vp-code-line-highlight-color: hsla(58, 100%, 63%, 0.408)
+}
+
+.dark {
+	/* --vp-code-line-highlight-color: hsla(208.91, 100%, 84.25%, 0.05); */
+	--vp-code-line-highlight-color: hsla(257, 85%, 51%, 0.38);
+}
+
+.twoslash-highlighted {
+	--twoslash-highlighted-bg: hsla(58, 100%, 63%, 0.408);
+	--twoslash-highlighted-border: hsla(0,0%,0%,0);
+	padding: 1px 2px 3px 2px;
+}
+
+.dark .twoslash-highlighted {
+	--twoslash-highlighted-bg: hsla(257, 85%, 51%, 0.38);
+}
