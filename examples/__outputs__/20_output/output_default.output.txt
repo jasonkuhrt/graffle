@@ -5,7 +5,5 @@
   { name: 'Squirtle' },
   { name: 'Bulbasaur' },
   { name: 'AngryPikachu' },
-  { name: 'AngryCharizard' },
-  { name: 'AngryPikachu' },
   { name: 'AngryCharizard' }
 ]
