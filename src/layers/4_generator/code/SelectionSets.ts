@@ -116,10 +116,13 @@ const renderUnion = createCodeGenerator<{ node: GraphQLUnionType }>(
         `\n`,
       )
     }
-        ${Helpers.inlineFragment(node)}
-        ${Helpers.__typename(`union`)}
+        ${Helpers.fragmentInlineField(node)}
+        ${Helpers.__typenameField(`union`)}
       }
     `)
+
+    code.push(Helpers.fragmentInlineInterface(node))
+    code.push(``)
   },
 )
 
@@ -173,10 +176,13 @@ const renderInterface = createCodeGenerator<{ node: GraphQLInterfaceType }>(
       export interface ${renderName(node)} extends $SelectionSet.Bases.ObjectLike {
         ${fieldsRendered}
         ${onTypesRendered}
-        ${Helpers.inlineFragment(node)}
-        ${Helpers.__typename(`interface`)}
+        ${Helpers.fragmentInlineField(node)}
+        ${Helpers.__typenameField(`interface`)}
       }
     `)
+    code.push(``)
+
+    code.push(Helpers.fragmentInlineInterface(node))
     code.push(``)
 
     code.push(`
@@ -217,10 +223,13 @@ const renderObject = createCodeGenerator<{ node: GraphQLObjectType }>(
     code.push(`
       export interface ${renderName(node)} ${extendsClause} {
         ${propertiesRendered}
-        ${Helpers.inlineFragment(node)}
-        ${Helpers.__typename(`object`)}
+        ${Helpers.fragmentInlineField(node)}
+        ${Helpers.__typenameField(`object`)}
       }
     `)
+    code.push(``)
+
+    code.push(Helpers.fragmentInlineInterface(node))
     code.push(``)
 
     code.push(`// ----------------------------------------| Fields Interfaces |`)
@@ -391,26 +400,39 @@ namespace Helpers {
     return `${name}?: ${type}$Expanded${alias}`
   }
 
-  export const __typename = (kind: 'union' | 'interface' | 'object') => {
+  /**
+   * Render a typename field. Pass the kind of type its for to produce superior JSDoc.
+   */
+  export const __typenameField = (kind: 'union' | 'interface' | 'object') => {
     return `
       ${__typenameDoc(kind)}
       ${outputFieldAlisable(`__typename`, `$SelectionSet.Indicator.NoArgsIndicator`)}
     `
   }
 
-  export const inlineFragment = (node: GraphQLObjectType | GraphQLUnionType | GraphQLInterfaceType) => {
+  const fragmentInlineNameSuffix = `$FragmentInline`
+
+  export const fragmentInlineInterface = (node: GraphQLObjectType | GraphQLUnionType | GraphQLInterfaceType) => {
+    const name = `${renderName(node)}${fragmentInlineNameSuffix}`
+    return `export interface ${name} extends ${
+      renderName(node)
+    }, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}`
+  }
+
+  export const fragmentInlineField = (node: GraphQLObjectType | GraphQLUnionType | GraphQLInterfaceType) => {
     const doc = Code.TSDoc(`
       Inline fragments for field groups. 
      
       Generally a niche feature. This can be useful for example to apply an \`@include\` directive to a subset of the
-      selection set allowing a variable to opt-in or not to that part of the selection.
+      selection set in turn allowing you to pass a variable to opt in/out of that selection during execution on the server.
        
       @see https://spec.graphql.org/draft/#sec-Inline-Fragments
     `)
+    // interface Query$FragmentInline extends Query, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}
 
     return `
       ${doc}
-      ___?: ${renderName(node)} | ${renderName(node)}[]
+      ___?: ${renderName(node)}${fragmentInlineNameSuffix} | ${renderName(node)}${fragmentInlineNameSuffix}[]
     `
   }
 

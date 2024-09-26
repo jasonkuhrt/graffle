@@ -46,11 +46,11 @@ export interface Mutation {
    * Inline fragments for field groups.
    *
    * Generally a niche feature. This can be useful for example to apply an `@include` directive to a subset of the
-   * selection set allowing a variable to opt-in or not to that part of the selection.
+   * selection set in turn allowing you to pass a variable to opt in/out of that selection during execution on the server.
    *
    * @see https://spec.graphql.org/draft/#sec-Inline-Fragments
    */
-  ___?: Mutation | Mutation[]
+  ___?: Mutation$FragmentInline | Mutation$FragmentInline[]
 
   /**
    * A meta field. Is the name of the type being selected.
@@ -61,6 +61,8 @@ export interface Mutation {
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
     | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
+
+export interface Mutation$FragmentInline extends Mutation, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}
 
 // ----------------------------------------| Fields Interfaces |
 
@@ -296,11 +298,11 @@ export interface Query {
    * Inline fragments for field groups.
    *
    * Generally a niche feature. This can be useful for example to apply an `@include` directive to a subset of the
-   * selection set allowing a variable to opt-in or not to that part of the selection.
+   * selection set in turn allowing you to pass a variable to opt in/out of that selection during execution on the server.
    *
    * @see https://spec.graphql.org/draft/#sec-Inline-Fragments
    */
-  ___?: Query | Query[]
+  ___?: Query$FragmentInline | Query$FragmentInline[]
 
   /**
    * A meta field. Is the name of the type being selected.
@@ -311,6 +313,8 @@ export interface Query {
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
     | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
+
+export interface Query$FragmentInline extends Query, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}
 
 // ----------------------------------------| Fields Interfaces |
 
@@ -800,11 +804,11 @@ export interface DateInterface1 extends $SelectionSet.Bases.ObjectLike {
    * Inline fragments for field groups.
    *
    * Generally a niche feature. This can be useful for example to apply an `@include` directive to a subset of the
-   * selection set allowing a variable to opt-in or not to that part of the selection.
+   * selection set in turn allowing you to pass a variable to opt in/out of that selection during execution on the server.
    *
    * @see https://spec.graphql.org/draft/#sec-Inline-Fragments
    */
-  ___?: DateInterface1 | DateInterface1[]
+  ___?: DateInterface1$FragmentInline | DateInterface1$FragmentInline[]
 
   /**
    * A meta field. Is the name of the type being selected. Since this is a interface type and thus polymorphic,
@@ -816,6 +820,10 @@ export interface DateInterface1 extends $SelectionSet.Bases.ObjectLike {
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
     | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
+
+export interface DateInterface1$FragmentInline
+  extends DateInterface1, $SelectionSet.Directive.$Groups.InlineFragment.Fields
+{}
 
 export namespace DateInterface1 {
   export type date1$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
@@ -836,11 +844,11 @@ export interface Error extends $SelectionSet.Bases.ObjectLike {
    * Inline fragments for field groups.
    *
    * Generally a niche feature. This can be useful for example to apply an `@include` directive to a subset of the
-   * selection set allowing a variable to opt-in or not to that part of the selection.
+   * selection set in turn allowing you to pass a variable to opt in/out of that selection during execution on the server.
    *
    * @see https://spec.graphql.org/draft/#sec-Inline-Fragments
    */
-  ___?: Error | Error[]
+  ___?: Error$FragmentInline | Error$FragmentInline[]
 
   /**
    * A meta field. Is the name of the type being selected. Since this is a interface type and thus polymorphic,
@@ -852,6 +860,8 @@ export interface Error extends $SelectionSet.Bases.ObjectLike {
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
     | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
+
+export interface Error$FragmentInline extends Error, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}
 
 export namespace Error {
   export type message$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
@@ -872,11 +882,11 @@ export interface Interface extends $SelectionSet.Bases.ObjectLike {
    * Inline fragments for field groups.
    *
    * Generally a niche feature. This can be useful for example to apply an `@include` directive to a subset of the
-   * selection set allowing a variable to opt-in or not to that part of the selection.
+   * selection set in turn allowing you to pass a variable to opt in/out of that selection during execution on the server.
    *
    * @see https://spec.graphql.org/draft/#sec-Inline-Fragments
    */
-  ___?: Interface | Interface[]
+  ___?: Interface$FragmentInline | Interface$FragmentInline[]
 
   /**
    * A meta field. Is the name of the type being selected. Since this is a interface type and thus polymorphic,
@@ -888,6 +898,8 @@ export interface Interface extends $SelectionSet.Bases.ObjectLike {
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
     | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
+
+export interface Interface$FragmentInline extends Interface, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}
 
 export namespace Interface {
   export type id$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
@@ -935,11 +947,11 @@ export interface Bar extends $SelectionSet.Bases.ObjectLike {
    * Inline fragments for field groups.
    *
    * Generally a niche feature. This can be useful for example to apply an `@include` directive to a subset of the
-   * selection set allowing a variable to opt-in or not to that part of the selection.
+   * selection set in turn allowing you to pass a variable to opt in/out of that selection during execution on the server.
    *
    * @see https://spec.graphql.org/draft/#sec-Inline-Fragments
    */
-  ___?: Bar | Bar[]
+  ___?: Bar$FragmentInline | Bar$FragmentInline[]
 
   /**
    * A meta field. Is the name of the type being selected.
@@ -950,6 +962,8 @@ export interface Bar extends $SelectionSet.Bases.ObjectLike {
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
     | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
+
+export interface Bar$FragmentInline extends Bar, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}
 
 // ----------------------------------------| Fields Interfaces |
 
@@ -983,11 +997,11 @@ export interface DateObject1 extends $SelectionSet.Bases.ObjectLike {
    * Inline fragments for field groups.
    *
    * Generally a niche feature. This can be useful for example to apply an `@include` directive to a subset of the
-   * selection set allowing a variable to opt-in or not to that part of the selection.
+   * selection set in turn allowing you to pass a variable to opt in/out of that selection during execution on the server.
    *
    * @see https://spec.graphql.org/draft/#sec-Inline-Fragments
    */
-  ___?: DateObject1 | DateObject1[]
+  ___?: DateObject1$FragmentInline | DateObject1$FragmentInline[]
 
   /**
    * A meta field. Is the name of the type being selected.
@@ -998,6 +1012,10 @@ export interface DateObject1 extends $SelectionSet.Bases.ObjectLike {
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
     | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
+
+export interface DateObject1$FragmentInline
+  extends DateObject1, $SelectionSet.Directive.$Groups.InlineFragment.Fields
+{}
 
 // ----------------------------------------| Fields Interfaces |
 
@@ -1031,11 +1049,11 @@ export interface DateObject2 extends $SelectionSet.Bases.ObjectLike {
    * Inline fragments for field groups.
    *
    * Generally a niche feature. This can be useful for example to apply an `@include` directive to a subset of the
-   * selection set allowing a variable to opt-in or not to that part of the selection.
+   * selection set in turn allowing you to pass a variable to opt in/out of that selection during execution on the server.
    *
    * @see https://spec.graphql.org/draft/#sec-Inline-Fragments
    */
-  ___?: DateObject2 | DateObject2[]
+  ___?: DateObject2$FragmentInline | DateObject2$FragmentInline[]
 
   /**
    * A meta field. Is the name of the type being selected.
@@ -1046,6 +1064,10 @@ export interface DateObject2 extends $SelectionSet.Bases.ObjectLike {
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
     | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
+
+export interface DateObject2$FragmentInline
+  extends DateObject2, $SelectionSet.Directive.$Groups.InlineFragment.Fields
+{}
 
 // ----------------------------------------| Fields Interfaces |
 
@@ -1083,11 +1105,11 @@ export interface ErrorOne extends $SelectionSet.Bases.ObjectLike {
    * Inline fragments for field groups.
    *
    * Generally a niche feature. This can be useful for example to apply an `@include` directive to a subset of the
-   * selection set allowing a variable to opt-in or not to that part of the selection.
+   * selection set in turn allowing you to pass a variable to opt in/out of that selection during execution on the server.
    *
    * @see https://spec.graphql.org/draft/#sec-Inline-Fragments
    */
-  ___?: ErrorOne | ErrorOne[]
+  ___?: ErrorOne$FragmentInline | ErrorOne$FragmentInline[]
 
   /**
    * A meta field. Is the name of the type being selected.
@@ -1098,6 +1120,8 @@ export interface ErrorOne extends $SelectionSet.Bases.ObjectLike {
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
     | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
+
+export interface ErrorOne$FragmentInline extends ErrorOne, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}
 
 // ----------------------------------------| Fields Interfaces |
 
@@ -1139,11 +1163,11 @@ export interface ErrorTwo extends $SelectionSet.Bases.ObjectLike {
    * Inline fragments for field groups.
    *
    * Generally a niche feature. This can be useful for example to apply an `@include` directive to a subset of the
-   * selection set allowing a variable to opt-in or not to that part of the selection.
+   * selection set in turn allowing you to pass a variable to opt in/out of that selection during execution on the server.
    *
    * @see https://spec.graphql.org/draft/#sec-Inline-Fragments
    */
-  ___?: ErrorTwo | ErrorTwo[]
+  ___?: ErrorTwo$FragmentInline | ErrorTwo$FragmentInline[]
 
   /**
    * A meta field. Is the name of the type being selected.
@@ -1154,6 +1178,8 @@ export interface ErrorTwo extends $SelectionSet.Bases.ObjectLike {
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
     | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
+
+export interface ErrorTwo$FragmentInline extends ErrorTwo, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}
 
 // ----------------------------------------| Fields Interfaces |
 
@@ -1194,11 +1220,11 @@ export interface Foo extends $SelectionSet.Bases.ObjectLike {
    * Inline fragments for field groups.
    *
    * Generally a niche feature. This can be useful for example to apply an `@include` directive to a subset of the
-   * selection set allowing a variable to opt-in or not to that part of the selection.
+   * selection set in turn allowing you to pass a variable to opt in/out of that selection during execution on the server.
    *
    * @see https://spec.graphql.org/draft/#sec-Inline-Fragments
    */
-  ___?: Foo | Foo[]
+  ___?: Foo$FragmentInline | Foo$FragmentInline[]
 
   /**
    * A meta field. Is the name of the type being selected.
@@ -1209,6 +1235,8 @@ export interface Foo extends $SelectionSet.Bases.ObjectLike {
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
     | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
+
+export interface Foo$FragmentInline extends Foo, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}
 
 // ----------------------------------------| Fields Interfaces |
 
@@ -1258,11 +1286,11 @@ export interface Object1 extends $SelectionSet.Bases.ObjectLike {
    * Inline fragments for field groups.
    *
    * Generally a niche feature. This can be useful for example to apply an `@include` directive to a subset of the
-   * selection set allowing a variable to opt-in or not to that part of the selection.
+   * selection set in turn allowing you to pass a variable to opt in/out of that selection during execution on the server.
    *
    * @see https://spec.graphql.org/draft/#sec-Inline-Fragments
    */
-  ___?: Object1 | Object1[]
+  ___?: Object1$FragmentInline | Object1$FragmentInline[]
 
   /**
    * A meta field. Is the name of the type being selected.
@@ -1273,6 +1301,8 @@ export interface Object1 extends $SelectionSet.Bases.ObjectLike {
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
     | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
+
+export interface Object1$FragmentInline extends Object1, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}
 
 // ----------------------------------------| Fields Interfaces |
 
@@ -1326,11 +1356,11 @@ export interface Object1ImplementingInterface extends $SelectionSet.Bases.Object
    * Inline fragments for field groups.
    *
    * Generally a niche feature. This can be useful for example to apply an `@include` directive to a subset of the
-   * selection set allowing a variable to opt-in or not to that part of the selection.
+   * selection set in turn allowing you to pass a variable to opt in/out of that selection during execution on the server.
    *
    * @see https://spec.graphql.org/draft/#sec-Inline-Fragments
    */
-  ___?: Object1ImplementingInterface | Object1ImplementingInterface[]
+  ___?: Object1ImplementingInterface$FragmentInline | Object1ImplementingInterface$FragmentInline[]
 
   /**
    * A meta field. Is the name of the type being selected.
@@ -1341,6 +1371,10 @@ export interface Object1ImplementingInterface extends $SelectionSet.Bases.Object
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
     | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
+
+export interface Object1ImplementingInterface$FragmentInline
+  extends Object1ImplementingInterface, $SelectionSet.Directive.$Groups.InlineFragment.Fields
+{}
 
 // ----------------------------------------| Fields Interfaces |
 
@@ -1384,11 +1418,11 @@ export interface Object2ImplementingInterface extends $SelectionSet.Bases.Object
    * Inline fragments for field groups.
    *
    * Generally a niche feature. This can be useful for example to apply an `@include` directive to a subset of the
-   * selection set allowing a variable to opt-in or not to that part of the selection.
+   * selection set in turn allowing you to pass a variable to opt in/out of that selection during execution on the server.
    *
    * @see https://spec.graphql.org/draft/#sec-Inline-Fragments
    */
-  ___?: Object2ImplementingInterface | Object2ImplementingInterface[]
+  ___?: Object2ImplementingInterface$FragmentInline | Object2ImplementingInterface$FragmentInline[]
 
   /**
    * A meta field. Is the name of the type being selected.
@@ -1399,6 +1433,10 @@ export interface Object2ImplementingInterface extends $SelectionSet.Bases.Object
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
     | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
+
+export interface Object2ImplementingInterface$FragmentInline
+  extends Object2ImplementingInterface, $SelectionSet.Directive.$Groups.InlineFragment.Fields
+{}
 
 // ----------------------------------------| Fields Interfaces |
 
@@ -1440,11 +1478,11 @@ export interface ObjectNested extends $SelectionSet.Bases.ObjectLike {
    * Inline fragments for field groups.
    *
    * Generally a niche feature. This can be useful for example to apply an `@include` directive to a subset of the
-   * selection set allowing a variable to opt-in or not to that part of the selection.
+   * selection set in turn allowing you to pass a variable to opt in/out of that selection during execution on the server.
    *
    * @see https://spec.graphql.org/draft/#sec-Inline-Fragments
    */
-  ___?: ObjectNested | ObjectNested[]
+  ___?: ObjectNested$FragmentInline | ObjectNested$FragmentInline[]
 
   /**
    * A meta field. Is the name of the type being selected.
@@ -1455,6 +1493,10 @@ export interface ObjectNested extends $SelectionSet.Bases.ObjectLike {
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
     | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
+
+export interface ObjectNested$FragmentInline
+  extends ObjectNested, $SelectionSet.Directive.$Groups.InlineFragment.Fields
+{}
 
 // ----------------------------------------| Fields Interfaces |
 
@@ -1491,11 +1533,11 @@ export interface ObjectUnion extends $SelectionSet.Bases.ObjectLike {
    * Inline fragments for field groups.
    *
    * Generally a niche feature. This can be useful for example to apply an `@include` directive to a subset of the
-   * selection set allowing a variable to opt-in or not to that part of the selection.
+   * selection set in turn allowing you to pass a variable to opt in/out of that selection during execution on the server.
    *
    * @see https://spec.graphql.org/draft/#sec-Inline-Fragments
    */
-  ___?: ObjectUnion | ObjectUnion[]
+  ___?: ObjectUnion$FragmentInline | ObjectUnion$FragmentInline[]
 
   /**
    * A meta field. Is the name of the type being selected.
@@ -1506,6 +1548,10 @@ export interface ObjectUnion extends $SelectionSet.Bases.ObjectLike {
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
     | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
+
+export interface ObjectUnion$FragmentInline
+  extends ObjectUnion, $SelectionSet.Directive.$Groups.InlineFragment.Fields
+{}
 
 // ----------------------------------------| Fields Interfaces |
 
@@ -1538,11 +1584,11 @@ export interface lowerCaseObject extends $SelectionSet.Bases.ObjectLike {
    * Inline fragments for field groups.
    *
    * Generally a niche feature. This can be useful for example to apply an `@include` directive to a subset of the
-   * selection set allowing a variable to opt-in or not to that part of the selection.
+   * selection set in turn allowing you to pass a variable to opt in/out of that selection during execution on the server.
    *
    * @see https://spec.graphql.org/draft/#sec-Inline-Fragments
    */
-  ___?: lowerCaseObject | lowerCaseObject[]
+  ___?: lowerCaseObject$FragmentInline | lowerCaseObject$FragmentInline[]
 
   /**
    * A meta field. Is the name of the type being selected.
@@ -1553,6 +1599,10 @@ export interface lowerCaseObject extends $SelectionSet.Bases.ObjectLike {
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
     | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
+
+export interface lowerCaseObject$FragmentInline
+  extends lowerCaseObject, $SelectionSet.Directive.$Groups.InlineFragment.Fields
+{}
 
 // ----------------------------------------| Fields Interfaces |
 
@@ -1586,11 +1636,11 @@ export interface lowerCaseObject2 extends $SelectionSet.Bases.ObjectLike {
    * Inline fragments for field groups.
    *
    * Generally a niche feature. This can be useful for example to apply an `@include` directive to a subset of the
-   * selection set allowing a variable to opt-in or not to that part of the selection.
+   * selection set in turn allowing you to pass a variable to opt in/out of that selection during execution on the server.
    *
    * @see https://spec.graphql.org/draft/#sec-Inline-Fragments
    */
-  ___?: lowerCaseObject2 | lowerCaseObject2[]
+  ___?: lowerCaseObject2$FragmentInline | lowerCaseObject2$FragmentInline[]
 
   /**
    * A meta field. Is the name of the type being selected.
@@ -1601,6 +1651,10 @@ export interface lowerCaseObject2 extends $SelectionSet.Bases.ObjectLike {
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
     | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
+
+export interface lowerCaseObject2$FragmentInline
+  extends lowerCaseObject2, $SelectionSet.Directive.$Groups.InlineFragment.Fields
+{}
 
 // ----------------------------------------| Fields Interfaces |
 
@@ -1634,11 +1688,11 @@ export interface DateUnion {
    * Inline fragments for field groups.
    *
    * Generally a niche feature. This can be useful for example to apply an `@include` directive to a subset of the
-   * selection set allowing a variable to opt-in or not to that part of the selection.
+   * selection set in turn allowing you to pass a variable to opt in/out of that selection during execution on the server.
    *
    * @see https://spec.graphql.org/draft/#sec-Inline-Fragments
    */
-  ___?: DateUnion | DateUnion[]
+  ___?: DateUnion$FragmentInline | DateUnion$FragmentInline[]
 
   /**
    * A meta field. Is the name of the type being selected. Since this is a union type and thus polymorphic,
@@ -1650,6 +1704,7 @@ export interface DateUnion {
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
     | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
+export interface DateUnion$FragmentInline extends DateUnion, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}
 
 /**
  * Union documentation.
@@ -1662,11 +1717,11 @@ export interface FooBarUnion {
    * Inline fragments for field groups.
    *
    * Generally a niche feature. This can be useful for example to apply an `@include` directive to a subset of the
-   * selection set allowing a variable to opt-in or not to that part of the selection.
+   * selection set in turn allowing you to pass a variable to opt in/out of that selection during execution on the server.
    *
    * @see https://spec.graphql.org/draft/#sec-Inline-Fragments
    */
-  ___?: FooBarUnion | FooBarUnion[]
+  ___?: FooBarUnion$FragmentInline | FooBarUnion$FragmentInline[]
 
   /**
    * A meta field. Is the name of the type being selected. Since this is a union type and thus polymorphic,
@@ -1678,6 +1733,9 @@ export interface FooBarUnion {
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
     | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
+export interface FooBarUnion$FragmentInline
+  extends FooBarUnion, $SelectionSet.Directive.$Groups.InlineFragment.Fields
+{}
 
 export interface Result {
   ___on_ErrorOne?: ErrorOne
@@ -1688,11 +1746,11 @@ export interface Result {
    * Inline fragments for field groups.
    *
    * Generally a niche feature. This can be useful for example to apply an `@include` directive to a subset of the
-   * selection set allowing a variable to opt-in or not to that part of the selection.
+   * selection set in turn allowing you to pass a variable to opt in/out of that selection during execution on the server.
    *
    * @see https://spec.graphql.org/draft/#sec-Inline-Fragments
    */
-  ___?: Result | Result[]
+  ___?: Result$FragmentInline | Result$FragmentInline[]
 
   /**
    * A meta field. Is the name of the type being selected. Since this is a union type and thus polymorphic,
@@ -1704,6 +1762,7 @@ export interface Result {
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
     | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
+export interface Result$FragmentInline extends Result, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}
 
 export interface lowerCaseUnion {
   ___on_lowerCaseObject?: lowerCaseObject
@@ -1713,11 +1772,11 @@ export interface lowerCaseUnion {
    * Inline fragments for field groups.
    *
    * Generally a niche feature. This can be useful for example to apply an `@include` directive to a subset of the
-   * selection set allowing a variable to opt-in or not to that part of the selection.
+   * selection set in turn allowing you to pass a variable to opt in/out of that selection during execution on the server.
    *
    * @see https://spec.graphql.org/draft/#sec-Inline-Fragments
    */
-  ___?: lowerCaseUnion | lowerCaseUnion[]
+  ___?: lowerCaseUnion$FragmentInline | lowerCaseUnion$FragmentInline[]
 
   /**
    * A meta field. Is the name of the type being selected. Since this is a union type and thus polymorphic,
@@ -1729,6 +1788,9 @@ export interface lowerCaseUnion {
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
     | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
+export interface lowerCaseUnion$FragmentInline
+  extends lowerCaseUnion, $SelectionSet.Directive.$Groups.InlineFragment.Fields
+{}
 
 /**
  * [1] These definitions serve to allow field selection interfaces to extend their respective object type without

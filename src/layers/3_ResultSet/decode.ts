@@ -21,8 +21,8 @@ const normalizeAliasInput = (aliasInput: SelectionSet.AliasInput): SelectionSet.
   return aliasInput
 }
 
-const unaliasField = (fieldName: string, selectionSet: SelectionSet.ObjectLike) => {
-  for (const [schemaFieldName, selection] of Object.entries(selectionSet)) {
+const getAliasesField = (fieldName: string, ss: SelectionSet.ObjectLike) => {
+  for (const [schemaFieldName, selection] of Object.entries(ss)) {
     if (isAliasInput(selection)) {
       const aliasInputMultiple = normalizeAliasInput(selection)
       for (const [aliasName, aliasSelectionSet] of aliasInputMultiple) {
@@ -35,41 +35,87 @@ const unaliasField = (fieldName: string, selectionSet: SelectionSet.ObjectLike) 
       }
     }
   }
-  return {
-    fieldName,
-    selectionSet: selectionSet[fieldName],
-  }
+
+  return null
 }
 
 // ---
+const getGroups = (selectionSet: SelectionSet.ObjectLike) => {
+  const maybeGroupOrGroups = selectionSet[`___`]
+  if (!maybeGroupOrGroups) return []
+  return Array.isArray(maybeGroupOrGroups) ? maybeGroupOrGroups : [maybeGroupOrGroups]
+}
+
+const getDataFieldInSelectionSet = (
+  fieldName: string,
+  selectionSet: SelectionSet.ObjectLike,
+): {
+  fieldName: string
+  selectionSet: SelectionSet.AnyExceptAlias
+} => {
+  const result = getDataFieldInSelectionSet_(fieldName, selectionSet)
+  if (result) return result
+
+  throw new Error(
+    `Cannot decode data field value. Data field name of "${fieldName}" not found in selection set.`,
+  )
+}
+
+const getDataFieldInSelectionSet_ = (
+  fieldName: string,
+  selectionSet: SelectionSet.ObjectLike,
+): null | {
+  fieldName: string
+  selectionSet: SelectionSet.AnyExceptAlias
+} => {
+  const fromDirect = selectionSet[fieldName]
+  if (fromDirect) {
+    return {
+      fieldName: fieldName,
+      selectionSet: fromDirect,
+    }
+  }
+
+  const fromAlias = getAliasesField(fieldName, selectionSet)
+  if (fromAlias) return fromAlias
+
+  const groups = getGroups(selectionSet)
+  for (const group of groups) {
+    const fromGroup = getDataFieldInSelectionSet_(fieldName, group)
+    if (fromGroup) return fromGroup
+  }
+
+  return null
+}
 
 export const decode = <$Data extends ExecutionResult['data']>(
-  index: Schema.Object$2,
+  objectType: Schema.Object$2,
   selectionSet: SelectionSet.ObjectLike,
   data: $Data,
 ): $Data => {
   if (!data) return data
 
-  return mapValues(data, (v, fieldName) => {
-    const unaliased = unaliasField(fieldName, selectionSet)
-    const indexField = index.fields[unaliased.fieldName]
-    if (!indexField) throw new Error(`Field not found: ${String(unaliased.fieldName)}`)
+  return mapValues(data, (value, fieldName) => {
+    const selectionSetField = getDataFieldInSelectionSet(fieldName, selectionSet)
 
-    const type = readMaybeThunk(indexField.type)
-    const typeWithoutNonNull = Output.unwrapNullable(type) as Output.Named | Output.List<any>
-    const v2 = decodeCustomScalarValue(typeWithoutNonNull, unaliased.selectionSet, v as any)
+    const schemaField = objectType.fields[selectionSetField.fieldName]
+    if (!schemaField) throw new Error(`Field not found in schema: ${String(selectionSetField.fieldName)}`)
+
+    const schemaFieldType = readMaybeThunk(schemaField.type)
+    const schemaFieldTypeSansNonNull = Output.unwrapNullable(schemaFieldType) as Output.Named | Output.List<any>
+    const v2 = decodeCustomScalarValue(schemaFieldTypeSansNonNull, selectionSetField.selectionSet, value as any)
     return v2
   }) as $Data
 }
 
 const decodeCustomScalarValue = (
-  schemaType: Output.Any,
+  fieldType: Output.Any,
   selectionSet: SelectionSet.Any,
   fieldValue: string | boolean | null | number | GraphQLObject | GraphQLObject[],
 ) => {
   if (fieldValue === null) return null
 
-  const schemaTypeDethunked = readMaybeThunk(schemaType)
+  const schemaTypeDethunked = readMaybeThunk(fieldType)
   const schemaTypeWithoutNonNull = Output.unwrapNullable(schemaTypeDethunked) as Exclude<
     Output.Any,
     Output.Nullable<any>

@@ -31,6 +31,7 @@ const testEachArgs = [
       },
     }
     const graphqlDocumentString = rootType(context, schemaIndex[`Root`][`Query`], ss as any)
+    // console.log(graphqlDocumentString)
     // Should parse, ensures is syntactically valid graphql document.
     const document = parse(graphqlDocumentString)
     const graphqlDocumentStringFormatted = print(document)
@@ -42,6 +43,16 @@ const testEachArgs = [
     expect(beforeAfter).toMatchSnapshot(description)
   },
 ] as const
+
+describe(`inline fragment field group`, () => {
+  test.each([
+    [s({ ___: { __typename: true } })],
+    [s({ ___: [{ __typename: true }, { abcEnum: true }] })],
+    [s({ interface: { ___: { __typename: true } } })],
+    [s({ unionFooBar: { ___: { __typename: true } } })],
+    [s({ ___: { __typename: true, $include: true } })],
+  ])(...testEachArgs)
+})
 
 describe(`enum`, () => {
   test.each([

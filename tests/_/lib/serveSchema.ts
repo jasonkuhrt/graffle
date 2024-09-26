@@ -1,3 +1,4 @@
+import { useDeferStream } from '@graphql-yoga/plugin-defer-stream'
 import { addCleanupListener } from 'async-cleanup'
 import getPort from 'get-port'
 import type { GraphQLSchema } from 'graphql'
@@ -8,6 +9,7 @@ export const serveSchema = async (input: { schema: GraphQLSchema; log?: boolean 
   const { schema } = input
   const yoga = createYoga({
     schema,
+    plugins: [useDeferStream()],
     context: (initialContext) => {
       const tenant = initialContext.request.headers.get(`tenant`)
       return {
