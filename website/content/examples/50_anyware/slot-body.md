@@ -50,9 +50,7 @@ console.log(result)
     { name: 'Pikachu' },
     { name: 'Charizard' },
     { name: 'Squirtle' },
-    { name: 'Bulbasaur' },
-    { name: 'AngryPikachu' },
-    { name: 'AngryCharizard' }
+    { name: 'Bulbasaur' }
   ]
 }
 ```

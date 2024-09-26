@@ -40,7 +40,7 @@ const pokemons = await pokemon.document({
     },
   },
 })
-  .run('makeSomeNewPokemons')
+  .run('pokemonsAndTrainers')
 
 console.log(pokemons)
 ```
@@ -48,37 +48,30 @@ console.log(pokemons)
 
 <!-- dprint-ignore-start -->
 ```json
-/some/path/to/runPipeline.ts:XX:XX
-          return new ContextualError(message, { hookName: signal.hookName, source: signal.source }, signal.error)
-                 ^
-
-
-ContextualError: There was an error in the core implementation of hook "decode".
-    at runPipeline (/some/path/to/runPipeline.ts:XX:XX:18)
-    at process.processTicksAndRejections (node:internal/process/task_queues:XX:XX)
-    at async runPipeline (/some/path/to/runPipeline.ts:XX:XX:14)
-    at async runPipeline (/some/path/to/runPipeline.ts:XX:XX:14)
-    at async runPipeline (/some/path/to/runPipeline.ts:XX:XX:14)
-    at async runPipeline (/some/path/to/runPipeline.ts:XX:XX:14)
-    at async Object.run (/some/path/to/main.ts:XX:XX:22)
-    at async run (/some/path/to/client.ts:XX:XX:20)
-    at async executeRootType (/some/path/to/client.ts:XX:XX:12)
-    at async Object.run (/some/path/to/client.ts:XX:XX:20) {
-  context: { hookName: 'decode', source: 'implementation' },
-  cause: Error: Field not found: addAngryPikachu
-      at <anonymous> (/some/path/to/customScalars.ts:XX:XX:28)
-      at <anonymous> (/some/path/to/prelude.ts:XX:XX:20)
-      at Array.map (<anonymous>)
-      at mapValues (/some/path/to/prelude.ts:XX:XX:28)
-      at Module.decode (/some/path/to/customScalars.ts:XX:XX:10)
-      at Object.decode (/some/path/to/core.ts:XX:XX:45)
-      at runHook (/some/path/to/runHook.ts:XX:XX:37)
-      at runPipeline (/some/path/to/runPipeline.ts:XX:XX:8)
-      at runPipeline (/some/path/to/runPipeline.ts:XX:XX:20)
-      at process.processTicksAndRejections (node:internal/process/task_queues:XX:XX)
+{
+  "trainers": [
+    {
+      "name": "Ash"
+    },
+    {
+      "name": "Misty"
+    }
+  ],
+  "pokemons": [
+    {
+      "name": "Pikachu",
+      "trainer": {
+        "name": "Ash"
+      }
+    },
+    {
+      "name": "Charizard",
+      "trainer": {
+        "name": "Ash"
+      }
+    }
+  ]
 }
-
-Node.js vXX.XX.XX
 ```
 <!-- dprint-ignore-end -->
 
