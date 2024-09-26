@@ -1,5 +1,5 @@
 /**
- * This example shows how to use the TypeScript interface for GraphQL arguments.
+ * This example shows how to write field arguments in TypeScript interface.
  */
 
 import { Pokemon } from '../$/generated-clients/pokemon/__.js'

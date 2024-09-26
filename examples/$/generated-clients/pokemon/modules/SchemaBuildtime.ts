@@ -50,7 +50,13 @@ export namespace Enum {
 //                         InputObject                          //
 // ------------------------------------------------------------ //
 export namespace InputObject {
+  export type DateFilter = $.InputObject<'DateFilter', {
+    gte: $.Input.Field<$.Input.Nullable<$Scalar.Float>>
+    lte: $.Input.Field<$.Input.Nullable<$Scalar.Float>>
+  }, true>
+
   export type PokemonFilter = $.InputObject<'PokemonFilter', {
+    birthday: $.Input.Field<$.Input.Nullable<InputObject.DateFilter>>
     name: $.Input.Field<$.Input.Nullable<InputObject.StringFilter>>
   }, true>
 
@@ -71,6 +77,7 @@ export namespace Interface {
 export namespace Object {
   export type Pokemon = $.Object$2<'Pokemon', {
     attack: $.Field<$.Output.Nullable<$Scalar.Int>, null>
+    birthday: $.Field<$.Output.Nullable<$Scalar.Int>, null>
     defense: $.Field<$.Output.Nullable<$Scalar.Int>, null>
     hp: $.Field<$.Output.Nullable<$Scalar.Int>, null>
     id: $.Field<$.Output.Nullable<$Scalar.Int>, null>

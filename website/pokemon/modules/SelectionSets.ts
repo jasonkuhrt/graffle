@@ -186,7 +186,13 @@ export namespace Query {
 //
 //
 
+export interface DateFilter {
+  gte?: number | undefined | null
+  lte?: number | undefined | null
+}
+
 export interface PokemonFilter {
+  birthday?: _RefDefs._DateFilter | undefined | null
   name?: _RefDefs._StringFilter | undefined | null
 }
 
@@ -230,6 +236,10 @@ export interface Pokemon extends $SelectionSet.Bases.ObjectLike {
    * Select the `attack` field on the `Pokemon` object. Its type is `Int` (a `Scalar`).
    */
   attack?: Pokemon.attack$Expanded | $SelectionSet.AliasInput<Pokemon.attack>
+  /**
+   * Select the `birthday` field on the `Pokemon` object. Its type is `Int` (a `Scalar`).
+   */
+  birthday?: Pokemon.birthday$Expanded | $SelectionSet.AliasInput<Pokemon.birthday>
   /**
    * Select the `defense` field on the `Pokemon` object. Its type is `Int` (a `Scalar`).
    */
@@ -277,6 +287,10 @@ export namespace Pokemon {
   export type attack$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
   export type attack = $SelectionSet.Indicator.NoArgsIndicator
+
+  export type birthday$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
+
+  export type birthday = $SelectionSet.Indicator.NoArgsIndicator
 
   export type defense$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
@@ -371,6 +385,7 @@ export namespace Trainer {
 export namespace _RefDefs {
   export type _Mutation = Mutation
   export type _Query = Query
+  export type _DateFilter = DateFilter
   export type _PokemonFilter = PokemonFilter
   export type _StringFilter = StringFilter
   export type _Pokemon = Pokemon

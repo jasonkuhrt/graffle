@@ -4,7 +4,7 @@ aside: false
 
 # Arguments
 
-This example shows how to use the TypeScript interface for GraphQL arguments.
+This example shows how to write field arguments in TypeScript interface.
 
 <!-- dprint-ignore-start -->
 ```ts twoslash
