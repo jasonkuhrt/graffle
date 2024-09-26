@@ -231,6 +231,8 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
           // todo optimize
           // 1. Generate a map of possible custom scalar paths (tree structure)
           // 2. When traversing the result, skip keys that are not in the map
+          // console.log(input.context.schemaIndex.Root)
+          // console.log(getOptionalNullablePropertyOrThrow(input.context.schemaIndex.Root, operation.rootType))
           const dataDecoded = CustomScalars.decode(
             getOptionalNullablePropertyOrThrow(input.context.schemaIndex.Root, operation.rootType),
             operation.selectionSet,

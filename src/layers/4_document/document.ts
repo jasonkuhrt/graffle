@@ -157,17 +157,15 @@ export const getOperationOrThrow = (
 ): OperationNormalized => {
   if (!operationName) {
     if (document.facts.hasMultipleOperations) {
-      throw {
-        errors: [new Error(`Must provide operation name if query contains multiple operations.`)],
-      }
+      throw new Error(`Must provide operation name if query contains multiple operations.`)
     }
-    return document.operations[defaultOperationName]!
+    // The default operation may be named or not so instead of looking it up by name we rely on the fact that
+    // there is guaranteed to be exactly one operation in the document based on checks up to this point.
+    return Object.values(document.operations)[0]!
   }
 
   if (!(operationName in document.operations)) {
-    throw {
-      errors: [new Error(`Unknown operation named "${operationName}".`)],
-    }
+    throw new Error(`Unknown operation named "${operationName}".`)
   }
   return document.operations[operationName]!
 }
