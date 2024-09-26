@@ -36,7 +36,7 @@ console.log(result)
 
 <!-- dprint-ignore-start -->
 ```txt
-'This operation was aborted'
+This operation was aborted
 ```
 <!-- dprint-ignore-end -->
 

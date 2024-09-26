@@ -252,7 +252,12 @@ export const runHook = async (
       case `hookInvokedButThrew`:
         debugExtension(`hook error`)
         // todo rename source to "hook"
-        done({ type: `error`, hookName: name, source: `implementation`, error: errorFromMaybeError(result) })
+        done({
+          type: `error`,
+          hookName: name,
+          source: `implementation`,
+          error: errorFromMaybeError(result),
+        })
         return
       default:
         throw casesExhausted(branch)

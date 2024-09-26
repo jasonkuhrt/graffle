@@ -9,7 +9,7 @@ import { Pokemon } from './pokemon/__.js'
 const atlas = Pokemon.create()
 
 const pokemons = await atlas.query.pokemons({
-  $: { filter: { name: { in: [`Pikachu`, `Charizard`] } } },
+  $: { filter: { name: { in: [`Pikachu`, `Charizard`] } } },  // [!code highlight]
   name: true,
   trainer: { name: true },
 })

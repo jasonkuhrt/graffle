@@ -1,2 +1,2 @@
 ---------------------------------------- SHOW ----------------------------------------
-'This operation was aborted'
+This operation was aborted

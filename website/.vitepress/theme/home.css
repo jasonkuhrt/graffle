@@ -1,0 +1,123 @@
+/* Feature Blocks */
+
+.icon {
+  filter: sepia(0.75);
+  background:hsla(0,0%,0%,0.025)!important;
+}
+
+.dark .icon {
+  background:hsla(0,0%,100%,0.025)!important;
+}
+
+/* Sponsorship Button */
+
+:root {
+  --vp-c-sponsor: var(--vp-c-brand-3);
+}
+
+/* Logo  */
+
+@keyframes rainbow-wave {
+  0% {
+    /* background-position: 0% 50%; */
+    filter: hue-rotate(0deg);
+  }
+  50% {
+    /* background-position: 100% 50%; */
+    filter: hue-rotate(180deg);
+  }
+  100% {
+    /* background-position: 0% 50%; */
+    filter: hue-rotate(360deg);
+  }
+}
+
+@keyframes rotate-conic {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+:root {
+  --vp-home-hero-img-border-radius: 33px;
+}
+
+.VPHomeHero .image-bg {
+  animation: rainbow-wave 30s linear infinite;
+  background-image: 
+    linear-gradient(45deg, 
+      #006994 0%, #0099cc 10%, #66ccff 20%, 
+      #339966 30%, #33cccc 40%, #66ffff 50%, 
+      #006994 60%, #0099cc 70%, #66ccff 80%, 
+      #339966 90%, #33cccc 100%
+    ),
+    conic-gradient(
+      from 0deg at 0% 0%,
+      rgba(0, 105, 148, 0.2) 0deg,
+      rgba(102, 204, 255, 0.2) 90deg,
+      rgba(51, 153, 102, 0.2) 180deg,
+      rgba(51, 204, 204, 0.2) 270deg,
+      rgba(102, 255, 255, 0.2) 320deg,
+      rgba(0, 105, 148, 0.2) 360deg
+    ),
+    radial-gradient(circle at 50% 50%, 
+      rgba(255,255,255,0.1) 0%, transparent 50%
+    );
+  background-size: 200% 200%, 100% 100%, 200% 200%;
+  background-position: 0% 50%;
+  background-blend-mode: overlay, soft-light, overlay;
+  border-radius: calc(var(--vp-home-hero-img-border-radius) + 2px);
+  overflow: hidden;
+}
+
+.VPHomeHero .image-bg::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  right: -50%;
+  bottom: -50%;
+  background: inherit;
+  background-blend-mode: inherit;
+  filter: inherit;
+  animation: rotate-conic 30s linear infinite;
+  z-index: -1;
+}
+
+.dark .VPHomeHero img {
+  filter: invert(0) opacity(0.75);
+}
+
+.VPHomeHero img {
+  border-radius:  var(--vp-home-hero-img-border-radius);
+  filter: invert(1) opacity(0.8);
+  position: relative;
+  z-index: 1;
+}
+
+@media (min-width: 767px) and (max-width: 960px) {
+:root {
+    --vp-home-hero-img-border-radius: 28px;
+  }
+  .VPHomeHero .image-bg {
+    border-radius: calc(var(--vp-home-hero-img-border-radius) + 2px);
+  }
+  .VPHomeHero img {
+    border-radius: calc(var(--vp-home-hero-img-border-radius) + 0px);
+  }
+}
+
+@media (max-width: 767px) {
+  :root {
+    --vp-home-hero-img-border-radius: 20px;
+  }
+  .VPHomeHero .image-bg {
+    border-radius: calc(var(--vp-home-hero-img-border-radius) + 2px);
+  }
+  .VPHomeHero img {
+    border-radius: calc(var(--vp-home-hero-img-border-radius) + 0px);
+  }
+}

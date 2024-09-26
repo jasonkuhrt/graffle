@@ -1,39 +1,37 @@
-import { operationTypeNameToRootTypeName, OperationTypes } from '../../lib/graphql.js'
+import { parse, print as graphqlPrint } from 'graphql'
+import { operationTypeNameToRootTypeName } from '../../lib/graphql.js'
 import { SelectionSet } from '../2_SelectionSet/__.js'
-import type { Context, DocumentObject } from '../2_SelectionSet/print.js'
+import type { Context } from '../2_SelectionSet/print.js'
+import type { DocumentNormalized } from './document.js'
 
-// todo this is currently unused by graffle internally. Remove?
 export const print = (
   context: Context,
-  document: DocumentObject,
+  document: DocumentNormalized,
+  options?: {
+    format?: boolean
+  },
 ) => {
-  const operations = [
-    ...(Object.entries(document.query || {}).map(([operationName, selectionSet]) => ({
-      operationName,
-      selectionSet,
-      operationType: OperationTypes.query,
-    }))),
-    ...(Object.entries(document.mutation || {}).map(([operationName, selectionSet]) => ({
-      operationName,
-      selectionSet,
-      operationType: OperationTypes.mutation,
-    }))),
-  ]
+  const operations = Object.values(document.operations)
 
-  return operations.map(({ operationName, selectionSet, operationType }) => {
-    const rootType = operationTypeNameToRootTypeName[operationType]
+  const documentString = operations.map(({ name, selectionSet, type }) => {
+    const rootType = operationTypeNameToRootTypeName[type]
     const rootTypeDocument = selectionSet
 
     const schemaRootType = context.schemaIndex[`Root`][rootType]
     if (!schemaRootType) throw new Error(`Schema has no ${rootType} root type`)
 
-    const documentString = SelectionSet.Print.resolveRootType(
+    return SelectionSet.Print.rootType(
       context,
       schemaRootType,
       rootTypeDocument,
-      operationName,
+      name,
     )
-
-    return documentString
   }).join(`\n\n`)
+
+  let formatted = documentString
+  if (options?.format) {
+    formatted = graphqlPrint(parse(documentString))
+  }
+
+  return formatted
 }

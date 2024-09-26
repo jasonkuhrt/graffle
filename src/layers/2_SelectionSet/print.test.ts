@@ -5,7 +5,7 @@ import { $Index as schemaIndex } from '../../../tests/_/schema/generated/modules
 import type * as SelectionSets from '../../../tests/_/schema/generated/modules/SelectionSets.js'
 import { outputConfigDefault } from '../6_client/Settings/Config.js'
 import type { Context } from './print.js'
-import { resolveRootType } from './print.js'
+import { rootType } from './print.js'
 
 // eslint-disable-next-line
 // @ts-ignore
@@ -30,7 +30,7 @@ const testEachArgs = [
         initialInput: {} as any,
       },
     }
-    const graphqlDocumentString = resolveRootType(context, schemaIndex[`Root`][`Query`], ss as any)
+    const graphqlDocumentString = rootType(context, schemaIndex[`Root`][`Query`], ss as any)
     // Should parse, ensures is syntactically valid graphql document.
     const document = parse(graphqlDocumentString)
     const graphqlDocumentStringFormatted = print(document)

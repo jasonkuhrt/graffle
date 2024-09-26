@@ -363,7 +363,8 @@ export const parseGraphQLOperationType = (request: GraphQLRequestEncoded): Opera
       line,
       operationType: match[0] as OperationTypeNameAll,
     }
-  }).filter(Boolean)
+  }).filter(_ => _ !== null)
+  // console.log(definedOperations)
 
   // Handle obviously invalid cases that are zero cost to compute.
 
@@ -385,7 +386,7 @@ export const parseGraphQLOperationType = (request: GraphQLRequestEncoded): Opera
   // Continue to the full search.
 
   const definedOperationToAnalyze = operationName
-    ? definedOperations.find(o => o?.line.includes(operationName))
+    ? definedOperations.find(o => o.line.includes(operationName))
     : definedOperations[0]
 
   // Invalid: The given operation name does not show up in the document.
