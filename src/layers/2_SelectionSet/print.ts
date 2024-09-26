@@ -3,95 +3,72 @@ import { assertArray, assertObject, entriesStrict, lowerCaseFirstLetter } from '
 import { Schema } from '../1_Schema/__.js'
 import { readMaybeThunk } from '../1_Schema/core/helpers.js'
 import type { Config } from '../6_client/Settings/Config.js'
+import type { Indicator } from './_indicator.js'
 import { Directive } from './Directive/__.js'
 import { isSelectFieldName } from './helpers.js'
-import type { Indicator } from './indicator.js'
+// import type { Indicator } from './indicator.js'
 import { isIndicator, isPositiveIndicator } from './indicator.js'
 import { parseClientOn, toGraphQLOn } from './on.js'
 import { parseClientFieldItem } from './runtime/FieldItem.js'
 import { createFieldName } from './runtime/FieldName.js'
-import { normalizeAlias } from './types.js'
+import { type ArgValue, normalizeAlias, type ObjectLike, type SS } from './types.js'
 
-interface SpecialFields extends Directive.$Fields {
-  // todo - this requires having the schema at runtime to know which fields to select.
-  // $scalars?: SelectionSet.Indicator
-  $?: Args
-}
-
-type Args = { [k: string]: ArgValue }
-
-type ArgValue = string | boolean | null | number | Args
-
-export type DocumentObject = {
-  query?: Record<string, GraphQLObjectSelection>
-  mutation?: Record<string, GraphQLObjectSelection>
-}
-
-export type GraphQLRootSelection = { query: GraphQLObjectSelection } | { mutation: GraphQLObjectSelection }
-
-// todo duplicaets the ObjectLike type in other module
-export type GraphQLObjectSelection = Record<string, Indicator | SS>
-
-export type SS = {
-  [k: string]: Indicator | SS
-} & SpecialFields
-
-type FieldValue = SS | Indicator
+type FieldValue = SS | Indicator.Indicator
 
 export interface Context {
   schemaIndex: Schema.Index
   config: Config
 }
 
-export const resolveRootType = (
+export const rootType = (
   context: Context,
   rootObjectDef: Schema.Output.RootType,
-  selectionSet: GraphQLObjectSelection,
+  selectionSet: ObjectLike,
   operationName: string = ``,
 ) => {
   const operationTypeName = lowerCaseFirstLetter(rootObjectDef.fields.__typename.type.type)
   return `${operationTypeName} ${operationName} { ${resolveObjectLikeField(context, rootObjectDef, selectionSet)} }`
 }
 
-const resolveArgValue = (
+const argValue = (
   context: Context,
   schemaArgTypeMaybeThunk: Schema.Input.Any,
-  argValue: ArgValue,
+  value: ArgValue,
 ): string => {
-  if (argValue === null) return String(null) // todo could check if index agrees is nullable.
+  if (value === null) return String(null) // todo could check if index agrees is nullable.
 
   const schemaArgType = readMaybeThunk(schemaArgTypeMaybeThunk)
 
   switch (schemaArgType.kind) {
     case `nullable`:
-      return resolveArgValue(context, schemaArgType.type, argValue)
+      return argValue(context, schemaArgType.type, value)
     case `list`: {
-      assertArray(argValue)
-      const value = argValue.map(_ => resolveArgValue(context, schemaArgType.type, _ as ArgValue))
-      return `[${value.join(`, `)}]`
+      assertArray(value)
+      const values = value.map(_ => argValue(context, schemaArgType.type, _ as ArgValue))
+      return `[${values.join(`, `)}]`
     }
     case `InputObject`: {
-      assertObject(argValue)
-      const entries = Object.entries(argValue).map(([argName, argValue]) => {
-        const schemaArgField = schemaArgType.fields[argName] as Schema.Input.Field | undefined
-        if (!schemaArgField) throw new Error(`Arg not found: ${argName}`)
-        return [argName, resolveArgValue(context, schemaArgField.type, argValue)]
+      assertObject(value)
+      const entries = Object.entries(value).map(([argName_, argValue_]) => {
+        const schemaArgField = schemaArgType.fields[argName_] as Schema.Input.Field | undefined
+        if (!schemaArgField) throw new Error(`Arg not found: ${argName_}`)
+        return [argName_, argValue(context, schemaArgField.type, argValue_)]
       })
       return `{ ${entries.map(([k, v]) => `${k!}: ${v!}`).join(`, `)} }`
     }
     case `Enum`: {
-      return String(argValue)
+      return String(value)
     }
     case `Scalar`: {
       // @ts-expect-error fixme
-      return JSON.stringify(schemaArgType.codec.encode(argValue))
+      return JSON.stringify(schemaArgType.codec.encode(value))
     }
     default:
       throw new Error(`Unsupported arg kind: ${JSON.stringify(schemaArgType)}`)
   }
 }
 
-const resolveArgs = (context: Context, schemaField: Schema.SomeField, ss: Indicator | SS) => {
+const resolveArgs = (context: Context, schemaField: Schema.SomeField, ss: Indicator.Indicator | SS) => {
   if (isIndicator(ss)) return ``
 
   const { $ } = ss
@@ -107,7 +84,7 @@ const resolveArgs = (context: Context, schemaField: Schema.SomeField, ss: Indica
     argEntries.map(([argFieldName, v]) => {
       const schemaArgField = schemaArgs.fields[argFieldName] as Schema.Input.Field | undefined
       if (!schemaArgField) throw new Error(`Arg field ${argFieldName} not found in schema.`)
-      const valueEncoded = resolveArgValue(context, schemaArgField.type, v)
+      const valueEncoded = argValue(context, schemaArgField.type, v)
       return `${argFieldName}: ${valueEncoded}`
     }).join(`, `)
   })`
@@ -137,7 +114,7 @@ const resolveFieldValue = (
     return `${args} ${directives}`
   }
 
-  const selection = Object.fromEntries(selects) as GraphQLObjectSelection
+  const selection = Object.fromEntries(selects) as ObjectLike
 
   // eslint-disable-next-line
   // @ts-ignore ID error

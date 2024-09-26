@@ -15,8 +15,8 @@ import {
 import { mergeRequestInit, searchParamsAppendAll } from '../../lib/http.js'
 import { casesExhausted, getOptionalNullablePropertyOrThrow, throwNull } from '../../lib/prelude.js'
 import { execute } from '../0_functions/execute.js'
-import { SelectionSet } from '../2_SelectionSet/__.js'
 import * as CustomScalars from '../3_ResultSet/decode.js'
+import { Document } from '../4_document/__.js'
 import type { GraffleExecutionResultVar } from '../6_client/client.js'
 import type { Config } from '../6_client/Settings/Config.js'
 import {
@@ -41,7 +41,6 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
     encode: ({ input }) => {
       let document: string
       let variables: StandardScalarVariables | undefined = undefined
-      let operationName: string | undefined = undefined
 
       switch (input.interface) {
         case `raw`: {
@@ -50,18 +49,15 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
             : print(input.document)
           document = documentPrinted
           variables = input.variables
-          operationName = input.operationName
           break
         }
         case `typed`: {
           // todo turn inputs into variables
           variables = undefined
-          document = SelectionSet.Print.resolveRootType(
-            input.context,
-            getOptionalNullablePropertyOrThrow(input.context.schemaIndex.Root, input.rootTypeName),
-            // todo fixme
-            input.selection as any,
-          )
+          document = Document.print({
+            config: input.context.config,
+            schemaIndex: input.context.schemaIndex,
+          }, input.document)
           break
         }
         default:
@@ -75,7 +71,6 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
             url: input.schema,
             query: document,
             variables,
-            operationName,
           }
         }
         case `memory`: {
@@ -84,7 +79,6 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
             schema: input.schema,
             query: document,
             variables,
-            operationName,
           }
         }
       }
@@ -233,12 +227,13 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
           }
         }
         case `typed`: {
+          const operation = Document.getOperationOrThrow(input.document, input.operationName)
           // todo optimize
           // 1. Generate a map of possible custom scalar paths (tree structure)
           // 2. When traversing the result, skip keys that are not in the map
           const dataDecoded = CustomScalars.decode(
-            getOptionalNullablePropertyOrThrow(input.context.schemaIndex.Root, input.rootTypeName),
-            input.selection,
+            getOptionalNullablePropertyOrThrow(input.context.schemaIndex.Root, operation.rootType),
+            operation.selectionSet,
             input.result.data,
           )
           switch (input.transport) {

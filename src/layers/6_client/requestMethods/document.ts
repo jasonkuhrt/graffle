@@ -2,7 +2,8 @@ import type { UnionToTuple } from 'type-fest'
 import type { IsTupleMultiple } from '../../../lib/prelude.js'
 import type { Schema } from '../../1_Schema/__.js'
 import type { ResultSet } from '../../3_ResultSet/__.js'
-import type { Document } from '../../4_document/__.js'
+import { Document } from '../../4_document/__.js'
+import type { InterfaceTypedRequestContext } from '../client.js'
 import type { ResolveOutputReturnRootType } from '../handleOutput.js'
 import type { AddTypenameToSelectedRootTypeResultFields, Config } from '../Settings/Config.js'
 
@@ -37,7 +38,6 @@ export type DocumentRunner<
 
 // todo maybe bring back these validations, but need to understand the perf impact
 
-// // dprint-ignore
 // export type Document<$Index extends Schema.Index> =
 //   {
 //     [name: string]:
@@ -53,7 +53,6 @@ export type DocumentRunner<
 //                                                 >
 //   }
 
-// // dprint-ignore
 // export type ValidateDocumentOperationNames<$Document> =
 //   // This initial condition checks that the document is not already in an error state.
 //   // Namely from for example { x: { mutation: { ... }}} where the schema has no mutations.
@@ -65,3 +64,13 @@ export type DocumentRunner<
 //     : keyof { [K in keyof $Document & string as Schema.Named.NameParse<K> extends never ? K : never]: K } extends never
 //       ? $Document
 //       : TSError<'ValidateDocumentOperationNames', `One or more Invalid operation name in document: ${keyof { [K in keyof $Document & string as Schema.Named.NameParse<K> extends never ? K : never]: K }}`>
+
+export const createMethodDocument =
+  (context: InterfaceTypedRequestContext, executeDocument: any) => (document: Document.DocumentObject) => {
+    const documentNormalized = Document.normalizeOrThrow(document)
+    return {
+      run: async (maybeOperationName?: string) => {
+        return await executeDocument(context, documentNormalized, maybeOperationName)
+      },
+    }
+  }

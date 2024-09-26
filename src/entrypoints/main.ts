@@ -9,3 +9,4 @@ export { type WithInput } from '../layers/6_client/Settings/inputIncrementable/i
 export * from '../lib/prelude.js'
 export * from './__Graffle.js'
 export * as Preset from './_Preset.js'
+export * as Print from './_Print.js'

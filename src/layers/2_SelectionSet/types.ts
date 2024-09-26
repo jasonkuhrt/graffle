@@ -3,9 +3,23 @@ import type { OmitNullableFields, PickNullableFields, Schema } from '../1_Schema
 import type { Indicator } from './_indicator.js'
 import type { Directive } from './Directive/__.js'
 
-export type ObjectLike = {
-  [fieldName: string]: Any
+export type ArgValue = string | boolean | null | number | Args_
+
+export type Args_ = { [k: string]: ArgValue }
+
+interface SpecialFields extends Directive.$Fields {
+  // todo - this requires having the schema at runtime to know which fields to select.
+  // $scalars?: SelectionSet.Indicator
+  $?: Args_
 }
+
+export type SS = {
+  [k: string]: Indicator.Indicator | SS
+} & SpecialFields
+
+export type ObjectLike = Record<string, Indicator.Indicator | SS>
+
+export type GraphQLRootSelection = { query: ObjectLike } | { mutation: ObjectLike }
 
 export type Any = AnyExceptAlias | AliasInput
 

@@ -1,12 +1,13 @@
 import { type ExecutionResult, GraphQLSchema } from 'graphql'
 import type { Errors } from '../../lib/errors/__.js'
 import type { Fluent } from '../../lib/fluent/__.js'
-import { type RootTypeName, RootTypeNameToOperationName } from '../../lib/graphql.js'
+import { type RootTypeName } from '../../lib/graphql.js'
 import { proxyGet } from '../../lib/prelude.js'
 import type { BaseInput_ } from '../0_functions/types.js'
 import { Schema } from '../1_Schema/__.js'
 import { readMaybeThunk } from '../1_Schema/core/helpers.js'
-import type { DocumentObject, GraphQLObjectSelection } from '../2_SelectionSet/print.js'
+import type { SelectionSet } from '../2_SelectionSet/__.js'
+import { Document } from '../4_document/__.js'
 import type { GlobalRegistry } from '../4_generator/globalRegistry.js'
 import { Core } from '../5_core/__.js'
 import { type InterfaceRaw, type TransportHttp } from '../5_core/types.js'
@@ -17,6 +18,7 @@ import { anywareProperties, type FnAnyware } from './properties/anyware.js'
 import type { FnInternal } from './properties/internal.js'
 import { type FnRetry, retryProperties } from './properties/retry.js'
 import { type FnWith, withProperties } from './properties/with.js'
+import { createMethodDocument } from './requestMethods/document.js'
 import type { FnRequestMethods } from './requestMethods/requestMethods.js'
 import { type Config } from './Settings/Config.js'
 import { type InputStatic } from './Settings/Input.js'
@@ -137,22 +139,36 @@ const createWithState = (
    */
   // const returnMode = input.returnMode ?? `data` as ReturnModeType
 
-  const executeRootType = async (
+  const executeDocument = async (
     context: InterfaceTypedRequestContext,
-    rootTypeName: RootTypeName,
-    rootTypeSelectionSet: GraphQLObjectSelection,
+    document: Document.DocumentNormalized,
+    operationName?: string,
   ) => {
     const transport = state.input.schema instanceof GraphQLSchema ? `memory` : `http`
     const interface_ = `typed`
     const anywareInitialInput = {
       interface: interface_,
       transport,
-      selection: rootTypeSelectionSet,
-      rootTypeName,
       schema: state.input.schema,
       context,
+      document,
+      operationName,
     } as Core.Hooks.HookDefEncode<Config>['input']
     return await run(context, anywareInitialInput)
+  }
+
+  const executeRootType = async (
+    context: InterfaceTypedRequestContext,
+    rootTypeName: RootTypeName,
+    rootTypeSelectionSet: SelectionSet.ObjectLike,
+  ) => {
+    return executeDocument(
+      context,
+      Document.createDocumentNormalizedFromRootTypeSelection(
+        rootTypeName,
+        rootTypeSelectionSet,
+      ),
+    )
   }
 
   const executeRootTypeField = async (
@@ -185,7 +201,7 @@ const createWithState = (
 
     const result = await executeRootType(context, rootTypeName, {
       [rootTypeFieldName]: rootTypeFieldSelectionSet,
-    } as GraphQLObjectSelection)
+    } as SelectionSet.ObjectLike)
     if (result instanceof Error) return result
 
     return context.config.output.envelope.enabled
@@ -194,14 +210,14 @@ const createWithState = (
       : result[rootTypeFieldName]
   }
 
-  const createRootTypeMethods = (context: InterfaceTypedRequestContext, rootTypeName: RootTypeName) => {
+  const createMethodsRootType = (context: InterfaceTypedRequestContext, rootTypeName: RootTypeName) => {
     return new Proxy({}, {
       get: (_, key) => {
         if (typeof key === `symbol`) throw new Error(`Symbols not supported.`)
 
         if (key.startsWith(`$batch`)) {
           return async (selectionSetOrIndicator: SelectionSetOrIndicator) =>
-            executeRootType(context, rootTypeName, selectionSetOrIndicator as GraphQLObjectSelection)
+            executeRootType(context, rootTypeName, selectionSetOrIndicator as SelectionSet.ObjectLike)
         } else {
           const fieldName = key
           return (selectionSetOrArgs: SelectionSetOrArgs) =>
@@ -263,66 +279,9 @@ const createWithState = (
     }
 
     Object.assign(clientDirect, {
-      document: (documentObject: DocumentObject) => {
-        const queryOperationNames = Object.keys(documentObject.query ?? {})
-        const mutationOperationNames = Object.keys(documentObject.mutation ?? {})
-        const operationNames = [
-          ...queryOperationNames,
-          ...mutationOperationNames,
-        ]
-
-        // todo test case for this
-        const conflictingOperationNames = queryOperationNames.filter(_ => mutationOperationNames.includes(_))
-
-        if (conflictingOperationNames.length > 0) {
-          throw {
-            errors: [
-              new Error(`Document has multiple uses of operation name(s): ${conflictingOperationNames.join(`, `)}.`),
-            ],
-          }
-        }
-
-        const hasMultipleOperations = operationNames.length > 1
-
-        const hasNoOperations = operationNames.length === 0
-
-        if (hasNoOperations) {
-          throw {
-            errors: [new Error(`Document has no operations.`)],
-          }
-        }
-
-        const defaultOperationName = operationNames[0]!
-
-        const processInput = (maybeOperationName: string) => {
-          if (!maybeOperationName && hasMultipleOperations) {
-            throw {
-              errors: [new Error(`Must provide operation name if query contains multiple operations.`)],
-            }
-          }
-          if (maybeOperationName && !(operationNames.includes(maybeOperationName))) {
-            throw {
-              errors: [new Error(`Unknown operation named "${maybeOperationName}".`)],
-            }
-          }
-          const operationName = maybeOperationName ? maybeOperationName : defaultOperationName
-          const rootTypeName = queryOperationNames.includes(operationName) ? `Query` : `Mutation`
-          const selection = documentObject[RootTypeNameToOperationName[rootTypeName]]![operationName]!
-          return {
-            rootTypeName,
-            selection,
-          } as const
-        }
-
-        return {
-          run: async (maybeOperationName: string) => {
-            const { selection, rootTypeName } = processInput(maybeOperationName)
-            return await executeRootType(typedContext, rootTypeName, selection)
-          },
-        }
-      },
-      query: createRootTypeMethods(typedContext, `Query`),
-      mutation: createRootTypeMethods(typedContext, `Mutation`),
+      document: createMethodDocument(typedContext, executeDocument),
+      query: createMethodsRootType(typedContext, `Query`),
+      mutation: createMethodsRootType(typedContext, `Mutation`),
       // todo
       // subscription: async () => {},
     })

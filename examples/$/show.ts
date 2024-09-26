@@ -9,7 +9,7 @@ export const show = <$Logger extends Logger = typeof console.log>(
   subTitle?: string,
 ): ReturnType<$Logger> => {
   const write = console.log
-  const inspected = inspect(value, { depth: null, colors: true })
+  const inspected = typeof value === 'string' ? value : inspect(value, { depth: null, colors: true })
   const message = renderShow(inspected, subTitle)
   return write(message) as ReturnType<$Logger>
 }

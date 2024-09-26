@@ -1,8 +1,7 @@
 import type { DocumentNode, ExecutionResult, GraphQLSchema } from 'graphql'
 import type { GraphQLRequestEncoded, GraphQLRequestInput, StandardScalarVariables } from '../../lib/graphql.js'
 import type { getRequestEncodeSearchParameters, postRequestEncodeBody } from '../../lib/graphqlHTTP.js'
-import type { Schema } from '../1_Schema/__.js'
-import type { SelectionSet } from '../2_SelectionSet/__.js'
+import type { Document } from '../4_document/__.js'
 import type { InterfaceTypedRequestContext, RequestContext } from '../6_client/client.js'
 import type { Config } from '../6_client/Settings/Config.js'
 import type { CoreExchangeGetRequest, CoreExchangePostRequest } from '../6_client/transportHttp/request.js'
@@ -12,8 +11,8 @@ type InterfaceInput<TypedProperties = {}, RawProperties = {}> =
   | ({
     interface: InterfaceTyped
     context: InterfaceTypedRequestContext
-    rootTypeName: Schema.RootTypeName
-    selection: SelectionSet.ObjectLike
+    document: Document.DocumentNormalized
+    operationName?: string
   } & TypedProperties)
   | ({
     interface: InterfaceRaw
@@ -45,7 +44,7 @@ export type HookSequence = typeof hookNamesOrderedBySequence
 
 export type HookDefEncode<$Config extends Config> = {
   input:
-    & InterfaceInput<{}, GraphQLRequestInput>
+    & InterfaceInput<{ operationName?: string }, GraphQLRequestInput>
     & TransportInput<$Config, { schema: string | URL }, { schema: GraphQLSchema }>
 }
 
