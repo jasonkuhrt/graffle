@@ -1,4 +1,4 @@
-import { describe, expectTypeOf, test } from 'vitest'
+import { expectTypeOf, test } from 'vitest'
 import { Graffle } from '../../../../tests/_/schema/generated/__.js'
 import * as Schema from '../../../../tests/_/schema/schema.js'
 import { MutationOnly } from '../../../../tests/_/schemaMutationOnly/generated/__.js'
@@ -16,65 +16,57 @@ test(`requires input`, () => {
   // graffle.document({})
 })
 
-describe(`input`, () => {
-  test(`document with one query`, () => {
-    const run = graffle.document({ query: { foo: { id: true } } }).run
-    expectTypeOf(run).toMatchTypeOf<(...params: ['foo'] | [] | [undefined]) => Promise<any>>()
-  })
-
-  test(`document with two queries`, () => {
-    const run = graffle.document({
-      query: {
-        foo: { id: true },
-        bar: { id: true },
-      },
-    }).run
-    expectTypeOf(run).toMatchTypeOf<(name: 'foo' | 'bar') => Promise<any>>()
-  })
-
-  test(`root operation not available if it is not in schema`, () => {
-    const queryOnly = QueryOnly.create({
-      schema: SchemaQueryOnly.schema,
-    })
-    queryOnly.document({
-      query: { foo: { id: true } },
-      // todo
-      // // @ts-expect-error mutation not in schema
-      // mutation: { foo: { id: true } },
-    })
-    const mutationOnly = MutationOnly.create({
-      schema: SchemaMutationOnly.schema,
-    })
-    mutationOnly.document({
-      // @ts-expect-error query not in schema
-      foo: { query: { id: true } },
-      bar: { mutation: { id: true } },
-    })
-  })
+test(`document with one query`, async () => {
+  const run = graffle.document({ query: { foo: { id: true } } }).run
+  type $Parameters = Parameters<typeof run>
+  expectTypeOf<$Parameters>().toEqualTypeOf<[]>()
+  const result = await run()
+  expectTypeOf(result).toEqualTypeOf<{ id: string | null }>()
 })
 
-describe(`document(...).run()`, () => {
-  test(`document with one query`, () => {
-    {
-      const result = graffle.document({ query: { x: { id: true } } }).run()
-      expectTypeOf(result).resolves.toEqualTypeOf<{ id: string | null }>()
-    }
-    {
-      const result = graffle.document({ query: { x: { id: true } } }).run(`x`)
-      expectTypeOf(result).resolves.toEqualTypeOf<{ id: string | null }>()
-    }
-    {
-      const result = graffle.document({ query: { x: { id: true } } }).run(undefined)
-      expectTypeOf(result).resolves.toEqualTypeOf<{ id: string | null }>()
-    }
+test(`document with two queries`, async () => {
+  const run = graffle.document({
+    query: {
+      foo: { id: true },
+      bar: { date: true },
+    },
+  }).run
+  type $Parameters = Parameters<typeof run>
+  expectTypeOf<$Parameters>().toEqualTypeOf<['foo' | 'bar']>()
+  const result = await run(`foo`)
+  expectTypeOf(result).toEqualTypeOf<{ id: string | null }>()
+})
+
+test(`document with two queries of different root types`, async () => {
+  const run = graffle.document({
+    query: {
+      foo: { id: true },
+    },
+    mutation: {
+      bar: { idNonNull: true },
+    },
+  }).run
+  type $Parameters = Parameters<typeof run>
+  expectTypeOf<$Parameters>().toEqualTypeOf<['foo' | 'bar']>()
+  const result = await run(`foo`)
+  expectTypeOf(result).toEqualTypeOf<{ id: string | null }>()
+})
+
+test(`root operation not available if it is not in schema`, () => {
+  const queryOnly = QueryOnly.create({
+    schema: SchemaQueryOnly.schema,
   })
-  test(`document with two queries`, () => {
-    const result = graffle.document({
-      query: {
-        foo: { id: true },
-        bar: { id: true },
-      },
-    }).run(`foo`)
-    expectTypeOf(result).resolves.toEqualTypeOf<{ id: string | null }>()
+  queryOnly.document({
+    query: { foo: { id: true } },
+    // @ts-expect-error mutation not in schema
+    mutation: { foo: { id: true } },
+  })
+  const mutationOnly = MutationOnly.create({
+    schema: SchemaMutationOnly.schema,
+  })
+  mutationOnly.document({
+    mutation: { bar: { id: true } },
+    // @ts-expect-error query not in schema
+    query: { foo: { id: true } },
   })
 })

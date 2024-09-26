@@ -14,9 +14,21 @@ export type DocumentRunner<
   $$Name extends Document.GetOperationNames<$$Document> = Document.GetOperationNames<$$Document>
 > = {
   run: <
-    $Name extends $$Name,
-    $Params extends (IsTupleMultiple<UnionToTuple<$$Name>> extends true ? [name: $Name] : ([] | [name: $Name | undefined])),
+    $Params extends (IsTupleMultiple<UnionToTuple<$$Name>> extends true ? [name: $$Name] : []),
+    const $Name extends string = $Params extends [] ? $$Name : $Params[0],
   >(...params: $Params) =>
+  // [$Name]
+  // ResultSet.Root<
+  //         AddTypenameToSelectedRootTypeResultFields<
+  //           $$Config,
+  //           $$Index,
+  //           Document.GetRootTypeNameOfOperation<$$Document, $Name>,
+  //           Document.GetOperation<$$Document, $Name>
+  //         >,
+  //         $$Index,
+  //         Document.GetRootTypeNameOfOperation<$$Document, $Name>
+  //       >
+        //
     Promise<
       ResolveOutputReturnRootType<
         $$Config,

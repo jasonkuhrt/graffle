@@ -91,7 +91,7 @@
     "test:examples": "vitest --config vitest.examples.config.ts --dir tests/examples",
     "test": "vitest",
     "test:web": "vitest --environment jsdom",
-    "test:types": "vitest --typecheck src/**/**/*.test-d.ts",
+    "test:types": "vitest --typecheck --dir src  --testNamePattern .*.test-d.ts",
     "test:coverage": "pnpm test -- --coverage",
     "release:stable": "dripip stable",
     "release:preview": "dripip preview",
