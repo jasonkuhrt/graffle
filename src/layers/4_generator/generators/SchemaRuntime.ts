@@ -99,7 +99,7 @@ const index = (config: Config) => {
     export const $Index: Index = {
       name: Data.Name,
       RootTypesPresent: [${
-    Object.entries(rootTypesPresence).filter(([_, present]) => present).map(([_]) => Code.quote(_)).join(`, `)
+    config.schema.typeMapByKind.GraphQLRootType.map((_) => Code.quote(_.name)).join(`, `)
   }] as const,
       RootUnion: undefined as any, // Type level only.
       Root: {
