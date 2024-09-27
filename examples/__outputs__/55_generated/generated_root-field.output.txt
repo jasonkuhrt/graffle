@@ -11,8 +11,5 @@
   },
   {
     "name": "Bulbasaur"
-  },
-  {
-    "name": "Fishy"
   }
 ]

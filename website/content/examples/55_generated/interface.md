@@ -134,13 +134,3 @@ Bulbasaur
 grass
 ```
 <!-- dprint-ignore-end -->
-<!-- dprint-ignore-start -->
-```txt
-Fishy
-```
-<!-- dprint-ignore-end -->
-<!-- dprint-ignore-start -->
-```txt
-water
-```
-<!-- dprint-ignore-end -->

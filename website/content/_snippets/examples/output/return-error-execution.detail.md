@@ -24,6 +24,7 @@ const pokemon = Pokemon
 type _result = typeof result
 const result = await pokemon.mutation.addPokemon({
   $: { name: ``, hp: 1, defense: 0, attack: 0, type: `water` },
+  //         ^^
   name: true,
 })
 console.log(result)

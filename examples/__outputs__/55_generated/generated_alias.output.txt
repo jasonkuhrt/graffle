@@ -11,9 +11,6 @@
   "babyPokemons": [
     {
       "name": "Charizard"
-    },
-    {
-      "name": "Fishy"
     }
   ]
 }
