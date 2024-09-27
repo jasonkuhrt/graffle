@@ -1,3 +1,4 @@
+import { pascalCase } from 'es-toolkit'
 import { printSchema } from 'graphql'
 import fs from 'node:fs/promises'
 import { dirname, join } from 'node:path'
@@ -12,7 +13,7 @@ const generate = async (
     defaultSchemaUrl?: URL
   },
 ) => {
-  const name = input.name === false ? undefined : input.dirName
+  const name = input.name === false ? undefined : pascalCase(input.dirName)
 
   const rootDir = join(`./tests/_/schemas/`, input.dirName)
   const outputSchemaPath = join(rootDir, `schema.graphql`)
@@ -44,20 +45,20 @@ const generate = async (
 }
 
 await generate({
-  dirName: `Pokemon`,
+  dirName: `pokemon`,
   defaultSchemaUrl: new URL(`http://localhost:3000/graphql`),
 })
 
 await generate({
-  dirName: `QueryOnly`,
+  dirName: `query-only`,
 })
 
 await generate({
-  dirName: `MutationOnly`,
+  dirName: `mutation-only`,
 })
 
 await generate({
-  dirName: `KitchenSink`,
+  dirName: `kitchen-sink`,
   name: false,
   options: { errorTypeNamePattern: /^Error.+/ },
 })

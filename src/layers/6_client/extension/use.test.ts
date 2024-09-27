@@ -2,7 +2,7 @@
 import { describe, expect } from 'vitest'
 import { createResponse, test } from '../../../../tests/_/helpers.js'
 import { db } from '../../../../tests/_/schemas/db.js'
-import { Graffle } from '../../../../tests/_/schemas/KitchenSink/graffle/__.js'
+import { Graffle } from '../../../../tests/_/schemas/kitchen-sink/graffle/__.js'
 import { oops } from '../../../lib/anyware/specHelpers.js'
 import { Throws } from '../../7_extensions/Throws/Throws.js'
 

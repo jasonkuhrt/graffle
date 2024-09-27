@@ -1,7 +1,7 @@
 import { test } from 'vitest'
-import { Graffle } from '../../../../tests/_/schemas/KitchenSink/graffle/__.js'
-import { schema } from '../../../../tests/_/schemas/KitchenSink/schema.js'
-import { QueryOnly } from '../../../../tests/_/schemas/QueryOnly/graffle/__.js'
+import { Graffle } from '../../../../tests/_/schemas/kitchen-sink/graffle/__.js'
+import { schema } from '../../../../tests/_/schemas/kitchen-sink/schema.js'
+import { QueryOnly } from '../../../../tests/_/schemas/query-only/graffle/__.js'
 
 test(`works`, () => {
   Graffle.create({ schema, output: { errors: { schema: `throw` } } })

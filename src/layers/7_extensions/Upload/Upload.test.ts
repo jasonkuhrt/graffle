@@ -2,7 +2,7 @@
 // @vitest-environment node
 
 import { afterAll, beforeAll, beforeEach, expect, test } from 'vitest'
-import { schema } from '../../../../tests/_/schemas/Upload/schema.js'
+import { schema } from '../../../../tests/_/schemas/upload/schema.js'
 import { Graffle } from '../../../entrypoints/main.js'
 import { Upload } from './Upload.js'
 

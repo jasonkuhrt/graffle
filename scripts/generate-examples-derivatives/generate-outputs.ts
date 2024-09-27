@@ -1,7 +1,7 @@
 import * as FS from 'node:fs/promises'
 import * as Path from 'node:path'
 import { serveSchema } from '../../tests/_/lib/serveSchema.js'
-import { schema } from '../../tests/_/schemas/Pokemon/schema.js'
+import { schema } from '../../tests/_/schemas/pokemon/schema.js'
 import { deleteFiles } from '../lib/deleteFiles.js'
 import { directories, readExampleFiles, runExample } from './helpers.js'
 

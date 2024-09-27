@@ -2,7 +2,7 @@
  * This example shows the default output behavior.
  */
 
-import { Pokemon } from '../../tests/_/schemas/Pokemon/graffle/__.js'
+import { Pokemon } from '../../tests/_/schemas/pokemon/graffle/__.js'
 import { show } from '../$/helpers.js'
 
 const pokemon = Pokemon.create()

@@ -1,8 +1,8 @@
 /* eslint-disable */
 import { expectTypeOf, test } from 'vitest'
-import { Graffle } from '../../../tests/_/schemas/KitchenSink/graffle/__.js'
-import { isError } from '../../../tests/_/schemas/KitchenSink/graffle/modules/Error.js'
-import * as Schema from '../../../tests/_/schemas/KitchenSink/schema.js'
+import { Graffle } from '../../../tests/_/schemas/kitchen-sink/graffle/__.js'
+import { isError } from '../../../tests/_/schemas/kitchen-sink/graffle/modules/Error.js'
+import * as Schema from '../../../tests/_/schemas/kitchen-sink/schema.js'
 
 const graffle = Graffle.create({ schema: Schema.schema, output: { errors: { schema: false } } })
 

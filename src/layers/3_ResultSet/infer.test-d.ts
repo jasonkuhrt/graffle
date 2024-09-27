@@ -1,7 +1,7 @@
 import { test } from 'vitest'
-import type * as Schema from '../../../tests/_/schemas/KitchenSink/graffle/modules/SchemaBuildtime.js'
-import type { Index } from '../../../tests/_/schemas/KitchenSink/graffle/modules/SchemaIndex.js'
-import type * as SelectionSets from '../../../tests/_/schemas/KitchenSink/graffle/modules/SelectionSets.js'
+import type * as Schema from '../../../tests/_/schemas/kitchen-sink/graffle/modules/SchemaBuildtime.js'
+import type { Index } from '../../../tests/_/schemas/kitchen-sink/graffle/modules/SchemaIndex.js'
+import type * as SelectionSets from '../../../tests/_/schemas/kitchen-sink/graffle/modules/SelectionSets.js'
 import { AssertIsEqual } from '../../lib/prelude.js'
 import type { ResultSet } from './__.js'
 

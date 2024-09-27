@@ -8,7 +8,7 @@ This example shows how to configure output to embed errors into the envelope.
 
 <!-- dprint-ignore-start -->
 ```ts twoslash
-import { Pokemon } from './Pokemon/__.js'
+import { Pokemon } from './pokemon/__.js'
 
 const pokemon = Pokemon
   .create({

@@ -8,7 +8,7 @@ This example shows how to configure output to throw errors even when using the e
 
 <!-- dprint-ignore-start -->
 ```ts twoslash
-import { Pokemon } from './Pokemon/__.js'
+import { Pokemon } from './pokemon/__.js'
 
 const pokemon = Pokemon
   .create({

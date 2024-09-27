@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest'
 import { db } from '../../../../tests/_/schemas/db.js'
-import { Graffle } from '../../../../tests/_/schemas/KitchenSink/graffle/__.js'
-import * as Schema from '../../../../tests/_/schemas/KitchenSink/schema.js'
+import { Graffle } from '../../../../tests/_/schemas/kitchen-sink/graffle/__.js'
+import * as Schema from '../../../../tests/_/schemas/kitchen-sink/schema.js'
 
 const graffle = Graffle.create({ schema: Schema.schema })
 

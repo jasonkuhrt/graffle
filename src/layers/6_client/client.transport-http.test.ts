@@ -1,7 +1,7 @@
 import { describe, expect, expectTypeOf } from 'vitest'
 import { createResponse, test } from '../../../tests/_/helpers.js'
 import { serveSchema } from '../../../tests/_/lib/serveSchema.js'
-import { Pokemon } from '../../../tests/_/schemas/Pokemon/graffle/__.js'
+import { Pokemon } from '../../../tests/_/schemas/pokemon/graffle/__.js'
 import { Graffle } from '../../entrypoints/main.js'
 import { ACCEPT_REC, CONTENT_TYPE_REC } from '../../lib/graphqlHTTP.js'
 import { Transport } from '../5_core/types.js'
@@ -32,7 +32,7 @@ test(`anyware hooks are typed to http transport`, () => {
   })
 })
 
-import { schema as schemaPokemon } from '../../../tests/_/schemas/Pokemon/schema.js'
+import { schema as schemaPokemon } from '../../../tests/_/schemas/pokemon/schema.js'
 
 test(`when envelope is used then response property is present even if relying on schema url default`, async () => {
   const service = await serveSchema({ schema: schemaPokemon })

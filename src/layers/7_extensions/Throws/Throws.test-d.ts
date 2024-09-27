@@ -1,6 +1,6 @@
 import { describe, expectTypeOf, test } from 'vitest'
-import { Graffle } from '../../../../tests/_/schemas/KitchenSink/graffle/__.js'
-import { schema } from '../../../../tests/_/schemas/KitchenSink/schema.js'
+import { Graffle } from '../../../../tests/_/schemas/kitchen-sink/graffle/__.js'
+import { schema } from '../../../../tests/_/schemas/kitchen-sink/schema.js'
 import { Throws } from './Throws.js'
 
 const graffle = Graffle.create({ schema }).use(Throws())

@@ -9,7 +9,7 @@ This example shows how to use special fields to write GraphQL document directive
 <!-- dprint-ignore-start -->
 ```ts twoslash
 // import { parse, print } from 'graphql'
-import { Pokemon } from './Pokemon/__.js'
+import { Pokemon } from './pokemon/__.js'
 
 const pokemon = Pokemon.create()
 

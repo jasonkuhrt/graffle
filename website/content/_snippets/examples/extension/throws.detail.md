@@ -6,7 +6,7 @@
 <!-- dprint-ignore-start -->
 ```ts twoslash
 import { Throws } from 'graffle/extensions'
-import { Pokemon } from './Pokemon/__.js'
+import { Pokemon } from './pokemon/__.js'
 
 const pokemon = Pokemon
   .create({ output: { defaults: { errorChannel: `return` } } })

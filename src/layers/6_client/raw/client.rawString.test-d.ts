@@ -1,8 +1,8 @@
 /* eslint-disable */
 import { describe, expectTypeOf } from 'vitest'
 import { test } from '../../../../tests/_/helpers.js'
-import { Graffle } from '../../../../tests/_/schemas/KitchenSink/graffle/__.js'
-import { schema } from '../../../../tests/_/schemas/KitchenSink/schema.js'
+import { Graffle } from '../../../../tests/_/schemas/kitchen-sink/graffle/__.js'
+import { schema } from '../../../../tests/_/schemas/kitchen-sink/schema.js'
 import type { TypedDocumentString } from '../../0_functions/types.js'
 import type { Envelope, RawResolveOutputReturnRootType } from '../handleOutput.js'
 

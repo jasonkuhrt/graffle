@@ -8,7 +8,7 @@ This example shows the default output behavior.
 
 <!-- dprint-ignore-start -->
 ```ts twoslash
-import { Pokemon } from './Pokemon/__.js'
+import { Pokemon } from './pokemon/__.js'
 
 const pokemon = Pokemon.create()
 
