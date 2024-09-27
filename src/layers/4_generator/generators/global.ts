@@ -12,7 +12,7 @@ export const ModuleGeneratorGlobal = createModuleGenerator(
   `Global`,
   ({ config, code }) => {
     const StandardScalarNamespace = `StandardScalar`
-    const needsDefaultCustomScalarImplementation = hasCustomScalars(config.typeMapByKind)
+    const needsDefaultCustomScalarImplementation = hasCustomScalars(config.schema.typeMapByKind)
       && !config.options.customScalars
 
     code.push(
@@ -23,16 +23,16 @@ export const ModuleGeneratorGlobal = createModuleGenerator(
       `import type { Index } from './${ModuleGeneratorSchemaIndex.name}.js'`,
     )
 
-    if (config.typeMapByKind.GraphQLScalarTypeCustom.length > 0) {
+    if (config.schema.typeMapByKind.GraphQLScalarTypeCustom.length > 0) {
       code.push(`import type * as Scalar from './${ModuleGeneratorScalar.name}.js'`)
     }
     code.push(``)
 
-    const defaultSchemaUrlTsDoc = config.defaultSchemaUrl
-      ? `\n${Code.TSDoc(config.defaultSchemaUrl.href)}`
+    const defaultSchemaUrlTsDoc = config.options.defaultSchemaUrl
+      ? `\n${Code.TSDoc(config.options.defaultSchemaUrl.href)}`
       : ``
 
-    const customScalarsProperties = config.typeMapByKind.GraphQLScalarTypeCustom
+    const customScalarsProperties = config.schema.typeMapByKind.GraphQLScalarTypeCustom
       .map((_) => {
         return `${_.name}: ${
           needsDefaultCustomScalarImplementation ? `${StandardScalarNamespace}.String` : `Scalar.${_.name}`
@@ -57,7 +57,7 @@ export const ModuleGeneratorGlobal = createModuleGenerator(
             featureOptions: {
               schemaErrors: ${config.options.errorTypeNamePattern ? `true` : `false`}
             }${defaultSchemaUrlTsDoc}
-            defaultSchemaUrl: ${config.defaultSchemaUrl ? `string` : `null`}
+            defaultSchemaUrl: ${config.options.defaultSchemaUrl ? `string` : `null`}
           }
         }
       }

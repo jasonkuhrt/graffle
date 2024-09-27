@@ -48,20 +48,20 @@ export const ModuleGeneratorSelectionSets = createModuleGenerator(
   ({ config, code }) => {
     code.push(``)
 
-    code.push(`import type { SelectionSet as $SelectionSet } from '${config.libraryPaths.schema}'`)
-    code.push(`import type * as $Utilities from '${config.libraryPaths.utilitiesForGenerated}'`)
-    if (hasCustomScalars(config.typeMapByKind)) {
+    code.push(`import type { SelectionSet as $SelectionSet } from '${config.paths.imports.grafflePackage.schema}'`)
+    code.push(`import type * as $Utilities from '${config.paths.imports.grafflePackage.utilitiesForGenerated}'`)
+    if (hasCustomScalars(config.schema.typeMapByKind)) {
       code.push(`import type * as $Scalar from './${ModuleGeneratorScalar.name}.js'`)
     }
     code.push(``)
 
     const typesToRender = [
-      config.typeMapByKind.GraphQLRootType,
-      config.typeMapByKind.GraphQLEnumType,
-      config.typeMapByKind.GraphQLInputObjectType,
-      config.typeMapByKind.GraphQLInterfaceType,
-      config.typeMapByKind.GraphQLObjectType,
-      config.typeMapByKind.GraphQLUnionType,
+      config.schema.typeMapByKind.GraphQLRootType,
+      config.schema.typeMapByKind.GraphQLEnumType,
+      config.schema.typeMapByKind.GraphQLInputObjectType,
+      config.schema.typeMapByKind.GraphQLInterfaceType,
+      config.schema.typeMapByKind.GraphQLObjectType,
+      config.schema.typeMapByKind.GraphQLUnionType,
     ].filter(_ => _.length > 0)
 
     typesToRender.forEach((nodes) => {
@@ -157,7 +157,7 @@ const renderInterface = createModuleGeneratorRunner<{ node: GraphQLInterfaceType
     const fieldsRendered = fields.map(field => {
       return Helpers.outputField(field.name, `${renderName(node)}.${renderName(field)}`)
     }).join(`\n`)
-    const implementorTypes = getInterfaceImplementors(config.typeMapByKind, node)
+    const implementorTypes = getInterfaceImplementors(config.schema.typeMapByKind, node)
     const onTypesRendered = implementorTypes.map(type =>
       Helpers.outputField(`${SelectionSet.On.prefix}${type.name}`, renderName(type))
     ).join(

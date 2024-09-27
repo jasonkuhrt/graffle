@@ -146,7 +146,7 @@ const concreteRenderers = defineConcreteRenderers({
     return Code.TSDocWithBlock(doc, source)
   },
   GraphQLInterfaceType: (config, node) => {
-    const implementors = getInterfaceImplementors(config.typeMapByKind, node)
+    const implementors = getInterfaceImplementors(config.schema.typeMapByKind, node)
     return Code.TSDocWithBlock(
       getDocumentation(config, node),
       Code.export$(Code.type(
@@ -270,11 +270,11 @@ const renderArg = (config: Config, arg: GraphQLArgument) => {
 export const ModuleGeneratorSchemaBuildtime = createModuleGenerator(
   `SchemaBuildtime`,
   ({ config, code }) => {
-    code.push(`import type * as $ from '${config.libraryPaths.schema}'`)
+    code.push(`import type * as $ from '${config.paths.imports.grafflePackage.schema}'`)
     code.push(`import type * as $Scalar from './${ModuleGeneratorScalar.name}.js'`)
     code.push(`\n\n`)
 
-    for (const [name, types] of entries(config.typeMapByKind)) {
+    for (const [name, types] of entries(config.schema.typeMapByKind)) {
       if (name === `GraphQLScalarType`) continue
       if (name === `GraphQLScalarTypeCustom`) continue
       if (name === `GraphQLScalarTypeStandard`) continue

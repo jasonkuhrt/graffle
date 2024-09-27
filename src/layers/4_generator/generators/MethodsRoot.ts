@@ -10,15 +10,15 @@ import { ModuleGeneratorSelectionSets } from './SelectionSets.js'
 export const ModuleGeneratorMethodsRoot = createModuleGenerator(
   `MethodsRoot`,
   ({ config, code }) => {
-    code.push(`import type * as Utils  from '${config.libraryPaths.utilitiesForGenerated}';`)
-    code.push(`import type { ResultSet } from '${config.libraryPaths.schema}';`)
+    code.push(`import type * as Utils  from '${config.paths.imports.grafflePackage.utilitiesForGenerated}';`)
+    code.push(`import type { ResultSet } from '${config.paths.imports.grafflePackage.schema}';`)
     code.push(`import type { Index } from './${ModuleGeneratorSchemaIndex.name}.js'`)
     code.push(`import type * as SelectionSet from './${ModuleGeneratorSelectionSets.name}.js'`)
     code.push(``)
 
     code.push(``)
 
-    config.rootTypesPresent.forEach(node => {
+    config.schema.typeMapByKind.GraphQLRootType.forEach(node => {
       code.push(renderRootType({ config, node }))
       code.push(``)
     })
@@ -26,7 +26,7 @@ export const ModuleGeneratorMethodsRoot = createModuleGenerator(
     code.push(`
       export interface BuilderMethodsRoot<$Config extends Utils.Config> {
         ${
-      config.typeMapByKind.GraphQLRootType.map(node => {
+      config.schema.typeMapByKind.GraphQLRootType.map(node => {
         const operationName = RootTypeNameToOperationName[node.name as keyof typeof RootTypeNameToOperationName]
         return `${operationName}: ${node.name}Methods<$Config>`
       }).join(`\n`)

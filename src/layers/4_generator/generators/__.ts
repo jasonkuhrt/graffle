@@ -1,5 +1,5 @@
 import { capitalizeFirstLetter } from '../../../lib/prelude.js'
-import { defaultName } from '../generate.js'
+import { defaultName } from '../config.js'
 import { createModuleGenerator } from '../helpers/moduleGenerator.js'
 import { ModuleGenerator_ } from './_.js'
 

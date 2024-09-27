@@ -8,14 +8,14 @@ export const ModuleGeneratorMethodsSelect = createModuleGenerator(
   `MethodsSelect`,
   ({ config, code }) => {
     code.push(`import type * as $SelectionSets from './${ModuleGeneratorSelectionSets.name}.js'`)
-    code.push(`import type * as $Utilities from '${config.libraryPaths.utilitiesForGenerated}'`)
+    code.push(`import type * as $Utilities from '${config.paths.imports.grafflePackage.utilitiesForGenerated}'`)
     code.push(``)
 
     const graphqlTypeGroups = [
-      config.typeMapByKind.GraphQLRootType,
-      config.typeMapByKind.GraphQLObjectType,
-      config.typeMapByKind.GraphQLUnionType,
-      config.typeMapByKind.GraphQLInterfaceType,
+      config.schema.typeMapByKind.GraphQLRootType,
+      config.schema.typeMapByKind.GraphQLObjectType,
+      config.schema.typeMapByKind.GraphQLUnionType,
+      config.schema.typeMapByKind.GraphQLInterfaceType,
     ].filter(_ => _.length > 0)
 
     code.push(title1(`Select Methods Interface`))

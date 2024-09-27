@@ -10,8 +10,8 @@ export const ModuleGeneratorError = createModuleGenerator(
 
     code.push(`
       const ErrorObjectsTypeNameSelectedEnum = {
-        ${config.error.objects.map(_ => `${_.name}: { __typename: '${_.name}' }`).join(`,\n`)}
-      } as ${config.error.objects.length > 0 ? `const` : `Record<string,ObjectWithTypeName>`}
+        ${config.schema.error.objects.map(_ => `${_.name}: { __typename: '${_.name}' }`).join(`,\n`)}
+      } as ${config.schema.error.objects.length > 0 ? `const` : `Record<string,ObjectWithTypeName>`}
 
       const ErrorObjectsTypeNameSelected = Object.values(ErrorObjectsTypeNameSelectedEnum)
 

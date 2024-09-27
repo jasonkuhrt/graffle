@@ -9,14 +9,14 @@ export const ModuleGeneratorMethodsDocument = createModuleGenerator(
   `MethodsDocument`,
   ({ config, code }) => {
     code.push(`import type * as SelectionSets from './${ModuleGeneratorSelectionSets.name}.js'`)
-    code.push(`import type * as Utilities from '${config.libraryPaths.utilitiesForGenerated}'`)
+    code.push(`import type * as Utilities from '${config.paths.imports.grafflePackage.utilitiesForGenerated}'`)
     code.push(`import type { Index } from './${ModuleGeneratorSchemaIndex.name}.js'`)
     code.push(``)
 
     code.push(
       `interface DocumentInput {`,
-      hasQuery(config.typeMapByKind) ? `query?: Record<string, SelectionSets.Query>` : null,
-      hasMutation(config.typeMapByKind) ? `mutation?: Record<string, SelectionSets.Mutation>` : null,
+      hasQuery(config.schema.typeMapByKind) ? `query?: Record<string, SelectionSets.Query>` : null,
+      hasMutation(config.schema.typeMapByKind) ? `mutation?: Record<string, SelectionSets.Mutation>` : null,
       `}`,
     )
     code.push(``)

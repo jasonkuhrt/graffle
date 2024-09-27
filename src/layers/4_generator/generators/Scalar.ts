@@ -6,31 +6,31 @@ export const ModuleGeneratorScalar = createModuleGenerator(
   `Scalar`,
   ({ config, code }) => {
     // todo test case for when this is true
-    const needsDefaultCustomScalarImplementation = hasCustomScalars(config.typeMapByKind)
+    const needsDefaultCustomScalarImplementation = hasCustomScalars(config.schema.typeMapByKind)
       && !config.options.customScalars
 
     const CustomScalarsNamespace = `CustomScalars`
     const StandardScalarNamespace = `StandardScalar`
 
     if (needsDefaultCustomScalarImplementation) {
-      code.push(`import * as ${StandardScalarNamespace} from '${config.libraryPaths.scalars}'`)
+      code.push(`import * as ${StandardScalarNamespace} from '${config.paths.imports.grafflePackage.scalars}'`)
     }
 
-    if (hasCustomScalars(config.typeMapByKind)) {
-      code.push(`import type { Schema } from '${config.libraryPaths.schema}'`)
-      code.push(`import * as ${CustomScalarsNamespace} from '${config.importPaths.customScalarCodecs}'`)
+    if (hasCustomScalars(config.schema.typeMapByKind)) {
+      code.push(`import type { Schema } from '${config.paths.imports.grafflePackage.schema}'`)
+      code.push(`import * as ${CustomScalarsNamespace} from '${config.paths.imports.customScalarCodecs}'`)
       code.push(``)
     }
 
-    code.push(`export * from '${config.libraryPaths.scalars}'`)
+    code.push(`export * from '${config.paths.imports.grafflePackage.scalars}'`)
     if (config.options.customScalars) {
-      code.push(`export * from '${config.importPaths.customScalarCodecs}'`)
-      const names = config.typeMapByKind.GraphQLScalarTypeCustom.map((scalar) => scalar.name)
-      code.push(`export { ${names.join(`, `)} } from '${config.importPaths.customScalarCodecs}'`)
+      code.push(`export * from '${config.paths.imports.customScalarCodecs}'`)
+      const names = config.schema.typeMapByKind.GraphQLScalarTypeCustom.map((scalar) => scalar.name)
+      code.push(`export { ${names.join(`, `)} } from '${config.paths.imports.customScalarCodecs}'`)
     }
     code.push(``)
 
-    for (const scalar of config.typeMapByKind.GraphQLScalarTypeCustom) {
+    for (const scalar of config.schema.typeMapByKind.GraphQLScalarTypeCustom) {
       code.push(typeTitle2(`custom scalar type`)(scalar))
       code.push(``)
       code.push(`export type ${scalar.name} = typeof ${CustomScalarsNamespace}.${scalar.name}`)
@@ -49,7 +49,7 @@ export const ModuleGeneratorScalar = createModuleGenerator(
         `WARNING: Custom scalars detected in the schema, but you have not created a custom scalars module to import implementations from.`,
       )
       code.push(
-        config.typeMapByKind.GraphQLScalarTypeCustom
+        config.schema.typeMapByKind.GraphQLScalarTypeCustom
           .flatMap((_) => {
             return [
               `export const ${_.name} = ${StandardScalarNamespace}.String`,

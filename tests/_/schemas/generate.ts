@@ -8,7 +8,7 @@ const generate = async (
   input: {
     dirName: string
     name?: boolean
-    options?: Generator.OptionsInput
+    generatorInput?: Omit<Generator.Input, 'sourceSchema'>
     defaultSchemaUrl?: URL
   },
 ) => {
@@ -29,16 +29,14 @@ const generate = async (
     defaultSchemaUrl: input.defaultSchemaUrl,
     sourceCustomScalarCodecsFilePath: join(`./tests/_/customScalarCodecs.ts`),
     outputDirPath,
-    code: {
-      libraryPaths: {
-        client: `../../../../../../src/entrypoints/client.js`,
-        schema: `../../../../../../src/entrypoints/schema.js`,
-        scalars: `../../../../../../src/layers/1_Schema/Hybrid/types/Scalar/Scalar.js`,
-        utilitiesForGenerated: `../../../../../../src/entrypoints/utilities-for-generated.js`,
-      },
+    libraryPaths: {
+      client: `../../../../../../src/entrypoints/client.js`,
+      schema: `../../../../../../src/entrypoints/schema.js`,
+      scalars: `../../../../../../src/layers/1_Schema/Hybrid/types/Scalar/Scalar.js`,
+      utilitiesForGenerated: `../../../../../../src/entrypoints/utilities-for-generated.js`,
     },
     name,
-    ...input.options,
+    ...input.generatorInput,
   })
   console.log(`generated at`, sourceDirPath)
 }
@@ -59,5 +57,5 @@ await generate({
 await generate({
   dirName: `kitchen-sink`,
   name: false,
-  options: { errorTypeNamePattern: /^Error.+/ },
+  generatorInput: { errorTypeNamePattern: /^Error.+/ },
 })
