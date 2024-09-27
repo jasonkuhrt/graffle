@@ -40,11 +40,6 @@ const getAliasesField = (fieldName: string, ss: SelectionSet.ObjectLike) => {
 }
 
 // ---
-const getGroups = (selectionSet: SelectionSet.ObjectLike) => {
-  const maybeGroupOrGroups = selectionSet[`___`]
-  if (!maybeGroupOrGroups) return []
-  return Array.isArray(maybeGroupOrGroups) ? maybeGroupOrGroups : [maybeGroupOrGroups]
-}
 
 const getDataFieldInSelectionSet = (
   fieldName: string,
@@ -57,7 +52,7 @@ const getDataFieldInSelectionSet = (
   if (result) return result
 
   throw new Error(
-    `Cannot decode data field value. Data field name of "${fieldName}" not found in selection set.`,
+    `Cannot decode field "${fieldName}" in result data. That field was not found in the selection set.`,
   )
 }
 
@@ -79,13 +74,36 @@ const getDataFieldInSelectionSet_ = (
   const fromAlias = getAliasesField(fieldName, selectionSet)
   if (fromAlias) return fromAlias
 
-  const groups = getGroups(selectionSet)
-  for (const group of groups) {
+  for (const group of getInlineFragmentGroups(selectionSet)) {
     const fromGroup = getDataFieldInSelectionSet_(fieldName, group)
     if (fromGroup) return fromGroup
   }
 
+  for (const typeCase of getInlineFragmentTypeCases(selectionSet)) {
+    const fromTypeCase = getDataFieldInSelectionSet_(fieldName, typeCase.selectionSet)
+    if (fromTypeCase) return fromTypeCase
+  }
+
   return null
+}
+
+const getInlineFragmentTypeCases = (selectionSet: SelectionSet.ObjectLike) => {
+  return Object.entries(selectionSet).map(([key, expression]) => {
+    const typeName = key.match(/___on_(.+)/)?.[0]
+    if (typeName) {
+      return {
+        typeName,
+        selectionSet: expression as SelectionSet.ObjectLike,
+      }
+    }
+    return null
+  }).filter(_ => _ !== null)
+}
+
+const getInlineFragmentGroups = (selectionSet: SelectionSet.ObjectLike) => {
+  const maybeGroupOrGroups = selectionSet[`___`]
+  if (!maybeGroupOrGroups) return []
+  return Array.isArray(maybeGroupOrGroups) ? maybeGroupOrGroups : [maybeGroupOrGroups]
 }
 
 export const decode = <$Data extends ExecutionResult['data']>(

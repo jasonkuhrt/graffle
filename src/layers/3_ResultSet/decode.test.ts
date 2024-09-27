@@ -10,7 +10,10 @@ test.each<[selectionSet: SelectionSets.Query, data: object]>([
   [{ objectNested: { object: { id: [`x`, true] } } }, { objectNested: { object: { x: `x` } } }],
   [{ ___: { __typename: true } }, { __typename: `Query` }],
   [{ ___: { __typename: [`type`, true] } }, { type: `Query` }],
-])(`alias`, (selectionSet, data) => {
+  [{ unionFooBar: { ___on_Foo: { id: true } } }, { unionFooBar: { id: `x` } }],
+  [{ unionFooBar: { ___on_Foo: { id: true } } }, { unionFooBar: null }],
+  [{ interface: { ___on_Object1ImplementingInterface: { id: true } } }, { interface: { id: `x` } }],
+])(`%s -----> %s`, (selectionSet, data) => {
   // @ts-expect-error fixme
   expect(decode($Index.Root.Query, selectionSet, data)).toEqual(data)
 })
