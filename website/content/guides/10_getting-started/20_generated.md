@@ -14,10 +14,29 @@ If you don't already have a project, create one:
 pnpm init
 ```
 
-Install dependencies. Graffle has a peer dependency on `graphql` so you will need to install that too. To easily run TypeScript we'll install `tsx`.
+Install dependencies. Graffle has a peer dependency on `graphql` so you will need to install that too.
 
 ```sh
-pnpm add graffle graphql tsx
+pnpm add graffle graphql
+```
+
+### And TypeScript
+
+This will be a TypeScript project so we'll install some dependencies for that.
+
+```sh
+pnpm add typescript tsx @tsconfig/strictest
+```
+
+- [`tsx`](https://github.com/privatenumber/tsx) makes it to easy run TypeScript files.
+- [`@tsconfig/strictest`](https://github.com/tsconfig/bases/blob/main/bases/strictest.json) is optional but makes sure we have a good default settings.
+
+Make sure you have TypeScript strict mode enabled. For example:
+
+```json tsconfig.json
+{
+  "extends": "@tsconfig/strictest/tsconfig.json"
+}
 ```
 
 ## Generate Client
