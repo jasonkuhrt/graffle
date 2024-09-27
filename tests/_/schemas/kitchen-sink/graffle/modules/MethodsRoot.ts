@@ -3,6 +3,45 @@ import type * as Utils from '../../../../../../src/entrypoints/utilities-for-gen
 import type { Index } from './SchemaIndex.js'
 import type * as SelectionSet from './SelectionSets.js'
 
+export interface MutationMethods<$Config extends Utils.Config> {
+  // todo Use a static type here?
+  $batch: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Mutation>) => Promise<
+    Utils.ResolveOutputReturnRootType<
+      $Config,
+      Index,
+      ResultSet.Mutation<
+        Utils.AddTypenameToSelectedRootTypeResultFields<$Config, Index, 'Mutation', $SelectionSet>,
+        Index
+      >
+    >
+  >
+  // todo Use a static type here?
+  __typename: () => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      '__typename',
+      'Mutation'
+    >
+  >
+  id: () => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      'id',
+      ResultSet.Field<true, Index['Root']['Mutation']['fields']['id'], Index>
+    >
+  >
+  idNonNull: () => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      'idNonNull',
+      ResultSet.Field<true, Index['Root']['Mutation']['fields']['idNonNull'], Index>
+    >
+  >
+}
+
 export interface QueryMethods<$Config extends Utils.Config> {
   // todo Use a static type here?
   $batch: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query>) => Promise<
@@ -457,45 +496,6 @@ export interface QueryMethods<$Config extends Utils.Config> {
       Index,
       'unionObjectNonNull',
       ResultSet.Field<$SelectionSet, Index['Root']['Query']['fields']['unionObjectNonNull'], Index>
-    >
-  >
-}
-
-export interface MutationMethods<$Config extends Utils.Config> {
-  // todo Use a static type here?
-  $batch: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Mutation>) => Promise<
-    Utils.ResolveOutputReturnRootType<
-      $Config,
-      Index,
-      ResultSet.Mutation<
-        Utils.AddTypenameToSelectedRootTypeResultFields<$Config, Index, 'Mutation', $SelectionSet>,
-        Index
-      >
-    >
-  >
-  // todo Use a static type here?
-  __typename: () => Promise<
-    Utils.ResolveOutputReturnRootField<
-      $Config,
-      Index,
-      '__typename',
-      'Mutation'
-    >
-  >
-  id: () => Promise<
-    Utils.ResolveOutputReturnRootField<
-      $Config,
-      Index,
-      'id',
-      ResultSet.Field<true, Index['Root']['Mutation']['fields']['id'], Index>
-    >
-  >
-  idNonNull: () => Promise<
-    Utils.ResolveOutputReturnRootField<
-      $Config,
-      Index,
-      'idNonNull',
-      ResultSet.Field<true, Index['Root']['Mutation']['fields']['idNonNull'], Index>
     >
   >
 }

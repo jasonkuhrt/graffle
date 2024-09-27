@@ -127,9 +127,9 @@ const index = (config: Config) => {
          ${config.schema.error.objects.map(_ => `${_.name}: { __typename: "${_.name}" }`).join(`,\n`)}
         },
         rootResultFields: {
-          ${hasQuery(config.schema.typeMapByKind) ? `Query: {},` : ``}
-          ${hasMutation(config.schema.typeMapByKind) ? `Mutation: {},` : ``}
-          ${hasSubscription(config.schema.typeMapByKind) ? `Subscription: {},` : ``}
+          ${!hasQuery(config.schema.typeMapByKind) ? `Query: {},` : ``}
+          ${!hasMutation(config.schema.typeMapByKind) ? `Mutation: {},` : ``}
+          ${!hasSubscription(config.schema.typeMapByKind) ? `Subscription: {},` : ``}
           ${
     Object.values(config.schema.typeMapByKind.GraphQLRootType).map((rootType) => {
       const resultFields = Object.values(rootType.getFields()).filter((field) => {

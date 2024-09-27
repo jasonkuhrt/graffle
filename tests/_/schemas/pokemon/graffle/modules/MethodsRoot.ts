@@ -3,6 +3,37 @@ import type * as Utils from '../../../../../../src/entrypoints/utilities-for-gen
 import type { Index } from './SchemaIndex.js'
 import type * as SelectionSet from './SelectionSets.js'
 
+export interface MutationMethods<$Config extends Utils.Config> {
+  // todo Use a static type here?
+  $batch: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Mutation>) => Promise<
+    Utils.ResolveOutputReturnRootType<
+      $Config,
+      Index,
+      ResultSet.Mutation<
+        Utils.AddTypenameToSelectedRootTypeResultFields<$Config, Index, 'Mutation', $SelectionSet>,
+        Index
+      >
+    >
+  >
+  // todo Use a static type here?
+  __typename: () => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      '__typename',
+      'Mutation'
+    >
+  >
+  addPokemon: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Mutation.addPokemon>) => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      'addPokemon',
+      ResultSet.Field<$SelectionSet, Index['Root']['Mutation']['fields']['addPokemon'], Index>
+    >
+  >
+}
+
 export interface QueryMethods<$Config extends Utils.Config> {
   // todo Use a static type here?
   $batch: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query>) => Promise<
@@ -70,37 +101,6 @@ export interface QueryMethods<$Config extends Utils.Config> {
       Index,
       'trainers',
       ResultSet.Field<$SelectionSet, Index['Root']['Query']['fields']['trainers'], Index>
-    >
-  >
-}
-
-export interface MutationMethods<$Config extends Utils.Config> {
-  // todo Use a static type here?
-  $batch: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Mutation>) => Promise<
-    Utils.ResolveOutputReturnRootType<
-      $Config,
-      Index,
-      ResultSet.Mutation<
-        Utils.AddTypenameToSelectedRootTypeResultFields<$Config, Index, 'Mutation', $SelectionSet>,
-        Index
-      >
-    >
-  >
-  // todo Use a static type here?
-  __typename: () => Promise<
-    Utils.ResolveOutputReturnRootField<
-      $Config,
-      Index,
-      '__typename',
-      'Mutation'
-    >
-  >
-  addPokemon: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Mutation.addPokemon>) => Promise<
-    Utils.ResolveOutputReturnRootField<
-      $Config,
-      Index,
-      'addPokemon',
-      ResultSet.Field<$SelectionSet, Index['Root']['Mutation']['fields']['addPokemon'], Index>
     >
   >
 }

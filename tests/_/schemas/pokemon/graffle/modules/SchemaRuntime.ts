@@ -139,9 +139,9 @@ export const $Index: Index = {
     objects: {},
     objectsTypename: {},
     rootResultFields: {
-      Query: {},
-      Mutation: {},
       Subscription: {},
+      Mutation: {},
+      Query: {},
     },
   },
 }

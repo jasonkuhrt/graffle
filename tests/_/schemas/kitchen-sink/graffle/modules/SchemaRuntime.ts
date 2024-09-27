@@ -328,12 +328,12 @@ export const $Index: Index = {
       ErrorTwo: { __typename: 'ErrorTwo' },
     },
     rootResultFields: {
+      Subscription: {},
+      Mutation: {},
       Query: {
         result: 'result' as const,
         resultNonNull: 'resultNonNull' as const,
       },
-      Mutation: {},
-      Subscription: {},
     },
   },
 }
