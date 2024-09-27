@@ -1,14 +1,14 @@
 import { Code } from '../../../lib/Code.js'
 import { hasCustomScalars } from '../../../lib/graphql.js'
-import { createModuleGenerator } from '../createCodeGenerator.js'
-import { moduleNameData } from './Data.js'
-import { moduleNameMethodsDocument } from './MethodsDocument.js'
-import { moduleNameMethodsRoot } from './MethodsRoot.js'
-import { moduleNameMethodsSelect } from './MethodsSelect.js'
-import { moduleNameScalar } from './Scalar.js'
-import { moduleNameSchemaIndex } from './SchemaIndex.js'
+import { createModuleGenerator } from '../helpers/moduleGenerator.js'
+import { ModuleGeneratorData } from './Data.js'
+import { ModuleGeneratorMethodsDocument } from './MethodsDocument.js'
+import { ModuleGeneratorMethodsRoot } from './MethodsRoot.js'
+import { ModuleGeneratorMethodsSelect } from './MethodsSelect.js'
+import { ModuleGeneratorScalar } from './Scalar.js'
+import { ModuleGeneratorSchemaIndex } from './SchemaIndex.js'
 
-export const { moduleName: moduleNameGlobal, generate: generateGlobal } = createModuleGenerator(
+export const ModuleGeneratorGlobal = createModuleGenerator(
   `Global`,
   ({ config, code }) => {
     const StandardScalarNamespace = `StandardScalar`
@@ -16,15 +16,15 @@ export const { moduleName: moduleNameGlobal, generate: generateGlobal } = create
       && !config.options.customScalars
 
     code.push(
-      `import type * as Data from './${moduleNameData}.js'`,
-      `import type * as MethodsSelect from './${moduleNameMethodsSelect}.js'`,
-      `import type * as MethodsDocument from './${moduleNameMethodsDocument}.js'`,
-      `import type * as MethodsRoot from './${moduleNameMethodsRoot}.js'`,
-      `import type { Index } from './${moduleNameSchemaIndex}.js'`,
+      `import type * as Data from './${ModuleGeneratorData.name}.js'`,
+      `import type * as MethodsSelect from './${ModuleGeneratorMethodsSelect.name}.js'`,
+      `import type * as MethodsDocument from './${ModuleGeneratorMethodsDocument.name}.js'`,
+      `import type * as MethodsRoot from './${ModuleGeneratorMethodsRoot.name}.js'`,
+      `import type { Index } from './${ModuleGeneratorSchemaIndex.name}.js'`,
     )
 
     if (config.typeMapByKind.GraphQLScalarTypeCustom.length > 0) {
-      code.push(`import type * as Scalar from './${moduleNameScalar}.js'`)
+      code.push(`import type * as Scalar from './${ModuleGeneratorScalar.name}.js'`)
     }
     code.push(``)
 

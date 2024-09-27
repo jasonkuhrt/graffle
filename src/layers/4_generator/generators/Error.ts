@@ -1,6 +1,6 @@
-import { createModuleGenerator } from '../createCodeGenerator.js'
+import { createModuleGenerator } from '../helpers/moduleGenerator.js'
 
-export const { generate: generateError, moduleName: moduleNameError } = createModuleGenerator(
+export const ModuleGeneratorError = createModuleGenerator(
   `Error`,
   ({ config, code }) => {
     code.push(

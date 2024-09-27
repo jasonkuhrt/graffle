@@ -1,8 +1,8 @@
 import { hasCustomScalars } from '../../../lib/graphql.js'
-import { createModuleGenerator } from '../createCodeGenerator.js'
-import { typeTitle2 } from '../helpers.js'
+import { createModuleGenerator } from '../helpers/moduleGenerator.js'
+import { typeTitle2 } from '../helpers/render.js'
 
-export const { generate: generateScalar, moduleName: moduleNameScalar } = createModuleGenerator(
+export const ModuleGeneratorScalar = createModuleGenerator(
   `Scalar`,
   ({ config, code }) => {
     // todo test case for when this is true

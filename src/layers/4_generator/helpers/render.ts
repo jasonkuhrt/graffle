@@ -1,15 +1,15 @@
 import type { GraphQLInterfaceType } from 'graphql'
 import { type GraphQLEnumValue, type GraphQLField, type GraphQLNamedType, isEnumType } from 'graphql'
-import { Code } from '../../lib/Code.js'
+import { Code } from '../../../lib/Code.js'
 import {
   type Describable,
   getNodeDisplayName,
   getNodeNameAndKind,
   isDeprecatableNode,
   type TypeMapByKind,
-} from '../../lib/graphql.js'
-import { borderThickFullWidth, borderThinFullWidth, centerTo } from '../../lib/text.js'
-import type { Config } from './generateCode.js'
+} from '../../../lib/graphql.js'
+import { borderThickFullWidth, borderThinFullWidth, centerTo } from '../../../lib/text.js'
+import type { Config } from '../config.js'
 
 export const title1 = (title: string) => {
   const titleDecorated = `

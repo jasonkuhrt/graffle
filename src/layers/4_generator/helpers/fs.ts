@@ -1,5 +1,5 @@
 import fs from 'node:fs/promises'
-import { errorFromMaybeError } from '../../lib/prelude.js'
+import { errorFromMaybeError } from '../../../lib/prelude.js'
 
 export const fileExists = async (path: string) => {
   return Boolean(

@@ -33,23 +33,23 @@ import {
   isAllArgsNullable,
   isAllInputObjectFieldsNullable,
 } from '../../../lib/graphql.js'
-import { createModuleGenerator } from '../createCodeGenerator.js'
-import type { Config } from '../generateCode.js'
-import { moduleNameData } from './Data.js'
-import { moduleNameScalar } from './Scalar.js'
-import { moduleNameSchemaIndex } from './SchemaIndex.js'
+import type { Config } from '../config.js'
+import { createModuleGenerator } from '../helpers/moduleGenerator.js'
+import { ModuleGeneratorData } from './Data.js'
+import { ModuleGeneratorScalar } from './Scalar.js'
+import { ModuleGeneratorSchemaIndex } from './SchemaIndex.js'
 
-export const { generate: generateRuntimeSchema, moduleName: moduleNameSchemaRuntime } = createModuleGenerator(
+export const ModuleGeneratorSchemaRuntime = createModuleGenerator(
   `SchemaRuntime`,
   ({ config, code }) => {
     code.push(`/* eslint-disable */\n`)
     code.push(
       `
-      import * as $ from '${config.libraryPaths.schema}'
-      import * as Data from './${moduleNameData}.js'
-      import * as $Scalar from './${moduleNameScalar}.js'
-      import type { Index } from './${moduleNameSchemaIndex}.js'
-    `,
+        import * as $ from '${config.libraryPaths.schema}'
+        import * as Data from './${ModuleGeneratorData.name}.js'
+        import * as $Scalar from './${ModuleGeneratorScalar.name}.js'
+        import type { Index } from './${ModuleGeneratorSchemaIndex.name}.js'
+      `,
     )
 
     code.push(

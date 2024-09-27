@@ -1,6 +1,6 @@
-import { createModuleGenerator } from '../createCodeGenerator.js'
+import { createModuleGenerator } from '../helpers/moduleGenerator.js'
 
-export const { generate: generateData, moduleName: moduleNameData } = createModuleGenerator(
+export const ModuleGeneratorData = createModuleGenerator(
   `Data`,
   ({ config, code }) => {
     code.push(

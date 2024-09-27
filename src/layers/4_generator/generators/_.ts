@@ -1,9 +1,9 @@
-import { createModuleGenerator } from '../createCodeGenerator.js'
-import { moduleNameClient } from './Client.js'
-import { moduleNameError } from './Error.js'
-import { moduleNameSelect } from './Select.js'
+import { createModuleGenerator } from '../helpers/moduleGenerator.js'
+import { ModuleGeneratorClient } from './Client.js'
+import { ModuleGeneratorError } from './Error.js'
+import { ModuleGeneratorSelect } from './Select.js'
 
-export const { generate: generate_, moduleName: moduleName_ } = createModuleGenerator(
+export const ModuleGenerator_ = createModuleGenerator(
   `_`,
   ({ code }) => {
     code.push(
@@ -13,9 +13,9 @@ export const { generate: generate_, moduleName: moduleName_ } = createModuleGene
       `// setups where this still indeed does help.`,
       `import './modules/Global.js'`,
       ``,
-      `export { Select } from './modules/${moduleNameSelect}.js'`,
-      `export { isError } from './modules/${moduleNameError}.js'`,
-      `export { create } from './modules/${moduleNameClient}.js'`,
+      `export { Select } from './modules/${ModuleGeneratorSelect.name}.js'`,
+      `export { isError } from './modules/${ModuleGeneratorError.name}.js'`,
+      `export { create } from './modules/${ModuleGeneratorClient.name}.js'`,
     )
 
     return code

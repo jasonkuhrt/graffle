@@ -1,17 +1,17 @@
 // todo jsdoc
-import { createModuleGenerator } from '../createCodeGenerator.js'
-import { renderName, title1, typeTitle } from '../helpers.js'
-import { moduleNameData } from './Data.js'
-import { moduleNameSchemaIndex } from './SchemaIndex.js'
-import { moduleNameSelectionSets } from './SelectionSets.js'
+import { createModuleGenerator } from '../helpers/moduleGenerator.js'
+import { renderName, title1, typeTitle } from '../helpers/render.js'
+import { ModuleGeneratorData } from './Data.js'
+import { ModuleGeneratorSchemaIndex } from './SchemaIndex.js'
+import { ModuleGeneratorSelectionSets } from './SelectionSets.js'
 
-export const { generate: generateSelect, moduleName: moduleNameSelect } = createModuleGenerator(
+export const ModuleGeneratorSelect = createModuleGenerator(
   `Select`,
   ({ config, code }) => {
-    code.push(`import * as Data from './${moduleNameData}.js'`)
-    code.push(`import type { Index } from './${moduleNameSchemaIndex}.js'`)
+    code.push(`import * as Data from './${ModuleGeneratorData.name}.js'`)
+    code.push(`import type { Index } from './${ModuleGeneratorSchemaIndex.name}.js'`)
     code.push(`import type { ResultSet } from '${config.libraryPaths.schema}'`)
-    code.push(`import type * as SelectionSets from './${moduleNameSelectionSets}.js'`)
+    code.push(`import type * as SelectionSets from './${ModuleGeneratorSelectionSets.name}.js'`)
     code.push(``)
 
     code.push(title1(`Runtime`))

@@ -3,7 +3,7 @@
 import { Command } from '@molt/command'
 import * as Path from 'node:path'
 import { z } from 'zod'
-import { generateFiles } from '../layers/4_generator/files.js'
+import { Generator } from '../layers/4_generator/__.js'
 import { urlParseSafe } from '../lib/prelude.js'
 
 const args = Command.create().description(`Generate a type safe GraphQL client.`)
@@ -89,7 +89,7 @@ const defaultSchemaUrl = typeof args.defaultSchemaUrl === `string`
   ? new URL(args.defaultSchemaUrl)
   : args.defaultSchemaUrl
 
-await generateFiles({
+await Generator.generate({
   sourceSchema: url
     ? { type: `url`, url }
     : { type: `sdl`, dirPath: Path.dirname(args.schema) },

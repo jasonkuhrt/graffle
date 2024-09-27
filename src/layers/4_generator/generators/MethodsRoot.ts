@@ -1,18 +1,19 @@
 // todo remove use of Utils.Aug when schema errors not in use
 import { getNamedType, type GraphQLObjectType, isScalarType } from 'graphql'
 import { isAllArgsNullable, RootTypeNameToOperationName } from '../../../lib/graphql.js'
-import { createCodeGenerator, createModuleGenerator } from '../createCodeGenerator.js'
-import { renderDocumentation, renderName } from '../helpers.js'
-import { moduleNameSchemaIndex } from './SchemaIndex.js'
-import { moduleNameSelectionSets } from './SelectionSets.js'
+import { createModuleGenerator } from '../helpers/moduleGenerator.js'
+import { createModuleGeneratorRunner } from '../helpers/moduleGeneratorRunner.js'
+import { renderDocumentation, renderName } from '../helpers/render.js'
+import { ModuleGeneratorSchemaIndex } from './SchemaIndex.js'
+import { ModuleGeneratorSelectionSets } from './SelectionSets.js'
 
-export const { moduleName: moduleNameMethodsRoot, generate: generateMethodsRoot } = createModuleGenerator(
+export const ModuleGeneratorMethodsRoot = createModuleGenerator(
   `MethodsRoot`,
   ({ config, code }) => {
     code.push(`import type * as Utils  from '${config.libraryPaths.utilitiesForGenerated}';`)
     code.push(`import type { ResultSet } from '${config.libraryPaths.schema}';`)
-    code.push(`import type { Index } from './${moduleNameSchemaIndex}.js'`)
-    code.push(`import type * as SelectionSet from './${moduleNameSelectionSets}.js'`)
+    code.push(`import type { Index } from './${ModuleGeneratorSchemaIndex.name}.js'`)
+    code.push(`import type * as SelectionSet from './${ModuleGeneratorSelectionSets.name}.js'`)
     code.push(``)
 
     code.push(``)
@@ -45,7 +46,7 @@ export const { moduleName: moduleNameMethodsRoot, generate: generateMethodsRoot 
   },
 )
 
-const renderRootType = createCodeGenerator<{ node: GraphQLObjectType }>(({ node, config, code }) => {
+const renderRootType = createModuleGeneratorRunner<{ node: GraphQLObjectType }>(({ node, config, code }) => {
   const fieldMethods = renderFieldMethods({ config, node })
 
   code.push(`
@@ -76,7 +77,7 @@ const renderRootType = createCodeGenerator<{ node: GraphQLObjectType }>(({ node,
     }`)
 })
 
-const renderFieldMethods = createCodeGenerator<{ node: GraphQLObjectType }>(({ node, config, code }) => {
+const renderFieldMethods = createModuleGeneratorRunner<{ node: GraphQLObjectType }>(({ node, config, code }) => {
   for (const field of Object.values(node.getFields())) {
     const doc = renderDocumentation(config, field)
     code.push(doc)

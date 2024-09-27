@@ -1,20 +1,20 @@
 import { getNamedType, isUnionType } from 'graphql'
 import { Code } from '../../../lib/Code.js'
 import { hasMutation, hasQuery, hasSubscription } from '../../../lib/graphql.js'
-import { createModuleGenerator } from '../createCodeGenerator.js'
-import { moduleNameData } from './Data.js'
-import { moduleNameMethodsRoot } from './MethodsRoot.js'
-import { moduleNameSchemaBuildtime } from './SchemaBuildtime.js'
+import { createModuleGenerator } from '../helpers/moduleGenerator.js'
+import { ModuleGeneratorData } from './Data.js'
+import { ModuleGeneratorMethodsRoot } from './MethodsRoot.js'
+import { ModuleGeneratorSchemaBuildtime } from './SchemaBuildtime.js'
 
-export const { generate: generateSchemaIndex, moduleName: moduleNameSchemaIndex } = createModuleGenerator(
+export const ModuleGeneratorSchemaIndex = createModuleGenerator(
   `SchemaIndex`,
   ({ config, code }) => {
     const SchemaBuildtimeNamespace = `Schema`
     const MethodsRootNamespace = `MethodsRoot`
     code.push(`/* eslint-disable */`)
-    code.push(`import type * as Data from './${moduleNameData}.js'`)
-    code.push(`import type * as ${SchemaBuildtimeNamespace} from './${moduleNameSchemaBuildtime}.js'`)
-    code.push(`import type * as ${MethodsRootNamespace} from './${moduleNameMethodsRoot}.js'`)
+    code.push(`import type * as Data from './${ModuleGeneratorData.name}.js'`)
+    code.push(`import type * as ${SchemaBuildtimeNamespace} from './${ModuleGeneratorSchemaBuildtime.name}.js'`)
+    code.push(`import type * as ${MethodsRootNamespace} from './${ModuleGeneratorMethodsRoot.name}.js'`)
     code.push(``)
 
     const rootTypesPresence = {

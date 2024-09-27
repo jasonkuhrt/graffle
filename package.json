@@ -70,7 +70,8 @@
   "homepage": "https://github.com/jasonkuhrt/graffle",
   "scripts": {
     "serve:pokemon": "tsx tests/_/services/pokemonManual.ts",
-    "gen:graffle": "tsx tests/_/schemas/generate.ts && pnpm build && cd website && pnpm gen:graffle",
+    "gen:graffle": "pnpm gen:graffle:tests && pnpm build && cd website && pnpm gen:graffle",
+    "gen:graffle:tests": "tsx tests/_/schemas/generate.ts",
     "graffle": "tsx ./src/cli/generate.ts",
     "gen:examples": "tsx scripts/generate-examples-derivatives/generate.ts && pnpm format",
     "dev": "rm -rf dist && tsc --watch",

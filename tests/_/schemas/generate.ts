@@ -2,14 +2,13 @@ import { pascalCase } from 'es-toolkit'
 import { printSchema } from 'graphql'
 import fs from 'node:fs/promises'
 import { dirname, join } from 'node:path'
-import { generateFiles } from '../../../src/layers/4_generator/files.js'
-import type { OptionsInput } from '../../../src/layers/4_generator/generateCode.js'
+import { Generator } from '../../../src/layers/4_generator/__.js'
 
 const generate = async (
   input: {
     dirName: string
     name?: boolean
-    options?: OptionsInput
+    options?: Generator.OptionsInput
     defaultSchemaUrl?: URL
   },
 ) => {
@@ -24,7 +23,7 @@ const generate = async (
 
   await fs.writeFile(outputSchemaPath, printSchema(schema))
 
-  await generateFiles({
+  await Generator.generate({
     sourceSchema: { type: `sdl` },
     sourceDirPath,
     defaultSchemaUrl: input.defaultSchemaUrl,

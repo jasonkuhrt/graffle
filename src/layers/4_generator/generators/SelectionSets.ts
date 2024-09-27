@@ -31,7 +31,8 @@ import {
 } from '../../../lib/graphql.js'
 import type { StandardScalarTypeNames } from '../../../lib/graphql.js'
 import { SelectionSet } from '../../2_SelectionSet/__.js'
-import { createCodeGenerator, createModuleGenerator } from '../createCodeGenerator.js'
+import { createModuleGenerator } from '../helpers/moduleGenerator.js'
+import { createModuleGeneratorRunner } from '../helpers/moduleGeneratorRunner.js'
 import {
   getDocumentation,
   getInterfaceImplementors,
@@ -39,10 +40,10 @@ import {
   renderName,
   title1,
   typeTitle2SelectionSet,
-} from '../helpers.js'
-import { moduleNameScalar } from './Scalar.js'
+} from '../helpers/render.js'
+import { ModuleGeneratorScalar } from './Scalar.js'
 
-export const { moduleName: moduleNameSelectionSets, generate: generateSelectionSets } = createModuleGenerator(
+export const ModuleGeneratorSelectionSets = createModuleGenerator(
   `SelectionSets`,
   ({ config, code }) => {
     code.push(``)
@@ -50,7 +51,7 @@ export const { moduleName: moduleNameSelectionSets, generate: generateSelectionS
     code.push(`import type { SelectionSet as $SelectionSet } from '${config.libraryPaths.schema}'`)
     code.push(`import type * as $Utilities from '${config.libraryPaths.utilitiesForGenerated}'`)
     if (hasCustomScalars(config.typeMapByKind)) {
-      code.push(`import type * as $Scalar from './${moduleNameScalar}.js'`)
+      code.push(`import type * as $Scalar from './${ModuleGeneratorScalar.name}.js'`)
     }
     code.push(``)
 
@@ -90,7 +91,7 @@ export const { moduleName: moduleNameSelectionSets, generate: generateSelectionS
   },
 )
 
-const renderRefDefs = createCodeGenerator<{ nodes: GraphQLNamedType[] }>(
+const renderRefDefs = createModuleGeneratorRunner<{ nodes: GraphQLNamedType[] }>(
   ({ nodes, code }) => {
     const refDefsRendered = nodes.map(node => `export type _${renderName(node)} = ${renderName(node)}`).join(`\n`)
     const namespaceRendered = `
@@ -103,7 +104,7 @@ const renderRefDefs = createCodeGenerator<{ nodes: GraphQLNamedType[] }>(
   },
 )
 
-const renderUnion = createCodeGenerator<{ node: GraphQLUnionType }>(
+const renderUnion = createModuleGeneratorRunner<{ node: GraphQLUnionType }>(
   ({ config, node, code }) => {
     const doc = renderDocumentation(config, node)
     code.push(doc)
@@ -126,7 +127,7 @@ const renderUnion = createCodeGenerator<{ node: GraphQLUnionType }>(
   },
 )
 
-const renderEnum = createCodeGenerator<{ node: GraphQLEnumType }>(
+const renderEnum = createModuleGeneratorRunner<{ node: GraphQLEnumType }>(
   ({ config, node, code }) => {
     const doc = renderDocumentation(config, node)
     code.push(doc)
@@ -136,7 +137,7 @@ const renderEnum = createCodeGenerator<{ node: GraphQLEnumType }>(
   },
 )
 
-const renderInputObject = createCodeGenerator<{ node: GraphQLInputObjectType }>(
+const renderInputObject = createModuleGeneratorRunner<{ node: GraphQLInputObjectType }>(
   ({ config, node, code }) => {
     const doc = renderDocumentation(config, node)
     code.push(doc)
@@ -150,7 +151,7 @@ const renderInputObject = createCodeGenerator<{ node: GraphQLInputObjectType }>(
   },
 )
 
-const renderInterface = createCodeGenerator<{ node: GraphQLInterfaceType }>(
+const renderInterface = createModuleGeneratorRunner<{ node: GraphQLInterfaceType }>(
   ({ config, node, code }) => {
     const fields = Object.values(node.getFields())
     const fieldsRendered = fields.map(field => {
@@ -194,7 +195,7 @@ const renderInterface = createCodeGenerator<{ node: GraphQLInterfaceType }>(
   },
 )
 
-const renderObject = createCodeGenerator<{ node: GraphQLObjectType }>(
+const renderObject = createModuleGeneratorRunner<{ node: GraphQLObjectType }>(
   ({ config, node, code }) => {
     const fields = Object.values(node.getFields())
 
@@ -253,7 +254,7 @@ const kindRenderLookup = {
   GraphQLUnionType: renderUnion,
 }
 
-const renderField = createCodeGenerator<{ field: GraphQLField<any, any> }>(
+const renderField = createModuleGeneratorRunner<{ field: GraphQLField<any, any> }>(
   ({ config, field, code }) => {
     const namedType = getNamedType(field.type)
     const nameRendered = renderName(field)
@@ -314,7 +315,7 @@ const renderField = createCodeGenerator<{ field: GraphQLField<any, any> }>(
   },
 )
 
-const renderArgsFields = createCodeGenerator<{ field: GraphQLField<any, any> }>(({ config, field, code }) => {
+const renderArgsFields = createModuleGeneratorRunner<{ field: GraphQLField<any, any> }>(({ config, field, code }) => {
   const argFieldsRendered = field.args.map(arg => renderArgLike({ config, arg })).join(`\n`)
   if (argFieldsRendered) {
     code.push(`{\n${argFieldsRendered}\n}`)
@@ -322,7 +323,7 @@ const renderArgsFields = createCodeGenerator<{ field: GraphQLField<any, any> }>(
   }
 })
 
-const renderFieldArgs = createCodeGenerator<{ field: GraphQLField<any, any>; argFieldsRendered: string }>(
+const renderFieldArgs = createModuleGeneratorRunner<{ field: GraphQLField<any, any>; argFieldsRendered: string }>(
   ({ field, code, argFieldsRendered }) => {
     const argsAnalysis = analyzeArgsNullability(field.args)
 
@@ -346,7 +347,7 @@ const renderFieldArgs = createCodeGenerator<{ field: GraphQLField<any, any>; arg
   },
 )
 
-const renderArgLike = createCodeGenerator<{ arg: GraphQLArgument | GraphQLInputField }>(
+const renderArgLike = createModuleGeneratorRunner<{ arg: GraphQLArgument | GraphQLInputField }>(
   ({ config, arg, code }) => {
     const typeRendered = renderArgType(arg.type)
     const doc = getDocumentation(config, arg)
