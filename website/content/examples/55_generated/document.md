@@ -35,11 +35,11 @@ const pokemons = await pokemon.document({
     makeSomeNewPokemons: {
       addPokemon: [
         [`addAngryPikachu`, {
-          $: { name: `AngryPikachu`, attack: 100, defense: 100, hp: 100 },
+          $: { name: `AngryPikachu`, attack: 100, defense: 100, hp: 100, type: `electric` },
           name: true,
         }],
         [`addAngryCharizard`, {
-          $: { name: `AngryCharizard`, attack: 100, defense: 100, hp: 100 },
+          $: { name: `AngryCharizard`, attack: 100, defense: 100, hp: 100, type: `fire` },
           name: true,
         }],
       ],
@@ -56,46 +56,29 @@ console.log(pokemons)
 
 <!-- dprint-ignore-start -->
 ```json
-/some/path/to/handleOutput.ts:XX:XX
-    const error = new Errors.ContextualAggregateError(
-                  ^
-
-
-ContextualAggregateError: One or more errors in the execution result.
-    at handleOutput (/some/path/to/handleOutput.ts:XX:XX:19)
-    at run (/some/path/to/client.ts:XX:XX:12)
-    at process.processTicksAndRejections (node:internal/process/task_queues:XX:XX)
-    at async executeDocument (/some/path/to/client.ts:XX:XX:12)
-    at async Object.run (/some/path/to/document.ts:XX:XX:16)
-    at async <anonymous> (/some/path/to/generated_document.ts:XX:XX:18) {
-  context: {},
-  cause: undefined,
-  errors: [
-    GraphQLError: Field "addPokemon" argument "type" of type "PokemonType!" is required, but it was not provided.
-        at <anonymous> (/some/path/to/graphqlHTTP.ts:XX:XX:47)
-        at Array.map (<anonymous>)
-        at parseExecutionResult (/some/path/to/graphqlHTTP.ts:XX:XX:28)
-        at Object.unpack (/some/path/to/core.ts:XX:XX:26)
-        at process.processTicksAndRejections (node:internal/process/task_queues:XX:XX)
-        at async runHook (/some/path/to/runHook.ts:XX:XX:16) {
-      path: undefined,
-      locations: undefined,
-      extensions: [Object: null prototype] {}
+{
+  "trainers": [
+    {
+      "name": "Ash"
     },
-    GraphQLError: Field "addPokemon" argument "type" of type "PokemonType!" is required, but it was not provided.
-        at <anonymous> (/some/path/to/graphqlHTTP.ts:XX:XX:47)
-        at Array.map (<anonymous>)
-        at parseExecutionResult (/some/path/to/graphqlHTTP.ts:XX:XX:28)
-        at Object.unpack (/some/path/to/core.ts:XX:XX:26)
-        at process.processTicksAndRejections (node:internal/process/task_queues:XX:XX)
-        at async runHook (/some/path/to/runHook.ts:XX:XX:16) {
-      path: undefined,
-      locations: undefined,
-      extensions: [Object: null prototype] {}
+    {
+      "name": "Misty"
+    }
+  ],
+  "pokemons": [
+    {
+      "name": "Pikachu",
+      "trainer": {
+        "name": "Ash"
+      }
+    },
+    {
+      "name": "Charizard",
+      "trainer": {
+        "name": "Ash"
+      }
     }
   ]
 }
-
-Node.js vXX.XX.XX
 ```
 <!-- dprint-ignore-end -->
