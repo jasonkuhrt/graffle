@@ -71,6 +71,7 @@ export interface Config {
     }
   }
   schema: {
+    sdl: string
     instance: GraphQLSchema
     typeMapByKind: TypeMapByKind
     error: {
@@ -135,12 +136,6 @@ export const createConfig = async (input: Input): Promise<Config> => {
     ? Object.values(typeMapByKind.GraphQLObjectType).filter(_ => _.name.match(errorTypeNamePattern))
     : []
 
-  // const rootTypes = {
-  //   Query: typeMapByKind.GraphQLRootType.find(_ => _.name === `Query`) ?? null,
-  //   Mutation: typeMapByKind.GraphQLRootType.find(_ => _.name === `Mutation`) ?? null,
-  //   Subscription: typeMapByKind.GraphQLRootType.find(_ => _.name === `Subscription`) ?? null,
-  // }
-
   return {
     name: input.name ?? defaultName,
     paths: {
@@ -164,6 +159,7 @@ export const createConfig = async (input: Input): Promise<Config> => {
       },
     },
     schema: {
+      sdl: sourceSchema.content,
       instance: schema,
       typeMapByKind,
       error: {
