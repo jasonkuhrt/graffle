@@ -3,7 +3,7 @@
  */
 
 import { Throws } from '../../src/entrypoints/extensions.js'
-import { Pokemon } from '../$/generated-clients/pokemon/__.js'
+import { Pokemon } from '../../tests/_/schemas/pokemon/graffle/__.js'
 import { interceptAndShowUncaughtErrors, show } from '../$/show.js'
 
 interceptAndShowUncaughtErrors()

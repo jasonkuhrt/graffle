@@ -3,7 +3,6 @@
 
 <!-- dprint-ignore-start -->
 ```ts twoslash
-// ---cut---
 import { Pokemon } from './pokemon/__.js'
 
 const pokemon = Pokemon.create({
@@ -37,7 +36,7 @@ console.log(result)
     headers: Headers {
       'content-type': 'application/graphql-response+json; charset=utf-8',
       'content-length': '104',
-      date: 'Fri, 27 Sep 2024 03:35:11 GMT',
+      date: 'Fri, 27 Sep 2024 14:34:00 GMT',
       connection: 'keep-alive',
       'keep-alive': 'timeout=5'
     },

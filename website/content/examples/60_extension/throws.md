@@ -9,7 +9,6 @@ This example shows how to use the Or Throw extension to throw errors for one-off
 <!-- dprint-ignore-start -->
 ```ts twoslash
 import { Throws } from 'graffle/extensions'
-// ---cut---
 import { Pokemon } from './pokemon/__.js'
 
 const pokemon = Pokemon

@@ -2,7 +2,7 @@
  * This example shows how to configure output to have errors returned instead of e.g. thrown.
  */
 
-import { Pokemon } from '../$/generated-clients/pokemon/__.js'
+import { Pokemon } from '../../tests/_/schemas/pokemon/graffle/__.js'
 import { show } from '../$/helpers.js'
 
 // dprint-ignore

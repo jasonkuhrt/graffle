@@ -1,6 +1,6 @@
 import { expectTypeOf } from 'vitest'
 import { test } from '../../../tests/_/helpers.js'
-import { schema } from '../../../tests/_/schema/schema.js'
+import { schema } from '../../../tests/_/schemas/kitchen-sink/schema.js'
 import { Graffle } from '../../entrypoints/main.js'
 import { Transport } from '../5_core/types.js'
 

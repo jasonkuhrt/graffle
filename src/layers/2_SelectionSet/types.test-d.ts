@@ -1,5 +1,5 @@
 import { assertType, test } from 'vitest'
-import type * as SelectionSets from '../../../tests/_/schema/generated/modules/SelectionSets.js'
+import type * as SelectionSets from '../../../tests/_/schemas/kitchen-sink/graffle/modules/SelectionSets.js'
 
 type Q = SelectionSets.Query
 

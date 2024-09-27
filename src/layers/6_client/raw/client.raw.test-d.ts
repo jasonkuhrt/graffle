@@ -1,8 +1,8 @@
 /* eslint-disable */
 import { describe, expectTypeOf } from 'vitest'
 import { test } from '../../../../tests/_/helpers.js'
-import { Graffle } from '../../../../tests/_/schema/generated/__.js'
-import { schema } from '../../../../tests/_/schema/schema.js'
+import { Graffle } from '../../../../tests/_/schemas/kitchen-sink/graffle/__.js'
+import { schema } from '../../../../tests/_/schemas/kitchen-sink/schema.js'
 import { gql } from '../../6_helpers/gql.js'
 import type { RawResolveOutputReturnRootType } from '../handleOutput.js'
 

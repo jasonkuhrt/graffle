@@ -1,7 +1,7 @@
 /* eslint-disable */
 import { expectTypeOf, test } from 'vitest'
-import { Graffle } from '../../../../tests/_/schema/generated/__.js'
-import * as Schema from '../../../../tests/_/schema/schema.js'
+import { Graffle } from '../../../../tests/_/schemas/kitchen-sink/graffle/__.js'
+import * as Schema from '../../../../tests/_/schemas/kitchen-sink/schema.js'
 
 const graffle = Graffle.create({ schema: Schema.schema })
 

@@ -8,7 +8,6 @@ This example shows how to write batches of GraphQL root fields (aka. entrypoints
 
 <!-- dprint-ignore-start -->
 ```ts twoslash
-// ---cut---
 import { Pokemon } from './pokemon/__.js'
 
 const pokemon = Pokemon.create()

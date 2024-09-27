@@ -8,6 +8,7 @@ export default tsEslint.config({
     'vite.config.ts',
     'vitest*.config.ts',
     '**/generated/**/*',
+    'tests/_/schemas/*/graffle/**/*',
     '**/$/**/*',
     'legacy/**/*',
     'build/**/*',

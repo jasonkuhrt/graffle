@@ -8,7 +8,6 @@ This example shows how to write whole GraphQL documents in the TypeScript interf
 
 <!-- dprint-ignore-start -->
 ```ts twoslash
-// ---cut---
 import { Pokemon } from './pokemon/__.js'
 
 const pokemon = Pokemon.create()

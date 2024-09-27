@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest'
-import { $Index } from '../../../tests/_/schema/generated/modules/SchemaRuntime.js'
-import type * as SelectionSets from '../../../tests/_/schema/generated/modules/SelectionSets.js'
+import { $Index } from '../../../tests/_/schemas/kitchen-sink/graffle/modules/SchemaRuntime.js'
+import type * as SelectionSets from '../../../tests/_/schemas/kitchen-sink/graffle/modules/SelectionSets.js'
 import { decode } from './decode.js'
 
 test.each<[selectionSet: SelectionSets.Query, data: object]>([
