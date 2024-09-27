@@ -22,20 +22,10 @@ const fixLinks = (sidebarMulti: SidebarMulti) => {
   })
 }
 
-const fixTitles = (sidebarMulti: SidebarMulti) => {
-  return sidebarMultiVisitItems(sidebarMulti, (sidebarItem) => {
-    const [title, maybeHtml] = sidebarItem.text?.split('<') as [string, string | undefined]
-    if (sidebarItem.text) {
-      sidebarItem.text = title.replaceAll(/-/g, ' ').split(' ').join(' ')
-        + (maybeHtml ? `<${maybeHtml}` : '')
-    }
-  })
-}
-
 /**
  * @see https://vitepress-sidebar.cdget.com/guide/api
  */
-const sidebars = fixTitles(fixLinks(generateSidebar([
+const sidebars = fixLinks(generateSidebar([
   {
     scanStartPath: 'content/guides',
     resolvePath: '/guides/',
@@ -43,13 +33,12 @@ const sidebars = fixTitles(fixLinks(generateSidebar([
     removePrefixAfterOrdering: true,
     useTitleFromFrontmatter: true,
     useTitleFromFileHeading: true,
-    // https://github.com/jooy2/vitepress-sidebar/issues/176
-    // hyphenToSpace: true,
+    hyphenToSpace: true,
     capitalizeEachWords: true,
     keepMarkdownSyntaxFromTitle: true,
   },
   {
-    // hyphenToSpace: true,
+    hyphenToSpace: true,
     capitalizeEachWords: true,
     scanStartPath: 'content/examples',
     resolvePath: '/examples/',
@@ -59,7 +48,7 @@ const sidebars = fixTitles(fixLinks(generateSidebar([
     useTitleFromFileHeading: true,
     keepMarkdownSyntaxFromTitle: true,
   },
-]) as SidebarMulti))
+]) as SidebarMulti)
 
 sidebars['/examples/'].items.find(_ => _.text === 'About')!.items!.unshift({ text: 'Introduction', link: '/' })
 sidebars['/guides/'].items.unshift({ text: 'Introduction', link: '/' })
