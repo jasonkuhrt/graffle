@@ -56,35 +56,91 @@ for (const being of beings) {
 
 <!-- dprint-ignore-start -->
 ```txt
-/some/path/to/handleOutput.ts:XX:XX
-    const error = new Errors.ContextualAggregateError(
-                  ^
-
-
-ContextualAggregateError: One or more errors in the execution result.
-    at handleOutput (/some/path/to/handleOutput.ts:XX:XX:19)
-    at run (/some/path/to/client.ts:XX:XX:12)
-    at process.processTicksAndRejections (node:internal/process/task_queues:XX:XX)
-    at async executeDocument (/some/path/to/client.ts:XX:XX:12)
-    at async executeRootTypeField (/some/path/to/client.ts:XX:XX:20)
-    at async <anonymous> (/some/path/to/generated_interface.ts:XX:XX:16) {
-  context: {},
-  cause: undefined,
-  errors: [
-    GraphQLError: Abstract type "Being" was resolved to a type "pokemon" that does not exist inside the schema.
-        at <anonymous> (/some/path/to/graphqlHTTP.ts:XX:XX:47)
-        at Array.map (<anonymous>)
-        at parseExecutionResult (/some/path/to/graphqlHTTP.ts:XX:XX:28)
-        at Object.unpack (/some/path/to/core.ts:XX:XX:26)
-        at process.processTicksAndRejections (node:internal/process/task_queues:XX:XX)
-        at async runHook (/some/path/to/runHook.ts:XX:XX:16) {
-      path: [ 'beings', 8 ],
-      locations: undefined,
-      extensions: [Object: null prototype] {}
-    }
-  ]
-}
-
-Node.js vXX.XX.XX
+Sally
+```
+<!-- dprint-ignore-end -->
+<!-- dprint-ignore-start -->
+```txt
+1080000
+```
+<!-- dprint-ignore-end -->
+<!-- dprint-ignore-start -->
+```txt
+Dylan
+```
+<!-- dprint-ignore-end -->
+<!-- dprint-ignore-start -->
+```txt
+3530000
+```
+<!-- dprint-ignore-end -->
+<!-- dprint-ignore-start -->
+```txt
+Ash
+```
+<!-- dprint-ignore-end -->
+<!-- dprint-ignore-start -->
+```txt
+youth
+```
+<!-- dprint-ignore-end -->
+<!-- dprint-ignore-start -->
+```txt
+Misty
+```
+<!-- dprint-ignore-end -->
+<!-- dprint-ignore-start -->
+```txt
+teamRocketGrunt
+```
+<!-- dprint-ignore-end -->
+<!-- dprint-ignore-start -->
+```txt
+Pikachu
+```
+<!-- dprint-ignore-end -->
+<!-- dprint-ignore-start -->
+```txt
+electric
+```
+<!-- dprint-ignore-end -->
+<!-- dprint-ignore-start -->
+```txt
+Charizard
+```
+<!-- dprint-ignore-end -->
+<!-- dprint-ignore-start -->
+```txt
+fire
+```
+<!-- dprint-ignore-end -->
+<!-- dprint-ignore-start -->
+```txt
+Squirtle
+```
+<!-- dprint-ignore-end -->
+<!-- dprint-ignore-start -->
+```txt
+water
+```
+<!-- dprint-ignore-end -->
+<!-- dprint-ignore-start -->
+```txt
+Bulbasaur
+```
+<!-- dprint-ignore-end -->
+<!-- dprint-ignore-start -->
+```txt
+grass
+```
+<!-- dprint-ignore-end -->
+<!-- dprint-ignore-start -->
+```txt
+Fishy
+```
+<!-- dprint-ignore-end -->
+<!-- dprint-ignore-start -->
+```txt
+water
 ```
 <!-- dprint-ignore-end -->

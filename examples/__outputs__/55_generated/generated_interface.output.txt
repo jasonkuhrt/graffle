@@ -1,30 +1,36 @@
-/some/path/to/handleOutput.ts:XX:XX
-    const error = new Errors.ContextualAggregateError(
-                  ^
-
-
-ContextualAggregateError: One or more errors in the execution result.
-    at handleOutput (/some/path/to/handleOutput.ts:XX:XX:19)
-    at run (/some/path/to/client.ts:XX:XX:12)
-    at process.processTicksAndRejections (node:internal/process/task_queues:XX:XX)
-    at async executeDocument (/some/path/to/client.ts:XX:XX:12)
-    at async executeRootTypeField (/some/path/to/client.ts:XX:XX:20)
-    at async <anonymous> (/some/path/to/generated_interface.ts:XX:XX:16) {
-  context: {},
-  cause: undefined,
-  errors: [
-    GraphQLError: Abstract type "Being" was resolved to a type "pokemon" that does not exist inside the schema.
-        at <anonymous> (/some/path/to/graphqlHTTP.ts:XX:XX:47)
-        at Array.map (<anonymous>)
-        at parseExecutionResult (/some/path/to/graphqlHTTP.ts:XX:XX:28)
-        at Object.unpack (/some/path/to/core.ts:XX:XX:26)
-        at process.processTicksAndRejections (node:internal/process/task_queues:XX:XX)
-        at async runHook (/some/path/to/runHook.ts:XX:XX:16) {
-      path: [ 'beings', 8 ],
-      locations: undefined,
-      extensions: [Object: null prototype] {}
-    }
-  ]
-}
-
-Node.js vXX.XX.XX
+---------------------------------------- SHOW ----------------------------------------
+Sally
+---------------------------------------- SHOW ----------------------------------------
+1080000
+---------------------------------------- SHOW ----------------------------------------
+Dylan
+---------------------------------------- SHOW ----------------------------------------
+3530000
+---------------------------------------- SHOW ----------------------------------------
+Ash
+---------------------------------------- SHOW ----------------------------------------
+youth
+---------------------------------------- SHOW ----------------------------------------
+Misty
+---------------------------------------- SHOW ----------------------------------------
+teamRocketGrunt
+---------------------------------------- SHOW ----------------------------------------
+Pikachu
+---------------------------------------- SHOW ----------------------------------------
+electric
+---------------------------------------- SHOW ----------------------------------------
+Charizard
+---------------------------------------- SHOW ----------------------------------------
+fire
+---------------------------------------- SHOW ----------------------------------------
+Squirtle
+---------------------------------------- SHOW ----------------------------------------
+water
+---------------------------------------- SHOW ----------------------------------------
+Bulbasaur
+---------------------------------------- SHOW ----------------------------------------
+grass
+---------------------------------------- SHOW ----------------------------------------
+Fishy
+---------------------------------------- SHOW ----------------------------------------
+water
