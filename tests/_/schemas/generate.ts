@@ -8,7 +8,7 @@ const generate = async (
   input: {
     dirName: string
     name?: boolean
-    generatorInput?: Omit<Generator.Input, 'sourceSchema'>
+    generatorInput?: Omit<Generator.Input, 'schemaSource'>
     defaultSchemaUrl?: URL
   },
 ) => {
