@@ -52,7 +52,13 @@ const args = Command.create().description(`Generate a type safe GraphQL client.`
       `Directory path for where to output the generated TypeScript files.`,
     ),
   )
-  .parameter(`format`, z.boolean().describe(`Format the generated files using dprint.`).default(true))
+  .parameter(
+    `format`,
+    z.boolean().describe(
+      `Try to format the generated files. At attempt to use dprint will be made. You need to have these dependencies installed in your project: @dprint/formatter, @dprint/typescript.`,
+    )
+      .default(true),
+  )
   .parameter(
     `libraryPathClient`,
     z.string().optional().describe(
@@ -85,27 +91,32 @@ const args = Command.create().description(`Generate a type safe GraphQL client.`
   .parse()
 
 const url = urlParseSafe(args.schema)
+
 const defaultSchemaUrl = typeof args.defaultSchemaUrl === `string`
   ? new URL(args.defaultSchemaUrl)
   : args.defaultSchemaUrl
 
+const format = args.format
+
+const schemaSource = url
+  ? { type: `url` as const, url }
+  : { type: `sdl` as const, dirOrFilePath: args.schema }
+
 await Generator.generate({
-  sourceSchema: url
-    ? { type: `url`, url }
-    : { type: `sdl`, dirOrFilePath: Path.dirname(args.schema) },
+  format,
+  schemaSource,
   defaultSchemaUrl,
   name: args.name,
+  outputDirPath: args.output,
+  errorTypeNamePattern: args.schemaErrorType._tag === `schemaErrorTypePattern`
+    ? new RegExp(args.schemaErrorType.value)
+    : args.schemaErrorType.value
+    ? /^Error.+/
+    : undefined,
   libraryPaths: {
     client: args.libraryPathClient,
     schema: args.libraryPathSchema,
     scalars: args.libraryPathScalars,
     utilitiesForGenerated: args.libraryPathUtilitiesForGenerated,
   },
-  outputDirPath: args.output,
-  format: args.format,
-  errorTypeNamePattern: args.schemaErrorType._tag === `schemaErrorTypePattern`
-    ? new RegExp(args.schemaErrorType.value)
-    : args.schemaErrorType.value
-    ? /^Error.+/
-    : undefined,
 })

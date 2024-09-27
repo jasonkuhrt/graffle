@@ -15,20 +15,21 @@ const generate = async (
   const name = input.name === false ? undefined : pascalCase(input.dirName)
 
   const rootDir = join(`./tests/_/schemas/`, input.dirName)
+
   const outputSchemaPath = join(rootDir, `schema.graphql`)
-  const sourceDirPath = dirname(outputSchemaPath)
-  const outputDirPath = join(rootDir, `/graffle`)
-
   const { schema } = await import(`./${input.dirName}/schema.js`)
-
   await fs.writeFile(outputSchemaPath, printSchema(schema))
 
+  const inputPathRootDir = dirname(outputSchemaPath)
+  const outputPathRootDir = join(rootDir, `/graffle`)
+
   await Generator.generate({
-    sourceSchema: { type: `sdl` },
-    sourceDirPath,
+    schemaSource: { type: `sdl` },
+    // todo funky between this and passing path to sdl
+    sourceDirPath: inputPathRootDir,
     defaultSchemaUrl: input.defaultSchemaUrl,
     sourceCustomScalarCodecsFilePath: join(`./tests/_/customScalarCodecs.ts`),
-    outputDirPath,
+    outputDirPath: outputPathRootDir,
     libraryPaths: {
       client: `../../../../../../src/entrypoints/client.js`,
       schema: `../../../../../../src/entrypoints/schema.js`,
@@ -38,7 +39,7 @@ const generate = async (
     name,
     ...input.generatorInput,
   })
-  console.log(`generated at`, sourceDirPath)
+  console.log(`generated at`, inputPathRootDir)
 }
 
 await generate({

@@ -8,7 +8,7 @@ import { omitUndefinedKeys } from '../../lib/prelude.js'
 import { fileExists, isPathToADirectory } from './helpers/fs.js'
 
 export interface Input {
-  sourceSchema: {
+  schemaSource: {
     type: 'sdl'
     /**
      * Defaults to the source directory if set, otherwise the current working directory.
@@ -103,8 +103,8 @@ export const createConfig = async (input: Input): Promise<Config> => {
   // dprint-ignore
   const defaultSchemaUrl =
     typeof input.defaultSchemaUrl === `boolean`
-      ? input.sourceSchema.type === `url`
-        ? input.sourceSchema.url
+      ? input.schemaSource.type === `url`
+        ? input.schemaSource.url
         : null
       : input.defaultSchemaUrl??null
 
@@ -184,14 +184,14 @@ const defaultSchemaFileName = `schema.graphql`
 const resolveSourceSchema = async (
   input: Input,
 ): Promise<{ type: 'introspection'; content: string } | { type: 'file'; content: string; path: string }> => {
-  if (input.sourceSchema.type === `sdl`) {
-    const fileOrDirPath = input.sourceSchema.dirOrFilePath ?? input.sourceDirPath ?? process.cwd()
+  if (input.schemaSource.type === `sdl`) {
+    const fileOrDirPath = input.schemaSource.dirOrFilePath ?? input.sourceDirPath ?? process.cwd()
     const isDir = await isPathToADirectory(fileOrDirPath)
     const finalPath = isDir ? Path.join(fileOrDirPath, defaultSchemaFileName) : fileOrDirPath
     const sdl = await fs.readFile(finalPath, `utf8`)
     return { type: `file`, content: sdl, path: finalPath }
   } else {
-    const data = await introspectionQuery(input.sourceSchema.url)
+    const data = await introspectionQuery(input.schemaSource.url)
     const schema = buildClientSchema(data)
     const sdl = printSchema(schema)
     return { type: `introspection`, content: sdl }
