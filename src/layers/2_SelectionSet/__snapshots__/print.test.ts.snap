@@ -879,6 +879,103 @@ exports[`enum > Query 1`] = `
 "
 `;
 
+exports[`inline fragment field group > Query 1`] = `
+"
+{
+  "___": {
+    "__typename": true
+  }
+}
+--------------
+{
+  ... {
+    __typename
+  }
+}
+"
+`;
+
+exports[`inline fragment field group > Query 2`] = `
+"
+{
+  "___": [
+    {
+      "__typename": true
+    },
+    {
+      "abcEnum": true
+    }
+  ]
+}
+--------------
+{
+  ... {
+    __typename
+  }
+  ... {
+    abcEnum
+  }
+}
+"
+`;
+
+exports[`inline fragment field group > Query 3`] = `
+"
+{
+  "interface": {
+    "___": {
+      "__typename": true
+    }
+  }
+}
+--------------
+{
+  interface {
+    ... {
+      __typename
+    }
+  }
+}
+"
+`;
+
+exports[`inline fragment field group > Query 4`] = `
+"
+{
+  "unionFooBar": {
+    "___": {
+      "__typename": true
+    }
+  }
+}
+--------------
+{
+  unionFooBar {
+    ... {
+      __typename
+    }
+  }
+}
+"
+`;
+
+exports[`inline fragment field group > Query 5`] = `
+"
+{
+  "___": {
+    "__typename": true,
+    "$include": true
+  }
+}
+--------------
+{
+  ... @include(if: true) {
+    __typename
+  }
+}
+"
+`;
+
 exports[`other > Query 1`] = `
 "
 {

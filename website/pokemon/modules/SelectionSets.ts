@@ -41,11 +41,11 @@ export interface Mutation {
    * Inline fragments for field groups.
    *
    * Generally a niche feature. This can be useful for example to apply an `@include` directive to a subset of the
-   * selection set allowing a variable to opt-in or not to that part of the selection.
+   * selection set in turn allowing you to pass a variable to opt in/out of that selection during execution on the server.
    *
    * @see https://spec.graphql.org/draft/#sec-Inline-Fragments
    */
-  ___?: Mutation | Mutation[]
+  ___?: Mutation$FragmentInline | Mutation$FragmentInline[]
 
   /**
    * A meta field. Is the name of the type being selected.
@@ -56,6 +56,8 @@ export interface Mutation {
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
     | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
+
+export interface Mutation$FragmentInline extends Mutation, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}
 
 // ----------------------------------------| Fields Interfaces |
 
@@ -115,11 +117,11 @@ export interface Query {
    * Inline fragments for field groups.
    *
    * Generally a niche feature. This can be useful for example to apply an `@include` directive to a subset of the
-   * selection set allowing a variable to opt-in or not to that part of the selection.
+   * selection set in turn allowing you to pass a variable to opt in/out of that selection during execution on the server.
    *
    * @see https://spec.graphql.org/draft/#sec-Inline-Fragments
    */
-  ___?: Query | Query[]
+  ___?: Query$FragmentInline | Query$FragmentInline[]
 
   /**
    * A meta field. Is the name of the type being selected.
@@ -130,6 +132,8 @@ export interface Query {
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
     | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
+
+export interface Query$FragmentInline extends Query, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}
 
 // ----------------------------------------| Fields Interfaces |
 
@@ -265,11 +269,11 @@ export interface Pokemon extends $SelectionSet.Bases.ObjectLike {
    * Inline fragments for field groups.
    *
    * Generally a niche feature. This can be useful for example to apply an `@include` directive to a subset of the
-   * selection set allowing a variable to opt-in or not to that part of the selection.
+   * selection set in turn allowing you to pass a variable to opt in/out of that selection during execution on the server.
    *
    * @see https://spec.graphql.org/draft/#sec-Inline-Fragments
    */
-  ___?: Pokemon | Pokemon[]
+  ___?: Pokemon$FragmentInline | Pokemon$FragmentInline[]
 
   /**
    * A meta field. Is the name of the type being selected.
@@ -280,6 +284,8 @@ export interface Pokemon extends $SelectionSet.Bases.ObjectLike {
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
     | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
+
+export interface Pokemon$FragmentInline extends Pokemon, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}
 
 // ----------------------------------------| Fields Interfaces |
 
@@ -344,11 +350,11 @@ export interface Trainer extends $SelectionSet.Bases.ObjectLike {
    * Inline fragments for field groups.
    *
    * Generally a niche feature. This can be useful for example to apply an `@include` directive to a subset of the
-   * selection set allowing a variable to opt-in or not to that part of the selection.
+   * selection set in turn allowing you to pass a variable to opt in/out of that selection during execution on the server.
    *
    * @see https://spec.graphql.org/draft/#sec-Inline-Fragments
    */
-  ___?: Trainer | Trainer[]
+  ___?: Trainer$FragmentInline | Trainer$FragmentInline[]
 
   /**
    * A meta field. Is the name of the type being selected.
@@ -359,6 +365,8 @@ export interface Trainer extends $SelectionSet.Bases.ObjectLike {
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
     | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
+
+export interface Trainer$FragmentInline extends Trainer, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}
 
 // ----------------------------------------| Fields Interfaces |
 

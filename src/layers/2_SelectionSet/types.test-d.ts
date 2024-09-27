@@ -163,8 +163,9 @@ test(`Query`, () => {
   assertType<Q>({ object: { ___: [{ $skip: true, int: true, id: true }] } })
   // On Root (Query)
   assertType<Q>({ ___: { id: true } })
-  // @ts-expect-error no directives on root type even within a field group
   assertType<Q>({ ___: { $skip: true, id: true } })
+  // @ts-expect-error no directives on root type
+  assertType<Q>({ $skip: true, id: true })
 
   // Arguments
   // all-optional on object

@@ -1,0 +1,38 @@
+---------------------------------------- SHOW ----------------------------------------
+{
+  "trainers": [
+    {
+      "name": "Ash",
+      "pokemon": [
+        {
+          "name": "Pikachu"
+        },
+        {
+          "name": "Charizard"
+        }
+      ]
+    },
+    {
+      "name": "Misty",
+      "pokemon": [
+        {
+          "name": "Squirtle"
+        }
+      ]
+    }
+  ],
+  "pokemons": [
+    {
+      "name": "Pikachu"
+    },
+    {
+      "name": "Charizard"
+    },
+    {
+      "name": "Squirtle"
+    },
+    {
+      "name": "Bulbasaur"
+    }
+  ]
+}

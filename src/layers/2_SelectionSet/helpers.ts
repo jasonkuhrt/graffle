@@ -1,3 +1,11 @@
-export const isClientKey = (fieldName: string) => fieldName.startsWith(`$`)
+export const SpecialKeyPrefixes = {
+  fragmentInline: `___`,
+  argumentsOrDirective: `$`,
+}
 
-export const isSelectFieldName = (fieldName: string) => !isClientKey(fieldName)
+export const isSpecialKey = (fieldName: string) => {
+  return fieldName.startsWith(SpecialKeyPrefixes.argumentsOrDirective)
+    || fieldName === SpecialKeyPrefixes.fragmentInline
+}
+
+export const isSchemaFieldSelect = (fieldName: string) => !isSpecialKey(fieldName)

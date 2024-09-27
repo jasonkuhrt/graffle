@@ -45,11 +45,11 @@ export interface Query {
    * Inline fragments for field groups.
    *
    * Generally a niche feature. This can be useful for example to apply an `@include` directive to a subset of the
-   * selection set allowing a variable to opt-in or not to that part of the selection.
+   * selection set in turn allowing you to pass a variable to opt in/out of that selection during execution on the server.
    *
    * @see https://spec.graphql.org/draft/#sec-Inline-Fragments
    */
-  ___?: Query | Query[]
+  ___?: Query$FragmentInline | Query$FragmentInline[]
 
   /**
    * A meta field. Is the name of the type being selected.
@@ -60,6 +60,8 @@ export interface Query {
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
     | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
 }
+
+export interface Query$FragmentInline extends Query, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}
 
 // ----------------------------------------| Fields Interfaces |
 

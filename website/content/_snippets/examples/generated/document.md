@@ -9,10 +9,10 @@ import { Pokemon } from './pokemon/__.js'
 const pokemon = Pokemon.create()
 
 const pokemons = await pokemon.document({
-  query: { //                     A root type.
-    pokemonsAndTrainers: { //     A name of an the operation.
-      trainers: { //              A root field.
-        name: true, //            A field.
+  query: { //                     An operation type.
+    pokemonsAndTrainers: { //     A name chosen by you for this operation.
+      trainers: { //              A selection on a Query type field (aka. root field, entrypoint).
+        name: true, //            A selection on a scalar type field
       },
       pokemons: {
         $: { //                   A field's arguments
@@ -28,11 +28,11 @@ const pokemons = await pokemon.document({
   mutation: {
     makeSomeNewPokemons: {
       addPokemon: [
-        ['addAngryPikachu', {
+        [`addAngryPikachu`, {
           $: { name: `AngryPikachu`, attack: 100, defense: 100, hp: 100 },
           name: true,
         }],
-        ['addAngryCharizard', {
+        [`addAngryCharizard`, {
           $: { name: `AngryCharizard`, attack: 100, defense: 100, hp: 100 },
           name: true,
         }],
@@ -40,7 +40,7 @@ const pokemons = await pokemon.document({
     },
   },
 })
-  .run('pokemonsAndTrainers')
+  .run(`pokemonsAndTrainers`)
 
 console.log(pokemons)
 ```

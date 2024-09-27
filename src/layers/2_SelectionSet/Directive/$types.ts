@@ -18,6 +18,12 @@ export interface DirectiveLike {
  */
 export interface $Fields extends Defer.Field, Stream.Field, Include.Field, Skip.Field {}
 
+export namespace $Groups {
+  export namespace InlineFragment {
+    export interface Fields extends Defer.Field, Stream.Field, Include.Field, Skip.Field {}
+  }
+}
+
 export const fieldToDef = {
   $defer: Defer,
   $stream: Stream,
