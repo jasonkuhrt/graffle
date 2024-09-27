@@ -63,6 +63,10 @@ export const StandardScalarTypeTypeScriptMapping = {
   TypeScriptPrimitiveTypeNames
 >
 
+export type TypeNamedKind = `Enum` | `InputObject` | `Interface` | `Object` | `Scalar` | `Union`
+
+export type TypeMapKind = TypeNamedKind | `Root`
+
 export const RootTypeName = {
   Query: `Query`,
   Mutation: `Mutation`,

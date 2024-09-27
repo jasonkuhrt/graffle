@@ -7,6 +7,7 @@ import {
   getNodeNameAndKind,
   isDeprecatableNode,
   type TypeMapByKind,
+  type TypeMapKind,
 } from '../../../lib/graphql.js'
 import { borderThickFullWidth, borderThinFullWidth, centerTo } from '../../../lib/text.js'
 import type { Config } from '../config.js'
@@ -55,10 +56,8 @@ export const typeTitle2 = (category: string) => (node: GraphQLNamedType) => {
 
 export const typeTitle2SelectionSet = typeTitle2(`GRAPHQL SELECTION SET`)
 
-export const typeTitle = (config: Config, typeName: string) => {
-  // @ts-expect-error ignoreme
-
-  const hasItems = config.typeMapByKind[`GraphQL${typeName}Type`]?.length > 0
+export const typeTitle = (config: Config, typeName: TypeMapKind) => {
+  const hasItems = config.schema.typeMapByKind[`GraphQL${typeName}Type`].length > 0
   const title = `${typeName} Types`
   const titleDecorated = `// ${title}\n// ${`-`.repeat(title.length)}\n`
   if (hasItems) {
