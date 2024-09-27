@@ -33,9 +33,6 @@ importers:
       '@ark/attest':
         specifier: ^0.19.0
         version: 0.19.0(typescript@5.6.2)
-      '@graphql-yoga/plugin-defer-stream':
-        specifier: ^3.7.0
-        version: 3.7.0(graphql-yoga@5.7.0(graphql@16.9.0))(graphql@16.9.0)
       '@opentelemetry/api':
         specifier: ^1.9.0
         version: 1.9.0
@@ -731,13 +728,6 @@ packages:
   '@graphql-yoga/logger@2.0.0':
     resolution: {integrity: sha512-Mg8psdkAp+YTG1OGmvU+xa6xpsAmSir0hhr3yFYPyLNwzUj95DdIwsMpKadDj9xDpYgJcH3Hp/4JMal9DhQimA==}
     engines: {node: '>=18.0.0'}
-
-  '@graphql-yoga/plugin-defer-stream@3.7.0':
-    resolution: {integrity: sha512-5TwoU0C7dqNca4RRZNQZpppSWSkwgewy+6iKnmCUPBSZlbATqREsc8gXsDMK/LA/qvDEizQG7uxHk1tmYeSKgg==}
-    engines: {node: '>=18.0.0'}
-    peerDependencies:
-      graphql: ^15.2.0 || ^16.0.0
-      graphql-yoga: ^5.7.0
 
   '@graphql-yoga/subscription@5.0.1':
     resolution: {integrity: sha512-1wCB1DfAnaLzS+IdoOzELGGnx1ODEg9nzQXFh4u2j02vAnne6d+v4A7HIH9EqzVdPLoAaMKXCZUUdKs+j3z1fg==}
@@ -4449,12 +4439,6 @@ snapshots:
   '@graphql-yoga/logger@2.0.0':
     dependencies:
       tslib: 2.7.0
-
-  '@graphql-yoga/plugin-defer-stream@3.7.0(graphql-yoga@5.7.0(graphql@16.9.0))(graphql@16.9.0)':
-    dependencies:
-      '@graphql-tools/utils': 10.5.4(graphql@16.9.0)
-      graphql: 16.9.0
-      graphql-yoga: 5.7.0(graphql@16.9.0)
 
   '@graphql-yoga/subscription@5.0.1':
     dependencies:

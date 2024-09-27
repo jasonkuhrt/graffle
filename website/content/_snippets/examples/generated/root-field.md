@@ -9,6 +9,7 @@ import { Pokemon } from './pokemon/__.js'
 const pokemon = Pokemon.create()
 
 const pokemons = await pokemon.query.pokemons({ name: true })
+//                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 console.log(pokemons)
 ```

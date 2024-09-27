@@ -12,13 +12,16 @@ const year = day * 365.25
 const yearsAgo100 = new Date(Date.now() - year * 100).getTime()
 const yearsAgo1 = new Date(Date.now() - year).getTime()
 
+// dprint-ignore
 const pokemons = await pokemon.query.$batch({
   pokemons: [
     [`elderPokemons`, {
+//   ^^^^^^^^^^^^^^^      
       $: { filter: { birthday: { lte: yearsAgo100 } } },
       name: true,
     }],
     [`babyPokemons`, {
+//   ^^^^^^^^^^^^^^
       $: { filter: { birthday: { gte: yearsAgo1 } } },
       name: true,
     }],

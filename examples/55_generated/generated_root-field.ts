@@ -8,5 +8,6 @@ import { showJson } from '../$/helpers.js'
 const pokemon = Pokemon.create()
 
 const pokemons = await pokemon.query.pokemons({ name: true })
+//                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 showJson(pokemons)

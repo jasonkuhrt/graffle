@@ -60,12 +60,12 @@ test(`Query`, () => {
 
   // Interface
   assertType<Q>({ interface: { id: true } })
-  assertType<Q>({ interface: { id: { $defer: true } } })
+  // assertType<Q>({ interface: { id: { $defer: true } } })
   assertType<Q>({ interface: { id: { $include: true } } })
   assertType<Q>({ interface: { id: { $skip: true } } })
-  assertType<Q>({ interface: { id: { $stream: true } } })
+  // assertType<Q>({ interface: { id: { $stream: true } } })
   assertType<Q>({ interface: { __typename: true } })
-  assertType<Q>({ interface: { __typename: { $defer: true } } })
+  // assertType<Q>({ interface: { __typename: { $defer: true } } })
   assertType<Q>({ interface: { $scalars: true } })
   assertType<Q>({ interfaceWithArgs: { $: { id: `abc` }, id: true } })
   // @ts-expect-error needs fragment
@@ -143,18 +143,18 @@ test(`Query`, () => {
   // assertType<S>({ string: include() })
 
   // @defer
-  assertType<Q>({ string: { $defer: true } })
-  assertType<Q>({ string: { $defer: { if: true, label: `foo` } } })
-  assertType<Q>({ string: { $defer: { if: true } } })
-  assertType<Q>({ string: { $defer: {} } })
+  // assertType<Q>({ string: { $defer: true } })
+  // assertType<Q>({ string: { $defer: { if: true, label: `foo` } } })
+  // assertType<Q>({ string: { $defer: { if: true } } })
+  // assertType<Q>({ string: { $defer: {} } })
 
   // (todo limit to lists?)
   // @stream
-  assertType<Q>({ string: { $stream: true } })
-  assertType<Q>({ string: { $stream: { if: true, label: `foo`, initialCount: 0 } } })
-  assertType<Q>({ string: { $stream: { if: true, label: `foo` } } })
-  assertType<Q>({ string: { $stream: { if: true } } })
-  assertType<Q>({ string: { $stream: {} } })
+  // assertType<Q>({ string: { $stream: true } })
+  // assertType<Q>({ string: { $stream: { if: true, label: `foo`, initialCount: 0 } } })
+  // assertType<Q>({ string: { $stream: { if: true, label: `foo` } } })
+  // assertType<Q>({ string: { $stream: { if: true } } })
+  // assertType<Q>({ string: { $stream: {} } })
 
   // Field Group
   // On Object
