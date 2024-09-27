@@ -65,13 +65,14 @@ export namespace Mutation {
   export interface addPokemon extends _RefDefs._Pokemon {
     /**
      * Arguments for `addPokemon` field.
-     * All arguments are required so you must include this.
+     * Some (2/5) arguments are required so you must include this.
      */
     $: {
-      attack: number
-      defense: number
-      hp: number
+      attack?: number | undefined | null
+      defense?: number | undefined | null
+      hp?: number | undefined | null
       name: string
+      type: _RefDefs._PokemonType
     }
   }
   export type addPokemon$Expanded = addPokemon
@@ -92,6 +93,10 @@ export namespace Mutation {
 // ----------------------------------------| Entrypoint Interface |
 
 export interface Query {
+  /**
+   * Select the `beings` field on the `Query` object. Its type is Interface.
+   */
+  beings?: Query.beings$Expanded | $SelectionSet.AliasInput<Query.beings>
   /**
    * Select the `pokemon` field on the `Query` object. Its type is Object.
    */
@@ -138,6 +143,8 @@ export interface Query$FragmentInline extends Query, $SelectionSet.Directive.$Gr
 // ----------------------------------------| Fields Interfaces |
 
 export namespace Query {
+  export interface beings extends _RefDefs._Being {}
+  export type beings$Expanded = beings
   export interface pokemon extends _RefDefs._Pokemon {}
   export type pokemon$Expanded = pokemon
   export interface pokemonByName extends _RefDefs._Pokemon {
@@ -181,6 +188,39 @@ export namespace Query {
 //
 //
 // ==================================================================================================
+//                                       GraphQLEnumType Types
+// ==================================================================================================
+//
+//
+//
+//
+//
+//
+
+export type PokemonType = 'electric' | 'fire' | 'grass' | 'water'
+
+export type TrainerClass =
+  | 'bugCatcher'
+  | 'camper'
+  | 'picnicker'
+  | 'psychic'
+  | 'psychicMedium'
+  | 'psychicYoungster'
+  | 'sailor'
+  | 'superNerd'
+  | 'tamer'
+  | 'teamRocketGrunt'
+  | 'triathlete'
+  | 'youngster'
+  | 'youth'
+
+//
+//
+//
+//
+//
+//
+// ==================================================================================================
 //                                    GraphQLInputObjectType Types
 // ==================================================================================================
 //
@@ -212,6 +252,66 @@ export interface StringFilter {
 //
 //
 // ==================================================================================================
+//                                     GraphQLInterfaceType Types
+// ==================================================================================================
+//
+//
+//
+//
+//
+//
+
+// --------------
+// Interface Type Being
+// --------------
+
+export interface Being extends $SelectionSet.Bases.ObjectLike {
+  id?: Being.id
+  name?: Being.name
+  ___on_Patron?: Patron
+  ___on_Pokemon?: Pokemon
+  ___on_Trainer?: Trainer
+
+  /**
+   * Inline fragments for field groups.
+   *
+   * Generally a niche feature. This can be useful for example to apply an `@include` directive to a subset of the
+   * selection set in turn allowing you to pass a variable to opt in/out of that selection during execution on the server.
+   *
+   * @see https://spec.graphql.org/draft/#sec-Inline-Fragments
+   */
+  ___?: Being$FragmentInline | Being$FragmentInline[]
+
+  /**
+   * A meta field. Is the name of the type being selected. Since this is a interface type and thus polymorphic,
+   * the name is one of the implementor type names, whichever is ultimately returned at runtime.
+   *
+   * @see https://graphql.org/learn/queries/#meta-fields
+   */
+  __typename?:
+    | $SelectionSet.Indicator.NoArgsIndicator$Expanded
+    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
+}
+
+export interface Being$FragmentInline extends Being, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}
+
+export namespace Being {
+  export type id$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
+
+  export type id = $SelectionSet.Indicator.NoArgsIndicator
+
+  export type name$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
+
+  export type name = $SelectionSet.Indicator.NoArgsIndicator
+}
+
+//
+//
+//
+//
+//
+//
+// ==================================================================================================
 //                                      GraphQLObjectType Types
 // ==================================================================================================
 //
@@ -220,6 +320,72 @@ export interface StringFilter {
 //
 //
 //
+
+//
+//
+//
+//
+// GRAPHQL SELECTION SET
+// OBJECT
+// --------------------------------------------------------------------------------------------------
+//                                               Patron
+// --------------------------------------------------------------------------------------------------
+//
+//
+
+// ----------------------------------------| Entrypoint Interface |
+
+export interface Patron extends $SelectionSet.Bases.ObjectLike {
+  /**
+   * Select the `id` field on the `Patron` object. Its type is `Int` (a `Scalar`).
+   */
+  id?: Patron.id$Expanded | $SelectionSet.AliasInput<Patron.id>
+  /**
+   * Select the `money` field on the `Patron` object. Its type is `Int` (a `Scalar`).
+   */
+  money?: Patron.money$Expanded | $SelectionSet.AliasInput<Patron.money>
+  /**
+   * Select the `name` field on the `Patron` object. Its type is `String` (a `Scalar`).
+   */
+  name?: Patron.name$Expanded | $SelectionSet.AliasInput<Patron.name>
+
+  /**
+   * Inline fragments for field groups.
+   *
+   * Generally a niche feature. This can be useful for example to apply an `@include` directive to a subset of the
+   * selection set in turn allowing you to pass a variable to opt in/out of that selection during execution on the server.
+   *
+   * @see https://spec.graphql.org/draft/#sec-Inline-Fragments
+   */
+  ___?: Patron$FragmentInline | Patron$FragmentInline[]
+
+  /**
+   * A meta field. Is the name of the type being selected.
+   *
+   * @see https://graphql.org/learn/queries/#meta-fields
+   */
+  __typename?:
+    | $SelectionSet.Indicator.NoArgsIndicator$Expanded
+    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
+}
+
+export interface Patron$FragmentInline extends Patron, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}
+
+// ----------------------------------------| Fields Interfaces |
+
+export namespace Patron {
+  export type id$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
+
+  export type id = $SelectionSet.Indicator.NoArgsIndicator
+
+  export type money$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
+
+  export type money = $SelectionSet.Indicator.NoArgsIndicator
+
+  export type name$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
+
+  export type name = $SelectionSet.Indicator.NoArgsIndicator
+}
 
 //
 //
@@ -264,6 +430,10 @@ export interface Pokemon extends $SelectionSet.Bases.ObjectLike {
    * Select the `trainer` field on the `Pokemon` object. Its type is Object.
    */
   trainer?: Pokemon.trainer$Expanded | $SelectionSet.AliasInput<Pokemon.trainer>
+  /**
+   * Select the `type` field on the `Pokemon` object. Its type is Enum.
+   */
+  type?: Pokemon.type$Expanded | $SelectionSet.AliasInput<Pokemon.type>
 
   /**
    * Inline fragments for field groups.
@@ -316,6 +486,9 @@ export namespace Pokemon {
 
   export interface trainer extends _RefDefs._Trainer {}
   export type trainer$Expanded = trainer
+  export type type$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
+
+  export type type = $SelectionSet.Indicator.NoArgsIndicator
 }
 
 //
@@ -333,6 +506,14 @@ export namespace Pokemon {
 // ----------------------------------------| Entrypoint Interface |
 
 export interface Trainer extends $SelectionSet.Bases.ObjectLike {
+  /**
+   * Select the `class` field on the `Trainer` object. Its type is Enum.
+   */
+  class?: Trainer.$class$Expanded | $SelectionSet.AliasInput<Trainer.$class>
+  /**
+   * Select the `fans` field on the `Trainer` object. Its type is Object.
+   */
+  fans?: Trainer.fans$Expanded | $SelectionSet.AliasInput<Trainer.fans>
   /**
    * Select the `id` field on the `Trainer` object. Its type is `Int` (a `Scalar`).
    */
@@ -371,6 +552,12 @@ export interface Trainer$FragmentInline extends Trainer, $SelectionSet.Directive
 // ----------------------------------------| Fields Interfaces |
 
 export namespace Trainer {
+  export type $class$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
+
+  export type $class = $SelectionSet.Indicator.NoArgsIndicator
+
+  export interface fans extends _RefDefs._Patron {}
+  export type fans$Expanded = fans
   export type id$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
   export type id = $SelectionSet.Indicator.NoArgsIndicator
@@ -393,9 +580,13 @@ export namespace Trainer {
 export namespace _RefDefs {
   export type _Mutation = Mutation
   export type _Query = Query
+  export type _PokemonType = PokemonType
+  export type _TrainerClass = TrainerClass
   export type _DateFilter = DateFilter
   export type _PokemonFilter = PokemonFilter
   export type _StringFilter = StringFilter
+  export type _Being = Being
+  export type _Patron = Patron
   export type _Pokemon = Pokemon
   export type _Trainer = Trainer
 }

@@ -20,8 +20,10 @@ import type * as $SelectionSets from './SelectionSets.js'
 export interface $MethodsSelect {
   Mutation: Mutation
   Query: Query
+  Patron: Patron
   Pokemon: Pokemon
   Trainer: Trainer
+  Being: Being
 }
 
 //
@@ -64,10 +66,34 @@ export interface Query {
 //
 //
 
+export interface Patron {
+  <$SelectionSet>(selectionSet: $Utilities.Exact<$SelectionSet, $SelectionSets.Patron>): $SelectionSet
+}
+
 export interface Pokemon {
   <$SelectionSet>(selectionSet: $Utilities.Exact<$SelectionSet, $SelectionSets.Pokemon>): $SelectionSet
 }
 
 export interface Trainer {
   <$SelectionSet>(selectionSet: $Utilities.Exact<$SelectionSet, $SelectionSets.Trainer>): $SelectionSet
+}
+
+//
+//
+//
+//
+//
+//
+// ==================================================================================================
+//                                             Interface
+// ==================================================================================================
+//
+//
+//
+//
+//
+//
+
+export interface Being {
+  <$SelectionSet>(selectionSet: $Utilities.Exact<$SelectionSet, $SelectionSets.Being>): $SelectionSet
 }

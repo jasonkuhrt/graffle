@@ -29,11 +29,11 @@ const pokemons = await pokemon.document({
     makeSomeNewPokemons: {
       addPokemon: [
         [`addAngryPikachu`, {
-          $: { name: `AngryPikachu`, attack: 100, defense: 100, hp: 100 },
+          $: { name: `AngryPikachu`, attack: 100, defense: 100, hp: 100, type: `electric` },
           name: true,
         }],
         [`addAngryCharizard`, {
-          $: { name: `AngryCharizard`, attack: 100, defense: 100, hp: 100 },
+          $: { name: `AngryCharizard`, attack: 100, defense: 100, hp: 100, type: `fire` },
           name: true,
         }],
       ],

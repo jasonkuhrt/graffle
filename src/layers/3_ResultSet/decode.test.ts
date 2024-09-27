@@ -13,6 +13,7 @@ test.each<[selectionSet: SelectionSets.Query, data: object]>([
   [{ unionFooBar: { ___on_Foo: { id: true } } }, { unionFooBar: { id: `x` } }],
   [{ unionFooBar: { ___on_Foo: { id: true } } }, { unionFooBar: null }],
   [{ interface: { ___on_Object1ImplementingInterface: { id: true } } }, { interface: { id: `x` } }],
+  [{ abcEnum: true }, { abcEnum: `foo` }],
 ])(`%s -----> %s`, (selectionSet, data) => {
   // @ts-expect-error fixme
   expect(decode($Index.Root.Query, selectionSet, data)).toEqual(data)

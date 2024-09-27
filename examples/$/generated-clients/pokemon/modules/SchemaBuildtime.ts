@@ -9,15 +9,17 @@ export namespace Root {
     addPokemon: $.Field<
       $.Output.Nullable<Object.Pokemon>,
       $.Args<{
-        attack: $.Input.Field<$Scalar.Int>
-        defense: $.Input.Field<$Scalar.Int>
-        hp: $.Input.Field<$Scalar.Int>
+        attack: $.Input.Field<$.Input.Nullable<$Scalar.Int>>
+        defense: $.Input.Field<$.Input.Nullable<$Scalar.Int>>
+        hp: $.Input.Field<$.Input.Nullable<$Scalar.Int>>
         name: $.Input.Field<$Scalar.String>
+        type: $.Input.Field<Enum.PokemonType>
       }, false>
     >
   }>
 
   export type Query = $.Output.ObjectQuery<{
+    beings: $.Field<$.Output.List<Interface.Being>, null>
     pokemon: $.Field<$.Output.Nullable<$.Output.List<Object.Pokemon>>, null>
     pokemonByName: $.Field<
       $.Output.Nullable<$.Output.List<Object.Pokemon>>,
@@ -44,7 +46,26 @@ export namespace Root {
 //                             Enum                             //
 // ------------------------------------------------------------ //
 export namespace Enum {
-  // -- no types --
+  export type PokemonType = $.Enum<'PokemonType', ['electric', 'fire', 'grass', 'water']>
+
+  export type TrainerClass = $.Enum<
+    'TrainerClass',
+    [
+      'bugCatcher',
+      'camper',
+      'picnicker',
+      'psychic',
+      'psychicMedium',
+      'psychicYoungster',
+      'sailor',
+      'superNerd',
+      'tamer',
+      'teamRocketGrunt',
+      'triathlete',
+      'youngster',
+      'youth',
+    ]
+  >
 }
 // ------------------------------------------------------------ //
 //                         InputObject                          //
@@ -69,12 +90,21 @@ export namespace InputObject {
 //                          Interface                           //
 // ------------------------------------------------------------ //
 export namespace Interface {
-  // -- no types --
+  export type Being = $.Interface<'Being', {
+    id: $.Field<$.Output.Nullable<$Scalar.Int>, null>
+    name: $.Field<$.Output.Nullable<$Scalar.String>, null>
+  }, [Object.Patron, Object.Pokemon, Object.Trainer]>
 }
 // ------------------------------------------------------------ //
 //                            Object                            //
 // ------------------------------------------------------------ //
 export namespace Object {
+  export type Patron = $.Object$2<'Patron', {
+    id: $.Field<$.Output.Nullable<$Scalar.Int>, null>
+    money: $.Field<$.Output.Nullable<$Scalar.Int>, null>
+    name: $.Field<$.Output.Nullable<$Scalar.String>, null>
+  }>
+
   export type Pokemon = $.Object$2<'Pokemon', {
     attack: $.Field<$.Output.Nullable<$Scalar.Int>, null>
     birthday: $.Field<$.Output.Nullable<$Scalar.Int>, null>
@@ -83,9 +113,12 @@ export namespace Object {
     id: $.Field<$.Output.Nullable<$Scalar.Int>, null>
     name: $.Field<$.Output.Nullable<$Scalar.String>, null>
     trainer: $.Field<$.Output.Nullable<Object.Trainer>, null>
+    type: $.Field<$.Output.Nullable<Enum.PokemonType>, null>
   }>
 
   export type Trainer = $.Object$2<'Trainer', {
+    class: $.Field<$.Output.Nullable<Enum.TrainerClass>, null>
+    fans: $.Field<$.Output.Nullable<$.Output.List<Object.Patron>>, null>
     id: $.Field<$.Output.Nullable<$Scalar.Int>, null>
     name: $.Field<$.Output.Nullable<$Scalar.String>, null>
     pokemon: $.Field<$.Output.Nullable<$.Output.List<Object.Pokemon>>, null>
