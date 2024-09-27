@@ -11,3 +11,8 @@ export const fileExists = async (path: string) => {
     }),
   )
 }
+
+export const isPathToADirectory = async (path: string) => {
+  const stat = await fs.stat(path)
+  return stat.isDirectory()
+}

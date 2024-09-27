@@ -5,7 +5,7 @@ import * as Path from 'node:path'
 import { introspectionQuery } from '../../cli/_helpers.js'
 import { getTypeMapByKind, type TypeMapByKind } from '../../lib/graphql.js'
 import { omitUndefinedKeys } from '../../lib/prelude.js'
-import { fileExists } from './helpers/fs.js'
+import { fileExists, isPathToADirectory } from './helpers/fs.js'
 
 export interface Input {
   sourceSchema: {
@@ -13,7 +13,7 @@ export interface Input {
     /**
      * Defaults to the source directory if set, otherwise the current working directory.
      */
-    dirPath?: string
+    dirOrFilePath?: string
   } | {
     type: 'url'
     url: URL
@@ -27,7 +27,6 @@ export interface Input {
    */
   sourceDirPath?: string
   sourceCustomScalarCodecsFilePath?: string
-  schemaPath?: string
   /**
    * Override import paths to graffle package within the generated code.
    * Used by Graffle test suite to have generated clients point to source
@@ -56,13 +55,14 @@ export interface Config {
   name: string
   paths: {
     project: {
+      inputs: {
+        root: string
+        schema: null | string
+        customScalarCodecs: string
+      }
       outputs: {
         root: string
         modules: string
-      }
-      inputs: {
-        root: string
-        customScalarCodecs: string
       }
     }
     imports: {
@@ -129,7 +129,7 @@ export const createConfig = async (input: Input): Promise<Config> => {
 
   const sourceSchema = await resolveSourceSchema(input)
 
-  const schema = buildSchema(sourceSchema)
+  const schema = buildSchema(sourceSchema.content)
   const typeMapByKind = getTypeMapByKind(schema)
   const errorObjects = errorTypeNamePattern
     ? Object.values(typeMapByKind.GraphQLObjectType).filter(_ => _.name.match(errorTypeNamePattern))
@@ -151,6 +151,7 @@ export const createConfig = async (input: Input): Promise<Config> => {
         },
         inputs: {
           root: inputPathDirRoot,
+          schema: sourceSchema.type === `introspection` ? null : sourceSchema.path,
           customScalarCodecs: inputPathCustomScalarCodecs,
         },
       },
@@ -182,16 +183,21 @@ export const createConfig = async (input: Input): Promise<Config> => {
   }
 }
 
-const resolveSourceSchema = async (input: Input) => {
+const defaultSchemaFileName = `schema.graphql`
+
+const resolveSourceSchema = async (
+  input: Input,
+): Promise<{ type: 'introspection'; content: string } | { type: 'file'; content: string; path: string }> => {
   if (input.sourceSchema.type === `sdl`) {
-    const sourceDirPath = input.sourceSchema.dirPath ?? input.sourceDirPath ?? process.cwd()
-    const schemaPath = input.schemaPath ?? Path.join(sourceDirPath, `schema.graphql`)
-    const sdl = await fs.readFile(schemaPath, `utf8`)
-    return sdl
+    const fileOrDirPath = input.sourceSchema.dirOrFilePath ?? input.sourceDirPath ?? process.cwd()
+    const isDir = await isPathToADirectory(fileOrDirPath)
+    const finalPath = isDir ? Path.join(fileOrDirPath, defaultSchemaFileName) : fileOrDirPath
+    const sdl = await fs.readFile(finalPath, `utf8`)
+    return { type: `file`, content: sdl, path: finalPath }
   } else {
     const data = await introspectionQuery(input.sourceSchema.url)
     const schema = buildClientSchema(data)
     const sdl = printSchema(schema)
-    return sdl
+    return { type: `introspection`, content: sdl }
   }
 }
