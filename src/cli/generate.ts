@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 import { Command } from '@molt/command'
-import * as Path from 'node:path'
 import { z } from 'zod'
 import { Generator } from '../layers/4_generator/__.js'
 import { urlParseSafe } from '../lib/prelude.js'
