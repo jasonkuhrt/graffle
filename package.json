@@ -136,7 +136,7 @@
     "@types/body-parser": "^1.19.5",
     "@types/express": "^5.0.0",
     "@types/json-bigint": "^1.0.4",
-    "@types/node": "^22.7.3",
+    "@types/node": "^22.7.4",
     "@typescript-eslint/eslint-plugin": "^8.7.0",
     "@typescript-eslint/parser": "^8.7.0",
     "async-cleanup": "^1.0.0",
