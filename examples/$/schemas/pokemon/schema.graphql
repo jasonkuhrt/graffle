@@ -1,13 +1,24 @@
+interface Being {
+  id: Int
+  name: String
+}
+
 input DateFilter {
   gte: Float
   lte: Float
 }
 
 type Mutation {
-  addPokemon(attack: Int!, defense: Int!, hp: Int!, name: String!): Pokemon
+  addPokemon(attack: Int, defense: Int, hp: Int, name: String!, type: PokemonType!): Pokemon
 }
 
-type Pokemon {
+type Patron implements Being {
+  id: Int
+  money: Int
+  name: String
+}
+
+type Pokemon implements Being {
   attack: Int
   birthday: Int
   defense: Int
@@ -15,6 +26,7 @@ type Pokemon {
   id: Int
   name: String
   trainer: Trainer
+  type: PokemonType
 }
 
 input PokemonFilter {
@@ -22,7 +34,15 @@ input PokemonFilter {
   name: StringFilter
 }
 
+enum PokemonType {
+  electric
+  fire
+  grass
+  water
+}
+
 type Query {
+  beings: [Being!]!
   pokemon: [Pokemon!]
   pokemonByName(name: String!): [Pokemon!]
   pokemons(filter: PokemonFilter): [Pokemon!]
@@ -35,8 +55,26 @@ input StringFilter {
   in: [String!]
 }
 
-type Trainer {
+type Trainer implements Being {
+  class: TrainerClass
+  fans: [Patron!]
   id: Int
   name: String
   pokemon: [Pokemon!]
+}
+
+enum TrainerClass {
+  bugCatcher
+  camper
+  picnicker
+  psychic
+  psychicMedium
+  psychicYoungster
+  sailor
+  superNerd
+  tamer
+  teamRocketGrunt
+  triathlete
+  youngster
+  youth
 }

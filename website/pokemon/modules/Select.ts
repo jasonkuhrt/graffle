@@ -44,6 +44,11 @@ export namespace Select {
   export type Query<$SelectionSet extends SelectionSets.Query> = ResultSet.Root<$SelectionSet, Index, 'Query'>
   // Object Types
   // ------------
+  export type Patron<$SelectionSet extends SelectionSets.Patron> = ResultSet.Object$<
+    $SelectionSet,
+    Index,
+    Index['allTypes']['Patron']
+  >
   export type Pokemon<$SelectionSet extends SelectionSets.Pokemon> = ResultSet.Object$<
     $SelectionSet,
     Index,
@@ -60,6 +65,9 @@ export namespace Select {
   // -- None --
   // Interface Types
   // ---------------
-
-  // -- None --
+  export type Being<$SelectionSet extends SelectionSets.Being> = ResultSet.Interface<
+    $SelectionSet,
+    Index,
+    Index['allTypes']['Being']
+  >
 }

@@ -1,6 +1,6 @@
 import type { ExecutionResult } from 'graphql'
 import { StandardScalarTypeNames } from '../../lib/graphql.js'
-import { assertArray, mapValues } from '../../lib/prelude.js'
+import { assertArray, casesExhausted, mapValues } from '../../lib/prelude.js'
 import type { Object$2, Schema } from '../1_Schema/__.js'
 import { Output } from '../1_Schema/__.js'
 import { readMaybeThunk } from '../1_Schema/core/helpers.js'
@@ -163,6 +163,10 @@ const decodeCustomScalarValue = (
     return fieldValue
   }
 
+  if (schemaTypeWithoutNonNull.kind === `Enum`) {
+    return fieldValue
+  }
+
   assertGraphQLObject(fieldValue)
 
   if (schemaTypeWithoutNonNull.kind === `Object`) {
@@ -170,7 +174,7 @@ const decodeCustomScalarValue = (
     return decode(schemaTypeWithoutNonNull, selectionSet as any, fieldValue)
   }
 
-  if (schemaTypeWithoutNonNull.kind === `Interface` || schemaTypeWithoutNonNull.kind === `Union`) {
+  if (schemaTypeWithoutNonNull.kind === `Interface` || schemaTypeWithoutNonNull.kind === `Union`) { // eslint-disable-line
     const possibleObjects = schemaTypeWithoutNonNull.kind === `Interface`
       ? schemaTypeWithoutNonNull.implementors
       : schemaTypeWithoutNonNull.members
@@ -187,6 +191,8 @@ const decodeCustomScalarValue = (
     // todo fix any cast
     return decode(ObjectType, selectionSet as any, fieldValue)
   }
+
+  casesExhausted(schemaTypeWithoutNonNull)
 
   return fieldValue
 }

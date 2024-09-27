@@ -15,15 +15,22 @@ export interface Index {
   allTypes: {
     Mutation: Schema.Root.Mutation
     Query: Schema.Root.Query
+    PokemonType: Schema.Enum.PokemonType
+    TrainerClass: Schema.Enum.TrainerClass
+    Patron: Schema.Object.Patron
     Pokemon: Schema.Object.Pokemon
     Trainer: Schema.Object.Trainer
+    Being: Schema.Interface.Being
   }
   objects: {
+    Patron: Schema.Object.Patron
     Pokemon: Schema.Object.Pokemon
     Trainer: Schema.Object.Trainer
   }
   unions: {}
-  interfaces: {}
+  interfaces: {
+    Being: Schema.Interface.Being
+  }
   error: {
     objects: {}
     objectsTypename: {}

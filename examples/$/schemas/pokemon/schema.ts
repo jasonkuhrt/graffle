@@ -17,16 +17,46 @@ export const builder = new SchemaBuilder<{
   plugins: [SimpleObjectsPlugin, ZodPlugin],
 })
 
+const TrainerClass = builder.enumType(`TrainerClass`, { values: Object.values(DatabaseServer.TrainerClass) })
+
+const Being = builder.interfaceRef<DatabaseServer.Being>('Being').implement({
+  resolveType: (value) => {
+    return value.kind
+  },
+  fields: (t) => ({
+    id: t.int({ resolve: (being) => being.id }),
+    name: t.string({ resolve: (being) => being.name }),
+  }),
+})
+
+const Patron = builder.objectRef<DatabaseServer.Patron>(`Patron`).implement({
+  interfaces: [Being],
+  fields: (t) => ({
+    id: t.int({ resolve: (fan) => fan.id }),
+    money: t.int({ resolve: (fan) => fan.money }),
+    name: t.string({ resolve: (fan) => fan.name }),
+  }),
+})
+
 const Trainer = builder.objectRef<DatabaseServer.Trainer>(`Trainer`).implement({
+  interfaces: [Being],
   fields: (t) => ({
     id: t.int({ resolve: (trainer) => trainer.id }),
     name: t.string({ resolve: (trainer) => trainer.name }),
+    class: t.field({ type: TrainerClass, resolve: (trainer) => trainer.class }),
+    fans: t.field({
+      type: t.listRef(Patron),
+      resolve: (trainer, _, ctx) =>
+        DatabaseServer.tenant(ctx.tenant).patrons.filter((f) => trainer.patronIds.includes(f.id)),
+    }),
   }),
 })
 
 const Pokemon = builder.objectRef<DatabaseServer.Pokemon>(`Pokemon`).implement({
+  interfaces: [Being],
   fields: (t) => ({
     id: t.int({ resolve: (pokemon) => pokemon.id }),
+    type: t.field({ type: PokemonType, resolve: (pokemon) => pokemon.type }),
     name: t.string({ resolve: (pokemon) => pokemon.name }),
     hp: t.int({ resolve: (pokemon) => pokemon.hp }),
     attack: t.int({ resolve: (pokemon) => pokemon.attack }),
@@ -49,6 +79,7 @@ builder.objectFields(Trainer, t => ({
 }))
 
 builder.queryType()
+
 builder.mutationType()
 
 const StringFilter = builder.inputType(`StringFilter`, {
@@ -122,6 +153,20 @@ builder.queryField(`trainers`, (t) =>
     resolve: (_, __, ctx) => DatabaseServer.tenant(ctx.tenant).trainers,
   }))
 
+builder.queryField(`beings`, (t) =>
+  t.field({
+    nullable: false,
+    type: t.listRef(Being),
+    resolve: (_, __, ctx) => {
+      const db = DatabaseServer.tenant(ctx.tenant)
+      return [
+        ...db.patrons,
+        ...db.trainers,
+        ...db.pokemon,
+      ]
+    },
+  }))
+
 builder.queryField(`trainerByName`, (t) =>
   t.field({
     type: Trainer,
@@ -132,6 +177,8 @@ builder.queryField(`trainerByName`, (t) =>
       DatabaseServer.tenant(ctx.tenant).trainers.find((t) => t.name.includes(name)) || null,
   }))
 
+const PokemonType = builder.enumType(`PokemonType`, { values: Object.values(DatabaseServer.PokemonType) })
+
 builder.mutationField(`addPokemon`, (t) =>
   t.field({
     type: Pokemon,
@@ -140,17 +187,20 @@ builder.mutationField(`addPokemon`, (t) =>
         required: true,
         validate: { minLength: [1, { message: 'Pokemon name cannot be empty.' }] },
       }),
-      hp: t.arg.int({ required: true }),
-      attack: t.arg.int({ required: true }),
-      defense: t.arg.int({ required: true }),
+      type: t.arg({ type: PokemonType, required: true }),
+      hp: t.arg.int({ required: false }),
+      attack: t.arg.int({ required: false }),
+      defense: t.arg.int({ required: false }),
     },
-    resolve: (_, { name, hp, attack, defense }, ctx) => {
-      const newPokemon = {
+    resolve: (_, { name, type, hp, attack, defense }, ctx) => {
+      const newPokemon: DatabaseServer.Pokemon = {
+        kind: `Pokemon`,
+        type,
         id: DatabaseServer.tenant(ctx.tenant).pokemon.length + 1,
         name,
-        hp,
-        attack,
-        defense,
+        hp: hp || 1,
+        attack: attack || 0,
+        defense: defense || 0,
         trainerId: null,
         birthday: new Date().getTime(),
       }
