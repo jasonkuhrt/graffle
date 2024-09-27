@@ -62,9 +62,11 @@ const sidebars = fixTitles(fixLinks(generateSidebar([
   },
 ]) as SidebarMulti))
 
-sidebars['/examples/'].items.unshift({ text: 'Introduction', link: '/' })
+sidebars['/examples/'].items.find(_ => _.text === 'About')!.items!.unshift({ text: 'Introduction', link: '/' })
 sidebars['/guides/'].items.unshift({ text: 'Introduction', link: '/' })
+
 const rootItems = sidebars['/guides/'].items.filter(_ => !_.items)
+
 sidebars['/guides/'].items = sidebars['/guides/'].items.filter(_ => _.items && _.items.length > 0)
 sidebars['/guides/'].items.unshift(...rootItems)
 

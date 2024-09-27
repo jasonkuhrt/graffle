@@ -67,7 +67,9 @@ const generateExamplePages = async (examplesTransformed: ExampleTransformed[]) =
   // Delete all existing to handle case of renaming or deleting examples.
   await deleteFiles({
     pattern: `./website/content/examples/**/*`,
-    options: { ignore: [`./website/content/examples/index.md`] },
+    options: {
+      ignore: [`./website/content/examples/index.md`, `./website/content/examples/01_about/**/*.md`],
+    },
   })
 
   await Promise.all(
