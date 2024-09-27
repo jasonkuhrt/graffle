@@ -31,7 +31,7 @@ export const test = testBase.extend<Fixtures>({
     // @ts-expect-error fixme
     await use(graffle)
   },
-  pokemonService: async ({}, use) => { // eslint-disable-next-line
+  pokemonService: async ({}, use) => { // eslint-disable-line
     const pokemonService = await serveSchema({ schema })
     await use(pokemonService)
     await pokemonService.stop()
