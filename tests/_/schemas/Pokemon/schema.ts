@@ -19,7 +19,7 @@ export const builder = new SchemaBuilder<{
 
 const TrainerClass = builder.enumType(`TrainerClass`, { values: Object.values(DatabaseServer.TrainerClass) })
 
-const Being = builder.interfaceRef<DatabaseServer.Being>('Being').implement({
+const Being = builder.interfaceRef<DatabaseServer.Being>(`Being`).implement({
   resolveType: (value) => {
     return value.kind
   },
@@ -185,7 +185,7 @@ builder.mutationField(`addPokemon`, (t) =>
     args: {
       name: t.arg.string({
         required: true,
-        validate: { minLength: [1, { message: 'Pokemon name cannot be empty.' }] },
+        validate: { minLength: [1, { message: `Pokemon name cannot be empty.` }] },
       }),
       type: t.arg({ type: PokemonType, required: true }),
       hp: t.arg.int({ required: false }),
