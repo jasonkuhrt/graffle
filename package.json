@@ -70,11 +70,9 @@
   "homepage": "https://github.com/jasonkuhrt/graffle",
   "scripts": {
     "serve:pokemon": "tsx tests/_/services/pokemonManual.ts",
-    "gen:graffle": "pnpm gen:test:schema && pnpm gen:graffle:examples && pnpm build && cd website && pnpm gen:graffle",
+    "gen:graffle": "tsx tests/_/schemas/generate.ts && pnpm build && cd website && pnpm gen:graffle",
     "graffle": "tsx ./src/cli/generate.ts",
-    "gen:test:schema": "tsx tests/_/schemaGenerate.ts",
     "gen:examples": "tsx scripts/generate-examples-derivatives/generate.ts && pnpm format",
-    "gen:graffle:examples": "tsx './examples/$/schemas/pokemon/generateSdl.ts' && pnpm graffle --name Pokemon --defaultSchemaUrl http://localhost:3000/graphql --schema './examples/$/schemas/pokemon/schema.graphql' --output './examples/$/generated-clients/pokemon' --libraryPathClient ../../../../../src/entrypoints/client.js --libraryPathSchema ../../../../../src/entrypoints/schema.js --libraryPathScalars ../../../../../src/entrypoints/scalars.js --libraryPathUtilitiesForGenerated ../../../../../src/entrypoints/utilities-for-generated.js",
     "dev": "rm -rf dist && tsc --watch",
     "format": "pnpm build:docs && dprint fmt",
     "lint": "eslint . --fix",

@@ -1,6 +1,6 @@
 import type { GlobalSetupContext } from 'vitest/node'
-import { schema } from '../../../examples/$/schemas/pokemon/schema.js'
 import { serveSchema } from '../lib/serveSchema.js'
+import { schema } from '../schemas/Pokemon/schema.js'
 
 declare module 'vitest' {
   export interface ProvidedContext {

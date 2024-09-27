@@ -3,8 +3,7 @@
 
 <!-- dprint-ignore-start -->
 ```ts twoslash
-// ---cut---
-import { Pokemon } from './pokemon/__.js'
+import { Pokemon } from './Pokemon/__.js'
 
 const atlas = Pokemon.create()
 

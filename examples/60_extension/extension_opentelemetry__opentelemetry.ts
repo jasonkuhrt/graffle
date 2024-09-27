@@ -1,7 +1,7 @@
 import { ConsoleSpanExporter, SimpleSpanProcessor } from '@opentelemetry/sdk-trace-base'
 import { NodeTracerProvider } from '@opentelemetry/sdk-trace-node'
 import { Opentelemetry } from '../../src/entrypoints/extensions.js'
-import { Pokemon } from '../$/generated-clients/pokemon/__.js'
+import { Pokemon } from '../../tests/_/schemas/Pokemon/graffle/__.js'
 import { interceptAndShowOutput, show } from '../$/helpers.js'
 
 interceptAndShowOutput()

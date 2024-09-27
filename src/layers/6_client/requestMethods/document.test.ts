@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest'
-import { db } from '../../../../tests/_/db.js'
-import { Graffle } from '../../../../tests/_/schema/generated/__.js'
-import { schema } from '../../../../tests/_/schema/schema.js'
+import { db } from '../../../../tests/_/schemas/db.js'
+import { Graffle } from '../../../../tests/_/schemas/KitchenSink/graffle/__.js'
+import { schema } from '../../../../tests/_/schemas/KitchenSink/schema.js'
 import type { Errors } from '../../../lib/errors/__.js'
 
 // todo test with custom scalars

@@ -2,7 +2,7 @@
  * This example shows how to write whole GraphQL documents in the TypeScript interface.
  */
 
-import { Pokemon } from '../$/generated-clients/pokemon/__.js'
+import { Pokemon } from '../../tests/_/schemas/Pokemon/graffle/__.js'
 import { showJson } from '../$/helpers.js'
 
 const pokemon = Pokemon.create()

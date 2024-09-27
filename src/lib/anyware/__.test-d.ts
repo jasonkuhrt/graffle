@@ -1,7 +1,7 @@
 /* eslint-disable */
 
 import { describe, expectTypeOf, test } from 'vitest'
-import { Result } from '../../../tests/_/schema/generated/modules/SchemaRuntime.js'
+import { Result } from '../../../tests/_/schemas/KitchenSink/graffle/modules/SchemaRuntime.js'
 import { ContextualError } from '../errors/ContextualError.js'
 import { type MaybePromise } from '../prelude.js'
 import { Anyware } from './__.js'

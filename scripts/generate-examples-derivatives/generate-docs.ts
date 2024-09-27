@@ -128,6 +128,7 @@ const generateExampleLinksSnippets = async (examplesTransformed: ExampleTransfor
 
 const transformRewriteGraffleImports = (example: Example) => {
   const newContent = example.file.content
+    .replaceAll(/from '.+\/tests\/_\/schemas\/(.*)\/graffle\/(.+)\.js'/g, `from './$1/$2.js'`)
     .replaceAll(
       /from '.*entrypoints\/main.js'/g,
       `from 'graffle'`,
@@ -136,20 +137,7 @@ const transformRewriteGraffleImports = (example: Example) => {
       /from '.*entrypoints\/(.*?).js'/g,
       `from 'graffle/$1'`,
     )
-    .replaceAll(
-      /\.js$/g,
-      ``,
-    )
-    .replaceAll(
-      `import { Atlas } from '../$/generated-clients/atlas/__.js'`,
-      `import { Graffle as Atlas } from './graffle/__.js'`,
-    )
-    .replaceAll(
-      /import ({[^}]+}) from '.*\/generated-clients\/([^/]+)\/__\.js'/g,
-      `// ---cut---
-import $1 from './$2/__.js'`,
-    )
-    // Any remaining $ imports are entirely removed.
+    // Any $ imports are entirely removed.
     .replaceAll(/import.*'.*\$.*'\n/g, ``)
 
   return {
