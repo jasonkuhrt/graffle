@@ -36,6 +36,9 @@ console.log(pokemons)
   },
   {
     "name": "Bulbasaur"
+  },
+  {
+    "name": "Fishy"
   }
 ]
 ```

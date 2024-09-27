@@ -21,7 +21,7 @@ const pokemon = Pokemon
 
 type _result = typeof result
 const result = await pokemon.mutation.addPokemon({
-  $: { name: ``, hp: 1, defense: 0, attack: 0 },
+  $: { name: `Fishy`, hp: 1, defense: 0, attack: 0, type: `water` },
   name: true,
 })
 console.log(result)
@@ -43,29 +43,7 @@ try {
 
 <!-- dprint-ignore-start -->
 ```txt
-ContextualAggregateError: One or more errors in the execution result.
-    at handleOutput (/some/path/to/handleOutput.ts:XX:XX:19)
-    at run (/some/path/to/client.ts:XX:XX:12)
-    at process.processTicksAndRejections (node:internal/process/task_queues:XX:XX)
-    at async executeDocument (/some/path/to/client.ts:XX:XX:12)
-    at async executeRootTypeField (/some/path/to/client.ts:XX:XX:20)
-    at async <anonymous> (/some/path/to/output_return-error_return-error-execution__return-error-execution.ts:XX:XX:16) {
-  context: {},
-  cause: undefined,
-  errors: [
-    GraphQLError: Field "addPokemon" argument "type" of type "PokemonType!" is required, but it was not provided.
-        at <anonymous> (/some/path/to/graphqlHTTP.ts:XX:XX:47)
-        at Array.map (<anonymous>)
-        at parseExecutionResult (/some/path/to/graphqlHTTP.ts:XX:XX:28)
-        at Object.unpack (/some/path/to/core.ts:XX:XX:26)
-        at process.processTicksAndRejections (node:internal/process/task_queues:XX:XX)
-        at async runHook (/some/path/to/runHook.ts:XX:XX:16) {
-      path: undefined,
-      locations: undefined,
-      extensions: [Object: null prototype] {}
-    }
-  ]
-}
+{ name: 'Fishy' }
 ```
 <!-- dprint-ignore-end -->
 <!-- dprint-ignore-start -->

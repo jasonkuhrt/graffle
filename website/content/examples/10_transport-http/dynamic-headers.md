@@ -43,7 +43,7 @@ await graffle.rawString({ document: `{ pokemons { name } }` })
   headers: Headers {
     accept: 'application/graphql-response+json; charset=utf-8, application/json; charset=utf-8',
     'content-type': 'application/json',
-    'x-sent-at-time': '1727407554445'
+    'x-sent-at-time': '1727407811627'
   },
   signal: undefined,
   method: 'post',
