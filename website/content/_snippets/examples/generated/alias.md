@@ -16,10 +16,12 @@ const yearsAgo1 = new Date(Date.now() - year).getTime()
 const pokemons = await pokemon.query.$batch({
   pokemons: [
     [`elderPokemons`, {
+//   ^^^^^^^^^^^^^^^      
       $: { filter: { birthday: { lte: yearsAgo100 } } },
       name: true,
     }],
     [`babyPokemons`, {
+//   ^^^^^^^^^^^^^^
       $: { filter: { birthday: { gte: yearsAgo1 } } },
       name: true,
     }],

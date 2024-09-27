@@ -106,6 +106,9 @@ const getInlineFragmentGroups = (selectionSet: SelectionSet.ObjectLike) => {
   return Array.isArray(maybeGroupOrGroups) ? maybeGroupOrGroups : [maybeGroupOrGroups]
 }
 
+/**
+ * Decode custom scalars in the result data.
+ */
 export const decode = <$Data extends ExecutionResult['data']>(
   objectType: Schema.Object$2,
   selectionSet: SelectionSet.ObjectLike,

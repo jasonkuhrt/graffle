@@ -15,7 +15,7 @@ import {
 import { mergeRequestInit, searchParamsAppendAll } from '../../lib/http.js'
 import { casesExhausted, getOptionalNullablePropertyOrThrow, throwNull } from '../../lib/prelude.js'
 import { execute } from '../0_functions/execute.js'
-import * as CustomScalars from '../3_ResultSet/decode.js'
+import { ResultSet } from '../3_ResultSet/__.js'
 import { Document } from '../4_document/__.js'
 import type { GraffleExecutionResultVar } from '../6_client/client.js'
 import type { Config } from '../6_client/Settings/Config.js'
@@ -233,7 +233,7 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
           // 2. When traversing the result, skip keys that are not in the map
           // console.log(input.context.schemaIndex.Root)
           // console.log(getOptionalNullablePropertyOrThrow(input.context.schemaIndex.Root, operation.rootType))
-          const dataDecoded = CustomScalars.decode(
+          const dataDecoded = ResultSet.decode(
             getOptionalNullablePropertyOrThrow(input.context.schemaIndex.Root, operation.rootType),
             operation.selectionSet,
             input.result.data,

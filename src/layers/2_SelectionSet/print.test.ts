@@ -113,32 +113,32 @@ describe(`$skip`, () => {
   ])(...testEachArgs)
 })
 
-describe(`$defer`, () => {
-  test.each([
-    [s({ object: { $defer: true, id: true } })],
-    [s({ object: { $defer: false, id: true } })],
-    [s({ object: { $defer: undefined, id: true } })],
-    [s({ object: { $defer: { if: true }, id: true } })],
-    [s({ object: { $defer: { if: false }, id: true } })],
-    [s({ object: { $defer: { if: undefined }, id: true } })],
-    [s({ object: { $defer: {}, id: true } })],
-    [s({ object: { $defer: { label: `foobar` }, id: true } })],
-  ])(...testEachArgs)
-})
+// describe(`$defer`, () => {
+//   test.each([
+//     [s({ object: { $defer: true, id: true } })],
+//     [s({ object: { $defer: false, id: true } })],
+//     [s({ object: { $defer: undefined, id: true } })],
+//     [s({ object: { $defer: { if: true }, id: true } })],
+//     [s({ object: { $defer: { if: false }, id: true } })],
+//     [s({ object: { $defer: { if: undefined }, id: true } })],
+//     [s({ object: { $defer: {}, id: true } })],
+//     [s({ object: { $defer: { label: `foobar` }, id: true } })],
+//   ])(...testEachArgs)
+// })
 
-describe(`$stream`, () => {
-  test.each([
-    [s({ object: { $stream: true, id: true } })],
-    [s({ object: { $stream: false, id: true } })],
-    [s({ object: { $stream: undefined, id: true } })],
-    [s({ object: { $stream: { if: true }, id: true } })],
-    [s({ object: { $stream: { if: false }, id: true } })],
-    [s({ object: { $stream: { if: undefined }, id: true } })],
-    [s({ object: { $stream: {}, id: true } })],
-    [s({ object: { $stream: { label: `foobar` }, id: true } })],
-    [s({ object: { $stream: { initialCount: 5 }, id: true } })],
-  ])(...testEachArgs)
-})
+// describe(`$stream`, () => {
+//   test.each([
+//     [s({ object: { $stream: true, id: true } })],
+//     [s({ object: { $stream: false, id: true } })],
+//     [s({ object: { $stream: undefined, id: true } })],
+//     [s({ object: { $stream: { if: true }, id: true } })],
+//     [s({ object: { $stream: { if: false }, id: true } })],
+//     [s({ object: { $stream: { if: undefined }, id: true } })],
+//     [s({ object: { $stream: {}, id: true } })],
+//     [s({ object: { $stream: { label: `foobar` }, id: true } })],
+//     [s({ object: { $stream: { initialCount: 5 }, id: true } })],
+//   ])(...testEachArgs)
+// })
 
 describe(`other`, () => {
   test.each([

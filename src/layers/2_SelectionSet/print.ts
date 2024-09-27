@@ -259,8 +259,6 @@ const printDirectives = (fieldValue: FieldValue): string => {
   return entriesStrict({
     $skip: fieldValue.$skip,
     $include: fieldValue.$include,
-    $defer: fieldValue.$defer,
-    $stream: fieldValue.$stream,
   }).reduce((code, [field, input]) => {
     const def = Directive.fieldToDef[field]
     code += Directive.Print.toGraphQLDirective(def.create(input))

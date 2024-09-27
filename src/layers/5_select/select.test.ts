@@ -9,5 +9,5 @@ test(`returns the input for any method name`, () => {
 })
 
 test(`has type safe methods`, () => {
-  expect(select.Bar({ ___: { $defer: true, int: true } })).toEqual({ ___: { $defer: true, int: true } })
+  expect(select.Bar({ ___: { $include: true, int: true } })).toEqual({ ___: { $include: true, int: true } })
 })
