@@ -1,5 +1,4 @@
 import { transformerTwoslash } from '@shikijs/vitepress-twoslash'
-import { capitalize } from 'es-toolkit'
 import { ModuleKind, ModuleResolutionKind } from 'typescript'
 import { defineConfig } from 'vitepress'
 import { tabsMarkdownPlugin } from 'vitepress-plugin-tabs'
@@ -27,7 +26,7 @@ const fixTitles = (sidebarMulti: SidebarMulti) => {
   return sidebarMultiVisitItems(sidebarMulti, (sidebarItem) => {
     const [title, maybeHtml] = sidebarItem.text?.split('<') as [string, string | undefined]
     if (sidebarItem.text) {
-      sidebarItem.text = title.replaceAll(/-/g, ' ').split(' ').map(capitalize).join(' ')
+      sidebarItem.text = title.replaceAll(/-/g, ' ').split(' ').join(' ')
         + (maybeHtml ? `<${maybeHtml}` : '')
     }
   })
@@ -46,12 +45,12 @@ const sidebars = fixTitles(fixLinks(generateSidebar([
     useTitleFromFileHeading: true,
     // https://github.com/jooy2/vitepress-sidebar/issues/176
     // hyphenToSpace: true,
-    // capitalizeEachWords: true,
+    capitalizeEachWords: true,
     keepMarkdownSyntaxFromTitle: true,
   },
   {
     // hyphenToSpace: true,
-    // capitalizeEachWords: true,
+    capitalizeEachWords: true,
     scanStartPath: 'content/examples',
     resolvePath: '/examples/',
     prefixSeparator: '_',
