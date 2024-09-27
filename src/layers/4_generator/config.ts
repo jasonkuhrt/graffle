@@ -4,6 +4,7 @@ import fs from 'node:fs/promises'
 import * as Path from 'node:path'
 import { introspectionQuery } from '../../cli/_helpers.js'
 import { getTypeMapByKind, type TypeMapByKind } from '../../lib/graphql.js'
+import { omitUndefinedKeys } from '../../lib/prelude.js'
 import { fileExists } from './helpers/fs.js'
 
 export interface Input {
@@ -157,7 +158,7 @@ export const createConfig = async (input: Input): Promise<Config> => {
         customScalarCodecs: customScalarCodecsImportPath,
         grafflePackage: {
           ...defaultLibraryPaths,
-          ...input.libraryPaths,
+          ...omitUndefinedKeys(input.libraryPaths ?? {}),
         },
       },
     },
