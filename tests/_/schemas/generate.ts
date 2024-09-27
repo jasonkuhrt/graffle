@@ -2,14 +2,13 @@ import { pascalCase } from 'es-toolkit'
 import { printSchema } from 'graphql'
 import fs from 'node:fs/promises'
 import { dirname, join } from 'node:path'
-import { generateFiles } from '../../../src/layers/4_generator/files.js'
-import type { OptionsInput } from '../../../src/layers/4_generator/generateCode.js'
+import { Generator } from '../../../src/layers/4_generator/__.js'
 
 const generate = async (
   input: {
     dirName: string
     name?: boolean
-    options?: OptionsInput
+    generatorInput?: Omit<Generator.Input, 'sourceSchema'>
     defaultSchemaUrl?: URL
   },
 ) => {
@@ -24,22 +23,20 @@ const generate = async (
 
   await fs.writeFile(outputSchemaPath, printSchema(schema))
 
-  await generateFiles({
+  await Generator.generate({
     sourceSchema: { type: `sdl` },
     sourceDirPath,
     defaultSchemaUrl: input.defaultSchemaUrl,
     sourceCustomScalarCodecsFilePath: join(`./tests/_/customScalarCodecs.ts`),
     outputDirPath,
-    code: {
-      libraryPaths: {
-        client: `../../../../../../src/entrypoints/client.js`,
-        schema: `../../../../../../src/entrypoints/schema.js`,
-        scalars: `../../../../../../src/layers/1_Schema/Hybrid/types/Scalar/Scalar.js`,
-        utilitiesForGenerated: `../../../../../../src/entrypoints/utilities-for-generated.js`,
-      },
+    libraryPaths: {
+      client: `../../../../../../src/entrypoints/client.js`,
+      schema: `../../../../../../src/entrypoints/schema.js`,
+      scalars: `../../../../../../src/layers/1_Schema/Hybrid/types/Scalar/Scalar.js`,
+      utilitiesForGenerated: `../../../../../../src/entrypoints/utilities-for-generated.js`,
     },
     name,
-    ...input.options,
+    ...input.generatorInput,
   })
   console.log(`generated at`, sourceDirPath)
 }
@@ -60,5 +57,5 @@ await generate({
 await generate({
   dirName: `kitchen-sink`,
   name: false,
-  options: { errorTypeNamePattern: /^Error.+/ },
+  generatorInput: { errorTypeNamePattern: /^Error.+/ },
 })

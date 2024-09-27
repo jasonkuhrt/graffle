@@ -23,8 +23,9 @@ export interface Index {
     objectsTypename: {}
     rootResultFields: {
       Query: {}
-      Mutation: {}
+
       Subscription: {}
+      Mutation: {}
     }
   }
 }

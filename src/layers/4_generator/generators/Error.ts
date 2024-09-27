@@ -1,6 +1,6 @@
-import { createModuleGenerator } from '../createCodeGenerator.js'
+import { createModuleGenerator } from '../helpers/moduleGenerator.js'
 
-export const { generate: generateError, moduleName: moduleNameError } = createModuleGenerator(
+export const ModuleGeneratorError = createModuleGenerator(
   `Error`,
   ({ config, code }) => {
     code.push(
@@ -10,8 +10,8 @@ export const { generate: generateError, moduleName: moduleNameError } = createMo
 
     code.push(`
       const ErrorObjectsTypeNameSelectedEnum = {
-        ${config.error.objects.map(_ => `${_.name}: { __typename: '${_.name}' }`).join(`,\n`)}
-      } as ${config.error.objects.length > 0 ? `const` : `Record<string,ObjectWithTypeName>`}
+        ${config.schema.error.objects.map(_ => `${_.name}: { __typename: '${_.name}' }`).join(`,\n`)}
+      } as ${config.schema.error.objects.length > 0 ? `const` : `Record<string,ObjectWithTypeName>`}
 
       const ErrorObjectsTypeNameSelected = Object.values(ErrorObjectsTypeNameSelectedEnum)
 

@@ -1,5 +1,5 @@
 import type * as $ from 'graffle/schema'
-import type * as $Scalar from './Scalar.ts'
+import type * as $Scalar from './Scalar.js'
 
 // ------------------------------------------------------------ //
 //                             Root                             //

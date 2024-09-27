@@ -33,38 +33,38 @@ import {
   isAllArgsNullable,
   isAllInputObjectFieldsNullable,
 } from '../../../lib/graphql.js'
-import { createModuleGenerator } from '../createCodeGenerator.js'
-import type { Config } from '../generateCode.js'
-import { moduleNameData } from './Data.js'
-import { moduleNameScalar } from './Scalar.js'
-import { moduleNameSchemaIndex } from './SchemaIndex.js'
+import type { Config } from '../config.js'
+import { createModuleGenerator } from '../helpers/moduleGenerator.js'
+import { ModuleGeneratorData } from './Data.js'
+import { ModuleGeneratorScalar } from './Scalar.js'
+import { ModuleGeneratorSchemaIndex } from './SchemaIndex.js'
 
-export const { generate: generateRuntimeSchema, moduleName: moduleNameSchemaRuntime } = createModuleGenerator(
+export const ModuleGeneratorSchemaRuntime = createModuleGenerator(
   `SchemaRuntime`,
   ({ config, code }) => {
     code.push(`/* eslint-disable */\n`)
     code.push(
       `
-      import * as $ from '${config.libraryPaths.schema}'
-      import * as Data from './${moduleNameData}.js'
-      import * as $Scalar from './${moduleNameScalar}.js'
-      import type { Index } from './${moduleNameSchemaIndex}.js'
-    `,
+        import * as $ from '${config.paths.imports.grafflePackage.schema}'
+        import * as Data from './${ModuleGeneratorData.name}.js'
+        import * as $Scalar from './${ModuleGeneratorScalar.name}.js'
+        import type { Index } from './${ModuleGeneratorSchemaIndex.name}.js'
+      `,
     )
 
     code.push(
       `export const $defaultSchemaUrl = ${
-        config.defaultSchemaUrl ? `new URL("${config.defaultSchemaUrl.href}")` : `undefined`
+        config.options.defaultSchemaUrl ? `new URL("${config.options.defaultSchemaUrl.href}")` : `undefined`
       }`,
     )
 
     code.push(
-      config.typeMapByKind.GraphQLEnumType.map(type => enum$(config, type)).join(`\n`),
-      config.typeMapByKind.GraphQLInputObjectType.map(type => inputObject(config, type)).join(`\n`),
-      config.typeMapByKind.GraphQLObjectType.map(type => object(config, type)).join(`\n`),
-      config.typeMapByKind.GraphQLUnionType.map(type => union(config, type)).join(`\n`),
-      config.typeMapByKind.GraphQLInterfaceType.map(type => interface$(config, type)).join(`\n`),
-      config.typeMapByKind.GraphQLRootType.map(type => object(config, type)).join(`\n`),
+      config.schema.typeMapByKind.GraphQLEnumType.map(type => enum$(config, type)).join(`\n`),
+      config.schema.typeMapByKind.GraphQLInputObjectType.map(type => inputObject(config, type)).join(`\n`),
+      config.schema.typeMapByKind.GraphQLObjectType.map(type => object(config, type)).join(`\n`),
+      config.schema.typeMapByKind.GraphQLUnionType.map(type => union(config, type)).join(`\n`),
+      config.schema.typeMapByKind.GraphQLInterfaceType.map(type => interface$(config, type)).join(`\n`),
+      config.schema.typeMapByKind.GraphQLRootType.map(type => object(config, type)).join(`\n`),
     )
 
     code.push(
@@ -77,16 +77,16 @@ export const { generate: generateRuntimeSchema, moduleName: moduleNameSchemaRunt
 
 const index = (config: Config) => {
   const rootTypesPresence = {
-    Query: hasQuery(config.typeMapByKind),
-    Mutation: hasMutation(config.typeMapByKind),
-    Subscription: hasSubscription(config.typeMapByKind),
+    Query: hasQuery(config.schema.typeMapByKind),
+    Mutation: hasMutation(config.schema.typeMapByKind),
+    Subscription: hasSubscription(config.schema.typeMapByKind),
   }
   // todo input objects for decode/encode input object fields
-  const unions = config.typeMapByKind.GraphQLUnionType.map(type => type.name).join(`,\n`)
-  const objects = config.typeMapByKind.GraphQLObjectType.map(type => type.name).join(`,\n`)
-  const interfaces = config.typeMapByKind.GraphQLInterfaceType.map(type => type.name).join(`,\n`)
-  const roots = config.typeMapByKind.GraphQLRootType.map(type => type.name).join(`,\n`)
-  const enums = config.typeMapByKind.GraphQLEnumType.map(type => type.name).join(`,\n`)
+  const unions = config.schema.typeMapByKind.GraphQLUnionType.map(type => type.name).join(`,\n`)
+  const objects = config.schema.typeMapByKind.GraphQLObjectType.map(type => type.name).join(`,\n`)
+  const interfaces = config.schema.typeMapByKind.GraphQLInterfaceType.map(type => type.name).join(`,\n`)
+  const roots = config.schema.typeMapByKind.GraphQLRootType.map(type => type.name).join(`,\n`)
+  const enums = config.schema.typeMapByKind.GraphQLEnumType.map(type => type.name).join(`,\n`)
   const allTypes = [
     roots,
     unions,
@@ -99,7 +99,7 @@ const index = (config: Config) => {
     export const $Index: Index = {
       name: Data.Name,
       RootTypesPresent: [${
-    Object.entries(rootTypesPresence).filter(([_, present]) => present).map(([_]) => Code.quote(_)).join(`, `)
+    config.schema.typeMapByKind.GraphQLRootType.map((_) => Code.quote(_.name)).join(`, `)
   }] as const,
       RootUnion: undefined as any, // Type level only.
       Root: {
@@ -121,20 +121,21 @@ const index = (config: Config) => {
       },
       error: {
         objects: {
-          ${config.error.objects.map(type => type.name).join(`,\n`)}
+          ${config.schema.error.objects.map(type => type.name).join(`,\n`)}
         },
         objectsTypename: {
-         ${config.error.objects.map(_ => `${_.name}: { __typename: "${_.name}" }`).join(`,\n`)}
+         ${config.schema.error.objects.map(_ => `${_.name}: { __typename: "${_.name}" }`).join(`,\n`)}
         },
         rootResultFields: {
+          ${!hasQuery(config.schema.typeMapByKind) ? `Query: {},` : ``}
+          ${!hasMutation(config.schema.typeMapByKind) ? `Mutation: {},` : ``}
+          ${!hasSubscription(config.schema.typeMapByKind) ? `Subscription: {},` : ``}
           ${
-    Object.entries(config.rootTypes).map(([rootTypeName, rootType]) => {
-      if (!rootType) return `${rootTypeName}: {}`
-
+    Object.values(config.schema.typeMapByKind.GraphQLRootType).map((rootType) => {
       const resultFields = Object.values(rootType.getFields()).filter((field) => {
         const type = getNamedType(field.type)
         return isUnionType(type)
-          && type.getTypes().some(_ => config.error.objects.some(__ => __.name === _.name))
+          && type.getTypes().some(_ => config.schema.error.objects.some(__ => __.name === _.name))
       }).map((field) => field.name)
 
       return `${rootType.name}: {\n${resultFields.map(_ => `${_}: "${_}" as const`).join(`,\n`)} }`
@@ -159,7 +160,7 @@ const union = (_config: Config, type: GraphQLUnionType) => {
 
 const interface$ = (config: Config, type: GraphQLInterfaceType) => {
   // todo probably need thunks here
-  const implementors = config.typeMapByKind.GraphQLObjectType.filter(_ =>
+  const implementors = config.schema.typeMapByKind.GraphQLObjectType.filter(_ =>
     _.getInterfaces().filter(_ => _.name === type.name).length > 0
   ).map(_ => _.name).join(`,`)
   const fields = Object.values(type.getFields()).map((field) => {

@@ -1,15 +1,16 @@
 import type { GraphQLInterfaceType } from 'graphql'
 import { type GraphQLEnumValue, type GraphQLField, type GraphQLNamedType, isEnumType } from 'graphql'
-import { Code } from '../../lib/Code.js'
+import { Code } from '../../../lib/Code.js'
 import {
   type Describable,
   getNodeDisplayName,
   getNodeNameAndKind,
   isDeprecatableNode,
   type TypeMapByKind,
-} from '../../lib/graphql.js'
-import { borderThickFullWidth, borderThinFullWidth, centerTo } from '../../lib/text.js'
-import type { Config } from './generateCode.js'
+  type TypeMapKind,
+} from '../../../lib/graphql.js'
+import { borderThickFullWidth, borderThinFullWidth, centerTo } from '../../../lib/text.js'
+import type { Config } from '../config.js'
 
 export const title1 = (title: string) => {
   const titleDecorated = `
@@ -55,10 +56,8 @@ export const typeTitle2 = (category: string) => (node: GraphQLNamedType) => {
 
 export const typeTitle2SelectionSet = typeTitle2(`GRAPHQL SELECTION SET`)
 
-export const typeTitle = (config: Config, typeName: string) => {
-  // @ts-expect-error ignoreme
-
-  const hasItems = config.typeMapByKind[`GraphQL${typeName}Type`]?.length > 0
+export const typeTitle = (config: Config, typeName: TypeMapKind) => {
+  const hasItems = config.schema.typeMapByKind[`GraphQL${typeName}Type`].length > 0
   const title = `${typeName} Types`
   const titleDecorated = `// ${title}\n// ${`-`.repeat(title.length)}\n`
   if (hasItems) {

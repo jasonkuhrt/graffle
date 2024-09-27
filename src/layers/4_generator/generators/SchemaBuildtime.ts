@@ -24,9 +24,10 @@ import {
   RootTypeName,
 } from '../../../lib/graphql.js'
 import { entries, values } from '../../../lib/prelude.js'
-import { createModuleGenerator } from '../createCodeGenerator.js'
-import { type Config } from '../generateCode.js'
-import { getDocumentation, getInterfaceImplementors } from '../helpers.js'
+import type { Config } from '../config.js'
+import { createModuleGenerator } from '../helpers/moduleGenerator.js'
+import { getDocumentation, getInterfaceImplementors } from '../helpers/render.js'
+import { ModuleGeneratorScalar } from './Scalar.js'
 
 const namespaceNames = {
   GraphQLEnumType: `Enum`,
@@ -145,7 +146,7 @@ const concreteRenderers = defineConcreteRenderers({
     return Code.TSDocWithBlock(doc, source)
   },
   GraphQLInterfaceType: (config, node) => {
-    const implementors = getInterfaceImplementors(config.typeMapByKind, node)
+    const implementors = getInterfaceImplementors(config.schema.typeMapByKind, node)
     return Code.TSDocWithBlock(
       getDocumentation(config, node),
       Code.export$(Code.type(
@@ -266,14 +267,14 @@ const renderArg = (config: Config, arg: GraphQLArgument) => {
 
 // high level
 
-export const { generate: generateSchemaBuildtime, moduleName: moduleNameSchemaBuildtime } = createModuleGenerator(
+export const ModuleGeneratorSchemaBuildtime = createModuleGenerator(
   `SchemaBuildtime`,
   ({ config, code }) => {
-    code.push(`import type * as $ from '${config.libraryPaths.schema}'`)
-    code.push(`import type * as $Scalar from './Scalar.ts'`)
+    code.push(`import type * as $ from '${config.paths.imports.grafflePackage.schema}'`)
+    code.push(`import type * as $Scalar from './${ModuleGeneratorScalar.name}.js'`)
     code.push(`\n\n`)
 
-    for (const [name, types] of entries(config.typeMapByKind)) {
+    for (const [name, types] of entries(config.schema.typeMapByKind)) {
       if (name === `GraphQLScalarType`) continue
       if (name === `GraphQLScalarTypeCustom`) continue
       if (name === `GraphQLScalarTypeStandard`) continue

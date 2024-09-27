@@ -29,9 +29,9 @@ export const $Index: Index = {
     objects: {},
     objectsTypename: {},
     rootResultFields: {
-      Query: {},
       Mutation: {},
       Subscription: {},
+      Query: {},
     },
   },
 }

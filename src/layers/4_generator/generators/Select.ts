@@ -1,21 +1,21 @@
 // todo jsdoc
-import { createModuleGenerator } from '../createCodeGenerator.js'
-import { renderName, title1, typeTitle } from '../helpers.js'
-import { moduleNameData } from './Data.js'
-import { moduleNameSchemaIndex } from './SchemaIndex.js'
-import { moduleNameSelectionSets } from './SelectionSets.js'
+import { createModuleGenerator } from '../helpers/moduleGenerator.js'
+import { renderName, title1, typeTitle } from '../helpers/render.js'
+import { ModuleGeneratorData } from './Data.js'
+import { ModuleGeneratorSchemaIndex } from './SchemaIndex.js'
+import { ModuleGeneratorSelectionSets } from './SelectionSets.js'
 
-export const { generate: generateSelect, moduleName: moduleNameSelect } = createModuleGenerator(
+export const ModuleGeneratorSelect = createModuleGenerator(
   `Select`,
   ({ config, code }) => {
-    code.push(`import * as Data from './${moduleNameData}.js'`)
-    code.push(`import type { Index } from './${moduleNameSchemaIndex}.js'`)
-    code.push(`import type { ResultSet } from '${config.libraryPaths.schema}'`)
-    code.push(`import type * as SelectionSets from './${moduleNameSelectionSets}.js'`)
+    code.push(`import * as Data from './${ModuleGeneratorData.name}.js'`)
+    code.push(`import type { Index } from './${ModuleGeneratorSchemaIndex.name}.js'`)
+    code.push(`import type { ResultSet } from '${config.paths.imports.grafflePackage.schema}'`)
+    code.push(`import type * as SelectionSets from './${ModuleGeneratorSelectionSets.name}.js'`)
     code.push(``)
 
     code.push(title1(`Runtime`))
-    code.push(`import { createSelect } from '${config.libraryPaths.client}'`)
+    code.push(`import { createSelect } from '${config.paths.imports.grafflePackage.client}'`)
     code.push(`export const Select = createSelect(Data.Name)`)
     code.push(``)
 
@@ -26,7 +26,7 @@ export const { generate: generateSelect, moduleName: moduleNameSelect } = create
 
     code.push(typeTitle(config, `Root`))
 
-    code.push(...config.typeMapByKind.GraphQLRootType.map((type) => {
+    code.push(...config.schema.typeMapByKind.GraphQLRootType.map((type) => {
       return `export type ${type.name}<$SelectionSet extends SelectionSets.${
         renderName(type)
       }> = ResultSet.Root<$SelectionSet, Index, '${type.name}'>`
@@ -35,7 +35,7 @@ export const { generate: generateSelect, moduleName: moduleNameSelect } = create
     code.push(typeTitle(config, `Object`))
 
     // TODO propagate descriptions to JSDoc
-    code.push(...config.typeMapByKind.GraphQLObjectType.map((type) => {
+    code.push(...config.schema.typeMapByKind.GraphQLObjectType.map((type) => {
       return `export type ${type.name}<$SelectionSet extends SelectionSets.${
         renderName(type)
       }> = ResultSet.Object$<$SelectionSet, Index, Index['allTypes']['${type.name}']>`
@@ -43,7 +43,7 @@ export const { generate: generateSelect, moduleName: moduleNameSelect } = create
 
     code.push(typeTitle(config, `Union`))
 
-    code.push(...config.typeMapByKind.GraphQLUnionType.map((type) => {
+    code.push(...config.schema.typeMapByKind.GraphQLUnionType.map((type) => {
       return `export type ${type.name}<$SelectionSet extends SelectionSets.${
         renderName(type)
       }> = ResultSet.Union<$SelectionSet, Index, Index['allTypes']['${type.name}']>`
@@ -51,7 +51,7 @@ export const { generate: generateSelect, moduleName: moduleNameSelect } = create
 
     code.push(typeTitle(config, `Interface`))
 
-    code.push(...config.typeMapByKind.GraphQLInterfaceType.map((type) => {
+    code.push(...config.schema.typeMapByKind.GraphQLInterfaceType.map((type) => {
       return `export type ${type.name}<$SelectionSet extends SelectionSets.${
         renderName(type)
       }> = ResultSet.Interface<$SelectionSet, Index, Index['allTypes']['${type.name}']>`

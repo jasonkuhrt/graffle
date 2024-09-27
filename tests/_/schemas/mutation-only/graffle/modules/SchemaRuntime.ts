@@ -30,8 +30,9 @@ export const $Index: Index = {
     objectsTypename: {},
     rootResultFields: {
       Query: {},
-      Mutation: {},
+
       Subscription: {},
+      Mutation: {},
     },
   },
 }
