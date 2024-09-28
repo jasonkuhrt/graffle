@@ -68,7 +68,8 @@ const battles = await pokemon.query.battles({
 for (const battle of battles) {
   switch (battle.__typename) {
     case `BattleRoyale`: {
-      // @ts-expect-error fixme
+      // eslint-disable-next-line
+      // @ts-ignore-error fixme
       const trainers = battle.combatants?.map(_ => _.trainer?.name)
       let info = ``
       info += `${battle.__typename} on ${new Date(battle.date ?? 0).toLocaleDateString()}\n`
