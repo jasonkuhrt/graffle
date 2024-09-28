@@ -88,6 +88,26 @@ teamRocketGrunt
 <!-- dprint-ignore-end -->
 <!-- dprint-ignore-start -->
 ```txt
+Brock
+```
+<!-- dprint-ignore-end -->
+<!-- dprint-ignore-start -->
+```txt
+youth
+```
+<!-- dprint-ignore-end -->
+<!-- dprint-ignore-start -->
+```txt
+Gary
+```
+<!-- dprint-ignore-end -->
+<!-- dprint-ignore-start -->
+```txt
+youth
+```
+<!-- dprint-ignore-end -->
+<!-- dprint-ignore-start -->
+```txt
 Pikachu
 ```
 <!-- dprint-ignore-end -->
@@ -124,6 +144,26 @@ Bulbasaur
 <!-- dprint-ignore-start -->
 ```txt
 grass
+```
+<!-- dprint-ignore-end -->
+<!-- dprint-ignore-start -->
+```txt
+Caterpie
+```
+<!-- dprint-ignore-end -->
+<!-- dprint-ignore-start -->
+```txt
+bug
+```
+<!-- dprint-ignore-end -->
+<!-- dprint-ignore-start -->
+```txt
+Weedle
+```
+<!-- dprint-ignore-end -->
+<!-- dprint-ignore-start -->
+```txt
+bug
 ```
 <!-- dprint-ignore-end -->
 

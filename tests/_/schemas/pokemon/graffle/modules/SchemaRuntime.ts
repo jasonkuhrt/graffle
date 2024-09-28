@@ -4,7 +4,8 @@ import * as Data from './Data.js'
 import * as $Scalar from './Scalar.js'
 import type { Index } from './SchemaIndex.js'
 export const $defaultSchemaUrl = new URL('http://localhost:3000/graphql')
-export const PokemonType = $.Enum(`PokemonType`, [`electric`, `fire`, `grass`, `water`])
+export const BattleWildResult = $.Enum(`BattleWildResult`, [`pokemonsCaptured`, `pokemonsDefeated`, `trainerDefeated`])
+export const PokemonType = $.Enum(`PokemonType`, [`bug`, `electric`, `fire`, `grass`, `water`])
 export const TrainerClass = $.Enum(`TrainerClass`, [
   `bugCatcher`,
   `camper`,
@@ -35,8 +36,60 @@ export const StringFilter = $.InputObject(`StringFilter`, {
   in: $.Input.Field($.Input.Nullable($.Input.List($Scalar.String))),
 }, true)
 // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
+export const BattleRoyale = $.Object$(`BattleRoyale`, {
+  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
+  combatants: $.field($.Output.Nullable($.Output.List(() => CombatantMultiPokemon))),
+  date: $.field($.Output.Nullable($Scalar.Int)),
+  id: $.field($.Output.Nullable($Scalar.ID)),
+  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
+  winner: $.field($.Output.Nullable(() => Trainer)),
+})
+
+// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
+export const BattleTrainer = $.Object$(`BattleTrainer`, {
+  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
+  combatant1: $.field($.Output.Nullable(() => CombatantSinglePokemon)),
+  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
+  combatant2: $.field($.Output.Nullable(() => CombatantSinglePokemon)),
+  date: $.field($.Output.Nullable($Scalar.Int)),
+  id: $.field($.Output.Nullable($Scalar.ID)),
+  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
+  winner: $.field($.Output.Nullable(() => Trainer)),
+})
+
+// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
+export const BattleWild = $.Object$(`BattleWild`, {
+  date: $.field($.Output.Nullable($Scalar.Int)),
+  id: $.field($.Output.Nullable($Scalar.ID)),
+  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
+  pokemon: $.field($.Output.Nullable(() => Pokemon)),
+  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
+  result: $.field($.Output.Nullable(BattleWildResult)),
+  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
+  trainer: $.field($.Output.Nullable(() => Trainer)),
+  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
+  wildPokemons: $.field($.Output.Nullable($.Output.List(() => Pokemon))),
+})
+
+// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
+export const CombatantMultiPokemon = $.Object$(`CombatantMultiPokemon`, {
+  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
+  pokemons: $.field($.Output.Nullable($.Output.List(() => Pokemon))),
+  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
+  trainer: $.field($.Output.Nullable(() => Trainer)),
+})
+
+// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
+export const CombatantSinglePokemon = $.Object$(`CombatantSinglePokemon`, {
+  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
+  pokemon: $.field($.Output.Nullable(() => Pokemon)),
+  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
+  trainer: $.field($.Output.Nullable(() => Trainer)),
+})
+
+// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
 export const Patron = $.Object$(`Patron`, {
-  id: $.field($.Output.Nullable($Scalar.Int)),
+  id: $.field($.Output.Nullable($Scalar.ID)),
   money: $.field($.Output.Nullable($Scalar.Int)),
   name: $.field($.Output.Nullable($Scalar.String)),
 })
@@ -47,7 +100,7 @@ export const Pokemon = $.Object$(`Pokemon`, {
   birthday: $.field($.Output.Nullable($Scalar.Int)),
   defense: $.field($.Output.Nullable($Scalar.Int)),
   hp: $.field($.Output.Nullable($Scalar.Int)),
-  id: $.field($.Output.Nullable($Scalar.Int)),
+  id: $.field($.Output.Nullable($Scalar.ID)),
   name: $.field($.Output.Nullable($Scalar.String)),
   // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
   trainer: $.field($.Output.Nullable(() => Trainer)),
@@ -61,14 +114,15 @@ export const Trainer = $.Object$(`Trainer`, {
   class: $.field($.Output.Nullable(TrainerClass)),
   // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
   fans: $.field($.Output.Nullable($.Output.List(() => Patron))),
-  id: $.field($.Output.Nullable($Scalar.Int)),
+  id: $.field($.Output.Nullable($Scalar.ID)),
   name: $.field($.Output.Nullable($Scalar.String)),
   // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
   pokemon: $.field($.Output.Nullable($.Output.List(() => Pokemon))),
 })
-
+// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
+export const Battle = $.Union(`Battle`, [BattleRoyale, BattleTrainer, BattleWild])
 export const Being = $.Interface(`Being`, {
-  id: $.field($.Output.Nullable($Scalar.Int)),
+  id: $.field($.Output.Nullable($Scalar.ID)),
   name: $.field($.Output.Nullable($Scalar.String)),
 }, [Patron, Pokemon, Trainer])
 // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
@@ -88,6 +142,8 @@ export const Mutation = $.Object$(`Mutation`, {
 
 // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
 export const Query = $.Object$(`Query`, {
+  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
+  battles: $.field($.Output.List(() => Battle)),
   // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
   beings: $.field($.Output.List(() => Being)),
   // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
@@ -119,19 +175,33 @@ export const $Index: Index = {
   allTypes: {
     Mutation,
     Query,
+    Battle,
+    BattleRoyale,
+    BattleTrainer,
+    BattleWild,
+    CombatantMultiPokemon,
+    CombatantSinglePokemon,
     Patron,
     Pokemon,
     Trainer,
     Being,
+    BattleWildResult,
     PokemonType,
     TrainerClass,
   },
   objects: {
+    BattleRoyale,
+    BattleTrainer,
+    BattleWild,
+    CombatantMultiPokemon,
+    CombatantSinglePokemon,
     Patron,
     Pokemon,
     Trainer,
   },
-  unions: {},
+  unions: {
+    Battle,
+  },
   interfaces: {
     Being,
   },

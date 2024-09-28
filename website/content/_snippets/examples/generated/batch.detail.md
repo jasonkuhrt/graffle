@@ -35,12 +35,12 @@ console.log(pokemons)
   "pokemonByName": [
     {
       "name": "Pikachu",
-      "id": 1
+      "id": "1"
     }
   ],
   "trainerByName": {
     "name": "Ash",
-    "id": 1
+    "id": "1"
   }
 }
 ```

@@ -30,6 +30,12 @@ console.log(pokemons)
   },
   {
     "name": "Bulbasaur"
+  },
+  {
+    "name": "Caterpie"
+  },
+  {
+    "name": "Weedle"
   }
 ]
 ```
