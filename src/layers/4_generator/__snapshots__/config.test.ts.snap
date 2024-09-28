@@ -1,9 +1,51 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`can introspect schema from url 1`] = `
-"interface Being {
-  id: Int
+"union Battle = BattleRoyale | BattleTrainer | BattleWild
+
+type BattleRoyale {
+  combatants: [CombatantMultiPokemon!]
+  date: Float
+  id: ID
+  winner: Trainer
+}
+
+type BattleTrainer {
+  combatant1: CombatantSinglePokemon
+  combatant2: CombatantSinglePokemon
+  date: Float
+  id: ID
+  winner: Trainer
+}
+
+type BattleWild {
+  date: Float
+  id: ID
+  pokemon: Pokemon
+  result: BattleWildResult
+  trainer: Trainer
+  wildPokemons: [Pokemon!]
+}
+
+enum BattleWildResult {
+  pokemonsCaptured
+  pokemonsDefeated
+  trainerDefeated
+}
+
+interface Being {
+  id: ID
   name: String
+}
+
+type CombatantMultiPokemon {
+  pokemons: [Pokemon!]
+  trainer: Trainer
+}
+
+type CombatantSinglePokemon {
+  pokemon: Pokemon
+  trainer: Trainer
 }
 
 input DateFilter {
@@ -16,7 +58,7 @@ type Mutation {
 }
 
 type Patron implements Being {
-  id: Int
+  id: ID
   money: Int
   name: String
 }
@@ -26,7 +68,7 @@ type Pokemon implements Being {
   birthday: Int
   defense: Int
   hp: Int
-  id: Int
+  id: ID
   name: String
   trainer: Trainer
   type: PokemonType
@@ -38,6 +80,7 @@ input PokemonFilter {
 }
 
 enum PokemonType {
+  bug
   electric
   fire
   grass
@@ -45,6 +88,7 @@ enum PokemonType {
 }
 
 type Query {
+  battles: [Battle!]!
   beings: [Being!]!
   pokemon: [Pokemon!]
   pokemonByName(name: String!): [Pokemon!]
@@ -61,7 +105,7 @@ input StringFilter {
 type Trainer implements Being {
   class: TrainerClass
   fans: [Patron!]
-  id: Int
+  id: ID
   name: String
   pokemon: [Pokemon!]
 }
