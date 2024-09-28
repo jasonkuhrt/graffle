@@ -2,11 +2,12 @@
 
 /* Revealable Inline Code Examples */
 
-details a {
+.ExampleSnippet > a {
   opacity:0.25;
 }
 
-details a:before {
+
+.ExampleSnippet > a:before {
   content: '⤤ ';
   font-size: 1.25rem;
 }
