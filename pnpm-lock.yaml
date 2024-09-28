@@ -31,8 +31,8 @@ importers:
         specifier: ^0.16.4
         version: 0.16.4
       '@ark/attest':
-        specifier: ^0.19.0
-        version: 0.19.0(typescript@5.6.2)
+        specifier: ^0.20.0
+        version: 0.20.0(typescript@5.6.2)
       '@opentelemetry/api':
         specifier: ^1.9.0
         version: 1.9.0
@@ -268,20 +268,20 @@ packages:
     resolution: {integrity: sha512-RI3HXgSuKTfcBf1hSEg1P9/cOvmI0flsMm6/QL3L3wju4AlHDqd55JFPfXs4pzgEAgy5L9pul4/HPPz99x2GvA==}
     engines: {node: '>=18'}
 
-  '@ark/attest@0.19.0':
-    resolution: {integrity: sha512-e4byt6mY6eBzK+ChKH5h6s+o/+Ae/9jgzNuSJ3Sh+EXP4LLJcZ7vQmZ2JmuOFH+alvHXARjPWpxniXNMyuecGw==}
+  '@ark/attest@0.20.0':
+    resolution: {integrity: sha512-9dwI5HDvoCUp9G8KSE/uZmYZbM3c/RlIjgdAI8nroeDu2QrhufhDqVUVIoxnlqVGKVZBOTRXvpIjLhFTvvTOgw==}
     hasBin: true
     peerDependencies:
       typescript: '*'
 
-  '@ark/fs@0.14.0':
-    resolution: {integrity: sha512-GZGBB8PSLtiNeV+6SH4cNmWLhtawof5geHQaNcIHiZOSr9zUPV1SXqSIXa9atLHHKsLeu9GPICXVRs8kM4yj6g==}
+  '@ark/fs@0.15.0':
+    resolution: {integrity: sha512-OpY/MzdydMhLyxkweHuOLcAIZNrgedzHNd0nHmED7rY26zIGdeiNYwrg9OmjwBjztsQOND0lextw9aNJZVNFwA==}
 
-  '@ark/schema@0.14.0':
-    resolution: {integrity: sha512-UgX2K5QuwgRwU1WRUpJBjAGhZ0bpBvk8fZfDrpRkc5wc7dSRH8tqXb5RnNstTojmV+A8cflvVRYRUw9eA7XEww==}
+  '@ark/schema@0.15.0':
+    resolution: {integrity: sha512-B6b2ATzklFqfH0sh/lwKCe7i0HlWu1/ieRAFDCihGgKqsjOWyikOJDf1cS6ijBnsRf0GecZw17vEaatj4435vg==}
 
-  '@ark/util@0.14.0':
-    resolution: {integrity: sha512-AvXTMJq0xOUtpPM3E/5gCwWZ13P+J3EDUVk4A5wkyqQY70GEXvTrFPk7JTRv/fqQHGSQTaYko7c9l2p/3WEYiQ==}
+  '@ark/util@0.15.0':
+    resolution: {integrity: sha512-TfPttNo/A0B2c4N96/YWScKxFj0Aq2/DUF5G4f6YaN6v6jhgcHNjar/9tYmmhLTo4VIqeB/jfy2zxHww/MK/6w==}
 
   '@babel/helper-string-parser@7.24.8':
     resolution: {integrity: sha512-pO9KhhRcuUyGnJWwyEgnRJTSIZHiT+vMD0kPeD+so0l7mxkMT19g3pjY9GTnHySck/hDzq+dtW/4VgnMkippsQ==}
@@ -1533,8 +1533,8 @@ packages:
   argparse@2.0.1:
     resolution: {integrity: sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q==}
 
-  arktype@2.0.0-rc.12:
-    resolution: {integrity: sha512-e6YBEvEtEukpsRTMUnk23MqRn4Dlto7optR4ntImUgJXhiy/3dvrbS7U6O98h18RyZc1uwwngk0QiJaPn+2g1g==}
+  arktype@2.0.0-rc.13:
+    resolution: {integrity: sha512-ZHbUYHIXYi4rE/m8DAITjC7Hd6zXB2VuR88ZN9Od5iSuxgbxnsJSRfGBpw2w5MjdacCOh+faU2r8vQLI3Lj6/g==}
 
   array-buffer-byte-length@1.0.1:
     resolution: {integrity: sha512-ahC5W1xgou+KTXix4sAO8Ki12Q+jf4i0+tmk3sC+zgcynshkHxzpXdImBehiUYKKKDwvfFiJl1tZt6ewscS1Mg==}
@@ -4116,26 +4116,26 @@ snapshots:
       typescript: 5.6.1-rc
       validate-npm-package-name: 5.0.1
 
-  '@ark/attest@0.19.0(typescript@5.6.2)':
+  '@ark/attest@0.20.0(typescript@5.6.2)':
     dependencies:
-      '@ark/fs': 0.14.0
-      '@ark/util': 0.14.0
+      '@ark/fs': 0.15.0
+      '@ark/util': 0.15.0
       '@prettier/sync': 0.5.2(prettier@3.3.3)
       '@typescript/analyze-trace': 0.10.1
       '@typescript/vfs': 1.6.0(typescript@5.6.2)
-      arktype: 2.0.0-rc.12
+      arktype: 2.0.0-rc.13
       prettier: 3.3.3
       typescript: 5.6.2
     transitivePeerDependencies:
       - supports-color
 
-  '@ark/fs@0.14.0': {}
+  '@ark/fs@0.15.0': {}
 
-  '@ark/schema@0.14.0':
+  '@ark/schema@0.15.0':
     dependencies:
-      '@ark/util': 0.14.0
+      '@ark/util': 0.15.0
 
-  '@ark/util@0.14.0': {}
+  '@ark/util@0.15.0': {}
 
   '@babel/helper-string-parser@7.24.8': {}
 
@@ -5459,10 +5459,10 @@ snapshots:
 
   argparse@2.0.1: {}
 
-  arktype@2.0.0-rc.12:
+  arktype@2.0.0-rc.13:
     dependencies:
-      '@ark/schema': 0.14.0
-      '@ark/util': 0.14.0
+      '@ark/schema': 0.15.0
+      '@ark/util': 0.15.0
 
   array-buffer-byte-length@1.0.1:
     dependencies:
