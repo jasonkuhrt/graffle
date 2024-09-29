@@ -72,7 +72,7 @@ for (const battle of battles) {
       // @ts-ignore-error fixme
       const trainers = battle.combatants?.map(_ => _.trainer?.name)
       let info = ``
-      info += `${battle.__typename} on ${new Date(battle.date ?? 0).toLocaleDateString()}\n`
+      info += `${battle.__typename} on ${new Intl.DateTimeFormat(`en-US`).format(new Date(battle.date ?? 0))}\n`
       info += `combatants: ${trainers?.join(`, `) ?? `null`}\n`
       info += `winner: ${battle.winner?.name ?? `null`}`
       show(info)
@@ -80,7 +80,7 @@ for (const battle of battles) {
     }
     case `BattleTrainer`: {
       let info = ``
-      info += `${battle.__typename} on ${new Date(battle.date ?? 0).toLocaleDateString()}\n`
+      info += `${battle.__typename} on ${new Intl.DateTimeFormat(`en-US`).format(new Date(battle.date ?? 0))}\n`
       info += `${battle.combatant1?.trainer?.name ?? `null`} vs ${battle.combatant2?.trainer?.name ?? `null`}\n`
       info += `winner: ${battle.winner?.name ?? `null`}`
       show(info)
@@ -88,7 +88,7 @@ for (const battle of battles) {
     }
     case `BattleWild`: {
       let info = ``
-      info += `${battle.__typename} on ${new Date(battle.date ?? 0).toLocaleDateString()}\n`
+      info += `${battle.__typename} on ${new Intl.DateTimeFormat(`en-US`).format(new Date(battle.date ?? 0))}\n`
       info += `trainer: ${battle.trainer?.name ?? `null`} with ${battle.pokemon?.name ?? `null`}\n`
       info += `vs wild pokemons: ${battle.wildPokemons?.map(_ => _.name).join(`, `) ?? `null`}\n`
       info += `result: ${battle.result ?? `null`}`
