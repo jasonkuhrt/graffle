@@ -66,6 +66,8 @@ const battles = await pokemon.query.battles({
 // After checking the __typename, the type is known to be one of the possible battle types
 // and TypeScript narrows accordingly.
 
+const dateFormatter = new Intl.DateTimeFormat(`en-US`, { timeZone: `UTC` })
+
 for (const battle of battles) {
   switch (battle.__typename) {
     case `BattleRoyale`: {
@@ -73,7 +75,7 @@ for (const battle of battles) {
       // @ts-ignore-error fixme
       const trainers = battle.combatants?.map(_ => _.trainer?.name)
       let info = ``
-      info += `${battle.__typename} on ${new Date(battle.date ?? 0).toLocaleDateString()}\n`
+      info += `${battle.__typename} on ${dateFormatter.format(new Date(battle.date ?? 0))}\n`
       info += `combatants: ${trainers?.join(`, `) ?? `null`}\n`
       info += `winner: ${battle.winner?.name ?? `null`}`
       console.log(info)
@@ -81,7 +83,7 @@ for (const battle of battles) {
     }
     case `BattleTrainer`: {
       let info = ``
-      info += `${battle.__typename} on ${new Date(battle.date ?? 0).toLocaleDateString()}\n`
+      info += `${battle.__typename} on ${dateFormatter.format(new Date(battle.date ?? 0))}\n`
       info += `${battle.combatant1?.trainer?.name ?? `null`} vs ${battle.combatant2?.trainer?.name ?? `null`}\n`
       info += `winner: ${battle.winner?.name ?? `null`}`
       console.log(info)
@@ -89,7 +91,7 @@ for (const battle of battles) {
     }
     case `BattleWild`: {
       let info = ``
-      info += `${battle.__typename} on ${new Date(battle.date ?? 0).toLocaleDateString()}\n`
+      info += `${battle.__typename} on ${dateFormatter.format(new Date(battle.date ?? 0))}\n`
       info += `trainer: ${battle.trainer?.name ?? `null`} with ${battle.pokemon?.name ?? `null`}\n`
       info += `vs wild pokemons: ${battle.wildPokemons?.map(_ => _.name).join(`, `) ?? `null`}\n`
       info += `result: ${battle.result ?? `null`}`
@@ -103,7 +105,7 @@ for (const battle of battles) {
 
 <!-- dprint-ignore-start -->
 ```txt
-BattleWild on 1/12/2020
+BattleWild on 1/1/2020
 trainer: Ash with Pikachu
 vs wild pokemons: Squirtle, Bulbasaur
 result: pokemonsCaptured
@@ -111,14 +113,14 @@ result: pokemonsCaptured
 <!-- dprint-ignore-end -->
 <!-- dprint-ignore-start -->
 ```txt
-BattleTrainer on 1/12/2003
+BattleTrainer on 1/1/2003
 Ash vs Misty
 winner: Misty
 ```
 <!-- dprint-ignore-end -->
 <!-- dprint-ignore-start -->
 ```txt
-BattleRoyale on 1/12/1987
+BattleRoyale on 1/13/1987
 combatants: Ash, Misty
 winner: Ash
 ```

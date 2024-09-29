@@ -196,7 +196,7 @@ export namespace DatabaseServer {
       {
         id: `3`,
         type: `BattleRoyale`,
-        date: new Date(Date.UTC(1987, 0, 1)).getTime(),
+        date: new Date(Date.UTC(1987, 0, 13)).getTime(),
         combatants: [
           { trainerId: `1`, pokemonIds: [`1`, `2`] },
           { trainerId: `2`, pokemonIds: [`3`, `4`] },
