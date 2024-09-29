@@ -12,9 +12,9 @@ Graffle allows you to apply one or more anyware's to the request pipeline. Each 
 
 You can think of anyware like middleware (run code before and after some operation with control to manipulate input and output) except that it represents a _sequence_ of operations that form a pipeline rather than just one operation like traditional middleware.
 
-The request pipeline has five hooks: [`encode`](#encode), [`pack`](#pack), [`exchange`](#exchange), [`unpack`](#unpack), and [`decode`](#decode).
+The request pipeline has five hooks: [`encode`](#encode), [`pack`](#pack), [`exchange`](#exchange), [`unpack`](#unpack), and [`decode`](#decode). You will learn more about these later.
 
-Each hook receives an input and returns an output. Each hook's output is the input to the next hook, until the last hook which returns the final result.
+A hook receives input and returns output. Output becomes input for the next hook except the final hook's output which becomes the pipeline result.
 
 Here is a snippet with a few highlights to give you a feel for how it works (note it does not always have to be this verbose as you will see later):
 
@@ -49,16 +49,27 @@ Graffle
 3. This is leveraging a feature called ["slots"](#slots). We run `exchange` with its original input but modified implementation for `fetch`.
 4. This is leveraging a feature called ["short-circuiting"](#short-circuiting). We _could_ have run the rest of the hooks manually but if we don't have to. By returning the hook result we're conceptually turning any remaining hooks into automatic passthroughs.
 
+## Layers
+
+There are two layers that make up the graffle request pipeline: `interface`, `transport`. Hooks are exposed at key junctures in the pipeline. The following diagram shows how hooks and layers relate.
+
+<img class='Diagram DiagramGraffleRequest' src="/_assets/graffle-request.svg" />
+
+Each layer has a specific responsibility:
+
+1. `interface` – Bridge some type of interface to/from the standard GraphQL request/result object.
+2. `transport` – Bridge the standard GraphQL request/result object to/from some type of transport's request/response object, and execute the "exchange". As a term "Exchange" is akin to "request" but tries to convey a decoupling from any particular transport like HTTP.
+
 ## Data
 
-Recall that Graffle supports multiple interfaces and transports:
+The type of data flowing through the request pipeline is polymorphic reflecting the different types of each layer kind.
 
-| Interface | Transport |
-| --------- | --------- |
-| `typed`   | `http`    |
-| `raw`     | `memory`  |
+| Layer Kind  | Types           |
+| ----------- | --------------- |
+| `interface` | `typed` `raw`   |
+| `transport` | `http` `memory` |
 
-Discriminated unions are used to model this in the input/output types flowing through the pipeline. While each hook's input is unique to itself there is a base type that all inputs share which carries the discriminated properties, `interface` and `transport`. You can use these properties to narrow the type as needed.
+Discriminated unions are used to model this. All hook inputs share a base interface type which carries the discriminated properties of `interface` and `transport`. You can use these properties to narrow data in your anyware as needed.
 
 ```ts twoslash
 import { Graffle } from 'graffle'
@@ -76,71 +87,84 @@ Graffle
   })
 ```
 
-If Graffle is created with a URL for schema then it will automatically type `transport` as `http`. Conversely if you pass a GraphQL schema instance it will automatically type `transport` as `memory`.
+> [!Note] DX ❤️
+> You will find lots of little ways we try to maximize the DX of anyware. For example if you create your client with a schema URL then transport is typed `http` but if you create it with a schema instance then `memory`. This reduces the narrowing logic you need in your anyware.
 
 ## Hooks
 
+This section covers each hook in detail, ordered by their sequence in the request pipeline.
+
 ### Encode
 
-| When Interface | Then Performs Tasks                                                                       |
-| -------------- | ----------------------------------------------------------------------------------------- |
-| `typed`        | 1. Transform input into its GraphQL representation. <br> 2. Encode custom scalars if any. |
-| `raw`          | Passthrough                                                                               |
+<p class="TitleHint">Layer: Interface</p>
+
+| When interface ... | Then ...                                                                                                   |
+| ------------------ | ---------------------------------------------------------------------------------------------------------- |
+| `typed`            | Given some input, create a GraphQL request. <br> 2. Encode any custom scalar arguments.                    |
+| `raw`              | Passthrough. The raw interface accepts GraphQL requests directly. Custom scalar arguments are not encoded. |
 
 ### Pack
 
-| When Transport | Then Performs Tasks    |
-| -------------- | ---------------------- |
-| `http`         | Construct a `Request`. |
-| `memory`       | Passthrough            |
+<p class="TitleHint">Layer: Transport</p>
+
+| When transport ... | Then ...                                                             |
+| ------------------ | -------------------------------------------------------------------- |
+| `http`             | Given a GraphQL Request, create an HTTP request object.              |
+| `memory`           | Passthrough. The memory transport accepts GraphQL requests directly. |
 
 #### Slot `searchParams`
 
-| When Transport | Then Performs Tasks                                                                                                                                          |
-| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `http`         | When request will be sent [using GET](/guides/transports/http#get) this slot is called to create the value that will be used for the HTTP Search Parameters. |
-| `memory`       | N/A                                                                                                                                                          |
+| When transport ... | And ...                                                    | Then ...                           |
+| ------------------ | ---------------------------------------------------------- | ---------------------------------- |
+| `http`             | Exchange will use [HTTP GET](/guides/transports/http#get). | Create the HTTP Search Parameters. |
+| `memory`           | -                                                          | -                                  |
 
 #### Slot `body`
 
-| When Transport | Then Performs Tasks                                                                                                                               |
-| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `http`         | When request will be sent [using POST](/guides/transports/http#post) this slot is called to create the value that will be used for the HTTP body. |
-| `memory`       | N/A                                                                                                                                               |
+| When transport ... | And ...                                                      | Then ...              |
+| ------------------ | ------------------------------------------------------------ | --------------------- |
+| `http`             | Exchange will use [HTTP POST](/guides/transports/http#post). | Create the HTTP body. |
+| `memory`           | -                                                            | -                     |
 
 ### Exchange
 
-| When Transport | Then Performs Tasks                                                |
-| -------------- | ------------------------------------------------------------------ |
-| `http`         | Send request using `fetch`.                                        |
-| `memory`       | Send request using `execute`/`graphql` from the `graphql` package. |
+<p class="TitleHint">Layer: Transport</p>
+
+| When transport ... | Then ...                                                           |
+| ------------------ | ------------------------------------------------------------------ |
+| `http`             | Send request using `fetch`.                                        |
+| `memory`           | Send request using `execute`/`graphql` from the `graphql` package. |
 
 #### Slot `fetch`
 
-| When Transport | Then Performs Tasks         |
-| -------------- | --------------------------- |
-| `http`         | Send request using `fetch`. |
-| `memory`       | N/A                         |
+| When transport ... | Then ...                    |
+| ------------------ | --------------------------- |
+| `http`             | Send request using `fetch`. |
+| `memory`           | -                           |
 
 ### Unpack
 
-| When Transport | Then Performs Tasks                       |
-| -------------- | ----------------------------------------- |
-| `http`         | Transform `Response` into GraphQL result. |
-| `memory`       | Passthrough                               |
+<p class="TitleHint">Layer: Transport</p>
+
+| When transport ... | Then ...                                                   |
+| ------------------ | ---------------------------------------------------------- |
+| `http`             | Given an HTTP response object, create a GraphQL result.    |
+| `memory`           | Passthrough. The exchange returns GraphQL results already. |
 
 ### Decode
 
-| When Interface | Then Performs Tasks           |
-| -------------- | ----------------------------- |
-| `typed`        | Decode custom scalars if any. |
-| `raw`          | Passthrough                   |
+<p class="TitleHint">Layer: Interface</p>
+
+| When interface ... | Then ...                                      |
+| ------------------ | --------------------------------------------- |
+| `typed`            | Decode any custom scalars in the result data. |
+| `raw`              | Passthrough. Custom scalars are not decoded.  |
 
 ## Jump-Starting
 
 <!--@include: @/_snippets/example-links/jump-start.md-->
 
-If you want to jump straight to a specific hook other than `encode` you can do so by simplify destructing to the desired hook. For example here we write anyware for `exchange`:
+If you want to jump straight to a specific hook other than `encode` you can do so by simply destructing to the desired hook. For example here we write anyware for `exchange`:
 
 ```ts twoslash
 import { Graffle } from 'graffle'

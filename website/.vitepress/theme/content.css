@@ -14,8 +14,13 @@
 .VPContent h6 {
 	opacity: 0.6;
 	font-size: 0.7rem;
-	/* text-transform: uppercase; */
-	/* font-weight: 900;	 */
+}
+
+.VPContent .TitleHint {
+	margin-top: 0;
+	opacity: 0.6;
+	font-size: 0.7rem;
+	font-style: italic;
 }
 
 .VPContent h6 a {
@@ -38,4 +43,14 @@
 	font-weight: bold;
 	letter-spacing: 0.025em;
 
+}
+
+.Diagram {
+	max-width: 80%;
+	opacity: 0.75;
+	margin: 3rem 0;
+}
+
+.dark .Diagram {
+	filter: invert(1);
 }
