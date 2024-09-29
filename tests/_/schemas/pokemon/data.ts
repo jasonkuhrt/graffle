@@ -164,12 +164,12 @@ export namespace DatabaseServer {
 
     // dprint-ignore
     database.pokemon.push(
-      { id: `1`, name: `Pikachu`, type: `electric`, hp: 35, attack: 55, defense: 40, trainerId: `1`, birthday: new Date(`1850`).getTime(), kind: `Pokemon` },
+      { id: `1`, name: `Pikachu`, type: `electric`, hp: 35, attack: 55, defense: 40, trainerId: `1`, birthday: new Date(Date.UTC(1850, 0, 1)).getTime(), kind: `Pokemon` },
       { id: `2`, name: `Charizard`, type: `fire`, hp: 78, attack: 84, defense: 78, trainerId: `1`, birthday: new Date(Date.now() - day * 5).getTime(), kind: `Pokemon` },
-      { id: `3`, name: `Squirtle`, type: `water`, hp: 44, attack: 48, defense: 65, trainerId: `2`, birthday: new Date(`1910`).getTime(), kind: `Pokemon` },
-      { id: `4`, name: `Bulbasaur`, type: `grass`, hp: 45, attack: 49, defense: 49, trainerId: null, birthday: new Date(`2000`).getTime(), kind: `Pokemon` },
-      { id: `5`, name: `Caterpie`, type: `bug`, hp: 45, attack: 30, defense: 35, trainerId: null, birthday: new Date(`2000`).getTime(), kind: `Pokemon` },
-      { id: `6`, name: `Weedle`, type: `bug`, hp: 40, attack: 35, defense: 50, trainerId: null, birthday: new Date(`2000`).getTime(), kind: `Pokemon` },
+      { id: `3`, name: `Squirtle`, type: `water`, hp: 44, attack: 48, defense: 65, trainerId: `2`, birthday: new Date(Date.UTC(1910, 0, 1)).getTime(), kind: `Pokemon` },
+      { id: `4`, name: `Bulbasaur`, type: `grass`, hp: 45, attack: 49, defense: 49, trainerId: null, birthday: new Date(Date.UTC(2000, 0, 1)).getTime(), kind: `Pokemon` },
+      { id: `5`, name: `Caterpie`, type: `bug`, hp: 45, attack: 30, defense: 35, trainerId: null, birthday: new Date(Date.UTC(2000, 0, 1)).getTime(), kind: `Pokemon` },
+      { id: `6`, name: `Weedle`, type: `bug`, hp: 40, attack: 35, defense: 50, trainerId: null, birthday: new Date(Date.UTC(2000, 0, 1)).getTime(), kind: `Pokemon` },
       
     )
 
@@ -177,7 +177,7 @@ export namespace DatabaseServer {
       {
         id: `1`,
         type: `BattleWild`,
-        date: new Date(`2020-01-13`).getTime(),
+        date: new Date(Date.UTC(2020, 0, 1)).getTime(),
         trainerId: `1`,
         pokemonId: `1`,
         wildPokemonsIds: [`4`, `3`],
@@ -186,7 +186,7 @@ export namespace DatabaseServer {
       {
         id: `2`,
         type: `BattleTrainer`,
-        date: new Date(`2003-01-13`).getTime(),
+        date: new Date(Date.UTC(2003, 0, 1)).getTime(),
         combatantOneTrainerId: `1`,
         combatantOnePokemonId: `1`,
         combatantTwoTrainerId: `2`,
@@ -196,7 +196,7 @@ export namespace DatabaseServer {
       {
         id: `3`,
         type: `BattleRoyale`,
-        date: new Date(`1987-01-13`).getTime(),
+        date: new Date(Date.UTC(1987, 0, 1)).getTime(),
         combatants: [
           { trainerId: `1`, pokemonIds: [`1`, `2`] },
           { trainerId: `2`, pokemonIds: [`3`, `4`] },
