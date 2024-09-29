@@ -60,6 +60,14 @@ console.log(pokemons)
           "name": "Squirtle"
         }
       ]
+    },
+    {
+      "name": "Brock",
+      "pokemon": []
+    },
+    {
+      "name": "Gary",
+      "pokemon": []
     }
   ]
 }

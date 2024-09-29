@@ -15,19 +15,33 @@ export interface Index {
   allTypes: {
     Mutation: Schema.Root.Mutation
     Query: Schema.Root.Query
+    BattleWildResult: Schema.Enum.BattleWildResult
     PokemonType: Schema.Enum.PokemonType
     TrainerClass: Schema.Enum.TrainerClass
+    BattleRoyale: Schema.Object.BattleRoyale
+    BattleTrainer: Schema.Object.BattleTrainer
+    BattleWild: Schema.Object.BattleWild
+    CombatantMultiPokemon: Schema.Object.CombatantMultiPokemon
+    CombatantSinglePokemon: Schema.Object.CombatantSinglePokemon
     Patron: Schema.Object.Patron
     Pokemon: Schema.Object.Pokemon
     Trainer: Schema.Object.Trainer
+    Battle: Schema.Union.Battle
     Being: Schema.Interface.Being
   }
   objects: {
+    BattleRoyale: Schema.Object.BattleRoyale
+    BattleTrainer: Schema.Object.BattleTrainer
+    BattleWild: Schema.Object.BattleWild
+    CombatantMultiPokemon: Schema.Object.CombatantMultiPokemon
+    CombatantSinglePokemon: Schema.Object.CombatantSinglePokemon
     Patron: Schema.Object.Patron
     Pokemon: Schema.Object.Pokemon
     Trainer: Schema.Object.Trainer
   }
-  unions: {}
+  unions: {
+    Battle: Schema.Union.Battle
+  }
   interfaces: {
     Being: Schema.Interface.Being
   }

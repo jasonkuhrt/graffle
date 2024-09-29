@@ -20,9 +20,15 @@ import type * as $SelectionSets from './SelectionSets.js'
 export interface $MethodsSelect {
   Mutation: Mutation
   Query: Query
+  BattleRoyale: BattleRoyale
+  BattleTrainer: BattleTrainer
+  BattleWild: BattleWild
+  CombatantMultiPokemon: CombatantMultiPokemon
+  CombatantSinglePokemon: CombatantSinglePokemon
   Patron: Patron
   Pokemon: Pokemon
   Trainer: Trainer
+  Battle: Battle
   Being: Being
 }
 
@@ -66,6 +72,26 @@ export interface Query {
 //
 //
 
+export interface BattleRoyale {
+  <$SelectionSet>(selectionSet: $Utilities.Exact<$SelectionSet, $SelectionSets.BattleRoyale>): $SelectionSet
+}
+
+export interface BattleTrainer {
+  <$SelectionSet>(selectionSet: $Utilities.Exact<$SelectionSet, $SelectionSets.BattleTrainer>): $SelectionSet
+}
+
+export interface BattleWild {
+  <$SelectionSet>(selectionSet: $Utilities.Exact<$SelectionSet, $SelectionSets.BattleWild>): $SelectionSet
+}
+
+export interface CombatantMultiPokemon {
+  <$SelectionSet>(selectionSet: $Utilities.Exact<$SelectionSet, $SelectionSets.CombatantMultiPokemon>): $SelectionSet
+}
+
+export interface CombatantSinglePokemon {
+  <$SelectionSet>(selectionSet: $Utilities.Exact<$SelectionSet, $SelectionSets.CombatantSinglePokemon>): $SelectionSet
+}
+
 export interface Patron {
   <$SelectionSet>(selectionSet: $Utilities.Exact<$SelectionSet, $SelectionSets.Patron>): $SelectionSet
 }
@@ -76,6 +102,26 @@ export interface Pokemon {
 
 export interface Trainer {
   <$SelectionSet>(selectionSet: $Utilities.Exact<$SelectionSet, $SelectionSets.Trainer>): $SelectionSet
+}
+
+//
+//
+//
+//
+//
+//
+// ==================================================================================================
+//                                               Union
+// ==================================================================================================
+//
+//
+//
+//
+//
+//
+
+export interface Battle {
+  <$SelectionSet>(selectionSet: $Utilities.Exact<$SelectionSet, $SelectionSets.Battle>): $SelectionSet
 }
 
 //

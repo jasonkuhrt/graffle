@@ -24,7 +24,7 @@ const Being = builder.interfaceRef<DatabaseServer.Being>(`Being`).implement({
     return value.kind
   },
   fields: (t) => ({
-    id: t.int({ resolve: (being) => being.id }),
+    id: t.id({ resolve: (being) => being.id }),
     name: t.string({ resolve: (being) => being.name }),
   }),
 })
@@ -32,7 +32,7 @@ const Being = builder.interfaceRef<DatabaseServer.Being>(`Being`).implement({
 const Patron = builder.objectRef<DatabaseServer.Patron>(`Patron`).implement({
   interfaces: [Being],
   fields: (t) => ({
-    id: t.int({ resolve: (fan) => fan.id }),
+    id: t.id({ resolve: (fan) => fan.id }),
     money: t.int({ resolve: (fan) => fan.money }),
     name: t.string({ resolve: (fan) => fan.name }),
   }),
@@ -41,7 +41,7 @@ const Patron = builder.objectRef<DatabaseServer.Patron>(`Patron`).implement({
 const Trainer = builder.objectRef<DatabaseServer.Trainer>(`Trainer`).implement({
   interfaces: [Being],
   fields: (t) => ({
-    id: t.int({ resolve: (trainer) => trainer.id }),
+    id: t.id({ resolve: (trainer) => trainer.id }),
     name: t.string({ resolve: (trainer) => trainer.name }),
     class: t.field({ type: TrainerClass, resolve: (trainer) => trainer.class }),
     fans: t.field({
@@ -55,7 +55,7 @@ const Trainer = builder.objectRef<DatabaseServer.Trainer>(`Trainer`).implement({
 const Pokemon = builder.objectRef<DatabaseServer.Pokemon>(`Pokemon`).implement({
   interfaces: [Being],
   fields: (t) => ({
-    id: t.int({ resolve: (pokemon) => pokemon.id }),
+    id: t.id({ resolve: (pokemon) => pokemon.id }),
     type: t.field({ type: PokemonType, resolve: (pokemon) => pokemon.type }),
     name: t.string({ resolve: (pokemon) => pokemon.name }),
     hp: t.int({ resolve: (pokemon) => pokemon.hp }),
@@ -78,9 +78,135 @@ builder.objectFields(Trainer, t => ({
   }),
 }))
 
-builder.queryType()
+const CombatantSinglePokemon = builder.objectRef<{ trainerId: string; pokemonId: string }>(`CombatantSinglePokemon`)
+  .implement({
+    fields: (t) => ({
+      trainer: t.field({
+        type: Trainer,
+        resolve: (combatant, _, ctx) => {
+          return DatabaseServer.tenant(ctx.tenant).trainers.find((t) => t.id === combatant.trainerId)
+        },
+      }),
+      pokemon: t.field({
+        type: Pokemon,
+        resolve: (combatant, _, ctx) => {
+          return DatabaseServer.tenant(ctx.tenant).pokemon.find((p) => p.id === combatant.pokemonId)
+        },
+      }),
+    }),
+  })
 
-builder.mutationType()
+const CombatantMultiPokemon = builder.objectRef<{ trainerId: string; pokemonIds: string[] }>(`CombatantMultiPokemon`)
+  .implement({
+    fields: (t) => ({
+      trainer: t.field({
+        type: Trainer,
+        resolve: (combatant, _, ctx) => {
+          return DatabaseServer.tenant(ctx.tenant).trainers.find((t) => t.id === combatant.trainerId)
+        },
+      }),
+      pokemons: t.field({
+        type: t.listRef(Pokemon),
+        resolve: (combatant, _, ctx) => {
+          return DatabaseServer.tenant(ctx.tenant).pokemon.filter((p) => combatant.pokemonIds.includes(p.id))
+        },
+      }),
+    }),
+  })
+
+const BattleWildResult = builder.enumType(`BattleWildResult`, {
+  values: Object.values(DatabaseServer.BattleWildResult),
+})
+
+const BattleWild = builder.objectRef<DatabaseServer.BattleWild>(`BattleWild`).implement({
+  fields: (t) => ({
+    id: t.id({ resolve: (battle) => battle.id }),
+    date: t.float({ resolve: (battle) => battle.date }),
+    trainer: t.field({
+      type: Trainer,
+      resolve: (battle, _, ctx) => {
+        return DatabaseServer.tenant(ctx.tenant).trainers.find((t) => t.id === battle.trainerId)
+      },
+    }),
+    pokemon: t.field({
+      type: Pokemon,
+      resolve: (battle, _, ctx) => {
+        return DatabaseServer.tenant(ctx.tenant).pokemon.find((p) => p.id === battle.pokemonId)
+      },
+    }),
+    wildPokemons: t.field({
+      type: t.listRef(Pokemon),
+      resolve: (battle, _, ctx) => {
+        return DatabaseServer.tenant(ctx.tenant).pokemon.filter((p) => battle.wildPokemonsIds.includes(p.id))
+      },
+    }),
+    result: t.field({
+      type: BattleWildResult,
+      resolve: (battle) => {
+        return battle.result
+      },
+    }),
+  }),
+})
+
+const BattleTrainer = builder.objectRef<DatabaseServer.BattleTrainer>(`BattleTrainer`).implement({
+  fields: (t) => ({
+    id: t.id({ resolve: (battle) => battle.id }),
+    date: t.float({ resolve: (battle) => battle.date }),
+    combatant1: t.field({
+      type: CombatantSinglePokemon,
+      resolve: (battle) => {
+        return {
+          trainerId: battle.combatantOneTrainerId,
+          pokemonId: battle.combatantOnePokemonId,
+        }
+      },
+    }),
+    combatant2: t.field({
+      type: CombatantSinglePokemon,
+      resolve: (battle) => {
+        return {
+          trainerId: battle.combatantTwoTrainerId,
+          pokemonId: battle.combatantTwoPokemonId,
+        }
+      },
+    }),
+    winner: t.field({
+      type: Trainer,
+      resolve: (battle, _, ctx) => {
+        return DatabaseServer.tenant(ctx.tenant).trainers.find((t) => t.id === battle.combatantWinnerId)
+      },
+    }),
+  }),
+})
+
+const BattleRoyale = builder.objectRef<DatabaseServer.BattleRoyale>(`BattleRoyale`).implement({
+  fields: (t) => ({
+    id: t.id({ resolve: (battle) => battle.id }),
+    date: t.float({ resolve: (battle) => battle.date }),
+    combatants: t.field({
+      type: t.listRef(CombatantMultiPokemon),
+      resolve: (battle) => {
+        return battle.combatants
+      },
+    }),
+    winner: t.field({
+      type: Trainer,
+      resolve: (battle, _, ctx) => {
+        return DatabaseServer.tenant(ctx.tenant).trainers.find((t) => t.id === battle.combatantWinnerId)
+      },
+    }),
+  }),
+})
+
+const Battle = builder.unionType(`Battle`, {
+  types: [BattleWild, BattleTrainer, BattleRoyale],
+  resolveType: (value) => {
+    return value.type
+  },
+})
+
+// Inputs
 
 const StringFilter = builder.inputType(`StringFilter`, {
   // todo refactor using oneOf
@@ -103,6 +229,12 @@ const PokemonFilter = builder.inputType(`PokemonFilter`, {
     birthday: t.field({ type: DateFilter }),
   }),
 })
+
+// Root Types
+
+builder.queryType()
+
+builder.mutationType()
 
 builder.queryField(`pokemons`, (t) =>
   t.field({
@@ -130,6 +262,13 @@ builder.queryField(`pokemons`, (t) =>
         }
         return true
       }),
+  }))
+
+builder.queryField(`battles`, (t) =>
+  t.field({
+    nullable: false,
+    type: [Battle],
+    resolve: (_, __, ctx) => DatabaseServer.tenant(ctx.tenant).battles,
   }))
 
 builder.queryField(`pokemon`, (t) =>
@@ -196,7 +335,7 @@ builder.mutationField(`addPokemon`, (t) =>
       const newPokemon: DatabaseServer.Pokemon = {
         kind: `Pokemon`,
         type,
-        id: DatabaseServer.tenant(ctx.tenant).pokemon.length + 1,
+        id: String(DatabaseServer.tenant(ctx.tenant).pokemon.length + 1),
         name,
         hp: hp || 1,
         attack: attack || 0,

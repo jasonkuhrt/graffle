@@ -19,6 +19,7 @@ export namespace Root {
   }>
 
   export type Query = $.Output.ObjectQuery<{
+    battles: $.Field<$.Output.List<Union.Battle>, null>
     beings: $.Field<$.Output.List<Interface.Being>, null>
     pokemon: $.Field<$.Output.Nullable<$.Output.List<Object.Pokemon>>, null>
     pokemonByName: $.Field<
@@ -46,7 +47,9 @@ export namespace Root {
 //                             Enum                             //
 // ------------------------------------------------------------ //
 export namespace Enum {
-  export type PokemonType = $.Enum<'PokemonType', ['electric', 'fire', 'grass', 'water']>
+  export type BattleWildResult = $.Enum<'BattleWildResult', ['pokemonsCaptured', 'pokemonsDefeated', 'trainerDefeated']>
+
+  export type PokemonType = $.Enum<'PokemonType', ['bug', 'electric', 'fire', 'grass', 'water']>
 
   export type TrainerClass = $.Enum<
     'TrainerClass',
@@ -91,7 +94,7 @@ export namespace InputObject {
 // ------------------------------------------------------------ //
 export namespace Interface {
   export type Being = $.Interface<'Being', {
-    id: $.Field<$.Output.Nullable<$Scalar.Int>, null>
+    id: $.Field<$.Output.Nullable<$Scalar.ID>, null>
     name: $.Field<$.Output.Nullable<$Scalar.String>, null>
   }, [Object.Patron, Object.Pokemon, Object.Trainer]>
 }
@@ -99,8 +102,42 @@ export namespace Interface {
 //                            Object                            //
 // ------------------------------------------------------------ //
 export namespace Object {
+  export type BattleRoyale = $.Object$2<'BattleRoyale', {
+    combatants: $.Field<$.Output.Nullable<$.Output.List<Object.CombatantMultiPokemon>>, null>
+    date: $.Field<$.Output.Nullable<$Scalar.Int>, null>
+    id: $.Field<$.Output.Nullable<$Scalar.ID>, null>
+    winner: $.Field<$.Output.Nullable<Object.Trainer>, null>
+  }>
+
+  export type BattleTrainer = $.Object$2<'BattleTrainer', {
+    combatant1: $.Field<$.Output.Nullable<Object.CombatantSinglePokemon>, null>
+    combatant2: $.Field<$.Output.Nullable<Object.CombatantSinglePokemon>, null>
+    date: $.Field<$.Output.Nullable<$Scalar.Int>, null>
+    id: $.Field<$.Output.Nullable<$Scalar.ID>, null>
+    winner: $.Field<$.Output.Nullable<Object.Trainer>, null>
+  }>
+
+  export type BattleWild = $.Object$2<'BattleWild', {
+    date: $.Field<$.Output.Nullable<$Scalar.Int>, null>
+    id: $.Field<$.Output.Nullable<$Scalar.ID>, null>
+    pokemon: $.Field<$.Output.Nullable<Object.Pokemon>, null>
+    result: $.Field<$.Output.Nullable<Enum.BattleWildResult>, null>
+    trainer: $.Field<$.Output.Nullable<Object.Trainer>, null>
+    wildPokemons: $.Field<$.Output.Nullable<$.Output.List<Object.Pokemon>>, null>
+  }>
+
+  export type CombatantMultiPokemon = $.Object$2<'CombatantMultiPokemon', {
+    pokemons: $.Field<$.Output.Nullable<$.Output.List<Object.Pokemon>>, null>
+    trainer: $.Field<$.Output.Nullable<Object.Trainer>, null>
+  }>
+
+  export type CombatantSinglePokemon = $.Object$2<'CombatantSinglePokemon', {
+    pokemon: $.Field<$.Output.Nullable<Object.Pokemon>, null>
+    trainer: $.Field<$.Output.Nullable<Object.Trainer>, null>
+  }>
+
   export type Patron = $.Object$2<'Patron', {
-    id: $.Field<$.Output.Nullable<$Scalar.Int>, null>
+    id: $.Field<$.Output.Nullable<$Scalar.ID>, null>
     money: $.Field<$.Output.Nullable<$Scalar.Int>, null>
     name: $.Field<$.Output.Nullable<$Scalar.String>, null>
   }>
@@ -110,7 +147,7 @@ export namespace Object {
     birthday: $.Field<$.Output.Nullable<$Scalar.Int>, null>
     defense: $.Field<$.Output.Nullable<$Scalar.Int>, null>
     hp: $.Field<$.Output.Nullable<$Scalar.Int>, null>
-    id: $.Field<$.Output.Nullable<$Scalar.Int>, null>
+    id: $.Field<$.Output.Nullable<$Scalar.ID>, null>
     name: $.Field<$.Output.Nullable<$Scalar.String>, null>
     trainer: $.Field<$.Output.Nullable<Object.Trainer>, null>
     type: $.Field<$.Output.Nullable<Enum.PokemonType>, null>
@@ -119,7 +156,7 @@ export namespace Object {
   export type Trainer = $.Object$2<'Trainer', {
     class: $.Field<$.Output.Nullable<Enum.TrainerClass>, null>
     fans: $.Field<$.Output.Nullable<$.Output.List<Object.Patron>>, null>
-    id: $.Field<$.Output.Nullable<$Scalar.Int>, null>
+    id: $.Field<$.Output.Nullable<$Scalar.ID>, null>
     name: $.Field<$.Output.Nullable<$Scalar.String>, null>
     pokemon: $.Field<$.Output.Nullable<$.Output.List<Object.Pokemon>>, null>
   }>
@@ -128,5 +165,5 @@ export namespace Object {
 //                            Union                             //
 // ------------------------------------------------------------ //
 export namespace Union {
-  // -- no types --
+  export type Battle = $.Union<'Battle', [Object.BattleRoyale, Object.BattleTrainer, Object.BattleWild]>
 }

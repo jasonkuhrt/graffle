@@ -32,7 +32,9 @@ console.log(result)
       { name: 'Pikachu' },
       { name: 'Charizard' },
       { name: 'Squirtle' },
-      { name: 'Bulbasaur' }
+      { name: 'Bulbasaur' },
+      { name: 'Caterpie' },
+      { name: 'Weedle' }
     ]
   },
   errors: undefined,
@@ -42,8 +44,8 @@ console.log(result)
     statusText: 'OK',
     headers: Headers {
       'content-type': 'application/graphql-response+json; charset=utf-8',
-      'content-length': '104',
-      date: 'Fri, 27 Sep 2024 14:46:38 GMT',
+      'content-length': '142',
+      date: 'Sun, 29 Sep 2024 00:13:57 GMT',
       connection: 'keep-alive',
       'keep-alive': 'timeout=5'
     },

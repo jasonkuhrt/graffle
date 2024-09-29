@@ -1,0 +1,13 @@
+---------------------------------------- SHOW ----------------------------------------
+BattleWild on 1/1/2020
+trainer: Ash with Pikachu
+vs wild pokemons: Squirtle, Bulbasaur
+result: pokemonsCaptured
+---------------------------------------- SHOW ----------------------------------------
+BattleTrainer on 1/1/2003
+Ash vs Misty
+winner: Misty
+---------------------------------------- SHOW ----------------------------------------
+BattleRoyale on 1/13/1987
+combatants: Ash, Misty
+winner: Ash

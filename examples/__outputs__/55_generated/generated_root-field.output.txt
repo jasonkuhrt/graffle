@@ -11,5 +11,11 @@
   },
   {
     "name": "Bulbasaur"
+  },
+  {
+    "name": "Caterpie"
+  },
+  {
+    "name": "Weedle"
   }
 ]

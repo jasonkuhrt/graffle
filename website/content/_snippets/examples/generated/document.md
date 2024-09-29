@@ -55,6 +55,12 @@ console.log(pokemons)
     },
     {
       "name": "Misty"
+    },
+    {
+      "name": "Brock"
+    },
+    {
+      "name": "Gary"
     }
   ],
   "pokemons": [
