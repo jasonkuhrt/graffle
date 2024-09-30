@@ -1,6 +1,6 @@
 import type { RequireProperties, StringKeyof } from '../../../lib/prelude.js'
 import type { Schema } from '../../1_Schema/__.js'
-import type { AliasInput } from '../../2_SelectionSet/types.js'
+import type { SelectionSet } from '../../2_SelectionSet/__.js'
 import type { GlobalRegistry } from '../../4_generator/globalRegistry.js'
 import type { Transport } from '../../5_core/types.js'
 import type { ConfigGetOutputError } from '../handleOutput.js'
@@ -134,16 +134,16 @@ export type AddTypenameToSelectedRootTypeResultFields<
       [$RootFieldName in StringKeyof<$Selection>]:
         IsResultField<$Index, $RootTypeName, $RootFieldName> extends false
         ? $Selection[$RootFieldName]
-        : $Selection[$RootFieldName] extends AliasInput
+        : $Selection[$RootFieldName] extends SelectionSet.Nodes.SelectAlias.SelectAlias
           ? AddTypenameToAliasInput<$Selection[$RootFieldName]>
           : $Selection[$RootFieldName] & TypenameSelection
     }
   : $Selection
 
 // dprint-ignore
-type AddTypenameToAliasInput<$AliasInput extends AliasInput> = {
+type AddTypenameToAliasInput<$AliasInput extends SelectionSet.Nodes.SelectAlias.SelectAlias> = {
   [$Index in keyof $AliasInput]:
-    $AliasInput[$Index] extends AliasInput
+    $AliasInput[$Index] extends SelectionSet.Nodes.SelectAlias.SelectAlias
       ? [$AliasInput[$Index][0], $AliasInput[$Index][1] & TypenameSelection]
       : $AliasInput[$Index]
 }

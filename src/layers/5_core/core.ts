@@ -4,7 +4,7 @@ import {
   OperationTypeAccessTypeMap,
   parseGraphQLOperationType,
   type StandardScalarVariables,
-} from '../../lib/graphql.js'
+} from '../../lib/graphql-plus/graphql.js'
 import {
   getRequestEncodeSearchParameters,
   getRequestHeadersRec,
@@ -15,8 +15,8 @@ import {
 import { mergeRequestInit, searchParamsAppendAll } from '../../lib/http.js'
 import { casesExhausted, getOptionalNullablePropertyOrThrow, throwNull } from '../../lib/prelude.js'
 import { execute } from '../0_functions/execute.js'
+import { SelectionSet } from '../2_SelectionSet/__.js'
 import { ResultSet } from '../3_ResultSet/__.js'
-import { Document } from '../4_document/__.js'
 import type { GraffleExecutionResultVar } from '../6_client/client.js'
 import type { Config } from '../6_client/Settings/Config.js'
 import {
@@ -54,10 +54,14 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
         case `typed`: {
           // todo turn inputs into variables
           variables = undefined
-          document = Document.print({
-            config: input.context.config,
-            schemaIndex: input.context.schemaIndex,
-          }, input.document)
+          document = print(SelectionSet.toGraphQLDocument(
+            {
+              schema: input.context.schemaIndex,
+              captures: { customScalarOutputs: [], variables: [] },
+            },
+            [],
+            input.document,
+          ))
           break
         }
         default:
@@ -227,7 +231,7 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
           }
         }
         case `typed`: {
-          const operation = Document.getOperationOrThrow(input.document, input.operationName)
+          const operation = SelectionSet.Document.getOperationOrThrow(input.document, input.operationName)
           // todo optimize
           // 1. Generate a map of possible custom scalar paths (tree structure)
           // 2. When traversing the result, skip keys that are not in the map

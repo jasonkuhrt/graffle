@@ -1,1 +1,1 @@
-export { print as document } from '../layers/4_document/print.js'
+export { toGraphQLDocument as document } from '../layers/2_SelectionSet/graphqlMapper/nodes/Document.js'

@@ -3,7 +3,7 @@ import { buildSchema, type GraphQLObjectType, type GraphQLSchema } from 'graphql
 import fs from 'node:fs/promises'
 import * as Path from 'node:path'
 import { introspectionQuery } from '../../cli/_helpers.js'
-import { getTypeMapByKind, type TypeMapByKind } from '../../lib/graphql.js'
+import { getTypeMapByKind, type TypeMapByKind } from '../../lib/graphql-plus/graphql.js'
 import { omitUndefinedKeys } from '../../lib/prelude.js'
 import { fileExists, isPathToADirectory } from './helpers/fs.js'
 

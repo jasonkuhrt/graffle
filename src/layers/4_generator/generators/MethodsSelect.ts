@@ -1,5 +1,5 @@
 // todo jsdoc
-import { getNodeNameAndKind, isRootType } from '../../../lib/graphql.js'
+import { getNodeNameAndKind, isRootType } from '../../../lib/graphql-plus/graphql.js'
 import { createModuleGenerator } from '../helpers/moduleGenerator.js'
 import { renderName, title1 } from '../helpers/render.js'
 import { ModuleGeneratorSelectionSets } from './SelectionSets.js'

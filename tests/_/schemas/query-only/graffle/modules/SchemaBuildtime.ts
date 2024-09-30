@@ -6,8 +6,8 @@ import type * as $Scalar from './Scalar.js'
 // ------------------------------------------------------------ //
 export namespace Root {
   export type Query = $.Output.ObjectQuery<{
-    id: $.Field<$.Output.Nullable<$Scalar.ID>, null>
-    idNonNull: $.Field<$Scalar.ID, null>
+    id: $.Field<'id', $.Output.Nullable<$Scalar.ID>, null>
+    idNonNull: $.Field<'idNonNull', $Scalar.ID, null>
   }>
 }
 // ------------------------------------------------------------ //

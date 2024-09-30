@@ -1,11 +1,12 @@
 import { Code } from '../../../lib/Code.js'
-import { hasCustomScalars } from '../../../lib/graphql.js'
+import { hasCustomScalars } from '../../../lib/graphql-plus/graphql.js'
 import { createModuleGenerator } from '../helpers/moduleGenerator.js'
 import { ModuleGeneratorData } from './Data.js'
 import { ModuleGeneratorMethodsDocument } from './MethodsDocument.js'
 import { ModuleGeneratorMethodsRoot } from './MethodsRoot.js'
 import { ModuleGeneratorMethodsSelect } from './MethodsSelect.js'
 import { ModuleGeneratorScalar } from './Scalar.js'
+import { ModuleGeneratorSchemaCustomScalarIndex } from './schemaCustomScalarIndex.js'
 import { ModuleGeneratorSchemaIndex } from './SchemaIndex.js'
 
 export const ModuleGeneratorGlobal = createModuleGenerator(
@@ -21,6 +22,7 @@ export const ModuleGeneratorGlobal = createModuleGenerator(
       `import type * as MethodsDocument from './${ModuleGeneratorMethodsDocument.name}.js'`,
       `import type * as MethodsRoot from './${ModuleGeneratorMethodsRoot.name}.js'`,
       `import type { Index } from './${ModuleGeneratorSchemaIndex.name}.js'`,
+      `import type * as SchemaCustomScalarIndex from './${ModuleGeneratorSchemaCustomScalarIndex.name}.js'`,
     )
 
     if (config.schema.typeMapByKind.GraphQLScalarTypeCustom.length > 0) {
@@ -44,20 +46,21 @@ export const ModuleGeneratorGlobal = createModuleGenerator(
         export namespace GraffleGlobalTypes {
           export interface Schemas {
             ${config.name}: {
+              name: Data.Name
+              index: Index
               interfaces: {
                 MethodsSelect: MethodsSelect.$MethodsSelect
                 Document: MethodsDocument.BuilderMethodsDocumentFn
                 Root: MethodsRoot.BuilderMethodsRootFn
               }
-              name: Data.Name
-              index: Index
               customScalars: {
                 ${customScalarsProperties}
-            }
-            featureOptions: {
-              schemaErrors: ${config.options.errorTypeNamePattern ? `true` : `false`}
-            }${defaultSchemaUrlTsDoc}
-            defaultSchemaUrl: ${config.options.defaultSchemaUrl ? `string` : `null`}
+              }
+              //schemaCustomScalarsIndex: SchemaCustomScalarIndex
+              featureOptions: {
+                schemaErrors: ${config.options.errorTypeNamePattern ? `true` : `false`}
+              }${defaultSchemaUrlTsDoc}
+              defaultSchemaUrl: ${config.options.defaultSchemaUrl ? `string` : `null`}
           }
         }
       }

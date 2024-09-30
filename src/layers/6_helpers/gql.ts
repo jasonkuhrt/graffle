@@ -1,6 +1,6 @@
 import type { TypedQueryDocumentNode } from 'graphql'
 import { parse } from 'graphql'
-import type { SomeData } from '../../lib/graphql.js'
+import type { SomeData } from '../../lib/graphql-plus/graphql.js'
 
 /**
  * Returns the string with any variables given interpolated and then parsed into a DocumentNode.

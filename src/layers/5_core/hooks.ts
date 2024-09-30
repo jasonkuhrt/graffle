@@ -1,7 +1,11 @@
 import type { DocumentNode, ExecutionResult, GraphQLSchema } from 'graphql'
-import type { GraphQLRequestEncoded, GraphQLRequestInput, StandardScalarVariables } from '../../lib/graphql.js'
+import type {
+  GraphQLRequestEncoded,
+  GraphQLRequestInput,
+  StandardScalarVariables,
+} from '../../lib/graphql-plus/graphql.js'
 import type { getRequestEncodeSearchParameters, postRequestEncodeBody } from '../../lib/graphqlHTTP.js'
-import type { Document } from '../4_document/__.js'
+import type { SelectionSet } from '../2_SelectionSet/__.js'
 import type { InterfaceTypedRequestContext, RequestContext } from '../6_client/client.js'
 import type { Config } from '../6_client/Settings/Config.js'
 import type { CoreExchangeGetRequest, CoreExchangePostRequest } from '../6_client/transportHttp/request.js'
@@ -11,7 +15,7 @@ type InterfaceInput<TypedProperties = {}, RawProperties = {}> =
   | ({
     interface: InterfaceTyped
     context: InterfaceTypedRequestContext
-    document: Document.DocumentNormalized
+    document: SelectionSet.Document.DocumentNormalized
     operationName?: string
   } & TypedProperties)
   | ({

@@ -8,7 +8,7 @@ import {
   isDeprecatableNode,
   type TypeMapByKind,
   type TypeMapKind,
-} from '../../../lib/graphql.js'
+} from '../../../lib/graphql-plus/graphql.js'
 import { borderThickFullWidth, borderThinFullWidth, centerTo } from '../../../lib/text.js'
 import type { Config } from '../config.js'
 

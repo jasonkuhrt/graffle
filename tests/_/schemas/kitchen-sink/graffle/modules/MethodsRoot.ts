@@ -29,7 +29,7 @@ export interface MutationMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'id',
-      ResultSet.Field<true, Index['Root']['Mutation']['fields']['id'], Index>
+      ResultSet.InferField<true, Index['Root']['Mutation']['fields']['id'], Index>
     >
   >
   idNonNull: () => Promise<
@@ -37,7 +37,7 @@ export interface MutationMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'idNonNull',
-      ResultSet.Field<true, Index['Root']['Mutation']['fields']['idNonNull'], Index>
+      ResultSet.InferField<true, Index['Root']['Mutation']['fields']['idNonNull'], Index>
     >
   >
 }
@@ -70,7 +70,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'InputObjectNested',
-      ResultSet.Field<true, Index['Root']['Query']['fields']['InputObjectNested'], Index>
+      ResultSet.InferField<true, Index['Root']['Query']['fields']['InputObjectNested'], Index>
     >
   >
   InputObjectNestedNonNull: <$SelectionSet>(
@@ -80,7 +80,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'InputObjectNestedNonNull',
-      ResultSet.Field<true, Index['Root']['Query']['fields']['InputObjectNestedNonNull'], Index>
+      ResultSet.InferField<true, Index['Root']['Query']['fields']['InputObjectNestedNonNull'], Index>
     >
   >
   /**
@@ -91,7 +91,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'abcEnum',
-      ResultSet.Field<$SelectionSet, Index['Root']['Query']['fields']['abcEnum'], Index>
+      ResultSet.InferField<$SelectionSet, Index['Root']['Query']['fields']['abcEnum'], Index>
     >
   >
   date: () => Promise<
@@ -99,7 +99,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'date',
-      ResultSet.Field<true, Index['Root']['Query']['fields']['date'], Index>
+      ResultSet.InferField<true, Index['Root']['Query']['fields']['date'], Index>
     >
   >
   dateArg: <$SelectionSet>(
@@ -109,7 +109,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'dateArg',
-      ResultSet.Field<true, Index['Root']['Query']['fields']['dateArg'], Index>
+      ResultSet.InferField<true, Index['Root']['Query']['fields']['dateArg'], Index>
     >
   >
   dateArgInputObject: <$SelectionSet>(
@@ -119,7 +119,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'dateArgInputObject',
-      ResultSet.Field<true, Index['Root']['Query']['fields']['dateArgInputObject'], Index>
+      ResultSet.InferField<true, Index['Root']['Query']['fields']['dateArgInputObject'], Index>
     >
   >
   dateArgList: <$SelectionSet>(
@@ -129,7 +129,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'dateArgList',
-      ResultSet.Field<true, Index['Root']['Query']['fields']['dateArgList'], Index>
+      ResultSet.InferField<true, Index['Root']['Query']['fields']['dateArgList'], Index>
     >
   >
   dateArgNonNull: <$SelectionSet>(
@@ -139,7 +139,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'dateArgNonNull',
-      ResultSet.Field<true, Index['Root']['Query']['fields']['dateArgNonNull'], Index>
+      ResultSet.InferField<true, Index['Root']['Query']['fields']['dateArgNonNull'], Index>
     >
   >
   dateArgNonNullList: <$SelectionSet>(
@@ -149,7 +149,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'dateArgNonNullList',
-      ResultSet.Field<true, Index['Root']['Query']['fields']['dateArgNonNullList'], Index>
+      ResultSet.InferField<true, Index['Root']['Query']['fields']['dateArgNonNullList'], Index>
     >
   >
   dateArgNonNullListNonNull: <$SelectionSet>(
@@ -159,7 +159,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'dateArgNonNullListNonNull',
-      ResultSet.Field<true, Index['Root']['Query']['fields']['dateArgNonNullListNonNull'], Index>
+      ResultSet.InferField<true, Index['Root']['Query']['fields']['dateArgNonNullListNonNull'], Index>
     >
   >
   dateInterface1: <$SelectionSet>(
@@ -169,7 +169,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'dateInterface1',
-      ResultSet.Field<$SelectionSet, Index['Root']['Query']['fields']['dateInterface1'], Index>
+      ResultSet.InferField<$SelectionSet, Index['Root']['Query']['fields']['dateInterface1'], Index>
     >
   >
   dateList: () => Promise<
@@ -177,7 +177,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'dateList',
-      ResultSet.Field<true, Index['Root']['Query']['fields']['dateList'], Index>
+      ResultSet.InferField<true, Index['Root']['Query']['fields']['dateList'], Index>
     >
   >
   dateListNonNull: () => Promise<
@@ -185,7 +185,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'dateListNonNull',
-      ResultSet.Field<true, Index['Root']['Query']['fields']['dateListNonNull'], Index>
+      ResultSet.InferField<true, Index['Root']['Query']['fields']['dateListNonNull'], Index>
     >
   >
   dateNonNull: () => Promise<
@@ -193,7 +193,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'dateNonNull',
-      ResultSet.Field<true, Index['Root']['Query']['fields']['dateNonNull'], Index>
+      ResultSet.InferField<true, Index['Root']['Query']['fields']['dateNonNull'], Index>
     >
   >
   dateObject1: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.dateObject1>) => Promise<
@@ -201,7 +201,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'dateObject1',
-      ResultSet.Field<$SelectionSet, Index['Root']['Query']['fields']['dateObject1'], Index>
+      ResultSet.InferField<$SelectionSet, Index['Root']['Query']['fields']['dateObject1'], Index>
     >
   >
   dateUnion: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.dateUnion>) => Promise<
@@ -209,7 +209,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'dateUnion',
-      ResultSet.Field<$SelectionSet, Index['Root']['Query']['fields']['dateUnion'], Index>
+      ResultSet.InferField<$SelectionSet, Index['Root']['Query']['fields']['dateUnion'], Index>
     >
   >
   error: <$SelectionSet>(args?: Utils.Exact<$SelectionSet, SelectionSet.Query.error$SelectionSetArguments>) => Promise<
@@ -217,7 +217,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'error',
-      ResultSet.Field<true, Index['Root']['Query']['fields']['error'], Index>
+      ResultSet.InferField<true, Index['Root']['Query']['fields']['error'], Index>
     >
   >
   id: () => Promise<
@@ -225,7 +225,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'id',
-      ResultSet.Field<true, Index['Root']['Query']['fields']['id'], Index>
+      ResultSet.InferField<true, Index['Root']['Query']['fields']['id'], Index>
     >
   >
   idNonNull: () => Promise<
@@ -233,7 +233,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'idNonNull',
-      ResultSet.Field<true, Index['Root']['Query']['fields']['idNonNull'], Index>
+      ResultSet.InferField<true, Index['Root']['Query']['fields']['idNonNull'], Index>
     >
   >
   interface: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.$interface>) => Promise<
@@ -241,7 +241,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'interface',
-      ResultSet.Field<$SelectionSet, Index['Root']['Query']['fields']['interface'], Index>
+      ResultSet.InferField<$SelectionSet, Index['Root']['Query']['fields']['interface'], Index>
     >
   >
   interfaceNonNull: <$SelectionSet>(
@@ -251,7 +251,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'interfaceNonNull',
-      ResultSet.Field<$SelectionSet, Index['Root']['Query']['fields']['interfaceNonNull'], Index>
+      ResultSet.InferField<$SelectionSet, Index['Root']['Query']['fields']['interfaceNonNull'], Index>
     >
   >
   interfaceWithArgs: <$SelectionSet>(
@@ -261,7 +261,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'interfaceWithArgs',
-      ResultSet.Field<$SelectionSet, Index['Root']['Query']['fields']['interfaceWithArgs'], Index>
+      ResultSet.InferField<$SelectionSet, Index['Root']['Query']['fields']['interfaceWithArgs'], Index>
     >
   >
   listInt: () => Promise<
@@ -269,7 +269,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'listInt',
-      ResultSet.Field<true, Index['Root']['Query']['fields']['listInt'], Index>
+      ResultSet.InferField<true, Index['Root']['Query']['fields']['listInt'], Index>
     >
   >
   listIntNonNull: () => Promise<
@@ -277,7 +277,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'listIntNonNull',
-      ResultSet.Field<true, Index['Root']['Query']['fields']['listIntNonNull'], Index>
+      ResultSet.InferField<true, Index['Root']['Query']['fields']['listIntNonNull'], Index>
     >
   >
   listListInt: () => Promise<
@@ -285,7 +285,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'listListInt',
-      ResultSet.Field<true, Index['Root']['Query']['fields']['listListInt'], Index>
+      ResultSet.InferField<true, Index['Root']['Query']['fields']['listListInt'], Index>
     >
   >
   listListIntNonNull: () => Promise<
@@ -293,7 +293,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'listListIntNonNull',
-      ResultSet.Field<true, Index['Root']['Query']['fields']['listListIntNonNull'], Index>
+      ResultSet.InferField<true, Index['Root']['Query']['fields']['listListIntNonNull'], Index>
     >
   >
   lowerCaseUnion: <$SelectionSet>(
@@ -303,7 +303,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'lowerCaseUnion',
-      ResultSet.Field<$SelectionSet, Index['Root']['Query']['fields']['lowerCaseUnion'], Index>
+      ResultSet.InferField<$SelectionSet, Index['Root']['Query']['fields']['lowerCaseUnion'], Index>
     >
   >
   object: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.$object>) => Promise<
@@ -311,7 +311,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'object',
-      ResultSet.Field<$SelectionSet, Index['Root']['Query']['fields']['object'], Index>
+      ResultSet.InferField<$SelectionSet, Index['Root']['Query']['fields']['object'], Index>
     >
   >
   objectList: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.objectList>) => Promise<
@@ -319,7 +319,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'objectList',
-      ResultSet.Field<$SelectionSet, Index['Root']['Query']['fields']['objectList'], Index>
+      ResultSet.InferField<$SelectionSet, Index['Root']['Query']['fields']['objectList'], Index>
     >
   >
   objectListNonNull: <$SelectionSet>(
@@ -329,7 +329,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'objectListNonNull',
-      ResultSet.Field<$SelectionSet, Index['Root']['Query']['fields']['objectListNonNull'], Index>
+      ResultSet.InferField<$SelectionSet, Index['Root']['Query']['fields']['objectListNonNull'], Index>
     >
   >
   objectNested: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.objectNested>) => Promise<
@@ -337,7 +337,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'objectNested',
-      ResultSet.Field<$SelectionSet, Index['Root']['Query']['fields']['objectNested'], Index>
+      ResultSet.InferField<$SelectionSet, Index['Root']['Query']['fields']['objectNested'], Index>
     >
   >
   objectNonNull: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.objectNonNull>) => Promise<
@@ -345,7 +345,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'objectNonNull',
-      ResultSet.Field<$SelectionSet, Index['Root']['Query']['fields']['objectNonNull'], Index>
+      ResultSet.InferField<$SelectionSet, Index['Root']['Query']['fields']['objectNonNull'], Index>
     >
   >
   objectWithArgs: <$SelectionSet>(
@@ -355,7 +355,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'objectWithArgs',
-      ResultSet.Field<$SelectionSet, Index['Root']['Query']['fields']['objectWithArgs'], Index>
+      ResultSet.InferField<$SelectionSet, Index['Root']['Query']['fields']['objectWithArgs'], Index>
     >
   >
   result: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.result>) => Promise<
@@ -363,7 +363,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'result',
-      ResultSet.Field<$SelectionSet, Index['Root']['Query']['fields']['result'], Index>
+      ResultSet.InferField<$SelectionSet, Index['Root']['Query']['fields']['result'], Index>
     >
   >
   resultNonNull: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.resultNonNull>) => Promise<
@@ -371,7 +371,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'resultNonNull',
-      ResultSet.Field<$SelectionSet, Index['Root']['Query']['fields']['resultNonNull'], Index>
+      ResultSet.InferField<$SelectionSet, Index['Root']['Query']['fields']['resultNonNull'], Index>
     >
   >
   string: () => Promise<
@@ -379,7 +379,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'string',
-      ResultSet.Field<true, Index['Root']['Query']['fields']['string'], Index>
+      ResultSet.InferField<true, Index['Root']['Query']['fields']['string'], Index>
     >
   >
   stringWithArgEnum: <$SelectionSet>(
@@ -389,7 +389,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'stringWithArgEnum',
-      ResultSet.Field<true, Index['Root']['Query']['fields']['stringWithArgEnum'], Index>
+      ResultSet.InferField<true, Index['Root']['Query']['fields']['stringWithArgEnum'], Index>
     >
   >
   stringWithArgInputObject: <$SelectionSet>(
@@ -399,7 +399,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'stringWithArgInputObject',
-      ResultSet.Field<true, Index['Root']['Query']['fields']['stringWithArgInputObject'], Index>
+      ResultSet.InferField<true, Index['Root']['Query']['fields']['stringWithArgInputObject'], Index>
     >
   >
   stringWithArgInputObjectRequired: <$SelectionSet>(
@@ -409,7 +409,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'stringWithArgInputObjectRequired',
-      ResultSet.Field<true, Index['Root']['Query']['fields']['stringWithArgInputObjectRequired'], Index>
+      ResultSet.InferField<true, Index['Root']['Query']['fields']['stringWithArgInputObjectRequired'], Index>
     >
   >
   stringWithArgs: <$SelectionSet>(
@@ -419,7 +419,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'stringWithArgs',
-      ResultSet.Field<true, Index['Root']['Query']['fields']['stringWithArgs'], Index>
+      ResultSet.InferField<true, Index['Root']['Query']['fields']['stringWithArgs'], Index>
     >
   >
   stringWithListArg: <$SelectionSet>(
@@ -429,7 +429,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'stringWithListArg',
-      ResultSet.Field<true, Index['Root']['Query']['fields']['stringWithListArg'], Index>
+      ResultSet.InferField<true, Index['Root']['Query']['fields']['stringWithListArg'], Index>
     >
   >
   stringWithListArgRequired: <$SelectionSet>(
@@ -439,7 +439,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'stringWithListArgRequired',
-      ResultSet.Field<true, Index['Root']['Query']['fields']['stringWithListArgRequired'], Index>
+      ResultSet.InferField<true, Index['Root']['Query']['fields']['stringWithListArgRequired'], Index>
     >
   >
   stringWithRequiredArg: <$SelectionSet>(
@@ -449,7 +449,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'stringWithRequiredArg',
-      ResultSet.Field<true, Index['Root']['Query']['fields']['stringWithRequiredArg'], Index>
+      ResultSet.InferField<true, Index['Root']['Query']['fields']['stringWithRequiredArg'], Index>
     >
   >
   unionFooBar: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.unionFooBar>) => Promise<
@@ -457,7 +457,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'unionFooBar',
-      ResultSet.Field<$SelectionSet, Index['Root']['Query']['fields']['unionFooBar'], Index>
+      ResultSet.InferField<$SelectionSet, Index['Root']['Query']['fields']['unionFooBar'], Index>
     >
   >
   unionFooBarNonNull: <$SelectionSet>(
@@ -467,7 +467,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'unionFooBarNonNull',
-      ResultSet.Field<$SelectionSet, Index['Root']['Query']['fields']['unionFooBarNonNull'], Index>
+      ResultSet.InferField<$SelectionSet, Index['Root']['Query']['fields']['unionFooBarNonNull'], Index>
     >
   >
   unionFooBarWithArgs: <$SelectionSet>(
@@ -477,7 +477,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'unionFooBarWithArgs',
-      ResultSet.Field<$SelectionSet, Index['Root']['Query']['fields']['unionFooBarWithArgs'], Index>
+      ResultSet.InferField<$SelectionSet, Index['Root']['Query']['fields']['unionFooBarWithArgs'], Index>
     >
   >
   unionObject: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.unionObject>) => Promise<
@@ -485,7 +485,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'unionObject',
-      ResultSet.Field<$SelectionSet, Index['Root']['Query']['fields']['unionObject'], Index>
+      ResultSet.InferField<$SelectionSet, Index['Root']['Query']['fields']['unionObject'], Index>
     >
   >
   unionObjectNonNull: <$SelectionSet>(
@@ -495,7 +495,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'unionObjectNonNull',
-      ResultSet.Field<$SelectionSet, Index['Root']['Query']['fields']['unionObjectNonNull'], Index>
+      ResultSet.InferField<$SelectionSet, Index['Root']['Query']['fields']['unionObjectNonNull'], Index>
     >
   >
 }

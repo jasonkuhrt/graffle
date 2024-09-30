@@ -35,11 +35,11 @@ export interface Query {
   /**
    * Select the `id` field on the `Query` object. Its type is `ID` (a `Scalar`).
    */
-  id?: Query.id$Expanded | $SelectionSet.AliasInput<Query.id>
+  id?: Query.id$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.id>
   /**
    * Select the `idNonNull` field on the `Query` object. Its type is `ID` (a `Scalar`).
    */
-  idNonNull?: Query.idNonNull$Expanded | $SelectionSet.AliasInput<Query.idNonNull>
+  idNonNull?: Query.idNonNull$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.idNonNull>
 
   /**
    * Inline fragments for field groups.
@@ -58,7 +58,7 @@ export interface Query {
    */
   __typename?:
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
-    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 export interface Query$FragmentInline extends Query, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}

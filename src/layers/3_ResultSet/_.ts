@@ -1,2 +1,2 @@
 export { decode } from './decode.js'
-export * from './infer.js'
+export * from './infer/_.js'

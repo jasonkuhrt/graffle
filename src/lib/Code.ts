@@ -2,7 +2,7 @@ import { linesPrepend, linesTrim } from './text.js'
 
 export namespace Code {
   export const propertyAccess = (object: string, name: string) => `${object}.${name}`
-  export const quote = (str: string) => `"${str}"`
+  export const string = (str: string) => `"${str}"`
   export const nullable = (type: string) => `${type} | null`
   export const union = (name: string, types: string[]) => `type ${name} =\n| ${Code.unionItems(types)}`
   export const unionItems = (types: string[]) => types.join(`\n| `)

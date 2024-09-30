@@ -2,7 +2,7 @@ union Battle = BattleRoyale | BattleTrainer | BattleWild
 
 type BattleRoyale {
   combatants: [CombatantMultiPokemon!]
-  date: Int
+  date: Float
   id: ID
   winner: Trainer
 }
@@ -10,13 +10,13 @@ type BattleRoyale {
 type BattleTrainer {
   combatant1: CombatantSinglePokemon
   combatant2: CombatantSinglePokemon
-  date: Int
+  date: Float
   id: ID
   winner: Trainer
 }
 
 type BattleWild {
-  date: Int
+  date: Float
   id: ID
   pokemon: Pokemon
   result: BattleWildResult

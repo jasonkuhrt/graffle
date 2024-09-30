@@ -7,7 +7,13 @@ import type { Nullable } from './types/Nullable.js'
 import type { Object$2 } from './types/Object.js'
 import type { Union } from './types/Union.js'
 
-export type Named = Interface | Enum | Object$2 | Union<string, [Object$2, ...Object$2[]]> | Hybrid.Scalar.Any
+export type ObjectLike = Object$2 | Interface
+
+export const isObjectLike = (type: Any): type is ObjectLike => {
+  return type.kind === `Object` || type.kind === `Interface` || type.kind === `Union`
+}
+
+export type Named = Interface | Enum | Object$2 | Union<string, [Object$2, ...Object$2[]]> | Hybrid.Scalar.$Any
 
 export type Unnamed = List<any> | Nullable<any>
 

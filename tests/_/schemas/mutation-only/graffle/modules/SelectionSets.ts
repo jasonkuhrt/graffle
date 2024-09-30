@@ -35,11 +35,11 @@ export interface Mutation {
   /**
    * Select the `id` field on the `Mutation` object. Its type is `ID` (a `Scalar`).
    */
-  id?: Mutation.id$Expanded | $SelectionSet.AliasInput<Mutation.id>
+  id?: Mutation.id$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Mutation.id>
   /**
    * Select the `idNonNull` field on the `Mutation` object. Its type is `ID` (a `Scalar`).
    */
-  idNonNull?: Mutation.idNonNull$Expanded | $SelectionSet.AliasInput<Mutation.idNonNull>
+  idNonNull?: Mutation.idNonNull$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Mutation.idNonNull>
 
   /**
    * Inline fragments for field groups.
@@ -58,7 +58,7 @@ export interface Mutation {
    */
   __typename?:
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
-    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 export interface Mutation$FragmentInline extends Mutation, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}

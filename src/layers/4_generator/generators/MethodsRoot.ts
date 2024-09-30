@@ -1,6 +1,6 @@
 // todo remove use of Utils.Aug when schema errors not in use
 import { getNamedType, type GraphQLObjectType, isScalarType } from 'graphql'
-import { isAllArgsNullable, RootTypeNameToOperationName } from '../../../lib/graphql.js'
+import { isAllArgsNullable, RootTypeNameToOperationName } from '../../../lib/graphql-plus/graphql.js'
 import { createModuleGenerator } from '../helpers/moduleGenerator.js'
 import { createModuleGeneratorRunner } from '../helpers/moduleGeneratorRunner.js'
 import { renderDocumentation, renderName } from '../helpers/render.js'
@@ -114,7 +114,7 @@ namespace Helpers {
           $Config,
           Index,
           '${fieldName}',
-          ResultSet.Field<${selectionSet}, Index['Root']['${rootName}']['fields']['${fieldName}'], Index>
+          ResultSet.InferField<${selectionSet}, Index['Root']['${rootName}']['fields']['${fieldName}'], Index>
         >
       >
     `

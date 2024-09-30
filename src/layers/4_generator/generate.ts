@@ -12,6 +12,7 @@ import { ModuleGeneratorMethodsRoot } from './generators/MethodsRoot.js'
 import { ModuleGeneratorMethodsSelect } from './generators/MethodsSelect.js'
 import { ModuleGeneratorScalar } from './generators/Scalar.js'
 import { ModuleGeneratorSchemaBuildtime } from './generators/SchemaBuildtime.js'
+import { ModuleGeneratorSchemaCustomScalarIndex } from './generators/schemaCustomScalarIndex.js'
 import { ModuleGeneratorSchemaIndex } from './generators/SchemaIndex.js'
 import { ModuleGeneratorSchemaRuntime } from './generators/SchemaRuntime.js'
 import { ModuleGeneratorSelect } from './generators/Select.js'
@@ -56,6 +57,7 @@ const generateCode = async (config: Config): Promise<GeneratedModule[]> => {
     ModuleGeneratorSchemaIndex,
     ModuleGeneratorSchemaBuildtime,
     ModuleGeneratorSchemaRuntime,
+    ModuleGeneratorSchemaCustomScalarIndex,
     // Interface Stuff
     ModuleGeneratorSelectionSets,
     ModuleGeneratorSelect,

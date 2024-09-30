@@ -28,8 +28,8 @@ import {
   isCustomScalarType,
   RootTypeName,
   StandardScalarTypeTypeScriptMapping,
-} from '../../../lib/graphql.js'
-import type { StandardScalarTypeNames } from '../../../lib/graphql.js'
+} from '../../../lib/graphql-plus/graphql.js'
+import type { StandardScalarTypeNames } from '../../../lib/graphql-plus/graphql.js'
 import { SelectionSet } from '../../2_SelectionSet/__.js'
 import { createModuleGenerator } from '../helpers/moduleGenerator.js'
 import { createModuleGeneratorRunner } from '../helpers/moduleGeneratorRunner.js'
@@ -113,7 +113,7 @@ const renderUnion = createModuleGeneratorRunner<{ node: GraphQLUnionType }>(
     code.push(`
       export interface ${renderName(node)} {
         ${
-      memberTypes.map((type) => `${SelectionSet.On.prefix}${type.name}?: ${renderName(type)}`).join(
+      memberTypes.map((type) => `${SelectionSet.On.typeConditionPRefix}${type.name}?: ${renderName(type)}`).join(
         `\n`,
       )
     }
@@ -133,7 +133,7 @@ const renderEnum = createModuleGeneratorRunner<{ node: GraphQLEnumType }>(
     code.push(doc)
 
     const values = Object.values(node.getValues())
-    code.push(Helpers.type(renderName(node), values.map((value) => Code.quote(value.name)).join(` | `)))
+    code.push(Helpers.type(renderName(node), values.map((value) => Code.string(value.name)).join(` | `)))
   },
 )
 
@@ -159,7 +159,7 @@ const renderInterface = createModuleGeneratorRunner<{ node: GraphQLInterfaceType
     }).join(`\n`)
     const implementorTypes = getInterfaceImplementors(config.schema.typeMapByKind, node)
     const onTypesRendered = implementorTypes.map(type =>
-      Helpers.outputField(`${SelectionSet.On.prefix}${type.name}`, renderName(type))
+      Helpers.outputField(`${SelectionSet.On.typeConditionPRefix}${type.name}`, renderName(type))
     ).join(
       ` \n `,
     )
@@ -284,12 +284,12 @@ const renderField = createModuleGeneratorRunner<{ field: GraphQLField<any, any> 
           code.push(
             Helpers.type(
               `${nameRendered}$Expanded`,
-              `$Utilities.UnionExpanded<$SelectionSet.Indicator.ClientIndicator | ${nameRendered}$SelectionSet>`,
+              `$Utilities.UnionExpanded<$SelectionSet.Nodes.Indicator.Indicator | ${nameRendered}$SelectionSet>`,
             ),
           )
           code.push(``)
           code.push(
-            Helpers.type(nameRendered, `$SelectionSet.Indicator.ClientIndicator | ${nameRendered}$SelectionSet`),
+            Helpers.type(nameRendered, `$SelectionSet.Nodes.Indicator.Indicator | ${nameRendered}$SelectionSet`),
           )
           code.push(``)
         } else {
@@ -397,7 +397,7 @@ namespace Helpers {
   }
 
   export const outputFieldAlisable = (name: string, type: string, aliasable: boolean = true) => {
-    const alias = aliasable ? `| $SelectionSet.AliasInput<${type}>` : ``
+    const alias = aliasable ? `| $SelectionSet.Nodes.SelectAlias.SelectAlias<${type}>` : ``
     return `${name}?: ${type}$Expanded${alias}`
   }
 

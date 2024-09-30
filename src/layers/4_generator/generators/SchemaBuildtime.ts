@@ -15,14 +15,14 @@ import type {
   ClassToName,
   NamedNameToClass,
   NameToClassNamedType,
-} from '../../../lib/graphql.js'
+} from '../../../lib/graphql-plus/graphql.js'
 import {
   isAllArgsNullable,
   isAllInputObjectFieldsNullable,
   isGraphQLOutputField,
   type NameToClass,
   RootTypeName,
-} from '../../../lib/graphql.js'
+} from '../../../lib/graphql-plus/graphql.js'
 import { entries, values } from '../../../lib/prelude.js'
 import type { Config } from '../config.js'
 import { createModuleGenerator } from '../helpers/moduleGenerator.js'
@@ -128,7 +128,7 @@ const concreteRenderers = defineConcreteRenderers({
       Code.export$(
         Code.type(
           node.name,
-          `$.Enum<${Code.quote(node.name)}, ${Code.tuple(node.getValues().map((_) => Code.quote(_.name)))} >`,
+          `$.Enum<${Code.string(node.name)}, ${Code.tuple(node.getValues().map((_) => Code.string(_.name)))} >`,
         ),
       ),
     ),
@@ -138,7 +138,7 @@ const concreteRenderers = defineConcreteRenderers({
     const source = Code.export$(
       Code.type(
         node.name,
-        `$.InputObject<${Code.quote(node.name)}, ${renderInputFields(config, node)}, ${
+        `$.InputObject<${Code.string(node.name)}, ${renderInputFields(config, node)}, ${
           Code.boolean(isAllFieldsNullable)
         }>`,
       ),
@@ -151,7 +151,7 @@ const concreteRenderers = defineConcreteRenderers({
       getDocumentation(config, node),
       Code.export$(Code.type(
         node.name,
-        `$.Interface<${Code.quote(node.name)}, ${renderOutputFields(config, node)}, ${
+        `$.Interface<${Code.string(node.name)}, ${renderOutputFields(config, node)}, ${
           Code.tuple(implementors.map(_ => `Object.${_.name}`))
         }>`,
       )),
@@ -161,7 +161,7 @@ const concreteRenderers = defineConcreteRenderers({
     const maybeRootTypeName = (RootTypeName as Record<string, RootTypeName>)[node.name]
     const type = maybeRootTypeName
       ? `$.Output.Object${maybeRootTypeName}<${renderOutputFields(config, node)}>`
-      : `$.Object$2<${Code.quote(node.name)}, ${renderOutputFields(config, node)}>`
+      : `$.Object$2<${Code.string(node.name)}, ${renderOutputFields(config, node)}>`
     const doc = getDocumentation(config, node)
     const source = Code.export$(Code.type(node.name, type))
     return Code.TSDocWithBlock(doc, source)
@@ -173,7 +173,7 @@ const concreteRenderers = defineConcreteRenderers({
       Code.export$(
         Code.type(
           node.name,
-          `$.Union<${Code.quote(node.name)},${
+          `$.Union<${Code.string(node.name)},${
             Code.tuple(
               node
                 .getTypes()
@@ -216,7 +216,7 @@ const renderOutputField = (config: Config, field: AnyField): string => {
     ? renderArgs(config, field.args)
     : null
 
-  return `$.Field<${type}${args ? `, ${args}` : `, null`}>`
+  return `$.Field<'${field.name}', ${type}${args ? `, ${args}` : `, null`}>`
 }
 
 const renderInputField = (config: Config, field: AnyField): string => {

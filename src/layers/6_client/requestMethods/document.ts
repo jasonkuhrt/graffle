@@ -1,8 +1,8 @@
 import type { UnionToTuple } from 'type-fest'
 import type { IsTupleMultiple } from '../../../lib/prelude.js'
 import type { Schema } from '../../1_Schema/__.js'
+import { SelectionSet } from '../../2_SelectionSet/__.js'
 import type { ResultSet } from '../../3_ResultSet/__.js'
-import { Document } from '../../4_document/__.js'
 import type { InterfaceTypedRequestContext } from '../client.js'
 import type { ResolveOutputReturnRootType } from '../handleOutput.js'
 import type { AddTypenameToSelectedRootTypeResultFields, Config } from '../Settings/Config.js'
@@ -11,8 +11,8 @@ import type { AddTypenameToSelectedRootTypeResultFields, Config } from '../Setti
 export type DocumentRunner<
   $$Config extends Config,
   $$Index extends Schema.Index,
-  $$Document extends Document.SomeDocument,
-  $$Name extends Document.GetOperationNames<$$Document> = Document.GetOperationNames<$$Document>
+  $$Document extends SelectionSet.Document.SomeDocument,
+  $$Name extends SelectionSet.Document.GetOperationNames<$$Document> = SelectionSet.Document.GetOperationNames<$$Document>
 > = {
   run: <
     $Params extends (IsTupleMultiple<UnionToTuple<$$Name>> extends true ? [name: $$Name] : []),
@@ -22,15 +22,15 @@ export type DocumentRunner<
       ResolveOutputReturnRootType<
         $$Config,
         $$Index,
-        ResultSet.Root<
+        ResultSet.InferRoot<
           AddTypenameToSelectedRootTypeResultFields<
             $$Config,
             $$Index,
-            Document.GetRootTypeNameOfOperation<$$Document, $Name>,
-            Document.GetOperation<$$Document, $Name>
+            SelectionSet.Document.GetRootTypeNameOfOperation<$$Document, $Name>,
+            SelectionSet.Document.GetOperation<$$Document, $Name>
           >,
           $$Index,
-          Document.GetRootTypeNameOfOperation<$$Document, $Name>
+          SelectionSet.Document.GetRootTypeNameOfOperation<$$Document, $Name>
         >
       >
     >
@@ -66,8 +66,8 @@ export type DocumentRunner<
 //       : TSError<'ValidateDocumentOperationNames', `One or more Invalid operation name in document: ${keyof { [K in keyof $Document & string as Schema.Named.NameParse<K> extends never ? K : never]: K }}`>
 
 export const createMethodDocument =
-  (context: InterfaceTypedRequestContext, executeDocument: any) => (document: Document.DocumentObject) => {
-    const documentNormalized = Document.normalizeOrThrow(document)
+  (context: InterfaceTypedRequestContext, executeDocument: any) => (document: SelectionSet.Document.DocumentObject) => {
+    const documentNormalized = SelectionSet.Document.normalizeOrThrow(document)
     return {
       run: async (maybeOperationName?: string) => {
         return await executeDocument(context, documentNormalized, maybeOperationName)

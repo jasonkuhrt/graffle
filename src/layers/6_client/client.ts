@@ -1,13 +1,12 @@
 import { type ExecutionResult, GraphQLSchema } from 'graphql'
 import type { Errors } from '../../lib/errors/__.js'
 import type { Fluent } from '../../lib/fluent/__.js'
-import { type RootTypeName } from '../../lib/graphql.js'
+import { type RootTypeName } from '../../lib/graphql-plus/graphql.js'
 import { proxyGet } from '../../lib/prelude.js'
 import type { BaseInput_ } from '../0_functions/types.js'
 import { Schema } from '../1_Schema/__.js'
 import { readMaybeThunk } from '../1_Schema/core/helpers.js'
-import type { SelectionSet } from '../2_SelectionSet/__.js'
-import { Document } from '../4_document/__.js'
+import { SelectionSet } from '../2_SelectionSet/__.js'
 import type { GlobalRegistry } from '../4_generator/globalRegistry.js'
 import { Core } from '../5_core/__.js'
 import { type InterfaceRaw, type TransportHttp } from '../5_core/types.js'
@@ -141,7 +140,7 @@ const createWithState = (
 
   const executeDocument = async (
     context: InterfaceTypedRequestContext,
-    document: Document.DocumentNormalized,
+    document: SelectionSet.Document.DocumentNormalized,
     operationName?: string,
   ) => {
     const transport = state.input.schema instanceof GraphQLSchema ? `memory` : `http`
@@ -160,11 +159,11 @@ const createWithState = (
   const executeRootType = async (
     context: InterfaceTypedRequestContext,
     rootTypeName: RootTypeName,
-    rootTypeSelectionSet: SelectionSet.ObjectLike,
+    rootTypeSelectionSet: SelectionSet.AnySelectionSet,
   ) => {
     return executeDocument(
       context,
-      Document.createDocumentNormalizedFromRootTypeSelection(
+      SelectionSet.Document.createDocumentNormalizedFromRootTypeSelection(
         rootTypeName,
         rootTypeSelectionSet,
       ),
@@ -201,7 +200,7 @@ const createWithState = (
 
     const result = await executeRootType(context, rootTypeName, {
       [rootTypeFieldName]: rootTypeFieldSelectionSet,
-    } as SelectionSet.ObjectLike)
+    } as SelectionSet.AnySelectionSet)
     if (result instanceof Error) return result
 
     return context.config.output.envelope.enabled
@@ -217,7 +216,7 @@ const createWithState = (
 
         if (key.startsWith(`$batch`)) {
           return async (selectionSetOrIndicator: SelectionSetOrIndicator) =>
-            executeRootType(context, rootTypeName, selectionSetOrIndicator as SelectionSet.ObjectLike)
+            executeRootType(context, rootTypeName, selectionSetOrIndicator as SelectionSet.AnySelectionSet)
         } else {
           const fieldName = key
           return (selectionSetOrArgs: SelectionSetOrArgs) =>

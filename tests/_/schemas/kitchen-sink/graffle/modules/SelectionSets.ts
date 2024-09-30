@@ -36,11 +36,11 @@ export interface Mutation {
   /**
    * Select the `id` field on the `Mutation` object. Its type is `ID` (a `Scalar`).
    */
-  id?: Mutation.id$Expanded | $SelectionSet.AliasInput<Mutation.id>
+  id?: Mutation.id$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Mutation.id>
   /**
    * Select the `idNonNull` field on the `Mutation` object. Its type is `ID` (a `Scalar`).
    */
-  idNonNull?: Mutation.idNonNull$Expanded | $SelectionSet.AliasInput<Mutation.idNonNull>
+  idNonNull?: Mutation.idNonNull$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Mutation.idNonNull>
 
   /**
    * Inline fragments for field groups.
@@ -59,7 +59,7 @@ export interface Mutation {
    */
   __typename?:
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
-    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 export interface Mutation$FragmentInline extends Mutation, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}
@@ -94,205 +94,231 @@ export interface Query {
   /**
    * Select the `InputObjectNested` field on the `Query` object. Its type is `ID` (a `Scalar`).
    */
-  InputObjectNested?: Query.InputObjectNested$Expanded | $SelectionSet.AliasInput<Query.InputObjectNested>
+  InputObjectNested?:
+    | Query.InputObjectNested$Expanded
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.InputObjectNested>
   /**
    * Select the `InputObjectNestedNonNull` field on the `Query` object. Its type is `ID` (a `Scalar`).
    */
   InputObjectNestedNonNull?:
     | Query.InputObjectNestedNonNull$Expanded
-    | $SelectionSet.AliasInput<Query.InputObjectNestedNonNull>
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.InputObjectNestedNonNull>
   /**
    * Select the `abcEnum` field on the `Query` object. Its type is Enum.
    */
-  abcEnum?: Query.abcEnum$Expanded | $SelectionSet.AliasInput<Query.abcEnum>
+  abcEnum?: Query.abcEnum$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.abcEnum>
   /**
    * Select the `date` field on the `Query` object. Its type is `Date` (a `Scalar`).
    */
-  date?: Query.date$Expanded | $SelectionSet.AliasInput<Query.date>
+  date?: Query.date$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.date>
   /**
    * Select the `dateArg` field on the `Query` object. Its type is `Date` (a `Scalar`).
    */
-  dateArg?: Query.dateArg$Expanded | $SelectionSet.AliasInput<Query.dateArg>
+  dateArg?: Query.dateArg$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.dateArg>
   /**
    * Select the `dateArgInputObject` field on the `Query` object. Its type is `Date` (a `Scalar`).
    */
-  dateArgInputObject?: Query.dateArgInputObject$Expanded | $SelectionSet.AliasInput<Query.dateArgInputObject>
+  dateArgInputObject?:
+    | Query.dateArgInputObject$Expanded
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.dateArgInputObject>
   /**
    * Select the `dateArgList` field on the `Query` object. Its type is `Date` (a `Scalar`).
    */
-  dateArgList?: Query.dateArgList$Expanded | $SelectionSet.AliasInput<Query.dateArgList>
+  dateArgList?: Query.dateArgList$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.dateArgList>
   /**
    * Select the `dateArgNonNull` field on the `Query` object. Its type is `Date` (a `Scalar`).
    */
-  dateArgNonNull?: Query.dateArgNonNull$Expanded | $SelectionSet.AliasInput<Query.dateArgNonNull>
+  dateArgNonNull?: Query.dateArgNonNull$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.dateArgNonNull>
   /**
    * Select the `dateArgNonNullList` field on the `Query` object. Its type is `Date` (a `Scalar`).
    */
-  dateArgNonNullList?: Query.dateArgNonNullList$Expanded | $SelectionSet.AliasInput<Query.dateArgNonNullList>
+  dateArgNonNullList?:
+    | Query.dateArgNonNullList$Expanded
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.dateArgNonNullList>
   /**
    * Select the `dateArgNonNullListNonNull` field on the `Query` object. Its type is `Date` (a `Scalar`).
    */
   dateArgNonNullListNonNull?:
     | Query.dateArgNonNullListNonNull$Expanded
-    | $SelectionSet.AliasInput<Query.dateArgNonNullListNonNull>
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.dateArgNonNullListNonNull>
   /**
    * Select the `dateInterface1` field on the `Query` object. Its type is Interface.
    */
-  dateInterface1?: Query.dateInterface1$Expanded | $SelectionSet.AliasInput<Query.dateInterface1>
+  dateInterface1?: Query.dateInterface1$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.dateInterface1>
   /**
    * Select the `dateList` field on the `Query` object. Its type is `Date` (a `Scalar`).
    */
-  dateList?: Query.dateList$Expanded | $SelectionSet.AliasInput<Query.dateList>
+  dateList?: Query.dateList$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.dateList>
   /**
    * Select the `dateListNonNull` field on the `Query` object. Its type is `Date` (a `Scalar`).
    */
-  dateListNonNull?: Query.dateListNonNull$Expanded | $SelectionSet.AliasInput<Query.dateListNonNull>
+  dateListNonNull?: Query.dateListNonNull$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.dateListNonNull>
   /**
    * Select the `dateNonNull` field on the `Query` object. Its type is `Date` (a `Scalar`).
    */
-  dateNonNull?: Query.dateNonNull$Expanded | $SelectionSet.AliasInput<Query.dateNonNull>
+  dateNonNull?: Query.dateNonNull$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.dateNonNull>
   /**
    * Select the `dateObject1` field on the `Query` object. Its type is Object.
    */
-  dateObject1?: Query.dateObject1$Expanded | $SelectionSet.AliasInput<Query.dateObject1>
+  dateObject1?: Query.dateObject1$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.dateObject1>
   /**
    * Select the `dateUnion` field on the `Query` object. Its type is Union.
    */
-  dateUnion?: Query.dateUnion$Expanded | $SelectionSet.AliasInput<Query.dateUnion>
+  dateUnion?: Query.dateUnion$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.dateUnion>
   /**
    * Select the `error` field on the `Query` object. Its type is `String` (a `Scalar`).
    */
-  error?: Query.error$Expanded | $SelectionSet.AliasInput<Query.error>
+  error?: Query.error$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.error>
   /**
    * Select the `id` field on the `Query` object. Its type is `ID` (a `Scalar`).
    */
-  id?: Query.id$Expanded | $SelectionSet.AliasInput<Query.id>
+  id?: Query.id$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.id>
   /**
    * Select the `idNonNull` field on the `Query` object. Its type is `ID` (a `Scalar`).
    */
-  idNonNull?: Query.idNonNull$Expanded | $SelectionSet.AliasInput<Query.idNonNull>
+  idNonNull?: Query.idNonNull$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.idNonNull>
   /**
    * Select the `interface` field on the `Query` object. Its type is Interface.
    */
-  interface?: Query.$interface$Expanded | $SelectionSet.AliasInput<Query.$interface>
+  interface?: Query.$interface$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.$interface>
   /**
    * Select the `interfaceNonNull` field on the `Query` object. Its type is Interface.
    */
-  interfaceNonNull?: Query.interfaceNonNull$Expanded | $SelectionSet.AliasInput<Query.interfaceNonNull>
+  interfaceNonNull?:
+    | Query.interfaceNonNull$Expanded
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.interfaceNonNull>
   /**
    * Select the `interfaceWithArgs` field on the `Query` object. Its type is Interface.
    */
-  interfaceWithArgs?: Query.interfaceWithArgs$Expanded | $SelectionSet.AliasInput<Query.interfaceWithArgs>
+  interfaceWithArgs?:
+    | Query.interfaceWithArgs$Expanded
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.interfaceWithArgs>
   /**
    * Select the `listInt` field on the `Query` object. Its type is `Int` (a `Scalar`).
    */
-  listInt?: Query.listInt$Expanded | $SelectionSet.AliasInput<Query.listInt>
+  listInt?: Query.listInt$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.listInt>
   /**
    * Select the `listIntNonNull` field on the `Query` object. Its type is `Int` (a `Scalar`).
    */
-  listIntNonNull?: Query.listIntNonNull$Expanded | $SelectionSet.AliasInput<Query.listIntNonNull>
+  listIntNonNull?: Query.listIntNonNull$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.listIntNonNull>
   /**
    * Select the `listListInt` field on the `Query` object. Its type is `Int` (a `Scalar`).
    */
-  listListInt?: Query.listListInt$Expanded | $SelectionSet.AliasInput<Query.listListInt>
+  listListInt?: Query.listListInt$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.listListInt>
   /**
    * Select the `listListIntNonNull` field on the `Query` object. Its type is `Int` (a `Scalar`).
    */
-  listListIntNonNull?: Query.listListIntNonNull$Expanded | $SelectionSet.AliasInput<Query.listListIntNonNull>
+  listListIntNonNull?:
+    | Query.listListIntNonNull$Expanded
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.listListIntNonNull>
   /**
    * Select the `lowerCaseUnion` field on the `Query` object. Its type is Union.
    */
-  lowerCaseUnion?: Query.lowerCaseUnion$Expanded | $SelectionSet.AliasInput<Query.lowerCaseUnion>
+  lowerCaseUnion?: Query.lowerCaseUnion$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.lowerCaseUnion>
   /**
    * Select the `object` field on the `Query` object. Its type is Object.
    */
-  object?: Query.$object$Expanded | $SelectionSet.AliasInput<Query.$object>
+  object?: Query.$object$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.$object>
   /**
    * Select the `objectList` field on the `Query` object. Its type is Object.
    */
-  objectList?: Query.objectList$Expanded | $SelectionSet.AliasInput<Query.objectList>
+  objectList?: Query.objectList$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.objectList>
   /**
    * Select the `objectListNonNull` field on the `Query` object. Its type is Object.
    */
-  objectListNonNull?: Query.objectListNonNull$Expanded | $SelectionSet.AliasInput<Query.objectListNonNull>
+  objectListNonNull?:
+    | Query.objectListNonNull$Expanded
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.objectListNonNull>
   /**
    * Select the `objectNested` field on the `Query` object. Its type is Object.
    */
-  objectNested?: Query.objectNested$Expanded | $SelectionSet.AliasInput<Query.objectNested>
+  objectNested?: Query.objectNested$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.objectNested>
   /**
    * Select the `objectNonNull` field on the `Query` object. Its type is Object.
    */
-  objectNonNull?: Query.objectNonNull$Expanded | $SelectionSet.AliasInput<Query.objectNonNull>
+  objectNonNull?: Query.objectNonNull$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.objectNonNull>
   /**
    * Select the `objectWithArgs` field on the `Query` object. Its type is Object.
    */
-  objectWithArgs?: Query.objectWithArgs$Expanded | $SelectionSet.AliasInput<Query.objectWithArgs>
+  objectWithArgs?: Query.objectWithArgs$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.objectWithArgs>
   /**
    * Select the `result` field on the `Query` object. Its type is Union.
    */
-  result?: Query.result$Expanded | $SelectionSet.AliasInput<Query.result>
+  result?: Query.result$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.result>
   /**
    * Select the `resultNonNull` field on the `Query` object. Its type is Union.
    */
-  resultNonNull?: Query.resultNonNull$Expanded | $SelectionSet.AliasInput<Query.resultNonNull>
+  resultNonNull?: Query.resultNonNull$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.resultNonNull>
   /**
    * Select the `string` field on the `Query` object. Its type is `String` (a `Scalar`).
    */
-  string?: Query.$string$Expanded | $SelectionSet.AliasInput<Query.$string>
+  string?: Query.$string$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.$string>
   /**
    * Select the `stringWithArgEnum` field on the `Query` object. Its type is `String` (a `Scalar`).
    */
-  stringWithArgEnum?: Query.stringWithArgEnum$Expanded | $SelectionSet.AliasInput<Query.stringWithArgEnum>
+  stringWithArgEnum?:
+    | Query.stringWithArgEnum$Expanded
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.stringWithArgEnum>
   /**
    * Select the `stringWithArgInputObject` field on the `Query` object. Its type is `String` (a `Scalar`).
    */
   stringWithArgInputObject?:
     | Query.stringWithArgInputObject$Expanded
-    | $SelectionSet.AliasInput<Query.stringWithArgInputObject>
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.stringWithArgInputObject>
   /**
    * Select the `stringWithArgInputObjectRequired` field on the `Query` object. Its type is `String` (a `Scalar`).
    */
   stringWithArgInputObjectRequired?:
     | Query.stringWithArgInputObjectRequired$Expanded
-    | $SelectionSet.AliasInput<Query.stringWithArgInputObjectRequired>
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.stringWithArgInputObjectRequired>
   /**
    * Select the `stringWithArgs` field on the `Query` object. Its type is `String` (a `Scalar`).
    */
-  stringWithArgs?: Query.stringWithArgs$Expanded | $SelectionSet.AliasInput<Query.stringWithArgs>
+  stringWithArgs?: Query.stringWithArgs$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.stringWithArgs>
   /**
    * Select the `stringWithListArg` field on the `Query` object. Its type is `String` (a `Scalar`).
    */
-  stringWithListArg?: Query.stringWithListArg$Expanded | $SelectionSet.AliasInput<Query.stringWithListArg>
+  stringWithListArg?:
+    | Query.stringWithListArg$Expanded
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.stringWithListArg>
   /**
    * Select the `stringWithListArgRequired` field on the `Query` object. Its type is `String` (a `Scalar`).
    */
   stringWithListArgRequired?:
     | Query.stringWithListArgRequired$Expanded
-    | $SelectionSet.AliasInput<Query.stringWithListArgRequired>
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.stringWithListArgRequired>
   /**
    * Select the `stringWithRequiredArg` field on the `Query` object. Its type is `String` (a `Scalar`).
    */
-  stringWithRequiredArg?: Query.stringWithRequiredArg$Expanded | $SelectionSet.AliasInput<Query.stringWithRequiredArg>
+  stringWithRequiredArg?:
+    | Query.stringWithRequiredArg$Expanded
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.stringWithRequiredArg>
   /**
    * Select the `unionFooBar` field on the `Query` object. Its type is Union.
    */
-  unionFooBar?: Query.unionFooBar$Expanded | $SelectionSet.AliasInput<Query.unionFooBar>
+  unionFooBar?: Query.unionFooBar$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.unionFooBar>
   /**
    * Select the `unionFooBarNonNull` field on the `Query` object. Its type is Union.
    */
-  unionFooBarNonNull?: Query.unionFooBarNonNull$Expanded | $SelectionSet.AliasInput<Query.unionFooBarNonNull>
+  unionFooBarNonNull?:
+    | Query.unionFooBarNonNull$Expanded
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.unionFooBarNonNull>
   /**
    * Select the `unionFooBarWithArgs` field on the `Query` object. Its type is Union.
    */
-  unionFooBarWithArgs?: Query.unionFooBarWithArgs$Expanded | $SelectionSet.AliasInput<Query.unionFooBarWithArgs>
+  unionFooBarWithArgs?:
+    | Query.unionFooBarWithArgs$Expanded
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.unionFooBarWithArgs>
   /**
    * Select the `unionObject` field on the `Query` object. Its type is Object.
    */
-  unionObject?: Query.unionObject$Expanded | $SelectionSet.AliasInput<Query.unionObject>
+  unionObject?: Query.unionObject$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.unionObject>
   /**
    * Select the `unionObjectNonNull` field on the `Query` object. Its type is Object.
    */
-  unionObjectNonNull?: Query.unionObjectNonNull$Expanded | $SelectionSet.AliasInput<Query.unionObjectNonNull>
+  unionObjectNonNull?:
+    | Query.unionObjectNonNull$Expanded
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.unionObjectNonNull>
 
   /**
    * Inline fragments for field groups.
@@ -311,7 +337,7 @@ export interface Query {
    */
   __typename?:
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
-    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 export interface Query$FragmentInline extends Query, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}
@@ -333,10 +359,10 @@ export namespace Query {
   >
 
   export type InputObjectNested$Expanded = $Utilities.UnionExpanded<
-    $SelectionSet.Indicator.ClientIndicator | InputObjectNested$SelectionSet
+    $SelectionSet.Nodes.Indicator.Indicator | InputObjectNested$SelectionSet
   >
 
-  export type InputObjectNested = $SelectionSet.Indicator.ClientIndicator | InputObjectNested$SelectionSet
+  export type InputObjectNested = $SelectionSet.Nodes.Indicator.Indicator | InputObjectNested$SelectionSet
 
   export type InputObjectNestedNonNull$SelectionSetArguments = {
     input: _RefDefs._InputObjectNestedNonNull
@@ -373,10 +399,10 @@ export namespace Query {
   >
 
   export type dateArg$Expanded = $Utilities.UnionExpanded<
-    $SelectionSet.Indicator.ClientIndicator | dateArg$SelectionSet
+    $SelectionSet.Nodes.Indicator.Indicator | dateArg$SelectionSet
   >
 
-  export type dateArg = $SelectionSet.Indicator.ClientIndicator | dateArg$SelectionSet
+  export type dateArg = $SelectionSet.Nodes.Indicator.Indicator | dateArg$SelectionSet
 
   export type dateArgInputObject$SelectionSetArguments = {
     input?: _RefDefs._InputObject | undefined | null
@@ -392,10 +418,10 @@ export namespace Query {
   >
 
   export type dateArgInputObject$Expanded = $Utilities.UnionExpanded<
-    $SelectionSet.Indicator.ClientIndicator | dateArgInputObject$SelectionSet
+    $SelectionSet.Nodes.Indicator.Indicator | dateArgInputObject$SelectionSet
   >
 
-  export type dateArgInputObject = $SelectionSet.Indicator.ClientIndicator | dateArgInputObject$SelectionSet
+  export type dateArgInputObject = $SelectionSet.Nodes.Indicator.Indicator | dateArgInputObject$SelectionSet
 
   export type dateArgList$SelectionSetArguments = {
     date?: Array<$Scalar.DateDecoded | undefined | null> | undefined | null
@@ -411,10 +437,10 @@ export namespace Query {
   >
 
   export type dateArgList$Expanded = $Utilities.UnionExpanded<
-    $SelectionSet.Indicator.ClientIndicator | dateArgList$SelectionSet
+    $SelectionSet.Nodes.Indicator.Indicator | dateArgList$SelectionSet
   >
 
-  export type dateArgList = $SelectionSet.Indicator.ClientIndicator | dateArgList$SelectionSet
+  export type dateArgList = $SelectionSet.Nodes.Indicator.Indicator | dateArgList$SelectionSet
 
   export type dateArgNonNull$SelectionSetArguments = {
     date: $Scalar.DateDecoded
@@ -486,9 +512,9 @@ export namespace Query {
     }
   >
 
-  export type error$Expanded = $Utilities.UnionExpanded<$SelectionSet.Indicator.ClientIndicator | error$SelectionSet>
+  export type error$Expanded = $Utilities.UnionExpanded<$SelectionSet.Nodes.Indicator.Indicator | error$SelectionSet>
 
-  export type error = $SelectionSet.Indicator.ClientIndicator | error$SelectionSet
+  export type error = $SelectionSet.Nodes.Indicator.Indicator | error$SelectionSet
 
   export type id$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
@@ -592,10 +618,10 @@ export namespace Query {
   >
 
   export type stringWithArgEnum$Expanded = $Utilities.UnionExpanded<
-    $SelectionSet.Indicator.ClientIndicator | stringWithArgEnum$SelectionSet
+    $SelectionSet.Nodes.Indicator.Indicator | stringWithArgEnum$SelectionSet
   >
 
-  export type stringWithArgEnum = $SelectionSet.Indicator.ClientIndicator | stringWithArgEnum$SelectionSet
+  export type stringWithArgEnum = $SelectionSet.Nodes.Indicator.Indicator | stringWithArgEnum$SelectionSet
 
   export type stringWithArgInputObject$SelectionSetArguments = {
     input?: _RefDefs._InputObject | undefined | null
@@ -611,10 +637,10 @@ export namespace Query {
   >
 
   export type stringWithArgInputObject$Expanded = $Utilities.UnionExpanded<
-    $SelectionSet.Indicator.ClientIndicator | stringWithArgInputObject$SelectionSet
+    $SelectionSet.Nodes.Indicator.Indicator | stringWithArgInputObject$SelectionSet
   >
 
-  export type stringWithArgInputObject = $SelectionSet.Indicator.ClientIndicator | stringWithArgInputObject$SelectionSet
+  export type stringWithArgInputObject = $SelectionSet.Nodes.Indicator.Indicator | stringWithArgInputObject$SelectionSet
 
   export type stringWithArgInputObjectRequired$SelectionSetArguments = {
     input: _RefDefs._InputObject
@@ -647,10 +673,10 @@ export namespace Query {
   >
 
   export type stringWithArgs$Expanded = $Utilities.UnionExpanded<
-    $SelectionSet.Indicator.ClientIndicator | stringWithArgs$SelectionSet
+    $SelectionSet.Nodes.Indicator.Indicator | stringWithArgs$SelectionSet
   >
 
-  export type stringWithArgs = $SelectionSet.Indicator.ClientIndicator | stringWithArgs$SelectionSet
+  export type stringWithArgs = $SelectionSet.Nodes.Indicator.Indicator | stringWithArgs$SelectionSet
 
   export type stringWithListArg$SelectionSetArguments = {
     ints?: Array<number | undefined | null> | undefined | null
@@ -666,10 +692,10 @@ export namespace Query {
   >
 
   export type stringWithListArg$Expanded = $Utilities.UnionExpanded<
-    $SelectionSet.Indicator.ClientIndicator | stringWithListArg$SelectionSet
+    $SelectionSet.Nodes.Indicator.Indicator | stringWithListArg$SelectionSet
   >
 
-  export type stringWithListArg = $SelectionSet.Indicator.ClientIndicator | stringWithListArg$SelectionSet
+  export type stringWithListArg = $SelectionSet.Nodes.Indicator.Indicator | stringWithListArg$SelectionSet
 
   export type stringWithListArgRequired$SelectionSetArguments = {
     ints: Array<number | undefined | null>
@@ -818,7 +844,7 @@ export interface DateInterface1 extends $SelectionSet.Bases.ObjectLike {
    */
   __typename?:
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
-    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 export interface DateInterface1$FragmentInline
@@ -858,7 +884,7 @@ export interface Error extends $SelectionSet.Bases.ObjectLike {
    */
   __typename?:
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
-    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 export interface Error$FragmentInline extends Error, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}
@@ -896,7 +922,7 @@ export interface Interface extends $SelectionSet.Bases.ObjectLike {
    */
   __typename?:
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
-    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 export interface Interface$FragmentInline extends Interface, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}
@@ -941,7 +967,7 @@ export interface Bar extends $SelectionSet.Bases.ObjectLike {
   /**
    * Select the `int` field on the `Bar` object. Its type is `Int` (a `Scalar`).
    */
-  int?: Bar.int$Expanded | $SelectionSet.AliasInput<Bar.int>
+  int?: Bar.int$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Bar.int>
 
   /**
    * Inline fragments for field groups.
@@ -960,7 +986,7 @@ export interface Bar extends $SelectionSet.Bases.ObjectLike {
    */
   __typename?:
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
-    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 export interface Bar$FragmentInline extends Bar, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}
@@ -991,7 +1017,7 @@ export interface DateObject1 extends $SelectionSet.Bases.ObjectLike {
   /**
    * Select the `date1` field on the `DateObject1` object. Its type is `Date` (a `Scalar`).
    */
-  date1?: DateObject1.date1$Expanded | $SelectionSet.AliasInput<DateObject1.date1>
+  date1?: DateObject1.date1$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<DateObject1.date1>
 
   /**
    * Inline fragments for field groups.
@@ -1010,7 +1036,7 @@ export interface DateObject1 extends $SelectionSet.Bases.ObjectLike {
    */
   __typename?:
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
-    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 export interface DateObject1$FragmentInline
@@ -1043,7 +1069,7 @@ export interface DateObject2 extends $SelectionSet.Bases.ObjectLike {
   /**
    * Select the `date2` field on the `DateObject2` object. Its type is `Date` (a `Scalar`).
    */
-  date2?: DateObject2.date2$Expanded | $SelectionSet.AliasInput<DateObject2.date2>
+  date2?: DateObject2.date2$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<DateObject2.date2>
 
   /**
    * Inline fragments for field groups.
@@ -1062,7 +1088,7 @@ export interface DateObject2 extends $SelectionSet.Bases.ObjectLike {
    */
   __typename?:
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
-    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 export interface DateObject2$FragmentInline
@@ -1095,11 +1121,11 @@ export interface ErrorOne extends $SelectionSet.Bases.ObjectLike {
   /**
    * Select the `infoId` field on the `ErrorOne` object. Its type is `ID` (a `Scalar`).
    */
-  infoId?: ErrorOne.infoId$Expanded | $SelectionSet.AliasInput<ErrorOne.infoId>
+  infoId?: ErrorOne.infoId$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<ErrorOne.infoId>
   /**
    * Select the `message` field on the `ErrorOne` object. Its type is `String` (a `Scalar`).
    */
-  message?: ErrorOne.message$Expanded | $SelectionSet.AliasInput<ErrorOne.message>
+  message?: ErrorOne.message$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<ErrorOne.message>
 
   /**
    * Inline fragments for field groups.
@@ -1118,7 +1144,7 @@ export interface ErrorOne extends $SelectionSet.Bases.ObjectLike {
    */
   __typename?:
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
-    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 export interface ErrorOne$FragmentInline extends ErrorOne, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}
@@ -1153,11 +1179,11 @@ export interface ErrorTwo extends $SelectionSet.Bases.ObjectLike {
   /**
    * Select the `infoInt` field on the `ErrorTwo` object. Its type is `Int` (a `Scalar`).
    */
-  infoInt?: ErrorTwo.infoInt$Expanded | $SelectionSet.AliasInput<ErrorTwo.infoInt>
+  infoInt?: ErrorTwo.infoInt$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<ErrorTwo.infoInt>
   /**
    * Select the `message` field on the `ErrorTwo` object. Its type is `String` (a `Scalar`).
    */
-  message?: ErrorTwo.message$Expanded | $SelectionSet.AliasInput<ErrorTwo.message>
+  message?: ErrorTwo.message$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<ErrorTwo.message>
 
   /**
    * Inline fragments for field groups.
@@ -1176,7 +1202,7 @@ export interface ErrorTwo extends $SelectionSet.Bases.ObjectLike {
    */
   __typename?:
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
-    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 export interface ErrorTwo$FragmentInline extends ErrorTwo, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}
@@ -1214,7 +1240,7 @@ export interface Foo extends $SelectionSet.Bases.ObjectLike {
   /**
    * Select the `id` field on the `Foo` object. Its type is `ID` (a `Scalar`).
    */
-  id?: Foo.id$Expanded | $SelectionSet.AliasInput<Foo.id>
+  id?: Foo.id$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Foo.id>
 
   /**
    * Inline fragments for field groups.
@@ -1233,7 +1259,7 @@ export interface Foo extends $SelectionSet.Bases.ObjectLike {
    */
   __typename?:
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
-    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 export interface Foo$FragmentInline extends Foo, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}
@@ -1264,23 +1290,23 @@ export interface Object1 extends $SelectionSet.Bases.ObjectLike {
   /**
    * Select the `boolean` field on the `Object1` object. Its type is `Boolean` (a `Scalar`).
    */
-  boolean?: Object1.$boolean$Expanded | $SelectionSet.AliasInput<Object1.$boolean>
+  boolean?: Object1.$boolean$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Object1.$boolean>
   /**
    * Select the `float` field on the `Object1` object. Its type is `Float` (a `Scalar`).
    */
-  float?: Object1.float$Expanded | $SelectionSet.AliasInput<Object1.float>
+  float?: Object1.float$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Object1.float>
   /**
    * Select the `id` field on the `Object1` object. Its type is `ID` (a `Scalar`).
    */
-  id?: Object1.id$Expanded | $SelectionSet.AliasInput<Object1.id>
+  id?: Object1.id$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Object1.id>
   /**
    * Select the `int` field on the `Object1` object. Its type is `Int` (a `Scalar`).
    */
-  int?: Object1.int$Expanded | $SelectionSet.AliasInput<Object1.int>
+  int?: Object1.int$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Object1.int>
   /**
    * Select the `string` field on the `Object1` object. Its type is `String` (a `Scalar`).
    */
-  string?: Object1.$string$Expanded | $SelectionSet.AliasInput<Object1.$string>
+  string?: Object1.$string$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Object1.$string>
 
   /**
    * Inline fragments for field groups.
@@ -1299,7 +1325,7 @@ export interface Object1 extends $SelectionSet.Bases.ObjectLike {
    */
   __typename?:
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
-    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 export interface Object1$FragmentInline extends Object1, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}
@@ -1346,11 +1372,15 @@ export interface Object1ImplementingInterface extends $SelectionSet.Bases.Object
   /**
    * Select the `id` field on the `Object1ImplementingInterface` object. Its type is `ID` (a `Scalar`).
    */
-  id?: Object1ImplementingInterface.id$Expanded | $SelectionSet.AliasInput<Object1ImplementingInterface.id>
+  id?:
+    | Object1ImplementingInterface.id$Expanded
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<Object1ImplementingInterface.id>
   /**
    * Select the `int` field on the `Object1ImplementingInterface` object. Its type is `Int` (a `Scalar`).
    */
-  int?: Object1ImplementingInterface.int$Expanded | $SelectionSet.AliasInput<Object1ImplementingInterface.int>
+  int?:
+    | Object1ImplementingInterface.int$Expanded
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<Object1ImplementingInterface.int>
 
   /**
    * Inline fragments for field groups.
@@ -1369,7 +1399,7 @@ export interface Object1ImplementingInterface extends $SelectionSet.Bases.Object
    */
   __typename?:
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
-    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 export interface Object1ImplementingInterface$FragmentInline
@@ -1408,11 +1438,13 @@ export interface Object2ImplementingInterface extends $SelectionSet.Bases.Object
    */
   boolean?:
     | Object2ImplementingInterface.$boolean$Expanded
-    | $SelectionSet.AliasInput<Object2ImplementingInterface.$boolean>
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<Object2ImplementingInterface.$boolean>
   /**
    * Select the `id` field on the `Object2ImplementingInterface` object. Its type is `ID` (a `Scalar`).
    */
-  id?: Object2ImplementingInterface.id$Expanded | $SelectionSet.AliasInput<Object2ImplementingInterface.id>
+  id?:
+    | Object2ImplementingInterface.id$Expanded
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<Object2ImplementingInterface.id>
 
   /**
    * Inline fragments for field groups.
@@ -1431,7 +1463,7 @@ export interface Object2ImplementingInterface extends $SelectionSet.Bases.Object
    */
   __typename?:
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
-    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 export interface Object2ImplementingInterface$FragmentInline
@@ -1468,11 +1500,11 @@ export interface ObjectNested extends $SelectionSet.Bases.ObjectLike {
   /**
    * Select the `id` field on the `ObjectNested` object. Its type is `ID` (a `Scalar`).
    */
-  id?: ObjectNested.id$Expanded | $SelectionSet.AliasInput<ObjectNested.id>
+  id?: ObjectNested.id$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<ObjectNested.id>
   /**
    * Select the `object` field on the `ObjectNested` object. Its type is Object.
    */
-  object?: ObjectNested.$object$Expanded | $SelectionSet.AliasInput<ObjectNested.$object>
+  object?: ObjectNested.$object$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<ObjectNested.$object>
 
   /**
    * Inline fragments for field groups.
@@ -1491,7 +1523,7 @@ export interface ObjectNested extends $SelectionSet.Bases.ObjectLike {
    */
   __typename?:
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
-    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 export interface ObjectNested$FragmentInline
@@ -1527,7 +1559,7 @@ export interface ObjectUnion extends $SelectionSet.Bases.ObjectLike {
   /**
    * Select the `fooBarUnion` field on the `ObjectUnion` object. Its type is Union.
    */
-  fooBarUnion?: ObjectUnion.fooBarUnion$Expanded | $SelectionSet.AliasInput<ObjectUnion.fooBarUnion>
+  fooBarUnion?: ObjectUnion.fooBarUnion$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<ObjectUnion.fooBarUnion>
 
   /**
    * Inline fragments for field groups.
@@ -1546,7 +1578,7 @@ export interface ObjectUnion extends $SelectionSet.Bases.ObjectLike {
    */
   __typename?:
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
-    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 export interface ObjectUnion$FragmentInline
@@ -1578,7 +1610,7 @@ export interface lowerCaseObject extends $SelectionSet.Bases.ObjectLike {
   /**
    * Select the `id` field on the `lowerCaseObject` object. Its type is `ID` (a `Scalar`).
    */
-  id?: lowerCaseObject.id$Expanded | $SelectionSet.AliasInput<lowerCaseObject.id>
+  id?: lowerCaseObject.id$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<lowerCaseObject.id>
 
   /**
    * Inline fragments for field groups.
@@ -1597,7 +1629,7 @@ export interface lowerCaseObject extends $SelectionSet.Bases.ObjectLike {
    */
   __typename?:
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
-    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 export interface lowerCaseObject$FragmentInline
@@ -1630,7 +1662,7 @@ export interface lowerCaseObject2 extends $SelectionSet.Bases.ObjectLike {
   /**
    * Select the `int` field on the `lowerCaseObject2` object. Its type is `Int` (a `Scalar`).
    */
-  int?: lowerCaseObject2.int$Expanded | $SelectionSet.AliasInput<lowerCaseObject2.int>
+  int?: lowerCaseObject2.int$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<lowerCaseObject2.int>
 
   /**
    * Inline fragments for field groups.
@@ -1649,7 +1681,7 @@ export interface lowerCaseObject2 extends $SelectionSet.Bases.ObjectLike {
    */
   __typename?:
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
-    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 export interface lowerCaseObject2$FragmentInline
@@ -1702,7 +1734,7 @@ export interface DateUnion {
    */
   __typename?:
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
-    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
 }
 export interface DateUnion$FragmentInline extends DateUnion, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}
 
@@ -1731,7 +1763,7 @@ export interface FooBarUnion {
    */
   __typename?:
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
-    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
 }
 export interface FooBarUnion$FragmentInline
   extends FooBarUnion, $SelectionSet.Directive.$Groups.InlineFragment.Fields
@@ -1760,7 +1792,7 @@ export interface Result {
    */
   __typename?:
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
-    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
 }
 export interface Result$FragmentInline extends Result, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}
 
@@ -1786,7 +1818,7 @@ export interface lowerCaseUnion {
    */
   __typename?:
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
-    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
 }
 export interface lowerCaseUnion$FragmentInline
   extends lowerCaseUnion, $SelectionSet.Directive.$Groups.InlineFragment.Fields

@@ -75,7 +75,7 @@ export const Scalars = {
 }
 
 // todo this mixes scalars from different schemas
-export type Any =
+export type $Any =
   | String
   | Int
   | Boolean

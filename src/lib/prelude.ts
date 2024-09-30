@@ -92,6 +92,9 @@ export const isRecordLikeObject = (value: unknown): value is Record<string, unkn
 
 export const entries = <T extends Record<string, any>>(obj: T) => Object.entries(obj) as [keyof T, T[keyof T]][]
 
+export const stringKeyEntries = <T extends Record<string, any>>(obj: T) =>
+  Object.entries(obj) as [keyof T & string, T[keyof T & string]][]
+
 // dprint-ignore
 export const entriesStrict = <T extends Record<string, any>>(obj: T): { [K in keyof T]: [K, ExcludeUndefined<T[K]>] }[keyof T][] =>
   Object.entries(obj).filter(([_, value]) => value !== undefined) as any
@@ -237,8 +240,6 @@ export function assertArray(v: unknown): asserts v is unknown[] {
 export function assertObject(v: unknown): asserts v is object {
   if (v === null || typeof v !== `object`) throw new Error(`Expected object. Got: ${String(v)}`)
 }
-
-export type StringKeyof<T> = keyof T & string
 
 export type MaybePromise<T> = T | Promise<T>
 
@@ -463,6 +464,21 @@ export type SuffixKeyNames<$Suffix extends string, $Object extends object> = {
  */
 export type UnionExpanded<$Union> = $Union
 
+export const shallowMergeDefaults = <$Defaults extends object, $Input extends object>(
+  defaults: $Defaults,
+  input: $Input,
+): $Defaults => {
+  const merged = { ...defaults } as Record<string, unknown>
+
+  for (const key in input) {
+    if (input[key] !== undefined) {
+      merged[key] = input[key]
+    }
+  }
+
+  return merged as any
+}
+
 export type mergeObjectArray<T extends [...any[]]> = T extends [infer $First, ...infer $Rest extends any[]]
   ? $First & mergeObjectArray<$Rest>
   : {}
@@ -560,6 +576,19 @@ export type OmitKeysWithPrefix<$Object extends object, $Prefix extends string> =
 AssertIsEqual<OmitKeysWithPrefix<{ a: 1; b: 2 }, 'a'>, { a: 1; b: 2 }>()
 AssertIsEqual<OmitKeysWithPrefix<{ foo_a: 1; b: 2 }, 'foo'>, { b: 2 }>()
 
+export const getFromEnumLooselyOrThrow = <
+  $Record extends { [_ in keyof $Record]: unknown },
+  $Key extends string,
+>(
+  record: $Record,
+  key: $Key,
+): $Record[keyof $Record] => {
+  // @ts-expect-error key lookup not safe.
+  const value = record[key]
+  if (value === undefined || value === null) throw new Error(`Key not found: ${String(key)}`)
+  return value as any
+}
+
 export const getOptionalNullablePropertyOrThrow = <
   $Record extends { [_ in keyof $Record]: unknown },
   $Key extends keyof $Record,
@@ -579,3 +608,5 @@ export const omitUndefinedKeys = <T extends object>(obj: T): OmitUndefinedKeys<T
 type OmitUndefinedKeys<T extends object> = {
   [K in keyof T as undefined extends T[K] ? K : never]: T[K]
 }
+
+export type StringKeyof<T> = keyof T & string
