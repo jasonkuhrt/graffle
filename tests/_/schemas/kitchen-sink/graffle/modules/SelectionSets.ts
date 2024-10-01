@@ -9,6 +9,28 @@ import type * as $Scalar from './Scalar.js'
 //
 //
 // ==================================================================================================
+//                                              Document
+// ==================================================================================================
+//
+//
+//
+//
+//
+//
+
+// Prefix with $ because this is not a schema type. A user could have a schema type named "Document" that this would conflict with.
+export interface $Document {
+  query?: Record<string, Query>
+  mutation?: Record<string, Mutation>
+}
+
+//
+//
+//
+//
+//
+//
+// ==================================================================================================
 //                                      GraphQLObjectType Types
 // ==================================================================================================
 //

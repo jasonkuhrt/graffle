@@ -8,6 +8,27 @@ import type * as $Utilities from '../../../../../../src/entrypoints/utilities-fo
 //
 //
 // ==================================================================================================
+//                                              Document
+// ==================================================================================================
+//
+//
+//
+//
+//
+//
+
+// Prefix with $ because this is not a schema type. A user could have a schema type named "Document" that this would conflict with.
+export interface $Document {
+  mutation?: Record<string, Mutation>
+}
+
+//
+//
+//
+//
+//
+//
+// ==================================================================================================
 //                                      GraphQLObjectType Types
 // ==================================================================================================
 //

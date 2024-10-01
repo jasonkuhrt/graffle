@@ -2,12 +2,8 @@ import type * as Utilities from '../../../../../../src/entrypoints/utilities-for
 import type { Index } from './SchemaIndex.js'
 import type * as SelectionSets from './SelectionSets.js'
 
-interface DocumentInput {
-  mutation?: Record<string, SelectionSets.Mutation>
-}
-
 export interface Document<$Config extends Utilities.Config> {
-  <$Document>(document: Utilities.ExactNonEmpty<$Document, DocumentInput>): Utilities.DocumentRunner<
+  <$Document>(document: Utilities.ExactNonEmpty<$Document, SelectionSets.$Document>): Utilities.DocumentRunner<
     $Config,
     Index,
     // @ts-expect-error We use Exact instead of constraint on this function. TypeScript does not see that as

@@ -25,6 +25,8 @@ import {
   getNodeKind,
   getNodeNameAndKind,
   hasCustomScalars,
+  hasMutation,
+  hasQuery,
   isCustomScalarType,
   RootTypeName,
   StandardScalarTypeTypeScriptMapping,
@@ -53,6 +55,19 @@ export const ModuleGeneratorSelectionSets = createModuleGenerator(
     if (hasCustomScalars(config.schema.typeMapByKind)) {
       code.push(`import type * as $Scalar from './${ModuleGeneratorScalar.name}.js'`)
     }
+    code.push(``)
+
+    code.push(title1(`Document`))
+    code.push(``)
+    code.push(
+      `// Prefix with $ because this is not a schema type. A user could have a schema type named "Document" that this would conflict with.`,
+    )
+    code.push(
+      `export interface $Document {`,
+      hasQuery(config.schema.typeMapByKind) ? `query?: Record<string, Query>` : null,
+      hasMutation(config.schema.typeMapByKind) ? `mutation?: Record<string, Mutation>` : null,
+      `}`,
+    )
     code.push(``)
 
     const typesToRender = [
@@ -86,8 +101,6 @@ export const ModuleGeneratorSelectionSets = createModuleGenerator(
        */
     `)
     code.push(renderRefDefs({ config, nodes: typesToRender.flat() }))
-
-    // console.log(code.join(`\n`))
   },
 )
 
