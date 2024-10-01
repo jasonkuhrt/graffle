@@ -9,10 +9,10 @@ import GeneratedClientBadge from './components/GeneratedClientBadge.vue'
 import MyLayout from './components/MyLayout.vue'
 
 // Imports for Twoslash
-import TwoslashFloatingVue from '@shikijs/vitepress-twoslash/client'
-import '@shikijs/twoslash/style-rich.css'
-import '@shikijs/vitepress-twoslash/style-core.css'
-import 'floating-vue/dist/style.css'
+// import TwoslashFloatingVue from '@shikijs/vitepress-twoslash/client'
+// import '@shikijs/twoslash/style-rich.css'
+// import '@shikijs/vitepress-twoslash/style-core.css'
+// import 'floating-vue/dist/style.css'
 
 export default {
   extends: DefaultTheme,
@@ -20,6 +20,6 @@ export default {
   enhanceApp({ app }: EnhanceAppContext) {
     enhanceAppWithTabs(app)
     app.component('GeneratedClientBadge', GeneratedClientBadge)
-    app.use(TwoslashFloatingVue)
+    // app.use(TwoslashFloatingVue)
   },
 }
