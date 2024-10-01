@@ -1,4 +1,4 @@
-import type { SelectionSet as $SelectionSet } from 'graffle/schema'
+import type { Select as $Select } from 'graffle/schema'
 import type * as $Utilities from 'graffle/utilities-for-generated'
 
 //
@@ -53,11 +53,11 @@ export interface Mutation {
    * @see https://graphql.org/learn/queries/#meta-fields
    */
   __typename?:
-    | $SelectionSet.Indicator.NoArgsIndicator$Expanded
-    | $Select.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
+    | $Select.Indicator.NoArgsIndicator$Expanded
+    | $Select.SelectAlias.SelectAlias<$Select.Indicator.NoArgsIndicator>
 }
 
-export interface Mutation$FragmentInline extends Mutation, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}
+export interface Mutation$FragmentInline extends Mutation, $Select.Directive.$Groups.InlineFragment.Fields {}
 
 // ----------------------------------------| Fields Interfaces |
 
@@ -138,11 +138,11 @@ export interface Query {
    * @see https://graphql.org/learn/queries/#meta-fields
    */
   __typename?:
-    | $SelectionSet.Indicator.NoArgsIndicator$Expanded
-    | $Select.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
+    | $Select.Indicator.NoArgsIndicator$Expanded
+    | $Select.SelectAlias.SelectAlias<$Select.Indicator.NoArgsIndicator>
 }
 
-export interface Query$FragmentInline extends Query, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}
+export interface Query$FragmentInline extends Query, $Select.Directive.$Groups.InlineFragment.Fields {}
 
 // ----------------------------------------| Fields Interfaces |
 
@@ -273,7 +273,7 @@ export interface StringFilter {
 // Interface Type Being
 // --------------
 
-export interface Being extends $SelectionSet.Bases.ObjectLike {
+export interface Being extends $Select.Bases.ObjectLike {
   id?: Being.id
   name?: Being.name
   ___on_Patron?: Patron
@@ -297,20 +297,20 @@ export interface Being extends $SelectionSet.Bases.ObjectLike {
    * @see https://graphql.org/learn/queries/#meta-fields
    */
   __typename?:
-    | $SelectionSet.Indicator.NoArgsIndicator$Expanded
-    | $Select.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
+    | $Select.Indicator.NoArgsIndicator$Expanded
+    | $Select.SelectAlias.SelectAlias<$Select.Indicator.NoArgsIndicator>
 }
 
-export interface Being$FragmentInline extends Being, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}
+export interface Being$FragmentInline extends Being, $Select.Directive.$Groups.InlineFragment.Fields {}
 
 export namespace Being {
-  export type id$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
+  export type id$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
-  export type id = $SelectionSet.Indicator.NoArgsIndicator
+  export type id = $Select.Indicator.NoArgsIndicator
 
-  export type name$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
+  export type name$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
-  export type name = $SelectionSet.Indicator.NoArgsIndicator
+  export type name = $Select.Indicator.NoArgsIndicator
 }
 
 //
@@ -343,7 +343,7 @@ export namespace Being {
 
 // ----------------------------------------| Entrypoint Interface |
 
-export interface BattleRoyale extends $SelectionSet.Bases.ObjectLike {
+export interface BattleRoyale extends $Select.Bases.ObjectLike {
   /**
    * Select the `combatants` field on the `BattleRoyale` object. Its type is Object.
    */
@@ -377,26 +377,24 @@ export interface BattleRoyale extends $SelectionSet.Bases.ObjectLike {
    * @see https://graphql.org/learn/queries/#meta-fields
    */
   __typename?:
-    | $SelectionSet.Indicator.NoArgsIndicator$Expanded
-    | $Select.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
+    | $Select.Indicator.NoArgsIndicator$Expanded
+    | $Select.SelectAlias.SelectAlias<$Select.Indicator.NoArgsIndicator>
 }
 
-export interface BattleRoyale$FragmentInline
-  extends BattleRoyale, $SelectionSet.Directive.$Groups.InlineFragment.Fields
-{}
+export interface BattleRoyale$FragmentInline extends BattleRoyale, $Select.Directive.$Groups.InlineFragment.Fields {}
 
 // ----------------------------------------| Fields Interfaces |
 
 export namespace BattleRoyale {
   export interface combatants extends _RefDefs._CombatantMultiPokemon {}
   export type combatants$Expanded = combatants
-  export type date$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
+  export type date$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
-  export type date = $SelectionSet.Indicator.NoArgsIndicator
+  export type date = $Select.Indicator.NoArgsIndicator
 
-  export type id$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
+  export type id$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
-  export type id = $SelectionSet.Indicator.NoArgsIndicator
+  export type id = $Select.Indicator.NoArgsIndicator
 
   export interface winner extends _RefDefs._Trainer {}
   export type winner$Expanded = winner
@@ -416,7 +414,7 @@ export namespace BattleRoyale {
 
 // ----------------------------------------| Entrypoint Interface |
 
-export interface BattleTrainer extends $SelectionSet.Bases.ObjectLike {
+export interface BattleTrainer extends $Select.Bases.ObjectLike {
   /**
    * Select the `combatant1` field on the `BattleTrainer` object. Its type is Object.
    */
@@ -454,13 +452,11 @@ export interface BattleTrainer extends $SelectionSet.Bases.ObjectLike {
    * @see https://graphql.org/learn/queries/#meta-fields
    */
   __typename?:
-    | $SelectionSet.Indicator.NoArgsIndicator$Expanded
-    | $Select.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
+    | $Select.Indicator.NoArgsIndicator$Expanded
+    | $Select.SelectAlias.SelectAlias<$Select.Indicator.NoArgsIndicator>
 }
 
-export interface BattleTrainer$FragmentInline
-  extends BattleTrainer, $SelectionSet.Directive.$Groups.InlineFragment.Fields
-{}
+export interface BattleTrainer$FragmentInline extends BattleTrainer, $Select.Directive.$Groups.InlineFragment.Fields {}
 
 // ----------------------------------------| Fields Interfaces |
 
@@ -469,13 +465,13 @@ export namespace BattleTrainer {
   export type combatant1$Expanded = combatant1
   export interface combatant2 extends _RefDefs._CombatantSinglePokemon {}
   export type combatant2$Expanded = combatant2
-  export type date$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
+  export type date$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
-  export type date = $SelectionSet.Indicator.NoArgsIndicator
+  export type date = $Select.Indicator.NoArgsIndicator
 
-  export type id$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
+  export type id$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
-  export type id = $SelectionSet.Indicator.NoArgsIndicator
+  export type id = $Select.Indicator.NoArgsIndicator
 
   export interface winner extends _RefDefs._Trainer {}
   export type winner$Expanded = winner
@@ -495,7 +491,7 @@ export namespace BattleTrainer {
 
 // ----------------------------------------| Entrypoint Interface |
 
-export interface BattleWild extends $SelectionSet.Bases.ObjectLike {
+export interface BattleWild extends $Select.Bases.ObjectLike {
   /**
    * Select the `date` field on the `BattleWild` object. Its type is `Float` (a `Scalar`).
    */
@@ -537,28 +533,28 @@ export interface BattleWild extends $SelectionSet.Bases.ObjectLike {
    * @see https://graphql.org/learn/queries/#meta-fields
    */
   __typename?:
-    | $SelectionSet.Indicator.NoArgsIndicator$Expanded
-    | $Select.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
+    | $Select.Indicator.NoArgsIndicator$Expanded
+    | $Select.SelectAlias.SelectAlias<$Select.Indicator.NoArgsIndicator>
 }
 
-export interface BattleWild$FragmentInline extends BattleWild, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}
+export interface BattleWild$FragmentInline extends BattleWild, $Select.Directive.$Groups.InlineFragment.Fields {}
 
 // ----------------------------------------| Fields Interfaces |
 
 export namespace BattleWild {
-  export type date$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
+  export type date$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
-  export type date = $SelectionSet.Indicator.NoArgsIndicator
+  export type date = $Select.Indicator.NoArgsIndicator
 
-  export type id$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
+  export type id$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
-  export type id = $SelectionSet.Indicator.NoArgsIndicator
+  export type id = $Select.Indicator.NoArgsIndicator
 
   export interface pokemon extends _RefDefs._Pokemon {}
   export type pokemon$Expanded = pokemon
-  export type result$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
+  export type result$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
-  export type result = $SelectionSet.Indicator.NoArgsIndicator
+  export type result = $Select.Indicator.NoArgsIndicator
 
   export interface trainer extends _RefDefs._Trainer {}
   export type trainer$Expanded = trainer
@@ -580,19 +576,15 @@ export namespace BattleWild {
 
 // ----------------------------------------| Entrypoint Interface |
 
-export interface CombatantMultiPokemon extends $SelectionSet.Bases.ObjectLike {
+export interface CombatantMultiPokemon extends $Select.Bases.ObjectLike {
   /**
    * Select the `pokemons` field on the `CombatantMultiPokemon` object. Its type is Object.
    */
-  pokemons?:
-    | CombatantMultiPokemon.pokemons$Expanded
-    | $Select.SelectAlias.SelectAlias<CombatantMultiPokemon.pokemons>
+  pokemons?: CombatantMultiPokemon.pokemons$Expanded | $Select.SelectAlias.SelectAlias<CombatantMultiPokemon.pokemons>
   /**
    * Select the `trainer` field on the `CombatantMultiPokemon` object. Its type is Object.
    */
-  trainer?:
-    | CombatantMultiPokemon.trainer$Expanded
-    | $Select.SelectAlias.SelectAlias<CombatantMultiPokemon.trainer>
+  trainer?: CombatantMultiPokemon.trainer$Expanded | $Select.SelectAlias.SelectAlias<CombatantMultiPokemon.trainer>
 
   /**
    * Inline fragments for field groups.
@@ -610,12 +602,12 @@ export interface CombatantMultiPokemon extends $SelectionSet.Bases.ObjectLike {
    * @see https://graphql.org/learn/queries/#meta-fields
    */
   __typename?:
-    | $SelectionSet.Indicator.NoArgsIndicator$Expanded
-    | $Select.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
+    | $Select.Indicator.NoArgsIndicator$Expanded
+    | $Select.SelectAlias.SelectAlias<$Select.Indicator.NoArgsIndicator>
 }
 
 export interface CombatantMultiPokemon$FragmentInline
-  extends CombatantMultiPokemon, $SelectionSet.Directive.$Groups.InlineFragment.Fields
+  extends CombatantMultiPokemon, $Select.Directive.$Groups.InlineFragment.Fields
 {}
 
 // ----------------------------------------| Fields Interfaces |
@@ -641,19 +633,15 @@ export namespace CombatantMultiPokemon {
 
 // ----------------------------------------| Entrypoint Interface |
 
-export interface CombatantSinglePokemon extends $SelectionSet.Bases.ObjectLike {
+export interface CombatantSinglePokemon extends $Select.Bases.ObjectLike {
   /**
    * Select the `pokemon` field on the `CombatantSinglePokemon` object. Its type is Object.
    */
-  pokemon?:
-    | CombatantSinglePokemon.pokemon$Expanded
-    | $Select.SelectAlias.SelectAlias<CombatantSinglePokemon.pokemon>
+  pokemon?: CombatantSinglePokemon.pokemon$Expanded | $Select.SelectAlias.SelectAlias<CombatantSinglePokemon.pokemon>
   /**
    * Select the `trainer` field on the `CombatantSinglePokemon` object. Its type is Object.
    */
-  trainer?:
-    | CombatantSinglePokemon.trainer$Expanded
-    | $Select.SelectAlias.SelectAlias<CombatantSinglePokemon.trainer>
+  trainer?: CombatantSinglePokemon.trainer$Expanded | $Select.SelectAlias.SelectAlias<CombatantSinglePokemon.trainer>
 
   /**
    * Inline fragments for field groups.
@@ -671,12 +659,12 @@ export interface CombatantSinglePokemon extends $SelectionSet.Bases.ObjectLike {
    * @see https://graphql.org/learn/queries/#meta-fields
    */
   __typename?:
-    | $SelectionSet.Indicator.NoArgsIndicator$Expanded
-    | $Select.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
+    | $Select.Indicator.NoArgsIndicator$Expanded
+    | $Select.SelectAlias.SelectAlias<$Select.Indicator.NoArgsIndicator>
 }
 
 export interface CombatantSinglePokemon$FragmentInline
-  extends CombatantSinglePokemon, $SelectionSet.Directive.$Groups.InlineFragment.Fields
+  extends CombatantSinglePokemon, $Select.Directive.$Groups.InlineFragment.Fields
 {}
 
 // ----------------------------------------| Fields Interfaces |
@@ -702,7 +690,7 @@ export namespace CombatantSinglePokemon {
 
 // ----------------------------------------| Entrypoint Interface |
 
-export interface Patron extends $SelectionSet.Bases.ObjectLike {
+export interface Patron extends $Select.Bases.ObjectLike {
   /**
    * Select the `id` field on the `Patron` object. Its type is `ID` (a `Scalar`).
    */
@@ -732,26 +720,26 @@ export interface Patron extends $SelectionSet.Bases.ObjectLike {
    * @see https://graphql.org/learn/queries/#meta-fields
    */
   __typename?:
-    | $SelectionSet.Indicator.NoArgsIndicator$Expanded
-    | $Select.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
+    | $Select.Indicator.NoArgsIndicator$Expanded
+    | $Select.SelectAlias.SelectAlias<$Select.Indicator.NoArgsIndicator>
 }
 
-export interface Patron$FragmentInline extends Patron, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}
+export interface Patron$FragmentInline extends Patron, $Select.Directive.$Groups.InlineFragment.Fields {}
 
 // ----------------------------------------| Fields Interfaces |
 
 export namespace Patron {
-  export type id$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
+  export type id$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
-  export type id = $SelectionSet.Indicator.NoArgsIndicator
+  export type id = $Select.Indicator.NoArgsIndicator
 
-  export type money$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
+  export type money$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
-  export type money = $SelectionSet.Indicator.NoArgsIndicator
+  export type money = $Select.Indicator.NoArgsIndicator
 
-  export type name$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
+  export type name$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
-  export type name = $SelectionSet.Indicator.NoArgsIndicator
+  export type name = $Select.Indicator.NoArgsIndicator
 }
 
 //
@@ -768,7 +756,7 @@ export namespace Patron {
 
 // ----------------------------------------| Entrypoint Interface |
 
-export interface Pokemon extends $SelectionSet.Bases.ObjectLike {
+export interface Pokemon extends $Select.Bases.ObjectLike {
   /**
    * Select the `attack` field on the `Pokemon` object. Its type is `Int` (a `Scalar`).
    */
@@ -818,44 +806,44 @@ export interface Pokemon extends $SelectionSet.Bases.ObjectLike {
    * @see https://graphql.org/learn/queries/#meta-fields
    */
   __typename?:
-    | $SelectionSet.Indicator.NoArgsIndicator$Expanded
-    | $Select.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
+    | $Select.Indicator.NoArgsIndicator$Expanded
+    | $Select.SelectAlias.SelectAlias<$Select.Indicator.NoArgsIndicator>
 }
 
-export interface Pokemon$FragmentInline extends Pokemon, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}
+export interface Pokemon$FragmentInline extends Pokemon, $Select.Directive.$Groups.InlineFragment.Fields {}
 
 // ----------------------------------------| Fields Interfaces |
 
 export namespace Pokemon {
-  export type attack$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
+  export type attack$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
-  export type attack = $SelectionSet.Indicator.NoArgsIndicator
+  export type attack = $Select.Indicator.NoArgsIndicator
 
-  export type birthday$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
+  export type birthday$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
-  export type birthday = $SelectionSet.Indicator.NoArgsIndicator
+  export type birthday = $Select.Indicator.NoArgsIndicator
 
-  export type defense$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
+  export type defense$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
-  export type defense = $SelectionSet.Indicator.NoArgsIndicator
+  export type defense = $Select.Indicator.NoArgsIndicator
 
-  export type hp$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
+  export type hp$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
-  export type hp = $SelectionSet.Indicator.NoArgsIndicator
+  export type hp = $Select.Indicator.NoArgsIndicator
 
-  export type id$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
+  export type id$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
-  export type id = $SelectionSet.Indicator.NoArgsIndicator
+  export type id = $Select.Indicator.NoArgsIndicator
 
-  export type name$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
+  export type name$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
-  export type name = $SelectionSet.Indicator.NoArgsIndicator
+  export type name = $Select.Indicator.NoArgsIndicator
 
   export interface trainer extends _RefDefs._Trainer {}
   export type trainer$Expanded = trainer
-  export type type$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
+  export type type$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
-  export type type = $SelectionSet.Indicator.NoArgsIndicator
+  export type type = $Select.Indicator.NoArgsIndicator
 }
 
 //
@@ -872,7 +860,7 @@ export namespace Pokemon {
 
 // ----------------------------------------| Entrypoint Interface |
 
-export interface Trainer extends $SelectionSet.Bases.ObjectLike {
+export interface Trainer extends $Select.Bases.ObjectLike {
   /**
    * Select the `class` field on the `Trainer` object. Its type is Enum.
    */
@@ -910,28 +898,28 @@ export interface Trainer extends $SelectionSet.Bases.ObjectLike {
    * @see https://graphql.org/learn/queries/#meta-fields
    */
   __typename?:
-    | $SelectionSet.Indicator.NoArgsIndicator$Expanded
-    | $Select.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
+    | $Select.Indicator.NoArgsIndicator$Expanded
+    | $Select.SelectAlias.SelectAlias<$Select.Indicator.NoArgsIndicator>
 }
 
-export interface Trainer$FragmentInline extends Trainer, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}
+export interface Trainer$FragmentInline extends Trainer, $Select.Directive.$Groups.InlineFragment.Fields {}
 
 // ----------------------------------------| Fields Interfaces |
 
 export namespace Trainer {
-  export type $class$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
+  export type $class$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
-  export type $class = $SelectionSet.Indicator.NoArgsIndicator
+  export type $class = $Select.Indicator.NoArgsIndicator
 
   export interface fans extends _RefDefs._Patron {}
   export type fans$Expanded = fans
-  export type id$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
+  export type id$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
-  export type id = $SelectionSet.Indicator.NoArgsIndicator
+  export type id = $Select.Indicator.NoArgsIndicator
 
-  export type name$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
+  export type name$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
-  export type name = $SelectionSet.Indicator.NoArgsIndicator
+  export type name = $Select.Indicator.NoArgsIndicator
 
   export interface pokemon extends _RefDefs._Pokemon {}
   export type pokemon$Expanded = pokemon
@@ -975,10 +963,10 @@ export interface Battle {
    * @see https://graphql.org/learn/queries/#meta-fields
    */
   __typename?:
-    | $SelectionSet.Indicator.NoArgsIndicator$Expanded
-    | $Select.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
+    | $Select.Indicator.NoArgsIndicator$Expanded
+    | $Select.SelectAlias.SelectAlias<$Select.Indicator.NoArgsIndicator>
 }
-export interface Battle$FragmentInline extends Battle, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}
+export interface Battle$FragmentInline extends Battle, $Select.Directive.$Groups.InlineFragment.Fields {}
 
 /**
  * [1] These definitions serve to allow field selection interfaces to extend their respective object type without
