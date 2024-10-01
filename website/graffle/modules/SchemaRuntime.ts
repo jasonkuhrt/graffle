@@ -29,78 +29,85 @@ export const StringQueryOperatorInput = $.InputObject(`StringQueryOperatorInput`
 }, true)
 // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
 export const Continent = $.Object$(`Continent`, {
-  code: $.field($Scalar.ID),
+  code: $.field('code', $Scalar.ID),
   // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-  countries: $.field($.Output.List(() => Country)),
-  name: $.field($Scalar.String),
+  countries: $.field('countries', $.Output.List(() => Country)),
+  name: $.field('name', $Scalar.String),
 })
 
 // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
 export const Country = $.Object$(`Country`, {
-  awsRegion: $.field($Scalar.String),
-  capital: $.field($.Output.Nullable($Scalar.String)),
-  code: $.field($Scalar.ID),
+  awsRegion: $.field('awsRegion', $Scalar.String),
+  capital: $.field('capital', $.Output.Nullable($Scalar.String)),
+  code: $.field('code', $Scalar.ID),
   // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-  continent: $.field(() => Continent),
-  currencies: $.field($.Output.List($Scalar.String)),
-  currency: $.field($.Output.Nullable($Scalar.String)),
-  emoji: $.field($Scalar.String),
-  emojiU: $.field($Scalar.String),
+  continent: $.field('continent', () => Continent),
+  currencies: $.field('currencies', $.Output.List($Scalar.String)),
+  currency: $.field('currency', $.Output.Nullable($Scalar.String)),
+  emoji: $.field('emoji', $Scalar.String),
+  emojiU: $.field('emojiU', $Scalar.String),
   // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-  languages: $.field($.Output.List(() => Language)),
-  name: $.field($Scalar.String, $.Args({ lang: $.Input.Field($.Input.Nullable($Scalar.String)) }, true)),
-  native: $.field($Scalar.String),
-  phone: $.field($Scalar.String),
-  phones: $.field($.Output.List($Scalar.String)),
+  languages: $.field('languages', $.Output.List(() => Language)),
+  name: $.field('name', $Scalar.String, $.Args({ lang: $.Input.Field($.Input.Nullable($Scalar.String)) }, true)),
+  native: $.field('native', $Scalar.String),
+  phone: $.field('phone', $Scalar.String),
+  phones: $.field('phones', $.Output.List($Scalar.String)),
   // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-  states: $.field($.Output.List(() => State)),
+  states: $.field('states', $.Output.List(() => State)),
   // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-  subdivisions: $.field($.Output.List(() => Subdivision)),
+  subdivisions: $.field('subdivisions', $.Output.List(() => Subdivision)),
 })
 
 // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
 export const Language = $.Object$(`Language`, {
-  code: $.field($Scalar.ID),
-  name: $.field($Scalar.String),
-  native: $.field($Scalar.String),
-  rtl: $.field($Scalar.Boolean),
+  code: $.field('code', $Scalar.ID),
+  name: $.field('name', $Scalar.String),
+  native: $.field('native', $Scalar.String),
+  rtl: $.field('rtl', $Scalar.Boolean),
 })
 
 // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
 export const State = $.Object$(`State`, {
-  code: $.field($.Output.Nullable($Scalar.String)),
+  code: $.field('code', $.Output.Nullable($Scalar.String)),
   // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-  country: $.field(() => Country),
-  name: $.field($Scalar.String),
+  country: $.field('country', () => Country),
+  name: $.field('name', $Scalar.String),
 })
 
 // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
 export const Subdivision = $.Object$(`Subdivision`, {
-  code: $.field($Scalar.ID),
-  emoji: $.field($.Output.Nullable($Scalar.String)),
-  name: $.field($Scalar.String),
+  code: $.field('code', $Scalar.ID),
+  emoji: $.field('emoji', $.Output.Nullable($Scalar.String)),
+  name: $.field('name', $Scalar.String),
 })
 
 // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
 export const Query = $.Object$(`Query`, {
   // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-  continent: $.field($.Output.Nullable(() => Continent), $.Args({ code: $.Input.Field($Scalar.ID) }, false)),
+  continent: $.field(
+    'continent',
+    $.Output.Nullable(() => Continent),
+    $.Args({ code: $.Input.Field($Scalar.ID) }, false),
+  ),
   // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
   continents: $.field(
+    'continents',
     $.Output.List(() => Continent),
     $.Args({ filter: $.Input.Field($.Input.Nullable(ContinentFilterInput)) }, true),
   ),
   // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
   countries: $.field(
+    'countries',
     $.Output.List(() => Country),
     $.Args({ filter: $.Input.Field($.Input.Nullable(CountryFilterInput)) }, true),
   ),
   // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-  country: $.field($.Output.Nullable(() => Country), $.Args({ code: $.Input.Field($Scalar.ID) }, false)),
+  country: $.field('country', $.Output.Nullable(() => Country), $.Args({ code: $.Input.Field($Scalar.ID) }, false)),
   // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-  language: $.field($.Output.Nullable(() => Language), $.Args({ code: $.Input.Field($Scalar.ID) }, false)),
+  language: $.field('language', $.Output.Nullable(() => Language), $.Args({ code: $.Input.Field($Scalar.ID) }, false)),
   // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
   languages: $.field(
+    'languages',
     $.Output.List(() => Language),
     $.Args({ filter: $.Input.Field($.Input.Nullable(LanguageFilterInput)) }, true),
   ),

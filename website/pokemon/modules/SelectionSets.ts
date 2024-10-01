@@ -35,7 +35,7 @@ export interface Mutation {
   /**
    * Select the `addPokemon` field on the `Mutation` object. Its type is Object.
    */
-  addPokemon?: Mutation.addPokemon$Expanded | $SelectionSet.AliasInput<Mutation.addPokemon>
+  addPokemon?: Mutation.addPokemon$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Mutation.addPokemon>
 
   /**
    * Inline fragments for field groups.
@@ -54,7 +54,7 @@ export interface Mutation {
    */
   __typename?:
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
-    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 export interface Mutation$FragmentInline extends Mutation, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}
@@ -96,31 +96,31 @@ export interface Query {
   /**
    * Select the `battles` field on the `Query` object. Its type is Union.
    */
-  battles?: Query.battles$Expanded | $SelectionSet.AliasInput<Query.battles>
+  battles?: Query.battles$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.battles>
   /**
    * Select the `beings` field on the `Query` object. Its type is Interface.
    */
-  beings?: Query.beings$Expanded | $SelectionSet.AliasInput<Query.beings>
+  beings?: Query.beings$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.beings>
   /**
    * Select the `pokemon` field on the `Query` object. Its type is Object.
    */
-  pokemon?: Query.pokemon$Expanded | $SelectionSet.AliasInput<Query.pokemon>
+  pokemon?: Query.pokemon$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.pokemon>
   /**
    * Select the `pokemonByName` field on the `Query` object. Its type is Object.
    */
-  pokemonByName?: Query.pokemonByName$Expanded | $SelectionSet.AliasInput<Query.pokemonByName>
+  pokemonByName?: Query.pokemonByName$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.pokemonByName>
   /**
    * Select the `pokemons` field on the `Query` object. Its type is Object.
    */
-  pokemons?: Query.pokemons$Expanded | $SelectionSet.AliasInput<Query.pokemons>
+  pokemons?: Query.pokemons$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.pokemons>
   /**
    * Select the `trainerByName` field on the `Query` object. Its type is Object.
    */
-  trainerByName?: Query.trainerByName$Expanded | $SelectionSet.AliasInput<Query.trainerByName>
+  trainerByName?: Query.trainerByName$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.trainerByName>
   /**
    * Select the `trainers` field on the `Query` object. Its type is Object.
    */
-  trainers?: Query.trainers$Expanded | $SelectionSet.AliasInput<Query.trainers>
+  trainers?: Query.trainers$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.trainers>
 
   /**
    * Inline fragments for field groups.
@@ -139,7 +139,7 @@ export interface Query {
    */
   __typename?:
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
-    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 export interface Query$FragmentInline extends Query, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}
@@ -298,7 +298,7 @@ export interface Being extends $SelectionSet.Bases.ObjectLike {
    */
   __typename?:
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
-    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 export interface Being$FragmentInline extends Being, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}
@@ -347,19 +347,19 @@ export interface BattleRoyale extends $SelectionSet.Bases.ObjectLike {
   /**
    * Select the `combatants` field on the `BattleRoyale` object. Its type is Object.
    */
-  combatants?: BattleRoyale.combatants$Expanded | $SelectionSet.AliasInput<BattleRoyale.combatants>
+  combatants?: BattleRoyale.combatants$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<BattleRoyale.combatants>
   /**
-   * Select the `date` field on the `BattleRoyale` object. Its type is `Int` (a `Scalar`).
+   * Select the `date` field on the `BattleRoyale` object. Its type is `Float` (a `Scalar`).
    */
-  date?: BattleRoyale.date$Expanded | $SelectionSet.AliasInput<BattleRoyale.date>
+  date?: BattleRoyale.date$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<BattleRoyale.date>
   /**
    * Select the `id` field on the `BattleRoyale` object. Its type is `ID` (a `Scalar`).
    */
-  id?: BattleRoyale.id$Expanded | $SelectionSet.AliasInput<BattleRoyale.id>
+  id?: BattleRoyale.id$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<BattleRoyale.id>
   /**
    * Select the `winner` field on the `BattleRoyale` object. Its type is Object.
    */
-  winner?: BattleRoyale.winner$Expanded | $SelectionSet.AliasInput<BattleRoyale.winner>
+  winner?: BattleRoyale.winner$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<BattleRoyale.winner>
 
   /**
    * Inline fragments for field groups.
@@ -378,7 +378,7 @@ export interface BattleRoyale extends $SelectionSet.Bases.ObjectLike {
    */
   __typename?:
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
-    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 export interface BattleRoyale$FragmentInline
@@ -420,23 +420,23 @@ export interface BattleTrainer extends $SelectionSet.Bases.ObjectLike {
   /**
    * Select the `combatant1` field on the `BattleTrainer` object. Its type is Object.
    */
-  combatant1?: BattleTrainer.combatant1$Expanded | $SelectionSet.AliasInput<BattleTrainer.combatant1>
+  combatant1?: BattleTrainer.combatant1$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<BattleTrainer.combatant1>
   /**
    * Select the `combatant2` field on the `BattleTrainer` object. Its type is Object.
    */
-  combatant2?: BattleTrainer.combatant2$Expanded | $SelectionSet.AliasInput<BattleTrainer.combatant2>
+  combatant2?: BattleTrainer.combatant2$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<BattleTrainer.combatant2>
   /**
-   * Select the `date` field on the `BattleTrainer` object. Its type is `Int` (a `Scalar`).
+   * Select the `date` field on the `BattleTrainer` object. Its type is `Float` (a `Scalar`).
    */
-  date?: BattleTrainer.date$Expanded | $SelectionSet.AliasInput<BattleTrainer.date>
+  date?: BattleTrainer.date$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<BattleTrainer.date>
   /**
    * Select the `id` field on the `BattleTrainer` object. Its type is `ID` (a `Scalar`).
    */
-  id?: BattleTrainer.id$Expanded | $SelectionSet.AliasInput<BattleTrainer.id>
+  id?: BattleTrainer.id$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<BattleTrainer.id>
   /**
    * Select the `winner` field on the `BattleTrainer` object. Its type is Object.
    */
-  winner?: BattleTrainer.winner$Expanded | $SelectionSet.AliasInput<BattleTrainer.winner>
+  winner?: BattleTrainer.winner$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<BattleTrainer.winner>
 
   /**
    * Inline fragments for field groups.
@@ -455,7 +455,7 @@ export interface BattleTrainer extends $SelectionSet.Bases.ObjectLike {
    */
   __typename?:
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
-    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 export interface BattleTrainer$FragmentInline
@@ -497,29 +497,29 @@ export namespace BattleTrainer {
 
 export interface BattleWild extends $SelectionSet.Bases.ObjectLike {
   /**
-   * Select the `date` field on the `BattleWild` object. Its type is `Int` (a `Scalar`).
+   * Select the `date` field on the `BattleWild` object. Its type is `Float` (a `Scalar`).
    */
-  date?: BattleWild.date$Expanded | $SelectionSet.AliasInput<BattleWild.date>
+  date?: BattleWild.date$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<BattleWild.date>
   /**
    * Select the `id` field on the `BattleWild` object. Its type is `ID` (a `Scalar`).
    */
-  id?: BattleWild.id$Expanded | $SelectionSet.AliasInput<BattleWild.id>
+  id?: BattleWild.id$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<BattleWild.id>
   /**
    * Select the `pokemon` field on the `BattleWild` object. Its type is Object.
    */
-  pokemon?: BattleWild.pokemon$Expanded | $SelectionSet.AliasInput<BattleWild.pokemon>
+  pokemon?: BattleWild.pokemon$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<BattleWild.pokemon>
   /**
    * Select the `result` field on the `BattleWild` object. Its type is Enum.
    */
-  result?: BattleWild.result$Expanded | $SelectionSet.AliasInput<BattleWild.result>
+  result?: BattleWild.result$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<BattleWild.result>
   /**
    * Select the `trainer` field on the `BattleWild` object. Its type is Object.
    */
-  trainer?: BattleWild.trainer$Expanded | $SelectionSet.AliasInput<BattleWild.trainer>
+  trainer?: BattleWild.trainer$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<BattleWild.trainer>
   /**
    * Select the `wildPokemons` field on the `BattleWild` object. Its type is Object.
    */
-  wildPokemons?: BattleWild.wildPokemons$Expanded | $SelectionSet.AliasInput<BattleWild.wildPokemons>
+  wildPokemons?: BattleWild.wildPokemons$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<BattleWild.wildPokemons>
 
   /**
    * Inline fragments for field groups.
@@ -538,7 +538,7 @@ export interface BattleWild extends $SelectionSet.Bases.ObjectLike {
    */
   __typename?:
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
-    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 export interface BattleWild$FragmentInline extends BattleWild, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}
@@ -584,11 +584,15 @@ export interface CombatantMultiPokemon extends $SelectionSet.Bases.ObjectLike {
   /**
    * Select the `pokemons` field on the `CombatantMultiPokemon` object. Its type is Object.
    */
-  pokemons?: CombatantMultiPokemon.pokemons$Expanded | $SelectionSet.AliasInput<CombatantMultiPokemon.pokemons>
+  pokemons?:
+    | CombatantMultiPokemon.pokemons$Expanded
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<CombatantMultiPokemon.pokemons>
   /**
    * Select the `trainer` field on the `CombatantMultiPokemon` object. Its type is Object.
    */
-  trainer?: CombatantMultiPokemon.trainer$Expanded | $SelectionSet.AliasInput<CombatantMultiPokemon.trainer>
+  trainer?:
+    | CombatantMultiPokemon.trainer$Expanded
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<CombatantMultiPokemon.trainer>
 
   /**
    * Inline fragments for field groups.
@@ -607,7 +611,7 @@ export interface CombatantMultiPokemon extends $SelectionSet.Bases.ObjectLike {
    */
   __typename?:
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
-    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 export interface CombatantMultiPokemon$FragmentInline
@@ -641,11 +645,15 @@ export interface CombatantSinglePokemon extends $SelectionSet.Bases.ObjectLike {
   /**
    * Select the `pokemon` field on the `CombatantSinglePokemon` object. Its type is Object.
    */
-  pokemon?: CombatantSinglePokemon.pokemon$Expanded | $SelectionSet.AliasInput<CombatantSinglePokemon.pokemon>
+  pokemon?:
+    | CombatantSinglePokemon.pokemon$Expanded
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<CombatantSinglePokemon.pokemon>
   /**
    * Select the `trainer` field on the `CombatantSinglePokemon` object. Its type is Object.
    */
-  trainer?: CombatantSinglePokemon.trainer$Expanded | $SelectionSet.AliasInput<CombatantSinglePokemon.trainer>
+  trainer?:
+    | CombatantSinglePokemon.trainer$Expanded
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<CombatantSinglePokemon.trainer>
 
   /**
    * Inline fragments for field groups.
@@ -664,7 +672,7 @@ export interface CombatantSinglePokemon extends $SelectionSet.Bases.ObjectLike {
    */
   __typename?:
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
-    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 export interface CombatantSinglePokemon$FragmentInline
@@ -698,15 +706,15 @@ export interface Patron extends $SelectionSet.Bases.ObjectLike {
   /**
    * Select the `id` field on the `Patron` object. Its type is `ID` (a `Scalar`).
    */
-  id?: Patron.id$Expanded | $SelectionSet.AliasInput<Patron.id>
+  id?: Patron.id$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Patron.id>
   /**
    * Select the `money` field on the `Patron` object. Its type is `Int` (a `Scalar`).
    */
-  money?: Patron.money$Expanded | $SelectionSet.AliasInput<Patron.money>
+  money?: Patron.money$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Patron.money>
   /**
    * Select the `name` field on the `Patron` object. Its type is `String` (a `Scalar`).
    */
-  name?: Patron.name$Expanded | $SelectionSet.AliasInput<Patron.name>
+  name?: Patron.name$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Patron.name>
 
   /**
    * Inline fragments for field groups.
@@ -725,7 +733,7 @@ export interface Patron extends $SelectionSet.Bases.ObjectLike {
    */
   __typename?:
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
-    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 export interface Patron$FragmentInline extends Patron, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}
@@ -764,35 +772,35 @@ export interface Pokemon extends $SelectionSet.Bases.ObjectLike {
   /**
    * Select the `attack` field on the `Pokemon` object. Its type is `Int` (a `Scalar`).
    */
-  attack?: Pokemon.attack$Expanded | $SelectionSet.AliasInput<Pokemon.attack>
+  attack?: Pokemon.attack$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Pokemon.attack>
   /**
    * Select the `birthday` field on the `Pokemon` object. Its type is `Int` (a `Scalar`).
    */
-  birthday?: Pokemon.birthday$Expanded | $SelectionSet.AliasInput<Pokemon.birthday>
+  birthday?: Pokemon.birthday$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Pokemon.birthday>
   /**
    * Select the `defense` field on the `Pokemon` object. Its type is `Int` (a `Scalar`).
    */
-  defense?: Pokemon.defense$Expanded | $SelectionSet.AliasInput<Pokemon.defense>
+  defense?: Pokemon.defense$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Pokemon.defense>
   /**
    * Select the `hp` field on the `Pokemon` object. Its type is `Int` (a `Scalar`).
    */
-  hp?: Pokemon.hp$Expanded | $SelectionSet.AliasInput<Pokemon.hp>
+  hp?: Pokemon.hp$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Pokemon.hp>
   /**
    * Select the `id` field on the `Pokemon` object. Its type is `ID` (a `Scalar`).
    */
-  id?: Pokemon.id$Expanded | $SelectionSet.AliasInput<Pokemon.id>
+  id?: Pokemon.id$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Pokemon.id>
   /**
    * Select the `name` field on the `Pokemon` object. Its type is `String` (a `Scalar`).
    */
-  name?: Pokemon.name$Expanded | $SelectionSet.AliasInput<Pokemon.name>
+  name?: Pokemon.name$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Pokemon.name>
   /**
    * Select the `trainer` field on the `Pokemon` object. Its type is Object.
    */
-  trainer?: Pokemon.trainer$Expanded | $SelectionSet.AliasInput<Pokemon.trainer>
+  trainer?: Pokemon.trainer$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Pokemon.trainer>
   /**
    * Select the `type` field on the `Pokemon` object. Its type is Enum.
    */
-  type?: Pokemon.type$Expanded | $SelectionSet.AliasInput<Pokemon.type>
+  type?: Pokemon.type$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Pokemon.type>
 
   /**
    * Inline fragments for field groups.
@@ -811,7 +819,7 @@ export interface Pokemon extends $SelectionSet.Bases.ObjectLike {
    */
   __typename?:
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
-    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 export interface Pokemon$FragmentInline extends Pokemon, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}
@@ -868,23 +876,23 @@ export interface Trainer extends $SelectionSet.Bases.ObjectLike {
   /**
    * Select the `class` field on the `Trainer` object. Its type is Enum.
    */
-  class?: Trainer.$class$Expanded | $SelectionSet.AliasInput<Trainer.$class>
+  class?: Trainer.$class$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Trainer.$class>
   /**
    * Select the `fans` field on the `Trainer` object. Its type is Object.
    */
-  fans?: Trainer.fans$Expanded | $SelectionSet.AliasInput<Trainer.fans>
+  fans?: Trainer.fans$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Trainer.fans>
   /**
    * Select the `id` field on the `Trainer` object. Its type is `ID` (a `Scalar`).
    */
-  id?: Trainer.id$Expanded | $SelectionSet.AliasInput<Trainer.id>
+  id?: Trainer.id$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Trainer.id>
   /**
    * Select the `name` field on the `Trainer` object. Its type is `String` (a `Scalar`).
    */
-  name?: Trainer.name$Expanded | $SelectionSet.AliasInput<Trainer.name>
+  name?: Trainer.name$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Trainer.name>
   /**
    * Select the `pokemon` field on the `Trainer` object. Its type is Object.
    */
-  pokemon?: Trainer.pokemon$Expanded | $SelectionSet.AliasInput<Trainer.pokemon>
+  pokemon?: Trainer.pokemon$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Trainer.pokemon>
 
   /**
    * Inline fragments for field groups.
@@ -903,7 +911,7 @@ export interface Trainer extends $SelectionSet.Bases.ObjectLike {
    */
   __typename?:
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
-    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 export interface Trainer$FragmentInline extends Trainer, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}
@@ -968,7 +976,7 @@ export interface Battle {
    */
   __typename?:
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
-    | $SelectionSet.AliasInput<$SelectionSet.Indicator.NoArgsIndicator>
+    | $SelectionSet.Nodes.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
 }
 export interface Battle$FragmentInline extends Battle, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}
 

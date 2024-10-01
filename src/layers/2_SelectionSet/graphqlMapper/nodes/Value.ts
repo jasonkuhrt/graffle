@@ -40,7 +40,8 @@ export const toGraphQLValue: GraphQLNodeMapper<ValueNode, [type: Schema.Input.An
   }
 
   if (unwrappedType.kind === `Scalar`) {
-    // @ts-expect-error custom scalars fall out of lookup
+    // eslint-disable-next-line
+    // @ts-ignore fixme - passes on build but fails on type check ??
     const kind = scalarNameToGraphQLNodeKind[unwrappedType.name] as undefined | Nodes.$KindGroups.StandardScalar
     // @ts-expect-error fixme
     const encodedValue = unwrappedType.codec.encode(value)

@@ -7,36 +7,42 @@ import type * as $Scalar from './Scalar.js'
 export namespace Root {
   export type Query = $.Output.ObjectQuery<{
     continent: $.Field<
+      'continent',
       $.Output.Nullable<Object.Continent>,
       $.Args<{
         code: $.Input.Field<$Scalar.ID>
       }, false>
     >
     continents: $.Field<
+      'continents',
       $.Output.List<Object.Continent>,
       $.Args<{
         filter: $.Input.Field<$.Input.Nullable<InputObject.ContinentFilterInput>>
       }, true>
     >
     countries: $.Field<
+      'countries',
       $.Output.List<Object.Country>,
       $.Args<{
         filter: $.Input.Field<$.Input.Nullable<InputObject.CountryFilterInput>>
       }, true>
     >
     country: $.Field<
+      'country',
       $.Output.Nullable<Object.Country>,
       $.Args<{
         code: $.Input.Field<$Scalar.ID>
       }, false>
     >
     language: $.Field<
+      'language',
       $.Output.Nullable<Object.Language>,
       $.Args<{
         code: $.Input.Field<$Scalar.ID>
       }, false>
     >
     languages: $.Field<
+      'languages',
       $.Output.List<Object.Language>,
       $.Args<{
         filter: $.Input.Field<$.Input.Nullable<InputObject.LanguageFilterInput>>
@@ -88,51 +94,52 @@ export namespace Interface {
 // ------------------------------------------------------------ //
 export namespace Object {
   export type Continent = $.Object$2<'Continent', {
-    code: $.Field<$Scalar.ID, null>
-    countries: $.Field<$.Output.List<Object.Country>, null>
-    name: $.Field<$Scalar.String, null>
+    code: $.Field<'code', $Scalar.ID, null>
+    countries: $.Field<'countries', $.Output.List<Object.Country>, null>
+    name: $.Field<'name', $Scalar.String, null>
   }>
 
   export type Country = $.Object$2<'Country', {
-    awsRegion: $.Field<$Scalar.String, null>
-    capital: $.Field<$.Output.Nullable<$Scalar.String>, null>
-    code: $.Field<$Scalar.ID, null>
-    continent: $.Field<Object.Continent, null>
-    currencies: $.Field<$.Output.List<$Scalar.String>, null>
-    currency: $.Field<$.Output.Nullable<$Scalar.String>, null>
-    emoji: $.Field<$Scalar.String, null>
-    emojiU: $.Field<$Scalar.String, null>
-    languages: $.Field<$.Output.List<Object.Language>, null>
+    awsRegion: $.Field<'awsRegion', $Scalar.String, null>
+    capital: $.Field<'capital', $.Output.Nullable<$Scalar.String>, null>
+    code: $.Field<'code', $Scalar.ID, null>
+    continent: $.Field<'continent', Object.Continent, null>
+    currencies: $.Field<'currencies', $.Output.List<$Scalar.String>, null>
+    currency: $.Field<'currency', $.Output.Nullable<$Scalar.String>, null>
+    emoji: $.Field<'emoji', $Scalar.String, null>
+    emojiU: $.Field<'emojiU', $Scalar.String, null>
+    languages: $.Field<'languages', $.Output.List<Object.Language>, null>
     name: $.Field<
+      'name',
       $Scalar.String,
       $.Args<{
         lang: $.Input.Field<$.Input.Nullable<$Scalar.String>>
       }, true>
     >
-    native: $.Field<$Scalar.String, null>
-    phone: $.Field<$Scalar.String, null>
-    phones: $.Field<$.Output.List<$Scalar.String>, null>
-    states: $.Field<$.Output.List<Object.State>, null>
-    subdivisions: $.Field<$.Output.List<Object.Subdivision>, null>
+    native: $.Field<'native', $Scalar.String, null>
+    phone: $.Field<'phone', $Scalar.String, null>
+    phones: $.Field<'phones', $.Output.List<$Scalar.String>, null>
+    states: $.Field<'states', $.Output.List<Object.State>, null>
+    subdivisions: $.Field<'subdivisions', $.Output.List<Object.Subdivision>, null>
   }>
 
   export type Language = $.Object$2<'Language', {
-    code: $.Field<$Scalar.ID, null>
-    name: $.Field<$Scalar.String, null>
-    native: $.Field<$Scalar.String, null>
-    rtl: $.Field<$Scalar.Boolean, null>
+    code: $.Field<'code', $Scalar.ID, null>
+    name: $.Field<'name', $Scalar.String, null>
+    native: $.Field<'native', $Scalar.String, null>
+    rtl: $.Field<'rtl', $Scalar.Boolean, null>
   }>
 
   export type State = $.Object$2<'State', {
-    code: $.Field<$.Output.Nullable<$Scalar.String>, null>
-    country: $.Field<Object.Country, null>
-    name: $.Field<$Scalar.String, null>
+    code: $.Field<'code', $.Output.Nullable<$Scalar.String>, null>
+    country: $.Field<'country', Object.Country, null>
+    name: $.Field<'name', $Scalar.String, null>
   }>
 
   export type Subdivision = $.Object$2<'Subdivision', {
-    code: $.Field<$Scalar.ID, null>
-    emoji: $.Field<$.Output.Nullable<$Scalar.String>, null>
-    name: $.Field<$Scalar.String, null>
+    code: $.Field<'code', $Scalar.ID, null>
+    emoji: $.Field<'emoji', $.Output.Nullable<$Scalar.String>, null>
+    name: $.Field<'name', $Scalar.String, null>
   }>
 }
 // ------------------------------------------------------------ //
