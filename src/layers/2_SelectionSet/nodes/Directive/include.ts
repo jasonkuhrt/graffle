@@ -5,7 +5,7 @@ import type { Definition } from './$types.js'
 export const Include: Definition = {
   name: `include`,
   type: Schema.Directives.standardDirectivesByName.include,
-  normalizeArgs: (input: ArgsInput): Args => {
+  normalizeArguments: (input: ArgsInput): Args => {
     return typeof input === `boolean`
       ? expandShortHand(input)
       : shallowMergeDefaults(
@@ -25,9 +25,6 @@ const expandShortHand = (value: ArgsInputShortHand): Args => {
   }
 }
 
-/**
- * https://spec.graphql.org/draft/#sec--include
- */
 export type ArgsInput = ArgsInputShortHand | ArgsInputLonghand
 
 type ArgsInputShortHand = boolean
@@ -41,9 +38,6 @@ export const argumentDefaults: Args = {
 }
 
 export interface Field {
-  /**
-   * https://spec.graphql.org/draft/#sec--include
-   */
   $include?: ArgsInput
 }
 

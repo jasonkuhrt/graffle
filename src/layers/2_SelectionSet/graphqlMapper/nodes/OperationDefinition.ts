@@ -13,12 +13,10 @@ export const toGraphQLOperationDefinition: GraphQLNodeMapper<
   operation,
 ) => {
   const type = getOptionalNullablePropertyOrThrow(context.schema.Root, operation.rootType)
-  const selectionSet = toGraphQLSelectionSet(context, location, type, operation.selectionSet)
+  const selectionSet = toGraphQLSelectionSet(context, location, type, operation.selectionSet, undefined)
 
   const name = operation.name
-    ? Nodes.Name({
-      value: operation.name,
-    })
+    ? Nodes.Name({ value: operation.name })
     : undefined
 
   return Nodes.OperationDefinition({

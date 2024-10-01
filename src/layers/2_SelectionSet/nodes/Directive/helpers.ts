@@ -8,14 +8,10 @@ export const definitionsByName = {
 
 export const keyPrefix = `$`
 
-export const getSelectDirective = (field: Record<string, any>, directiveName: string) => {
-  const key = `${keyPrefix}${directiveName}`
-
-  if (field[key] !== undefined) {
-    return {
-      argumentsInput: field[key],
-    }
+export const parseKey = (key: string): string | null => {
+  if (key.startsWith(keyPrefix)) {
+    return key.slice(keyPrefix.length)
   }
 
-  return undefined
+  return null
 }

@@ -4,12 +4,12 @@ import type { Include, Skip } from './_.js'
 export interface Definition {
   name: string
   type: Schema.Directives.Directive
-  normalizeArgs: (args: any) => object
+  normalizeArguments: (args: any) => Record<string, any>
 }
 
 export interface DirectiveLike {
   name: string
-  args: unknown
+  arguments: Record<string, any>
 }
 
 /**

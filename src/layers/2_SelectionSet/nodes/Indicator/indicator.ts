@@ -2,9 +2,13 @@ import type { Simplify } from 'type-fest'
 import type { UnionExpanded } from '../../../../lib/prelude.js'
 import type { Directive } from '../../_.js'
 import { isNegativeIndicator, type Negative } from './negative.js'
-import { type Positive } from './positive.js'
+import { isPositiveIndicator, type Positive } from './positive.js'
 
 export type Indicator = UnionExpanded<Positive | Negative>
+
+export const isIndicator = (v: any): v is Indicator => {
+  return isPositiveIndicator(v) || isNegativeIndicator(v)
+}
 
 export type NoArgsIndicator = Indicator | Directive.$Fields
 

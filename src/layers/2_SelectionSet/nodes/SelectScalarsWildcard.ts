@@ -1,5 +1,7 @@
 import type { Indicator } from './_.js'
 
+export const key = `$scalars`
+
 export type SelectScalarsWildcard = {
   $scalars: Indicator.Positive
 }

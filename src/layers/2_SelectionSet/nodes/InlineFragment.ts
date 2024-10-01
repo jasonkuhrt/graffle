@@ -30,7 +30,7 @@ export const normalizeInlineFragment = (
   return [selectInlineFragment] as AnySelectionSet[]
 }
 
-export const parseInlineFragmentKey = (key: string) => {
+export const parseKey = (key: string) => {
   const match = key.match(inlineFragmentKeyPattern)
 
   if (!match) {
