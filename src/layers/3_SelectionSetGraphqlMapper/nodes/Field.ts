@@ -1,6 +1,6 @@
 import { Nodes } from '../../../lib/graphql-plus/_Nodes.js'
 import type { Schema } from '../../1_Schema/__.js'
-import { GraffleNodes } from '../_GraffleNodes.js'
+import { Select } from '../../2_Select/__.js'
 import type { Field } from '../types.js'
 import type { GraphQLNodeMapper } from '../types.js'
 import { type SelectionSetContext, toGraphQLSelectionSet } from './SelectionSet.js'
@@ -15,7 +15,7 @@ export const toGraphQLField: GraphQLNodeMapper<Nodes.FieldNode, [type: Schema.Ou
     ? Nodes.Name({ value: field.alias })
     : undefined
 
-  if (GraffleNodes.Indicator.isPositiveIndicator(field.value)) {
+  if (Select.Indicator.isPositiveIndicator(field.value)) {
     return Nodes.Field({
       name: Nodes.Name({ value: field.name }),
       alias,

@@ -1,7 +1,7 @@
 import type { UnionToTuple } from 'type-fest'
 import type { IsTupleMultiple } from '../../../lib/prelude.js'
 import type { Schema } from '../../1_Schema/__.js'
-import { SelectionSet } from '../../2_SelectionSet/__.js'
+import { Select } from '../../2_Select/__.js'
 import type { ResultSet } from '../../3_ResultSet/__.js'
 import type { InterfaceTypedRequestContext } from '../client.js'
 import type { ResolveOutputReturnRootType } from '../handleOutput.js'
@@ -11,8 +11,8 @@ import type { AddTypenameToSelectedRootTypeResultFields, Config } from '../Setti
 export type DocumentRunner<
   $$Config extends Config,
   $$Index extends Schema.Index,
-  $$Document extends SelectionSet.Document.SomeDocument,
-  $$Name extends SelectionSet.Document.GetOperationNames<$$Document> = SelectionSet.Document.GetOperationNames<$$Document>
+  $$Document extends Select.Document.SomeDocument,
+  $$Name extends Select.Document.GetOperationNames<$$Document> = Select.Document.GetOperationNames<$$Document>
 > = {
   run: <
     $Params extends (IsTupleMultiple<UnionToTuple<$$Name>> extends true ? [name: $$Name] : []),
@@ -26,11 +26,11 @@ export type DocumentRunner<
           AddTypenameToSelectedRootTypeResultFields<
             $$Config,
             $$Index,
-            SelectionSet.Document.GetRootTypeNameOfOperation<$$Document, $Name>,
-            SelectionSet.Document.GetOperation<$$Document, $Name>
+            Select.Document.GetRootTypeNameOfOperation<$$Document, $Name>,
+            Select.Document.GetOperation<$$Document, $Name>
           >,
           $$Index,
-          SelectionSet.Document.GetRootTypeNameOfOperation<$$Document, $Name>
+          Select.Document.GetRootTypeNameOfOperation<$$Document, $Name>
         >
       >
     >
@@ -66,8 +66,8 @@ export type DocumentRunner<
 //       : TSError<'ValidateDocumentOperationNames', `One or more Invalid operation name in document: ${keyof { [K in keyof $Document & string as Schema.Named.NameParse<K> extends never ? K : never]: K }}`>
 
 export const createMethodDocument =
-  (context: InterfaceTypedRequestContext, executeDocument: any) => (document: SelectionSet.Document.DocumentObject) => {
-    const documentNormalized = SelectionSet.Document.normalizeOrThrow(document)
+  (context: InterfaceTypedRequestContext, executeDocument: any) => (document: Select.Document.DocumentObject) => {
+    const documentNormalized = Select.Document.normalizeOrThrow(document)
     return {
       run: async (maybeOperationName?: string) => {
         return await executeDocument(context, documentNormalized, maybeOperationName)

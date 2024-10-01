@@ -7,3 +7,5 @@ export * as InlineFragment from './InlineFragment.js'
 export * as SelectAlias from './SelectAlias.js'
 export * as SelectionSet from './selectionSet.js'
 export * as SelectScalarsWildcard from './SelectScalarsWildcard.js'
+// todo resolve this export
+export { type Bases } from './selectionSet.js'

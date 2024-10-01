@@ -1,6 +1,6 @@
 import type { Simplify } from 'type-fest'
-import type { UnionExpanded } from '../../../../lib/prelude.js'
-import type { Directive } from '../../_.js'
+import type { UnionExpanded } from '../../../lib/prelude.js'
+import type { Directive } from '../_.js'
 import { isNegativeIndicator, type Negative } from './negative.js'
 import { isPositiveIndicator, type Positive } from './positive.js'
 

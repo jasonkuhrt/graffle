@@ -5,7 +5,7 @@ import type {
   StandardScalarVariables,
 } from '../../lib/graphql-plus/graphql.js'
 import type { getRequestEncodeSearchParameters, postRequestEncodeBody } from '../../lib/graphqlHTTP.js'
-import type { SelectionSet } from '../2_SelectionSet/__.js'
+import type { Select } from '../2_Select/__.js'
 import type { InterfaceTypedRequestContext, RequestContext } from '../6_client/client.js'
 import type { Config } from '../6_client/Settings/Config.js'
 import type { CoreExchangeGetRequest, CoreExchangePostRequest } from '../6_client/transportHttp/request.js'
@@ -15,7 +15,7 @@ type InterfaceInput<TypedProperties = {}, RawProperties = {}> =
   | ({
     interface: InterfaceTyped
     context: InterfaceTypedRequestContext
-    document: SelectionSet.Document.DocumentNormalized
+    document: Select.Document.DocumentNormalized
     operationName?: string
   } & TypedProperties)
   | ({

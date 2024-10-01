@@ -35,27 +35,27 @@ export interface Query {
   /**
    * Select the `continent` field on the `Query` object. Its type is Object.
    */
-  continent?: Query.continent$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.continent>
+  continent?: Query.continent$Expanded | $Select.SelectAlias.SelectAlias<Query.continent>
   /**
    * Select the `continents` field on the `Query` object. Its type is Object.
    */
-  continents?: Query.continents$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.continents>
+  continents?: Query.continents$Expanded | $Select.SelectAlias.SelectAlias<Query.continents>
   /**
    * Select the `countries` field on the `Query` object. Its type is Object.
    */
-  countries?: Query.countries$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.countries>
+  countries?: Query.countries$Expanded | $Select.SelectAlias.SelectAlias<Query.countries>
   /**
    * Select the `country` field on the `Query` object. Its type is Object.
    */
-  country?: Query.country$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.country>
+  country?: Query.country$Expanded | $Select.SelectAlias.SelectAlias<Query.country>
   /**
    * Select the `language` field on the `Query` object. Its type is Object.
    */
-  language?: Query.language$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.language>
+  language?: Query.language$Expanded | $Select.SelectAlias.SelectAlias<Query.language>
   /**
    * Select the `languages` field on the `Query` object. Its type is Object.
    */
-  languages?: Query.languages$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Query.languages>
+  languages?: Query.languages$Expanded | $Select.SelectAlias.SelectAlias<Query.languages>
 
   /**
    * Inline fragments for field groups.
@@ -74,7 +74,7 @@ export interface Query {
    */
   __typename?:
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
-    | $SelectionSet.Nodes.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
+    | $Select.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 export interface Query$FragmentInline extends Query, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}
@@ -217,15 +217,15 @@ export interface Continent extends $SelectionSet.Bases.ObjectLike {
   /**
    * Select the `code` field on the `Continent` object. Its type is `ID` (a `Scalar`).
    */
-  code?: Continent.code$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Continent.code>
+  code?: Continent.code$Expanded | $Select.SelectAlias.SelectAlias<Continent.code>
   /**
    * Select the `countries` field on the `Continent` object. Its type is Object.
    */
-  countries?: Continent.countries$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Continent.countries>
+  countries?: Continent.countries$Expanded | $Select.SelectAlias.SelectAlias<Continent.countries>
   /**
    * Select the `name` field on the `Continent` object. Its type is `String` (a `Scalar`).
    */
-  name?: Continent.name$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Continent.name>
+  name?: Continent.name$Expanded | $Select.SelectAlias.SelectAlias<Continent.name>
 
   /**
    * Inline fragments for field groups.
@@ -244,7 +244,7 @@ export interface Continent extends $SelectionSet.Bases.ObjectLike {
    */
   __typename?:
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
-    | $SelectionSet.Nodes.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
+    | $Select.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 export interface Continent$FragmentInline extends Continent, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}
@@ -281,63 +281,63 @@ export interface Country extends $SelectionSet.Bases.ObjectLike {
   /**
    * Select the `awsRegion` field on the `Country` object. Its type is `String` (a `Scalar`).
    */
-  awsRegion?: Country.awsRegion$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Country.awsRegion>
+  awsRegion?: Country.awsRegion$Expanded | $Select.SelectAlias.SelectAlias<Country.awsRegion>
   /**
    * Select the `capital` field on the `Country` object. Its type is `String` (a `Scalar`).
    */
-  capital?: Country.capital$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Country.capital>
+  capital?: Country.capital$Expanded | $Select.SelectAlias.SelectAlias<Country.capital>
   /**
    * Select the `code` field on the `Country` object. Its type is `ID` (a `Scalar`).
    */
-  code?: Country.code$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Country.code>
+  code?: Country.code$Expanded | $Select.SelectAlias.SelectAlias<Country.code>
   /**
    * Select the `continent` field on the `Country` object. Its type is Object.
    */
-  continent?: Country.continent$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Country.continent>
+  continent?: Country.continent$Expanded | $Select.SelectAlias.SelectAlias<Country.continent>
   /**
    * Select the `currencies` field on the `Country` object. Its type is `String` (a `Scalar`).
    */
-  currencies?: Country.currencies$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Country.currencies>
+  currencies?: Country.currencies$Expanded | $Select.SelectAlias.SelectAlias<Country.currencies>
   /**
    * Select the `currency` field on the `Country` object. Its type is `String` (a `Scalar`).
    */
-  currency?: Country.currency$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Country.currency>
+  currency?: Country.currency$Expanded | $Select.SelectAlias.SelectAlias<Country.currency>
   /**
    * Select the `emoji` field on the `Country` object. Its type is `String` (a `Scalar`).
    */
-  emoji?: Country.emoji$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Country.emoji>
+  emoji?: Country.emoji$Expanded | $Select.SelectAlias.SelectAlias<Country.emoji>
   /**
    * Select the `emojiU` field on the `Country` object. Its type is `String` (a `Scalar`).
    */
-  emojiU?: Country.emojiU$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Country.emojiU>
+  emojiU?: Country.emojiU$Expanded | $Select.SelectAlias.SelectAlias<Country.emojiU>
   /**
    * Select the `languages` field on the `Country` object. Its type is Object.
    */
-  languages?: Country.languages$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Country.languages>
+  languages?: Country.languages$Expanded | $Select.SelectAlias.SelectAlias<Country.languages>
   /**
    * Select the `name` field on the `Country` object. Its type is `String` (a `Scalar`).
    */
-  name?: Country.name$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Country.name>
+  name?: Country.name$Expanded | $Select.SelectAlias.SelectAlias<Country.name>
   /**
    * Select the `native` field on the `Country` object. Its type is `String` (a `Scalar`).
    */
-  native?: Country.native$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Country.native>
+  native?: Country.native$Expanded | $Select.SelectAlias.SelectAlias<Country.native>
   /**
    * Select the `phone` field on the `Country` object. Its type is `String` (a `Scalar`).
    */
-  phone?: Country.phone$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Country.phone>
+  phone?: Country.phone$Expanded | $Select.SelectAlias.SelectAlias<Country.phone>
   /**
    * Select the `phones` field on the `Country` object. Its type is `String` (a `Scalar`).
    */
-  phones?: Country.phones$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Country.phones>
+  phones?: Country.phones$Expanded | $Select.SelectAlias.SelectAlias<Country.phones>
   /**
    * Select the `states` field on the `Country` object. Its type is Object.
    */
-  states?: Country.states$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Country.states>
+  states?: Country.states$Expanded | $Select.SelectAlias.SelectAlias<Country.states>
   /**
    * Select the `subdivisions` field on the `Country` object. Its type is Object.
    */
-  subdivisions?: Country.subdivisions$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Country.subdivisions>
+  subdivisions?: Country.subdivisions$Expanded | $Select.SelectAlias.SelectAlias<Country.subdivisions>
 
   /**
    * Inline fragments for field groups.
@@ -356,7 +356,7 @@ export interface Country extends $SelectionSet.Bases.ObjectLike {
    */
   __typename?:
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
-    | $SelectionSet.Nodes.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
+    | $Select.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 export interface Country$FragmentInline extends Country, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}
@@ -409,9 +409,9 @@ export namespace Country {
     }
   >
 
-  export type name$Expanded = $Utilities.UnionExpanded<$SelectionSet.Nodes.Indicator.Indicator | name$SelectionSet>
+  export type name$Expanded = $Utilities.UnionExpanded<$Select.Indicator.Indicator | name$SelectionSet>
 
-  export type name = $SelectionSet.Nodes.Indicator.Indicator | name$SelectionSet
+  export type name = $Select.Indicator.Indicator | name$SelectionSet
 
   export type native$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
 
@@ -449,19 +449,19 @@ export interface Language extends $SelectionSet.Bases.ObjectLike {
   /**
    * Select the `code` field on the `Language` object. Its type is `ID` (a `Scalar`).
    */
-  code?: Language.code$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Language.code>
+  code?: Language.code$Expanded | $Select.SelectAlias.SelectAlias<Language.code>
   /**
    * Select the `name` field on the `Language` object. Its type is `String` (a `Scalar`).
    */
-  name?: Language.name$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Language.name>
+  name?: Language.name$Expanded | $Select.SelectAlias.SelectAlias<Language.name>
   /**
    * Select the `native` field on the `Language` object. Its type is `String` (a `Scalar`).
    */
-  native?: Language.native$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Language.native>
+  native?: Language.native$Expanded | $Select.SelectAlias.SelectAlias<Language.native>
   /**
    * Select the `rtl` field on the `Language` object. Its type is `Boolean` (a `Scalar`).
    */
-  rtl?: Language.rtl$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Language.rtl>
+  rtl?: Language.rtl$Expanded | $Select.SelectAlias.SelectAlias<Language.rtl>
 
   /**
    * Inline fragments for field groups.
@@ -480,7 +480,7 @@ export interface Language extends $SelectionSet.Bases.ObjectLike {
    */
   __typename?:
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
-    | $SelectionSet.Nodes.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
+    | $Select.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 export interface Language$FragmentInline extends Language, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}
@@ -523,15 +523,15 @@ export interface State extends $SelectionSet.Bases.ObjectLike {
   /**
    * Select the `code` field on the `State` object. Its type is `String` (a `Scalar`).
    */
-  code?: State.code$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<State.code>
+  code?: State.code$Expanded | $Select.SelectAlias.SelectAlias<State.code>
   /**
    * Select the `country` field on the `State` object. Its type is Object.
    */
-  country?: State.country$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<State.country>
+  country?: State.country$Expanded | $Select.SelectAlias.SelectAlias<State.country>
   /**
    * Select the `name` field on the `State` object. Its type is `String` (a `Scalar`).
    */
-  name?: State.name$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<State.name>
+  name?: State.name$Expanded | $Select.SelectAlias.SelectAlias<State.name>
 
   /**
    * Inline fragments for field groups.
@@ -550,7 +550,7 @@ export interface State extends $SelectionSet.Bases.ObjectLike {
    */
   __typename?:
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
-    | $SelectionSet.Nodes.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
+    | $Select.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 export interface State$FragmentInline extends State, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}
@@ -587,15 +587,15 @@ export interface Subdivision extends $SelectionSet.Bases.ObjectLike {
   /**
    * Select the `code` field on the `Subdivision` object. Its type is `ID` (a `Scalar`).
    */
-  code?: Subdivision.code$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Subdivision.code>
+  code?: Subdivision.code$Expanded | $Select.SelectAlias.SelectAlias<Subdivision.code>
   /**
    * Select the `emoji` field on the `Subdivision` object. Its type is `String` (a `Scalar`).
    */
-  emoji?: Subdivision.emoji$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Subdivision.emoji>
+  emoji?: Subdivision.emoji$Expanded | $Select.SelectAlias.SelectAlias<Subdivision.emoji>
   /**
    * Select the `name` field on the `Subdivision` object. Its type is `String` (a `Scalar`).
    */
-  name?: Subdivision.name$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Subdivision.name>
+  name?: Subdivision.name$Expanded | $Select.SelectAlias.SelectAlias<Subdivision.name>
 
   /**
    * Inline fragments for field groups.
@@ -614,7 +614,7 @@ export interface Subdivision extends $SelectionSet.Bases.ObjectLike {
    */
   __typename?:
     | $SelectionSet.Indicator.NoArgsIndicator$Expanded
-    | $SelectionSet.Nodes.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
+    | $Select.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
 }
 
 export interface Subdivision$FragmentInline

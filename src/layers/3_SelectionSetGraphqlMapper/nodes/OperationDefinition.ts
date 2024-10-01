@@ -1,12 +1,12 @@
 import { Nodes } from '../../../lib/graphql-plus/_Nodes.js'
 import { getOptionalNullablePropertyOrThrow } from '../../../lib/prelude.js'
-import type { GraffleNodes } from '../_GraffleNodes.js'
+import type { Select } from '../../2_Select/__.js'
 import type { GraphQLNodeMapper } from '../types.js'
 import { toGraphQLSelectionSet } from './SelectionSet.js'
 
 export const toGraphQLOperationDefinition: GraphQLNodeMapper<
   Nodes.OperationDefinitionNode,
-  [operation: GraffleNodes.Document.OperationNormalized]
+  [operation: Select.Document.OperationNormalized]
 > = (
   context,
   location,

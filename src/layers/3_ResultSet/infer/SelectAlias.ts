@@ -1,6 +1,6 @@
 import type { mergeObjectArray, ValuesOrEmptyObject } from '../../../lib/prelude.js'
 import type { Schema } from '../../1_Schema/__.js'
-import type { SelectionSet } from '../../2_SelectionSet/__.js'
+import type { Select } from '../../2_Select/__.js'
 import type { InferField } from './Field.js'
 
 // dprint-ignore
@@ -12,7 +12,7 @@ export type InferSelectionSelectAlias<
   ValuesOrEmptyObject<
     {
       [
-        $Select in keyof $SelectionSet as $SelectionSet[$Select] extends SelectionSet.Nodes.SelectAlias.SelectAlias
+        $Select in keyof $SelectionSet as $SelectionSet[$Select] extends Select.SelectAlias.SelectAlias
 					? $Select
 					: never
       ]:
@@ -28,17 +28,17 @@ export type InferSelectionSelectAlias<
 
 // dprint-ignore
 export type InferSelectAlias<
-  $SelectAlias extends SelectionSet.Nodes.SelectAlias.SelectAlias,
+  $SelectAlias extends Select.SelectAlias.SelectAlias,
   $FieldName extends string,
   $Schema extends Schema.Index,
   $Node extends Schema.Output.Object$2,
 > =
-  $SelectAlias extends SelectionSet.Nodes.SelectAlias.SelectAliasOne      ? InferSelectAliasOne<$SelectAlias, $FieldName, $Schema, $Node> :
-  $SelectAlias extends SelectionSet.Nodes.SelectAlias.SelectAliasMultiple ? InferSelectAliasMultiple<$SelectAlias, $FieldName, $Schema, $Node> :
+  $SelectAlias extends Select.SelectAlias.SelectAliasOne      ? InferSelectAliasOne<$SelectAlias, $FieldName, $Schema, $Node> :
+  $SelectAlias extends Select.SelectAlias.SelectAliasMultiple ? InferSelectAliasMultiple<$SelectAlias, $FieldName, $Schema, $Node> :
                                                                             never
 
 type InferSelectAliasMultiple<
-  $SelectAliasMultiple extends SelectionSet.Nodes.SelectAlias.SelectAliasMultiple,
+  $SelectAliasMultiple extends Select.SelectAlias.SelectAliasMultiple,
   $FieldName extends string,
   $Schema extends Schema.Index,
   $Node extends Schema.Output.Object$2,
@@ -49,7 +49,7 @@ type InferSelectAliasMultiple<
 >
 
 type InferSelectAliasOne<
-  $SelectAliasOne extends SelectionSet.Nodes.SelectAlias.SelectAliasOne,
+  $SelectAliasOne extends Select.SelectAlias.SelectAliasOne,
   $FieldName extends string,
   $Schema extends Schema.Index,
   $Node extends Schema.Output.Object$2,

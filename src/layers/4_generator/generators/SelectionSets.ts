@@ -30,7 +30,7 @@ import {
   StandardScalarTypeTypeScriptMapping,
 } from '../../../lib/graphql-plus/graphql.js'
 import type { StandardScalarTypeNames } from '../../../lib/graphql-plus/graphql.js'
-import { SelectionSet } from '../../2_SelectionSet/__.js'
+import { Select } from '../../2_Select/__.js'
 import { createModuleGenerator } from '../helpers/moduleGenerator.js'
 import { createModuleGeneratorRunner } from '../helpers/moduleGeneratorRunner.js'
 import {
@@ -48,7 +48,7 @@ export const ModuleGeneratorSelectionSets = createModuleGenerator(
   ({ config, code }) => {
     code.push(``)
 
-    code.push(`import type { SelectionSet as $SelectionSet } from '${config.paths.imports.grafflePackage.schema}'`)
+    code.push(`import type { Select as $Select } from '${config.paths.imports.grafflePackage.schema}'`)
     code.push(`import type * as $Utilities from '${config.paths.imports.grafflePackage.utilitiesForGenerated}'`)
     if (hasCustomScalars(config.schema.typeMapByKind)) {
       code.push(`import type * as $Scalar from './${ModuleGeneratorScalar.name}.js'`)
@@ -113,9 +113,10 @@ const renderUnion = createModuleGeneratorRunner<{ node: GraphQLUnionType }>(
     code.push(`
       export interface ${renderName(node)} {
         ${
-      memberTypes.map((type) => `${SelectionSet.On.typeConditionPRefix}${type.name}?: ${renderName(type)}`).join(
-        `\n`,
-      )
+      memberTypes.map((type) => `${Select.InlineFragment.typeConditionPRefix}${type.name}?: ${renderName(type)}`)
+        .join(
+          `\n`,
+        )
     }
         ${Helpers.fragmentInlineField(node)}
         ${Helpers.__typenameField(`union`)}
@@ -159,7 +160,7 @@ const renderInterface = createModuleGeneratorRunner<{ node: GraphQLInterfaceType
     }).join(`\n`)
     const implementorTypes = getInterfaceImplementors(config.schema.typeMapByKind, node)
     const onTypesRendered = implementorTypes.map(type =>
-      Helpers.outputField(`${SelectionSet.On.typeConditionPRefix}${type.name}`, renderName(type))
+      Helpers.outputField(`${Select.InlineFragment.typeConditionPRefix}${type.name}`, renderName(type))
     ).join(
       ` \n `,
     )
@@ -174,7 +175,7 @@ const renderInterface = createModuleGeneratorRunner<{ node: GraphQLInterfaceType
     code.push(doc)
 
     code.push(`
-      export interface ${renderName(node)} extends $SelectionSet.Bases.ObjectLike {
+      export interface ${renderName(node)} extends $Select.Bases.ObjectLike {
         ${fieldsRendered}
         ${onTypesRendered}
         ${Helpers.fragmentInlineField(node)}
@@ -216,7 +217,7 @@ const renderObject = createModuleGeneratorRunner<{ node: GraphQLObjectType }>(
     }).join(`\n`)
 
     const isRootType = node.name in RootTypeName
-    const extendsClause = isRootType ? `` : `extends $SelectionSet.Bases.ObjectLike`
+    const extendsClause = isRootType ? `` : `extends $Select.Bases.ObjectLike`
 
     const doc = renderDocumentation(config, node)
     code.push(doc)
@@ -278,31 +279,31 @@ const renderField = createModuleGeneratorRunner<{ field: GraphQLField<any, any> 
         )
         if (argsAnalysis.isAllNullable) {
           code.push(
-            `export type ${nameRendered}$SelectionSet = $Utilities.Simplify<$SelectionSet.Bases.Base & { ${argsRendered} }>`,
+            `export type ${nameRendered}$SelectionSet = $Utilities.Simplify<$Select.Bases.Base & { ${argsRendered} }>`,
           )
           code.push(``)
           code.push(
             Helpers.type(
               `${nameRendered}$Expanded`,
-              `$Utilities.UnionExpanded<$SelectionSet.Nodes.Indicator.Indicator | ${nameRendered}$SelectionSet>`,
+              `$Utilities.UnionExpanded<$Select.Indicator.Indicator | ${nameRendered}$SelectionSet>`,
             ),
           )
           code.push(``)
           code.push(
-            Helpers.type(nameRendered, `$SelectionSet.Nodes.Indicator.Indicator | ${nameRendered}$SelectionSet`),
+            Helpers.type(nameRendered, `$Select.Indicator.Indicator | ${nameRendered}$SelectionSet`),
           )
           code.push(``)
         } else {
           // todo test that a directive can be passed with the intersection that otherwise cannot be.
-          code.push(Helpers.$interface(nameRendered, `$SelectionSet.Bases.Base`, argsRendered))
+          code.push(Helpers.$interface(nameRendered, `$Select.Bases.Base`, argsRendered))
           code.push(``)
           code.push(Helpers.type(`${nameRendered}$Expanded`, nameRendered))
           code.push(``)
         }
       } else {
-        code.push(Helpers.type(`${nameRendered}$Expanded`, `$SelectionSet.Indicator.NoArgsIndicator$Expanded`))
+        code.push(Helpers.type(`${nameRendered}$Expanded`, `$Select.Indicator.NoArgsIndicator$Expanded`))
         code.push(``)
-        code.push(Helpers.type(nameRendered, `$SelectionSet.Indicator.NoArgsIndicator`))
+        code.push(Helpers.type(nameRendered, `$Select.Indicator.NoArgsIndicator`))
         code.push(``)
       }
     } else {
@@ -397,7 +398,7 @@ namespace Helpers {
   }
 
   export const outputFieldAlisable = (name: string, type: string, aliasable: boolean = true) => {
-    const alias = aliasable ? `| $SelectionSet.Nodes.SelectAlias.SelectAlias<${type}>` : ``
+    const alias = aliasable ? `| $Select.SelectAlias.SelectAlias<${type}>` : ``
     return `${name}?: ${type}$Expanded${alias}`
   }
 
@@ -407,7 +408,7 @@ namespace Helpers {
   export const __typenameField = (kind: 'union' | 'interface' | 'object') => {
     return `
       ${__typenameDoc(kind)}
-      ${outputFieldAlisable(`__typename`, `$SelectionSet.Indicator.NoArgsIndicator`)}
+      ${outputFieldAlisable(`__typename`, `$Select.Indicator.NoArgsIndicator`)}
     `
   }
 
@@ -415,9 +416,7 @@ namespace Helpers {
 
   export const fragmentInlineInterface = (node: GraphQLObjectType | GraphQLUnionType | GraphQLInterfaceType) => {
     const name = `${renderName(node)}${fragmentInlineNameSuffix}`
-    return `export interface ${name} extends ${
-      renderName(node)
-    }, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}`
+    return `export interface ${name} extends ${renderName(node)}, $Select.Directive.$Groups.InlineFragment.Fields {}`
   }
 
   export const fragmentInlineField = (node: GraphQLObjectType | GraphQLUnionType | GraphQLInterfaceType) => {
@@ -429,7 +428,7 @@ namespace Helpers {
        
       @see https://spec.graphql.org/draft/#sec-Inline-Fragments
     `)
-    // interface Query$FragmentInline extends Query, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}
+    // interface Query$FragmentInline extends Query, $Select.Directive.$Groups.InlineFragment.Fields {}
 
     return `
       ${doc}

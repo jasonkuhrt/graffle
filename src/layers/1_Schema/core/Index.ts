@@ -3,6 +3,7 @@ import type { GlobalRegistry } from '../../4_generator/globalRegistry.js'
 import type { Hybrid } from '../Hybrid/__.js'
 import type { Output } from '../Output/__.js'
 
+// todo move this type to the generator module
 /**
  * A generic schema index type. Any particular schema index will be a subtype of this, with
  * additional specificity such as on objects where here `Record` is used.

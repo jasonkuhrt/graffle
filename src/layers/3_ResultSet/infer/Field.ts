@@ -1,13 +1,13 @@
 import type { Simplify } from 'type-fest'
 import type { TSError } from '../../../lib/TSError.js'
 import type { Schema } from '../../1_Schema/__.js'
-import type { SelectionSet } from '../../2_SelectionSet/__.js'
+import type { Select } from '../../2_Select/__.js'
 import type { InferInterface, InferObject, InferUnion } from './root.js'
 
 // dprint-ignore
 export type InferField<$SelectionSet, $Field extends Schema.SomeField, $Schema extends Schema.Index> =
   Simplify<
-    $SelectionSet extends SelectionSet.Directive.Include.FieldStates.Negative | SelectionSet.Directive.Skip.FieldStates.Positive ?
+    $SelectionSet extends Select.Directive.Include.FieldStates.Negative | Select.Directive.Skip.FieldStates.Positive ?
        null :
        (
           | FieldDirectiveInclude<$SelectionSet>
@@ -34,12 +34,12 @@ type InferFieldType<
 
 // dprint-ignore
 type FieldDirectiveInclude<$SelectionSet> =
-  $SelectionSet extends SelectionSet.Directive.Include.Field  ? $SelectionSet extends SelectionSet.Directive.Include.FieldStates.Positive ? never
+  $SelectionSet extends Select.Directive.Include.Field  ? $SelectionSet extends Select.Directive.Include.FieldStates.Positive ? never
 																																																																					: null
 																															: never
 
 // dprint-ignore
 type FieldDirectiveSkip<$SelectionSet> =
-  $SelectionSet extends SelectionSet.Directive.Skip.Field     ? $SelectionSet extends SelectionSet.Directive.Skip.FieldStates.Negative 	? never 
+  $SelectionSet extends Select.Directive.Skip.Field     ? $SelectionSet extends Select.Directive.Skip.FieldStates.Negative 	? never 
 																																																																				: null
 																															: never

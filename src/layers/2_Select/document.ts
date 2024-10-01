@@ -1,12 +1,12 @@
 import type { OperationTypeNode } from 'graphql'
-import { RootTypeName, RootTypeNameToOperationName } from '../../../lib/graphql-plus/graphql.js'
+import { RootTypeName, RootTypeNameToOperationName } from '../../lib/graphql-plus/graphql.js'
 import {
   type OperationType,
   type RootTypeNameMutation,
   type RootTypeNameQuery,
-} from '../../../lib/graphql-plus/graphql.js'
-import type { FirstNonUnknownNever, IsKeyInObjectOptional, Values } from '../../../lib/prelude.js'
-import type { SelectionSet } from '../__.js'
+} from '../../lib/graphql-plus/graphql.js'
+import type { FirstNonUnknownNever, IsKeyInObjectOptional, Values } from '../../lib/prelude.js'
+import type { Select } from './__.js'
 
 export type OperationName = string
 
@@ -14,8 +14,8 @@ export interface SomeDocumentOperation {
   [k: string]: object
 }
 export type DocumentObject = {
-  query?: Record<string, SelectionSet.AnySelectionSet>
-  mutation?: Record<string, SelectionSet.AnySelectionSet>
+  query?: Record<string, Select.SelectionSet.AnySelectionSet>
+  mutation?: Record<string, Select.SelectionSet.AnySelectionSet>
 }
 
 export interface SomeDocument {
@@ -56,7 +56,7 @@ export interface OperationNormalized {
   name: string | null
   type: OperationTypeNode
   rootType: RootTypeName
-  selectionSet: SelectionSet.AnySelectionSet
+  selectionSet: Select.SelectionSet.AnySelectionSet
 }
 
 export interface DocumentNormalized {
@@ -75,7 +75,7 @@ export const createDocumentNormalized = (document: DocumentNormalized) => docume
 
 export const createDocumentNormalizedFromRootTypeSelection = (
   rootTypeName: RootTypeName,
-  selectionSet: SelectionSet.AnySelectionSet,
+  selectionSet: Select.SelectionSet.AnySelectionSet,
 ) =>
   createDocumentNormalized({
     operations: {

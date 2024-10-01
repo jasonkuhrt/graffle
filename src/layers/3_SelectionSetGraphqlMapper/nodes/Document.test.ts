@@ -3,7 +3,7 @@ import { describe, expect, test } from 'vitest'
 import { db } from '../../../../tests/_/schemas/db.js'
 import { $Index as schemaIndex } from '../../../../tests/_/schemas/kitchen-sink/graffle/modules/SchemaRuntime.js'
 import type * as SelectionSets from '../../../../tests/_/schemas/kitchen-sink/graffle/modules/SelectionSets.js'
-import { SelectionSet } from '../../2_SelectionSet/__.js'
+import { Select } from '../../2_Select/__.js'
 import type { Context } from '../types.js'
 import { toGraphQLDocument } from './Document.js'
 
@@ -30,7 +30,7 @@ const testEachArguments = [
       //   initialInput: {} as any,
       // },
     }
-    const documentNormalized = SelectionSet.Nodes.Document.createDocumentNormalizedFromRootTypeSelection(
+    const documentNormalized = Select.Document.createDocumentNormalizedFromRootTypeSelection(
       `Query`,
       selectionSet as any,
     )

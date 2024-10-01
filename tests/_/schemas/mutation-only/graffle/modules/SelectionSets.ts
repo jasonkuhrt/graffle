@@ -1,4 +1,4 @@
-import type { SelectionSet as $SelectionSet } from '../../../../../../src/entrypoints/schema.js'
+import type { Select as $Select } from '../../../../../../src/entrypoints/schema.js'
 import type * as $Utilities from '../../../../../../src/entrypoints/utilities-for-generated.js'
 
 //
@@ -35,11 +35,11 @@ export interface Mutation {
   /**
    * Select the `id` field on the `Mutation` object. Its type is `ID` (a `Scalar`).
    */
-  id?: Mutation.id$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Mutation.id>
+  id?: Mutation.id$Expanded | $Select.SelectAlias.SelectAlias<Mutation.id>
   /**
    * Select the `idNonNull` field on the `Mutation` object. Its type is `ID` (a `Scalar`).
    */
-  idNonNull?: Mutation.idNonNull$Expanded | $SelectionSet.Nodes.SelectAlias.SelectAlias<Mutation.idNonNull>
+  idNonNull?: Mutation.idNonNull$Expanded | $Select.SelectAlias.SelectAlias<Mutation.idNonNull>
 
   /**
    * Inline fragments for field groups.
@@ -57,22 +57,22 @@ export interface Mutation {
    * @see https://graphql.org/learn/queries/#meta-fields
    */
   __typename?:
-    | $SelectionSet.Indicator.NoArgsIndicator$Expanded
-    | $SelectionSet.Nodes.SelectAlias.SelectAlias<$SelectionSet.Indicator.NoArgsIndicator>
+    | $Select.Indicator.NoArgsIndicator$Expanded
+    | $Select.SelectAlias.SelectAlias<$Select.Indicator.NoArgsIndicator>
 }
 
-export interface Mutation$FragmentInline extends Mutation, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}
+export interface Mutation$FragmentInline extends Mutation, $Select.Directive.$Groups.InlineFragment.Fields {}
 
 // ----------------------------------------| Fields Interfaces |
 
 export namespace Mutation {
-  export type id$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
+  export type id$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
-  export type id = $SelectionSet.Indicator.NoArgsIndicator
+  export type id = $Select.Indicator.NoArgsIndicator
 
-  export type idNonNull$Expanded = $SelectionSet.Indicator.NoArgsIndicator$Expanded
+  export type idNonNull$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
-  export type idNonNull = $SelectionSet.Indicator.NoArgsIndicator
+  export type idNonNull = $Select.Indicator.NoArgsIndicator
 }
 
 /**

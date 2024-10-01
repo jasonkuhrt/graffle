@@ -1,7 +1,7 @@
 import { AssertIsEqual, type ExcludeNull, type GetKeyOr, type StringKeyof } from '../../../lib/prelude.js'
 import type { TSError } from '../../../lib/TSError.js'
 import type { Schema } from '../../1_Schema/__.js'
-import type { SelectionSet } from '../../2_SelectionSet/__.js'
+import type { Select } from '../../2_Select/__.js'
 import type { InferField } from './Field.js'
 import type { InferSelectionSelectAlias } from './SelectAlias.js'
 
@@ -35,7 +35,7 @@ export type InferRoot<
 
 // dprint-ignore
 export type InferObject<$SelectionSet, $Schema extends Schema.Index, $Node extends Schema.Output.Object$2> =
-  SelectionSet.Nodes.SelectScalarsWildcard.IsSelectScalarsWildcard<$SelectionSet> extends true
+  Select.SelectScalarsWildcard.IsSelectScalarsWildcard<$SelectionSet> extends true
     // todo what about when scalars wildcard is combined with other fields like relations?
     ? InferSelectScalarsWildcard<$SelectionSet, $Schema,$Node>
     :
@@ -56,11 +56,11 @@ type InferSelectionNonSelectAlias<$SelectionSet , $Schema extends Schema.Index, 
 // dprint-ignore
 type PickSelectsPositiveIndicatorAndNotSelectAlias<$SelectionSet> = StringKeyof<{
   [
-    $Select in keyof $SelectionSet as $SelectionSet[$Select] extends SelectionSet.Nodes.Indicator.Negative
+    $FieldName in keyof $SelectionSet as $SelectionSet[$FieldName] extends Select.Indicator.Negative
       ? never
-      : $SelectionSet[$Select] extends any[]
+      : $SelectionSet[$FieldName] extends any[]
       ? never
-       : $Select
+       : $FieldName
   ]: 0
 }>
 
@@ -107,10 +107,10 @@ type InferInlineFragmentTypeConditional<$SelectionSet, $Node extends Schema.Outp
     ? InferObject<
         & GetKeyOr<
             $SelectionSet,
-            `${SelectionSet.Nodes.InlineFragment.TypeConditionalKeyPrefix}${$Node['fields']['__typename']['type']['type']}`,
+            `${Select.InlineFragment.TypeConditionalKeyPrefix}${$Node['fields']['__typename']['type']['type']}`,
             {}
           >
-        & SelectionSet.Nodes.InlineFragment.OmitInlineFragmentsWithTypeConditions<$SelectionSet>,
+        & Select.InlineFragment.OmitInlineFragmentsWithTypeConditions<$SelectionSet>,
         $Index,
         $Node
       >

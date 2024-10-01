@@ -1,7 +1,7 @@
 import { Nodes } from '../../../lib/graphql-plus/_Nodes.js'
 import { casesExhausted } from '../../../lib/prelude.js'
 import type { Schema } from '../../1_Schema/__.js'
-import { GraffleNodes } from '../_GraffleNodes.js'
+import { Select } from '../../2_Select/__.js'
 import type { GraphQLNodeMapper } from '../types.js'
 import { toGraphQLArgument } from './Argument.js'
 import { toGraphQLDirective } from './Directive.js'
@@ -23,7 +23,7 @@ export const toGraphQLSelectionSet: GraphQLNodeMapper<
   Nodes.SelectionSetNode,
   [
     type: Schema.Output.ObjectLike,
-    selectionSet: GraffleNodes.SelectionSet.AnySelectionSet,
+    selectionSet: Select.SelectionSet.AnySelectionSet,
     graphqlFieldProperties: SelectionSetContext | undefined,
   ]
 > = (
@@ -36,7 +36,7 @@ export const toGraphQLSelectionSet: GraphQLNodeMapper<
   const selections: Nodes.SelectionNode[] = []
 
   for (const key in selectionSet) {
-    const s = GraffleNodes.parseSelection(key, selectionSet[key])
+    const s = Select.parseSelection(key, selectionSet[key])
 
     switch (s.type) {
       case `Arguments`:

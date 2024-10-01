@@ -16,7 +16,7 @@ import { mergeRequestInit, searchParamsAppendAll } from '../../lib/http.js'
 import { casesExhausted, getOptionalNullablePropertyOrThrow, throwNull } from '../../lib/prelude.js'
 import { execute } from '../0_functions/execute.js'
 import type { Schema } from '../1_Schema/__.js'
-import { SelectionSet } from '../2_SelectionSet/__.js'
+import { Select } from '../2_Select/__.js'
 import { ResultSet } from '../3_ResultSet/__.js'
 import { SelectionSetGraphqlMapper } from '../3_SelectionSetGraphqlMapper/__.js'
 import type { GraffleExecutionResultVar } from '../6_client/client.js'
@@ -33,9 +33,9 @@ const injectTypenameOnResultFields = (
   input: {
     operationName: string | undefined
     schema: Schema.Index
-    document: SelectionSet.Nodes.Document.DocumentNormalized
+    document: Select.Document.DocumentNormalized
   },
-): SelectionSet.Nodes.Document.DocumentNormalized => {
+): Select.Document.DocumentNormalized => {
   const { document, operationName, schema } = input
   const operation = operationName ? document.operations[operationName] : Object.values(document.operations)[0]!
   if (!operation) {
@@ -53,7 +53,7 @@ const injectTypenameOnResultFields = (
 const injectTypenameOnResultFields_ = (
   input: {
     schema: Schema.Index
-    operation: SelectionSet.Nodes.Document.OperationNormalized
+    operation: Select.Document.OperationNormalized
   },
 ): void => {
   const { operation, schema } = input
@@ -62,7 +62,7 @@ const injectTypenameOnResultFields_ = (
     const isResultField = Boolean(schema.error.rootResultFields[operation.rootType][rootFieldName])
     if (!isResultField) continue
 
-    const field = SelectionSet.Nodes.parseSelection(rootFieldName, fieldValue)
+    const field = Select.parseSelection(rootFieldName, fieldValue)
 
     // todo test case for following todo
     // todo: handle inline fragments on the root type
@@ -76,7 +76,7 @@ const injectTypenameOnResultFields_ = (
         field.aliases.map(alias => {
           // todo test case for following todo
           // todo: handle inline fragments within the alias selection set
-          const selectionSet = alias[1] as SelectionSet.Nodes.SelectionSet.AnySelectionSet
+          const selectionSet = alias[1] as Select.SelectionSet.AnySelectionSet
           selectionSet[`__typename`] = true
         })
         break
@@ -298,7 +298,7 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
           }
         }
         case `typed`: {
-          const operation = SelectionSet.Document.getOperationOrThrow(input.document, input.operationName)
+          const operation = Select.Document.getOperationOrThrow(input.document, input.operationName)
           // todo optimize
           // 1. Generate a map of possible custom scalar paths (tree structure)
           // 2. When traversing the result, skip keys that are not in the map

@@ -1,6 +1,0 @@
-export * from './nodes/__.js'
-export type { Directive } from './nodes/Directive/__.js'
-export * as Document from './nodes/document.js'
-export * from './nodes/Indicator/__.js'
-export * as On from './nodes/InlineFragment.js'
-export * from './nodes/selectionSet.js'

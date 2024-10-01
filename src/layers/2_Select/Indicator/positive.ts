@@ -1,4 +1,4 @@
-import type { Values } from '../../../../lib/prelude.js'
+import type { Values } from '../../../lib/prelude.js'
 
 export const positiveIndicatorEnum = {
   true: true,

@@ -6,7 +6,7 @@ import { proxyGet } from '../../lib/prelude.js'
 import type { BaseInput_ } from '../0_functions/types.js'
 import { Schema } from '../1_Schema/__.js'
 import { readMaybeThunk } from '../1_Schema/core/helpers.js'
-import { SelectionSet } from '../2_SelectionSet/__.js'
+import { Select } from '../2_Select/__.js'
 import type { GlobalRegistry } from '../4_generator/globalRegistry.js'
 import { Core } from '../5_core/__.js'
 import { type InterfaceRaw, type TransportHttp } from '../5_core/types.js'
@@ -140,7 +140,7 @@ const createWithState = (
 
   const executeDocument = async (
     context: InterfaceTypedRequestContext,
-    document: SelectionSet.Document.DocumentNormalized,
+    document: Select.Document.DocumentNormalized,
     operationName?: string,
   ) => {
     const transport = state.input.schema instanceof GraphQLSchema ? `memory` : `http`
@@ -159,11 +159,11 @@ const createWithState = (
   const executeRootType = async (
     context: InterfaceTypedRequestContext,
     rootTypeName: RootTypeName,
-    rootTypeSelectionSet: SelectionSet.AnySelectionSet,
+    rootTypeSelectionSet: Select.SelectionSet.AnySelectionSet,
   ) => {
     return executeDocument(
       context,
-      SelectionSet.Document.createDocumentNormalizedFromRootTypeSelection(
+      Select.Document.createDocumentNormalizedFromRootTypeSelection(
         rootTypeName,
         rootTypeSelectionSet,
       ),
@@ -200,7 +200,7 @@ const createWithState = (
 
     const result = await executeRootType(context, rootTypeName, {
       [rootTypeFieldName]: rootTypeFieldSelectionSet,
-    } as SelectionSet.AnySelectionSet)
+    } as Select.SelectionSet.AnySelectionSet)
     if (result instanceof Error) return result
 
     return context.config.output.envelope.enabled
@@ -216,7 +216,7 @@ const createWithState = (
 
         if (key.startsWith(`$batch`)) {
           return async (selectionSetOrIndicator: SelectionSetOrIndicator) =>
-            executeRootType(context, rootTypeName, selectionSetOrIndicator as SelectionSet.AnySelectionSet)
+            executeRootType(context, rootTypeName, selectionSetOrIndicator as Select.SelectionSet.AnySelectionSet)
         } else {
           const fieldName = key
           return (selectionSetOrArgs: SelectionSetOrArgs) =>
