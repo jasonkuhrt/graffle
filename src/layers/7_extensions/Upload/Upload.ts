@@ -1,5 +1,5 @@
 import { createExtension } from '../../../entrypoints/main.js'
-import type { StandardScalarVariables } from '../../../lib/graphql.js'
+import type { StandardScalarVariables } from '../../../lib/graphql-plus/graphql.js'
 import { createBody } from './createBody.js'
 
 /**

@@ -1,4 +1,4 @@
-import { hasCustomScalars } from '../../../lib/graphql.js'
+import { hasCustomScalars } from '../../../lib/graphql-plus/graphql.js'
 import { createModuleGenerator } from '../helpers/moduleGenerator.js'
 import { typeTitle2 } from '../helpers/render.js'
 

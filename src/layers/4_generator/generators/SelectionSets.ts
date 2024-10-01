@@ -25,12 +25,14 @@ import {
   getNodeKind,
   getNodeNameAndKind,
   hasCustomScalars,
+  hasMutation,
+  hasQuery,
   isCustomScalarType,
   RootTypeName,
   StandardScalarTypeTypeScriptMapping,
-} from '../../../lib/graphql.js'
-import type { StandardScalarTypeNames } from '../../../lib/graphql.js'
-import { SelectionSet } from '../../2_SelectionSet/__.js'
+} from '../../../lib/graphql-plus/graphql.js'
+import type { StandardScalarTypeNames } from '../../../lib/graphql-plus/graphql.js'
+import { Select } from '../../2_Select/__.js'
 import { createModuleGenerator } from '../helpers/moduleGenerator.js'
 import { createModuleGeneratorRunner } from '../helpers/moduleGeneratorRunner.js'
 import {
@@ -48,11 +50,24 @@ export const ModuleGeneratorSelectionSets = createModuleGenerator(
   ({ config, code }) => {
     code.push(``)
 
-    code.push(`import type { SelectionSet as $SelectionSet } from '${config.paths.imports.grafflePackage.schema}'`)
+    code.push(`import type { Select as $Select } from '${config.paths.imports.grafflePackage.schema}'`)
     code.push(`import type * as $Utilities from '${config.paths.imports.grafflePackage.utilitiesForGenerated}'`)
     if (hasCustomScalars(config.schema.typeMapByKind)) {
       code.push(`import type * as $Scalar from './${ModuleGeneratorScalar.name}.js'`)
     }
+    code.push(``)
+
+    code.push(title1(`Document`))
+    code.push(``)
+    code.push(
+      `// Prefix with $ because this is not a schema type. A user could have a schema type named "Document" that this would conflict with.`,
+    )
+    code.push(
+      `export interface $Document {`,
+      hasQuery(config.schema.typeMapByKind) ? `query?: Record<string, Query>` : null,
+      hasMutation(config.schema.typeMapByKind) ? `mutation?: Record<string, Mutation>` : null,
+      `}`,
+    )
     code.push(``)
 
     const typesToRender = [
@@ -86,8 +101,6 @@ export const ModuleGeneratorSelectionSets = createModuleGenerator(
        */
     `)
     code.push(renderRefDefs({ config, nodes: typesToRender.flat() }))
-
-    // console.log(code.join(`\n`))
   },
 )
 
@@ -113,9 +126,10 @@ const renderUnion = createModuleGeneratorRunner<{ node: GraphQLUnionType }>(
     code.push(`
       export interface ${renderName(node)} {
         ${
-      memberTypes.map((type) => `${SelectionSet.On.prefix}${type.name}?: ${renderName(type)}`).join(
-        `\n`,
-      )
+      memberTypes.map((type) => `${Select.InlineFragment.typeConditionPRefix}${type.name}?: ${renderName(type)}`)
+        .join(
+          `\n`,
+        )
     }
         ${Helpers.fragmentInlineField(node)}
         ${Helpers.__typenameField(`union`)}
@@ -133,7 +147,7 @@ const renderEnum = createModuleGeneratorRunner<{ node: GraphQLEnumType }>(
     code.push(doc)
 
     const values = Object.values(node.getValues())
-    code.push(Helpers.type(renderName(node), values.map((value) => Code.quote(value.name)).join(` | `)))
+    code.push(Helpers.type(renderName(node), values.map((value) => Code.string(value.name)).join(` | `)))
   },
 )
 
@@ -159,7 +173,7 @@ const renderInterface = createModuleGeneratorRunner<{ node: GraphQLInterfaceType
     }).join(`\n`)
     const implementorTypes = getInterfaceImplementors(config.schema.typeMapByKind, node)
     const onTypesRendered = implementorTypes.map(type =>
-      Helpers.outputField(`${SelectionSet.On.prefix}${type.name}`, renderName(type))
+      Helpers.outputField(`${Select.InlineFragment.typeConditionPRefix}${type.name}`, renderName(type))
     ).join(
       ` \n `,
     )
@@ -174,7 +188,7 @@ const renderInterface = createModuleGeneratorRunner<{ node: GraphQLInterfaceType
     code.push(doc)
 
     code.push(`
-      export interface ${renderName(node)} extends $SelectionSet.Bases.ObjectLike {
+      export interface ${renderName(node)} extends $Select.Bases.ObjectLike {
         ${fieldsRendered}
         ${onTypesRendered}
         ${Helpers.fragmentInlineField(node)}
@@ -216,7 +230,7 @@ const renderObject = createModuleGeneratorRunner<{ node: GraphQLObjectType }>(
     }).join(`\n`)
 
     const isRootType = node.name in RootTypeName
-    const extendsClause = isRootType ? `` : `extends $SelectionSet.Bases.ObjectLike`
+    const extendsClause = isRootType ? `` : `extends $Select.Bases.ObjectLike`
 
     const doc = renderDocumentation(config, node)
     code.push(doc)
@@ -278,31 +292,31 @@ const renderField = createModuleGeneratorRunner<{ field: GraphQLField<any, any> 
         )
         if (argsAnalysis.isAllNullable) {
           code.push(
-            `export type ${nameRendered}$SelectionSet = $Utilities.Simplify<$SelectionSet.Bases.Base & { ${argsRendered} }>`,
+            `export type ${nameRendered}$SelectionSet = $Utilities.Simplify<$Select.Bases.Base & { ${argsRendered} }>`,
           )
           code.push(``)
           code.push(
             Helpers.type(
               `${nameRendered}$Expanded`,
-              `$Utilities.UnionExpanded<$SelectionSet.Indicator.ClientIndicator | ${nameRendered}$SelectionSet>`,
+              `$Utilities.UnionExpanded<$Select.Indicator.Indicator | ${nameRendered}$SelectionSet>`,
             ),
           )
           code.push(``)
           code.push(
-            Helpers.type(nameRendered, `$SelectionSet.Indicator.ClientIndicator | ${nameRendered}$SelectionSet`),
+            Helpers.type(nameRendered, `$Select.Indicator.Indicator | ${nameRendered}$SelectionSet`),
           )
           code.push(``)
         } else {
           // todo test that a directive can be passed with the intersection that otherwise cannot be.
-          code.push(Helpers.$interface(nameRendered, `$SelectionSet.Bases.Base`, argsRendered))
+          code.push(Helpers.$interface(nameRendered, `$Select.Bases.Base`, argsRendered))
           code.push(``)
           code.push(Helpers.type(`${nameRendered}$Expanded`, nameRendered))
           code.push(``)
         }
       } else {
-        code.push(Helpers.type(`${nameRendered}$Expanded`, `$SelectionSet.Indicator.NoArgsIndicator$Expanded`))
+        code.push(Helpers.type(`${nameRendered}$Expanded`, `$Select.Indicator.NoArgsIndicator$Expanded`))
         code.push(``)
-        code.push(Helpers.type(nameRendered, `$SelectionSet.Indicator.NoArgsIndicator`))
+        code.push(Helpers.type(nameRendered, `$Select.Indicator.NoArgsIndicator`))
         code.push(``)
       }
     } else {
@@ -397,7 +411,7 @@ namespace Helpers {
   }
 
   export const outputFieldAlisable = (name: string, type: string, aliasable: boolean = true) => {
-    const alias = aliasable ? `| $SelectionSet.AliasInput<${type}>` : ``
+    const alias = aliasable ? `| $Select.SelectAlias.SelectAlias<${type}>` : ``
     return `${name}?: ${type}$Expanded${alias}`
   }
 
@@ -407,7 +421,7 @@ namespace Helpers {
   export const __typenameField = (kind: 'union' | 'interface' | 'object') => {
     return `
       ${__typenameDoc(kind)}
-      ${outputFieldAlisable(`__typename`, `$SelectionSet.Indicator.NoArgsIndicator`)}
+      ${outputFieldAlisable(`__typename`, `$Select.Indicator.NoArgsIndicator`)}
     `
   }
 
@@ -415,9 +429,7 @@ namespace Helpers {
 
   export const fragmentInlineInterface = (node: GraphQLObjectType | GraphQLUnionType | GraphQLInterfaceType) => {
     const name = `${renderName(node)}${fragmentInlineNameSuffix}`
-    return `export interface ${name} extends ${
-      renderName(node)
-    }, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}`
+    return `export interface ${name} extends ${renderName(node)}, $Select.Directive.$Groups.InlineFragment.Fields {}`
   }
 
   export const fragmentInlineField = (node: GraphQLObjectType | GraphQLUnionType | GraphQLInterfaceType) => {
@@ -429,7 +441,7 @@ namespace Helpers {
        
       @see https://spec.graphql.org/draft/#sec-Inline-Fragments
     `)
-    // interface Query$FragmentInline extends Query, $SelectionSet.Directive.$Groups.InlineFragment.Fields {}
+    // interface Query$FragmentInline extends Query, $Select.Directive.$Groups.InlineFragment.Fields {}
 
     return `
       ${doc}

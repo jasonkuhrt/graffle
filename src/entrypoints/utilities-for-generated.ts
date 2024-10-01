@@ -1,5 +1,5 @@
 export { type Simplify } from 'type-fest'
-export * from '../layers/2_SelectionSet/__.js'
+export * from '../layers/2_Select/__.js'
 export type {
   ConfigGetOutputError,
   ResolveOutputReturnRootField,

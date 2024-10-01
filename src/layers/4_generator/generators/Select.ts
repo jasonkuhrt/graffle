@@ -29,7 +29,7 @@ export const ModuleGeneratorSelect = createModuleGenerator(
     code.push(...config.schema.typeMapByKind.GraphQLRootType.map((type) => {
       return `export type ${type.name}<$SelectionSet extends SelectionSets.${
         renderName(type)
-      }> = ResultSet.Root<$SelectionSet, Index, '${type.name}'>`
+      }> = ResultSet.InferRoot<$SelectionSet, Index, '${type.name}'>`
     }))
 
     code.push(typeTitle(config, `Object`))
@@ -38,7 +38,7 @@ export const ModuleGeneratorSelect = createModuleGenerator(
     code.push(...config.schema.typeMapByKind.GraphQLObjectType.map((type) => {
       return `export type ${type.name}<$SelectionSet extends SelectionSets.${
         renderName(type)
-      }> = ResultSet.Object$<$SelectionSet, Index, Index['allTypes']['${type.name}']>`
+      }> = ResultSet.InferObject<$SelectionSet, Index, Index['allTypes']['${type.name}']>`
     }))
 
     code.push(typeTitle(config, `Union`))
@@ -46,7 +46,7 @@ export const ModuleGeneratorSelect = createModuleGenerator(
     code.push(...config.schema.typeMapByKind.GraphQLUnionType.map((type) => {
       return `export type ${type.name}<$SelectionSet extends SelectionSets.${
         renderName(type)
-      }> = ResultSet.Union<$SelectionSet, Index, Index['allTypes']['${type.name}']>`
+      }> = ResultSet.InferUnion<$SelectionSet, Index, Index['allTypes']['${type.name}']>`
     }))
 
     code.push(typeTitle(config, `Interface`))
@@ -54,7 +54,7 @@ export const ModuleGeneratorSelect = createModuleGenerator(
     code.push(...config.schema.typeMapByKind.GraphQLInterfaceType.map((type) => {
       return `export type ${type.name}<$SelectionSet extends SelectionSets.${
         renderName(type)
-      }> = ResultSet.Interface<$SelectionSet, Index, Index['allTypes']['${type.name}']>`
+      }> = ResultSet.InferInterface<$SelectionSet, Index, Index['allTypes']['${type.name}']>`
     }))
 
     code.push(`}`) // namespace Select

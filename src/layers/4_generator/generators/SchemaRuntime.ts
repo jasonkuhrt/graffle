@@ -25,14 +25,14 @@ import {
   isUnionType,
 } from 'graphql'
 import { Code } from '../../../lib/Code.js'
-import type { AnyClass, AnyGraphQLOutputField } from '../../../lib/graphql.js'
+import type { AnyClass, AnyGraphQLOutputField } from '../../../lib/graphql-plus/graphql.js'
 import {
   hasMutation,
   hasQuery,
   hasSubscription,
   isAllArgsNullable,
   isAllInputObjectFieldsNullable,
-} from '../../../lib/graphql.js'
+} from '../../../lib/graphql-plus/graphql.js'
 import type { Config } from '../config.js'
 import { createModuleGenerator } from '../helpers/moduleGenerator.js'
 import { ModuleGeneratorData } from './Data.js'
@@ -99,7 +99,7 @@ const index = (config: Config) => {
     export const $Index: Index = {
       name: Data.Name,
       RootTypesPresent: [${
-    config.schema.typeMapByKind.GraphQLRootType.map((_) => Code.quote(_.name)).join(`, `)
+    config.schema.typeMapByKind.GraphQLRootType.map((_) => Code.string(_.name)).join(`, `)
   }] as const,
       RootUnion: undefined as any, // Type level only.
       Root: {
@@ -213,8 +213,8 @@ const inputField = (config: Config, field: GraphQLInputField): string => {
 const outputField = (config: Config, field: AnyGraphQLOutputField): string => {
   const type = buildType(`output`, config, field.type)
   return field.args.length > 0
-    ? `$.field(${type}, ${renderArgs(config, field.args)})`
-    : `$.field(${type})`
+    ? `$.field(${Code.string(field.name)}, ${type}, ${renderArgs(config, field.args)})`
+    : `$.field(${Code.string(field.name)}, ${type})`
 }
 
 const renderArgs = (config: Config, args: readonly GraphQLArgument[]) => {

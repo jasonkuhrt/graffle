@@ -2,6 +2,7 @@ import type { HKT } from '../../entrypoints/utilities-for-generated.js'
 import type { Values } from '../../lib/prelude.js'
 import type { TSError } from '../../lib/TSError.js'
 import type { Schema } from '../1_Schema/__.js'
+import type { SchemaCustomScalarIndex } from './generators/schemaCustomScalarIndex.js'
 
 declare global {
   export namespace GraffleGlobalTypes {
@@ -15,6 +16,7 @@ type SomeSchema = {
   name: string
   index: Schema.Index
   customScalars: Record<string, Schema.Scalar.Scalar>
+  schemaCustomScalarIndex: SchemaCustomScalarIndex
   featureOptions: {
     schemaErrors: boolean
   }

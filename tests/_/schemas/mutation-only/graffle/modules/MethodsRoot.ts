@@ -29,7 +29,7 @@ export interface MutationMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'id',
-      ResultSet.Field<true, Index['Root']['Mutation']['fields']['id'], Index>
+      ResultSet.InferField<true, Index['Root']['Mutation']['fields']['id'], Index>
     >
   >
   idNonNull: () => Promise<
@@ -37,7 +37,7 @@ export interface MutationMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'idNonNull',
-      ResultSet.Field<true, Index['Root']['Mutation']['fields']['idNonNull'], Index>
+      ResultSet.InferField<true, Index['Root']['Mutation']['fields']['idNonNull'], Index>
     >
   >
 }

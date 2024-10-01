@@ -1,6 +1,6 @@
 import type { GraphQLFormattedError } from 'graphql'
 import { type ExecutionResult, GraphQLError } from 'graphql'
-import type { GraphQLRequestEncoded, StandardScalarVariables } from './graphql.js'
+import type { GraphQLRequestEncoded, StandardScalarVariables } from './graphql-plus/graphql.js'
 import { CONTENT_TYPE_GQL, CONTENT_TYPE_JSON } from './http.js'
 import { isRecordLikeObject } from './prelude.js'
 

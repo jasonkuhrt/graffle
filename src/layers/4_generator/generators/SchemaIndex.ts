@@ -1,6 +1,6 @@
 import { getNamedType, isUnionType } from 'graphql'
 import { Code } from '../../../lib/Code.js'
-import { hasMutation, hasQuery, hasSubscription } from '../../../lib/graphql.js'
+import { hasMutation, hasQuery, hasSubscription } from '../../../lib/graphql-plus/graphql.js'
 import { createModuleGenerator } from '../helpers/moduleGenerator.js'
 import { ModuleGeneratorData } from './Data.js'
 import { ModuleGeneratorMethodsRoot } from './MethodsRoot.js'
@@ -46,7 +46,7 @@ export const ModuleGeneratorSchemaIndex = createModuleGenerator(
         Code.objectFrom({
           name: `Data.Name`,
           RootTypesPresent: `[${
-            config.schema.typeMapByKind.GraphQLRootType.map((_) => Code.quote(_.name)).join(`, `)
+            config.schema.typeMapByKind.GraphQLRootType.map((_) => Code.string(_.name)).join(`, `)
           }]`,
           RootUnion: config.schema.typeMapByKind.GraphQLRootType.map(_ => `${SchemaBuildtimeNamespace}.Root.${_.name}`)
             .join(`|`),

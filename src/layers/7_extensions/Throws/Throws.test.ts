@@ -15,7 +15,7 @@ describe(`document`, () => {
         .run()
       await expect(result).rejects.toMatchInlineSnapshot(`[Error: Failure on field resultNonNull: ErrorOne]`)
     })
-    test(`without __typename`, async () => {
+    test(`without __typename still works, __typename is dynamically added at runtime`, async () => {
       const result = graffle.throws().document({ query: { x: { resultNonNull: { $: { case: `ErrorOne` } } } } }).run()
       await expect(result).rejects.toMatchInlineSnapshot(
         `[Error: Failure on field resultNonNull: ErrorOne]`,

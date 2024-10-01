@@ -40,30 +40,30 @@ export const Select = createSelect(Data.Name)
 export namespace Select {
   // Root Types
   // ----------
-  export type Query<$SelectionSet extends SelectionSets.Query> = ResultSet.Root<$SelectionSet, Index, 'Query'>
+  export type Query<$SelectionSet extends SelectionSets.Query> = ResultSet.InferRoot<$SelectionSet, Index, 'Query'>
   // Object Types
   // ------------
-  export type Continent<$SelectionSet extends SelectionSets.Continent> = ResultSet.Object$<
+  export type Continent<$SelectionSet extends SelectionSets.Continent> = ResultSet.InferObject<
     $SelectionSet,
     Index,
     Index['allTypes']['Continent']
   >
-  export type Country<$SelectionSet extends SelectionSets.Country> = ResultSet.Object$<
+  export type Country<$SelectionSet extends SelectionSets.Country> = ResultSet.InferObject<
     $SelectionSet,
     Index,
     Index['allTypes']['Country']
   >
-  export type Language<$SelectionSet extends SelectionSets.Language> = ResultSet.Object$<
+  export type Language<$SelectionSet extends SelectionSets.Language> = ResultSet.InferObject<
     $SelectionSet,
     Index,
     Index['allTypes']['Language']
   >
-  export type State<$SelectionSet extends SelectionSets.State> = ResultSet.Object$<
+  export type State<$SelectionSet extends SelectionSets.State> = ResultSet.InferObject<
     $SelectionSet,
     Index,
     Index['allTypes']['State']
   >
-  export type Subdivision<$SelectionSet extends SelectionSets.Subdivision> = ResultSet.Object$<
+  export type Subdivision<$SelectionSet extends SelectionSets.Subdivision> = ResultSet.InferObject<
     $SelectionSet,
     Index,
     Index['allTypes']['Subdivision']

@@ -1,5 +1,9 @@
 import { describe, expect, test } from 'vitest'
-import { type GraphQLRequestEncoded, type OperationTypeNameAll, parseGraphQLOperationType } from './graphql.js'
+import {
+  type GraphQLRequestEncoded,
+  type OperationTypeNameAll,
+  parseGraphQLOperationType,
+} from './graphql-plus/graphql.js'
 
 const operationNameOne = `one`
 const operationNameTwo = `two`

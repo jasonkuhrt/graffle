@@ -1,0 +1,847 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`alias > Query - { id: [ 'x', { 'undefined': true } ] } 1`] = `
+"
+{
+  "id": [
+    "x",
+    {
+      "$skip": true
+    }
+  ]
+}
+--------------
+{
+  x: id @skip(if: true)
+}
+"
+`;
+
+exports[`alias > Query - { id: [ 'x', true ] } 1`] = `
+"
+{
+  "id": [
+    "x",
+    true
+  ]
+}
+--------------
+{
+  x: id
+}
+"
+`;
+
+exports[`alias > Query - { id: [ [ 'x', true ], [ 'id2', true ] ] } 1`] = `
+"
+{
+  "id": [
+    [
+      "x",
+      true
+    ],
+    [
+      "id2",
+      true
+    ]
+  ]
+}
+--------------
+{
+  x: id
+  id2: id
+}
+"
+`;
+
+exports[`alias > Query - { object: [ 'x', { 'undefined': true, id: true } ] } 1`] = `
+"
+{
+  "object": [
+    "x",
+    {
+      "$skip": true,
+      "id": true
+    }
+  ]
+}
+--------------
+{
+  x: object @skip(if: true) {
+    id
+  }
+}
+"
+`;
+
+exports[`arguments > Query - { objectWithArgs: { '$': { id: '' }, id: true } } 1`] = `
+"
+{
+  "objectWithArgs": {
+    "$": {
+      "id": ""
+    },
+    "id": true
+  }
+}
+--------------
+{
+  objectWithArgs(id: "") {
+    id
+  }
+}
+"
+`;
+
+exports[`arguments > Query - { objectWithArgs: { '$': {}, id: true } } 1`] = `
+"
+{
+  "objectWithArgs": {
+    "$": {},
+    "id": true
+  }
+}
+--------------
+{
+  objectWithArgs {
+    id
+  }
+}
+"
+`;
+
+exports[`arguments > Query - { stringWithArgs: { '$': { boolean: true, float: 1 } } } 1`] = `
+"
+{
+  "stringWithArgs": {
+    "$": {
+      "boolean": true,
+      "float": 1
+    }
+  }
+}
+--------------
+{
+  stringWithArgs(boolean: true, float: 1)
+}
+"
+`;
+
+exports[`arguments > Query - { stringWithArgs: { '$': {} } } 1`] = `
+"
+{
+  "stringWithArgs": {
+    "$": {}
+  }
+}
+--------------
+{
+  stringWithArgs
+}
+"
+`;
+
+exports[`arguments > custom scalars > Query - arg field > arg field 1`] = `
+"
+{
+  "dateArg": {
+    "$": {
+      "date": "1970-01-01T00:00:00.000Z"
+    }
+  }
+}
+--------------
+{
+  dateArg(date: "1970-01-01T00:00:00.000Z")
+}
+"
+`;
+
+exports[`arguments > custom scalars > Query - arg field in list (null) > arg field in list (null) 1`] = `
+"
+{
+  "dateArgList": {
+    "$": {
+      "date": null
+    }
+  }
+}
+--------------
+{
+  dateArgList(date: null)
+}
+"
+`;
+
+exports[`arguments > custom scalars > Query - arg field in list > arg field in list 1`] = `
+"
+{
+  "dateArgList": {
+    "$": {
+      "date": [
+        "1970-01-01T00:00:00.000Z",
+        "1970-01-01T00:00:00.001Z"
+      ]
+    }
+  }
+}
+--------------
+{
+  dateArgList(date: ["1970-01-01T00:00:00.000Z", "1970-01-01T00:00:00.001Z"])
+}
+"
+`;
+
+exports[`arguments > custom scalars > Query - arg field in non-null > arg field in non-null 1`] = `
+"
+{
+  "dateArgNonNull": {
+    "$": {
+      "date": "1970-01-01T00:00:00.000Z"
+    }
+  }
+}
+--------------
+{
+  dateArgNonNull(date: "1970-01-01T00:00:00.000Z")
+}
+"
+`;
+
+exports[`arguments > custom scalars > Query - arg field in non-null list (with list) > arg field in non-null list (with list) 1`] = `
+"
+{
+  "dateArgNonNullList": {
+    "$": {
+      "date": [
+        "1970-01-01T00:00:00.000Z",
+        "1970-01-01T00:00:00.001Z"
+      ]
+    }
+  }
+}
+--------------
+{
+  dateArgNonNullList(
+    date: ["1970-01-01T00:00:00.000Z", "1970-01-01T00:00:00.001Z"]
+  )
+}
+"
+`;
+
+exports[`arguments > custom scalars > Query - arg field in non-null list (with null) > arg field in non-null list (with null) 1`] = `
+"
+{
+  "dateArgNonNullList": {
+    "$": {
+      "date": [
+        null,
+        "1970-01-01T00:00:00.000Z"
+      ]
+    }
+  }
+}
+--------------
+{
+  dateArgNonNullList(date: [null, "1970-01-01T00:00:00.000Z"])
+}
+"
+`;
+
+exports[`arguments > custom scalars > Query - arg field in non-null list non-null > arg field in non-null list non-null 1`] = `
+"
+{
+  "dateArgNonNullListNonNull": {
+    "$": {
+      "date": [
+        "1970-01-01T00:00:00.000Z",
+        "1970-01-01T00:00:00.001Z"
+      ]
+    }
+  }
+}
+--------------
+{
+  dateArgNonNullListNonNull(
+    date: ["1970-01-01T00:00:00.000Z", "1970-01-01T00:00:00.001Z"]
+  )
+}
+"
+`;
+
+exports[`arguments > custom scalars > Query - input object field > input object field 1`] = `
+"
+{
+  "dateArgInputObject": {
+    "$": {
+      "input": {
+        "idRequired": "",
+        "dateRequired": "1970-01-01T00:00:00.000Z",
+        "date": "1970-01-01T00:00:00.001Z"
+      }
+    }
+  }
+}
+--------------
+{
+  dateArgInputObject(
+    input: {idRequired: "", dateRequired: "1970-01-01T00:00:00.000Z", date: "1970-01-01T00:00:00.001Z"}
+  )
+}
+"
+`;
+
+exports[`arguments > custom scalars > Query - nested input object field > nested input object field 1`] = `
+"
+{
+  "InputObjectNested": {
+    "$": {
+      "input": {
+        "InputObject": {
+          "idRequired": "",
+          "dateRequired": "1970-01-01T00:00:00.000Z",
+          "date": "1970-01-01T00:00:00.001Z"
+        }
+      }
+    }
+  }
+}
+--------------
+{
+  InputObjectNested(
+    input: {InputObject: {idRequired: "", dateRequired: "1970-01-01T00:00:00.000Z", date: "1970-01-01T00:00:00.001Z"}}
+  )
+}
+"
+`;
+
+exports[`directive > $include > Query - { object: { 'undefined': { if: false }, id: true } } 1`] = `
+"
+{
+  "object": {
+    "$include": {
+      "if": false
+    },
+    "id": true
+  }
+}
+--------------
+{
+  object @include(if: false) {
+    id
+  }
+}
+"
+`;
+
+exports[`directive > $include > Query - { object: { 'undefined': { if: true }, id: true } } 1`] = `
+"
+{
+  "object": {
+    "$include": {
+      "if": true
+    },
+    "id": true
+  }
+}
+--------------
+{
+  object @include(if: true) {
+    id
+  }
+}
+"
+`;
+
+exports[`directive > $include > Query - { object: { 'undefined': { if: undefined }, id: true } } 1`] = `
+"
+{
+  "object": {
+    "$include": {},
+    "id": true
+  }
+}
+--------------
+{
+  object @include(if: true) {
+    id
+  }
+}
+"
+`;
+
+exports[`directive > $include > Query - { object: { 'undefined': {}, id: true } } 1`] = `
+"
+{
+  "object": {
+    "$include": {},
+    "id": true
+  }
+}
+--------------
+{
+  object @include(if: true) {
+    id
+  }
+}
+"
+`;
+
+exports[`directive > $include > Query - { object: { 'undefined': false, id: true } } 1`] = `
+"
+{
+  "object": {
+    "$include": false,
+    "id": true
+  }
+}
+--------------
+{
+  object @include(if: false) {
+    id
+  }
+}
+"
+`;
+
+exports[`directive > $include > Query - { object: { 'undefined': true, id: true } } 1`] = `
+"
+{
+  "object": {
+    "$include": true,
+    "id": true
+  }
+}
+--------------
+{
+  object @include(if: true) {
+    id
+  }
+}
+"
+`;
+
+exports[`directive > $include > Query - { object: { 'undefined': undefined, id: true } } 1`] = `
+"
+{
+  "object": {
+    "id": true
+  }
+}
+--------------
+{
+  object {
+    id
+  }
+}
+"
+`;
+
+exports[`directive > $skip > Query - { object: { 'undefined': { if: false }, id: true } } 1`] = `
+"
+{
+  "object": {
+    "$skip": {
+      "if": false
+    },
+    "id": true
+  }
+}
+--------------
+{
+  object @skip(if: false) {
+    id
+  }
+}
+"
+`;
+
+exports[`directive > $skip > Query - { object: { 'undefined': { if: true }, id: true } } 1`] = `
+"
+{
+  "object": {
+    "$skip": {
+      "if": true
+    },
+    "id": true
+  }
+}
+--------------
+{
+  object @skip(if: true) {
+    id
+  }
+}
+"
+`;
+
+exports[`directive > $skip > Query - { object: { 'undefined': { if: undefined }, id: true } } 1`] = `
+"
+{
+  "object": {
+    "$skip": {},
+    "id": true
+  }
+}
+--------------
+{
+  object @skip(if: true) {
+    id
+  }
+}
+"
+`;
+
+exports[`directive > $skip > Query - { object: { 'undefined': {}, id: true } } 1`] = `
+"
+{
+  "object": {
+    "$skip": {},
+    "id": true
+  }
+}
+--------------
+{
+  object @skip(if: true) {
+    id
+  }
+}
+"
+`;
+
+exports[`directive > $skip > Query - { object: { 'undefined': false, id: true } } 1`] = `
+"
+{
+  "object": {
+    "$skip": false,
+    "id": true
+  }
+}
+--------------
+{
+  object @skip(if: false) {
+    id
+  }
+}
+"
+`;
+
+exports[`directive > $skip > Query - { object: { 'undefined': true, id: true } } 1`] = `
+"
+{
+  "object": {
+    "$skip": true,
+    "id": true
+  }
+}
+--------------
+{
+  object @skip(if: true) {
+    id
+  }
+}
+"
+`;
+
+exports[`directive > $skip > Query - { object: { 'undefined': undefined, id: true } } 1`] = `
+"
+{
+  "object": {
+    "id": true
+  }
+}
+--------------
+{
+  object {
+    id
+  }
+}
+"
+`;
+
+exports[`enum > Query - { result: { '$': { case: 'Object1' }, __typename: true } } 1`] = `
+"
+{
+  "result": {
+    "$": {
+      "case": "Object1"
+    },
+    "__typename": true
+  }
+}
+--------------
+{
+  result(case: Object1) {
+    __typename
+  }
+}
+"
+`;
+
+exports[`inline fragment > field group > Query - directive > directive 1`] = `
+"
+{
+  "___": {
+    "__typename": true,
+    "$include": true
+  }
+}
+--------------
+{
+  ... @include(if: true) {
+    __typename
+  }
+}
+"
+`;
+
+exports[`inline fragment > field group > Query - interface > interface 1`] = `
+"
+{
+  "interface": {
+    "___": {
+      "__typename": true
+    }
+  }
+}
+--------------
+{
+  interface {
+    ... {
+      __typename
+    }
+  }
+}
+"
+`;
+
+exports[`inline fragment > field group > Query - multiple > multiple 1`] = `
+"
+{
+  "___": [
+    {
+      "__typename": true
+    },
+    {
+      "abcEnum": true
+    }
+  ]
+}
+--------------
+{
+  ... {
+    __typename
+  }
+  ... {
+    abcEnum
+  }
+}
+"
+`;
+
+exports[`inline fragment > field group > Query - one > one 1`] = `
+"
+{
+  "___": {
+    "__typename": true
+  }
+}
+--------------
+{
+  ... {
+    __typename
+  }
+}
+"
+`;
+
+exports[`inline fragment > field group > Query - union > union 1`] = `
+"
+{
+  "unionFooBar": {
+    "___": {
+      "__typename": true
+    }
+  }
+}
+--------------
+{
+  unionFooBar {
+    ... {
+      __typename
+    }
+  }
+}
+"
+`;
+
+exports[`inline fragment > type condition union > Query - __typename (no fragment) > __typename (no fragment) 1`] = `
+"
+{
+  "unionFooBar": {
+    "__typename": true
+  }
+}
+--------------
+{
+  unionFooBar {
+    __typename
+  }
+}
+"
+`;
+
+exports[`inline fragment > type condition union > Query - directive > directive 1`] = `
+"
+{
+  "unionFooBar": {
+    "___on_Bar": {
+      "$skip": true,
+      "int": true
+    }
+  }
+}
+--------------
+{
+  unionFooBar {
+    ... on Bar @skip(if: true) {
+      int
+    }
+  }
+}
+"
+`;
+
+exports[`inline fragment > type condition union > Query - scalar > scalar 1`] = `
+"
+{
+  "unionFooBar": {
+    "___on_Bar": {
+      "int": true
+    }
+  }
+}
+--------------
+{
+  unionFooBar {
+    ... on Bar {
+      int
+    }
+  }
+}
+"
+`;
+
+exports[`other > Query - { __typename: true } 1`] = `
+"
+{
+  "__typename": true
+}
+--------------
+{
+  __typename
+}
+"
+`;
+
+exports[`other > Query - { id: true, string: false } 1`] = `
+"
+{
+  "id": true,
+  "string": false
+}
+--------------
+{
+  id
+}
+"
+`;
+
+exports[`other > Query - { id: true, string: undefined } 1`] = `
+"
+{
+  "id": true
+}
+--------------
+{
+  id
+}
+"
+`;
+
+exports[`other > Query - { object: { id: true } } 1`] = `
+"
+{
+  "object": {
+    "id": true
+  }
+}
+--------------
+{
+  object {
+    id
+  }
+}
+"
+`;
+
+exports[`other > Query - { objectNested: { object: { string: true, id: true, int: { 'undefined': true } } } } 1`] = `
+"
+{
+  "objectNested": {
+    "object": {
+      "string": true,
+      "id": true,
+      "int": {
+        "$skip": true
+      }
+    }
+  }
+}
+--------------
+{
+  objectNested {
+    object {
+      string
+      id
+      int @skip(if: true)
+    }
+  }
+}
+"
+`;
+
+exports[`other > Query - { objectNested: { object: { string: true, id: true, int: false } } } 1`] = `
+"
+{
+  "objectNested": {
+    "object": {
+      "string": true,
+      "id": true,
+      "int": false
+    }
+  }
+}
+--------------
+{
+  objectNested {
+    object {
+      string
+      id
+    }
+  }
+}
+"
+`;
+
+exports[`other > Query - { string: true } 1`] = `
+"
+{
+  "string": true
+}
+--------------
+{
+  string
+}
+"
+`;

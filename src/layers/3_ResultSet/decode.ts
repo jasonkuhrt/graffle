@@ -1,31 +1,17 @@
 import type { ExecutionResult } from 'graphql'
-import { StandardScalarTypeNames } from '../../lib/graphql.js'
+import { StandardScalarTypeNames } from '../../lib/graphql-plus/graphql.js'
+import { assertObject } from '../../lib/prelude.js'
 import { assertArray, casesExhausted, mapValues } from '../../lib/prelude.js'
 import type { Object$2, Schema } from '../1_Schema/__.js'
 import { Output } from '../1_Schema/__.js'
 import { readMaybeThunk } from '../1_Schema/core/helpers.js'
-import type { SelectionSet } from '../2_SelectionSet/__.js'
-import type { GraphQLObject } from './helpers.js'
-import { assertGraphQLObject } from './helpers.js'
+import { Select } from '../2_Select/__.js'
 
-const isAliasInput = (selector: SelectionSet.Any): selector is SelectionSet.AliasInput => {
-  return Array.isArray(selector)
-}
-
-const isAliasInputOne = (aliasInput: SelectionSet.AliasInput): aliasInput is SelectionSet.AliasInputOne => {
-  return typeof aliasInput[0] === `string`
-}
-
-const normalizeAliasInput = (aliasInput: SelectionSet.AliasInput): SelectionSet.AliasInputMultiple => {
-  if (isAliasInputOne(aliasInput)) return [aliasInput]
-  return aliasInput
-}
-
-const getAliasesField = (fieldName: string, ss: SelectionSet.ObjectLike) => {
+const getAliasesField = (fieldName: string, ss: Select.SelectionSet.AnySelectionSet) => {
   for (const [schemaFieldName, selection] of Object.entries(ss)) {
-    if (isAliasInput(selection)) {
-      const aliasInputMultiple = normalizeAliasInput(selection)
-      for (const [aliasName, aliasSelectionSet] of aliasInputMultiple) {
+    if (Select.SelectAlias.isSelectAlias(selection)) {
+      const selectAliasMultiple = Select.SelectAlias.normalizeSelectAlias(selection)
+      for (const [aliasName, aliasSelectionSet] of selectAliasMultiple) {
         if (aliasName === fieldName) {
           return {
             fieldName: schemaFieldName,
@@ -43,10 +29,10 @@ const getAliasesField = (fieldName: string, ss: SelectionSet.ObjectLike) => {
 
 const getDataFieldInSelectionSet = (
   fieldName: string,
-  selectionSet: SelectionSet.ObjectLike,
+  selectionSet: Select.SelectionSet.AnySelectionSet,
 ): {
   fieldName: string
-  selectionSet: SelectionSet.AnyExceptAlias
+  selectionSet: Select.SelectionSet.AnyExceptAlias
 } => {
   const result = getDataFieldInSelectionSet_(fieldName, selectionSet)
   if (result) return result
@@ -58,10 +44,10 @@ const getDataFieldInSelectionSet = (
 
 const getDataFieldInSelectionSet_ = (
   fieldName: string,
-  selectionSet: SelectionSet.ObjectLike,
+  selectionSet: Select.SelectionSet.AnySelectionSet,
 ): null | {
   fieldName: string
-  selectionSet: SelectionSet.AnyExceptAlias
+  selectionSet: Select.SelectionSet.AnyExceptAlias
 } => {
   const fromDirect = selectionSet[fieldName]
   if (fromDirect) {
@@ -87,20 +73,20 @@ const getDataFieldInSelectionSet_ = (
   return null
 }
 
-const getInlineFragmentTypeCases = (selectionSet: SelectionSet.ObjectLike) => {
+const getInlineFragmentTypeCases = (selectionSet: Select.SelectionSet.AnySelectionSet) => {
   return Object.entries(selectionSet).map(([key, expression]) => {
     const typeName = key.match(/___on_(.+)/)?.[0]
     if (typeName) {
       return {
         typeName,
-        selectionSet: expression as SelectionSet.ObjectLike,
+        selectionSet: expression as Select.SelectionSet.AnySelectionSet,
       }
     }
     return null
   }).filter(_ => _ !== null)
 }
 
-const getInlineFragmentGroups = (selectionSet: SelectionSet.ObjectLike) => {
+const getInlineFragmentGroups = (selectionSet: Select.SelectionSet.AnySelectionSet) => {
   const maybeGroupOrGroups = selectionSet[`___`]
   if (!maybeGroupOrGroups) return []
   return Array.isArray(maybeGroupOrGroups) ? maybeGroupOrGroups : [maybeGroupOrGroups]
@@ -111,7 +97,7 @@ const getInlineFragmentGroups = (selectionSet: SelectionSet.ObjectLike) => {
  */
 export const decode = <$Data extends ExecutionResult['data']>(
   objectType: Schema.Object$2,
-  selectionSet: SelectionSet.ObjectLike,
+  selectionSet: Select.SelectionSet.AnySelectionSet,
   data: $Data,
 ): $Data => {
   if (!data) return data
@@ -131,7 +117,7 @@ export const decode = <$Data extends ExecutionResult['data']>(
 
 const decodeCustomScalarValue = (
   fieldType: Output.Any,
-  selectionSet: SelectionSet.Any,
+  selectionSet: Select.SelectionSet.Any,
   fieldValue: string | boolean | null | number | GraphQLObject | GraphQLObject[],
 ) => {
   if (fieldValue === null) return null
@@ -195,4 +181,16 @@ const decodeCustomScalarValue = (
   casesExhausted(schemaTypeWithoutNonNull)
 
   return fieldValue
+}
+
+// eslint-disable-next-line
+export function assertGraphQLObject(v: unknown): asserts v is GraphQLObject {
+  assertObject(v)
+  if (`__typename` in v && typeof v.__typename !== `string`) {
+    throw new Error(`Expected string __typename or undefined. Got: ${String(v.__typename)}`)
+  }
+}
+
+export type GraphQLObject = {
+  __typename?: string
 }
