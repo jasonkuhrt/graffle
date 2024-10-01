@@ -1,9 +1,7 @@
 import type { ValueNode } from 'graphql'
-
-import { Nodes } from '../../../../lib/graphql-plus/graphql.js'
-import { casesExhausted } from '../../../../lib/prelude.js'
-import { Schema } from '../../../1_Schema/__.js'
-import { readMaybeThunk } from '../../../1_Schema/core/helpers.js'
+import { Nodes } from '../../../lib/graphql-plus/_Nodes.js'
+import { casesExhausted } from '../../../lib/prelude.js'
+import { Schema } from '../../1_Schema/__.js'
 import type { GraphQLNodeMapper } from '../types.js'
 
 const scalarNameToGraphQLNodeKind = {
@@ -85,7 +83,7 @@ export const toGraphQLValue: GraphQLNodeMapper<ValueNode, [type: Schema.Input.An
     return Nodes.ObjectValue({
       // @ts-expect-error fixme
       fields: Object.entries(value).map(([fieldName, fieldValue]) => {
-        const fieldType = readMaybeThunk(unwrappedType.fields[fieldName].type)
+        const fieldType = Schema.readMaybeThunk(unwrappedType.fields[fieldName].type)
         return Nodes.ObjectField({
           name: {
             kind: Nodes.Kind.NAME,

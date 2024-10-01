@@ -1,11 +1,11 @@
 import { print } from 'graphql'
 import { describe, expect, test } from 'vitest'
-import { db } from '../../../../../tests/_/schemas/db.js'
-import { $Index as schemaIndex } from '../../../../../tests/_/schemas/kitchen-sink/graffle/modules/SchemaRuntime.js'
-import type * as SelectionSets from '../../../../../tests/_/schemas/kitchen-sink/graffle/modules/SelectionSets.js'
-import { toGraphQLDocument } from '../../_.js'
-import { createDocumentNormalizedFromRootTypeSelection } from '../../nodes/document.js'
+import { db } from '../../../../tests/_/schemas/db.js'
+import { $Index as schemaIndex } from '../../../../tests/_/schemas/kitchen-sink/graffle/modules/SchemaRuntime.js'
+import type * as SelectionSets from '../../../../tests/_/schemas/kitchen-sink/graffle/modules/SelectionSets.js'
+import { SelectionSet } from '../../2_SelectionSet/__.js'
 import type { Context } from '../types.js'
+import { toGraphQLDocument } from './Document.js'
 
 type CasesQuery = [selectionSet: SelectionSets.Query]
 
@@ -30,7 +30,10 @@ const testEachArguments = [
       //   initialInput: {} as any,
       // },
     }
-    const documentNormalized = createDocumentNormalizedFromRootTypeSelection(`Query`, selectionSet as any)
+    const documentNormalized = SelectionSet.Nodes.Document.createDocumentNormalizedFromRootTypeSelection(
+      `Query`,
+      selectionSet as any,
+    )
     const graphqlDocument = toGraphQLDocument(context, [], documentNormalized)
     const graphqlDocumentStringFormatted = print(graphqlDocument)
 

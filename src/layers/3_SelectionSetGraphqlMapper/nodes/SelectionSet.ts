@@ -1,7 +1,6 @@
-import { Nodes } from '../../../../lib/graphql-plus/_Nodes.js'
-import { casesExhausted } from '../../../../lib/prelude.js'
-import type { Schema } from '../../../1_Schema/__.js'
-import { type AnySelectionSet } from '../../nodes/selectionSet.js'
+import { Nodes } from '../../../lib/graphql-plus/_Nodes.js'
+import { casesExhausted } from '../../../lib/prelude.js'
+import type { Schema } from '../../1_Schema/__.js'
 import { GraffleNodes } from '../_GraffleNodes.js'
 import type { GraphQLNodeMapper } from '../types.js'
 import { toGraphQLArgument } from './Argument.js'
@@ -24,7 +23,7 @@ export const toGraphQLSelectionSet: GraphQLNodeMapper<
   Nodes.SelectionSetNode,
   [
     type: Schema.Output.ObjectLike,
-    selectionSet: AnySelectionSet,
+    selectionSet: GraffleNodes.SelectionSet.AnySelectionSet,
     graphqlFieldProperties: SelectionSetContext | undefined,
   ]
 > = (

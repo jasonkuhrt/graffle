@@ -1,6 +1,6 @@
-import type { Nodes } from '../../../lib/graphql-plus/_Nodes.js'
-import type { Schema } from '../../1_Schema/__.js'
-import type { Any } from '../nodes/selectionSet.js'
+import type { Nodes } from '../../lib/graphql-plus/_Nodes.js'
+import type { Schema } from '../1_Schema/__.js'
+import type { GraffleNodes } from './_GraffleNodes.js'
 
 export interface Context {
   schema: Schema.Index
@@ -60,5 +60,5 @@ export type GraphQLNodeMapper<$Return extends Nodes.$Any, $Args extends [...any[
 export interface Field {
   name: string
   alias: string | null
-  value: Any
+  value: GraffleNodes.SelectionSet.Any
 }

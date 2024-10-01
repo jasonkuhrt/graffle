@@ -1,8 +1,7 @@
+import { Nodes } from '../../../lib/graphql-plus/_Nodes.js'
+import type { Schema } from '../../1_Schema/__.js'
+import { GraffleNodes } from '../_GraffleNodes.js'
 import type { Field } from '../types.js'
-
-import { Nodes } from '../../../../lib/graphql-plus/_Nodes.js'
-import type { Schema } from '../../../1_Schema/__.js'
-import { Nodes as GraffleNodes } from '../../nodes/__.js'
 import type { GraphQLNodeMapper } from '../types.js'
 import { type SelectionSetContext, toGraphQLSelectionSet } from './SelectionSet.js'
 

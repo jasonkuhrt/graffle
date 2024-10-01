@@ -1,7 +1,6 @@
-import { Nodes } from '../../../../lib/graphql-plus/graphql.js'
-import { getFromEnumLooselyOrThrow } from '../../../../lib/prelude.js'
-import { SelectionSet } from '../../__.js'
-import type { GraffleNodes } from '../_GraffleNodes.js'
+import { Nodes } from '../../../lib/graphql-plus/_Nodes.js'
+import { getFromEnumLooselyOrThrow } from '../../../lib/prelude.js'
+import { GraffleNodes } from '../_GraffleNodes.js'
 import type { GraphQLNodeMapper } from '../types.js'
 import { toGraphQLValue } from './Value.js'
 
@@ -13,7 +12,7 @@ export const toGraphQLDirective: GraphQLNodeMapper<
   location,
   directive,
 ) => {
-  const definition = getFromEnumLooselyOrThrow(SelectionSet.Nodes.Directive.definitionsByName, directive.name)
+  const definition = getFromEnumLooselyOrThrow(GraffleNodes.Directive.definitionsByName, directive.name)
 
   const graphqlArguments = Object.entries(directive.arguments).map(
     ([argumentName, argumentValue]) => {

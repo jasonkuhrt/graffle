@@ -1,4 +1,3 @@
-export { toGraphQLDocument } from './graphqlMapper/nodes/Document.js'
 export * from './nodes/__.js'
 export type { Directive } from './nodes/Directive/__.js'
 export * as Document from './nodes/document.js'

@@ -1,6 +1,6 @@
-import { Nodes } from '../../../../lib/graphql-plus/_Nodes.js'
-import type { Schema } from '../../../1_Schema/__.js'
-import type { AnySelectionSet } from '../../_.js'
+import { Nodes } from '../../../lib/graphql-plus/_Nodes.js'
+import type { Schema } from '../../1_Schema/__.js'
+import type { GraffleNodes } from '../_GraffleNodes.js'
 import type { GraphQLNodeMapper } from '../types.js'
 import { type SelectionSetContext, toGraphQLSelectionSet } from './SelectionSet.js'
 
@@ -39,6 +39,6 @@ export const toGraphQLInlineFragment: GraphQLNodeMapper<
 }
 
 export interface InlineFragmentNormalized {
-  selectionSet: AnySelectionSet
+  selectionSet: GraffleNodes.SelectionSet.AnySelectionSet
   typeCondition: null | string
 }

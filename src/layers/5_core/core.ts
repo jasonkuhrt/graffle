@@ -18,6 +18,7 @@ import { execute } from '../0_functions/execute.js'
 import type { Schema } from '../1_Schema/__.js'
 import { SelectionSet } from '../2_SelectionSet/__.js'
 import { ResultSet } from '../3_ResultSet/__.js'
+import { SelectionSetGraphqlMapper } from '../3_SelectionSetGraphqlMapper/__.js'
 import type { GraffleExecutionResultVar } from '../6_client/client.js'
 import type { Config } from '../6_client/Settings/Config.js'
 import {
@@ -114,7 +115,7 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
         case `typed`: {
           // todo turn inputs into variables
           variables = undefined
-          document = print(SelectionSet.toGraphQLDocument(
+          document = print(SelectionSetGraphqlMapper.toGraphQLDocument(
             {
               schema: input.context.schemaIndex,
               captures: { customScalarOutputs: [], variables: [] },

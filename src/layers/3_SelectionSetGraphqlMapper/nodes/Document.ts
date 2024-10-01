@@ -1,9 +1,12 @@
-import { Nodes } from '../../../../lib/graphql-plus/_Nodes.js'
-import type { DocumentNormalized } from '../../nodes/document.js'
+import { Nodes } from '../../../lib/graphql-plus/_Nodes.js'
+import type { GraffleNodes } from '../_GraffleNodes.js'
 import type { GraphQLNodeMapper } from '../types.js'
 import { toGraphQLOperationDefinition } from './OperationDefinition.js'
 
-export const toGraphQLDocument: GraphQLNodeMapper<Nodes.DocumentNode, [document: DocumentNormalized]> = (
+export const toGraphQLDocument: GraphQLNodeMapper<
+  Nodes.DocumentNode,
+  [document: GraffleNodes.Document.DocumentNormalized]
+> = (
   context,
   location,
   document,
