@@ -90,20 +90,20 @@ export default defineConfig({
       md.use(tabsMarkdownPlugin)
     },
     codeTransformers: [
-      transformerTwoslash({
-        twoslashOptions: {
-          compilerOptions: {
-            moduleResolution: ModuleResolutionKind.Bundler,
-            module: ModuleKind.ESNext,
-            noErrorTruncation: true,
-          },
-          // Instead of automatically putting underlines over every property and variable,
-          // only do so for the ones we explicitly ask for in our markdown.
-          // shouldGetHoverInfo: (x) => {
-          //   return false
-          // },
-        },
-      }) as any,
+      // transformerTwoslash({
+      //   twoslashOptions: {
+      //     compilerOptions: {
+      //       moduleResolution: ModuleResolutionKind.Bundler,
+      //       module: ModuleKind.ESNext,
+      //       noErrorTruncation: true,
+      //     },
+      //     // Instead of automatically putting underlines over every property and variable,
+      //     // only do so for the ones we explicitly ask for in our markdown.
+      //     // shouldGetHoverInfo: (x) => {
+      //     //   return false
+      //     // },
+      //   },
+      // }) as any,
     ],
   },
   srcDir: './content',
