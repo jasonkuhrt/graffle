@@ -29,7 +29,7 @@ export type ParsedSelection =
   | {
     type: 'SelectionSet'
     name: string
-    selectionSet: SelectionSet.Any
+    selectionSet: SelectionSet.AnySelectionSet
   }
   | {
     type: 'Indicator'

@@ -15,6 +15,7 @@ import {
 import { mergeRequestInit, searchParamsAppendAll } from '../../lib/http.js'
 import { casesExhausted, getOptionalNullablePropertyOrThrow, throwNull } from '../../lib/prelude.js'
 import { execute } from '../0_functions/execute.js'
+import type { Schema } from '../1_Schema/__.js'
 import { SelectionSet } from '../2_SelectionSet/__.js'
 import { ResultSet } from '../3_ResultSet/__.js'
 import type { GraffleExecutionResultVar } from '../6_client/client.js'
@@ -26,6 +27,65 @@ import {
   type MethodModeGetReads,
 } from '../6_client/transportHttp/request.js'
 import { type HookMap, hookNamesOrderedBySequence, type HookSequence } from './hooks.js'
+
+const injectTypenameOnResultFields = (
+  input: {
+    operationName: string | undefined
+    schema: Schema.Index
+    document: SelectionSet.Nodes.Document.DocumentNormalized
+  },
+): SelectionSet.Nodes.Document.DocumentNormalized => {
+  const { document, operationName, schema } = input
+  const operation = operationName ? document.operations[operationName] : Object.values(document.operations)[0]!
+  if (!operation) {
+    throw new Error(`Operation not found`)
+  }
+
+  injectTypenameOnResultFields_({
+    operation,
+    schema,
+  })
+
+  return document
+}
+
+const injectTypenameOnResultFields_ = (
+  input: {
+    schema: Schema.Index
+    operation: SelectionSet.Nodes.Document.OperationNormalized
+  },
+): void => {
+  const { operation, schema } = input
+
+  for (const [rootFieldName, fieldValue] of Object.entries(operation.selectionSet)) {
+    const isResultField = Boolean(schema.error.rootResultFields[operation.rootType][rootFieldName])
+    if (!isResultField) continue
+
+    const field = SelectionSet.Nodes.parseSelection(rootFieldName, fieldValue)
+
+    // todo test case for following todo
+    // todo: handle inline fragments on the root type
+
+    switch (field.type) {
+      case `SelectionSet`: {
+        field.selectionSet[`__typename`] = true
+        continue
+      }
+      case `Alias`: {
+        field.aliases.map(alias => {
+          // todo test case for following todo
+          // todo: handle inline fragments within the alias selection set
+          const selectionSet = alias[1] as SelectionSet.Nodes.SelectionSet.AnySelectionSet
+          selectionSet[`__typename`] = true
+        })
+        break
+      }
+      default: {
+        throw new Error(`Unsupported selection set select type for a root field: ${field.type}`)
+      }
+    }
+  }
+}
 
 export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
   // If core errors caused by an abort error then raise it as a direct error.
@@ -60,7 +120,13 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
               captures: { customScalarOutputs: [], variables: [] },
             },
             [],
-            input.document,
+            input.context.config.output.errors.schema
+              ? injectTypenameOnResultFields({
+                operationName: input.operationName,
+                schema: input.context.schemaIndex,
+                document: input.document,
+              })
+              : input.document,
           ))
           break
         }
