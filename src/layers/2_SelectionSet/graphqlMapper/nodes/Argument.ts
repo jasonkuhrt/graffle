@@ -2,7 +2,7 @@ import { Nodes } from '../../../../lib/graphql-plus/_Nodes.js'
 import type { Schema } from '../../../1_Schema/__.js'
 import type { Nodes as GraffleNodes } from '../../nodes/__.js'
 import type { GraphQLNodeMapper } from '../types.js'
-import { toGraphQLValue } from './Value2.js'
+import { toGraphQLValue } from './Value.js'
 
 export const toGraphQLArgument: GraphQLNodeMapper<
   Nodes.ArgumentNode,

@@ -6,8 +6,8 @@ import { GraffleNodes } from '../_GraffleNodes.js'
 import type { GraphQLNodeMapper } from '../types.js'
 import { toGraphQLArgument } from './Argument.js'
 import { toGraphQLDirective } from './Directive.js'
-import { toGraphQLField } from './Field2.js'
-import { toGraphQLInlineFragment } from './InlineFragment2.js'
+import { toGraphQLField } from './Field.js'
+import { toGraphQLInlineFragment } from './InlineFragment.js'
 
 export type SelectionSetContext = {
   kind: `Field`

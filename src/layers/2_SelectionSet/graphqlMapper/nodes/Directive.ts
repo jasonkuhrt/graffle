@@ -3,7 +3,7 @@ import { getFromEnumLooselyOrThrow } from '../../../../lib/prelude.js'
 import { SelectionSet } from '../../__.js'
 import type { GraffleNodes } from '../_GraffleNodes.js'
 import type { GraphQLNodeMapper } from '../types.js'
-import { toGraphQLValue } from './Value2.js'
+import { toGraphQLValue } from './Value.js'
 
 export const toGraphQLDirective: GraphQLNodeMapper<
   Nodes.DirectiveNode,
