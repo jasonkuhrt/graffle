@@ -1,9 +1,9 @@
 import { Nodes } from '../../../../lib/graphql-plus/graphql.js'
 import { getFromEnumLooselyOrThrow } from '../../../../lib/prelude.js'
 import { SelectionSet } from '../../__.js'
+import type { GraffleNodes } from '../_GraffleNodes.js'
 import type { GraphQLNodeMapper } from '../types.js'
-import type { GraffleNodes } from './helpers.js'
-import { toGraphQLValue } from './value.js'
+import { toGraphQLValue } from './Value2.js'
 
 export const toGraphQLDirective: GraphQLNodeMapper<
   Nodes.DirectiveNode,

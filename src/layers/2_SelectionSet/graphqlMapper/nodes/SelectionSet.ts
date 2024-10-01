@@ -2,12 +2,12 @@ import { Nodes } from '../../../../lib/graphql-plus/_Nodes.js'
 import { casesExhausted } from '../../../../lib/prelude.js'
 import type { Schema } from '../../../1_Schema/__.js'
 import { type AnySelectionSet } from '../../nodes/selectionSet.js'
+import { GraffleNodes } from '../_GraffleNodes.js'
 import type { GraphQLNodeMapper } from '../types.js'
-import { toGraphQLArgument } from './arguments.js'
+import { toGraphQLArgument } from './Argument.js'
 import { toGraphQLDirective } from './Directive.js'
-import { toGraphQLField } from './field.js'
-import { GraffleNodes } from './helpers.js'
-import { toGraphQLInlineFragment } from './inlineFragment.js'
+import { toGraphQLField } from './Field2.js'
+import { toGraphQLInlineFragment } from './InlineFragment2.js'
 
 export type SelectionSetContext = {
   kind: `Field`
