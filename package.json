@@ -2,7 +2,7 @@
   "name": "graffle",
   "description": "Simple GraphQL Client for JavaScript. Minimal. Extensible. Type Safe. Runs everywhere.",
   "version": "0.0.0-dripip",
-  "packageManager": "pnpm@9.11.0",
+  "packageManager": "pnpm@9.12.0",
   "type": "module",
   "bin": {
     "graffle": "./build/cli/generate.js"
