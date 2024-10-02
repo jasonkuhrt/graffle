@@ -1,10 +1,10 @@
 import { Nodes, operationTypeNameToRootTypeName, type RootTypeName } from '../../lib/graphql-plus/graphql.js'
-import type { Schema } from '../1_Schema/__.js'
+import type { SchemaIndex } from '../4_generator/generators/SchemaIndex.js'
 
 export const injectTypenameOnRootResultFields = (
   { document, operationName, schema }: {
     operationName?: string | undefined
-    schema: Schema.Index
+    schema: SchemaIndex
     document: Nodes.DocumentNode
   },
 ): void => {
@@ -25,7 +25,7 @@ export const injectTypenameOnRootResultFields = (
 
 const injectTypenameOnRootResultFields_ = (
   { selectionSet, schema, rootTypeName }: {
-    schema: Schema.Index
+    schema: SchemaIndex
     rootTypeName: RootTypeName
     selectionSet: Nodes.SelectionSetNode
   },

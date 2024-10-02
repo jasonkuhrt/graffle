@@ -2,10 +2,11 @@ import type { Simplify } from 'type-fest'
 import type { TSError } from '../../../lib/TSError.js'
 import type { Schema } from '../../1_Schema/__.js'
 import type { Select } from '../../2_Select/__.js'
+import type { SchemaIndex } from '../../4_generator/generators/SchemaIndex.js'
 import type { InferInterface, InferObject, InferUnion } from './root.js'
 
 // dprint-ignore
-export type InferField<$SelectionSet, $Field extends Schema.SomeField, $Schema extends Schema.Index> =
+export type InferField<$SelectionSet, $Field extends Schema.SomeField, $Schema extends SchemaIndex> =
   Simplify<
     $SelectionSet extends Select.Directive.Include.FieldStates.Negative | Select.Directive.Skip.FieldStates.Positive ?
        null :
@@ -20,7 +21,7 @@ export type InferField<$SelectionSet, $Field extends Schema.SomeField, $Schema e
 type InferFieldType<
   $SelectionSet,
   $Type extends Schema.Output.Any,
-  $Schema extends Schema.Index
+  $Schema extends SchemaIndex
 > = 
   $Type extends Schema.__typename<infer $Value>             ? $Value :
   $Type extends Schema.Output.Nullable<infer $InnerType>    ? null | InferFieldType<$SelectionSet, $InnerType, $Schema> :

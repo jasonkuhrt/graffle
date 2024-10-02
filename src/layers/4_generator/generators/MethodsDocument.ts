@@ -7,12 +7,12 @@ import { ModuleGeneratorSelectionSets } from './SelectionSets.js'
 export const ModuleGeneratorMethodsDocument = createModuleGenerator(
   `MethodsDocument`,
   ({ config, code }) => {
-    code.push(`import type * as SelectionSets from './${ModuleGeneratorSelectionSets.name}.js'`)
-    code.push(`import type * as Utilities from '${config.paths.imports.grafflePackage.utilitiesForGenerated}'`)
-    code.push(`import type { Index } from './${ModuleGeneratorSchemaIndex.name}.js'`)
-    code.push(``)
+    code(`import type * as SelectionSets from './${ModuleGeneratorSelectionSets.name}.js'`)
+    code(`import type * as Utilities from '${config.paths.imports.grafflePackage.utilitiesForGenerated}'`)
+    code(`import type { Index } from './${ModuleGeneratorSchemaIndex.name}.js'`)
+    code()
 
-    code.push(`export interface Document<$Config extends Utilities.Config> {
+    code(`export interface Document<$Config extends Utilities.Config> {
 			<$Document>(document: Utilities.ExactNonEmpty<$Document, SelectionSets.$Document>): Utilities.DocumentRunner<
 				$Config,
 				Index,
@@ -21,9 +21,9 @@ export const ModuleGeneratorMethodsDocument = createModuleGenerator(
 				$Document
 			>
 		}`)
-    code.push(``)
+    code()
 
-    code.push(`
+    code(`
       export interface BuilderMethodsDocumentFn extends Utilities.HKT.Fn {
         // @ts-expect-error parameter is Untyped.
         return: Document<this['params']['config']>

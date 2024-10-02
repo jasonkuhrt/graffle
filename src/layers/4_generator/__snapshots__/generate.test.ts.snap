@@ -199,6 +199,7 @@ export namespace Select {
 
 exports[`schema2 6`] = `
 "/* eslint-disable */
+import type * as Utilities from '../../../../../../src/entrypoints/utilities-for-generated.js'
 import type * as Data from './Data.js'
 import type * as MethodsRoot from './MethodsRoot.js'
 import type * as Schema from './SchemaBuildtime.js'
@@ -264,6 +265,7 @@ export interface Index {
     Error: Schema.Interface.Error
     Interface: Schema.Interface.Interface
   }
+  customScalars: Utilities.SchemaIndexBase['customScalars']
   error: {
     objects: {
       ErrorOne: Schema.Object.ErrorOne
@@ -446,6 +448,9 @@ export namespace Root {
         input: $.Input.Field<InputObject.InputObject>
       }, false>
     >
+    /**
+     * The given arguments are reflected back as a JSON string.
+     */
     stringWithArgs: $.Field<
       'stringWithArgs',
       $.Output.Nullable<$Scalar.String>,
@@ -666,6 +671,7 @@ exports[`schema2 9`] = `
 "/* eslint-disable */
 import * as $ from '../../../../../../src/entrypoints/schema.js'
 import * as Data from './Data.js'
+import { $index as $customScalarsIndex } from './RuntimeCustomScalars.js'
 import * as $Scalar from './Scalar.js'
 import type { Index } from './SchemaIndex.js'
 export const $defaultSchemaUrl = undefined
@@ -1008,6 +1014,9 @@ export const $Index: Index = {
     DateInterface1,
     Error,
     Interface,
+  },
+  customScalars: {
+    input: $customScalarsIndex,
   },
   error: {
     objects: {

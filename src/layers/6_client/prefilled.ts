@@ -1,6 +1,6 @@
 import type { HasRequiredKeys } from 'type-fest'
 import type { Exact } from '../../lib/prelude.js'
-import type { Schema } from '../1_Schema/__.js'
+import type { SchemaIndex } from '../4_generator/generators/SchemaIndex.js'
 import type { GlobalRegistry } from '../4_generator/globalRegistry.js'
 import { type Client, create } from './client.js'
 import type { InputBase } from './Settings/Input.js'
@@ -20,7 +20,7 @@ export const createPrefilled: CreatePrefilled = (name, schemaIndex, schemaUrl) =
 
 // dprint-ignore
 export type CreatePrefilled =
-<const $Name extends GlobalRegistry.SchemaNames>(name: $Name, schemaIndex: Schema.Index, schemaUrl?: URL) =>
+<const $Name extends GlobalRegistry.SchemaNames>(name: $Name, schemaIndex: SchemaIndex, schemaUrl?: URL) =>
 	<
 		// eslint-disable-next-line
 		// @ts-ignore passes after generation

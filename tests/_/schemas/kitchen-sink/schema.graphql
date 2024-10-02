@@ -152,6 +152,8 @@ type Query {
   stringWithArgEnum(ABCEnum: ABCEnum): String
   stringWithArgInputObject(input: InputObject): String
   stringWithArgInputObjectRequired(input: InputObject!): String
+
+  """The given arguments are reflected back as a JSON string."""
   stringWithArgs(boolean: Boolean, float: Float, id: ID, int: Int, string: String): String
   stringWithListArg(ints: [Int]): String
   stringWithListArgRequired(ints: [Int!]!): String

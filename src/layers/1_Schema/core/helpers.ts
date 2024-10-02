@@ -1,5 +1,3 @@
-import type { Index } from './Index.js'
-
 export type MaybeThunk<$Type> = $Type | Thunk<$Type>
 
 export type Thunk<$Type> = () => $Type
@@ -19,4 +17,5 @@ export namespace Base {
   }
 }
 
-export type RootTypeName = keyof Index['Root']
+// todo stop using this, just use the graphql one
+export type RootTypeName = 'Query' | 'Mutation' | 'Subscription'

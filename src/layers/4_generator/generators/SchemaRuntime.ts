@@ -36,29 +36,35 @@ import {
 import type { Config } from '../config.js'
 import { createModuleGenerator } from '../helpers/moduleGenerator.js'
 import { ModuleGeneratorData } from './Data.js'
+import { ModuleGeneratorRuntimeCustomScalars } from './RuntimeIndexCustomScalars.js'
 import { ModuleGeneratorScalar } from './Scalar.js'
 import { ModuleGeneratorSchemaIndex } from './SchemaIndex.js'
+
+const identifiers = {
+  $customScalarsIndex: `$customScalarsIndex`,
+}
 
 export const ModuleGeneratorSchemaRuntime = createModuleGenerator(
   `SchemaRuntime`,
   ({ config, code }) => {
-    code.push(`/* eslint-disable */\n`)
-    code.push(
+    code(`/* eslint-disable */\n`)
+    code(
       `
         import * as $ from '${config.paths.imports.grafflePackage.schema}'
         import * as Data from './${ModuleGeneratorData.name}.js'
         import * as $Scalar from './${ModuleGeneratorScalar.name}.js'
         import type { Index } from './${ModuleGeneratorSchemaIndex.name}.js'
+        import { $index as ${identifiers.$customScalarsIndex} } from './${ModuleGeneratorRuntimeCustomScalars.name}.js'
       `,
     )
 
-    code.push(
+    code(
       `export const $defaultSchemaUrl = ${
         config.options.defaultSchemaUrl ? `new URL("${config.options.defaultSchemaUrl.href}")` : `undefined`
       }`,
     )
 
-    code.push(
+    code(
       config.schema.typeMapByKind.GraphQLEnumType.map(type => enum$(config, type)).join(`\n`),
       config.schema.typeMapByKind.GraphQLInputObjectType.map(type => inputObject(config, type)).join(`\n`),
       config.schema.typeMapByKind.GraphQLObjectType.map(type => object(config, type)).join(`\n`),
@@ -67,7 +73,7 @@ export const ModuleGeneratorSchemaRuntime = createModuleGenerator(
       config.schema.typeMapByKind.GraphQLRootType.map(type => object(config, type)).join(`\n`),
     )
 
-    code.push(
+    code(
       index(config),
     )
 
@@ -118,6 +124,9 @@ const index = (config: Config) => {
       },
       interfaces: {
         ${interfaces}
+      },
+      customScalars: {
+        input: ${identifiers.$customScalarsIndex},
       },
       error: {
         objects: {

@@ -1,5 +1,4 @@
 export { readMaybeThunk, type RootTypeName } from './core/helpers.js'
-export * from './core/Index.js'
 export * from './core/Named/__.js'
 export * as Directives from './Directives.js'
 export * from './Hybrid/__.js'

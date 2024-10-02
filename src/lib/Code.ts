@@ -8,6 +8,9 @@ export namespace Code {
   export const unionItems = (types: string[]) => types.join(`\n| `)
   export const tuple = (types: string[]) => `[${types.join(`, `)}]`
   export const list = (type: string) => `Array<${type}>`
+  export const termField = (name: string, type: string, options?: { comma?: boolean }) => {
+    return `${name}: ${type}${(options?.comma ?? true) ? `,` : ``}`
+  }
   export const field = (name: string, type: string, options?: { optional?: boolean }) => {
     if (options?.optional) return `${name}?: ${type}`
     return `${name}: ${type}`

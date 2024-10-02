@@ -1,6 +1,7 @@
 /* eslint-disable */
 import * as $ from '../../../../../../src/entrypoints/schema.js'
 import * as Data from './Data.js'
+import { $index as $customScalarsIndex } from './RuntimeCustomScalars.js'
 import * as $Scalar from './Scalar.js'
 import type { Index } from './SchemaIndex.js'
 export const $defaultSchemaUrl = undefined
@@ -25,6 +26,9 @@ export const $Index: Index = {
   objects: {},
   unions: {},
   interfaces: {},
+  customScalars: {
+    input: $customScalarsIndex,
+  },
   error: {
     objects: {},
     objectsTypename: {},

@@ -1,6 +1,6 @@
 import type { Anyware } from '../../lib/anyware/__.js'
 import type { Fluent } from '../../lib/fluent/__.js'
-import type { Schema } from '../1_Schema/__.js'
+import type { SchemaIndex } from '../4_generator/generators/SchemaIndex.js'
 import type { GlobalRegistry } from '../4_generator/globalRegistry.js'
 import type { Core } from '../5_core/__.js'
 import type { Extension } from './extension/extension.js'
@@ -9,7 +9,7 @@ import type { InputStatic } from './Settings/Input.js'
 
 export type ClientContext = {
   config: Config
-  schemaIndex: Schema.Index | null
+  schemaIndex: SchemaIndex | null
 }
 
 export type FnClient<$Context extends ClientContext = ClientContext> = Fluent.Create<$Context>

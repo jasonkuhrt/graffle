@@ -1,5 +1,5 @@
 // TODO test case for recursive input objects
-//
+
 import SchemaBuilder from '@pothos/core'
 import SimpleObjectsPlugin from '@pothos/plugin-simple-objects'
 import { DateTimeISOResolver } from 'graphql-scalars'
@@ -283,6 +283,7 @@ builder.queryType({
     }),
     stringWithArgs: t.field({
       type: `String`,
+      description: `The given arguments are reflected back as a JSON string.`,
       args: {
         string: t.arg.string(),
         int: t.arg.int(),

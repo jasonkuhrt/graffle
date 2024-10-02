@@ -10,13 +10,13 @@ describe(`document`, () => {
   describe(`query result field`, () => {
     test(`with __typename`, async () => {
       const result = graffle.throws().document({
-        query: { x: { resultNonNull: { $: { case: `ErrorOne` }, __typename: true } } },
+        query: { x: { resultNonNull: { $: { $case: `ErrorOne` }, __typename: true } } },
       })
         .run()
       await expect(result).rejects.toMatchInlineSnapshot(`[Error: Failure on field resultNonNull: ErrorOne]`)
     })
     test(`without __typename still works, __typename is dynamically added at runtime`, async () => {
-      const result = graffle.throws().document({ query: { x: { resultNonNull: { $: { case: `ErrorOne` } } } } }).run()
+      const result = graffle.throws().document({ query: { x: { resultNonNull: { $: { $case: `ErrorOne` } } } } }).run()
       await expect(result).rejects.toMatchInlineSnapshot(
         `[Error: Failure on field resultNonNull: ErrorOne]`,
       )
@@ -26,8 +26,8 @@ describe(`document`, () => {
         query: {
           x: {
             resultNonNull: [
-              [`resultNonNull`, { $: { case: `ErrorOne` } }],
-              [`x`, { $: { case: `ErrorOne` } }],
+              [`resultNonNull`, { $: { $case: `ErrorOne` } }],
+              [`x`, { $: { $case: `ErrorOne` } }],
             ],
           },
         },

@@ -45,10 +45,12 @@ export namespace Select {
   // ------------
 
   // -- None --
+
   // Union Types
   // -----------
 
   // -- None --
+
   // Interface Types
   // ---------------
 

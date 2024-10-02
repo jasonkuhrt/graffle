@@ -22,7 +22,7 @@ export const toGraphQLDirective: GraphQLNodeMapper<
       }
 
       // todo lift directive arguments to document variables
-      const value = toGraphQLValue(context, location, argumentType, argumentValue)
+      const value = toGraphQLValue({ ...context, value: { isEnum: false } }, location, argumentValue)
       return Nodes.Argument({
         name: Nodes.Name({
           value: argumentName,

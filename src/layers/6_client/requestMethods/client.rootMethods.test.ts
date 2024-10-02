@@ -1,39 +1,38 @@
-import { describe, expect, test } from 'vitest'
-import { db } from '../../../../tests/_/schemas/db.js'
-import { Graffle } from '../../../../tests/_/schemas/kitchen-sink/graffle/__.js'
-import * as Schema from '../../../../tests/_/schemas/kitchen-sink/schema.js'
-
-const graffle = Graffle.create({ schema: Schema.schema })
+import { describe, expect } from 'vitest'
+import { test } from '../../../../tests/_/helpers.js'
 
 // dprint-ignore
 describe(`query`, () => {
-  test(`scalar`, async () => {
-    await expect(graffle.query.id()).resolves.toEqual(db.id1)
+  test(`scalar`, async ({ kitchenSink, kitchenSinkData:db }) => {
+    await expect(kitchenSink.query.id()).resolves.toEqual(db.id1)
   })
-  test(`scalar arg`, async () => {
-    await expect(graffle.query.dateArg()).resolves.toEqual(db.date0)
-    await expect(graffle.query.dateArg({ date: db.date1 })).resolves.toEqual(db.date1)
-    await expect(graffle.query.dateArgNonNull({ date: db.date1 })).resolves.toEqual(db.date1)
+  test(`argument`, async ({ kitchenSink }) => {
+    await expect(kitchenSink.query.stringWithArgs({ id: `x` })).resolves.toEqual(`{"id":"x"}`)
   })
-  test(`object`, async () => {
-    await expect(graffle.query.dateObject1({ date1: true })).resolves.toEqual({ date1: db.date0 })
+  test(`argument custom scalar`, async ({ kitchenSink, kitchenSinkData:db }) => {
+    await expect(kitchenSink.query.dateArg()).resolves.toEqual(db.date0)
+    await expect(kitchenSink.query.dateArg({ date: db.date1 })).resolves.toEqual(db.date1)
+    await expect(kitchenSink.query.dateArgNonNull({ date: db.date1 })).resolves.toEqual(db.date1)
   })
-  test(`object with args`, async () => {
-    await expect(graffle.query.objectWithArgs({ $: { id: `x` }, id: true })).resolves.toEqual({ id: `x` })
+  test(`object`, async ({ kitchenSink, kitchenSinkData:db }) => {
+    await expect(kitchenSink.query.dateObject1({ date1: true })).resolves.toEqual({ date1: db.date0 })
   })
-  test(`union found`, async () => {
-    await expect(graffle.query.unionFooBar({ ___on_Foo: { id: true } })).resolves.toEqual({ id: db.id })
+  test(`object with arguments`, async ({ kitchenSink }) => {
+    await expect(kitchenSink.query.objectWithArgs({ $: { id: `x` }, id: true })).resolves.toEqual({ id: `x` })
   })
-  test(`union not found`, async () => {
-    await expect(graffle.query.unionFooBar({ ___on_Bar: { int: true } })).resolves.toEqual({})
+  test(`union found`, async ({ kitchenSink, kitchenSinkData:db }) => {
+    await expect(kitchenSink.query.unionFooBar({ ___on_Foo: { id: true } })).resolves.toEqual({ id: db.id })
   })
-  test(`interface fields`, async () => {
-    await expect(graffle.query.interface({ id: true })).resolves.toEqual({ id: db.id })
+  test(`union not found`, async ({ kitchenSink }) => {
+    await expect(kitchenSink.query.unionFooBar({ ___on_Bar: { int: true } })).resolves.toEqual({})
   })
-  test(`interface instance found`, async () => {
-    await expect(graffle.query.interface({ ___on_Object1ImplementingInterface: { int: true } })).resolves.toEqual({ int: db.int })
+  test(`interface fields`, async ({ kitchenSink, kitchenSinkData:db }) => {
+    await expect(kitchenSink.query.interface({ id: true })).resolves.toEqual({ id: db.id })
   })
-  test(`interface instance not found`, async () => {
-    await expect(graffle.query.interface({ ___on_Object2ImplementingInterface: { boolean: true } })).resolves.toEqual({})
+  test(`interface instance found`, async ({ kitchenSink, kitchenSinkData:db }) => {
+    await expect(kitchenSink.query.interface({ ___on_Object1ImplementingInterface: { int: true } })).resolves.toEqual({ int: db.int })
+  })
+  test(`interface instance not found`, async ({ kitchenSink }) => {
+    await expect(kitchenSink.query.interface({ ___on_Object2ImplementingInterface: { boolean: true } })).resolves.toEqual({})
   })
 })

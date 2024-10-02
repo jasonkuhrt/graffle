@@ -157,6 +157,9 @@ export namespace Root {
         input: $.Input.Field<InputObject.InputObject>
       }, false>
     >
+    /**
+     * The given arguments are reflected back as a JSON string.
+     */
     stringWithArgs: $.Field<
       'stringWithArgs',
       $.Output.Nullable<$Scalar.String>,

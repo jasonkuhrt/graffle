@@ -1,23 +1,28 @@
 import { Nodes } from '../../../lib/graphql-plus/_Nodes.js'
-import type { Schema } from '../../1_Schema/__.js'
-import type { Select } from '../../2_Select/__.js'
-import type { GraphQLNodeMapper } from '../types.js'
+import { Select } from '../../2_Select/__.js'
+import { advanceIndex, type GraphQLNodeMapper } from '../types.js'
 import { toGraphQLValue } from './Value.js'
+
+export interface Argument {
+  name: string
+  value: Select.Arguments.ArgValue
+}
 
 export const toGraphQLArgument: GraphQLNodeMapper<
   Nodes.ArgumentNode,
-  [arg: {
-    name: string
-    type: Schema.Input.Any
-    value: Select.Arguments.ArgValue
-  }]
+  [arg: Argument]
 > = (
   context,
-  location,
+  index,
   arg,
 ) => {
-  return Nodes.Argument({
-    name: Nodes.Name({ value: arg.name }),
-    value: toGraphQLValue(context, location, arg.type, arg.value),
-  })
+  const value = toGraphQLValue(
+    { ...context, value: { isEnum: Select.Arguments.isEnumKey(arg.name) } },
+    advanceIndex(index, arg.name),
+    arg.value,
+  )
+
+  const name = Nodes.Name({ value: arg.name.replace(Select.Arguments.enumKeyPrefixPattern, ``) })
+
+  return Nodes.Argument({ name, value })
 }

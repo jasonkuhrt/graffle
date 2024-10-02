@@ -22,22 +22,36 @@ import {
   type VariableDefinitionNode,
   type VariableNode,
 } from 'graphql'
+import type { HasRequiredKeys } from 'type-fest'
 
 export type {
   ArgumentNode,
+  BooleanValueNode,
   DefinitionNode,
   DirectiveNode,
   DocumentNode,
   FieldNode,
+  FloatValueNode,
   InlineFragmentNode,
+  IntValueNode,
+  ListValueNode,
   NameNode,
+  NullValueNode,
+  ObjectFieldNode,
+  ObjectValueNode,
   OperationDefinitionNode,
   SelectionNode,
   SelectionSetNode,
+  StringValueNode,
   ValueNode,
+  VariableNode,
 } from 'graphql'
 
 export { Kind } from 'graphql'
+
+export { getNamedType } from 'graphql'
+
+export * as $Schema from './nodesSchema.js'
 
 export type $Any =
   | DirectiveNode
@@ -52,6 +66,15 @@ export type $Any =
   | DocumentNode
   | ArgumentNode
   | EnumValueNode
+  | ListValueNode
+  | NullValueNode
+  | ObjectValueNode
+  | ObjectFieldNode
+  | VariableNode
+  | StringValueNode
+  | IntValueNode
+  | FloatValueNode
+  | BooleanValueNode
 
 export namespace $KindGroups {
   export type StandardScalar =
@@ -61,7 +84,9 @@ export namespace $KindGroups {
     | typeof Kind.FLOAT
 }
 
-export type Constructor<$Node> = (input: Omit<$Node, 'kind'>) => $Node
+export type Constructor<$Node> = (
+  ...input: HasRequiredKeys<Omit<$Node, 'kind'>> extends true ? [Omit<$Node, 'kind'>] : [] | [Omit<$Node, 'kind'>]
+) => $Node
 
 export const Directive: Constructor<DirectiveNode> = (directive) => {
   return {
@@ -186,10 +211,9 @@ export const ListValue: Constructor<ListValueNode> = (listValue) => {
   }
 }
 
-export const NullValue: Constructor<NullValueNode> = (nullValue) => {
+export const NullValue: Constructor<NullValueNode> = () => {
   return {
     kind: Kind.NULL,
-    ...nullValue,
   }
 }
 

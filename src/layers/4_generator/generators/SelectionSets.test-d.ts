@@ -193,10 +193,10 @@ test(`Query`, () => {
   assertType<Q>({ stringWithArgs: { $: { boolean: null, float: null, id: null, int: null, string: null } } })
 
   // enum arg
-  assertType<Q>({ stringWithArgEnum: { $: { ABCEnum: `A` } } })
-  assertType<Q>({ stringWithArgEnum: { $: { ABCEnum: `B` } } })
-  assertType<Q>({ stringWithArgEnum: { $: { ABCEnum: `C` } } })
-  assertType<Q>({ stringWithArgEnum: { $: { ABCEnum: null } } })
+  assertType<Q>({ stringWithArgEnum: { $: { $ABCEnum: `A` } } })
+  assertType<Q>({ stringWithArgEnum: { $: { $ABCEnum: `B` } } })
+  assertType<Q>({ stringWithArgEnum: { $: { $ABCEnum: `C` } } })
+  assertType<Q>({ stringWithArgEnum: { $: { $ABCEnum: null } } })
   assertType<Q>({ stringWithArgEnum: { $: {} } })
   // @ts-expect-error invalid enum value
   assertType<Q>({ stringWithArgEnum: { $: { ABCEnum: `D` } } })

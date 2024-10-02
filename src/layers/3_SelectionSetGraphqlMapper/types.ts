@@ -1,10 +1,15 @@
 import type { Nodes } from '../../lib/graphql-plus/_Nodes.js'
-import type { Schema } from '../1_Schema/__.js'
+import type { Codec } from '../1_Schema/Hybrid/types/Scalar/codec.js'
 import type { Select } from '../2_Select/__.js'
+import type { CustomScalarsIndex, SchemaIndex } from '../4_generator/generators/SchemaIndex.js'
+import type { ValueMapper } from './nodes/Value.js'
 
 export interface Context {
-  schema: Schema.Index
+  schema: SchemaIndex
   captures: Captures
+  hooks?: {
+    value?: ValueMapper
+  }
 }
 
 export interface Parsed {
@@ -49,10 +54,27 @@ export type LocationStepField = { type: 'field'; name: string }
 
 export type LocationStepArgument = { type: 'argument'; name: string }
 
-export type GraphQLNodeMapper<$Return extends Nodes.$Any, $Args extends [...any[]] = []> = (
+export type CodecString = Codec<any, string>
+
+export const isCodec = (value: unknown): value is CodecString =>
+  typeof value === `object` && value !== null && `encode` in value && typeof value.encode === `function`
+
+type IndexPointer = CustomScalarsIndex | CodecString | null
+
+export const advanceIndex = (pointer: IndexPointer, key: string) => {
+  if (pointer === null) return pointer
+  if (isCodec(pointer)) return pointer
+  return pointer[key] ?? null
+}
+
+export type GraphQLNodeMapper<
+  $Return extends Nodes.$Any,
+  $Args extends [...any[]] = [],
+  $ContextExtension extends object = {},
+> = (
   ...args: [
-    context: Context,
-    location: Location,
+    context: Context & $ContextExtension,
+    customScalarsIndexPointer: IndexPointer,
     ...$Args,
   ]
 ) => $Return

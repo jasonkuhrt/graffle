@@ -7,6 +7,7 @@ import type { BaseInput_ } from '../0_functions/types.js'
 import { Schema } from '../1_Schema/__.js'
 import { readMaybeThunk } from '../1_Schema/core/helpers.js'
 import { Select } from '../2_Select/__.js'
+import type { SchemaIndex } from '../4_generator/generators/SchemaIndex.js'
 import type { GlobalRegistry } from '../4_generator/globalRegistry.js'
 import { Core } from '../5_core/__.js'
 import { type InterfaceRaw, type TransportHttp } from '../5_core/types.js'
@@ -59,11 +60,11 @@ export type SelectionSetOrArgs = object
 export interface RequestContext {
   config: Config
   state: State
-  schemaIndex: Schema.Index | null
+  schemaIndex: SchemaIndex | null
 }
 
 export interface InterfaceTypedRequestContext extends RequestContext {
-  schemaIndex: Schema.Index
+  schemaIndex: SchemaIndex
 }
 
 type RawParameters = [BaseInput_]
@@ -107,7 +108,7 @@ type Create = <$Input extends InputStatic<GlobalRegistry.SchemaUnion>>(input: $I
   // @ts-ignore fixme
   Client<{
     config: InputToConfig<$Input>,
-    schemaIndex: $Input['schemaIndex'] extends Schema.Index
+    schemaIndex: $Input['schemaIndex'] extends SchemaIndex
       ? GlobalRegistry.GetSchemaIndexOrDefault<$Input['name']>
       : null
   }>

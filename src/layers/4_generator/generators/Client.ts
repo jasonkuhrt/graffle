@@ -4,7 +4,7 @@ import { ModuleGeneratorSchemaRuntime } from './SchemaRuntime.js'
 export const ModuleGeneratorClient = createModuleGenerator(
   `Client`,
   ({ config, code }) => {
-    code.push(
+    code(
       `import { createPrefilled } from '${config.paths.imports.grafflePackage.client}'`,
       `import { $defaultSchemaUrl, $Index } from './${ModuleGeneratorSchemaRuntime.name}.js'`,
       ``,

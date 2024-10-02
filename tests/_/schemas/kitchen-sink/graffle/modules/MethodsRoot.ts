@@ -412,6 +412,9 @@ export interface QueryMethods<$Config extends Utils.Config> {
       ResultSet.InferField<true, Index['Root']['Query']['fields']['stringWithArgInputObjectRequired'], Index>
     >
   >
+  /**
+   * The given arguments are reflected back as a JSON string.
+   */
   stringWithArgs: <$SelectionSet>(
     args?: Utils.Exact<$SelectionSet, SelectionSet.Query.stringWithArgs$SelectionSetArguments>,
   ) => Promise<

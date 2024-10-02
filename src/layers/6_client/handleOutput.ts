@@ -3,7 +3,7 @@ import type { Simplify } from 'type-fest'
 import { Errors } from '../../lib/errors/__.js'
 import type { GraphQLExecutionResultError } from '../../lib/graphql-plus/graphql.js'
 import { isRecordLikeObject, type SimplifyExceptError, type Values } from '../../lib/prelude.js'
-import type { Schema } from '../1_Schema/__.js'
+import type { SchemaIndex } from '../4_generator/generators/SchemaIndex.js'
 import type { ErrorsOther, GraffleExecutionResultVar, InterfaceTypedRequestContext, RequestContext } from './client.js'
 import {
   type Config,
@@ -140,7 +140,7 @@ export type RawResolveOutputReturnRootType<$Config extends Config, $Data> =
  >
 
 // dprint-ignore
-export type ResolveOutputReturnRootType<$Config extends Config, $Index extends Schema.Index, $Data> =
+export type ResolveOutputReturnRootType<$Config extends Config, $Index extends SchemaIndex, $Data> =
   SimplifyExceptError<
    | IfConfiguredGetOutputErrorReturns<$Config>
    | (
@@ -151,7 +151,7 @@ export type ResolveOutputReturnRootType<$Config extends Config, $Index extends S
  >
 
 // dprint-ignore
-export type ResolveOutputReturnRootField<$Config extends Config, $Index extends Schema.Index, $RootFieldName extends string, $Data> =
+export type ResolveOutputReturnRootField<$Config extends Config, $Index extends SchemaIndex, $RootFieldName extends string, $Data> =
     | IfConfiguredGetOutputErrorReturns<$Config>
     | (
         $Config['output']['envelope']['enabled'] extends true
@@ -168,17 +168,17 @@ type IfConfiguredGetOutputErrorReturns<$Config extends Config> =
   | (ConfigGetOutputError<$Config, 'schema'>     extends 'return'  ? Error                        : never)
 
 // dprint-ignore
-type IfConfiguredStripSchemaErrorsFromDataRootType<$Config extends Config, $Index extends Schema.Index, $Data> =
+type IfConfiguredStripSchemaErrorsFromDataRootType<$Config extends Config, $Index extends SchemaIndex, $Data> =
   { [$RootFieldName in keyof $Data]: IfConfiguredStripSchemaErrorsFromDataRootField<$Config, $Index, $Data[$RootFieldName]> }
 
 // dprint-ignore
-type IfConfiguredStripSchemaErrorsFromDataRootField<$Config extends Config, $Index extends Schema.Index, $Data> =
+type IfConfiguredStripSchemaErrorsFromDataRootField<$Config extends Config, $Index extends SchemaIndex, $Data> =
   $Config['output']['errors']['schema'] extends false
     ? $Data
     : ExcludeSchemaErrors<$Index, $Data>
 
 // dprint-ignore
-type ExcludeSchemaErrors<$Index extends Schema.Index, $Data> =
+type ExcludeSchemaErrors<$Index extends SchemaIndex, $Data> =
   Exclude<
     $Data,
     $Index['error']['objectsTypename'][keyof $Index['error']['objectsTypename']]

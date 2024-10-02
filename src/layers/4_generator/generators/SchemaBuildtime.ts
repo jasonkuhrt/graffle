@@ -270,9 +270,9 @@ const renderArg = (config: Config, arg: GraphQLArgument) => {
 export const ModuleGeneratorSchemaBuildtime = createModuleGenerator(
   `SchemaBuildtime`,
   ({ config, code }) => {
-    code.push(`import type * as $ from '${config.paths.imports.grafflePackage.schema}'`)
-    code.push(`import type * as $Scalar from './${ModuleGeneratorScalar.name}.js'`)
-    code.push(`\n\n`)
+    code(`import type * as $ from '${config.paths.imports.grafflePackage.schema}'`)
+    code(`import type * as $Scalar from './${ModuleGeneratorScalar.name}.js'`)
+    code(`\n\n`)
 
     for (const [name, types] of entries(config.schema.typeMapByKind)) {
       if (name === `GraphQLScalarType`) continue
@@ -280,8 +280,8 @@ export const ModuleGeneratorSchemaBuildtime = createModuleGenerator(
       if (name === `GraphQLScalarTypeStandard`) continue
 
       const namespaceName = name === `GraphQLRootType` ? `Root` : namespaceNames[name]
-      code.push(Code.commentSectionTitle(namespaceName))
-      code.push(Code.export$(
+      code(Code.commentSectionTitle(namespaceName))
+      code(Code.export$(
         Code.namespace(
           namespaceName,
           types.length === 0

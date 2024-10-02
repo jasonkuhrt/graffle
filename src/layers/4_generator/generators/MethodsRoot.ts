@@ -2,7 +2,7 @@
 import { getNamedType, type GraphQLObjectType, isScalarType } from 'graphql'
 import { isAllArgsNullable, RootTypeNameToOperationName } from '../../../lib/graphql-plus/graphql.js'
 import { createModuleGenerator } from '../helpers/moduleGenerator.js'
-import { createModuleGeneratorRunner } from '../helpers/moduleGeneratorRunner.js'
+import { createCodeGenerator } from '../helpers/moduleGeneratorRunner.js'
 import { renderDocumentation, renderName } from '../helpers/render.js'
 import { ModuleGeneratorSchemaIndex } from './SchemaIndex.js'
 import { ModuleGeneratorSelectionSets } from './SelectionSets.js'
@@ -10,20 +10,20 @@ import { ModuleGeneratorSelectionSets } from './SelectionSets.js'
 export const ModuleGeneratorMethodsRoot = createModuleGenerator(
   `MethodsRoot`,
   ({ config, code }) => {
-    code.push(`import type * as Utils  from '${config.paths.imports.grafflePackage.utilitiesForGenerated}';`)
-    code.push(`import type { ResultSet } from '${config.paths.imports.grafflePackage.schema}';`)
-    code.push(`import type { Index } from './${ModuleGeneratorSchemaIndex.name}.js'`)
-    code.push(`import type * as SelectionSet from './${ModuleGeneratorSelectionSets.name}.js'`)
-    code.push(``)
+    code(`import type * as Utils  from '${config.paths.imports.grafflePackage.utilitiesForGenerated}';`)
+    code(`import type { ResultSet } from '${config.paths.imports.grafflePackage.schema}';`)
+    code(`import type { Index } from './${ModuleGeneratorSchemaIndex.name}.js'`)
+    code(`import type * as SelectionSet from './${ModuleGeneratorSelectionSets.name}.js'`)
+    code()
 
-    code.push(``)
+    code()
 
     config.schema.typeMapByKind.GraphQLRootType.forEach(node => {
-      code.push(renderRootType({ config, node }))
-      code.push(``)
+      code(renderRootType({ config, node }))
+      code()
     })
 
-    code.push(`
+    code(`
       export interface BuilderMethodsRoot<$Config extends Utils.Config> {
         ${
       config.schema.typeMapByKind.GraphQLRootType.map(node => {
@@ -33,9 +33,9 @@ export const ModuleGeneratorMethodsRoot = createModuleGenerator(
     }
       }
     `)
-    code.push(``)
+    code()
 
-    code.push(`
+    code(`
       export interface BuilderMethodsRootFn extends Utils.HKT.Fn {
         // @ts-expect-error parameter is Untyped.
         return: BuilderMethodsRoot<this['params']['config']>
@@ -46,10 +46,10 @@ export const ModuleGeneratorMethodsRoot = createModuleGenerator(
   },
 )
 
-const renderRootType = createModuleGeneratorRunner<{ node: GraphQLObjectType }>(({ node, config, code }) => {
+const renderRootType = createCodeGenerator<{ node: GraphQLObjectType }>(({ node, config, code }) => {
   const fieldMethods = renderFieldMethods({ config, node })
 
-  code.push(`
+  code(`
     export interface ${node.name}Methods<$Config extends Utils.Config> {
       // todo Use a static type here?
       $batch: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.${node.name}>) =>
@@ -77,10 +77,10 @@ const renderRootType = createModuleGeneratorRunner<{ node: GraphQLObjectType }>(
     }`)
 })
 
-const renderFieldMethods = createModuleGeneratorRunner<{ node: GraphQLObjectType }>(({ node, config, code }) => {
+const renderFieldMethods = createCodeGenerator<{ node: GraphQLObjectType }>(({ node, config, code }) => {
   for (const field of Object.values(node.getFields())) {
     const doc = renderDocumentation(config, field)
-    code.push(doc)
+    code(doc)
 
     const fieldTypeUnwrapped = getNamedType(field.type)
 
@@ -92,12 +92,12 @@ const renderFieldMethods = createModuleGeneratorRunner<{ node: GraphQLObjectType
         }.${renderName(field)}$SelectionSetArguments>)`
         : `()`
 
-      code.push(`
+      code(`
         ${field.name}: ${parametersCode} =>
           ${Helpers.returnType(node.name, field.name, `true`)}
       `)
     } else {
-      code.push(`
+      code(`
         ${field.name}: <$SelectionSet>
         (selectionSet: Utils.Exact<$SelectionSet, SelectionSet.${renderName(node)}.${renderName(field)}>) =>
           ${Helpers.returnType(node.name, field.name, `$SelectionSet`)}

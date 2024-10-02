@@ -43,6 +43,7 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
     encode: ({ input }) => {
       let documentString: string
 
+      // todo: the other case where we're going to need to parse document is for custom scalar support of raw
       const isWillInjectTypename = input.context.config.output.errors.schema && input.context.schemaIndex
 
       if (isWillInjectTypename) {
@@ -53,6 +54,7 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
           : SelectionSetGraphqlMapper.toGraphQL({
             schema: input.context.schemaIndex,
             document: input.document,
+            customScalarsIndex: input.context.schemaIndex.customScalars.input,
           })
 
         injectTypenameOnRootResultFields({
@@ -70,6 +72,7 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
           : print(SelectionSetGraphqlMapper.toGraphQL({
             schema: input.context.schemaIndex,
             document: input.document,
+            customScalarsIndex: input.context.schemaIndex.customScalars.input,
           }))
       }
 
