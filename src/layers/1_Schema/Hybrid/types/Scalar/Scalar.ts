@@ -43,8 +43,7 @@ export interface Scalar<
 > {
   kind: ScalarKind
   name: $Name
-  // codec: Codec<$Decoded, $Encoded>
-  codec: Codec<$Decoded, string>
+  codec: Codec<$Decoded, $Encoded>
 }
 
 export const String = create(`String`, JavaScriptScalarCodecs.String)
