@@ -1,6 +1,7 @@
 /* eslint-disable */
 import * as $ from '../../../../../../src/entrypoints/schema.js'
 import * as Data from './Data.js'
+import { $index as $customScalarsIndex } from './RuntimeCustomScalars.js'
 import * as $Scalar from './Scalar.js'
 import type { Index } from './SchemaIndex.js'
 export const $defaultSchemaUrl = new URL('http://localhost:3000/graphql')
@@ -211,6 +212,9 @@ export const $Index: Index = {
   },
   interfaces: {
     Being,
+  },
+  customScalars: {
+    input: $customScalarsIndex,
   },
   error: {
     objects: {},

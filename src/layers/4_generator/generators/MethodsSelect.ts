@@ -7,9 +7,9 @@ import { ModuleGeneratorSelectionSets } from './SelectionSets.js'
 export const ModuleGeneratorMethodsSelect = createModuleGenerator(
   `MethodsSelect`,
   ({ config, code }) => {
-    code.push(`import type * as $SelectionSets from './${ModuleGeneratorSelectionSets.name}.js'`)
-    code.push(`import type * as $Utilities from '${config.paths.imports.grafflePackage.utilitiesForGenerated}'`)
-    code.push(``)
+    code(`import type * as $SelectionSets from './${ModuleGeneratorSelectionSets.name}.js'`)
+    code(`import type * as $Utilities from '${config.paths.imports.grafflePackage.utilitiesForGenerated}'`)
+    code()
 
     const graphqlTypeGroups = [
       config.schema.typeMapByKind.GraphQLRootType,
@@ -18,34 +18,34 @@ export const ModuleGeneratorMethodsSelect = createModuleGenerator(
       config.schema.typeMapByKind.GraphQLInterfaceType,
     ].filter(_ => _.length > 0)
 
-    code.push(title1(`Select Methods Interface`))
-    code.push(``)
+    code(title1(`Select Methods Interface`))
+    code()
 
-    code.push(`export interface $MethodsSelect {`)
+    code(`export interface $MethodsSelect {`)
     for (const graphqlTypeGroup of graphqlTypeGroups) {
       for (const graphqlType of graphqlTypeGroup) {
         // dprint-ignore
-        code.push(`${graphqlType.name}: ${renderName(graphqlType)}`)
+        code(`${graphqlType.name}: ${renderName(graphqlType)}`)
       }
     }
-    code.push(`}`)
-    code.push(``)
+    code(`}`)
+    code()
 
     for (const graphqlTypeGroup of graphqlTypeGroups) {
       const { kind } = getNodeNameAndKind(graphqlTypeGroup[0]!)
       const titleText = isRootType(graphqlTypeGroup[0]!) ? `Root` : kind
-      code.push(title1(titleText))
-      code.push(``)
+      code(title1(titleText))
+      code()
 
       for (const graphqlType of graphqlTypeGroup) {
         // dprint-ignore
-        code.push(`
+        code(`
           export interface ${renderName(graphqlType)} {
             <$SelectionSet>(selectionSet: $Utilities.Exact<$SelectionSet, $SelectionSets.${renderName(graphqlType)}>):
               $SelectionSet
           }`
         )
-        code.push(``)
+        code()
       }
     }
   },

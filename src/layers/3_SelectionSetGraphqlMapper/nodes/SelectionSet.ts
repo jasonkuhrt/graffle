@@ -2,7 +2,7 @@ import { Nodes } from '../../../lib/graphql-plus/_Nodes.js'
 import { casesExhausted } from '../../../lib/prelude.js'
 import type { Schema } from '../../1_Schema/__.js'
 import { Select } from '../../2_Select/__.js'
-import type { GraphQLNodeMapper } from '../types.js'
+import { advanceIndex, type GraphQLNodeMapper } from '../types.js'
 import { toGraphQLArgument } from './Argument.js'
 import { toGraphQLDirective } from './Directive.js'
 import { toGraphQLField } from './Field.js'
@@ -28,7 +28,7 @@ export const toGraphQLSelectionSet: GraphQLNodeMapper<
   ]
 > = (
   context,
-  location,
+  index,
   type,
   selectionSet,
   selectionSetContext,
@@ -36,9 +36,9 @@ export const toGraphQLSelectionSet: GraphQLNodeMapper<
   const selections: Nodes.SelectionNode[] = []
 
   for (const key in selectionSet) {
-    const s = Select.parseSelection(key, selectionSet[key])
+    const keyParsed = Select.parseSelection(key, selectionSet[key])
 
-    switch (s.type) {
+    switch (keyParsed.type) {
       case `Arguments`:
         if (!selectionSetContext) {
           throw new Error(`No selection set context to push arguments to.`)
@@ -46,8 +46,9 @@ export const toGraphQLSelectionSet: GraphQLNodeMapper<
         if (selectionSetContext.kind === `InlineFragment`) {
           throw new Error(`Cannot have arguments on an inline fragment.`)
         }
-        for (const argName in s.arguments) {
-          const argValue = s.arguments[argName]
+        const index_ = advanceIndex(index, Select.Arguments.key)
+        for (const argName in keyParsed.arguments) {
+          const argValue = keyParsed.arguments[argName]
           // We don't do client side validation, let server handle schema errors.
           const argType = selectionSetContext.type.args?.fields[argName]?.type
           const arg = {
@@ -55,7 +56,7 @@ export const toGraphQLSelectionSet: GraphQLNodeMapper<
             value: argValue,
             type: argType,
           }
-          selectionSetContext.arguments.push(toGraphQLArgument(context, location, arg))
+          selectionSetContext.arguments.push(toGraphQLArgument(context, index_, arg))
         }
         continue
       case `DirectiveNoop`: {
@@ -65,28 +66,28 @@ export const toGraphQLSelectionSet: GraphQLNodeMapper<
         if (!selectionSetContext) {
           throw new Error(`No selection set context to push directives to.`)
         }
-        selectionSetContext.directives.push(toGraphQLDirective(context, location, s))
+        selectionSetContext.directives.push(toGraphQLDirective(context, index, keyParsed))
         continue
       case `Indicator`: {
-        if (!s.select) continue
+        if (!keyParsed.select) continue
         selections.push(Nodes.Field({
           name: Nodes.Name({
-            value: s.name,
+            value: keyParsed.name,
           }),
         }))
         continue
       }
       case `InlineFragment`: {
-        for (const selectionSet of s.selectionSets) {
+        for (const selectionSet of keyParsed.selectionSets) {
           selections.push(
-            toGraphQLInlineFragment(context, location, type, { typeCondition: s.typeCondition, selectionSet }),
+            toGraphQLInlineFragment(context, index, type, { typeCondition: keyParsed.typeCondition, selectionSet }),
           )
         }
         continue
       }
       case `Alias`: {
-        for (const alias of s.aliases) {
-          selections.push(toGraphQLField(context, location, type, {
+        for (const alias of keyParsed.aliases) {
+          selections.push(toGraphQLField(context, index, type, {
             name: key,
             alias: alias[0],
             value: alias[1],
@@ -96,10 +97,11 @@ export const toGraphQLSelectionSet: GraphQLNodeMapper<
       }
       case `SelectionSet`: {
         selections.push(
-          toGraphQLField(context, location, type, { alias: null, name: s.name, value: s.selectionSet }),
+          toGraphQLField(context, index, type, { alias: null, name: keyParsed.name, value: keyParsed.selectionSet }),
         )
         continue
       }
+      // todo make this an extension that requires the schema.
       case `ScalarsWildcard`: {
         // todo get scalar fields from the schema
         throw new Error(`todo`)
@@ -107,7 +109,7 @@ export const toGraphQLSelectionSet: GraphQLNodeMapper<
       // todo
       // case 'FragmentSpread'
       default: {
-        casesExhausted(s)
+        casesExhausted(keyParsed)
       }
     }
   }

@@ -1,6 +1,7 @@
 import type { RequireProperties, StringKeyof } from '../../../lib/prelude.js'
 import type { Schema } from '../../1_Schema/__.js'
 import type { Select } from '../../2_Select/__.js'
+import type { SchemaIndex } from '../../4_generator/generators/SchemaIndex.js'
 import type { GlobalRegistry } from '../../4_generator/globalRegistry.js'
 import type { Transport } from '../../5_core/types.js'
 import type { ConfigGetOutputError } from '../handleOutput.js'
@@ -126,7 +127,7 @@ type TypenameSelection = { __typename: true }
 // dprint-ignore
 export type AddTypenameToSelectedRootTypeResultFields<
   $Config extends Config,
-  $Index extends Schema.Index,
+  $Index extends SchemaIndex,
   $RootTypeName extends Schema.RootTypeName,
   $Selection,
 > = IsNeedSelectionTypename<$Config, $Index> extends true
@@ -149,14 +150,14 @@ type AddTypenameToAliasInput<$AliasInput extends Select.SelectAlias.SelectAlias>
 }
 
 type IsResultField<
-  $Index extends Schema.Index,
+  $Index extends SchemaIndex,
   $RootTypeName extends Schema.RootTypeName,
   $FieldName extends string,
 > = $FieldName & $Index['error']['rootResultFields'][$RootTypeName] extends never ? false
   : true
 
 // dprint-ignore
-export type IsNeedSelectionTypename<$Config extends Config, $Index extends Schema.Index> =
+export type IsNeedSelectionTypename<$Config extends Config, $Index extends SchemaIndex> =
   ConfigGetOutputError<$Config, 'schema'> extends 'throw'
     ? GlobalRegistry.HasSchemaErrorsViaName<$Index['name']> extends true
       ? true

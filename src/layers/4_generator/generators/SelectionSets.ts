@@ -16,7 +16,6 @@ import {
   type GraphQLObjectType,
   type GraphQLType,
   isEnumType,
-  isListType,
 } from 'graphql'
 import { getNamedType, isNullableType, isScalarType } from 'graphql'
 import { Code } from '../../../lib/Code.js'
@@ -27,14 +26,14 @@ import {
   hasCustomScalars,
   hasMutation,
   hasQuery,
-  isCustomScalarType,
+  Nodes,
   RootTypeName,
   StandardScalarTypeTypeScriptMapping,
 } from '../../../lib/graphql-plus/graphql.js'
 import type { StandardScalarTypeNames } from '../../../lib/graphql-plus/graphql.js'
 import { Select } from '../../2_Select/__.js'
 import { createModuleGenerator } from '../helpers/moduleGenerator.js'
-import { createModuleGeneratorRunner } from '../helpers/moduleGeneratorRunner.js'
+import { createCodeGenerator } from '../helpers/moduleGeneratorRunner.js'
 import {
   getDocumentation,
   getInterfaceImplementors,
@@ -48,27 +47,27 @@ import { ModuleGeneratorScalar } from './Scalar.js'
 export const ModuleGeneratorSelectionSets = createModuleGenerator(
   `SelectionSets`,
   ({ config, code }) => {
-    code.push(``)
+    code()
 
-    code.push(`import type { Select as $Select } from '${config.paths.imports.grafflePackage.schema}'`)
-    code.push(`import type * as $Utilities from '${config.paths.imports.grafflePackage.utilitiesForGenerated}'`)
+    code(`import type { Select as $Select } from '${config.paths.imports.grafflePackage.schema}'`)
+    code(`import type * as $Utilities from '${config.paths.imports.grafflePackage.utilitiesForGenerated}'`)
     if (hasCustomScalars(config.schema.typeMapByKind)) {
-      code.push(`import type * as $Scalar from './${ModuleGeneratorScalar.name}.js'`)
+      code(`import type * as $Scalar from './${ModuleGeneratorScalar.name}.js'`)
     }
-    code.push(``)
+    code()
 
-    code.push(title1(`Document`))
-    code.push(``)
-    code.push(
+    code(title1(`Document`))
+    code()
+    code(
       `// Prefix with $ because this is not a schema type. A user could have a schema type named "Document" that this would conflict with.`,
     )
-    code.push(
+    code(
       `export interface $Document {`,
       hasQuery(config.schema.typeMapByKind) ? `query?: Record<string, Query>` : null,
       hasMutation(config.schema.typeMapByKind) ? `mutation?: Record<string, Mutation>` : null,
       `}`,
     )
-    code.push(``)
+    code()
 
     const typesToRender = [
       config.schema.typeMapByKind.GraphQLRootType,
@@ -82,16 +81,16 @@ export const ModuleGeneratorSelectionSets = createModuleGenerator(
     typesToRender.forEach((nodes) => {
       const kind = getNodeKind(nodes[0]!)
 
-      code.push(title1(`${kind} Types`))
-      code.push(``)
+      code(title1(`${kind} Types`))
+      code()
 
       nodes.forEach(node => {
-        code.push(kindRenderLookup[kind]({ config, node: node as never }))
-        code.push(``)
+        code(kindRenderLookup[kind]({ config, node: node as never }))
+        code()
       })
     })
 
-    code.push(`
+    code(`
       /**
        * [1] These definitions serve to allow field selection interfaces to extend their respective object type without
        *     name clashing between the field name and the object name.
@@ -100,11 +99,11 @@ export const ModuleGeneratorSelectionSets = createModuleGenerator(
        *     would end up with an error of \`export interface Foo extends Foo ...\`
        */
     `)
-    code.push(renderRefDefs({ config, nodes: typesToRender.flat() }))
+    code(renderRefDefs({ config, nodes: typesToRender.flat() }))
   },
 )
 
-const renderRefDefs = createModuleGeneratorRunner<{ nodes: GraphQLNamedType[] }>(
+const renderRefDefs = createCodeGenerator<{ nodes: GraphQLNamedType[] }>(
   ({ nodes, code }) => {
     const refDefsRendered = nodes.map(node => `export type _${renderName(node)} = ${renderName(node)}`).join(`\n`)
     const namespaceRendered = `
@@ -112,18 +111,18 @@ const renderRefDefs = createModuleGeneratorRunner<{ nodes: GraphQLNamedType[] }>
         ${refDefsRendered}
       }
     `
-    code.push(namespaceRendered)
-    code.push(``)
+    code(namespaceRendered)
+    code()
   },
 )
 
-const renderUnion = createModuleGeneratorRunner<{ node: GraphQLUnionType }>(
+const renderUnion = createCodeGenerator<{ node: GraphQLUnionType }>(
   ({ config, node, code }) => {
     const doc = renderDocumentation(config, node)
-    code.push(doc)
+    code(doc)
 
     const memberTypes = node.getTypes()
-    code.push(`
+    code(`
       export interface ${renderName(node)} {
         ${
       memberTypes.map((type) => `${Select.InlineFragment.typeConditionPRefix}${type.name}?: ${renderName(type)}`)
@@ -136,36 +135,36 @@ const renderUnion = createModuleGeneratorRunner<{ node: GraphQLUnionType }>(
       }
     `)
 
-    code.push(Helpers.fragmentInlineInterface(node))
-    code.push(``)
+    code(Helpers.fragmentInlineInterface(node))
+    code()
   },
 )
 
-const renderEnum = createModuleGeneratorRunner<{ node: GraphQLEnumType }>(
+const renderEnum = createCodeGenerator<{ node: GraphQLEnumType }>(
   ({ config, node, code }) => {
     const doc = renderDocumentation(config, node)
-    code.push(doc)
+    code(doc)
 
     const values = Object.values(node.getValues())
-    code.push(Helpers.type(renderName(node), values.map((value) => Code.string(value.name)).join(` | `)))
+    code(Helpers.type(renderName(node), values.map((value) => Code.string(value.name)).join(` | `)))
   },
 )
 
-const renderInputObject = createModuleGeneratorRunner<{ node: GraphQLInputObjectType }>(
+const renderInputObject = createCodeGenerator<{ node: GraphQLInputObjectType }>(
   ({ config, node, code }) => {
     const doc = renderDocumentation(config, node)
-    code.push(doc)
+    code(doc)
 
     const fields = Object.values(node.getFields())
-    code.push(`
+    code(`
       export interface ${renderName(node)} {
-        ${fields.map((field) => renderArgLike({ config, arg: field })).join(`\n`)}
+        ${fields.map((field) => renderArgumentLike({ config, arg: field })).join(`\n`)}
       }
     `)
   },
 )
 
-const renderInterface = createModuleGeneratorRunner<{ node: GraphQLInterfaceType }>(
+const renderInterface = createCodeGenerator<{ node: GraphQLInterfaceType }>(
   ({ config, node, code }) => {
     const fields = Object.values(node.getFields())
     const fieldsRendered = fields.map(field => {
@@ -178,16 +177,16 @@ const renderInterface = createModuleGeneratorRunner<{ node: GraphQLInterfaceType
       ` \n `,
     )
 
-    code.push(``)
-    code.push(`// --------------`)
-    code.push(`// Interface Type ${node.name}`)
-    code.push(`// --------------`)
-    code.push(``)
+    code()
+    code(`// --------------`)
+    code(`// Interface Type ${node.name}`)
+    code(`// --------------`)
+    code()
 
     const doc = renderDocumentation(config, node)
-    code.push(doc)
+    code(doc)
 
-    code.push(`
+    code(`
       export interface ${renderName(node)} extends $Select.Bases.ObjectLike {
         ${fieldsRendered}
         ${onTypesRendered}
@@ -195,29 +194,29 @@ const renderInterface = createModuleGeneratorRunner<{ node: GraphQLInterfaceType
         ${Helpers.__typenameField(`interface`)}
       }
     `)
-    code.push(``)
+    code()
 
-    code.push(Helpers.fragmentInlineInterface(node))
-    code.push(``)
+    code(Helpers.fragmentInlineInterface(node))
+    code()
 
-    code.push(`
+    code(`
       export namespace ${renderName(node)} {
         ${fields.map((field) => renderField({ config, field })).join(`\n`)}
       }
     `)
-    code.push(``)
+    code()
   },
 )
 
-const renderObject = createModuleGeneratorRunner<{ node: GraphQLObjectType }>(
+const renderObject = createCodeGenerator<{ node: GraphQLObjectType }>(
   ({ config, node, code }) => {
     const fields = Object.values(node.getFields())
 
-    code.push(typeTitle2SelectionSet(node))
-    code.push(``)
+    code(typeTitle2SelectionSet(node))
+    code()
 
-    code.push(`// ----------------------------------------| Entrypoint Interface |`)
-    code.push(``)
+    code(`// ----------------------------------------| Entrypoint Interface |`)
+    code()
 
     const propertiesRendered = fields.map(field => {
       const nodeWhat = getNodeNameAndKind(getNamedType(field.type))
@@ -233,29 +232,29 @@ const renderObject = createModuleGeneratorRunner<{ node: GraphQLObjectType }>(
     const extendsClause = isRootType ? `` : `extends $Select.Bases.ObjectLike`
 
     const doc = renderDocumentation(config, node)
-    code.push(doc)
+    code(doc)
 
-    code.push(`
+    code(`
       export interface ${renderName(node)} ${extendsClause} {
         ${propertiesRendered}
         ${Helpers.fragmentInlineField(node)}
         ${Helpers.__typenameField(`object`)}
       }
     `)
-    code.push(``)
+    code()
 
-    code.push(Helpers.fragmentInlineInterface(node))
-    code.push(``)
+    code(Helpers.fragmentInlineInterface(node))
+    code()
 
-    code.push(`// ----------------------------------------| Fields Interfaces |`)
-    code.push(``)
+    code(`// ----------------------------------------| Fields Interfaces |`)
+    code()
 
-    code.push(`
+    code(`
       export namespace ${renderName(node)} {
         ${fields.map((field) => renderField({ config, field })).join(`\n`)}
       }
     `)
-    code.push(``)
+    code()
   },
 )
 
@@ -268,76 +267,68 @@ const kindRenderLookup = {
   GraphQLUnionType: renderUnion,
 }
 
-const renderField = createModuleGeneratorRunner<{ field: GraphQLField<any, any> }>(
+const renderField = createCodeGenerator<{ field: GraphQLField<any, any> }>(
   ({ config, field, code }) => {
     const namedType = getNamedType(field.type)
     const nameRendered = renderName(field)
 
-    // code.push(``)
-    // code.push(`// -- .${nameRendered} --`)
-    // code.push(``)
+    // code()
+    // code(`// -- .${nameRendered} --`)
+    // code()
 
     if (isScalarType(namedType) || isEnumType(namedType)) {
       const argsAnalysis = analyzeArgsNullability(field.args)
-      const argFieldsRendered = renderArgsFields({ config, field })
-      const argsRendered = renderFieldArgs({
+      const argFieldsRendered = renderArguments({ config, field })
+      const argsRendered = renderArgumentsKey({
         config,
         field,
         argFieldsRendered: `${nameRendered}$SelectionSetArguments`,
       })
 
       if (argsAnalysis.hasAny) {
-        code.push(
+        code(
           `export type ${nameRendered}$SelectionSetArguments = ${argFieldsRendered}`,
         )
         if (argsAnalysis.isAllNullable) {
-          code.push(
+          code(
             `export type ${nameRendered}$SelectionSet = $Utilities.Simplify<$Select.Bases.Base & { ${argsRendered} }>`,
           )
-          code.push(``)
-          code.push(
+          code()
+          code(
             Helpers.type(
               `${nameRendered}$Expanded`,
               `$Utilities.UnionExpanded<$Select.Indicator.Indicator | ${nameRendered}$SelectionSet>`,
             ),
           )
-          code.push(``)
-          code.push(
+          code()
+          code(
             Helpers.type(nameRendered, `$Select.Indicator.Indicator | ${nameRendered}$SelectionSet`),
           )
-          code.push(``)
+          code()
         } else {
           // todo test that a directive can be passed with the intersection that otherwise cannot be.
-          code.push(Helpers.$interface(nameRendered, `$Select.Bases.Base`, argsRendered))
-          code.push(``)
-          code.push(Helpers.type(`${nameRendered}$Expanded`, nameRendered))
-          code.push(``)
+          code(Helpers.$interface(nameRendered, `$Select.Bases.Base`, argsRendered))
+          code()
+          code(Helpers.type(`${nameRendered}$Expanded`, nameRendered))
+          code()
         }
       } else {
-        code.push(Helpers.type(`${nameRendered}$Expanded`, `$Select.Indicator.NoArgsIndicator$Expanded`))
-        code.push(``)
-        code.push(Helpers.type(nameRendered, `$Select.Indicator.NoArgsIndicator`))
-        code.push(``)
+        code(Helpers.type(`${nameRendered}$Expanded`, `$Select.Indicator.NoArgsIndicator$Expanded`))
+        code()
+        code(Helpers.type(nameRendered, `$Select.Indicator.NoArgsIndicator`))
+        code()
       }
     } else {
-      const argFieldsRendered = renderArgsFields({ config, field })
-      const argsRendered = renderFieldArgs({ config, field, argFieldsRendered })
+      const argFieldsRendered = renderArguments({ config, field })
+      const argsRendered = renderArgumentsKey({ config, field, argFieldsRendered })
       const sigRendered = `export interface ${nameRendered} extends _RefDefs._${renderName(namedType)}`
-      code.push(`${sigRendered} {${argsRendered ? `\n${argsRendered}\n` : ``}}`)
-      code.push(`export type ${nameRendered}$Expanded = ${nameRendered}`)
+      code(`${sigRendered} {${argsRendered ? `\n${argsRendered}\n` : ``}}`)
+      code(`export type ${nameRendered}$Expanded = ${nameRendered}`)
     }
   },
 )
 
-const renderArgsFields = createModuleGeneratorRunner<{ field: GraphQLField<any, any> }>(({ config, field, code }) => {
-  const argFieldsRendered = field.args.map(arg => renderArgLike({ config, arg })).join(`\n`)
-  if (argFieldsRendered) {
-    code.push(`{\n${argFieldsRendered}\n}`)
-    code.push(``)
-  }
-})
-
-const renderFieldArgs = createModuleGeneratorRunner<{ field: GraphQLField<any, any>; argFieldsRendered: string }>(
+const renderArgumentsKey = createCodeGenerator<{ field: GraphQLField<any, any>; argFieldsRendered: string }>(
   ({ field, code, argFieldsRendered }) => {
     const argsAnalysis = analyzeArgsNullability(field.args)
 
@@ -351,7 +342,7 @@ const renderFieldArgs = createModuleGeneratorRunner<{ field: GraphQLField<any, a
         ? `\n * ${lead} are required so you may omit this.`
         : `\n * ${lead} are required so you must include this.`
 
-      code.push(`
+      code(`
         /**
          * Arguments for \`${field.name}\` field.${tsDocMessageAboutRequired}
          */
@@ -361,27 +352,36 @@ const renderFieldArgs = createModuleGeneratorRunner<{ field: GraphQLField<any, a
   },
 )
 
-const renderArgLike = createModuleGeneratorRunner<{ arg: GraphQLArgument | GraphQLInputField }>(
+const renderArguments = createCodeGenerator<{ field: GraphQLField<any, any> }>(({ config, field, code }) => {
+  const argFieldsRendered = field.args.map(arg => renderArgumentLike({ config, arg })).join(`\n`)
+  if (argFieldsRendered) {
+    code(`{\n${argFieldsRendered}\n}`)
+    code()
+  }
+})
+
+const renderArgumentLike = createCodeGenerator<{ arg: GraphQLArgument | GraphQLInputField }>(
   ({ config, arg, code }) => {
+    const enumKeyPrefix = isEnumType(Nodes.getNamedType(arg.type)) ? Select.Arguments.enumKeyPrefix : ``
     const typeRendered = renderArgType(arg.type)
     const doc = getDocumentation(config, arg)
-    code.push(doc)
-    code.push(`${arg.name}${Helpers.propOpt(arg.type)}: ${typeRendered}`)
+    code(doc)
+    code(`${enumKeyPrefix}${arg.name}${Helpers.propOpt(arg.type)}: ${typeRendered}`)
   },
 )
 
-const renderArgType = (type: GraphQLType): string => {
-  const sansNullabilityType = getNullableType(type)
+const renderArgType = (type: Nodes.$Schema.GraphQLType): string => {
+  const sansNullabilityType = Nodes.$Schema.getNullableType(type)
 
-  const nullableRendered = isNullableType(type) ? `| undefined | null` : ``
+  const nullableRendered = Nodes.$Schema.isNullableType(type) ? `| undefined | null` : ``
 
-  if (isListType(sansNullabilityType)) {
+  if (Nodes.$Schema.isListType(sansNullabilityType)) {
     const innerType = getNullableType(sansNullabilityType.ofType)
     return `Array<${renderArgType(innerType)}> ${nullableRendered}`
   }
 
-  if (isScalarType(sansNullabilityType)) {
-    if (isCustomScalarType(sansNullabilityType)) {
+  if (Nodes.$Schema.isScalarType(sansNullabilityType)) {
+    if (Nodes.$Schema.isScalarTypeCustom(sansNullabilityType)) {
       const scalarTypeRendered = `$Scalar.${sansNullabilityType.name}Decoded`
       return `${scalarTypeRendered} ${nullableRendered}`
     }

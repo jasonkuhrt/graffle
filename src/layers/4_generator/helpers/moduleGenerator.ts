@@ -1,5 +1,5 @@
 import {
-  createModuleGeneratorRunner,
+  createCodeGenerator,
   type ModuleGeneratorRunner,
   type ModuleGeneratorRunnerImplementation,
 } from './moduleGeneratorRunner.js'
@@ -26,7 +26,7 @@ export interface GeneratedModule<$Name extends string = string> {
 }
 
 export const createModuleGenerator: FactoryModuleGenerator = (name, runnerImplementation) => {
-  const runner = createModuleGeneratorRunner(runnerImplementation)
+  const runner = createCodeGenerator(runnerImplementation)
 
   const generate: ModuleGeneratorRunner = (config) => {
     const content = runner({ config })

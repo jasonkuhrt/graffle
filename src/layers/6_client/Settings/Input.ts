@@ -1,5 +1,5 @@
 import type { GraphQLSchema } from 'graphql'
-import type { Schema } from '../../1_Schema/__.js'
+import type { SchemaIndex } from '../../4_generator/generators/SchemaIndex.js'
 import type { GlobalRegistry } from '../../4_generator/globalRegistry.js'
 import type { WithInput } from './inputIncrementable/inputIncrementable.js'
 
@@ -39,7 +39,7 @@ export type InputStatic<$Schema extends GlobalRegistry.SchemaUnion> =
      * When using root type field methods, this runtime schema is used to assist how arguments on scalars versus objects
      * are constructed into the sent GraphQL document.
      */
-    readonly schemaIndex?: Schema.Index | null
+    readonly schemaIndex?: SchemaIndex | null
     // todo way to hide Relay input pattern of nested input
     // elideInputKey: true,
   }

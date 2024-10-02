@@ -1,7 +1,8 @@
 import { print } from 'graphql'
 import { describe, expect, test } from 'vitest'
 import { db } from '../../../../tests/_/schemas/db.js'
-import { $Index as schemaIndex } from '../../../../tests/_/schemas/kitchen-sink/graffle/modules/SchemaRuntime.js'
+import { $index as customScalarsIndex } from '../../../../tests/_/schemas/kitchen-sink/graffle/modules/RuntimeCustomScalars.js'
+import { $Index as SchemaIndex } from '../../../../tests/_/schemas/kitchen-sink/graffle/modules/SchemaRuntime.js'
 import type * as SelectionSets from '../../../../tests/_/schemas/kitchen-sink/graffle/modules/SelectionSets.js'
 import { Select } from '../../2_Select/__.js'
 import type { Context } from '../types.js'
@@ -17,7 +18,7 @@ const testEachArguments = [
     const [description, selectionSet] = args.length === 1 ? [undefined, args[0]] : args
 
     const context: Context = {
-      schema: schemaIndex,
+      schema: SchemaIndex,
       captures: {
         variables: [],
         customScalarOutputs: [],
@@ -34,7 +35,8 @@ const testEachArguments = [
       `Query`,
       selectionSet as any,
     )
-    const graphqlDocument = toGraphQLDocument(context, [], documentNormalized)
+
+    const graphqlDocument = toGraphQLDocument(context, customScalarsIndex as any, documentNormalized)
     const graphqlDocumentStringFormatted = print(graphqlDocument)
 
     const beforeAfter = `\n`
@@ -69,7 +71,7 @@ describe(`inline fragment`, () => {
 
 describe(`enum`, () => {
   test.each<CasesQuery>([
-    [{ result: { $: { case: `Object1` }, __typename: true } }],
+    [{ result: { $: { $case: `Object1` }, __typename: true } }],
   ])(...testEachArguments)
 })
 

@@ -14,21 +14,30 @@ export type ModuleGeneratorRunnerImplementation<$CustomInput extends object = {}
 ) => void
 
 interface BaseInputInternal extends BaseInput {
-  code: LinesOfGeneratedCode
+  code: CodePusher
 }
 
 interface BaseInput {
   config: Config
 }
 
+type CodePusher = (...lines: (Code | null)[]) => void
+
 type LinesOfGeneratedCode = (Code | null)[]
 
 type Code = string
 
-export const createModuleGeneratorRunner: FactoryModuleGeneratorRunner = (runnerImplementation) => {
+export const createCodeGenerator: FactoryModuleGeneratorRunner = (runnerImplementation) => {
   return (input) => {
     const code: LinesOfGeneratedCode = []
-    runnerImplementation({ ...input, code })
+    const codePusher: CodePusher = (...lines) => {
+      if (lines.length === 0) {
+        code.push(``)
+      } else {
+        code.push(...lines)
+      }
+    }
+    runnerImplementation({ ...input, code: codePusher })
     return code.filter(_ => _ !== null).map(_ => _.trim()).join(`\n`)
   }
 }

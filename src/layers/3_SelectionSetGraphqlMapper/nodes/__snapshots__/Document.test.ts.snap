@@ -559,12 +559,12 @@ exports[`directive > $skip > Query - { object: { 'undefined': undefined, id: tru
 "
 `;
 
-exports[`enum > Query - { result: { '$': { case: 'Object1' }, __typename: true } } 1`] = `
+exports[`enum > Query - { result: { '$': { 'undefined': 'Object1' }, __typename: true } } 1`] = `
 "
 {
   "result": {
     "$": {
-      "case": "Object1"
+      "$case": "Object1"
     },
     "__typename": true
   }

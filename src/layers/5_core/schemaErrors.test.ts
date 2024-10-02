@@ -14,7 +14,7 @@ type CasesQuery = [description: string, queryWithoutTypename: Query, queryWithTy
 // dprint-ignore
 test.each<CasesQuery>([
   [`one result field`, 		              { resultNonNull: { } },                                      { resultNonNull: { __typename: true } }],
-  [`two result fields`, 		            { resultNonNull: { }, result: { $: { case: `ErrorOne` }}},   { resultNonNull: { __typename: true }, result: { $: { case: `ErrorOne` }, __typename: true } }],
+  [`two result fields`, 		            { resultNonNull: { }, result: { $: { $case: `ErrorOne` }}},   { resultNonNull: { __typename: true }, result: { $: { $case: `ErrorOne` }, __typename: true } }],
   [`no result fields`, 		              { id: true, object: { id: true } },                          { id: true, object: { id: true }}],
   [`__typename in fragment`,            { resultNonNull: { ___: { __typename: true  }}},             { resultNonNull: { ___: { __typename: true  }, __typename: true } }],
   [`root field in fragment`,            { ___: { resultNonNull: {} } },                              { ___: { resultNonNull: { __typename: true  }}}],

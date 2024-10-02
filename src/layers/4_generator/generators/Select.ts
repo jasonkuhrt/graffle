@@ -8,55 +8,55 @@ import { ModuleGeneratorSelectionSets } from './SelectionSets.js'
 export const ModuleGeneratorSelect = createModuleGenerator(
   `Select`,
   ({ config, code }) => {
-    code.push(`import * as Data from './${ModuleGeneratorData.name}.js'`)
-    code.push(`import type { Index } from './${ModuleGeneratorSchemaIndex.name}.js'`)
-    code.push(`import type { ResultSet } from '${config.paths.imports.grafflePackage.schema}'`)
-    code.push(`import type * as SelectionSets from './${ModuleGeneratorSelectionSets.name}.js'`)
-    code.push(``)
+    code(`import * as Data from './${ModuleGeneratorData.name}.js'`)
+    code(`import type { Index } from './${ModuleGeneratorSchemaIndex.name}.js'`)
+    code(`import type { ResultSet } from '${config.paths.imports.grafflePackage.schema}'`)
+    code(`import type * as SelectionSets from './${ModuleGeneratorSelectionSets.name}.js'`)
+    code()
 
-    code.push(title1(`Runtime`))
-    code.push(`import { createSelect } from '${config.paths.imports.grafflePackage.client}'`)
-    code.push(`export const Select = createSelect(Data.Name)`)
-    code.push(``)
+    code(title1(`Runtime`))
+    code(`import { createSelect } from '${config.paths.imports.grafflePackage.client}'`)
+    code(`export const Select = createSelect(Data.Name)`)
+    code()
 
-    code.push(title1(`Buildtime`))
-    code.push(``)
+    code(title1(`Buildtime`))
+    code()
 
-    code.push(`export namespace Select {`)
+    code(`export namespace Select {`)
 
-    code.push(typeTitle(config, `Root`))
+    code(typeTitle(config, `Root`))
 
-    code.push(...config.schema.typeMapByKind.GraphQLRootType.map((type) => {
+    code(...config.schema.typeMapByKind.GraphQLRootType.map((type) => {
       return `export type ${type.name}<$SelectionSet extends SelectionSets.${
         renderName(type)
       }> = ResultSet.InferRoot<$SelectionSet, Index, '${type.name}'>`
     }))
 
-    code.push(typeTitle(config, `Object`))
+    code(typeTitle(config, `Object`))
 
     // TODO propagate descriptions to JSDoc
-    code.push(...config.schema.typeMapByKind.GraphQLObjectType.map((type) => {
+    code(...config.schema.typeMapByKind.GraphQLObjectType.map((type) => {
       return `export type ${type.name}<$SelectionSet extends SelectionSets.${
         renderName(type)
       }> = ResultSet.InferObject<$SelectionSet, Index, Index['allTypes']['${type.name}']>`
     }))
 
-    code.push(typeTitle(config, `Union`))
+    code(typeTitle(config, `Union`))
 
-    code.push(...config.schema.typeMapByKind.GraphQLUnionType.map((type) => {
+    code(...config.schema.typeMapByKind.GraphQLUnionType.map((type) => {
       return `export type ${type.name}<$SelectionSet extends SelectionSets.${
         renderName(type)
       }> = ResultSet.InferUnion<$SelectionSet, Index, Index['allTypes']['${type.name}']>`
     }))
 
-    code.push(typeTitle(config, `Interface`))
+    code(typeTitle(config, `Interface`))
 
-    code.push(...config.schema.typeMapByKind.GraphQLInterfaceType.map((type) => {
+    code(...config.schema.typeMapByKind.GraphQLInterfaceType.map((type) => {
       return `export type ${type.name}<$SelectionSet extends SelectionSets.${
         renderName(type)
       }> = ResultSet.InferInterface<$SelectionSet, Index, Index['allTypes']['${type.name}']>`
     }))
 
-    code.push(`}`) // namespace Select
+    code(`}`) // namespace Select
   },
 )

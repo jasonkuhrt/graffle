@@ -6,7 +6,6 @@ import { ModuleGeneratorMethodsDocument } from './MethodsDocument.js'
 import { ModuleGeneratorMethodsRoot } from './MethodsRoot.js'
 import { ModuleGeneratorMethodsSelect } from './MethodsSelect.js'
 import { ModuleGeneratorScalar } from './Scalar.js'
-import { ModuleGeneratorSchemaCustomScalarIndex } from './schemaCustomScalarIndex.js'
 import { ModuleGeneratorSchemaIndex } from './SchemaIndex.js'
 
 export const ModuleGeneratorGlobal = createModuleGenerator(
@@ -16,19 +15,18 @@ export const ModuleGeneratorGlobal = createModuleGenerator(
     const needsDefaultCustomScalarImplementation = hasCustomScalars(config.schema.typeMapByKind)
       && !config.options.customScalars
 
-    code.push(
+    code(
       `import type * as Data from './${ModuleGeneratorData.name}.js'`,
       `import type * as MethodsSelect from './${ModuleGeneratorMethodsSelect.name}.js'`,
       `import type * as MethodsDocument from './${ModuleGeneratorMethodsDocument.name}.js'`,
       `import type * as MethodsRoot from './${ModuleGeneratorMethodsRoot.name}.js'`,
       `import type { Index } from './${ModuleGeneratorSchemaIndex.name}.js'`,
-      `import type * as SchemaCustomScalarIndex from './${ModuleGeneratorSchemaCustomScalarIndex.name}.js'`,
     )
 
     if (config.schema.typeMapByKind.GraphQLScalarTypeCustom.length > 0) {
-      code.push(`import type * as Scalar from './${ModuleGeneratorScalar.name}.js'`)
+      code(`import type * as Scalar from './${ModuleGeneratorScalar.name}.js'`)
     }
-    code.push(``)
+    code()
 
     const defaultSchemaUrlTsDoc = config.options.defaultSchemaUrl
       ? `\n${Code.TSDoc(config.options.defaultSchemaUrl.href)}`
@@ -41,7 +39,7 @@ export const ModuleGeneratorGlobal = createModuleGenerator(
         }`
       }).join(`\n`)
 
-    code.push(`
+    code(`
       declare global {
         export namespace GraffleGlobalTypes {
           export interface Schemas {

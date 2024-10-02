@@ -5,6 +5,7 @@ import type { Config } from '../../src/entrypoints/utilities-for-generated.js'
 import type { Client } from '../../src/layers/6_client/client.js'
 import { CONTENT_TYPE_REC } from '../../src/lib/graphqlHTTP.js'
 import { type SchemaService, serveSchema } from './lib/serveSchema.js'
+import { db } from './schemas/db.js'
 import { Graffle as KitchenSink } from './schemas/kitchen-sink/graffle/__.js'
 import { type Index as KitchenSinkSchemaIndex } from './schemas/kitchen-sink/graffle/modules/SchemaIndex.js'
 import { schema as kitchenSinkSchema } from './schemas/kitchen-sink/schema.js'
@@ -15,9 +16,10 @@ export const createResponse = (body: object) =>
 
 interface Fixtures {
   fetch: Mock<(request: Request) => Promise<Response>>
-  graffle: Client<{ config: Config; schemaIndex: null }>
-  kitchenSink: Client<{ config: Config; schemaIndex: KitchenSinkSchemaIndex }>
   pokemonService: SchemaService
+  graffle: Client<{ config: Config; schemaIndex: null }>
+  kitchenSink: Client<{ config: Config & { name: 'default' }; schemaIndex: KitchenSinkSchemaIndex }>
+  kitchenSinkData: typeof db
 }
 
 export const test = testBase.extend<Fixtures>({
@@ -34,6 +36,9 @@ export const test = testBase.extend<Fixtures>({
     const kitchenSink = KitchenSink.create({ schema: kitchenSinkSchema })
     // @ts-expect-error fixme
     await use(kitchenSink)
+  },
+  kitchenSinkData: async ({}, use) => { // eslint-disable-line
+    await use(db)
   },
   graffle: async ({ fetch: _ }, use) => {
     const graffle = Graffle.create({ schema: new URL(`https://foo.io/api/graphql`) })

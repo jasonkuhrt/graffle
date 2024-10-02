@@ -33,7 +33,12 @@ export const getTypeScriptFormatter = async (): Promise<Formatter | null> => {
           ...defaultDprintConfig,
           ...customFormatterConfig,
         }
-        return formatter.formatText(`memory.ts`, content, config)
+        try {
+          return formatter.formatText(`memory.ts`, content, config)
+        } catch (error) {
+          console.log(`----------\n\n\n\n${content}\n\n\n\n----------`)
+          throw error
+        }
       },
     }
   } catch (error) {

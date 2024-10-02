@@ -1,8 +1,8 @@
 import type { UnionToTuple } from 'type-fest'
 import type { IsTupleMultiple } from '../../../lib/prelude.js'
-import type { Schema } from '../../1_Schema/__.js'
 import { Select } from '../../2_Select/__.js'
 import type { ResultSet } from '../../3_ResultSet/__.js'
+import type { SchemaIndex } from '../../4_generator/generators/SchemaIndex.js'
 import type { InterfaceTypedRequestContext } from '../client.js'
 import type { ResolveOutputReturnRootType } from '../handleOutput.js'
 import type { AddTypenameToSelectedRootTypeResultFields, Config } from '../Settings/Config.js'
@@ -10,7 +10,7 @@ import type { AddTypenameToSelectedRootTypeResultFields, Config } from '../Setti
 // dprint-ignore
 export type DocumentRunner<
   $$Config extends Config,
-  $$Index extends Schema.Index,
+  $$Index extends SchemaIndex,
   $$Document extends Select.Document.SomeDocument,
   $$Name extends Select.Document.GetOperationNames<$$Document> = Select.Document.GetOperationNames<$$Document>
 > = {
@@ -38,7 +38,7 @@ export type DocumentRunner<
 
 // todo maybe bring back these validations, but need to understand the perf impact
 
-// export type Document<$Index extends Schema.Index> =
+// export type Document<$Index extends SchemaIndex> =
 //   {
 //     [name: string]:
 //       $Index['Root']['Query'] extends null    ? { mutation: SelectionSet.Root<$Index, 'Mutation'> } :

@@ -1,13 +1,13 @@
 import { Nodes } from '../../../lib/graphql-plus/_Nodes.js'
 import type { Schema } from '../../1_Schema/__.js'
 import { Select } from '../../2_Select/__.js'
-import type { Field } from '../types.js'
+import { advanceIndex, type Field } from '../types.js'
 import type { GraphQLNodeMapper } from '../types.js'
 import { type SelectionSetContext, toGraphQLSelectionSet } from './SelectionSet.js'
 
 export const toGraphQLField: GraphQLNodeMapper<Nodes.FieldNode, [type: Schema.Output.ObjectLike, field: Field]> = (
   context,
-  location,
+  index,
   type,
   field,
 ) => {
@@ -29,8 +29,13 @@ export const toGraphQLField: GraphQLNodeMapper<Nodes.FieldNode, [type: Schema.Ou
     type: type.fields[field.name] as Schema.SomeField,
   }
 
-  // todo fix any
-  const selectionSet = toGraphQLSelectionSet(context, location, type, field.value as any, selectionSetContext)
+  const selectionSet = toGraphQLSelectionSet(
+    context,
+    advanceIndex(index, field.name),
+    type,
+    field.value as any, // todo fix any
+    selectionSetContext,
+  )
 
   return Nodes.Field({
     name: Nodes.Name({

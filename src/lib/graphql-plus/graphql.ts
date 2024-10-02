@@ -27,6 +27,7 @@ import {
   OperationTypeNode,
 } from 'graphql'
 import type { Errors } from '../errors/__.js'
+import { isScalarTypeAndCustom } from './nodesSchema.js'
 
 export * from './_Nodes.js'
 
@@ -104,10 +105,6 @@ export const isStandardScalarType = (type: GraphQLScalarType) => {
   return type.name in StandardScalarTypeNames
 }
 
-export const isCustomScalarType = (type: GraphQLScalarType) => {
-  return !isStandardScalarType(type)
-}
-
 export const getTypeMapByKind = (schema: GraphQLSchema) => {
   const typeMap = schema.getTypeMap()
   const typeMapValues = Object.values(typeMap)
@@ -127,7 +124,7 @@ export const getTypeMapByKind = (schema: GraphQLSchema) => {
     switch (true) {
       case type instanceof GraphQLScalarType:
         typeMapByKind.GraphQLScalarType.push(type)
-        if (isCustomScalarType(type)) {
+        if (isScalarTypeAndCustom(type)) {
           typeMapByKind.GraphQLScalarTypeCustom.push(type)
         } else {
           typeMapByKind.GraphQLScalarTypeStandard.push(type)

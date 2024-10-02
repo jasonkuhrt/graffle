@@ -14,7 +14,7 @@ const G = Graffle.create
 const defaultGraffle = Graffle.create({ schema })
 
 const resultFieldSelect =
-  Graffle.Select.Query({ resultNonNull: { $: { case: 'Object1' }, __typename: true } })['resultNonNull']
+  Graffle.Select.Query({ resultNonNull: { $: { $case: 'Object1' }, __typename: true } })['resultNonNull']
 
 describe('default is errors thrown, no envelope, no schema errors', async () => {
   const graffle = G({

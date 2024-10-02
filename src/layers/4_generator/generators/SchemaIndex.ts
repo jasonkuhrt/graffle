@@ -1,21 +1,75 @@
 import { getNamedType, isUnionType } from 'graphql'
 import { Code } from '../../../lib/Code.js'
 import { hasMutation, hasQuery, hasSubscription } from '../../../lib/graphql-plus/graphql.js'
+import type { Schema } from '../../1_Schema/__.js'
+import type { CodecString } from '../../3_SelectionSetGraphqlMapper/types.js'
+import type { GlobalRegistry } from '../globalRegistry.js'
 import { createModuleGenerator } from '../helpers/moduleGenerator.js'
 import { ModuleGeneratorData } from './Data.js'
 import { ModuleGeneratorMethodsRoot } from './MethodsRoot.js'
 import { ModuleGeneratorSchemaBuildtime } from './SchemaBuildtime.js'
+
+export type CustomScalarsIndex = {
+  [key: string]: CodecString | CustomScalarsIndex
+}
+
+/**
+ * A generic schema index type. Any particular schema index will be a subtype of this, with
+ * additional specificity such as on objects where here `Record` is used.
+ */
+// todo make all readonly?
+export interface SchemaIndex {
+  name: GlobalRegistry.SchemaNames
+  RootTypesPresent: ('Query' | 'Mutation' | 'Subscription')[]
+  RootUnion: Schema.Output.RootType
+  Root: {
+    Query: null | Schema.Output.ObjectQuery
+    Mutation: null | Schema.Output.ObjectMutation
+    Subscription: null | Schema.Output.ObjectSubscription
+  }
+  allTypes: Record<
+    string,
+    | Schema.Hybrid.Enum
+    | Schema.Output.ObjectQuery
+    | Schema.Output.ObjectMutation
+    | Schema.Output.Object$2
+    | Schema.Output.Union
+    | Schema.Output.Interface
+  >
+  objects: Record<string, Schema.Output.Object$2>
+  unions: Record<string, Schema.Output.Union>
+  interfaces: Record<string, Schema.Output.Interface>
+  customScalars: {
+    input: CustomScalarsIndex
+  }
+  error: {
+    objects: Record<string, Schema.Output.Object$2>
+    objectsTypename: Record<string, { __typename: string }>
+    rootResultFields: {
+      Query: Record<string, string>
+      Mutation: Record<string, string>
+      Subscription: Record<string, string>
+    }
+  }
+}
+
+const identifiers = {
+  Utilities: `Utilities`,
+}
 
 export const ModuleGeneratorSchemaIndex = createModuleGenerator(
   `SchemaIndex`,
   ({ config, code }) => {
     const SchemaBuildtimeNamespace = `Schema`
     const MethodsRootNamespace = `MethodsRoot`
-    code.push(`/* eslint-disable */`)
-    code.push(`import type * as Data from './${ModuleGeneratorData.name}.js'`)
-    code.push(`import type * as ${SchemaBuildtimeNamespace} from './${ModuleGeneratorSchemaBuildtime.name}.js'`)
-    code.push(`import type * as ${MethodsRootNamespace} from './${ModuleGeneratorMethodsRoot.name}.js'`)
-    code.push(``)
+    code(`/* eslint-disable */`)
+    code(`
+      import type * as Data from './${ModuleGeneratorData.name}.js'
+      import type * as ${SchemaBuildtimeNamespace} from './${ModuleGeneratorSchemaBuildtime.name}.js'
+      import type * as ${MethodsRootNamespace} from './${ModuleGeneratorMethodsRoot.name}.js'
+      import type * as ${identifiers.Utilities} from '${config.paths.imports.grafflePackage.utilitiesForGenerated}'
+    `)
+    code()
 
     const rootTypesPresence = {
       Query: hasQuery(config.schema.typeMapByKind),
@@ -40,7 +94,7 @@ export const ModuleGeneratorSchemaIndex = createModuleGenerator(
       _ => [_.name, `${SchemaBuildtimeNamespace}.Enum.${_.name}`] as const,
     )
 
-    code.push(Code.export$(
+    code(Code.export$(
       Code.interface$(
         `Index`,
         Code.objectFrom({
@@ -65,8 +119,10 @@ export const ModuleGeneratorSchemaIndex = createModuleGenerator(
             ...interfaces,
           ]),
           objects: Code.objectFromEntries(objects),
+          // schemaIndex: identifiers.customScalarsIndex,
           unions: Code.objectFromEntries(unions),
           interfaces: Code.objectFromEntries(interfaces),
+          customScalars: `${identifiers.Utilities}.SchemaIndexBase['customScalars']`,
           // todo jsdoc comment saying:
           // Objects that match this pattern name: /.../
           error: Code.objectFrom({

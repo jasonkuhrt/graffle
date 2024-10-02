@@ -580,7 +580,7 @@ export namespace Query {
      * All arguments are required so you must include this.
      */
     $: {
-      case: _RefDefs._Case
+      $case: _RefDefs._Case
     }
   }
   export type result$Expanded = result
@@ -590,7 +590,7 @@ export namespace Query {
      * No arguments are required so you may omit this.
      */
     $?: {
-      case?: _RefDefs._Case | undefined | null
+      $case?: _RefDefs._Case | undefined | null
     }
   }
   export type resultNonNull$Expanded = resultNonNull
@@ -599,7 +599,7 @@ export namespace Query {
   export type $string = $Select.Indicator.NoArgsIndicator
 
   export type stringWithArgEnum$SelectionSetArguments = {
-    ABCEnum?: _RefDefs._ABCEnum | undefined | null
+    $ABCEnum?: _RefDefs._ABCEnum | undefined | null
   }
   export type stringWithArgEnum$SelectionSet = $Utilities.Simplify<
     $Select.Bases.Base & {

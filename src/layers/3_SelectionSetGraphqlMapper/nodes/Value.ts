@@ -1,99 +1,82 @@
 import type { ValueNode } from 'graphql'
 import { Nodes } from '../../../lib/graphql-plus/_Nodes.js'
-import { casesExhausted } from '../../../lib/prelude.js'
-import { Schema } from '../../1_Schema/__.js'
-import type { GraphQLNodeMapper } from '../types.js'
+import { advanceIndex, type CodecString, type GraphQLNodeMapper, isCodec } from '../types.js'
 
-const scalarNameToGraphQLNodeKind = {
-  String: Nodes.Kind.STRING,
-  Int: Nodes.Kind.INT,
-  Boolean: Nodes.Kind.BOOLEAN,
-  ID: Nodes.Kind.STRING,
-  Float: Nodes.Kind.FLOAT,
-} satisfies Record<string, Nodes.$KindGroups.StandardScalar>
+export const toGraphQLValue: ValueMapper = (context, index, value) => {
+  // todo remove? unused.
+  // const hookResult = context.hooks?.value?.(context, index, value)
+  // if (hookResult) return hookResult
 
-type SupportedJavaScriptValues = string | boolean
+  if (isCodec(index)) {
+    return applyCodec(index, value)
+  }
 
-const javaScriptScalarToGraphQLNodeKind = {
-  string: Nodes.Kind.STRING,
-  boolean: Nodes.Kind.BOOLEAN,
-} satisfies Record<string, Nodes.$KindGroups.StandardScalar>
-
-export const toGraphQLValue: GraphQLNodeMapper<ValueNode, [type: Schema.Input.Any, value: unknown]> = (
-  context,
-  location,
-  type,
-  value,
-) => {
   if (value === null) {
-    return Nodes.NullValue({})
+    return Nodes.NullValue()
   }
 
-  const unwrappedType: Schema.Input.AnyExceptNull = Schema.Input.unwrapNullable(type)
-
-  if (unwrappedType.kind === `Enum`) {
-    return Nodes.EnumValue({
-      value: String(value),
-    })
-  }
-
-  if (unwrappedType.kind === `Scalar`) {
-    // eslint-disable-next-line
-    // @ts-ignore fixme - passes on build but fails on type check ??
-    const kind = scalarNameToGraphQLNodeKind[unwrappedType.name] as undefined | Nodes.$KindGroups.StandardScalar
-    // @ts-expect-error fixme
-    const encodedValue = unwrappedType.codec.encode(value)
-
-    if (!kind) {
-      // custom scalar
-
-      // @ts-expect-error custom scalar encoding could fall out of range.
-      const kind = javaScriptScalarToGraphQLNodeKind[typeof encodedValue] as
-        | undefined
-        | Nodes.$KindGroups.StandardScalar
-
-      if (!kind) {
-        throw new Error(`Unsupported encoded type for custom scalar: ${typeof encodedValue}`)
-      }
-
-      // @ts-expect-error kinds and value not aligning
-      return Nodes.Value({
-        kind,
-        value: encodedValue as SupportedJavaScriptValues,
-      })
-    }
-
-    return Nodes.Value({
-      kind,
-      value: encodedValue as any,
-    })
-  }
-
-  if (unwrappedType.kind === `list`) {
-    if (!Array.isArray(value)) {
-      throw new Error(`Expected array for list type, got: ${typeof value}`)
-    }
-
+  if (Array.isArray(value)) {
     return Nodes.ListValue({
-      values: value.map(oneValue => toGraphQLValue(context, location, unwrappedType.type, oneValue)),
+      values: value.map(oneValue =>
+        toGraphQLValue(
+          context,
+          index,
+          oneValue,
+        )
+      ),
     })
   }
 
-  if (unwrappedType.kind === `InputObject`) { // eslint-disable-line
+  if (typeof value === `object`) {
     return Nodes.ObjectValue({
-      // @ts-expect-error fixme
       fields: Object.entries(value).map(([fieldName, fieldValue]) => {
-        const fieldType = Schema.readMaybeThunk(unwrappedType.fields[fieldName].type)
         return Nodes.ObjectField({
-          name: {
-            kind: Nodes.Kind.NAME,
-            value: fieldName,
-          },
-          value: toGraphQLValue(context, location, fieldType, fieldValue),
+          name: Nodes.Name({ value: fieldName }),
+          value: toGraphQLValue(context, advanceIndex(index, fieldName), fieldValue),
         })
       }),
     })
   }
 
-  throw casesExhausted(unwrappedType)
+  if (typeof value === `string`) {
+    if (context.value.isEnum) {
+      return Nodes.EnumValue({ value: String(value) })
+    }
+    return Nodes.StringValue({ value })
+  }
+
+  if (typeof value === `boolean`) {
+    return Nodes.BooleanValue({ value })
+  }
+
+  if (typeof value === `number`) {
+    return Nodes.FloatValue({ value: String(value) })
+  }
+
+  throw new Error(`Unsupported value: ${String(value)}`)
+}
+
+export type ValueMapper = GraphQLNodeMapper<
+  ValueNode,
+  [value: unknown],
+  { value: ValueContext }
+>
+
+type ValueContext = {
+  isEnum: boolean
+}
+
+const applyCodec = (
+  codec: CodecString,
+  value: unknown,
+): Nodes.ListValueNode | Nodes.StringValueNode | Nodes.NullValueNode => {
+  if (value === null) return Nodes.NullValue()
+
+  if (Array.isArray(value)) {
+    return Nodes.ListValue({
+      values: value.map(oneValue => applyCodec(codec, oneValue)),
+    })
+  }
+
+  return Nodes.StringValue({ value: codec.encode(value) })
 }

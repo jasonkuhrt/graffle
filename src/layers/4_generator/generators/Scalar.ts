@@ -13,42 +13,42 @@ export const ModuleGeneratorScalar = createModuleGenerator(
     const StandardScalarNamespace = `StandardScalar`
 
     if (needsDefaultCustomScalarImplementation) {
-      code.push(`import * as ${StandardScalarNamespace} from '${config.paths.imports.grafflePackage.scalars}'`)
+      code(`import * as ${StandardScalarNamespace} from '${config.paths.imports.grafflePackage.scalars}'`)
     }
 
     if (hasCustomScalars(config.schema.typeMapByKind)) {
-      code.push(`import type { Schema } from '${config.paths.imports.grafflePackage.schema}'`)
-      code.push(`import * as ${CustomScalarsNamespace} from '${config.paths.imports.customScalarCodecs}'`)
-      code.push(``)
+      code(`import type { Schema } from '${config.paths.imports.grafflePackage.schema}'`)
+      code(`import * as ${CustomScalarsNamespace} from '${config.paths.imports.customScalarCodecs}'`)
+      code()
     }
 
-    code.push(`export * from '${config.paths.imports.grafflePackage.scalars}'`)
+    code(`export * from '${config.paths.imports.grafflePackage.scalars}'`)
     if (config.options.customScalars) {
-      code.push(`export * from '${config.paths.imports.customScalarCodecs}'`)
+      code(`export * from '${config.paths.imports.customScalarCodecs}'`)
       const names = config.schema.typeMapByKind.GraphQLScalarTypeCustom.map((scalar) => scalar.name)
-      code.push(`export { ${names.join(`, `)} } from '${config.paths.imports.customScalarCodecs}'`)
+      code(`export { ${names.join(`, `)} } from '${config.paths.imports.customScalarCodecs}'`)
     }
-    code.push(``)
+    code()
 
     for (const scalar of config.schema.typeMapByKind.GraphQLScalarTypeCustom) {
-      code.push(typeTitle2(`custom scalar type`)(scalar))
-      code.push(``)
-      code.push(`export type ${scalar.name} = typeof ${CustomScalarsNamespace}.${scalar.name}`)
-      code.push(
+      code(typeTitle2(`custom scalar type`)(scalar))
+      code()
+      code(`export type ${scalar.name} = typeof ${CustomScalarsNamespace}.${scalar.name}`)
+      code(
         `// Without this we get error:
          // "Exported type alias 'DateDecoded' has or is using private name 'Date'."`,
       )
-      code.push(`type ${scalar.name}_ = typeof ${CustomScalarsNamespace}.${scalar.name}`)
-      code.push(`export type ${scalar.name}Decoded = Schema.Scalar.GetDecoded<${scalar.name}_>`)
-      code.push(`export type ${scalar.name}Encoded = Schema.Scalar.GetEncoded<${scalar.name}_>`)
-      code.push(``)
+      code(`type ${scalar.name}_ = typeof ${CustomScalarsNamespace}.${scalar.name}`)
+      code(`export type ${scalar.name}Decoded = Schema.Scalar.GetDecoded<${scalar.name}_>`)
+      code(`export type ${scalar.name}Encoded = Schema.Scalar.GetEncoded<${scalar.name}_>`)
+      code()
     }
 
     if (needsDefaultCustomScalarImplementation) {
       console.log(
         `WARNING: Custom scalars detected in the schema, but you have not created a custom scalars module to import implementations from.`,
       )
-      code.push(
+      code(
         config.schema.typeMapByKind.GraphQLScalarTypeCustom
           .flatMap((_) => {
             return [

@@ -9,7 +9,7 @@ export const ModuleGenerator__ = createModuleGenerator(
   `__`,
   ({ config, code }) => {
     const namespace = config.name === defaultName ? defaultNamespace : capitalizeFirstLetter(config.name)
-    code.push(
+    code(
       `export * as ${namespace} from './${ModuleGenerator_.name}.js'`,
     )
     return code
