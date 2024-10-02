@@ -30,16 +30,17 @@ const getAliasesField = (fieldName: string, ss: Select.SelectionSet.AnySelection
 const getDataFieldInSelectionSet = (
   fieldName: string,
   selectionSet: Select.SelectionSet.AnySelectionSet,
-): {
+): null | {
   fieldName: string
   selectionSet: Select.SelectionSet.AnyExceptAlias
 } => {
   const result = getDataFieldInSelectionSet_(fieldName, selectionSet)
   if (result) return result
 
-  throw new Error(
-    `Cannot decode field "${fieldName}" in result data. That field was not found in the selection set.`,
-  )
+  return null
+  // throw new Error(
+  //   `Cannot decode field "${fieldName}" in result data. That field was not found in the selection set.`,
+  // )
 }
 
 const getDataFieldInSelectionSet_ = (
@@ -104,10 +105,10 @@ export const decode = <$Data extends ExecutionResult['data']>(
 
   return mapValues(data, (value, fieldName) => {
     const selectionSetField = getDataFieldInSelectionSet(fieldName, selectionSet)
+    if (!selectionSetField) return value
 
     const schemaField = objectType.fields[selectionSetField.fieldName]
     if (!schemaField) throw new Error(`Field not found in schema: ${String(selectionSetField.fieldName)}`)
-
     const schemaFieldType = readMaybeThunk(schemaField.type)
     const schemaFieldTypeSansNonNull = Output.unwrapNullable(schemaFieldType) as Output.Named | Output.List<any>
     const v2 = decodeCustomScalarValue(schemaFieldTypeSansNonNull, selectionSetField.selectionSet, value as any)

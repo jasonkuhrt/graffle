@@ -40,7 +40,7 @@ describe(`document`, () => {
 })
 
 test(`.raw() throws if errors array non-empty`, async () => {
-  await expect(graffle.throws().rawString({ document: `query {}` })).rejects.toMatchInlineSnapshot(
+  await expect(graffle.throws().rawString({ document: `query { foo }` })).rejects.toMatchInlineSnapshot(
     `[ContextualAggregateError: One or more errors in the execution result.]`,
   )
 })
