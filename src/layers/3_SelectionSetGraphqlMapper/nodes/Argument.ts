@@ -6,7 +6,11 @@ import { toGraphQLValue } from './Value.js'
 
 export const toGraphQLArgument: GraphQLNodeMapper<
   Nodes.ArgumentNode,
-  [arg: { name: string; type: Schema.Input.Any; value: Select.Arguments.ArgValue }]
+  [arg: {
+    name: string
+    type: Schema.Input.Any
+    value: Select.Arguments.ArgValue
+  }]
 > = (
   context,
   location,

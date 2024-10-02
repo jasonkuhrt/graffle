@@ -1,73 +1,51 @@
-import type { RootTypeName } from '../../lib/graphql-plus/graphql.js'
+import { Nodes, operationTypeNameToRootTypeName, type RootTypeName } from '../../lib/graphql-plus/graphql.js'
 import type { Schema } from '../1_Schema/__.js'
-import { Select } from '../2_Select/__.js'
 
-export const injectTypenameOnResultFields = (
-  input: {
+export const injectTypenameOnRootResultFields = (
+  { document, operationName, schema }: {
     operationName?: string | undefined
     schema: Schema.Index
-    document: Select.Document.DocumentNormalized
+    document: Nodes.DocumentNode
   },
-): Select.Document.DocumentNormalized => {
-  const { document, operationName, schema } = input
-  const operation = operationName ? document.operations[operationName] : Object.values(document.operations)[0]!
+): void => {
+  const operationDefinition = document.definitions.find(_ =>
+    _.kind === Nodes.Kind.OPERATION_DEFINITION && (operationName ? _.name?.value === operationName : true)
+  ) as Nodes.OperationDefinitionNode | undefined
 
-  if (!operation) {
+  if (!operationDefinition) {
     throw new Error(`Operation not found`)
   }
 
-  injectTypenameOnRootResultFields({
-    rootTypeName: operation.rootType,
+  injectTypenameOnRootResultFields_({
+    rootTypeName: operationTypeNameToRootTypeName[operationDefinition.operation],
     schema,
-    selectionSet: operation.selectionSet,
+    selectionSet: operationDefinition.selectionSet,
   })
-
-  return document
 }
 
-const injectTypenameOnRootResultFields = (
-  input: {
+const injectTypenameOnRootResultFields_ = (
+  { selectionSet, schema, rootTypeName }: {
     schema: Schema.Index
-    selectionSet: Select.SelectionSet.AnySelectionSet
     rootTypeName: RootTypeName
+    selectionSet: Nodes.SelectionSetNode
   },
 ): void => {
-  const { selectionSet, schema, rootTypeName } = input
-
-  for (const [rootFieldName, fieldValue] of Object.entries(selectionSet)) {
-    const field = Select.parseSelection(rootFieldName, fieldValue)
-
-    switch (field.type) {
-      case `InlineFragment`: {
-        // we need to check contents for result root fields
-        for (const inlineFragmentSelectionSet of field.selectionSets) {
-          injectTypenameOnRootResultFields({
-            rootTypeName,
-            schema,
-            selectionSet: inlineFragmentSelectionSet,
-          })
+  for (const selection of selectionSet.selections) {
+    switch (selection.kind) {
+      case Nodes.Kind.FIELD: {
+        if (schema.error.rootResultFields[rootTypeName][selection.name.value]) {
+          // @ts-expect-error selections is typed as readonly
+          // @see https://github.com/graphql/graphql-js/discussions/4212
+          selection.selectionSet?.selections.push(Nodes.Field({ name: Nodes.Name({ value: `__typename` }) }))
         }
         continue
       }
-      case `SelectionSet`: {
-        if (schema.error.rootResultFields[rootTypeName][rootFieldName]) {
-          field.selectionSet[`__typename`] = true
-        }
-        continue
-      }
-      case `Alias`: {
-        if (schema.error.rootResultFields[rootTypeName][rootFieldName]) {
-          for (const alias of field.aliases) {
-            // Casting type: This alias is for a field whose type is in rootResultFields
-            // so it must be a selection set (e.g. not an indicator)
-            const aliasSelectionSet = alias[1] as Select.SelectionSet.AnySelectionSet
-            aliasSelectionSet[`__typename`] = true
-          }
-        }
-        continue
-      }
-      default: {
-        continue
+      case Nodes.Kind.INLINE_FRAGMENT: {
+        injectTypenameOnRootResultFields_({
+          rootTypeName,
+          schema,
+          selectionSet: selection.selectionSet,
+        })
       }
     }
   }

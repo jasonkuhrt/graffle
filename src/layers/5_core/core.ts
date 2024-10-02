@@ -1,4 +1,4 @@
-import { type ExecutionResult, print } from 'graphql'
+import { type ExecutionResult, parse, print } from 'graphql'
 import { Anyware } from '../../lib/anyware/__.js'
 import {
   OperationTypeAccessTypeMap,
@@ -27,7 +27,7 @@ import {
   type MethodModeGetReads,
 } from '../6_client/transportHttp/request.js'
 import { type HookMap, hookNamesOrderedBySequence, type HookSequence } from './hooks.js'
-import { injectTypenameOnResultFields } from './schemaErrors.js'
+import { injectTypenameOnRootResultFields } from './schemaErrors.js'
 
 export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
   // If core errors caused by an abort error then raise it as a direct error.
@@ -41,47 +41,49 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
   hookNamesOrderedBySequence,
   hooks: {
     encode: ({ input }) => {
-      let document: string
-      let variables: StandardScalarVariables | undefined = undefined
+      let documentString: string
 
-      switch (input.interface) {
-        case `raw`: {
-          const documentPrinted = typeof input.document === `string`
+      const isWillInjectTypename = input.context.config.output.errors.schema && input.context.schemaIndex
+
+      if (isWillInjectTypename) {
+        const documentObject = input.interface === `raw`
+          ? typeof input.document === `string`
+            ? parse(input.document)
+            : input.document
+          : SelectionSetGraphqlMapper.toGraphQL({
+            schema: input.context.schemaIndex,
+            document: input.document,
+          })
+
+        injectTypenameOnRootResultFields({
+          document: documentObject,
+          operationName: input.operationName,
+          schema: input.context.schemaIndex!,
+        })
+
+        documentString = print(documentObject)
+      } else {
+        documentString = input.interface === `raw`
+          ? typeof input.document === `string`
             ? input.document
             : print(input.document)
-          document = documentPrinted
-          variables = input.variables
-          break
-        }
-        case `typed`: {
-          // todo turn inputs into variables
-          variables = undefined
-          document = print(SelectionSetGraphqlMapper.toGraphQLDocument(
-            {
-              schema: input.context.schemaIndex,
-              captures: { customScalarOutputs: [], variables: [] },
-            },
-            [],
-            input.context.config.output.errors.schema
-              ? injectTypenameOnResultFields({
-                operationName: input.operationName,
-                schema: input.context.schemaIndex,
-                document: input.document,
-              })
-              : input.document,
-          ))
-          break
-        }
-        default:
-          throw casesExhausted(input)
+          : print(SelectionSetGraphqlMapper.toGraphQL({
+            schema: input.context.schemaIndex,
+            document: input.document,
+          }))
       }
+
+      const variables: StandardScalarVariables | undefined = input.interface === `raw`
+        ? input.variables
+        // todo turn inputs into variables
+        : undefined
 
       switch (input.transport) {
         case `http`: {
           return {
             ...input,
             url: input.schema,
-            query: document,
+            query: documentString,
             variables,
           }
         }
@@ -89,7 +91,7 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
           return {
             ...input,
             schema: input.schema,
-            query: document,
+            query: documentString,
             variables,
           }
         }
@@ -220,6 +222,12 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
           throw casesExhausted(input)
       }
     },
+    // todo
+    // Given that we manipulate the selection set in encode, and given decode relies on the sent selection set
+    // it follows that the decode hook depends on the output of the encode hook. that means we need to plumb
+    // through the hooks that data built during encode. Yet encode doesn't output it currently, but rather prints it.
+    // Hooks could have a new optional field "schema". When present certain enhanced features would be allowed.
+    // like custom scalars and result fields.
     decode: ({ input }) => {
       switch (input.interface) {
         // todo this depends on the return mode

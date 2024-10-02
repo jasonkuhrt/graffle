@@ -1,1 +1,1 @@
-export { toGraphQLDocument } from './nodes/Document.js'
+export { toGraphQL } from './helpers.js'

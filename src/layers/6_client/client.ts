@@ -59,6 +59,7 @@ export type SelectionSetOrArgs = object
 export interface RequestContext {
   config: Config
   state: State
+  schemaIndex: Schema.Index | null
 }
 
 export interface InterfaceTypedRequestContext extends RequestContext {
@@ -128,6 +129,7 @@ const createWithState = (
     // @ts-expect-error fixme
     config: inputToConfig(state.input),
     state,
+    schemaIndex: state.input.schemaIndex ?? null,
   }
 
   /**
