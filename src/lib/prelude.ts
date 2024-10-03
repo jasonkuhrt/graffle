@@ -487,21 +487,6 @@ export const identityProxy = new Proxy({}, {
   get: () => (value: unknown) => value,
 })
 
-// todo just for tets, move to test lib
-
-export type IsEqual<A, B> = A extends B ? B extends A ? true : false : false
-
-export type AssertIsEqual<A, B> = IsEqual<A, B> extends true ? true : never
-
-export const AssertIsEqual = <A, B>(
-  ..._: IsEqual<A, B> extends false ? [reason: {
-      message: `Types not equal`
-      A: SimplifyDeep<A>
-      B: SimplifyDeep<B>
-    }]
-    : []
-) => undefined
-
 export type IfExtendsElse<$Type, $Extends, $Else> = $Type extends $Extends ? $Type : $Else
 
 // dprint-ignore
@@ -573,9 +558,6 @@ export type OmitKeysWithPrefix<$Object extends object, $Prefix extends string> =
   ]: $Object[$Key]
 }
 
-AssertIsEqual<OmitKeysWithPrefix<{ a: 1; b: 2 }, 'a'>, { a: 1; b: 2 }>()
-AssertIsEqual<OmitKeysWithPrefix<{ foo_a: 1; b: 2 }, 'foo'>, { b: 2 }>()
-
 export const getFromEnumLooselyOrThrow = <
   $Record extends { [_ in keyof $Record]: unknown },
   $Key extends string,
@@ -616,3 +598,9 @@ export const keysStrict = <T extends object>(obj: T): (keyof T)[] => {
 }
 
 export type HasKeys<T> = keyof T extends never ? false : true
+
+export type IsHasIndexType<T> = string extends keyof T ? true : false
+
+export const isString = (value: unknown): value is string => {
+  return typeof value === 'string'
+}
