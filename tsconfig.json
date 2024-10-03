@@ -29,6 +29,6 @@
     "isolatedModules": false,
     "verbatimModuleSyntax": true
   },
-  "include": ["src", "tests", "examples", "scripts"],
+  "include": ["src", "tests", "examples", "scripts", "sandbox.ts"],
   "exclude": ["build"]
 }

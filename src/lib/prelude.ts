@@ -614,3 +614,5 @@ export type StringKeyof<T> = keyof T & string
 export const keysStrict = <T extends object>(obj: T): (keyof T)[] => {
   return Object.keys(obj) as (keyof T)[]
 }
+
+export type HasKeys<T> = keyof T extends never ? false : true

@@ -120,6 +120,10 @@ export const Document: Constructor<DocumentNode> = (document) => {
   }
 }
 
+export const isDocumentNode = (value: unknown): value is DocumentNode => {
+  return typeof value === `object` && value !== null && `kind` in value && value.kind === `Document`
+}
+
 export const OperationDefinition: Constructor<OperationDefinitionNode> = (operationDefinition) => {
   return {
     kind: Kind.OPERATION_DEFINITION,
