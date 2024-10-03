@@ -1,3 +1,4 @@
+import type { Simplify } from 'type-fest'
 import { AssertIsEqual, type ExcludeNull, type GetKeyOr, type StringKeyof } from '../../../lib/prelude.js'
 import type { TSError } from '../../../lib/TSError.js'
 import type { Schema } from '../../1_Schema/__.js'
@@ -40,10 +41,10 @@ export type InferObject<$SelectionSet, $Schema extends SchemaIndex, $Node extend
     // todo what about when scalars wildcard is combined with other fields like relations?
     ? InferSelectScalarsWildcard<$SelectionSet, $Schema,$Node>
     :
-      (
+      Simplify<(
         & InferSelectionNonSelectAlias<$SelectionSet, $Schema, $Node>
         & InferSelectionSelectAlias<$SelectionSet, $Schema, $Node>
-      )
+      )>
 
 // dprint-ignore
 type InferSelectionNonSelectAlias<$SelectionSet , $Schema extends SchemaIndex, $Node extends Schema.Output.Object$2> =
