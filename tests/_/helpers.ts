@@ -19,6 +19,7 @@ interface Fixtures {
   pokemonService: SchemaService
   graffle: Client<{ config: Config; schemaIndex: null }>
   kitchenSink: Client<{ config: Config & { name: 'default' }; schemaIndex: KitchenSinkSchemaIndex }>
+  kitchenSinkHttp: Client<{ config: Config & { name: 'default' }; schemaIndex: KitchenSinkSchemaIndex }>
   kitchenSinkData: typeof db
 }
 
@@ -34,6 +35,11 @@ export const test = testBase.extend<Fixtures>({
   },
   kitchenSink: async ({ fetch: _ }, use) => {
     const kitchenSink = KitchenSink.create({ schema: kitchenSinkSchema })
+    // @ts-expect-error fixme
+    await use(kitchenSink)
+  },
+  kitchenSinkHttp: async ({ fetch: _ }, use) => {
+    const kitchenSink = KitchenSink.create({ schema: `https://foo.io/api/graphql` })
     // @ts-expect-error fixme
     await use(kitchenSink)
   },
