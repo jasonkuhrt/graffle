@@ -1,4 +1,3 @@
-import _ from 'json-bigint'
 import fs from 'node:fs/promises'
 import { type Config, createConfig, type Input } from './config.js'
 import { ModuleGenerator_ } from './generators/_.js'

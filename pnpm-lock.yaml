@@ -63,9 +63,6 @@ importers:
       '@types/express':
         specifier: ^5.0.0
         version: 5.0.0
-      '@types/json-bigint':
-        specifier: ^1.0.4
-        version: 1.0.4
       '@types/node':
         specifier: ^22.7.4
         version: 22.7.4
@@ -138,9 +135,6 @@ importers:
       jsdom:
         specifier: ^25.0.1
         version: 25.0.1
-      json-bigint:
-        specifier: ^1.0.0
-        version: 1.0.0
       publint:
         specifier: ^0.2.11
         version: 0.2.11
@@ -1106,9 +1100,6 @@ packages:
   '@types/http-errors@2.0.4':
     resolution: {integrity: sha512-D0CFMMtydbJAegzOyHjtiKPLlvnm3iTZyZRSZoLq2mRhDdmLfIWOCYPfQJ4cu2erKghU++QvjcUjp/5h7hESpA==}
 
-  '@types/json-bigint@1.0.4':
-    resolution: {integrity: sha512-ydHooXLbOmxBbubnA7Eh+RpBzuaIiQjh8WGJYQB50JFGFrdxW7JzVlyEV7fAXw0T2sqJ1ysTneJbiyNLqZRAag==}
-
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
 
@@ -1597,9 +1588,6 @@ packages:
 
   before-after-hook@2.2.3:
     resolution: {integrity: sha512-NzUnlZexiaH/46WDhANlyR2bXRopNg4F/zuSA3OpZnllCUgRaOF2znDioDWrmbNVsuZk6l9pMquQB38cfBZwkQ==}
-
-  bignumber.js@9.1.2:
-    resolution: {integrity: sha512-2/mKyZH9K85bzOEfhXDBFZTGd1CTs+5IHpeFQo9luiBG7hghdC851Pj2WAhb6E3R6b9tZj/XKhbg4fum+Kepug==}
 
   birpc@0.2.17:
     resolution: {integrity: sha512-+hkTxhot+dWsLpp3gia5AkVHIsKlZybNT5gIYiDlNzJrmYPcTM9k5/w2uaj3IPpd7LlEYpmCj4Jj1nC41VhDFg==}
@@ -2691,9 +2679,6 @@ packages:
     peerDependenciesMeta:
       canvas:
         optional: true
-
-  json-bigint@1.0.0:
-    resolution: {integrity: sha512-SiPv/8VpZuWbvLSMtTDU8hEfrZWg/mH/nV/b4o0CYbSxu1UIQPLdwKOCIyLQX+VIPO5vrLX3i8qtqFyhdPSUSQ==}
 
   json-buffer@3.0.1:
     resolution: {integrity: sha512-4bV5BfR2mqfQTJm+V5tPPdf+ZpuhiIvTuAB5g8kcrXOZpTT/QwwVRWBywX1ozr6lEuPdbHxwaJlm9G6mI2sfSQ==}
@@ -4912,8 +4897,6 @@ snapshots:
 
   '@types/http-errors@2.0.4': {}
 
-  '@types/json-bigint@1.0.4': {}
-
   '@types/json-schema@7.0.15': {}
 
   '@types/json5@0.0.29': {}
@@ -5530,8 +5513,6 @@ snapshots:
 
   before-after-hook@2.2.3: {}
 
-  bignumber.js@9.1.2: {}
-
   birpc@0.2.17: {}
 
   brace-expansion@1.1.11:
@@ -6001,7 +5982,7 @@ snapshots:
       - supports-color
       - typescript
 
-  eslint-config-standard@13.0.1(eslint-plugin-import@2.23.3(@typescript-eslint/parser@5.0.0(eslint@9.11.1)(typescript@4.4.3))(eslint-import-resolver-typescript@2.5.0)(eslint@9.11.1))(eslint-plugin-node@11.1.0(eslint@9.11.1))(eslint-plugin-promise@4.2.1)(eslint-plugin-standard@4.0.0(eslint@9.11.1))(eslint@9.11.1):
+  eslint-config-standard@13.0.1(eslint-plugin-import@2.23.3)(eslint-plugin-node@11.1.0(eslint@9.11.1))(eslint-plugin-promise@4.2.1)(eslint-plugin-standard@4.0.0(eslint@9.11.1))(eslint@9.11.1):
     dependencies:
       eslint: 9.11.1
       eslint-plugin-import: 2.23.3(@typescript-eslint/parser@8.8.0(eslint@9.11.1)(typescript@5.6.2))(eslint@9.11.1)
@@ -6154,7 +6135,7 @@ snapshots:
       '@typescript-eslint/parser': 5.0.0(eslint@9.11.1)(typescript@4.4.3)
       eslint: 9.11.1
       eslint-config-prettier: 6.0.0(eslint@9.11.1)
-      eslint-config-standard: 13.0.1(eslint-plugin-import@2.23.3(@typescript-eslint/parser@5.0.0(eslint@9.11.1)(typescript@4.4.3))(eslint-import-resolver-typescript@2.5.0)(eslint@9.11.1))(eslint-plugin-node@11.1.0(eslint@9.11.1))(eslint-plugin-promise@4.2.1)(eslint-plugin-standard@4.0.0(eslint@9.11.1))(eslint@9.11.1)
+      eslint-config-standard: 13.0.1(eslint-plugin-import@2.23.3)(eslint-plugin-node@11.1.0(eslint@9.11.1))(eslint-plugin-promise@4.2.1)(eslint-plugin-standard@4.0.0(eslint@9.11.1))(eslint@9.11.1)
       eslint-import-resolver-typescript: 2.5.0(eslint-plugin-import@2.23.3)(eslint@9.11.1)
       eslint-plugin-import: 2.23.3(@typescript-eslint/parser@8.8.0(eslint@9.11.1)(typescript@5.6.2))(eslint@9.11.1)
       eslint-plugin-jsdoc: 33.1.1(eslint@9.11.1)
@@ -6809,10 +6790,6 @@ snapshots:
       - bufferutil
       - supports-color
       - utf-8-validate
-
-  json-bigint@1.0.0:
-    dependencies:
-      bignumber.js: 9.1.2
 
   json-buffer@3.0.1: {}
 

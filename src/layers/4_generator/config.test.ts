@@ -1,4 +1,3 @@
-import _ from 'json-bigint'
 import { expect } from 'vitest'
 import { test } from '../../../tests/_/helpers.js'
 import { createConfig } from './config.js'

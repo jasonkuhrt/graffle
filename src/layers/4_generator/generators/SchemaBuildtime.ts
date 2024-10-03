@@ -6,7 +6,6 @@ import type {
   GraphQLObjectType,
 } from 'graphql'
 import { getNullableType, isListType, isNamedType, isNullableType } from 'graphql'
-import _ from 'json-bigint'
 import { Code } from '../../../lib/Code.js'
 import type {
   AnyClass,
