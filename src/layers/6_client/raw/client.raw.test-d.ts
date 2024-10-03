@@ -1,14 +1,12 @@
 import { describe, expectTypeOf } from 'vitest'
 import { test } from '../../../../tests/_/helpers.js'
 import { gql } from '../../6_helpers/gql.js'
-import type { RawResolveOutputReturnRootType } from '../handleOutput.js'
 
 describe(`TypedQueryDocumentNode`, () => {
   describe(`data`, () => {
     const document = gql<{ id: string }, {}>`query { id }`
-    test(`envelope data is typed`, ({ kitchenSink: g }) => {
-      type ExpectedType = RawResolveOutputReturnRootType<typeof g._.context.config, { id: string }>
-      expectTypeOf(g.raw({ document })).resolves.toEqualTypeOf<ExpectedType>()
+    test(`envelope data is typed`, async ({ kitchenSink: g }) => {
+      expectTypeOf(await g.raw({ document })).toEqualTypeOf<null | { id: string }>()
     })
     test(`variables are not allowed to be passed in`, async ({ kitchenSink: g }) => {
       // @ts-expect-error - variables not allowed.
@@ -19,9 +17,7 @@ describe(`TypedQueryDocumentNode`, () => {
   describe(`data + optional variables`, () => {
     const document = gql<{ id: string }, { filter?: boolean }>`query { id }`
     test(`envelope data is typed`, ({ kitchenSink: g }) => {
-      expectTypeOf(g.raw({ document })).resolves.toEqualTypeOf<
-        RawResolveOutputReturnRootType<typeof g._.context.config, { id: string }>
-      >()
+      expectTypeOf(g.raw({ document })).resolves.toEqualTypeOf<{ id: string } | null>()
     })
     test(`variables are typed and allowed to be passed in or omitted`, async ({ kitchenSink: g }) => {
       // Expect no type errors below
