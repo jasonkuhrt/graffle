@@ -1,7 +1,7 @@
 import type { UnionToTuple } from 'type-fest'
 import type { IsTupleMultiple } from '../../../lib/prelude.js'
 import { Select } from '../../2_Select/__.js'
-import type { ResultSet } from '../../3_ResultSet/__.js'
+import type { ResultSet } from '../../3_Result/__.js'
 import type { SchemaIndex } from '../../4_generator/generators/SchemaIndex.js'
 import type { InterfaceTypedRequestContext } from '../client.js'
 import type { ResolveOutputReturnRootType } from '../handleOutput.js'
