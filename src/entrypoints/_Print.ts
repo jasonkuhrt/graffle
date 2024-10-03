@@ -1,1 +1,1 @@
-export { toGraphQLDocument as document } from '../layers/3_SelectionSetGraphqlMapper/nodes/Document.js'
+export { toGraphQLDocument as document } from '../layers/3_SelectGraphQLMapper/nodes/Document.js'

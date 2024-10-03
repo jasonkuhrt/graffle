@@ -17,7 +17,7 @@ import { casesExhausted, getOptionalNullablePropertyOrThrow, throwNull } from '.
 import { execute } from '../0_functions/execute.js'
 import { Select } from '../2_Select/__.js'
 import { ResultSet } from '../3_ResultSet/__.js'
-import { SelectionSetGraphqlMapper } from '../3_SelectionSetGraphqlMapper/__.js'
+import { SelectionSetGraphqlMapper } from '../3_SelectGraphQLMapper/__.js'
 import type { GraffleExecutionResultVar } from '../6_client/client.js'
 import type { Config } from '../6_client/Settings/Config.js'
 import {
