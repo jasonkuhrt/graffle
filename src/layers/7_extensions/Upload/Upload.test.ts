@@ -36,15 +36,12 @@ afterAll(async () => {
 })
 
 test(`upload`, async () => {
-  const data = await graffle.rawString({
-    document: `
-      mutation ($blob: Upload!) {
-        readTextFile(blob: $blob)
-      }
-    `,
-    variables: {
-      blob: new Blob([`Hello World`], { type: `text/plain` }) as any,
-    },
+  const data = await graffle.gql`
+    mutation ($blob: Upload!) {
+      readTextFile(blob: $blob)
+    }
+  `.send({
+    blob: new Blob([`Hello World`], { type: `text/plain` }) as any,
   })
   expect(data).toMatchInlineSnapshot(`
     {

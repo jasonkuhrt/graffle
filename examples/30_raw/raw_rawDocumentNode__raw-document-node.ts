@@ -2,8 +2,9 @@
  * This example shows how to send a request using a Document instance for the GraphQL document.
  */
 
+import { parse } from 'graphql'
 import { Opentelemetry, Throws } from '../../src/entrypoints/extensions.js'
-import { gql, Graffle } from '../../src/entrypoints/main.js'
+import { Graffle } from '../../src/entrypoints/main.js'
 import { publicGraphQLSchemaEndpoints, show } from '../$/helpers.js'
 
 const graffle = Graffle.create({
@@ -12,18 +13,15 @@ const graffle = Graffle.create({
   .use(Throws())
   .use(Opentelemetry())
 
-const data = await graffle.raw({
-  document: gql`
-    query pokemonByName ($Name: String!) {
-      pokemonByName (name: $Name) {
+const data = await graffle.gql(parse(`
+  query pokemonByName ($Name: String!) {
+    pokemonByName (name: $Name) {
+      name
+      continent {
         name
-        continent {
-          name
-        }
       }
     }
-  `,
-  variables: { name: `Pikachu` },
-})
+  }
+`)).send({ name: `Pikachu` })
 
 show(data)

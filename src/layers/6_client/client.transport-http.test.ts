@@ -46,7 +46,7 @@ describe(`methodMode`, () => {
   describe(`default (post)`, () => {
     test(`sends spec compliant post request by default`, async ({ fetch, graffle }) => {
       fetch.mockImplementationOnce(() => Promise.resolve(createResponse({ data: { id: `abc` } })))
-      await graffle.rawString({ document: `query { id }` })
+      await graffle.gql`query { id }`.send()
       const request = fetch.mock.calls[0]?.[0]
       expect(request?.method).toEqual(`POST`)
       expect(request?.headers.get(`content-type`)).toEqual(CONTENT_TYPE_REC)
@@ -57,11 +57,7 @@ describe(`methodMode`, () => {
     test(`can set method mode to get`, async ({ fetch }) => {
       fetch.mockImplementationOnce(() => Promise.resolve(createResponse({ data: { user: { name: `foo` } } })))
       const graffle = Graffle.create({ schema, transport: { methodMode: `getReads` } })
-      await graffle.rawString({
-        document: `query foo($id: ID!){user(id:$id){name}}`,
-        variables: { 'id': `QVBJcy5ndXJ1` },
-        operationName: `foo`,
-      })
+      await graffle.gql`query foo($id: ID!){user(id:$id){name}}`.send(`foo`, { 'id': `QVBJcy5ndXJ1` })
       const request = fetch.mock.calls[0]?.[0]
       expect(request?.method).toEqual(`GET`)
       expect(request?.headers.get(`content-type`)).toEqual(null)
@@ -73,14 +69,14 @@ describe(`methodMode`, () => {
     test(`if no variables or operationName then search parameters are omitted`, async ({ fetch }) => {
       fetch.mockImplementationOnce(() => Promise.resolve(createResponse({ data: { user: { name: `foo` } } })))
       const graffle = Graffle.create({ schema, transport: { methodMode: `getReads` } })
-      await graffle.rawString({ document: `query {user{name}}` })
+      await graffle.gql`query {user{name}}`.send()
       const request = fetch.mock.calls[0]?.[0]
       expect(request?.url).toMatchInlineSnapshot(`"https://foo.io/api/graphql?query=query+%7Buser%7Bname%7D%7D"`)
     })
     test(`mutation still uses POST`, async ({ fetch }) => {
       fetch.mockImplementationOnce(() => Promise.resolve(createResponse({ data: { user: { name: `foo` } } })))
       const graffle = Graffle.create({ schema, transport: { methodMode: `getReads` } })
-      await graffle.rawString({ document: `mutation { user { name } }` })
+      await graffle.gql`mutation { user { name } }`.send()
       const request = fetch.mock.calls[0]?.[0]
       expect(request?.method).toEqual(`POST`)
       expect(request?.headers.get(`content-type`)).toEqual(CONTENT_TYPE_REC)
@@ -93,7 +89,7 @@ describe(`configuration`, () => {
   test(`can set headers`, async ({ fetch }) => {
     fetch.mockImplementationOnce(() => Promise.resolve(createResponse({ data: { id: `abc` } })))
     const graffle = Graffle.create({ schema, transport: { headers: { 'x-foo': `bar` } } })
-    await graffle.rawString({ document: `query { id }` })
+    await graffle.gql`query { id }`.send()
     const request = fetch.mock.calls[0]?.[0]
     expect(request?.headers.get(`x-foo`)).toEqual(`bar`)
   })
@@ -101,7 +97,7 @@ describe(`configuration`, () => {
   test(`can set raw (requestInit)`, async ({ fetch }) => {
     fetch.mockImplementationOnce(() => Promise.resolve(createResponse({ data: { id: `abc` } })))
     const graffle = Graffle.create({ schema, transport: { raw: { headers: { 'x-foo': `bar` } } } })
-    await graffle.rawString({ document: `query { id }` })
+    await graffle.gql`query { id }`.send()
     const request = fetch.mock.calls[0]?.[0]
     expect(request?.headers.get(`x-foo`)).toEqual(`bar`)
   })
@@ -111,7 +107,7 @@ describe(`configuration`, () => {
     test(`to constructor`, async () => {
       const abortController = new AbortController()
       const graffle = Graffle.create({ schema, transport: { signal: abortController.signal } })
-      const resultPromise = graffle.rawString({ document: `query { id }` })
+      const resultPromise = graffle.gql`query { id }`.send()
       abortController.abort()
       const { caughtError } = await resultPromise.catch((caughtError: unknown) => ({ caughtError })) as any as {
         caughtError: Error
@@ -121,7 +117,7 @@ describe(`configuration`, () => {
     test(`to "with"`, async () => {
       const abortController = new AbortController()
       const graffle = Graffle.create({ schema }).with({ transport: { signal: abortController.signal } })
-      const resultPromise = graffle.rawString({ document: `query { id }` })
+      const resultPromise = graffle.gql`query { id }`.send()
       abortController.abort()
       const { caughtError } = await resultPromise.catch((caughtError: unknown) => ({ caughtError })) as any as {
         caughtError: Error

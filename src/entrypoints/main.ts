@@ -1,7 +1,6 @@
 export { execute } from '../layers/0_functions/execute.js'
 export { type TypedDocumentString } from '../layers/0_functions/types.js'
 export { createExtension, type Extension } from '../layers/6_client/extension/extension.js'
-export { gql } from '../layers/6_helpers/gql.js'
 // todo figure this export out. Was just put there to resolve a type error about "...cannot be named..."
 export { type Config as BuilderConfig } from '../layers/6_client/Settings/Config.js'
 export * from '../layers/6_client/Settings/Input.js'

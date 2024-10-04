@@ -16,8 +16,12 @@ const graffle = Graffle
     })
   })
 
-const result = await graffle.rawString({
-  document: `query { continents { name } }`,
-})
+const result = await graffle.gql`
+  query {
+    continents {
+      name
+    }
+  }
+`.send()
 
 show(result)

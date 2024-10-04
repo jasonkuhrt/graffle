@@ -1,10 +1,10 @@
+import { parse } from 'graphql'
 import { expect } from 'vitest'
 import { test } from '../../../tests/_/helpers.js'
 import { $Index as schema } from '../../../tests/_/schemas/kitchen-sink/graffle/modules/SchemaRuntime.js'
 import type { Query } from '../../../tests/_/schemas/kitchen-sink/graffle/modules/SelectionSets.js'
 import { Select } from '../2_Select/__.js'
 import { SelectionSetGraphqlMapper } from '../3_SelectGraphQLMapper/__.js'
-import { gql } from '../6_helpers/gql.js'
 import { Throws } from '../7_extensions/Throws/Throws.js'
 import { injectTypenameOnRootResultFields } from './schemaErrors.js'
 
@@ -36,18 +36,17 @@ test.each<CasesQuery>([
 	expect(documentWithoutTypename).toMatchObject(documentWithTypename)
 })
 
+// dprint-ignore
 test(`type name field injection works for raw string requests`, async ({ kitchenSink }) => {
   // todo it would be nicer to move the extension use to the fixture but how would we get the static type for that?
   // This makes me think of a feature we need to have. Make it easy to get static types of the client in its various configured states.
-  const result = await kitchenSink.use(Throws()).throws().rawString({
-    document: `query { resultNonNull (case: Object1) { ... on Object1 { id } } }`,
-  })
+  const result = await kitchenSink.use(Throws()).throws().gql`query { resultNonNull (case: Object1) { ... on Object1 { id } } }`.send()
   expect(result).toMatchObject({ resultNonNull: { __typename: `Object1`, id: `abc` } })
 })
 
 test(`type name field injection works for raw document requests`, async ({ kitchenSink }) => {
-  const result = await kitchenSink.use(Throws()).throws().raw({
-    document: gql`query { resultNonNull (case: Object1) { ... on Object1 { id } } }`,
-  })
+  const result = await kitchenSink.use(Throws()).throws().gql(
+    parse(`query { resultNonNull (case: Object1) { ... on Object1 { id } } }`),
+  ).send()
   expect(result).toMatchObject({ resultNonNull: { __typename: `Object1`, id: `abc` } })
 })

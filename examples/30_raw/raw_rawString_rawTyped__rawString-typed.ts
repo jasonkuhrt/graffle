@@ -47,9 +47,6 @@ const document: Document = /* gql */ `
   }
 `
 
-const data = await graffle.rawString({
-  document,
-  variables: { name: `Pikachu` },
-})
+const data = await graffle.gql(document).send({ name: `Pikachu` })
 
 show(data?.pokemonByName)
