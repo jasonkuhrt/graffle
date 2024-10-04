@@ -2,7 +2,6 @@ import type { HKT } from '../../../entrypoints/utilities-for-generated.js'
 import type { Fluent } from '../../../lib/fluent/__.js'
 import type { GlobalRegistry } from '../../4_generator/globalRegistry.js'
 import type { ClientContext } from '../fluent.js'
-import type { BuilderRequestMethodsStatic } from '../raw/methods.js'
 
 export interface FnRequestMethods extends Fluent.FnMerge {
   // @ts-expect-error untyped params
@@ -11,7 +10,6 @@ export interface FnRequestMethods extends Fluent.FnMerge {
 
 // dprint-ignore
 export type BuilderRequestMethods<$Context extends ClientContext>=
-  & BuilderRequestMethodsStatic<$Context['config']>
   & (
     $Context['schemaIndex'] extends null
       ? {}

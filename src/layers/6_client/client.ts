@@ -13,6 +13,7 @@ import { Core } from '../5_core/__.js'
 import { type InterfaceRaw, type TransportHttp } from '../5_core/types.js'
 import { type UseFn, useProperties } from './extension/use.js'
 import type { ClientContext, FnParametersProperty, State } from './fluent.js'
+import type { FnGql } from './gql/gql.js'
 import { handleOutput } from './handleOutput.js'
 import { anywareProperties, type FnAnyware } from './properties/anyware.js'
 import type { FnInternal } from './properties/internal.js'
@@ -87,6 +88,7 @@ export type Client<$Context extends ClientContext> = Fluent.Materialize<
       FnWith,
       UseFn,
       FnAnyware,
+      FnGql,
     ]
   >
 >

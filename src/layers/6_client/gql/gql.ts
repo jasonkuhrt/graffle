@@ -1,17 +1,16 @@
-/* eslint-disable */
 import { isString } from 'es-toolkit'
-import type { Variables } from '../../../lib/graphql-plus/graphql.js'
-import { TypedDocument } from '../../../lib/typed-document/__.js'
-import { gql as gqlf } from '../../6_helpers/gql.js'
+import type { Fluent } from '../../../lib/fluent/__.js'
+import type { TypedDocument } from '../../../lib/typed-document/__.js'
+import type { Config } from '../Settings/Config.js'
 import { type DocumentController, resolveSendArguments, type sendArgumentsImplementation } from './send.js'
 
 // dprint-ignore
-interface gql {
-  <$Document extends TypedDocument.TypedDocument<any, any>>(document: $Document): DocumentController<$Document>
-  <$Document extends TypedDocument.TypedDocument<any, any>>(parts: TemplateStringsArray, ...args: unknown[]): DocumentController<$Document>
+export interface gql<$Config extends Config = Config> {
+  <$Document extends TypedDocument.TypedDocument>(document: $Document): DocumentController<$Config, $Document>
+  <$Document extends TypedDocument.TypedDocument>(parts: TemplateStringsArray, ...args: unknown[]): DocumentController<$Config, $Document>
 }
 
-type gqlArguments = [TypedDocument.TypedDocument<any, any>] | [TemplateStringsArray, ...unknown[]]
+type gqlArguments = [TypedDocument.TypedDocument] | [TemplateStringsArray, ...unknown[]]
 
 const resolveGqlArguments = (args: gqlArguments) => {
   const document = args[0]
@@ -22,6 +21,11 @@ const resolveGqlArguments = (args: gqlArguments) => {
     operationName,
     variables,
   }
+}
+
+export interface FnGql extends Fluent.FnProperty<'gql'> {
+  // @ts-expect-error untyped params
+  return: gql<this['params']>
 }
 
 const gql: gql = (...args: gqlArguments) => {

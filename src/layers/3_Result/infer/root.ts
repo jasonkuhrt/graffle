@@ -1,5 +1,5 @@
 import type { Simplify } from 'type-fest'
-import { AssertIsEqual, type ExcludeNull, type GetKeyOr, type StringKeyof } from '../../../lib/prelude.js'
+import { type ExcludeNull, type GetKeyOr, type StringKeyof } from '../../../lib/prelude.js'
 import type { TSError } from '../../../lib/TSError.js'
 import type { Schema } from '../../1_Schema/__.js'
 import type { Select } from '../../2_Select/__.js'
@@ -56,7 +56,7 @@ type InferSelectionNonSelectAlias<$SelectionSet , $Schema extends SchemaIndex, $
   }
 
 // dprint-ignore
-type PickSelectsPositiveIndicatorAndNotSelectAlias<$SelectionSet> = StringKeyof<{
+export type PickSelectsPositiveIndicatorAndNotSelectAlias<$SelectionSet> = StringKeyof<{
   [
     $FieldName in keyof $SelectionSet as $SelectionSet[$FieldName] extends Select.Indicator.Negative
       ? never
@@ -65,9 +65,6 @@ type PickSelectsPositiveIndicatorAndNotSelectAlias<$SelectionSet> = StringKeyof<
        : $FieldName
   ]: 0
 }>
-
-AssertIsEqual<PickSelectsPositiveIndicatorAndNotSelectAlias<{ a: true }>, 'a'>()
-AssertIsEqual<PickSelectsPositiveIndicatorAndNotSelectAlias<{ a: ['b', true]; b: true }>, 'b'>()
 
 type InferSelectScalarsWildcard<
   $SelectionSet,
