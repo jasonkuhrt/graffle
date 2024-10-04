@@ -4,9 +4,9 @@ import type { HasRequiredKeys, IsNever } from 'type-fest'
 import { type HasKeys, type IsHasIndexType } from '../../lib/prelude.js'
 import type { SomeData, Variables } from '../graphql-plus/graphql.js'
 
-export { type TypedDocumentNode } from '@graphql-typed-document-node/core'
+export { type TypedDocumentNode as Node } from '@graphql-typed-document-node/core'
 
-export { type TypedQueryDocumentNode } from 'graphql'
+export { type TypedQueryDocumentNode as Query } from 'graphql'
 
 export type { SomeData, Variables } from '../graphql-plus/graphql.js'
 
@@ -26,9 +26,11 @@ export type TypedDocument<$Result extends SomeData = SomeData, $Variables extend
  * @see https://github.com/dotansimha/graphql-typed-document-node/issues/163.
  */
 // dprint-ignore
-export interface TypedDocumentString<$Result = SomeData, $Variables = Variables> extends String, DocumentTypeDecoration<$Result, $Variables> {
+interface TypedDocumentString<$Result = SomeData, $Variables = Variables> extends String, DocumentTypeDecoration<$Result, $Variables> {
  // nothing
 }
+
+export { type TypedDocumentString as String }
 
 //
 //
@@ -63,14 +65,14 @@ export type VariablesInputKindOptional = 'optional'
 
 // dprint-ignore
 export type ResultOf<$Document extends TypedDocument> =
-  $Document extends TypedDocumentNode     <infer $R, infer _>   ? $R :
-  $Document extends TypedQueryDocumentNode<infer $R, infer _>   ? $R :
-  $Document extends TypedDocumentString   <infer $R, infer _>   ? $R :
-                                                                  never
+  $Document extends TypedQueryDocumentNode <infer $R, infer _>   ? $R :
+  $Document extends TypedDocumentNode      <infer $R, infer _>   ? $R :
+  $Document extends TypedDocumentString    <infer $R, infer _>   ? $R :
+                                                                   never
 
 // dprint-ignore
 export type VariablesOf<$Document extends TypedDocument> =
-  $Document extends TypedDocumentString   <infer _, infer $V>   ? $V :
-  $Document extends TypedQueryDocumentNode<infer _, infer $V>   ? $V :
-  $Document extends TypedDocumentNode     <infer _, infer $V>   ? $V :
-                                                                  never
+  $Document extends TypedDocumentString    <infer _, infer $V>   ? $V :
+  $Document extends TypedQueryDocumentNode <infer _, infer $V>   ? $V :
+  $Document extends TypedDocumentNode      <infer _, infer $V>   ? $V :
+                                                                   never

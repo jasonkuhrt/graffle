@@ -11,6 +11,8 @@ import { type Index as KitchenSinkSchemaIndex } from './schemas/kitchen-sink/gra
 import { schema as kitchenSinkSchema } from './schemas/kitchen-sink/schema.js'
 import { schema } from './schemas/pokemon/schema.js'
 
+export const kitchenSink = KitchenSink.create({ schema: kitchenSinkSchema })
+
 export const createResponse = (body: object) =>
   new Response(JSON.stringify(body), { status: 200, headers: { 'content-type': CONTENT_TYPE_REC } })
 

@@ -19,7 +19,7 @@ type SendArguments__<$Variables extends TypedDocument.Variables, $VariablesKind 
 		                                      never
 
 // dprint-ignore
-export interface DocumentController<$Config extends Config,$TypedDocument extends TypedDocument.TypedDocument> {
+export interface DocumentController<$Config extends Config, $TypedDocument extends TypedDocument.TypedDocument> {
   send(...args: SendArguments<$TypedDocument>): Promise<RawResolveOutputReturnRootType<$Config, TypedDocument.ResultOf<$TypedDocument>>>
 }
 

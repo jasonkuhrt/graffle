@@ -1,19 +1,35 @@
-// {
-//   const d1 = await graffle.gql<TypedDocument.TypedQueryDocumentNode<{ id: number }, { x: 1 }>>``.send({ x: 1 })
-//   const d2 = await graffle.gql<TypedDocument.TypedQueryDocumentNode<{ id: number }, { x?: 1 }>>``.send()
-//   const d3 = await graffle.gql<TypedDocument.TypedQueryDocumentNode<{ id: number }, { x?: 1 }>>``.send({ x: 1 })
-//   const d4 = await graffle.gql<TypedDocument.TypedQueryDocumentNode<{ id: number }, {}>>``.send()
-//   const d5 = await graffle.gql<TypedDocument.TypedQueryDocumentNode<{ id: number }, Variables>>``.send()
-//   const d6 = await graffle.gql<TypedDocument.TypedQueryDocumentNode<{ id: number }, Variables>>``.send({ x: 1 })
-//   const d7 = await graffle.gql<TypedDocument.TypedQueryDocumentNode<{ id: number }, Variables>>``.send('abc', { x: 1 })
-// }
+import { beforeEach, describe, expect } from 'vitest'
+import { test } from '../../../../tests/_/helpers.js'
+import { Graffle } from '../../../../tests/_/schemas/kitchen-sink/graffle/__.js'
+import { schema } from '../../../../tests/_/schemas/kitchen-sink/schema.js'
+import { createExtension } from '../extension/extension.js'
 
-// {
-//   const d1 = await graffle.gql<TypedDocument.TypedDocumentNode<{ id: number }, { x: 1 }>>``.send({ x: 1 })
-//   const d2 = await graffle.gql<TypedDocument.TypedDocumentNode<{ id: number }, { x?: 1 }>>``.send()
-//   const d3 = await graffle.gql<TypedDocument.TypedDocumentNode<{ id: number }, { x?: 1 }>>``.send({ x: 1 })
-//   const d4 = await graffle.gql<TypedDocument.TypedDocumentNode<{ id: number }, {}>>``.send()
-//   const d5 = await graffle.gql<TypedDocument.TypedDocumentNode<{ id: number }, Variables>>``.send()
-//   const d6 = await graffle.gql<TypedDocument.TypedDocumentNode<{ id: number }, Variables>>``.send({ x: 1 })
-//   const d7 = await graffle.gql<TypedDocument.TypedDocumentNode<{ id: number }, Variables>>``.send('abc', { x: 1 })
-// }
+// todo test with custom scalars
+
+const graffle = Graffle.create({ schema })
+
+describe(`memory transport`, () => {
+  let input: object | undefined
+  const spyExchangeInput = createExtension({
+    name: `spy`,
+    onRequest: ({ exchange }) => {
+      if (exchange.input.transport === `memory`) {
+        input = exchange.input
+      }
+      return exchange()
+    },
+  })
+  beforeEach(() => {
+    input = undefined
+  })
+  describe(`operationName`, () => {
+    test(`undefined by default`, async () => {
+      await graffle.use(spyExchangeInput).gql`query { id }`.send()
+      expect(input).toMatchObject({ operationName: undefined })
+    })
+    test(`reflects explicit value`, async () => {
+      await graffle.use(spyExchangeInput).gql`query foo { id }`.send(`foo`)
+      expect(input).toMatchObject({ operationName: `foo` })
+    })
+  })
+})

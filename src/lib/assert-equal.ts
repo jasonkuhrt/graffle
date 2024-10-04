@@ -11,3 +11,12 @@ export const AssertEqual = <A, B>(
     }]
     : []
 ) => undefined
+
+export const AssertTypeOf = <A, B = A>(
+  _: B,
+  ...__: IsEqual<A, B> extends false ? [reason: {
+      A: SimplifyDeep<A>
+      B: SimplifyDeep<B>
+    }]
+    : []
+) => undefined
