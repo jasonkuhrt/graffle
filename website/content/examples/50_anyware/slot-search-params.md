@@ -25,17 +25,15 @@ const graffle = Graffle
     })
   })
 
-const result = await graffle.rawString({
-  document: `
+const result = await graffle.gql`
     query trainers {
       pokemon { name }
     }
     query pokemon {
       trainers { name }
     }
-  `,
-  operationName: `queryCountries`,
-})
+  `
+  .send(`queryCountries`)
 
 console.log(result)
 ```
@@ -45,29 +43,16 @@ console.log(result)
 
 <!-- dprint-ignore-start -->
 ```txt
-/some/path/to/runPipeline.ts:XX:XX
-          return new ContextualError(message, { hookName: signal.hookName, source: signal.source }, signal.error)
-                 ^
+/some/path/to/anyware_slot_slot-body__slot-search-params.ts:XX:XX
+const result = await graffle.gql`
+                             ^
 
 
-ContextualError: There was an error in the core implementation of hook "pack".
-    at runPipeline (/some/path/to/runPipeline.ts:XX:XX:18)
-    at async runPipeline (/some/path/to/runPipeline.ts:XX:XX:14)
-    at async Object.run (/some/path/to/main.ts:XX:XX:22)
-    at async run (/some/path/to/client.ts:XX:XX:20)
-    at async runRaw (/some/path/to/client.ts:XX:XX:12)
-    at async Object.raw (/some/path/to/client.ts:XX:XX:14)
-    at async Proxy.rawString (/some/path/to/client.ts:XX:XX:14)
-    at async <anonymous> (/some/path/to/anyware_slot_slot-body__slot-search-params.ts:XX:XX:16) {
-  context: { hookName: 'pack', source: 'implementation' },
-  cause: Error: Unexpected null value.
-      at throwNull (/some/path/to/prelude.ts:XX:XX:29)
-      at Object.run (/some/path/to/core.ts:XX:XX:35)
-      at runHook (/some/path/to/runHook.ts:XX:XX:37)
-      at <anonymous> (/some/path/to/runHook.ts:XX:XX:14)
-      at <anonymous> (/some/path/to/anyware_slot_slot-body__slot-search-params.ts:XX:XX:18)
-      at applyBody (/some/path/to/main.ts:XX:XX:28)
-}
+TypeError: graffle.gql is not a function
+    at <anonymous> (/some/path/to/anyware_slot_slot-body__slot-search-params.ts:XX:XX:30)
+    at ModuleJob.run (node:internal/modules/esm/module_job:XX:XX)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:XX:XX)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:XX:XX)
 
 Node.js vXX.XX.XX
 ```

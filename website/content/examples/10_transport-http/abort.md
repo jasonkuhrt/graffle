@@ -20,15 +20,14 @@ const graffle = Graffle.create({
 const resultPromise = graffle
   .with({ transport: { signal: abortController.signal } })
   //                           ^^^^^^^^^^^^^^^
-  .rawString({
-    document: `
-      {
-        pokemon {
-          name
-        }
+  .gql`
+    {
+      pokemon {
+        name
       }
-    `,
-  })
+    }
+  `
+  .send()
 
 abortController.abort()
 //              ^^^^^
@@ -43,6 +42,17 @@ console.log(result)
 
 <!-- dprint-ignore-start -->
 ```txt
-This operation was aborted
+/some/path/to/transport-http_abort.ts:XX:XX
+  .gql`
+   ^
+
+
+TypeError: graffle.with(...).gql is not a function
+    at <anonymous> (/some/path/to/transport-http_abort.ts:XX:XX:4)
+    at ModuleJob.run (node:internal/modules/esm/module_job:XX:XX)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:XX:XX)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:XX:XX)
+
+Node.js vXX.XX.XX
 ```
 <!-- dprint-ignore-end -->

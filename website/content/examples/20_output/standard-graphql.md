@@ -15,7 +15,7 @@ const graffle = Graffle.create({
   output: Preset.traditionalGraphqlOutput,
 })
 
-const result = await graffle.rawString({ document: `{ query { thisWillError } }` })
+const result = await graffle.gql(`{ query { thisWillError } }`).send()
 
 console.log(result)
 ```
@@ -25,42 +25,16 @@ console.log(result)
 
 <!-- dprint-ignore-start -->
 ```txt
-/some/path/to/runPipeline.ts:XX:XX
-          return new ContextualError(message, { hookName: signal.hookName, source: signal.source }, signal.error)
-                 ^
+/some/path/to/output_preset__standard-graphql.ts:XX:XX
+const result = await graffle.gql(`{ query { thisWillError } }`).send()
+                             ^
 
 
-ContextualError: There was an error in the core implementation of hook "exchange".
-    at runPipeline (/some/path/to/runPipeline.ts:XX:XX:18)
-    at async runPipeline (/some/path/to/runPipeline.ts:XX:XX:14)
-    at async runPipeline (/some/path/to/runPipeline.ts:XX:XX:14)
-    ... 3 lines matching cause stack trace ...
-    at async Object.raw (/some/path/to/client.ts:XX:XX:14)
-    at async Proxy.rawString (/some/path/to/client.ts:XX:XX:14)
-    at async <anonymous> (/some/path/to/output_preset__standard-graphql.ts:XX:XX:16) {
-  context: { hookName: 'exchange', source: 'implementation' },
-  [cause]: TypeError: Failed to parse URL from ...
-      at new Request (node:internal/deps/undici/undici:XX:XX)
-      at Object.run (/some/path/to/core.ts:XX:XX:29)
-      ... 6 lines matching cause stack trace ...
-      at async runRaw (/some/path/to/client.ts:XX:XX:12)
-      at async Object.raw (/some/path/to/client.ts:XX:XX:14) {
-    [cause]: TypeError: Invalid URL
-        at new URL (node:internal/url:XX:XX)
-        at new Request (node:internal/deps/undici/undici:XX:XX)
-        at Object.run (/some/path/to/core.ts:XX:XX:29)
-        at runHook (/some/path/to/runHook.ts:XX:XX:37)
-        at runPipeline (/some/path/to/runPipeline.ts:XX:XX:8)
-        at runPipeline (/some/path/to/runPipeline.ts:XX:XX:20)
-        at async runPipeline (/some/path/to/runPipeline.ts:XX:XX:14)
-        at async Object.run (/some/path/to/main.ts:XX:XX:22)
-        at async run (/some/path/to/client.ts:XX:XX:20)
-        at async runRaw (/some/path/to/client.ts:XX:XX:12) {
-      code: 'ERR_INVALID_URL',
-      input: '...'
-    }
-  }
-}
+TypeError: graffle.gql is not a function
+    at <anonymous> (/some/path/to/output_preset__standard-graphql.ts:XX:XX:30)
+    at ModuleJob.run (node:internal/modules/esm/module_job:XX:XX)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:XX:XX)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:XX:XX)
 
 Node.js vXX.XX.XX
 ```
