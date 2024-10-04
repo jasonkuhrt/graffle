@@ -1,3 +1,4 @@
+import type { DocumentNode } from 'graphql'
 import { AssertEqual } from '../assert-equal.js'
 import type {
   GetVariablesInputKind,
@@ -22,6 +23,7 @@ import type {
   AssertEqual<GetVariablesInputKind<{ x?: 1 }>, VariablesInputKindOptional>()
   AssertEqual<GetVariablesInputKind<{ x?: 2; y?: 1 }>, VariablesInputKindOptional>()
 
+  AssertEqual<VariablesOf<DocumentNode      >, Variables>()
   AssertEqual<VariablesOf<Node    <{x:1},{}>>, {}>()
   AssertEqual<VariablesOf<Query   <{x:1},{}>>, {}>()
   AssertEqual<VariablesOf<String  <{x:1},{}>>, {}>()
