@@ -1,6 +1,6 @@
 import type { DocumentTypeDecoration, TypedDocumentNode } from '@graphql-typed-document-node/core'
-import type { DocumentNode, TypedQueryDocumentNode } from 'graphql'
-import type { HasRequiredKeys, IsNever } from 'type-fest'
+import type { TypedQueryDocumentNode } from 'graphql'
+import type { HasRequiredKeys, IsNever, IsUnknown } from 'type-fest'
 import { type HasKeys, type IsHasIndexType } from '../../lib/prelude.js'
 import type { SomeData, Variables } from '../graphql-plus/graphql.js'
 
@@ -72,8 +72,13 @@ export type ResultOf<$Document extends TypedDocument> =
 
 // dprint-ignore
 export type VariablesOf<$Document extends TypedDocument> =
-  $Document extends DocumentNode                                 ? Variables :
   $Document extends TypedDocumentString    <infer _, infer $V>   ? $V :
   $Document extends TypedQueryDocumentNode <infer _, infer $V>   ? $V :
-  $Document extends TypedDocumentNode      <infer _, infer $V>   ? $V :
+  $Document extends TypedDocumentNode      <infer _, infer $V>   ? IsUnknown<$V> extends true
+                                                                    // This catches case of DocumentNode being passed
+                                                                    // which is a subtype of TypedDocumentNode, however,
+                                                                    // extracting variables from it will always yield
+                                                                    // unknown.
+                                                                    ? Variables
+                                                                    : $V :
                                                                    never
