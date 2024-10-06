@@ -4,7 +4,7 @@
  * of automation would generate the types for you.
  */
 
-import { Graffle, type TypedDocumentString } from '../../src/entrypoints/main.js'
+import { Graffle, type TypedDocument } from '../../src/entrypoints/main.js'
 import { publicGraphQLSchemaEndpoints, show } from '../$/helpers.js'
 
 const graffle = Graffle.create({
@@ -17,7 +17,7 @@ const graffle = Graffle.create({
  * @see https://the-guild.dev/graphql/codegen/plugins/presets/preset-client#documentmode
  * @see https://github.com/jasonkuhrt/graffle/issues/997
  */
-type Document = TypedDocumentString<
+type Document = TypedDocument.String<
   {
     pokemonByName: {
       id: string

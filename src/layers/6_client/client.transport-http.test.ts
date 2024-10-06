@@ -4,7 +4,7 @@ import { serveSchema } from '../../../tests/_/lib/serveSchema.js'
 import { Pokemon } from '../../../tests/_/schemas/pokemon/graffle/__.js'
 import { Graffle } from '../../entrypoints/main.js'
 import { ACCEPT_REC, CONTENT_TYPE_REC } from '../../lib/graphqlHTTP.js'
-import { Transport } from '../5_core/types.js'
+import { Transport } from '../5_request/types.js'
 import type { CoreExchangeGetRequest, CoreExchangePostRequest } from './transportHttp/request.js'
 
 const schema = new URL(`https://foo.io/api/graphql`)

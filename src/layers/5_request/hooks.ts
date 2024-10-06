@@ -6,7 +6,7 @@ import type {
 } from '../../lib/graphql-plus/graphql.js'
 import type { getRequestEncodeSearchParameters, postRequestEncodeBody } from '../../lib/graphqlHTTP.js'
 import type { Select } from '../2_Select/__.js'
-import type { InterfaceTypedRequestContext, RequestContext } from '../6_client/client.js'
+import type { InterfaceTypedRequestContext, RequestContext } from '../6_client/handleOutput.js'
 import type { Config } from '../6_client/Settings/Config.js'
 import type { CoreExchangeGetRequest, CoreExchangePostRequest } from '../6_client/transportHttp/request.js'
 import type { InterfaceRaw, InterfaceTyped, TransportHttp, TransportMemory } from './types.js'

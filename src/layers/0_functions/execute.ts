@@ -1,6 +1,14 @@
-import type { ExecutionResult, GraphQLSchema } from 'graphql'
+import type { DocumentNode, ExecutionResult, GraphQLSchema } from 'graphql'
 import { execute as graphqlExecute, graphql } from 'graphql'
-import type { BaseInput_ } from './types.js'
+import type { StandardScalarVariables } from '../../lib/graphql-plus/graphql.js'
+
+type OperationNameInput = string
+
+export type BaseInput_ = {
+  document: DocumentNode | string
+  operationName?: OperationNameInput
+  variables?: StandardScalarVariables
+}
 
 type Input = BaseInput_ & {
   schema: GraphQLSchema

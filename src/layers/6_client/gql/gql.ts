@@ -1,8 +1,8 @@
 import { GraphQLSchema } from 'graphql'
 import type { Fluent } from '../../../lib/fluent/__.js'
 import type { TypedDocument } from '../../../lib/typed-document/__.js'
-import { Core } from '../../5_core/__.js'
-import type { InterfaceRaw } from '../../5_core/types.js'
+import { RequestCore } from '../../5_request/__.js'
+import type { InterfaceRaw } from '../../5_request/types.js'
 import { defineProperties } from '../fluent.js'
 import { handleOutput } from '../handleOutput.js'
 import type { Config } from '../Settings/Config.js'
@@ -41,7 +41,7 @@ export const gqlProperties = defineProperties((builder, state) => {
           const { operationName, variables } = resolveSendArguments(args)
           const interface_: InterfaceRaw = `raw`
           const transport = state.input.schema instanceof GraphQLSchema ? `memory` : `http`
-          const initialInput: Core.Hooks.HookDefEncode<Config>['input'] = {
+          const initialInput: RequestCore.Hooks.HookDefEncode<Config>['input'] = {
             interface: interface_,
             transport,
             document,
@@ -54,7 +54,7 @@ export const gqlProperties = defineProperties((builder, state) => {
               schemaIndex: state.input.schemaIndex ?? null,
             },
           }
-          const result = await Core.anyware.run({
+          const result = await RequestCore.anyware.run({
             initialInput,
             retryingExtension: state.retry as any,
             extensions: state.extensions.filter(_ => _.onRequest !== undefined).map(_ => _.onRequest!) as any,

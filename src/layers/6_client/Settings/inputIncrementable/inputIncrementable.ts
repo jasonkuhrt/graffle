@@ -1,5 +1,5 @@
 import type { GlobalRegistry } from '../../../4_generator/globalRegistry.js'
-import type { Transport, TransportMemory } from '../../../5_core/types.js'
+import type { Transport, TransportMemory } from '../../../5_request/types.js'
 import type { TransportHttpInput } from '../../transportHttp/request.js'
 import type { Config } from '../Config.js'
 import type { InputToConfig } from '../InputToConfig.js'

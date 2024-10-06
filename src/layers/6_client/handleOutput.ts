@@ -1,10 +1,11 @@
-import type { GraphQLError } from 'graphql'
+import type { ExecutionResult, GraphQLError } from 'graphql'
 import type { Simplify } from 'type-fest'
 import { Errors } from '../../lib/errors/__.js'
 import type { GraphQLExecutionResultError } from '../../lib/graphql-plus/graphql.js'
 import { isRecordLikeObject, type SimplifyExceptError, type Values } from '../../lib/prelude.js'
 import type { SchemaIndex } from '../4_generator/generators/SchemaIndex.js'
-import type { ErrorsOther, GraffleExecutionResultVar, InterfaceTypedRequestContext, RequestContext } from './client.js'
+import type { TransportHttp } from '../5_request/types.js'
+import type { State } from './fluent.js'
 import {
   type Config,
   type ErrorCategory,
@@ -13,34 +14,73 @@ import {
   readConfigErrorCategoryOutputChannel,
 } from './Settings/Config.js'
 
+export interface RequestContext {
+  config: Config
+  state: State
+  schemaIndex: SchemaIndex | null
+}
+
+export interface InterfaceTypedRequestContext extends RequestContext {
+  schemaIndex: SchemaIndex
+}
+
+/**
+ * Types of "other" Graffle Error.
+ */
+export type ErrorsOther =
+  | Errors.ContextualError
+  // Possible from http transport fetch with abort controller.
+  | DOMException
+
+export type GraffleExecutionResultVar<$Config extends Config = Config> =
+  | (
+    & ExecutionResult
+    & ($Config['transport']['type'] extends TransportHttp ? {
+        /**
+         * If transport was HTTP, then the raw response is available here.
+         */
+        response: Response
+      }
+      : TransportHttp extends $Config['transport']['type'] ? {
+          /**
+           * If transport was HTTP, then the raw response is available here.
+           */
+          response?: Response
+        }
+      : {})
+  )
+  | ErrorsOther
+
 export const handleOutput = (
-  context: RequestContext,
+  state: State,
+  // context: RequestContext,
   result: GraffleExecutionResultVar,
 ) => {
-  if (isContextConfigTraditionalGraphQLOutput(context.config)) {
+  if (isContextConfigTraditionalGraphQLOutput(state.config)) {
     if (result instanceof Error) throw result
     return result
   }
 
-  const c = context.config.output
+  const config = state.config
+  const c = config.output
 
   const isEnvelope = c.envelope.enabled
 
-  const isThrowOther = readConfigErrorCategoryOutputChannel(context.config, `other`) === `throw`
+  const isThrowOther = readConfigErrorCategoryOutputChannel(config, `other`) === `throw`
     && (!c.envelope.enabled || !c.envelope.errors.other)
 
-  const isReturnOther = readConfigErrorCategoryOutputChannel(context.config, `other`) === `return`
+  const isReturnOther = readConfigErrorCategoryOutputChannel(config, `other`) === `return`
     && (!c.envelope.enabled || !c.envelope.errors.other)
 
-  const isThrowExecution = readConfigErrorCategoryOutputChannel(context.config, `execution`) === `throw`
+  const isThrowExecution = readConfigErrorCategoryOutputChannel(config, `execution`) === `throw`
     && (!c.envelope.enabled || !c.envelope.errors.execution)
 
-  const isReturnExecution = readConfigErrorCategoryOutputChannel(context.config, `execution`) === `return`
+  const isReturnExecution = readConfigErrorCategoryOutputChannel(config, `execution`) === `return`
     && (!c.envelope.enabled || !c.envelope.errors.execution)
 
-  const isThrowSchema = readConfigErrorCategoryOutputChannel(context.config, `schema`) === `throw`
+  const isThrowSchema = readConfigErrorCategoryOutputChannel(config, `schema`) === `throw`
 
-  const isReturnSchema = readConfigErrorCategoryOutputChannel(context.config, `schema`) === `return`
+  const isReturnSchema = readConfigErrorCategoryOutputChannel(config, `schema`) === `return`
 
   if (result instanceof Error) {
     if (isThrowOther) throw result
@@ -60,7 +100,7 @@ export const handleOutput = (
     return isEnvelope ? { ...result, errors: [...result.errors ?? [], error] } : error
   }
 
-  if (isTypedContext(context)) {
+  if (state.input.schemaIndex) {
     if (c.errors.schema !== false) {
       if (!isRecordLikeObject(result.data)) throw new Error(`Expected data to be an object.`)
       const schemaErrors = Object.entries(result.data).map(([rootFieldName, rootFieldValue]) => {
@@ -79,7 +119,7 @@ export const handleOutput = (
         }
 
         const isErrorObject = Boolean(
-          context.schemaIndex.error.objectsTypename[__typename],
+          state.input.schemaIndex?.error.objectsTypename[__typename],
         )
         if (!isErrorObject) return null
         // todo extract message
@@ -111,8 +151,6 @@ export const handleOutput = (
 
   return result.data
 }
-
-const isTypedContext = (context: RequestContext): context is InterfaceTypedRequestContext => `schemaIndex` in context
 
 /**
  * Types for output handling.

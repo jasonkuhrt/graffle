@@ -18,7 +18,7 @@ import { execute } from '../0_functions/execute.js'
 import { Select } from '../2_Select/__.js'
 import { ResultSet } from '../3_Result/__.js'
 import { SelectionSetGraphqlMapper } from '../3_SelectGraphQLMapper/__.js'
-import type { GraffleExecutionResultVar } from '../6_client/client.js'
+import type { GraffleExecutionResultVar } from '../6_client/handleOutput.js'
 import type { Config } from '../6_client/Settings/Config.js'
 import {
   type CoreExchangeGetRequest,
