@@ -134,7 +134,7 @@ export const executeDocument = async (
 ) => {
   const transport = state.input.schema instanceof GraphQLSchema ? `memory` : `http`
   const interface_ = `typed`
-  const initialInput = {
+  const initialInput: RequestCore.Hooks.HookDefEncode<Config>['input'] = {
     interface: interface_,
     transport,
     schema: state.input.schema,
@@ -146,7 +146,7 @@ export const executeDocument = async (
     document,
     operationName,
     variables,
-  } as RequestCore.Hooks.HookDefEncode<Config>['input']
+  }
 
   const result = await RequestCore.anyware.run({
     initialInput,

@@ -3,10 +3,9 @@ import type { Fluent } from '../../../lib/fluent/__.js'
 import type { TypedDocument } from '../../../lib/typed-document/__.js'
 import { RequestCore } from '../../5_request/__.js'
 import type { InterfaceRaw } from '../../5_request/types.js'
-import { defineProperties } from '../fluent.js'
+import { defineTerminus } from '../fluent.js'
 import { handleOutput } from '../handleOutput.js'
 import type { Config } from '../Settings/Config.js'
-import { inputToConfig } from '../Settings/InputToConfig.js'
 import { type DocumentController, resolveSendArguments, type sendArgumentsImplementation } from './send.js'
 
 // dprint-ignore
@@ -31,7 +30,7 @@ export interface FnGql extends Fluent.FnProperty<'gql'> {
   return: gql<this['params']>
 }
 
-export const gqlProperties = defineProperties((builder, state) => {
+export const gqlProperties = defineTerminus((state) => {
   return {
     gql: (...args: gqlArguments) => {
       const { document } = resolveGqlArguments(args)
@@ -44,22 +43,22 @@ export const gqlProperties = defineProperties((builder, state) => {
           const initialInput: RequestCore.Hooks.HookDefEncode<Config>['input'] = {
             interface: interface_,
             transport,
-            document,
             schema: state.input.schema,
-            variables,
-            operationName,
             context: {
-              config: inputToConfig(state.input),
+              config: state.config,
               state,
               schemaIndex: state.input.schemaIndex ?? null,
             },
+            document,
+            variables,
+            operationName,
           }
           const result = await RequestCore.anyware.run({
             initialInput,
             retryingExtension: state.retry as any,
             extensions: state.extensions.filter(_ => _.onRequest !== undefined).map(_ => _.onRequest!) as any,
           })
-          return handleOutput(initialInput.context, result)
+          return handleOutput(state, result)
         },
       } as any
     },
