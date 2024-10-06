@@ -13,7 +13,7 @@ import { Core } from '../5_core/__.js'
 import { type InterfaceRaw, type TransportHttp } from '../5_core/types.js'
 import { type UseFn, useProperties } from './extension/use.js'
 import type { ClientContext, FnParametersProperty, State } from './fluent.js'
-import type { FnGql } from './gql/gql.js'
+import { type FnGql, gql, gqlProperties } from './gql/gql.js'
 import { handleOutput } from './handleOutput.js'
 import { anywareProperties, type FnAnyware } from './properties/anyware.js'
 import type { FnInternal } from './properties/internal.js'
@@ -68,16 +68,6 @@ export interface InterfaceTypedRequestContext extends RequestContext {
   schemaIndex: SchemaIndex
 }
 
-type RawParameters = [BaseInput_]
-
-const resolveRawParameters = (parameters: RawParameters) => {
-  // return parameters.length === 2
-  // ? { document: parameters[0], ...parameters[1] }
-  // return typeof parameters[0] === `string` || `kind` in parameters[0]
-  // ? { document: parameters[0], ...parameters[1] }
-  return parameters[0]
-}
-
 export type Client<$Context extends ClientContext> = Fluent.Materialize<
   Fluent.AddMany<
     Fluent.Create<$Context>,
@@ -127,14 +117,6 @@ export const create: Create = (input) => {
 const createWithState = (
   state: State,
 ) => {
-  // todo lazily compute config, not every fluent call uses it.
-  const context: RequestContext = {
-    // @ts-expect-error fixme
-    config: inputToConfig(state.input),
-    state,
-    schemaIndex: state.input.schemaIndex ?? null,
-  }
-
   /**
    * @remarks Without generation the type of returnMode can be `ReturnModeTypeBase` which leads
    * TS to think some errors below are invalid checks because of a non-present member.
@@ -240,19 +222,12 @@ const createWithState = (
     return handleOutput(context, result)
   }
 
-  const runRaw = async (context: RequestContext, rawInput: BaseInput_) => {
-    const interface_: InterfaceRaw = `raw`
-    const transport = state.input.schema instanceof GraphQLSchema ? `memory` : `http`
-    const initialInput = {
-      interface: interface_,
-      transport,
-      document: rawInput.document,
-      schema: state.input.schema,
-      context,
-      variables: rawInput.variables,
-      operationName: rawInput.operationName,
-    } as Core.Hooks.HookDefEncode<Config>['input']
-    return await run(context, initialInput)
+  // todo lazily compute config, not every fluent call uses it.
+  const context: RequestContext = {
+    // @ts-expect-error fixme
+    config: inputToConfig(state.input),
+    state,
+    schemaIndex: state.input.schemaIndex ?? null,
   }
 
   // @ts-expect-error ignoreme
@@ -262,13 +237,7 @@ const createWithState = (
         config: context.config,
       },
     },
-    raw: async (...args: RawParameters) => {
-      const input = resolveRawParameters(args)
-      return await runRaw(context, input)
-    },
-    rawString: async (...args: RawParameters) => {
-      return await clientDirect.raw(...args)
-    },
+    ...gqlProperties(createWithState, state),
     ...withProperties(createWithState, state),
     ...useProperties(createWithState, state),
     ...anywareProperties(createWithState, state),

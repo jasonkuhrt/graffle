@@ -8,13 +8,13 @@ AssertEqual<
 >()
 AssertEqual<
   SendArguments<TypedDocument.Query<{ y: 0 }, { x?: 1 }>>,
-  [] | [x?: string] | [x?: string, x?: { x?: 1 }] | [x?: { x?: 1 }]
+  [x?: string] | [x?: string, x?: { x?: 1 }] | [x?: { x?: 1 }]
 >()
 AssertEqual<
   SendArguments<TypedDocument.Query<{ y: 0 }, {}>>,
-  [] | [x?: string]
+  [x?: string]
 >()
 AssertEqual<
   SendArguments<TypedDocument.Query<{ y: 0 }, TypedDocument.Variables>>,
-  [] | [x?: string] | [x?: string, x?: TypedDocument.Variables] | [x?: TypedDocument.Variables]
+  [x?: string] | [x?: string, x?: TypedDocument.Variables] | [x?: TypedDocument.Variables]
 >()

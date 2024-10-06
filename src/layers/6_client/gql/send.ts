@@ -13,8 +13,8 @@ type SendArguments_<$Variables extends TypedDocument.Variables> =
 
 // dprint-ignore
 type SendArguments__<$Variables extends TypedDocument.Variables, $VariablesKind extends TypedDocument.VariablesInputKind> =
-		$VariablesKind extends 'none'      ? ([operationName?: string] | []) :
-		$VariablesKind extends 'optional'  ? ([operationName?: string] | [operationName?: string, variables?: $Variables] | [variables?: $Variables] | []) :
+		$VariablesKind extends 'none'      ? ([operationName?: string]) :
+		$VariablesKind extends 'optional'  ? ([operationName?: string] | [operationName?: string, variables?: $Variables] | [variables?: $Variables]) :
 		$VariablesKind extends 'required'  ? ([operationName: string, variables: $Variables] | [variables: $Variables]) :
 		                                      never
 
