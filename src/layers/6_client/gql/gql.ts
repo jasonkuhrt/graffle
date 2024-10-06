@@ -1,6 +1,4 @@
-import { context } from '@opentelemetry/api'
-import { GraphQLSchema, parse } from 'graphql'
-import { run } from '../../../lib/anyware/specHelpers.js'
+import { GraphQLSchema } from 'graphql'
 import type { Fluent } from '../../../lib/fluent/__.js'
 import type { TypedDocument } from '../../../lib/typed-document/__.js'
 import { Core } from '../../5_core/__.js'
