@@ -1,5 +1,5 @@
 /**
- * This example shows how to use the Or Throw extension to throw errors for one-off cases.
+ * This example shows how to use the Introspection extension to easily introspect your schema.
  */
 
 import { Introspection } from '../../src/entrypoints/extensions.js'

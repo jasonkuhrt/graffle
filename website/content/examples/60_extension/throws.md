@@ -4,7 +4,7 @@ aside: false
 
 # Throws
 
-This example shows how to use the Or Throw extension to throw errors for one-off cases.
+This example shows how to use the Throws extension to throw errors for one-off cases.
 
 <!-- dprint-ignore-start -->
 ```ts twoslash
