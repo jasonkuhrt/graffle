@@ -15,7 +15,7 @@ import {
   type Variables,
 } from '../../lib/graphql-plus/graphql.js'
 import { mergeRequestInit, searchParamsAppendAll } from '../../lib/http.js'
-import { casesExhausted, getOptionalNullablePropertyOrThrow, isString, throwNull } from '../../lib/prelude.js'
+import { casesExhausted, isString, throwNull } from '../../lib/prelude.js'
 import { Select } from '../2_Select/__.js'
 import { ResultSet } from '../3_Result/__.js'
 import { SelectionSetGraphqlMapper } from '../3_SelectGraphQLMapper/__.js'
@@ -55,7 +55,7 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
             ? parse(input.request.query)
             : input.request.query as Nodes.DocumentNode
           : SelectionSetGraphqlMapper.toGraphQL({
-            schema: input.schemaIndex!,
+            // schema: input.schemaIndex!,
             document: input.request.document,
             customScalarsIndex: input.schemaIndex!.customScalars.input,
           })
@@ -73,7 +73,7 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
             ? input.request.query
             : print(input.request.query as Nodes.DocumentNode)
           : print(SelectionSetGraphqlMapper.toGraphQL({
-            schema: input.schemaIndex!,
+            // schema: input.schemaIndex!,
             document: input.request.document,
             customScalarsIndex: input.schemaIndex!.customScalars.input,
           }))
@@ -225,6 +225,30 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
     // Hooks could have a new optional field "schema". When present certain enhanced features would be allowed.
     // like custom scalars and result fields.
     decode: ({ input }) => {
+      // todo decode scalars regardless of the interface type.
+
+      // if there are no custom scalar index, then skip decoding.
+
+      // To decode, three things:
+      // 1. The result
+      // 2. The selection set (which may contain aliases)
+      // 3. The customs scalars schema index
+
+      // Requirement (2) means that we have to parse the selection set.
+      // If the user told us that they were not using any aliases, then we could skip that.
+      // Let's keep that potential optimization for the future.
+      // that means now building a decoder that will optionally consider aliases, but not require it.
+      const data = input.result.data
+      ResultSet.decode({
+        data,
+        // todo do not assume Query object
+        customScalarsIndex: input.schemaIndex.customScalars.input.Query,
+      })
+      // const operation = Select.Document.getOperationOrThrow(input.document!, input.operationName)
+      // getOptionalNullablePropertyOrThrow(input.schemaIndex.Root, operation.rootType),
+      // operation.selectionSet,
+      // input.result.data,
+
       switch (input.interfaceType) {
         // todo this depends on the return mode
         case `raw`: {
@@ -245,23 +269,18 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
         case `typed`: {
           if (!input.schemaIndex) throw new Error(`schemaIndex is required for typed decode`)
 
-          const operation = Select.Document.getOperationOrThrow(input.document!, input.operationName)
           // todo optimize
           // 1. Generate a map of possible custom scalar paths (tree structure)
           // 2. When traversing the result, skip keys that are not in the map
           // console.log(input.context.schemaIndex.Root)
           // console.log(getOptionalNullablePropertyOrThrow(input.context.schemaIndex.Root, operation.rootType))
-          const dataDecoded = ResultSet.decode(
-            getOptionalNullablePropertyOrThrow(input.schemaIndex.Root, operation.rootType),
-            operation.selectionSet,
-            input.result.data,
-          )
+
           switch (input.transportType) {
             case `memory`: {
-              return { ...input.result, data: dataDecoded }
+              return { ...input.result, data }
             }
             case `http`: {
-              return { ...input.result, data: dataDecoded, response: input.response }
+              return { ...input.result, data, response: input.response }
             }
             default:
               throw casesExhausted(input)

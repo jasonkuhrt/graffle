@@ -4,7 +4,7 @@ import fs from 'node:fs/promises'
 import * as Path from 'node:path'
 import { Graffle } from '../../entrypoints/__Graffle.js'
 import { Introspection } from '../../entrypoints/extensions.js'
-import { getTypeMapByKind, type TypeMapByKind } from '../../lib/graphql-plus/graphql.js'
+import { Nodes } from '../../lib/graphql-plus/_Nodes.js'
 import { omitUndefinedKeys } from '../../lib/prelude.js'
 import { fileExists, isPathToADirectory } from './helpers/fs.js'
 
@@ -74,7 +74,7 @@ export interface Config {
   schema: {
     sdl: string
     instance: GraphQLSchema
-    typeMapByKind: TypeMapByKind
+    typeMapByKind: Nodes.$Schema.TypeMapByKind
     error: {
       objects: GraphQLObjectType[]
       enabled: boolean
@@ -132,7 +132,7 @@ export const createConfig = async (input: Input): Promise<Config> => {
   const sourceSchema = await resolveSourceSchema(input)
 
   const schema = buildSchema(sourceSchema.content)
-  const typeMapByKind = getTypeMapByKind(schema)
+  const typeMapByKind = Nodes.$Schema.getTypeMapByKind(schema)
   const errorObjects = errorTypeNamePattern
     ? Object.values(typeMapByKind.GraphQLObjectType).filter(_ => _.name.match(errorTypeNamePattern))
     : []

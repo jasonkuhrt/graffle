@@ -5,7 +5,6 @@ import type {
   GraphQLField,
   GraphQLInputField,
   GraphQLNamedType,
-  GraphQLSchema,
 } from 'graphql'
 import {
   GraphQLEnumType,
@@ -28,17 +27,9 @@ import {
 import type { Errors } from '../errors/__.js'
 import { isString } from '../prelude.js'
 import type { TypedDocument } from '../typed-document/__.js'
-import { isScalarTypeAndCustom } from './nodesSchema.js'
+import { type TypeMapByKind } from './nodesSchema.js'
 
 export * from './_Nodes.js'
-
-export type TypeMapByKind =
-  & {
-    [Name in keyof NameToClassNamedType]: InstanceType<NameToClassNamedType[Name]>[]
-  }
-  & { GraphQLRootType: GraphQLObjectType[] }
-  & { GraphQLScalarTypeCustom: GraphQLScalarType<any, any>[] }
-  & { GraphQLScalarTypeStandard: GraphQLScalarType<any, any>[] }
 
 export const StandardScalarTypeNames = {
   String: `String`,
@@ -83,7 +74,9 @@ export const isRootType = (value: unknown): value is GraphQLObjectType => {
 }
 
 export type RootTypeNameQuery = typeof RootTypeName['Query']
+
 export type RootTypeNameMutation = typeof RootTypeName['Mutation']
+
 export type RootTypeNameSubscription = typeof RootTypeName['Subscription']
 
 export const operationTypeNameToRootTypeName = {
@@ -106,58 +99,6 @@ export const isStandardScalarType = (type: GraphQLScalarType) => {
   return type.name in StandardScalarTypeNames
 }
 
-export const getTypeMapByKind = (schema: GraphQLSchema) => {
-  const typeMap = schema.getTypeMap()
-  const typeMapValues = Object.values(typeMap)
-  const typeMapByKind: TypeMapByKind = {
-    GraphQLRootType: [],
-    GraphQLScalarType: [],
-    GraphQLScalarTypeCustom: [],
-    GraphQLScalarTypeStandard: [],
-    GraphQLEnumType: [],
-    GraphQLInputObjectType: [],
-    GraphQLInterfaceType: [],
-    GraphQLObjectType: [],
-    GraphQLUnionType: [],
-  }
-  for (const type of typeMapValues) {
-    if (type.name.startsWith(`__`)) continue
-    switch (true) {
-      case type instanceof GraphQLScalarType:
-        typeMapByKind.GraphQLScalarType.push(type)
-        if (isScalarTypeAndCustom(type)) {
-          typeMapByKind.GraphQLScalarTypeCustom.push(type)
-        } else {
-          typeMapByKind.GraphQLScalarTypeStandard.push(type)
-        }
-        break
-      case type instanceof GraphQLEnumType:
-        typeMapByKind.GraphQLEnumType.push(type)
-        break
-      case type instanceof GraphQLInputObjectType:
-        typeMapByKind.GraphQLInputObjectType.push(type)
-        break
-      case type instanceof GraphQLInterfaceType:
-        typeMapByKind.GraphQLInterfaceType.push(type)
-        break
-      case type instanceof GraphQLObjectType:
-        if (type.name === `Query` || type.name === `Mutation` || type.name === `Subscription`) {
-          typeMapByKind.GraphQLRootType.push(type)
-        } else {
-          typeMapByKind.GraphQLObjectType.push(type)
-        }
-        break
-      case type instanceof GraphQLUnionType:
-        typeMapByKind.GraphQLUnionType.push(type)
-        break
-      default:
-        // skip
-        break
-    }
-  }
-  return typeMapByKind
-}
-
 export type ClassToName<C> = C extends GraphQLScalarType ? `GraphQLScalarType`
   : C extends GraphQLObjectType ? `GraphQLObjectType`
   : C extends GraphQLInterfaceType ? `GraphQLInterfaceType`
@@ -167,17 +108,6 @@ export type ClassToName<C> = C extends GraphQLScalarType ? `GraphQLScalarType`
   : C extends GraphQLList<any> ? `GraphQLList`
   : C extends GraphQLNonNull<any> ? `GraphQLNonNull`
   : never
-
-export const NameToClassNamedType = {
-  GraphQLScalarType: GraphQLScalarType,
-  GraphQLObjectType: GraphQLObjectType,
-  GraphQLInterfaceType: GraphQLInterfaceType,
-  GraphQLUnionType: GraphQLUnionType,
-  GraphQLEnumType: GraphQLEnumType,
-  GraphQLInputObjectType: GraphQLInputObjectType,
-}
-
-export type NameToClassNamedType = typeof NameToClassNamedType
 
 export const NamedNameToClass = {
   GraphQLScalarType: GraphQLScalarType,

@@ -7,13 +7,13 @@ import type {
 } from 'graphql'
 import { getNullableType, isListType, isNamedType, isNullableType } from 'graphql'
 import { Code } from '../../../lib/Code.js'
-import type {
-  AnyClass,
-  AnyField,
-  AnyNamedClassName,
-  ClassToName,
-  NamedNameToClass,
-  NameToClassNamedType,
+import {
+  type AnyClass,
+  type AnyField,
+  type AnyNamedClassName,
+  type ClassToName,
+  type NamedNameToClass,
+  Nodes,
 } from '../../../lib/graphql-plus/graphql.js'
 import {
   isAllArgsNullable,
@@ -25,7 +25,7 @@ import {
 import { entries, values } from '../../../lib/prelude.js'
 import type { Config } from '../config.js'
 import { createModuleGenerator } from '../helpers/moduleGenerator.js'
-import { getDocumentation, getInterfaceImplementors } from '../helpers/render.js'
+import { getDocumentation } from '../helpers/render.js'
 import { ModuleGeneratorScalar } from './Scalar.js'
 
 const namespaceNames = {
@@ -55,12 +55,13 @@ const defineReferenceRenderers = <
 ) => renderers
 
 const defineConcreteRenderers = <
-  $Renderers extends { [ClassName in keyof NameToClassNamedType]: any },
+  $Renderers extends { [ClassName in keyof Nodes.$Schema.NameToClassNamedType]: any },
 >(
   renderers: {
     [ClassName in keyof $Renderers]: (
       config: Config,
-      node: ClassName extends keyof NameToClassNamedType ? InstanceType<NameToClassNamedType[ClassName]>
+      node: ClassName extends keyof Nodes.$Schema.NameToClassNamedType
+        ? InstanceType<Nodes.$Schema.NameToClassNamedType[ClassName]>
         : never,
     ) => string
   },
@@ -145,7 +146,7 @@ const concreteRenderers = defineConcreteRenderers({
     return Code.TSDocWithBlock(doc, source)
   },
   GraphQLInterfaceType: (config, node) => {
-    const implementors = getInterfaceImplementors(config.schema.typeMapByKind, node)
+    const implementors = Nodes.$Schema.getInterfaceImplementors(config.schema.typeMapByKind, node)
     return Code.TSDocWithBlock(
       getDocumentation(config, node),
       Code.export$(Code.type(

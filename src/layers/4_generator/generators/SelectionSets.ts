@@ -34,14 +34,7 @@ import type { StandardScalarTypeNames } from '../../../lib/graphql-plus/graphql.
 import { Select } from '../../2_Select/__.js'
 import { createModuleGenerator } from '../helpers/moduleGenerator.js'
 import { createCodeGenerator } from '../helpers/moduleGeneratorRunner.js'
-import {
-  getDocumentation,
-  getInterfaceImplementors,
-  renderDocumentation,
-  renderName,
-  title1,
-  typeTitle2SelectionSet,
-} from '../helpers/render.js'
+import { getDocumentation, renderDocumentation, renderName, title1, typeTitle2SelectionSet } from '../helpers/render.js'
 import { ModuleGeneratorScalar } from './Scalar.js'
 
 export const ModuleGeneratorSelectionSets = createModuleGenerator(
@@ -170,7 +163,7 @@ const renderInterface = createCodeGenerator<{ node: GraphQLInterfaceType }>(
     const fieldsRendered = fields.map(field => {
       return Helpers.outputField(field.name, `${renderName(node)}.${renderName(field)}`)
     }).join(`\n`)
-    const implementorTypes = getInterfaceImplementors(config.schema.typeMapByKind, node)
+    const implementorTypes = Nodes.$Schema.getInterfaceImplementors(config.schema.typeMapByKind, node)
     const onTypesRendered = implementorTypes.map(type =>
       Helpers.outputField(`${Select.InlineFragment.typeConditionPRefix}${type.name}`, renderName(type))
     ).join(

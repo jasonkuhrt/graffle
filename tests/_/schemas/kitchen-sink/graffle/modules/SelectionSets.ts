@@ -176,6 +176,10 @@ export interface Query {
    */
   dateList?: Query.dateList$Expanded | $Select.SelectAlias.SelectAlias<Query.dateList>
   /**
+   * Select the `dateListList` field on the `Query` object. Its type is `Date` (a `Scalar`).
+   */
+  dateListList?: Query.dateListList$Expanded | $Select.SelectAlias.SelectAlias<Query.dateListList>
+  /**
    * Select the `dateListNonNull` field on the `Query` object. Its type is `Date` (a `Scalar`).
    */
   dateListNonNull?: Query.dateListNonNull$Expanded | $Select.SelectAlias.SelectAlias<Query.dateListNonNull>
@@ -515,6 +519,15 @@ export namespace Query {
   export type dateList$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type dateList = $Select.Indicator.NoArgsIndicator
+
+  /**
+   * This is the "expanded" version of the `dateListList` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
+  export type dateListList$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
+
+  export type dateListList = $Select.Indicator.NoArgsIndicator
 
   /**
    * This is the "expanded" version of the `dateListNonNull` type. It is identical except for the fact

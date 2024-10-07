@@ -1,11 +1,10 @@
 import type { Nodes } from '../../lib/graphql-plus/_Nodes.js'
 import type { Codec } from '../1_Schema/Hybrid/types/Scalar/codec.js'
 import type { Select } from '../2_Select/__.js'
-import type { CustomScalarsIndex, SchemaIndex } from '../4_generator/generators/SchemaIndex.js'
+import type { CustomScalarsIndex } from '../4_generator/generators/SchemaIndex.js'
 import type { ValueMapper } from './nodes/Value.js'
 
 export interface Context {
-  schema: SchemaIndex
   captures: Captures
   hooks?: {
     value?: ValueMapper

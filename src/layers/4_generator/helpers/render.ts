@@ -1,4 +1,3 @@
-import type { GraphQLInterfaceType } from 'graphql'
 import { type GraphQLEnumValue, type GraphQLField, type GraphQLNamedType, isEnumType } from 'graphql'
 import { Code } from '../../../lib/Code.js'
 import {
@@ -6,7 +5,6 @@ import {
   getNodeDisplayName,
   getNodeNameAndKind,
   isDeprecatableNode,
-  type TypeMapByKind,
   type TypeMapKind,
 } from '../../../lib/graphql-plus/graphql.js'
 import { borderThickFullWidth, borderThinFullWidth, centerTo } from '../../../lib/text.js'
@@ -130,10 +128,4 @@ export const renderName = (type: GraphQLNamedType | GraphQLField<any, any>) => {
     return `$${type.name}`
   }
   return type.name
-}
-
-export const getInterfaceImplementors = (typeMap: TypeMapByKind, interfaceTypeSearch: GraphQLInterfaceType) => {
-  return typeMap.GraphQLObjectType.filter(objectType =>
-    objectType.getInterfaces().filter(interfaceType => interfaceType.name === interfaceTypeSearch.name).length > 0
-  )
 }

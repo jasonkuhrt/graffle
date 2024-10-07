@@ -218,6 +218,10 @@ builder.queryType({
       type: t.listRef(`Date`),
       resolve: () => [db.date0, db.date1],
     }),
+    dateListList: t.field({
+      type: t.listRef(t.listRef(`Date`)),
+      resolve: () => [[db.date0, db.date1], [db.date0, db.date1]],
+    }),
     dateObject1: t.field({ type: DateObject1, resolve: () => ({ date1: db.date0 }) }),
     dateUnion: t.field({ type: DateUnion, resolve: () => ({ date1: db.date0 }) }),
     dateInterface1: t.field({

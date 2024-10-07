@@ -2,7 +2,6 @@ import { print } from 'graphql'
 import { describe, expect, test } from 'vitest'
 import { db } from '../../../../tests/_/schemas/db.js'
 import { $index as customScalarsIndex } from '../../../../tests/_/schemas/kitchen-sink/graffle/modules/RuntimeCustomScalars.js'
-import { $Index as SchemaIndex } from '../../../../tests/_/schemas/kitchen-sink/graffle/modules/SchemaRuntime.js'
 import type * as SelectionSets from '../../../../tests/_/schemas/kitchen-sink/graffle/modules/SelectionSets.js'
 import { Select } from '../../2_Select/__.js'
 import type { Context } from '../types.js'
@@ -18,18 +17,10 @@ const testEachArguments = [
     const [description, selectionSet] = args.length === 1 ? [undefined, args[0]] : args
 
     const context: Context = {
-      schema: SchemaIndex,
       captures: {
         variables: [],
         customScalarOutputs: [],
       },
-      // config: {
-      //   output: outputConfigDefault,
-      //   transport: { type: `memory`, config: { methodMode: `post` } },
-      //   name: schemaIndex[`name`],
-
-      //   initialInput: {} as any,
-      // },
     }
     const documentNormalized = Select.Document.createDocumentNormalizedFromRootTypeSelection(
       `Query`,

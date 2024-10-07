@@ -1,16 +1,14 @@
 import { Nodes } from '../../../lib/graphql-plus/_Nodes.js'
-import type { Schema } from '../../1_Schema/__.js'
 import type { Select } from '../../2_Select/__.js'
 import type { GraphQLNodeMapper } from '../types.js'
 import { type SelectionSetContext, toGraphQLSelectionSet } from './SelectionSet.js'
 
 export const toGraphQLInlineFragment: GraphQLNodeMapper<
   Nodes.InlineFragmentNode,
-  [type: Schema.Output.ObjectLike, inlineFragment: InlineFragmentNormalized]
+  [inlineFragment: InlineFragmentNormalized]
 > = (
   context,
   location,
-  type,
   inlineFragment,
 ) => {
   const typeCondition = inlineFragment.typeCondition
@@ -25,11 +23,10 @@ export const toGraphQLInlineFragment: GraphQLNodeMapper<
 
   const selectionSetContext: SelectionSetContext = {
     kind: `InlineFragment`,
-    type,
     directives: graphqlDirectives,
   }
 
-  const selectionSet = toGraphQLSelectionSet(context, location, type, inlineFragment.selectionSet, selectionSetContext)
+  const selectionSet = toGraphQLSelectionSet(context, location, inlineFragment.selectionSet, selectionSetContext)
 
   return Nodes.InlineFragment({
     typeCondition,

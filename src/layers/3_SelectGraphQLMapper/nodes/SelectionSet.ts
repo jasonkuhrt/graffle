@@ -1,6 +1,5 @@
 import { Nodes } from '../../../lib/graphql-plus/_Nodes.js'
 import { casesExhausted } from '../../../lib/prelude.js'
-import type { Schema } from '../../1_Schema/__.js'
 import { Select } from '../../2_Select/__.js'
 import { advanceIndex, type GraphQLNodeMapper } from '../types.js'
 import { toGraphQLArgument } from './Argument.js'
@@ -10,26 +9,22 @@ import { toGraphQLInlineFragment } from './InlineFragment.js'
 
 export type SelectionSetContext = {
   kind: `Field`
-  type: Schema.SomeField
   arguments: Nodes.ArgumentNode[]
   directives: Nodes.DirectiveNode[]
 } | {
   kind: `InlineFragment`
-  type: Schema.Output.ObjectLike
   directives: Nodes.DirectiveNode[]
 }
 
 export const toGraphQLSelectionSet: GraphQLNodeMapper<
   Nodes.SelectionSetNode,
   [
-    type: Schema.Output.ObjectLike,
     selectionSet: Select.SelectionSet.AnySelectionSet,
     graphqlFieldProperties: SelectionSetContext | undefined,
   ]
 > = (
   context,
   index,
-  type,
   selectionSet,
   selectionSetContext,
 ) => {
@@ -46,15 +41,15 @@ export const toGraphQLSelectionSet: GraphQLNodeMapper<
         if (selectionSetContext.kind === `InlineFragment`) {
           throw new Error(`Cannot have arguments on an inline fragment.`)
         }
-        const index_ = advanceIndex(index, Select.Arguments.key)
+        // todo import constant from generator for "i"
+        // ... do NOT use namespace since that would drag generator code into tree-shake output.
+        const index_ = advanceIndex(index, `i`)
         for (const argName in keyParsed.arguments) {
           const argValue = keyParsed.arguments[argName]
           // We don't do client side validation, let server handle schema errors.
-          const argType = selectionSetContext.type.args?.fields[argName]?.type
           const arg = {
             name: argName,
             value: argValue,
-            type: argType,
           }
           selectionSetContext.arguments.push(toGraphQLArgument(context, index_, arg))
         }
@@ -80,14 +75,14 @@ export const toGraphQLSelectionSet: GraphQLNodeMapper<
       case `InlineFragment`: {
         for (const selectionSet of keyParsed.selectionSets) {
           selections.push(
-            toGraphQLInlineFragment(context, index, type, { typeCondition: keyParsed.typeCondition, selectionSet }),
+            toGraphQLInlineFragment(context, index, { typeCondition: keyParsed.typeCondition, selectionSet }),
           )
         }
         continue
       }
       case `Alias`: {
         for (const alias of keyParsed.aliases) {
-          selections.push(toGraphQLField(context, index, type, {
+          selections.push(toGraphQLField(context, index, {
             name: key,
             alias: alias[0],
             value: alias[1],
@@ -97,7 +92,7 @@ export const toGraphQLSelectionSet: GraphQLNodeMapper<
       }
       case `SelectionSet`: {
         selections.push(
-          toGraphQLField(context, index, type, { alias: null, name: keyParsed.name, value: keyParsed.selectionSet }),
+          toGraphQLField(context, index, { alias: null, name: keyParsed.name, value: keyParsed.selectionSet }),
         )
         continue
       }
