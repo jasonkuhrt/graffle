@@ -2,6 +2,7 @@ import { createModuleGenerator } from '../helpers/moduleGenerator.js'
 import { ModuleGeneratorClient } from './Client.js'
 import { ModuleGeneratorError } from './Error.js'
 import { ModuleGeneratorSelect } from './Select.js'
+import { ModuleGeneratorSelectionSets } from './SelectionSets.js'
 
 export const ModuleGenerator_ = createModuleGenerator(
   `_`,
@@ -16,6 +17,7 @@ export const ModuleGenerator_ = createModuleGenerator(
       `export { Select } from './modules/${ModuleGeneratorSelect.name}.js'`,
       `export { isError } from './modules/${ModuleGeneratorError.name}.js'`,
       `export { create } from './modules/${ModuleGeneratorClient.name}.js'`,
+      `export * as SelectionSets from './modules/${ModuleGeneratorSelectionSets.name}.js'`,
     )
 
     return code

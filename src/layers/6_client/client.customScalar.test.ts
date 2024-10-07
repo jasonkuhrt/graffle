@@ -1,13 +1,13 @@
 import { describe, expect } from 'vitest'
 import { createResponse, test } from '../../../tests/_/helpers.js'
 import { db } from '../../../tests/_/schemas/db.js'
-import type { Query } from '../../../tests/_/schemas/kitchen-sink/graffle/modules/SelectionSets.js'
+import type { Graffle } from '../../../tests/_/schemas/kitchen-sink/graffle/__.js'
 
 const date0Encoded = db.date0.toISOString()
 
 type TestCase = [
   describe: string,
-  query: Query,
+  query: Graffle.SelectionSets.Query,
   responseData: object,
   expectedData: object,
 ]

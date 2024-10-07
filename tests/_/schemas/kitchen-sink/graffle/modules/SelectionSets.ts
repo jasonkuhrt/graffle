@@ -89,10 +89,20 @@ export interface Mutation$FragmentInline extends Mutation, $Select.Directive.$Gr
 // ----------------------------------------| Fields Interfaces |
 
 export namespace Mutation {
+  /**
+   * This is the "expanded" version of the `id` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type id$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type id = $Select.Indicator.NoArgsIndicator
 
+  /**
+   * This is the "expanded" version of the `idNonNull` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type idNonNull$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type idNonNull = $Select.Indicator.NoArgsIndicator
@@ -121,7 +131,7 @@ export interface Query {
    * Select the `InputObjectNestedNonNull` field on the `Query` object. Its type is `ID` (a `Scalar`).
    */
   InputObjectNestedNonNull?:
-    | Query.InputObjectNestedNonNull$Expanded
+    | Query.InputObjectNestedNonNull
     | $Select.SelectAlias.SelectAlias<Query.InputObjectNestedNonNull>
   /**
    * Select the `abcEnum` field on the `Query` object. Its type is Enum.
@@ -146,16 +156,16 @@ export interface Query {
   /**
    * Select the `dateArgNonNull` field on the `Query` object. Its type is `Date` (a `Scalar`).
    */
-  dateArgNonNull?: Query.dateArgNonNull$Expanded | $Select.SelectAlias.SelectAlias<Query.dateArgNonNull>
+  dateArgNonNull?: Query.dateArgNonNull | $Select.SelectAlias.SelectAlias<Query.dateArgNonNull>
   /**
    * Select the `dateArgNonNullList` field on the `Query` object. Its type is `Date` (a `Scalar`).
    */
-  dateArgNonNullList?: Query.dateArgNonNullList$Expanded | $Select.SelectAlias.SelectAlias<Query.dateArgNonNullList>
+  dateArgNonNullList?: Query.dateArgNonNullList | $Select.SelectAlias.SelectAlias<Query.dateArgNonNullList>
   /**
    * Select the `dateArgNonNullListNonNull` field on the `Query` object. Its type is `Date` (a `Scalar`).
    */
   dateArgNonNullListNonNull?:
-    | Query.dateArgNonNullListNonNull$Expanded
+    | Query.dateArgNonNullListNonNull
     | $Select.SelectAlias.SelectAlias<Query.dateArgNonNullListNonNull>
   /**
    * Select the `dateInterface1` field on the `Query` object. Its type is Interface.
@@ -204,7 +214,7 @@ export interface Query {
   /**
    * Select the `interfaceWithArgs` field on the `Query` object. Its type is Interface.
    */
-  interfaceWithArgs?: Query.interfaceWithArgs$Expanded | $Select.SelectAlias.SelectAlias<Query.interfaceWithArgs>
+  interfaceWithArgs?: Query.interfaceWithArgs | $Select.SelectAlias.SelectAlias<Query.interfaceWithArgs>
   /**
    * Select the `listInt` field on the `Query` object. Its type is `Int` (a `Scalar`).
    */
@@ -252,7 +262,7 @@ export interface Query {
   /**
    * Select the `result` field on the `Query` object. Its type is Union.
    */
-  result?: Query.result$Expanded | $Select.SelectAlias.SelectAlias<Query.result>
+  result?: Query.result | $Select.SelectAlias.SelectAlias<Query.result>
   /**
    * Select the `resultNonNull` field on the `Query` object. Its type is Union.
    */
@@ -275,7 +285,7 @@ export interface Query {
    * Select the `stringWithArgInputObjectRequired` field on the `Query` object. Its type is `String` (a `Scalar`).
    */
   stringWithArgInputObjectRequired?:
-    | Query.stringWithArgInputObjectRequired$Expanded
+    | Query.stringWithArgInputObjectRequired
     | $Select.SelectAlias.SelectAlias<Query.stringWithArgInputObjectRequired>
   /**
    * Select the `stringWithArgs` field on the `Query` object. Its type is `String` (a `Scalar`).
@@ -289,14 +299,12 @@ export interface Query {
    * Select the `stringWithListArgRequired` field on the `Query` object. Its type is `String` (a `Scalar`).
    */
   stringWithListArgRequired?:
-    | Query.stringWithListArgRequired$Expanded
+    | Query.stringWithListArgRequired
     | $Select.SelectAlias.SelectAlias<Query.stringWithListArgRequired>
   /**
    * Select the `stringWithRequiredArg` field on the `Query` object. Its type is `String` (a `Scalar`).
    */
-  stringWithRequiredArg?:
-    | Query.stringWithRequiredArg$Expanded
-    | $Select.SelectAlias.SelectAlias<Query.stringWithRequiredArg>
+  stringWithRequiredArg?: Query.stringWithRequiredArg | $Select.SelectAlias.SelectAlias<Query.stringWithRequiredArg>
   /**
    * Select the `unionFooBar` field on the `Query` object. Its type is Union.
    */
@@ -356,6 +364,11 @@ export namespace Query {
     }
   >
 
+  /**
+   * This is the "expanded" version of the `InputObjectNested` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type InputObjectNested$Expanded = $Utilities.UnionExpanded<
     $Select.Indicator.Indicator | InputObjectNested$SelectionSet
   >
@@ -373,12 +386,20 @@ export namespace Query {
     $: InputObjectNestedNonNull$SelectionSetArguments
   }
 
-  export type InputObjectNestedNonNull$Expanded = InputObjectNestedNonNull
-
+  /**
+   * This is the "expanded" version of the `abcEnum` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type abcEnum$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type abcEnum = $Select.Indicator.NoArgsIndicator
 
+  /**
+   * This is the "expanded" version of the `date` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type date$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type date = $Select.Indicator.NoArgsIndicator
@@ -396,6 +417,11 @@ export namespace Query {
     }
   >
 
+  /**
+   * This is the "expanded" version of the `dateArg` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type dateArg$Expanded = $Utilities.UnionExpanded<$Select.Indicator.Indicator | dateArg$SelectionSet>
 
   export type dateArg = $Select.Indicator.Indicator | dateArg$SelectionSet
@@ -413,6 +439,11 @@ export namespace Query {
     }
   >
 
+  /**
+   * This is the "expanded" version of the `dateArgInputObject` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type dateArgInputObject$Expanded = $Utilities.UnionExpanded<
     $Select.Indicator.Indicator | dateArgInputObject$SelectionSet
   >
@@ -432,6 +463,11 @@ export namespace Query {
     }
   >
 
+  /**
+   * This is the "expanded" version of the `dateArgList` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type dateArgList$Expanded = $Utilities.UnionExpanded<$Select.Indicator.Indicator | dateArgList$SelectionSet>
 
   export type dateArgList = $Select.Indicator.Indicator | dateArgList$SelectionSet
@@ -447,8 +483,6 @@ export namespace Query {
     $: dateArgNonNull$SelectionSetArguments
   }
 
-  export type dateArgNonNull$Expanded = dateArgNonNull
-
   export type dateArgNonNullList$SelectionSetArguments = {
     date: Array<$Scalar.DateDecoded | undefined | null>
   }
@@ -459,8 +493,6 @@ export namespace Query {
      */
     $: dateArgNonNullList$SelectionSetArguments
   }
-
-  export type dateArgNonNullList$Expanded = dateArgNonNullList
 
   export type dateArgNonNullListNonNull$SelectionSetArguments = {
     date: Array<$Scalar.DateDecoded | undefined | null>
@@ -473,18 +505,31 @@ export namespace Query {
     $: dateArgNonNullListNonNull$SelectionSetArguments
   }
 
-  export type dateArgNonNullListNonNull$Expanded = dateArgNonNullListNonNull
-
   export interface dateInterface1 extends _RefDefs._DateInterface1 {}
   export type dateInterface1$Expanded = dateInterface1
+  /**
+   * This is the "expanded" version of the `dateList` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type dateList$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type dateList = $Select.Indicator.NoArgsIndicator
 
+  /**
+   * This is the "expanded" version of the `dateListNonNull` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type dateListNonNull$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type dateListNonNull = $Select.Indicator.NoArgsIndicator
 
+  /**
+   * This is the "expanded" version of the `dateNonNull` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type dateNonNull$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type dateNonNull = $Select.Indicator.NoArgsIndicator
@@ -506,14 +551,29 @@ export namespace Query {
     }
   >
 
+  /**
+   * This is the "expanded" version of the `error` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type error$Expanded = $Utilities.UnionExpanded<$Select.Indicator.Indicator | error$SelectionSet>
 
   export type error = $Select.Indicator.Indicator | error$SelectionSet
 
+  /**
+   * This is the "expanded" version of the `id` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type id$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type id = $Select.Indicator.NoArgsIndicator
 
+  /**
+   * This is the "expanded" version of the `idNonNull` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type idNonNull$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type idNonNull = $Select.Indicator.NoArgsIndicator
@@ -532,18 +592,38 @@ export namespace Query {
     }
   }
   export type interfaceWithArgs$Expanded = interfaceWithArgs
+  /**
+   * This is the "expanded" version of the `listInt` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type listInt$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type listInt = $Select.Indicator.NoArgsIndicator
 
+  /**
+   * This is the "expanded" version of the `listIntNonNull` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type listIntNonNull$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type listIntNonNull = $Select.Indicator.NoArgsIndicator
 
+  /**
+   * This is the "expanded" version of the `listListInt` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type listListInt$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type listListInt = $Select.Indicator.NoArgsIndicator
 
+  /**
+   * This is the "expanded" version of the `listListIntNonNull` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type listListIntNonNull$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type listListIntNonNull = $Select.Indicator.NoArgsIndicator
@@ -594,6 +674,11 @@ export namespace Query {
     }
   }
   export type resultNonNull$Expanded = resultNonNull
+  /**
+   * This is the "expanded" version of the `$string` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type $string$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type $string = $Select.Indicator.NoArgsIndicator
@@ -611,6 +696,11 @@ export namespace Query {
     }
   >
 
+  /**
+   * This is the "expanded" version of the `stringWithArgEnum` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type stringWithArgEnum$Expanded = $Utilities.UnionExpanded<
     $Select.Indicator.Indicator | stringWithArgEnum$SelectionSet
   >
@@ -630,6 +720,11 @@ export namespace Query {
     }
   >
 
+  /**
+   * This is the "expanded" version of the `stringWithArgInputObject` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type stringWithArgInputObject$Expanded = $Utilities.UnionExpanded<
     $Select.Indicator.Indicator | stringWithArgInputObject$SelectionSet
   >
@@ -646,8 +741,6 @@ export namespace Query {
      */
     $: stringWithArgInputObjectRequired$SelectionSetArguments
   }
-
-  export type stringWithArgInputObjectRequired$Expanded = stringWithArgInputObjectRequired
 
   export type stringWithArgs$SelectionSetArguments = {
     boolean?: boolean | undefined | null
@@ -666,6 +759,11 @@ export namespace Query {
     }
   >
 
+  /**
+   * This is the "expanded" version of the `stringWithArgs` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type stringWithArgs$Expanded = $Utilities.UnionExpanded<
     $Select.Indicator.Indicator | stringWithArgs$SelectionSet
   >
@@ -685,6 +783,11 @@ export namespace Query {
     }
   >
 
+  /**
+   * This is the "expanded" version of the `stringWithListArg` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type stringWithListArg$Expanded = $Utilities.UnionExpanded<
     $Select.Indicator.Indicator | stringWithListArg$SelectionSet
   >
@@ -702,8 +805,6 @@ export namespace Query {
     $: stringWithListArgRequired$SelectionSetArguments
   }
 
-  export type stringWithListArgRequired$Expanded = stringWithListArgRequired
-
   export type stringWithRequiredArg$SelectionSetArguments = {
     string: string
   }
@@ -714,8 +815,6 @@ export namespace Query {
      */
     $: stringWithRequiredArg$SelectionSetArguments
   }
-
-  export type stringWithRequiredArg$Expanded = stringWithRequiredArg
 
   export interface unionFooBar extends _RefDefs._FooBarUnion {}
   export type unionFooBar$Expanded = unionFooBar
@@ -846,6 +945,11 @@ export interface DateInterface1$FragmentInline
 {}
 
 export namespace DateInterface1 {
+  /**
+   * This is the "expanded" version of the `date1` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type date1$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type date1 = $Select.Indicator.NoArgsIndicator
@@ -884,6 +988,11 @@ export interface Error extends $Select.Bases.ObjectLike {
 export interface Error$FragmentInline extends Error, $Select.Directive.$Groups.InlineFragment.Fields {}
 
 export namespace Error {
+  /**
+   * This is the "expanded" version of the `message` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type message$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type message = $Select.Indicator.NoArgsIndicator
@@ -922,6 +1031,11 @@ export interface Interface extends $Select.Bases.ObjectLike {
 export interface Interface$FragmentInline extends Interface, $Select.Directive.$Groups.InlineFragment.Fields {}
 
 export namespace Interface {
+  /**
+   * This is the "expanded" version of the `id` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type id$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type id = $Select.Indicator.NoArgsIndicator
@@ -988,6 +1102,11 @@ export interface Bar$FragmentInline extends Bar, $Select.Directive.$Groups.Inlin
 // ----------------------------------------| Fields Interfaces |
 
 export namespace Bar {
+  /**
+   * This is the "expanded" version of the `int` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type int$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type int = $Select.Indicator.NoArgsIndicator
@@ -1038,6 +1157,11 @@ export interface DateObject1$FragmentInline extends DateObject1, $Select.Directi
 // ----------------------------------------| Fields Interfaces |
 
 export namespace DateObject1 {
+  /**
+   * This is the "expanded" version of the `date1` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type date1$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type date1 = $Select.Indicator.NoArgsIndicator
@@ -1088,6 +1212,11 @@ export interface DateObject2$FragmentInline extends DateObject2, $Select.Directi
 // ----------------------------------------| Fields Interfaces |
 
 export namespace DateObject2 {
+  /**
+   * This is the "expanded" version of the `date2` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type date2$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type date2 = $Select.Indicator.NoArgsIndicator
@@ -1142,10 +1271,20 @@ export interface ErrorOne$FragmentInline extends ErrorOne, $Select.Directive.$Gr
 // ----------------------------------------| Fields Interfaces |
 
 export namespace ErrorOne {
+  /**
+   * This is the "expanded" version of the `infoId` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type infoId$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type infoId = $Select.Indicator.NoArgsIndicator
 
+  /**
+   * This is the "expanded" version of the `message` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type message$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type message = $Select.Indicator.NoArgsIndicator
@@ -1200,10 +1339,20 @@ export interface ErrorTwo$FragmentInline extends ErrorTwo, $Select.Directive.$Gr
 // ----------------------------------------| Fields Interfaces |
 
 export namespace ErrorTwo {
+  /**
+   * This is the "expanded" version of the `infoInt` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type infoInt$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type infoInt = $Select.Indicator.NoArgsIndicator
 
+  /**
+   * This is the "expanded" version of the `message` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type message$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type message = $Select.Indicator.NoArgsIndicator
@@ -1257,6 +1406,11 @@ export interface Foo$FragmentInline extends Foo, $Select.Directive.$Groups.Inlin
 // ----------------------------------------| Fields Interfaces |
 
 export namespace Foo {
+  /**
+   * This is the "expanded" version of the `id` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type id$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type id = $Select.Indicator.NoArgsIndicator
@@ -1323,22 +1477,47 @@ export interface Object1$FragmentInline extends Object1, $Select.Directive.$Grou
 // ----------------------------------------| Fields Interfaces |
 
 export namespace Object1 {
+  /**
+   * This is the "expanded" version of the `$boolean` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type $boolean$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type $boolean = $Select.Indicator.NoArgsIndicator
 
+  /**
+   * This is the "expanded" version of the `float` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type float$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type float = $Select.Indicator.NoArgsIndicator
 
+  /**
+   * This is the "expanded" version of the `id` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type id$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type id = $Select.Indicator.NoArgsIndicator
 
+  /**
+   * This is the "expanded" version of the `int` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type int$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type int = $Select.Indicator.NoArgsIndicator
 
+  /**
+   * This is the "expanded" version of the `$string` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type $string$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type $string = $Select.Indicator.NoArgsIndicator
@@ -1395,10 +1574,20 @@ export interface Object1ImplementingInterface$FragmentInline
 // ----------------------------------------| Fields Interfaces |
 
 export namespace Object1ImplementingInterface {
+  /**
+   * This is the "expanded" version of the `id` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type id$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type id = $Select.Indicator.NoArgsIndicator
 
+  /**
+   * This is the "expanded" version of the `int` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type int$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type int = $Select.Indicator.NoArgsIndicator
@@ -1457,10 +1646,20 @@ export interface Object2ImplementingInterface$FragmentInline
 // ----------------------------------------| Fields Interfaces |
 
 export namespace Object2ImplementingInterface {
+  /**
+   * This is the "expanded" version of the `$boolean` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type $boolean$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type $boolean = $Select.Indicator.NoArgsIndicator
 
+  /**
+   * This is the "expanded" version of the `id` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type id$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type id = $Select.Indicator.NoArgsIndicator
@@ -1515,6 +1714,11 @@ export interface ObjectNested$FragmentInline extends ObjectNested, $Select.Direc
 // ----------------------------------------| Fields Interfaces |
 
 export namespace ObjectNested {
+  /**
+   * This is the "expanded" version of the `id` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type id$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type id = $Select.Indicator.NoArgsIndicator
@@ -1619,6 +1823,11 @@ export interface lowerCaseObject$FragmentInline
 // ----------------------------------------| Fields Interfaces |
 
 export namespace lowerCaseObject {
+  /**
+   * This is the "expanded" version of the `id` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type id$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type id = $Select.Indicator.NoArgsIndicator
@@ -1671,6 +1880,11 @@ export interface lowerCaseObject2$FragmentInline
 // ----------------------------------------| Fields Interfaces |
 
 export namespace lowerCaseObject2 {
+  /**
+   * This is the "expanded" version of the `int` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type int$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type int = $Select.Indicator.NoArgsIndicator

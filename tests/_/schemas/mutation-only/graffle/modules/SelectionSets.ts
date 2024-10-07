@@ -87,10 +87,20 @@ export interface Mutation$FragmentInline extends Mutation, $Select.Directive.$Gr
 // ----------------------------------------| Fields Interfaces |
 
 export namespace Mutation {
+  /**
+   * This is the "expanded" version of the `id` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type id$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type id = $Select.Indicator.NoArgsIndicator
 
+  /**
+   * This is the "expanded" version of the `idNonNull` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type idNonNull$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type idNonNull = $Select.Indicator.NoArgsIndicator

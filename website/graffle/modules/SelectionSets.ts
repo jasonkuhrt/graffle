@@ -56,7 +56,7 @@ export interface Query {
   /**
    * Select the `continent` field on the `Query` object. Its type is Object.
    */
-  continent?: Query.continent$Expanded | $Select.SelectAlias.SelectAlias<Query.continent>
+  continent?: Query.continent | $Select.SelectAlias.SelectAlias<Query.continent>
   /**
    * Select the `continents` field on the `Query` object. Its type is Object.
    */
@@ -68,11 +68,11 @@ export interface Query {
   /**
    * Select the `country` field on the `Query` object. Its type is Object.
    */
-  country?: Query.country$Expanded | $Select.SelectAlias.SelectAlias<Query.country>
+  country?: Query.country | $Select.SelectAlias.SelectAlias<Query.country>
   /**
    * Select the `language` field on the `Query` object. Its type is Object.
    */
-  language?: Query.language$Expanded | $Select.SelectAlias.SelectAlias<Query.language>
+  language?: Query.language | $Select.SelectAlias.SelectAlias<Query.language>
   /**
    * Select the `languages` field on the `Query` object. Its type is Object.
    */
@@ -273,12 +273,22 @@ export interface Continent$FragmentInline extends Continent, $Select.Directive.$
 // ----------------------------------------| Fields Interfaces |
 
 export namespace Continent {
+  /**
+   * This is the "expanded" version of the `code` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type code$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type code = $Select.Indicator.NoArgsIndicator
 
   export interface countries extends _RefDefs._Country {}
   export type countries$Expanded = countries
+  /**
+   * This is the "expanded" version of the `name` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type name$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type name = $Select.Indicator.NoArgsIndicator
@@ -385,32 +395,67 @@ export interface Country$FragmentInline extends Country, $Select.Directive.$Grou
 // ----------------------------------------| Fields Interfaces |
 
 export namespace Country {
+  /**
+   * This is the "expanded" version of the `awsRegion` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type awsRegion$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type awsRegion = $Select.Indicator.NoArgsIndicator
 
+  /**
+   * This is the "expanded" version of the `capital` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type capital$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type capital = $Select.Indicator.NoArgsIndicator
 
+  /**
+   * This is the "expanded" version of the `code` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type code$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type code = $Select.Indicator.NoArgsIndicator
 
   export interface continent extends _RefDefs._Continent {}
   export type continent$Expanded = continent
+  /**
+   * This is the "expanded" version of the `currencies` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type currencies$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type currencies = $Select.Indicator.NoArgsIndicator
 
+  /**
+   * This is the "expanded" version of the `currency` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type currency$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type currency = $Select.Indicator.NoArgsIndicator
 
+  /**
+   * This is the "expanded" version of the `emoji` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type emoji$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type emoji = $Select.Indicator.NoArgsIndicator
 
+  /**
+   * This is the "expanded" version of the `emojiU` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type emojiU$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type emojiU = $Select.Indicator.NoArgsIndicator
@@ -430,18 +475,38 @@ export namespace Country {
     }
   >
 
+  /**
+   * This is the "expanded" version of the `name` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type name$Expanded = $Utilities.UnionExpanded<$Select.Indicator.Indicator | name$SelectionSet>
 
   export type name = $Select.Indicator.Indicator | name$SelectionSet
 
+  /**
+   * This is the "expanded" version of the `native` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type native$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type native = $Select.Indicator.NoArgsIndicator
 
+  /**
+   * This is the "expanded" version of the `phone` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type phone$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type phone = $Select.Indicator.NoArgsIndicator
 
+  /**
+   * This is the "expanded" version of the `phones` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type phones$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type phones = $Select.Indicator.NoArgsIndicator
@@ -509,18 +574,38 @@ export interface Language$FragmentInline extends Language, $Select.Directive.$Gr
 // ----------------------------------------| Fields Interfaces |
 
 export namespace Language {
+  /**
+   * This is the "expanded" version of the `code` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type code$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type code = $Select.Indicator.NoArgsIndicator
 
+  /**
+   * This is the "expanded" version of the `name` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type name$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type name = $Select.Indicator.NoArgsIndicator
 
+  /**
+   * This is the "expanded" version of the `native` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type native$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type native = $Select.Indicator.NoArgsIndicator
 
+  /**
+   * This is the "expanded" version of the `rtl` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type rtl$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type rtl = $Select.Indicator.NoArgsIndicator
@@ -579,12 +664,22 @@ export interface State$FragmentInline extends State, $Select.Directive.$Groups.I
 // ----------------------------------------| Fields Interfaces |
 
 export namespace State {
+  /**
+   * This is the "expanded" version of the `code` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type code$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type code = $Select.Indicator.NoArgsIndicator
 
   export interface country extends _RefDefs._Country {}
   export type country$Expanded = country
+  /**
+   * This is the "expanded" version of the `name` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type name$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type name = $Select.Indicator.NoArgsIndicator
@@ -643,14 +738,29 @@ export interface Subdivision$FragmentInline extends Subdivision, $Select.Directi
 // ----------------------------------------| Fields Interfaces |
 
 export namespace Subdivision {
+  /**
+   * This is the "expanded" version of the `code` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type code$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type code = $Select.Indicator.NoArgsIndicator
 
+  /**
+   * This is the "expanded" version of the `emoji` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type emoji$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type emoji = $Select.Indicator.NoArgsIndicator
 
+  /**
+   * This is the "expanded" version of the `name` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type name$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type name = $Select.Indicator.NoArgsIndicator
