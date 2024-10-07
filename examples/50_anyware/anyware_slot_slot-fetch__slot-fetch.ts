@@ -10,7 +10,7 @@ const graffle = Graffle
     return await exchange({
       using: {
         fetch: () => {
-          return new Response(JSON.stringify({ data: { continents: [{ name: `Earthsea` }] } }))
+          return new Response(JSON.stringify({ data: { trainers: [{ name: `Jason` }] } }))
         },
       },
     })
@@ -18,7 +18,7 @@ const graffle = Graffle
 
 const result = await graffle.gql`
   query {
-    continents {
+    trainers {
       name
     }
   }

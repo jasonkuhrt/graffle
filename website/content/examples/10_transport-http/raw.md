@@ -32,17 +32,17 @@ await graffle.gql`{ pokemons { name } }`.send()
 
 <!-- dprint-ignore-start -->
 ```txt
-/some/path/to/transport-http_raw.ts:XX:XX
-await graffle.gql`{ pokemons { name } }`.send()
-              ^
-
-
-TypeError: graffle.gql is not a function
-    at <anonymous> (/some/path/to/transport-http_raw.ts:XX:XX:15)
-    at ModuleJob.run (node:internal/modules/esm/module_job:XX:XX)
-    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:XX:XX)
-    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:XX:XX)
-
-Node.js vXX.XX.XX
+{
+  methodMode: 'post',
+  headers: Headers {
+    accept: 'application/graphql-response+json; charset=utf-8, application/json; charset=utf-8',
+    'content-type': 'application/json'
+  },
+  signal: undefined,
+  mode: 'cors',
+  method: 'post',
+  url: 'http://localhost:3000/graphql',
+  body: '{"query":"{ pokemons { name } }"}'
+}
 ```
 <!-- dprint-ignore-end -->

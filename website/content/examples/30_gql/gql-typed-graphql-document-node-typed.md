@@ -2,9 +2,10 @@
 aside: false
 ---
 
-# Gql Document Node Typed
+# Gql Typed Graphql Document Node Typed
 
-This example shows how to send a request using a Document instance for the GraphQL document while also being typesafe in regards to the passed variables and return type.
+This example shows how to use the TypeScript type "TypedQueryDocumentNode" from the
+package `graphql` to make a type safe request with gql method.
 
 <!-- dprint-ignore-start -->
 ```ts twoslash
@@ -53,17 +54,14 @@ console.log(data?.pokemonByName)
 
 <!-- dprint-ignore-start -->
 ```txt
-/some/path/to/gql_gql-document-node_gql-typed__gql-document-node-typed.ts:XX:XX
-const data = await graffle.gql(document).send({ name: `Pikachu` })
-                           ^
-
-
-TypeError: graffle.gql is not a function
-    at <anonymous> (/some/path/to/gql_gql-document-node_gql-typed__gql-document-node-typed.ts:XX:XX:28)
-    at ModuleJob.run (node:internal/modules/esm/module_job:XX:XX)
-    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:XX:XX)
-    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:XX:XX)
-
-Node.js vXX.XX.XX
+[
+  {
+    name: 'Pikachu',
+    hp: 35,
+    attack: 55,
+    defense: 40,
+    trainer: { name: 'Ash' }
+  }
+]
 ```
 <!-- dprint-ignore-end -->

@@ -34,18 +34,9 @@ console.log(data)
 
 <!-- dprint-ignore-start -->
 ```json
-/some/path/to/transport-memory.ts:XX:XX
-const data = await graffle.gql`
-                           ^
-
-
-TypeError: graffle.gql is not a function
-    at <anonymous> (/some/path/to/transport-memory.ts:XX:XX:28)
-    at ModuleJob.run (node:internal/modules/esm/module_job:XX:XX)
-    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:XX:XX)
-    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:XX:XX)
-
-Node.js vXX.XX.XX
+{
+  "foo": "bar"
+}
 ```
 <!-- dprint-ignore-end -->
 

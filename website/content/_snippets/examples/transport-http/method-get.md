@@ -29,18 +29,58 @@ await graffle.gql`query { pokemonByName(name: "Nano") { hp } }`.send()
 
 <!-- dprint-ignore-start -->
 ```txt
-/some/path/to/transport-http_method-get.ts:XX:XX
-await graffle.gql`mutation { addPokemon(attack:0, defense:0, hp:1, name:"Nano", type: grass) { name } }`.send()
-              ^
-
-
-TypeError: graffle.gql is not a function
-    at <anonymous> (/some/path/to/transport-http_method-get.ts:XX:XX:15)
-    at ModuleJob.run (node:internal/modules/esm/module_job:XX:XX)
-    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:XX:XX)
-    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:XX:XX)
-
-Node.js vXX.XX.XX
+{
+  methodMode: 'getReads',
+  headers: Headers {
+    accept: 'application/graphql-response+json; charset=utf-8, application/json; charset=utf-8',
+    'content-type': 'application/json',
+    tenant: 'nano'
+  },
+  signal: undefined,
+  method: 'post',
+  url: URL {
+    href: 'http://localhost:3000/graphql',
+    origin: 'http://localhost:3000',
+    protocol: 'http:',
+    username: '',
+    password: '',
+    host: 'localhost:3000',
+    hostname: 'localhost',
+    port: '3000',
+    pathname: '/graphql',
+    search: '',
+    searchParams: URLSearchParams {},
+    hash: ''
+  },
+  body: '{"query":"mutation { addPokemon(attack:0, defense:0, hp:1, name:\\"Nano\\", type: grass) { name } }"}'
+}
+```
+<!-- dprint-ignore-end -->
+<!-- dprint-ignore-start -->
+```txt
+{
+  methodMode: 'getReads',
+  headers: Headers {
+    accept: 'application/graphql-response+json; charset=utf-8, application/json; charset=utf-8',
+    tenant: 'nano'
+  },
+  signal: undefined,
+  method: 'get',
+  url: URL {
+    href: 'http://localhost:3000/graphql?query=query+%7B+pokemonByName%28name%3A+%22Nano%22%29+%7B+hp+%7D+%7D',
+    origin: 'http://localhost:3000',
+    protocol: 'http:',
+    username: '',
+    password: '',
+    host: 'localhost:3000',
+    hostname: 'localhost',
+    port: '3000',
+    pathname: '/graphql',
+    search: '?query=query+%7B+pokemonByName%28name%3A+%22Nano%22%29+%7B+hp+%7D+%7D',
+    searchParams: URLSearchParams { 'query' => 'query { pokemonByName(name: "Nano") { hp } }' },
+    hash: ''
+  }
+}
 ```
 <!-- dprint-ignore-end -->
 

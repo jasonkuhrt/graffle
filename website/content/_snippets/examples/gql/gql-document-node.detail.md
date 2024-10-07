@@ -16,10 +16,10 @@ const graffle = Graffle.create({
   .use(Opentelemetry())
 
 const data = await graffle.gql(parse(`
-  query pokemonByName ($Name: String!) {
-    pokemonByName (name: $Name) {
+  query pokemonByName ($name: String!) {
+    pokemonByName (name: $name) {
       name
-      continent {
+      trainer {
         name
       }
     }
@@ -32,18 +32,9 @@ console.log(data)
 
 <!-- dprint-ignore-start -->
 ```txt
-/some/path/to/gql_gql-document-node.ts:XX:XX
-const data = await graffle.gql(parse(`
-                           ^
-
-
-TypeError: graffle.gql is not a function
-    at <anonymous> (/some/path/to/gql_gql-document-node.ts:XX:XX:28)
-    at ModuleJob.run (node:internal/modules/esm/module_job:XX:XX)
-    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:XX:XX)
-    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:XX:XX)
-
-Node.js vXX.XX.XX
+{
+  pokemonByName: [ { name: 'Pikachu', trainer: { name: 'Ash' } } ]
+}
 ```
 <!-- dprint-ignore-end -->
 

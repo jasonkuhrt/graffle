@@ -47,10 +47,9 @@ try {
 ```txt
 ContextualAggregateError: One or more errors in the execution result.
     at handleOutput (/some/path/to/handleOutput.ts:XX:XX:19)
-    at run (/some/path/to/client.ts:XX:XX:12)
+    at executeDocument (/some/path/to/requestMethods.ts:XX:XX:10)
     at process.processTicksAndRejections (node:internal/process/task_queues:XX:XX)
-    at async executeDocument (/some/path/to/client.ts:XX:XX:12)
-    at async executeRootTypeField (/some/path/to/client.ts:XX:XX:20)
+    at async executeRootTypeField (/some/path/to/requestMethods.ts:XX:XX:18)
     at async <anonymous> (/some/path/to/output_return-error_return-error-execution__return-error-execution.ts:XX:XX:16) {
   context: {},
   cause: undefined,
@@ -88,9 +87,8 @@ ContextualError: There was an error in the extension "anonymous" (use named func
     at runPipeline (/some/path/to/runPipeline.ts:XX:XX:18)
     at process.processTicksAndRejections (node:internal/process/task_queues:XX:XX)
     at async Object.run (/some/path/to/main.ts:XX:XX:22)
-    at async run (/some/path/to/client.ts:XX:XX:20)
-    at async executeDocument (/some/path/to/client.ts:XX:XX:12)
-    at async executeRootTypeField (/some/path/to/client.ts:XX:XX:20)
+    at async executeDocument (/some/path/to/requestMethods.ts:XX:XX:18)
+    at async executeRootTypeField (/some/path/to/requestMethods.ts:XX:XX:18)
     at async <anonymous> (/some/path/to/output_return-error_return-error-execution__return-error-execution.ts:XX:XX:3) {
   context: {
     hookName: 'encode',

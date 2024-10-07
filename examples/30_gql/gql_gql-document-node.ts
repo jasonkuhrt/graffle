@@ -14,10 +14,10 @@ const graffle = Graffle.create({
   .use(Opentelemetry())
 
 const data = await graffle.gql(parse(`
-  query pokemonByName ($Name: String!) {
-    pokemonByName (name: $Name) {
+  query pokemonByName ($name: String!) {
+    pokemonByName (name: $name) {
       name
-      continent {
+      trainer {
         name
       }
     }

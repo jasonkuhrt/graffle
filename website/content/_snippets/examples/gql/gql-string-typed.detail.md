@@ -5,7 +5,7 @@
 
 <!-- dprint-ignore-start -->
 ```ts twoslash
-import { Graffle, type TypedDocumentString } from 'graffle'
+import { Graffle, type TypedDocument } from 'graffle'
 
 const graffle = Graffle.create({
   schema: `http://localhost:3000/graphql`,
@@ -17,7 +17,7 @@ const graffle = Graffle.create({
  * @see https://the-guild.dev/graphql/codegen/plugins/presets/preset-client#documentmode
  * @see https://github.com/jasonkuhrt/graffle/issues/997
  */
-type Document = TypedDocumentString<
+type Document = TypedDocument.String<
   {
     pokemonByName: {
       id: string
@@ -55,18 +55,15 @@ console.log(data?.pokemonByName)
 
 <!-- dprint-ignore-start -->
 ```txt
-/some/path/to/gql_gql-string_gql-typed__gql-string-typed.ts:XX:XX
-const data = await graffle.gql(document).send({ name: `Pikachu` })
-                           ^
-
-
-TypeError: graffle.gql is not a function
-    at <anonymous> (/some/path/to/gql_gql-string_gql-typed__gql-string-typed.ts:XX:XX:28)
-    at ModuleJob.run (node:internal/modules/esm/module_job:XX:XX)
-    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:XX:XX)
-    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:XX:XX)
-
-Node.js vXX.XX.XX
+[
+  {
+    name: 'Pikachu',
+    hp: 35,
+    attack: 55,
+    defense: 40,
+    trainer: { name: 'Ash' }
+  }
+]
 ```
 <!-- dprint-ignore-end -->
 

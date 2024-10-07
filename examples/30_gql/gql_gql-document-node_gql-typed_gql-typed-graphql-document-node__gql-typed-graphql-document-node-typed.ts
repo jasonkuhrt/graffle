@@ -1,5 +1,6 @@
 /**
- * This example shows how to send a request using a Document instance for the GraphQL document while also being typesafe in regards to the passed variables and return type.
+ * This example shows how to use the TypeScript type "TypedQueryDocumentNode" from the
+ * package `graphql` to make a type safe request with gql method.
  */
 
 import { parse, type TypedQueryDocumentNode } from 'graphql'
