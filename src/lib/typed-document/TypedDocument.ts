@@ -1,10 +1,15 @@
-import type { DocumentTypeDecoration, TypedDocumentNode } from '@graphql-typed-document-node/core'
+import type {
+  DocumentTypeDecoration,
+  TypedDocumentNode as TypedDocumentNodeCore,
+} from '@graphql-typed-document-node/core'
 import type { TypedQueryDocumentNode } from 'graphql'
 import type { HasRequiredKeys, IsNever, IsUnknown } from 'type-fest'
 import { type HasKeys, type IsHasIndexType } from '../../lib/prelude.js'
 import type { SomeData, Variables } from '../graphql-plus/graphql.js'
 
-export { type TypedDocumentNode as Node } from '@graphql-typed-document-node/core'
+// export { type TypedDocumentNode as Node } from '@graphql-typed-document-node/core'
+
+export type TypedDocumentNode = any
 
 export { type TypedQueryDocumentNode as Query } from 'graphql'
 
@@ -19,7 +24,7 @@ export type { SomeData, Variables } from '../graphql-plus/graphql.js'
 export type TypedDocument<$Result extends SomeData = SomeData, $Variables extends Variables = any> =
   | TypedQueryDocumentNode<$Result, $Variables>
   | TypedDocumentString   <$Result, $Variables>
-  | TypedDocumentNode     <$Result, $Variables>
+  | TypedDocumentNodeCore     <$Result, $Variables>
 
 export const isString = <$TypedDocument extends TypedDocument>(
   document: $TypedDocument,
@@ -70,7 +75,7 @@ export type VariablesInputKindOptional = 'optional'
 // dprint-ignore
 export type ResultOf<$Document extends TypedDocument> =
   $Document extends TypedQueryDocumentNode <infer $R, infer _>   ? $R :
-  $Document extends TypedDocumentNode      <infer $R, infer _>   ? $R :
+  $Document extends TypedDocumentNodeCore      <infer $R, infer _>   ? $R :
   $Document extends TypedDocumentString    <infer $R, infer _>   ? $R :
                                                                    never
 
@@ -78,7 +83,7 @@ export type ResultOf<$Document extends TypedDocument> =
 export type VariablesOf<$Document extends TypedDocument> =
   $Document extends TypedDocumentString    <infer _, infer $V>   ? $V :
   $Document extends TypedQueryDocumentNode <infer _, infer $V>   ? $V :
-  $Document extends TypedDocumentNode      <infer _, infer $V>   ? IsUnknown<$V> extends true
+  $Document extends TypedDocumentNodeCore      <infer _, infer $V>   ? IsUnknown<$V> extends true
                                                                     // This catches case of DocumentNode being passed
                                                                     // which is a subtype of TypedDocumentNode, however,
                                                                     // extracting variables from it will always yield

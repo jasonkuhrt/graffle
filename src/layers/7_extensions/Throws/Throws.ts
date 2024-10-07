@@ -16,7 +16,7 @@ export const Throws = () => {
       const throwsifiedInput: WithInput = {
         output: {
           envelope: {
-            enabled: client._.context.config.output.envelope.enabled,
+            enabled: client._.config.output.envelope.enabled,
             // @ts-expect-error
             errors: { execution: false, other: false, schema: false },
           },

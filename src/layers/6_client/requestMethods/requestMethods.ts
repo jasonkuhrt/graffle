@@ -2,7 +2,7 @@ import type { HKT } from '../../../entrypoints/utilities-for-generated.js'
 import type { Fluent } from '../../../lib/fluent/__.js'
 import type { RootTypeName, Variables } from '../../../lib/graphql-plus/graphql.js'
 import { readMaybeThunk } from '../../1_Schema/_.js'
-import type { Schema } from '../../1_Schema/__.js'
+import { Schema } from '../../1_Schema/__.js'
 import { Select } from '../../2_Select/__.js'
 import type { GlobalRegistry } from '../../4_generator/globalRegistry.js'
 import { RequestCore } from '../../5_request/__.js'
@@ -18,7 +18,7 @@ export interface FnRequestMethods extends Fluent.FnMerge {
 // dprint-ignore
 export type BuilderRequestMethods<$Context extends ClientContext>=
   & (
-    $Context['schemaIndex'] extends null
+    $Context['config']['schemaIndex'] extends null
       ? {}
       :
         (
@@ -136,6 +136,9 @@ export const executeDocument = async (
   const url = state.config.transport.type === `http` ? state.config.transport.url : undefined
   const schema = state.config.transport.type === `http` ? undefined : state.config.transport.schema
   const initialInput = {
+    document,
+    operationName,
+    // todo, remove the above
     state,
     interfaceType,
     transportType,

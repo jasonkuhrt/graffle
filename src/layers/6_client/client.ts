@@ -34,7 +34,6 @@ export type IncrementWthNewConfig<
 > = Fluent.IncrementWthNewContext<
   $Parameters,
   {
-    schemaIndex: $Parameters['state']['context']['schemaIndex']
     config: $ConfigNew
   }
 >
@@ -66,7 +65,7 @@ const createWithState = (
 
   // @ts-expect-error ignoreme
   const clientDirect: Client = {
-    _: { state },
+    _: state,
     ...gqlProperties(state),
     ...withProperties(createWithState, state),
     ...useProperties(createWithState, state),
