@@ -1,5 +1,5 @@
 <div class="ExampleSnippet">
-<a href="../../examples/gql/gql-typed-graphql-document-node">Gql Typed Graphql Document Node</a>
+<a href="../../examples/gql/gql-document-node-typed">Gql Document Node Typed</a>
 
 <!-- dprint-ignore-start -->
 ```ts twoslash

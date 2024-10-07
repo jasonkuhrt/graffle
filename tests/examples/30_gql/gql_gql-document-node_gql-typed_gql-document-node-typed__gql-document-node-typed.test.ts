@@ -7,15 +7,15 @@
 import { expect, test } from 'vitest'
 import { runExample } from '../../../scripts/generate-examples-derivatives/helpers.js'
 
-test(`gql_gql-document-node_gql-typed_gql-typed-graphql-document-node__gql-typed-graphql-document-node`, async () => {
+test(`gql_gql-document-node_gql-typed_gql-document-node-typed__gql-document-node-typed`, async () => {
   const exampleResult = await runExample(
-    `./examples/30_gql/gql_gql-document-node_gql-typed_gql-typed-graphql-document-node__gql-typed-graphql-document-node.ts`,
+    `./examples/30_gql/gql_gql-document-node_gql-typed_gql-document-node-typed__gql-document-node-typed.ts`,
   )
   // Examples should output their data results.
   const exampleResultMaybeEncoded = exampleResult
   // If ever outputs vary by Node version, you can use this to snapshot by Node version.
   // const nodeMajor = process.version.match(/v(\d+)/)?.[1] ?? `unknown`
   await expect(exampleResultMaybeEncoded).toMatchFileSnapshot(
-    `../../../examples/__outputs__/30_gql/gql_gql-document-node_gql-typed_gql-typed-graphql-document-node__gql-typed-graphql-document-node.output.txt`,
+    `../../../examples/__outputs__/30_gql/gql_gql-document-node_gql-typed_gql-document-node-typed__gql-document-node-typed.output.txt`,
   )
 })
