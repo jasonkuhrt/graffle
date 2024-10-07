@@ -1,19 +1,18 @@
 import type { IsUnknown } from 'type-fest'
 import type { ConfigManager } from '../../../lib/prelude.js'
+import type { SchemaIndex } from '../../4_generator/generators/SchemaIndex.js'
 import type { GlobalRegistry } from '../../4_generator/globalRegistry.js'
-import { Transport, type TransportHttp, type TransportMemory } from '../../5_request/types.js'
+import { Transport } from '../../5_request/types.js'
 import { defaultMethodMode } from '../transportHttp/request.js'
-import { type Config, outputConfigDefault } from './Config.js'
+import { outputConfigDefault, type TransportConfigHttp, type TransportConfigMemory } from './Config.js'
 import type { InputOutputEnvelopeLonghand, InputStatic, URLInput } from './Input.js'
 
 // dprint-ignore
 export type InputToConfig<$Input extends InputStatic<GlobalRegistry.SchemaUnion>> = {
   initialInput: $Input
   name: HandleName<$Input>
-  transport: {
-    type: HandleTransport<$Input>
-    config: Config['transport']['config']
-  }
+  schemaIndex: SchemaIndex | null
+  transport: HandleTransport<$Input>
   output: {
     defaults: {
       errorChannel: ConfigManager.ReadOrDefault<$Input, ['output', 'defaults', 'errorChannel'], 'throw'>
@@ -43,22 +42,20 @@ export const defaultSchemaName: GlobalRegistry.DefaultSchemaName = `default`
 export const inputToConfig = <$Input extends InputStatic<GlobalRegistry.SchemaUnion>>(
   input: $Input,
 ): InputToConfig<$Input> => {
-  const envelopeLonghand: InputOutputEnvelopeLonghand | undefined = typeof input.output?.envelope === `object`
+  const outputEnvelopeLonghand: InputOutputEnvelopeLonghand | undefined = typeof input.output?.envelope === `object`
     ? { enabled: true, ...input.output.envelope }
     : typeof input.output?.envelope === `boolean`
     ? { enabled: input.output.envelope }
     : undefined
+
+  const transport = handleTransport(input)
+
   return {
     initialInput: input,
     // @ts-expect-error conditional type fixme
     name: input.name ?? defaultSchemaName,
-    transport: {
-      type: handleTransportType(input),
-      config: {
-        methodMode: input.transport?.methodMode ?? defaultMethodMode,
-        ...input.transport,
-      },
-    },
+    transport,
+    schemaIndex: input.schemaIndex ?? null,
     output: {
       defaults: {
         // @ts-expect-error conditional type
@@ -66,15 +63,15 @@ export const inputToConfig = <$Input extends InputStatic<GlobalRegistry.SchemaUn
       },
       envelope: {
         // @ts-expect-error conditional type
-        enabled: envelopeLonghand?.enabled ?? outputConfigDefault.envelope.enabled,
+        enabled: outputEnvelopeLonghand?.enabled ?? outputConfigDefault.envelope.enabled,
         errors: {
           // @ts-expect-error conditional type
-          execution: envelopeLonghand?.errors?.execution ?? outputConfigDefault.envelope.errors.execution,
+          execution: outputEnvelopeLonghand?.errors?.execution ?? outputConfigDefault.envelope.errors.execution,
           // @ts-expect-error conditional type
-          other: envelopeLonghand?.errors?.other ?? outputConfigDefault.envelope.errors.other,
+          other: outputEnvelopeLonghand?.errors?.other ?? outputConfigDefault.envelope.errors.other,
           // @ts-expect-error conditional type
 
-          schema: envelopeLonghand?.errors?.schema ?? outputConfigDefault.envelope.errors.schema,
+          schema: outputEnvelopeLonghand?.errors?.schema ?? outputConfigDefault.envelope.errors.schema,
         },
       },
       errors: {
@@ -95,13 +92,25 @@ type HandleName<$Input extends InputStatic<GlobalRegistry.SchemaUnion>> = $Input
 
 // dprint-ignore
 type HandleTransport<$Input extends InputStatic<GlobalRegistry.SchemaUnion>> =
-  $Input['schema'] extends URLInput         ? TransportHttp :
+  $Input['schema'] extends URLInput         ? TransportConfigHttp :
   // When the client is generated via introspection of a URL then the schema defaults to that URL.
   // This is the only case when schema can be unknown from so we can assume that transport is HTTP.
-  IsUnknown<$Input['schema']> extends true  ? TransportHttp
-                                            : TransportMemory
+  IsUnknown<$Input['schema']> extends true  ? TransportConfigHttp
+                                            : TransportConfigMemory
 
-const handleTransportType = <T extends InputStatic<GlobalRegistry.SchemaUnion>>(input: T): HandleTransport<T> => {
-  // @ts-expect-error conditional type
-  return input.schema instanceof URL || typeof input.schema === `string` ? Transport.http : Transport.memory
+const handleTransport = <T extends InputStatic<GlobalRegistry.SchemaUnion>>(input: T): HandleTransport<T> => {
+  if (input.schema instanceof URL || typeof input.schema === `string`) {
+    return {
+      type: Transport.http,
+      url: input.schema,
+      config: {
+        methodMode: input.transport?.methodMode ?? defaultMethodMode,
+        ...input.transport,
+      },
+    } as any
+  }
+  return {
+    type: Transport.memory,
+    schema: input.schema,
+  } as any
 }

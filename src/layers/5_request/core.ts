@@ -1,33 +1,36 @@
 import { type ExecutionResult, parse, print } from 'graphql'
 import { Anyware } from '../../lib/anyware/__.js'
 import {
-  OperationTypeAccessTypeMap,
-  parseGraphQLOperationType,
-  type StandardScalarVariables,
-} from '../../lib/graphql-plus/graphql.js'
-import {
   getRequestEncodeSearchParameters,
   getRequestHeadersRec,
   parseExecutionResult,
   postRequestEncodeBody,
   postRequestHeadersRec,
-} from '../../lib/graphqlHTTP.js'
+} from '../../lib/graphql-http/graphqlHTTP.js'
+import { execute } from '../../lib/graphql-plus/execute.js'
+import type { Nodes } from '../../lib/graphql-plus/graphql.js'
+import {
+  OperationTypeAccessTypeMap,
+  parseGraphQLOperationType,
+  type Variables,
+} from '../../lib/graphql-plus/graphql.js'
 import { mergeRequestInit, searchParamsAppendAll } from '../../lib/http.js'
-import { casesExhausted, getOptionalNullablePropertyOrThrow, throwNull } from '../../lib/prelude.js'
-import { execute } from '../0_functions/execute.js'
+import { casesExhausted, getOptionalNullablePropertyOrThrow, isString, throwNull } from '../../lib/prelude.js'
 import { Select } from '../2_Select/__.js'
 import { ResultSet } from '../3_Result/__.js'
 import { SelectionSetGraphqlMapper } from '../3_SelectGraphQLMapper/__.js'
 import type { GraffleExecutionResultVar } from '../6_client/handleOutput.js'
 import type { Config } from '../6_client/Settings/Config.js'
+import { MethodMode, type MethodModeGetReads } from '../6_client/transportHttp/request.js'
 import {
   type CoreExchangeGetRequest,
   type CoreExchangePostRequest,
-  MethodMode,
-  type MethodModeGetReads,
-} from '../6_client/transportHttp/request.js'
-import { type HookMap, hookNamesOrderedBySequence, type HookSequence } from './hooks.js'
+  type HookMap,
+  hookNamesOrderedBySequence,
+  type HookSequence,
+} from './hooks.js'
 import { injectTypenameOnRootResultFields } from './schemaErrors.js'
+import { Transport } from './types.js'
 
 export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
   // If core errors caused by an abort error then raise it as a direct error.
@@ -44,60 +47,50 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
       let documentString: string
 
       // todo: the other case where we're going to need to parse document is for custom scalar support of raw
-      const isWillInjectTypename = input.context.config.output.errors.schema && input.context.schemaIndex
+      const isWillInjectTypename = input.state.config.output.errors.schema && input.schemaIndex
 
       if (isWillInjectTypename) {
-        const documentObject = input.interface === `raw`
-          ? typeof input.document === `string`
-            ? parse(input.document)
-            : input.document
+        const documentObject: Nodes.DocumentNode = input.interfaceType === `raw`
+          ? isString(input.request.query)
+            ? parse(input.request.query)
+            : input.request.query as Nodes.DocumentNode
           : SelectionSetGraphqlMapper.toGraphQL({
-            schema: input.context.schemaIndex,
-            document: input.document,
-            customScalarsIndex: input.context.schemaIndex.customScalars.input,
+            schema: input.schemaIndex!,
+            document: input.request.document,
+            customScalarsIndex: input.schemaIndex!.customScalars.input,
           })
 
         injectTypenameOnRootResultFields({
           document: documentObject,
-          operationName: input.operationName,
-          schema: input.context.schemaIndex!,
+          operationName: input.request.operationName,
+          schema: input.schemaIndex!,
         })
 
         documentString = print(documentObject)
       } else {
-        documentString = input.interface === `raw`
-          ? typeof input.document === `string`
-            ? input.document
-            : print(input.document)
+        documentString = input.interfaceType === `raw`
+          ? isString(input.request.query)
+            ? input.request.query
+            : print(input.request.query as Nodes.DocumentNode)
           : print(SelectionSetGraphqlMapper.toGraphQL({
-            schema: input.context.schemaIndex,
-            document: input.document,
-            customScalarsIndex: input.context.schemaIndex.customScalars.input,
+            schema: input.schemaIndex!,
+            document: input.request.document,
+            customScalarsIndex: input.schemaIndex!.customScalars.input,
           }))
       }
 
-      const variables: StandardScalarVariables | undefined = input.interface === `raw`
-        ? input.variables
+      const variables: Variables | undefined = input.interfaceType === `raw`
+        ? input.request.variables
         // todo turn inputs into variables
         : undefined
 
-      switch (input.transport) {
-        case `http`: {
-          return {
-            ...input,
-            url: input.schema,
-            query: documentString,
-            variables,
-          }
-        }
-        case `memory`: {
-          return {
-            ...input,
-            schema: input.schema,
-            query: documentString,
-            variables,
-          }
-        }
+      return {
+        ...input,
+        request: {
+          query: documentString,
+          variables,
+          operationName: input.request.operationName,
+        },
       }
     },
     pack: {
@@ -107,17 +100,26 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
       },
       run: ({ input, slots }) => {
         // TODO thrown error here is swallowed in examples.
-        switch (input.transport) {
+        switch (input.transportType) {
           case `memory`: {
             return input
+            // return {
+            //   ...input,
+            //   request: {
+            //     ...input.request,
+            //     schema: input.schema,
+            //   },
+            // }
           }
           case `http`: {
-            const methodMode = input.context.config.transport.config.methodMode
+            if (input.state.config.transport.type !== Transport.http) throw new Error(`transport type is not http`)
+
+            const methodMode = input.state.config.transport.config.methodMode
             // todo parsing here can be optimized.
             //      1. If using TS interface then work with initially submitted structured data to already know the operation type
             //      2. Maybe: Memoize over request.{ operationName, query }
             //      3. Maybe: Keep a cache of parsed request.{ query }
-            const operationType = throwNull(parseGraphQLOperationType(input)) // todo better feedback here than throwNull
+            const operationType = throwNull(parseGraphQLOperationType(input.request)) // todo better feedback here than throwNull
             const requestMethod = methodMode === MethodMode.post
               ? `post`
               : methodMode === MethodMode.getReads // eslint-disable-line
@@ -131,11 +133,11 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
                     headers: requestMethod === `get` ? getRequestHeadersRec : postRequestHeadersRec,
                   },
                   {
-                    headers: input.context.config.transport.config.headers,
-                    signal: input.context.config.transport.config.signal,
+                    headers: input.state.config.transport.config.headers,
+                    signal: input.state.config.transport.config.signal,
                   },
                 ),
-                input.context.config.transport.config.raw,
+                input.state.config.transport.config.raw,
               ),
               {
                 headers: input.headers,
@@ -146,18 +148,14 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
                 methodMode: methodMode as MethodModeGetReads,
                 ...baseProperties,
                 method: `get`,
-                url: searchParamsAppendAll(input.url, slots.searchParams(input)),
+                url: searchParamsAppendAll(input.url, slots.searchParams(input.request)),
               }
               : {
                 methodMode: methodMode,
                 ...baseProperties,
                 method: `post`,
                 url: input.url,
-                body: slots.body({
-                  query: input.query,
-                  variables: input.variables,
-                  operationName: input.operationName,
-                }),
+                body: slots.body(input.request),
               }
             return {
               ...input,
@@ -176,7 +174,7 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
         fetch: (request) => fetch(request),
       },
       run: async ({ input, slots }) => {
-        switch (input.transport) {
+        switch (input.transportType) {
           case `http`: {
             const request = new Request(input.request.url, input.request)
             const response = await slots.fetch(request)
@@ -186,12 +184,7 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
             }
           }
           case `memory`: {
-            const result = await execute({
-              schema: input.schema,
-              document: input.query,
-              variables: input.variables,
-              operationName: input.operationName,
-            })
+            const result = await execute(input)
             return {
               ...input,
               result,
@@ -203,7 +196,7 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
       },
     },
     unpack: async ({ input }) => {
-      switch (input.transport) {
+      switch (input.transportType) {
         case `http`: {
           // todo 1 if response is missing header of content length then .json() hangs forever.
           //        firstly consider a timeout, secondly, if response is malformed, then don't even run .json()
@@ -232,10 +225,10 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
     // Hooks could have a new optional field "schema". When present certain enhanced features would be allowed.
     // like custom scalars and result fields.
     decode: ({ input }) => {
-      switch (input.interface) {
+      switch (input.interfaceType) {
         // todo this depends on the return mode
         case `raw`: {
-          switch (input.transport) {
+          switch (input.transportType) {
             case `http`: {
               return {
                 ...input.result,
@@ -250,18 +243,20 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
           }
         }
         case `typed`: {
-          const operation = Select.Document.getOperationOrThrow(input.document, input.operationName)
+          if (!input.schemaIndex) throw new Error(`schemaIndex is required for typed decode`)
+
+          const operation = Select.Document.getOperationOrThrow(input.document!, input.operationName)
           // todo optimize
           // 1. Generate a map of possible custom scalar paths (tree structure)
           // 2. When traversing the result, skip keys that are not in the map
           // console.log(input.context.schemaIndex.Root)
           // console.log(getOptionalNullablePropertyOrThrow(input.context.schemaIndex.Root, operation.rootType))
           const dataDecoded = ResultSet.decode(
-            getOptionalNullablePropertyOrThrow(input.context.schemaIndex.Root, operation.rootType),
+            getOptionalNullablePropertyOrThrow(input.schemaIndex.Root, operation.rootType),
             operation.selectionSet,
             input.result.data,
           )
-          switch (input.transport) {
+          switch (input.transportType) {
             case `memory`: {
               return { ...input.result, data: dataDecoded }
             }

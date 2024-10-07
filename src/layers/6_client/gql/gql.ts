@@ -1,4 +1,3 @@
-import { GraphQLSchema } from 'graphql'
 import type { Fluent } from '../../../lib/fluent/__.js'
 import type { TypedDocument } from '../../../lib/typed-document/__.js'
 import { RequestCore } from '../../5_request/__.js'
@@ -38,21 +37,23 @@ export const gqlProperties = defineTerminus((state) => {
       return {
         send: async (...args: sendArgumentsImplementation) => {
           const { operationName, variables } = resolveSendArguments(args)
-          const interface_: InterfaceRaw = `raw`
-          const transport = state.input.schema instanceof GraphQLSchema ? `memory` : `http`
-          const initialInput: RequestCore.Hooks.HookDefEncode<Config>['input'] = {
-            interface: interface_,
-            transport,
-            schema: state.input.schema,
-            context: {
-              config: state.config,
-              state,
-              schemaIndex: state.input.schemaIndex ?? null,
+          const interfaceType: InterfaceRaw = `raw`
+          const transportType = state.config.transport.type
+          const url = state.config.transport.type === `http` ? state.config.transport.url : undefined
+          const schema = state.config.transport.type === `http` ? undefined : state.config.transport.schema
+          const initialInput = {
+            interfaceType,
+            transportType,
+            state,
+            url,
+            schema,
+            schemaIndex: state.config.schemaIndex,
+            request: {
+              query: document,
+              variables,
+              operationName,
             },
-            document,
-            variables,
-            operationName,
-          }
+          } as RequestCore.Hooks.HookDefEncode<Config>['input']
           const result = await RequestCore.anyware.run({
             initialInput,
             retryingExtension: state.retry as any,

@@ -1,5 +1,5 @@
 import { createExtension } from '../../../entrypoints/main.js'
-import type { StandardScalarVariables } from '../../../lib/graphql-plus/graphql.js'
+import type { Variables } from '../../../lib/graphql-plus/graphql.js'
 import { createBody } from './createBody.js'
 
 /**
@@ -21,7 +21,9 @@ export const Upload = () =>
             if (!hasUploadScalarVariable) return
 
             // TODO we can probably get file upload working for in-memory schemas too :)
-            if (pack.input.transport !== `http`) throw new Error(`Must be using http transport to use "Upload" scalar.`)
+            if (pack.input.transportType !== `http`) {
+              throw new Error(`Must be using http transport to use "Upload" scalar.`)
+            }
 
             return createBody({
               query: input.query,
@@ -39,6 +41,6 @@ export const Upload = () =>
     },
   })
 
-const isUsingUploadScalar = (_variables: StandardScalarVariables) => {
+const isUsingUploadScalar = (_variables: Variables) => {
   return Object.values(_variables).some(_ => _ instanceof Blob)
 }

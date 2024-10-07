@@ -1,4 +1,3 @@
-export { execute } from '../layers/0_functions/execute.js'
 export { createExtension, type Extension } from '../layers/6_client/extension/extension.js'
 export { type TypedDocument } from '../lib/typed-document/__.js'
 // todo figure this export out. Was just put there to resolve a type error about "...cannot be named..."

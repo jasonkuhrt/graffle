@@ -1,26 +1,29 @@
-import type { DocumentNode, ExecutionResult, GraphQLSchema } from 'graphql'
-import type {
-  GraphQLRequestEncoded,
-  GraphQLRequestInput,
-  StandardScalarVariables,
-} from '../../lib/graphql-plus/graphql.js'
-import type { getRequestEncodeSearchParameters, postRequestEncodeBody } from '../../lib/graphqlHTTP.js'
+import type { ExecutionResult, GraphQLSchema } from 'graphql'
+import type { GraphQLHTTP } from '../../lib/graphql-http/__.js'
+import type { getRequestEncodeSearchParameters, postRequestEncodeBody } from '../../lib/graphql-http/graphqlHTTP.js'
+import type { GraphQLRequestInput } from '../../lib/graphql-plus/graphql.js'
+import type { httpMethodGet, httpMethodPost } from '../../lib/http.js'
 import type { Select } from '../2_Select/__.js'
-import type { InterfaceTypedRequestContext, RequestContext } from '../6_client/handleOutput.js'
+import type { SchemaIndex } from '../4_generator/generators/SchemaIndex.js'
+import type { State } from '../6_client/fluent.js'
 import type { Config } from '../6_client/Settings/Config.js'
-import type { CoreExchangeGetRequest, CoreExchangePostRequest } from '../6_client/transportHttp/request.js'
+import type { MethodModeGetReads, MethodModePost } from '../6_client/transportHttp/request.js'
 import type { InterfaceRaw, InterfaceTyped, TransportHttp, TransportMemory } from './types.js'
+
+interface HookInputBase {
+  schemaIndex: SchemaIndex | null
+  state: State
+  // todo remove these
+  document?: Select.Document.DocumentNormalized
+  operationName?: string
+}
 
 type InterfaceInput<TypedProperties = {}, RawProperties = {}> =
   | ({
-    interface: InterfaceTyped
-    context: InterfaceTypedRequestContext
-    document: Select.Document.DocumentNormalized
-    operationName?: string
+    interfaceType: InterfaceTyped
   } & TypedProperties)
   | ({
-    interface: InterfaceRaw
-    context: RequestContext
+    interfaceType: InterfaceRaw
   } & RawProperties)
 
 // dprint-ignore
@@ -29,37 +32,40 @@ type TransportInput<$Config extends Config, $HttpProperties = {}, $MemoryPropert
   | (
       TransportHttp extends $Config['transport']['type']
         ? ({
-            transport: TransportHttp
-            
+            transportType: TransportHttp
+            url: string | URL
           } & $HttpProperties)
         : never
     )
   | (
       TransportMemory extends $Config['transport']['type']
         ? ({
-          transport: TransportMemory
+          transportType: TransportMemory
+          schema: GraphQLSchema
         } & $MemoryProperties)
         : never
     )
 
-export const hookNamesOrderedBySequence = [`encode`, `pack`, `exchange`, `unpack`, `decode`] as const
-
-export type HookSequence = typeof hookNamesOrderedBySequence
-
 export type HookDefEncode<$Config extends Config> = {
   input:
-    & InterfaceInput<{ operationName?: string }, GraphQLRequestInput>
-    & TransportInput<$Config, { schema: string | URL }, { schema: GraphQLSchema }>
+    & HookInputBase
+    & InterfaceInput<
+      { request: { document: Select.Document.DocumentNormalized; operationName?: string } },
+      { request: GraphQLRequestInput }
+    >
+    & TransportInput<$Config>
 }
 
 export type HookDefPack<$Config extends Config> = {
   input:
-    & GraphQLRequestEncoded
+    & HookInputBase
     & InterfaceInput
-    // todo why is headers here but not other http request properties?
-    & TransportInput<$Config, { url: string | URL; headers?: HeadersInit }, {
-      schema: GraphQLSchema
-    }>
+    & TransportInput<
+      $Config,
+      // todo why is headers here but not other http request properties?
+      { headers?: HeadersInit }
+    >
+    & { request: GraphQLHTTP.RequestInput }
   slots: {
     /**
      * When request will be sent using GET this slot is called to create the value that will be used for the HTTP Search Parameters.
@@ -77,30 +83,35 @@ export type HookDefExchange<$Config extends Config> = {
     fetch: (request: Request) => Response | Promise<Response>
   }
   input:
+    & HookInputBase
     & InterfaceInput
-    & TransportInput<$Config, {
-      request: CoreExchangePostRequest | CoreExchangeGetRequest
-    }, {
-      schema: GraphQLSchema
-      query: string | DocumentNode
-      variables?: StandardScalarVariables
-      operationName?: string
-    }>
+    & TransportInput<
+      $Config,
+      { request: CoreExchangePostRequest | CoreExchangeGetRequest },
+      { request: GraphQLHTTP.RequestInput }
+    >
 }
 
 export type HookDefUnpack<$Config extends Config> = {
   input:
+    & HookInputBase
     & InterfaceInput
-    & TransportInput<$Config, { response: Response }, {
-      result: ExecutionResult
-    }>
+    & TransportInput<
+      $Config,
+      { response: Response },
+      { result: ExecutionResult }
+    >
 }
 
 export type HookDefDecode<$Config extends Config> = {
   input:
-    & { result: ExecutionResult }
+    & HookInputBase
     & InterfaceInput
-    & TransportInput<$Config, { response: Response }>
+    & TransportInput<
+      $Config,
+      { response: Response }
+    >
+    & { result: ExecutionResult }
 }
 
 export type HookMap<$Config extends Config = Config> = {
@@ -109,4 +120,24 @@ export type HookMap<$Config extends Config = Config> = {
   exchange: HookDefExchange<$Config>
   unpack: HookDefUnpack<$Config>
   decode: HookDefDecode<$Config>
+}
+
+export const hookNamesOrderedBySequence = [`encode`, `pack`, `exchange`, `unpack`, `decode`] as const
+
+export type HookSequence = typeof hookNamesOrderedBySequence
+
+/**
+ * An extension of {@link RequestInit} that adds a required `url` property and makes `body` required.
+ */
+export type CoreExchangePostRequest = Omit<RequestInit, 'body' | 'method'> & {
+  methodMode: MethodModePost | MethodModeGetReads
+  method: httpMethodPost
+  url: string | URL // todo URL for config and string only for input. Requires anyware to allow different types for input and existing config.
+  body: BodyInit
+}
+
+export type CoreExchangeGetRequest = Omit<RequestInit, 'body' | 'method'> & {
+  methodMode: MethodModeGetReads
+  method: httpMethodGet
+  url: string | URL
 }

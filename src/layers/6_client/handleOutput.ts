@@ -14,16 +14,6 @@ import {
   readConfigErrorCategoryOutputChannel,
 } from './Settings/Config.js'
 
-export interface RequestContext {
-  config: Config
-  state: State
-  schemaIndex: SchemaIndex | null
-}
-
-export interface InterfaceTypedRequestContext extends RequestContext {
-  schemaIndex: SchemaIndex
-}
-
 /**
  * Types of "other" Graffle Error.
  */

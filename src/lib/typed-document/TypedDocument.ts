@@ -21,6 +21,10 @@ export type TypedDocument<$Result extends SomeData = SomeData, $Variables extend
   | TypedDocumentString   <$Result, $Variables>
   | TypedDocumentNode     <$Result, $Variables>
 
+export const isString = <$TypedDocument extends TypedDocument>(
+  document: $TypedDocument,
+): document is Exclude<$TypedDocument, TypedDocumentNode | TypedQueryDocumentNode> => typeof document === `string`
+
 /**
  * @remarks From package \@graphql-typed-document-node/core in theory but not exported
  * @see https://github.com/dotansimha/graphql-typed-document-node/issues/163.

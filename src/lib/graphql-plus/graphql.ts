@@ -1,5 +1,4 @@
 import type {
-  DocumentNode,
   GraphQLArgument,
   GraphQLEnumValue,
   GraphQLError,
@@ -27,6 +26,8 @@ import {
   OperationTypeNode,
 } from 'graphql'
 import type { Errors } from '../errors/__.js'
+import { isString } from '../prelude.js'
+import type { TypedDocument } from '../typed-document/__.js'
 import { isScalarTypeAndCustom } from './nodesSchema.js'
 
 export * from './_Nodes.js'
@@ -307,16 +308,6 @@ export const hasMutation = (typeMapByKind: TypeMapByKind) =>
 export const hasSubscription = (typeMapByKind: TypeMapByKind) =>
   typeMapByKind.GraphQLRootType.find((_) => _.name === `Subscription`)
 
-export type Variables = Record<string, unknown>
-
-export type StandardScalarVariables = {
-  [key: string]: string | boolean | null | number | StandardScalarVariables
-}
-
-export type SomeData = Record<string, any>
-
-export type GraphQLExecutionResultError = Errors.ContextualAggregateError<GraphQLError>
-
 export const OperationTypes = {
   query: `query`,
   mutation: `mutation`,
@@ -345,21 +336,26 @@ export const OperationTypeAccessTypeMap = {
 export const isOperationTypeName = (value: unknown): value is OperationTypeName =>
   value === `query` || value === `mutation`
 
-export type GraphQLRequestEncoded = {
-  query: string
-  variables?: StandardScalarVariables
+export interface GraphQLRequestInput {
+  query: string | TypedDocument.TypedDocument
+  variables?: Variables
   operationName?: string
 }
 
-export type GraphQLRequestInput = {
-  document: string | DocumentNode
-  variables?: StandardScalarVariables
-  operationName?: string
+export type Variables = {
+  [key: string]: string | boolean | null | number | Variables
 }
+
+export type SomeData = Record<string, any>
+
+export type GraphQLExecutionResultError = Errors.ContextualAggregateError<GraphQLError>
 
 const definedOperationPattern = new RegExp(`^\\b(${Object.values(OperationTypes).join(`|`)})\\b`)
 
-export const parseGraphQLOperationType = (request: GraphQLRequestEncoded): OperationTypeNameAll | null => {
+export const parseGraphQLOperationType = (request: GraphQLRequestInput): OperationTypeNameAll | null => {
+  // todo support DocumentNode too
+  if (!isString(request.query)) return null
+
   const { operationName, query: document } = request
 
   const definedOperations = document.split(/[{}\n]+/).map(s => s.trim()).map(line => {

@@ -63,7 +63,7 @@ export const createState = (stateWithoutConfig: StateWithoutConfig): State => {
     ...stateWithoutConfig,
     get config(): Config {
       const configFound = config ?? inputToConfig(stateWithoutConfig.input)
-      return configFound
+      return configFound as any
     },
   }
 }

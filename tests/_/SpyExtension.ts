@@ -5,7 +5,7 @@ export const Spy = () =>
   createExtension({
     name: `spy`,
     onRequest: ({ exchange }) => {
-      if (exchange.input.transport === `memory`) {
+      if (exchange.input.transportType === `memory`) {
         Spy.input = exchange.input
       }
       return exchange()

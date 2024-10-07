@@ -1,9 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import {
-  type GraphQLRequestEncoded,
-  type OperationTypeNameAll,
-  parseGraphQLOperationType,
-} from './graphql-plus/graphql.js'
+import { type GraphQLRequestInput, type OperationTypeNameAll, parseGraphQLOperationType } from './graphql.js'
 
 const operationNameOne = `one`
 const operationNameTwo = `two`
@@ -14,7 +10,7 @@ const docOverloadedTerms = `query { queryX }`
 
 type CaseParameters = [
   description: string,
-  request: GraphQLRequestEncoded,
+  request: GraphQLRequestInput,
   result: null | OperationTypeNameAll,
 ]
 

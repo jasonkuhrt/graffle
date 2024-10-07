@@ -1,7 +1,6 @@
 import type { IsEmptyObject, IsNever, IsUnknown, Simplify } from 'type-fest'
 
 import type { ConditionalSimplify, ConditionalSimplifyDeep } from 'type-fest/source/conditional-simplify.js'
-import type { ExcludeUndefined } from 'type-fest/source/required-deep.js'
 
 /* eslint-disable */
 export type RemoveIndex<T> = {
@@ -213,6 +212,7 @@ export type LastOf<T> = UnionToIntersection<T extends any ? () => T : never> ext
 // export type IsMultiple<T> = T extends 0 ? false : T extends 1 ? false : true
 
 export type ExcludeNull<T> = Exclude<T, null>
+export type ExcludeUndefined<T> = Exclude<T, undefined>
 export type ExcludeNullAndUndefined<T> = Exclude<T, null | undefined>
 
 export const mapValues = <

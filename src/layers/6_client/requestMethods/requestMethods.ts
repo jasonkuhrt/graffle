@@ -1,4 +1,3 @@
-import { GraphQLSchema } from 'graphql'
 import type { HKT } from '../../../entrypoints/utilities-for-generated.js'
 import type { Fluent } from '../../../lib/fluent/__.js'
 import type { RootTypeName, Variables } from '../../../lib/graphql-plus/graphql.js'
@@ -132,21 +131,23 @@ export const executeDocument = async (
   operationName?: string,
   variables?: Variables,
 ) => {
-  const transport = state.input.schema instanceof GraphQLSchema ? `memory` : `http`
-  const interface_ = `typed`
-  const initialInput: RequestCore.Hooks.HookDefEncode<Config>['input'] = {
-    interface: interface_,
-    transport,
-    schema: state.input.schema,
-    context: {
-      state,
-      schemaIndex: state.input.schemaIndex,
-      config: state.config,
+  const transportType = state.config.transport.type
+  const interfaceType = `typed`
+  const url = state.config.transport.type === `http` ? state.config.transport.url : undefined
+  const schema = state.config.transport.type === `http` ? undefined : state.config.transport.schema
+  const initialInput = {
+    state,
+    interfaceType,
+    transportType,
+    url,
+    schema,
+    schemaIndex: state.config.schemaIndex,
+    request: {
+      document,
+      operationName,
+      variables,
     },
-    document,
-    operationName,
-    variables,
-  }
+  } as RequestCore.Hooks.HookDefEncode<Config>['input']
 
   const result = await RequestCore.anyware.run({
     initialInput,

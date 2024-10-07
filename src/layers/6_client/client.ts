@@ -67,7 +67,7 @@ const createWithState = (
   // @ts-expect-error ignoreme
   const clientDirect: Client = {
     _: { state },
-    ...gqlProperties(createWithState, state),
+    ...gqlProperties(state),
     ...withProperties(createWithState, state),
     ...useProperties(createWithState, state),
     ...anywareProperties(createWithState, state),
