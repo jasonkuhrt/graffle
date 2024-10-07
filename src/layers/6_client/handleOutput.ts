@@ -147,7 +147,7 @@ export const handleOutput = (
  */
 
 // dprint-ignore
-export type RawResolveOutputReturnRootType<$Config extends Config, $Data> =
+export type ResolveOutputGql<$Config extends Config, $Data> =
   SimplifyExceptError<
    | IfConfiguredGetOutputErrorReturns<$Config>
    | (

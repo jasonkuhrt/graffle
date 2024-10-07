@@ -2,7 +2,8 @@ import { buildClientSchema, printSchema } from 'graphql'
 import { buildSchema, type GraphQLObjectType, type GraphQLSchema } from 'graphql'
 import fs from 'node:fs/promises'
 import * as Path from 'node:path'
-import { introspectionQuery } from '../../cli/_helpers.js'
+import { Graffle } from '../../entrypoints/__Graffle.js'
+import { Introspection } from '../../entrypoints/extensions.js'
 import { getTypeMapByKind, type TypeMapByKind } from '../../lib/graphql-plus/graphql.js'
 import { omitUndefinedKeys } from '../../lib/prelude.js'
 import { fileExists, isPathToADirectory } from './helpers/fs.js'
@@ -191,7 +192,19 @@ const resolveSourceSchema = async (
     const sdl = await fs.readFile(finalPath, `utf8`)
     return { type: `file`, content: sdl, path: finalPath }
   } else {
-    const data = await introspectionQuery(input.schemaSource.url)
+    const graffle = Graffle.create({ schema: input.schemaSource.url }).use(Introspection({
+      options: {
+        directiveIsRepeatable: true,
+        schemaDescription: true,
+        specifiedByUrl: true,
+        inputValueDeprecation: true,
+        // todo oneOf
+      },
+    }))
+    const data = await graffle.introspect()
+    if (!data) {
+      throw new Error(`No data returned for introspection query.`)
+    }
     const schema = buildClientSchema(data)
     const sdl = printSchema(schema)
     return { type: `introspection`, content: sdl }

@@ -9,7 +9,7 @@ import { type DocumentController, resolveSendArguments, type sendArgumentsImplem
 
 // dprint-ignore
 export interface gql<$Config extends Config = Config> {
-  <$Document extends TypedDocument.TypedDocument>(document: $Document): DocumentController<$Config, $Document>
+  <$Document extends TypedDocument.TypedDocument>(document: $Document                            ): DocumentController<$Config, $Document>
   <$Document extends TypedDocument.TypedDocument>(parts: TemplateStringsArray, ...args: unknown[]): DocumentController<$Config, $Document>
 }
 
