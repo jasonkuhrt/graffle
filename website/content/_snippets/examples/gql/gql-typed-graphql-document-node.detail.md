@@ -1,11 +1,7 @@
----
-aside: false
----
+::: details Example
 
-# Gql Typed Graphql Document Node Typed
-
-This example shows how to use the TypeScript type "TypedQueryDocumentNode" from the
-package `graphql` to make a type safe request with gql method.
+<div class="ExampleSnippet">
+<a href="../../examples/gql/gql-typed-graphql-document-node">Gql Typed Graphql Document Node</a>
 
 <!-- dprint-ignore-start -->
 ```ts twoslash
@@ -50,8 +46,6 @@ console.log(data?.pokemonByName)
 ```
 <!-- dprint-ignore-end -->
 
-#### Outputs
-
 <!-- dprint-ignore-start -->
 ```txt
 [
@@ -65,3 +59,6 @@ console.log(data?.pokemonByName)
 ]
 ```
 <!-- dprint-ignore-end -->
+
+</div>
+:::
