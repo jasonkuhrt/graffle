@@ -1,6 +1,6 @@
 import { isString } from '../../../lib/prelude.js'
 import type { TypedDocument } from '../../../lib/typed-document/__.js'
-import type { RawResolveOutputReturnRootType } from '../handleOutput.js'
+import type { ResolveOutputGql } from '../handleOutput.js'
 import type { Config } from '../Settings/Config.js'
 
 // dprint-ignore
@@ -20,7 +20,7 @@ type SendArguments__<$Variables extends TypedDocument.Variables, $VariablesKind 
 
 // dprint-ignore
 export interface DocumentController<$Config extends Config, $TypedDocument extends TypedDocument.TypedDocument> {
-  send(...args: SendArguments<$TypedDocument>): Promise<RawResolveOutputReturnRootType<$Config, TypedDocument.ResultOf<$TypedDocument>>>
+  send(...args: SendArguments<$TypedDocument>): Promise<ResolveOutputGql<$Config, TypedDocument.ResultOf<$TypedDocument>>>
 }
 
 export type sendArgumentsImplementation = [] | [string] | [TypedDocument.Variables] | [string, TypedDocument.Variables]
