@@ -12,6 +12,8 @@ import type {
   VariablesInputKindRequired,
   VariablesOf,
 } from './TypedDocument.js'
+// We want to test both internal/external Node to ensure they both work. See jsdoc for `Node` for more context.
+import type { TypedDocumentNode as Node2 } from '@graphql-typed-document-node/core'
 
 // dprint-ignore
 {
@@ -24,12 +26,13 @@ import type {
   AssertEqual<GetVariablesInputKind<{ x?: 2; y?: 1 }>, VariablesInputKindOptional>()
 
   AssertEqual<VariablesOf<DocumentNode      >, Variables>()
+  AssertEqual<VariablesOf<Node2   <{x:1},{}>>, {}>()
   AssertEqual<VariablesOf<Node    <{x:1},{}>>, {}>()
   AssertEqual<VariablesOf<Query   <{x:1},{}>>, {}>()
   AssertEqual<VariablesOf<String  <{x:1},{}>>, {}>()
 
+  AssertEqual<ResultOf<Node2  <{x:1},{}>>, {x:1}>()
   AssertEqual<ResultOf<Node   <{x:1},{}>>, {x:1}>()
   AssertEqual<ResultOf<Query  <{x:1},{}>>, {x:1}>()
   AssertEqual<ResultOf<String <{x:1},{}>>, {x:1}>()
-
 }
