@@ -16,5 +16,5 @@ provider.addSpanProcessor(processor)
 provider.register()
 
 const graffle = Pokemon.create().use(Opentelemetry())
-const data = await graffle.rawString({ document: `query { pokemons { name } }` })
+const data = await graffle.gql`query { pokemons { name } }`.send()
 show(data)

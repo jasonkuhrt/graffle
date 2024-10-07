@@ -1,9 +1,10 @@
+import type { GraphQLSchema } from 'graphql'
 import type { RequireProperties, StringKeyof } from '../../../lib/prelude.js'
 import type { Schema } from '../../1_Schema/__.js'
 import type { Select } from '../../2_Select/__.js'
 import type { SchemaIndex } from '../../4_generator/generators/SchemaIndex.js'
 import type { GlobalRegistry } from '../../4_generator/globalRegistry.js'
-import type { Transport } from '../../5_core/types.js'
+import type { TransportHttp, TransportMemory } from '../../5_request/types.js'
 import type { ConfigGetOutputError } from '../handleOutput.js'
 import type { TransportHttpInput } from '../transportHttp/request.js'
 import type { InputStatic } from './Input.js'
@@ -103,6 +104,17 @@ export type OutputConfigDefault = {
   }
 }
 
+export interface TransportConfigHttp {
+  type: TransportHttp
+  url: string | URL
+  config: RequireProperties<TransportHttpInput, 'methodMode'>
+}
+
+export interface TransportConfigMemory {
+  type: TransportMemory
+  schema: GraphQLSchema
+}
+
 export type Config = {
   /**
    * The initial input that was given to derive this config.
@@ -110,10 +122,8 @@ export type Config = {
   initialInput: InputStatic<any> // InputStatic<GlobalRegistry.SchemaUnion>
   name: GlobalRegistry.SchemaNames
   output: OutputConfig
-  transport: {
-    type: Transport
-    config: RequireProperties<TransportHttpInput, 'methodMode'>
-  }
+  schemaIndex: SchemaIndex | null
+  transport: TransportConfigHttp | TransportConfigMemory
 }
 
 /**

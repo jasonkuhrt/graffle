@@ -10,9 +10,7 @@ export type Internal<$Args extends FnParametersMerge> = {
   /**
    * TODO
    */
-  _: {
-    context: $Args
-  }
+  _: $Args
 }
 
 // todo once context is on state

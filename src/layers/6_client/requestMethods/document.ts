@@ -1,10 +1,9 @@
 import type { UnionToTuple } from 'type-fest'
 import type { IsTupleMultiple } from '../../../lib/prelude.js'
-import { Select } from '../../2_Select/__.js'
+import type { Select } from '../../2_Select/__.js'
 import type { ResultSet } from '../../3_Result/__.js'
 import type { SchemaIndex } from '../../4_generator/generators/SchemaIndex.js'
-import type { InterfaceTypedRequestContext } from '../client.js'
-import type { ResolveOutputReturnRootType } from '../handleOutput.js'
+import { type ResolveOutputReturnRootType } from '../handleOutput.js'
 import type { AddTypenameToSelectedRootTypeResultFields, Config } from '../Settings/Config.js'
 
 // dprint-ignore
@@ -64,13 +63,3 @@ export type DocumentRunner<
 //     : keyof { [K in keyof $Document & string as Schema.Named.NameParse<K> extends never ? K : never]: K } extends never
 //       ? $Document
 //       : TSError<'ValidateDocumentOperationNames', `One or more Invalid operation name in document: ${keyof { [K in keyof $Document & string as Schema.Named.NameParse<K> extends never ? K : never]: K }}`>
-
-export const createMethodDocument =
-  (context: InterfaceTypedRequestContext, executeDocument: any) => (document: Select.Document.DocumentObject) => {
-    const documentNormalized = Select.Document.normalizeOrThrow(document)
-    return {
-      run: async (maybeOperationName?: string) => {
-        return await executeDocument(context, documentNormalized, maybeOperationName)
-      },
-    }
-  }

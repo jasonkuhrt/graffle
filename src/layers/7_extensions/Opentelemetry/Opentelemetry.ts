@@ -12,6 +12,7 @@ export const Opentelemetry = (input?: Input) => {
   return createExtension({
     name,
     onRequest: async ({ encode }) => {
+      encode.input
       return await startActiveGraffleSpan(`request`, async () => {
         const { pack } = await startActiveGraffleSpan(`encode`, encode)
         const { exchange } = await startActiveGraffleSpan(`pack`, pack)

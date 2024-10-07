@@ -22,7 +22,7 @@ const graffle = Graffle
     })
   )
 
-const data = await graffle.rawString({ document: `{ pokemon { name } }` })
+const data = await graffle.gql`{ pokemon { name } }`.send()
 
 console.log(data)
 ```

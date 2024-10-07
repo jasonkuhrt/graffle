@@ -3,26 +3,25 @@ import { createResponse, test } from '../../../tests/_/helpers.js'
 import { serveSchema } from '../../../tests/_/lib/serveSchema.js'
 import { Pokemon } from '../../../tests/_/schemas/pokemon/graffle/__.js'
 import { Graffle } from '../../entrypoints/main.js'
-import { ACCEPT_REC, CONTENT_TYPE_REC } from '../../lib/graphqlHTTP.js'
-import { Transport } from '../5_core/types.js'
-import type { CoreExchangeGetRequest, CoreExchangePostRequest } from './transportHttp/request.js'
+import { ACCEPT_REC, CONTENT_TYPE_REC } from '../../lib/graphql-http/graphqlHTTP.js'
+import { Transport } from '../5_request/types.js'
 
 const schema = new URL(`https://foo.io/api/graphql`)
 
 test(`anyware hooks are typed to http transport`, () => {
   Graffle.create({ schema }).anyware(async ({ encode }) => {
-    expectTypeOf(encode.input.transport).toEqualTypeOf(Transport.http)
+    expectTypeOf(encode.input.transportType).toEqualTypeOf(Transport.http)
     const { pack } = await encode()
-    expectTypeOf(pack.input.transport).toEqualTypeOf(Transport.http)
+    expectTypeOf(pack.input.transportType).toEqualTypeOf(Transport.http)
     const { exchange } = await pack()
-    expectTypeOf(exchange.input.transport).toEqualTypeOf(Transport.http)
+    expectTypeOf(exchange.input.transportType).toEqualTypeOf(Transport.http)
     // todo we can statically track the method mode like we do the transport mode
     expectTypeOf(exchange.input.request).toEqualTypeOf<CoreExchangePostRequest | CoreExchangeGetRequest>()
     const { unpack } = await exchange()
-    expectTypeOf(unpack.input.transport).toEqualTypeOf(Transport.http)
+    expectTypeOf(unpack.input.transportType).toEqualTypeOf(Transport.http)
     expectTypeOf(unpack.input.response).toEqualTypeOf<Response>()
     const { decode } = await unpack()
-    expectTypeOf(decode.input.transport).toEqualTypeOf(Transport.http)
+    expectTypeOf(decode.input.transportType).toEqualTypeOf(Transport.http)
     expectTypeOf(decode.input.response).toEqualTypeOf<Response>()
     const result = await decode()
     if (!(result instanceof Error)) {
@@ -33,6 +32,7 @@ test(`anyware hooks are typed to http transport`, () => {
 })
 
 import { schema as schemaPokemon } from '../../../tests/_/schemas/pokemon/schema.js'
+import type { CoreExchangeGetRequest, CoreExchangePostRequest } from '../5_request/hooks.js'
 
 test(`when envelope is used then response property is present even if relying on schema url default`, async () => {
   const service = await serveSchema({ schema: schemaPokemon })
@@ -46,7 +46,7 @@ describe(`methodMode`, () => {
   describe(`default (post)`, () => {
     test(`sends spec compliant post request by default`, async ({ fetch, graffle }) => {
       fetch.mockImplementationOnce(() => Promise.resolve(createResponse({ data: { id: `abc` } })))
-      await graffle.rawString({ document: `query { id }` })
+      await graffle.gql`query { id }`.send()
       const request = fetch.mock.calls[0]?.[0]
       expect(request?.method).toEqual(`POST`)
       expect(request?.headers.get(`content-type`)).toEqual(CONTENT_TYPE_REC)
@@ -57,11 +57,7 @@ describe(`methodMode`, () => {
     test(`can set method mode to get`, async ({ fetch }) => {
       fetch.mockImplementationOnce(() => Promise.resolve(createResponse({ data: { user: { name: `foo` } } })))
       const graffle = Graffle.create({ schema, transport: { methodMode: `getReads` } })
-      await graffle.rawString({
-        document: `query foo($id: ID!){user(id:$id){name}}`,
-        variables: { 'id': `QVBJcy5ndXJ1` },
-        operationName: `foo`,
-      })
+      await graffle.gql`query foo($id: ID!){user(id:$id){name}}`.send(`foo`, { 'id': `QVBJcy5ndXJ1` })
       const request = fetch.mock.calls[0]?.[0]
       expect(request?.method).toEqual(`GET`)
       expect(request?.headers.get(`content-type`)).toEqual(null)
@@ -73,14 +69,14 @@ describe(`methodMode`, () => {
     test(`if no variables or operationName then search parameters are omitted`, async ({ fetch }) => {
       fetch.mockImplementationOnce(() => Promise.resolve(createResponse({ data: { user: { name: `foo` } } })))
       const graffle = Graffle.create({ schema, transport: { methodMode: `getReads` } })
-      await graffle.rawString({ document: `query {user{name}}` })
+      await graffle.gql`query {user{name}}`.send()
       const request = fetch.mock.calls[0]?.[0]
       expect(request?.url).toMatchInlineSnapshot(`"https://foo.io/api/graphql?query=query+%7Buser%7Bname%7D%7D"`)
     })
     test(`mutation still uses POST`, async ({ fetch }) => {
       fetch.mockImplementationOnce(() => Promise.resolve(createResponse({ data: { user: { name: `foo` } } })))
       const graffle = Graffle.create({ schema, transport: { methodMode: `getReads` } })
-      await graffle.rawString({ document: `mutation { user { name } }` })
+      await graffle.gql`mutation { user { name } }`.send()
       const request = fetch.mock.calls[0]?.[0]
       expect(request?.method).toEqual(`POST`)
       expect(request?.headers.get(`content-type`)).toEqual(CONTENT_TYPE_REC)
@@ -93,7 +89,7 @@ describe(`configuration`, () => {
   test(`can set headers`, async ({ fetch }) => {
     fetch.mockImplementationOnce(() => Promise.resolve(createResponse({ data: { id: `abc` } })))
     const graffle = Graffle.create({ schema, transport: { headers: { 'x-foo': `bar` } } })
-    await graffle.rawString({ document: `query { id }` })
+    await graffle.gql`query { id }`.send()
     const request = fetch.mock.calls[0]?.[0]
     expect(request?.headers.get(`x-foo`)).toEqual(`bar`)
   })
@@ -101,7 +97,7 @@ describe(`configuration`, () => {
   test(`can set raw (requestInit)`, async ({ fetch }) => {
     fetch.mockImplementationOnce(() => Promise.resolve(createResponse({ data: { id: `abc` } })))
     const graffle = Graffle.create({ schema, transport: { raw: { headers: { 'x-foo': `bar` } } } })
-    await graffle.rawString({ document: `query { id }` })
+    await graffle.gql`query { id }`.send()
     const request = fetch.mock.calls[0]?.[0]
     expect(request?.headers.get(`x-foo`)).toEqual(`bar`)
   })
@@ -111,7 +107,7 @@ describe(`configuration`, () => {
     test(`to constructor`, async () => {
       const abortController = new AbortController()
       const graffle = Graffle.create({ schema, transport: { signal: abortController.signal } })
-      const resultPromise = graffle.rawString({ document: `query { id }` })
+      const resultPromise = graffle.gql`query { id }`.send()
       abortController.abort()
       const { caughtError } = await resultPromise.catch((caughtError: unknown) => ({ caughtError })) as any as {
         caughtError: Error
@@ -121,7 +117,7 @@ describe(`configuration`, () => {
     test(`to "with"`, async () => {
       const abortController = new AbortController()
       const graffle = Graffle.create({ schema }).with({ transport: { signal: abortController.signal } })
-      const resultPromise = graffle.rawString({ document: `query { id }` })
+      const resultPromise = graffle.gql`query { id }`.send()
       abortController.abort()
       const { caughtError } = await resultPromise.catch((caughtError: unknown) => ({ caughtError })) as any as {
         caughtError: Error

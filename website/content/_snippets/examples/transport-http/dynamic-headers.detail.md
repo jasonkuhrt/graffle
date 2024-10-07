@@ -27,7 +27,7 @@ const graffle = Graffle
     return exchange()
   })
 
-await graffle.rawString({ document: `{ pokemons { name } }` })
+await graffle.gql`{ pokemons { name } }`.send()
 ```
 <!-- dprint-ignore-end -->
 
@@ -38,7 +38,7 @@ await graffle.rawString({ document: `{ pokemons { name } }` })
   headers: Headers {
     accept: 'application/graphql-response+json; charset=utf-8, application/json; charset=utf-8',
     'content-type': 'application/json',
-    'x-sent-at-time': '1727803644880'
+    'x-sent-at-time': '1728318376823'
   },
   signal: undefined,
   method: 'post',

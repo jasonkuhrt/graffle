@@ -31,7 +31,7 @@ type InferFieldType<
   $Type extends Schema.Object$2                             ? InferObject<$SelectionSet, $Schema, $Type> :
   $Type extends Schema.Interface                            ? InferInterface<$SelectionSet, $Schema, $Type> :
   $Type extends Schema.Union                                ? InferUnion<$SelectionSet, $Schema, $Type> :
-                                                              TSError<'InferFieldType', `Unknown type`, { $Type: $Type }>
+                                                              TSError<'InferFieldType', `Unknown type`, { $Type: $Type; $SelectionSet: $SelectionSet; $Schema:$Schema }>
 
 // dprint-ignore
 type FieldDirectiveInclude<$SelectionSet> =

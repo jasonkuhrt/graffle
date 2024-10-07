@@ -3,13 +3,15 @@ import { test as testBase, vi } from 'vitest'
 import { Graffle } from '../../src/entrypoints/main.js'
 import type { Config } from '../../src/entrypoints/utilities-for-generated.js'
 import type { Client } from '../../src/layers/6_client/client.js'
-import { CONTENT_TYPE_REC } from '../../src/lib/graphqlHTTP.js'
+import { CONTENT_TYPE_REC } from '../../src/lib/graphql-http/graphqlHTTP.js'
 import { type SchemaService, serveSchema } from './lib/serveSchema.js'
 import { db } from './schemas/db.js'
 import { Graffle as KitchenSink } from './schemas/kitchen-sink/graffle/__.js'
 import { type Index as KitchenSinkSchemaIndex } from './schemas/kitchen-sink/graffle/modules/SchemaIndex.js'
 import { schema as kitchenSinkSchema } from './schemas/kitchen-sink/schema.js'
 import { schema } from './schemas/pokemon/schema.js'
+
+export const kitchenSink = KitchenSink.create({ schema: kitchenSinkSchema })
 
 export const createResponse = (body: object) =>
   new Response(JSON.stringify(body), { status: 200, headers: { 'content-type': CONTENT_TYPE_REC } })

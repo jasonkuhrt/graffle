@@ -10,11 +10,11 @@
     "vitepress": "^1.3.4"
   },
   "dependencies": {
-    "@shikijs/twoslash": "^1.21.0",
-    "@shikijs/vitepress-twoslash": "^1.21.0",
+    "@shikijs/twoslash": "^1.22.0",
+    "@shikijs/vitepress-twoslash": "^1.22.0",
     "@tsconfig/node20": "^20.1.4",
     "@tsconfig/strictest": "^2.0.5",
-    "es-toolkit": "^1.23.0",
+    "es-toolkit": "^1.24.0",
     "floating-vue": "^5.2.2",
     "globby": "^14.0.2",
     "graffle": "link:..",

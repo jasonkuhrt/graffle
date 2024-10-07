@@ -21,13 +21,11 @@ const graffle = Pokemon
 
 // The following request will use an HTTP POST method because it is
 // using a "mutation" type of operation.
-await graffle.rawString({
-  document: `mutation { addPokemon(attack:0, defense:0, hp:1, name:"Nano", type: grass) { name } }`,
-})
+await graffle.gql`mutation { addPokemon(attack:0, defense:0, hp:1, name:"Nano", type: grass) { name } }`.send()
 
 // The following request will use an HTTP GET method because it
 // is using a "query" type of operation.
-await graffle.rawString({ document: `query { pokemonByName(name: "Nano") { hp } }` })
+await graffle.gql`query { pokemonByName(name: "Nano") { hp } }`.send()
 ```
 <!-- dprint-ignore-end -->
 

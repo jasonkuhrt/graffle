@@ -16,15 +16,19 @@ const graffle = Graffle
     return await exchange({
       using: {
         fetch: () => {
-          return new Response(JSON.stringify({ data: { continents: [{ name: `Earthsea` }] } }))
+          return new Response(JSON.stringify({ data: { trainers: [{ name: `Jason` }] } }))
         },
       },
     })
   })
 
-const result = await graffle.rawString({
-  document: `query { continents { name } }`,
-})
+const result = await graffle.gql`
+  query {
+    trainers {
+      name
+    }
+  }
+`.send()
 
 console.log(result)
 ```
@@ -34,6 +38,6 @@ console.log(result)
 
 <!-- dprint-ignore-start -->
 ```txt
-{ continents: [ { name: 'Earthsea' } ] }
+{ trainers: [ { name: 'Jason' } ] }
 ```
 <!-- dprint-ignore-end -->

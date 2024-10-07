@@ -1,7 +1,6 @@
 import type { IsEmptyObject, IsNever, IsUnknown, Simplify } from 'type-fest'
 
 import type { ConditionalSimplify, ConditionalSimplifyDeep } from 'type-fest/source/conditional-simplify.js'
-import type { ExcludeUndefined } from 'type-fest/source/required-deep.js'
 
 /* eslint-disable */
 export type RemoveIndex<T> = {
@@ -213,6 +212,7 @@ export type LastOf<T> = UnionToIntersection<T extends any ? () => T : never> ext
 // export type IsMultiple<T> = T extends 0 ? false : T extends 1 ? false : true
 
 export type ExcludeNull<T> = Exclude<T, null>
+export type ExcludeUndefined<T> = Exclude<T, undefined>
 export type ExcludeNullAndUndefined<T> = Exclude<T, null | undefined>
 
 export const mapValues = <
@@ -352,9 +352,13 @@ export namespace ConfigManager {
 
   export type ReadOrDefault<$Obj, $Path extends Path, $Default> = OrDefault<Read<$Obj, $Path>, $Default>
 
-  export type OrDefault<$Value, $Default> = IsUnknown<$Value> extends true ? $Default
-    : $Value extends undefined ? $Default
-    : $Value
+  // dprint-ignore
+  export type OrDefault<$Value, $Default> =
+    // When no value has been passed in, because the property is optional,
+    // then the inferred type is unknown.
+    IsUnknown<$Value> extends true ? $Default :
+    $Value extends undefined       ? $Default :
+                                     $Value
 
   // dprint-ignore
   export type Read<$Value, $Path extends [...string[]]> =
@@ -487,21 +491,6 @@ export const identityProxy = new Proxy({}, {
   get: () => (value: unknown) => value,
 })
 
-// todo just for tets, move to test lib
-
-export type IsEqual<A, B> = A extends B ? B extends A ? true : false : false
-
-export type AssertIsEqual<A, B> = IsEqual<A, B> extends true ? true : never
-
-export const AssertIsEqual = <A, B>(
-  ..._: IsEqual<A, B> extends false ? [reason: {
-      message: `Types not equal`
-      A: SimplifyDeep<A>
-      B: SimplifyDeep<B>
-    }]
-    : []
-) => undefined
-
 export type IfExtendsElse<$Type, $Extends, $Else> = $Type extends $Extends ? $Type : $Else
 
 // dprint-ignore
@@ -573,9 +562,6 @@ export type OmitKeysWithPrefix<$Object extends object, $Prefix extends string> =
   ]: $Object[$Key]
 }
 
-AssertIsEqual<OmitKeysWithPrefix<{ a: 1; b: 2 }, 'a'>, { a: 1; b: 2 }>()
-AssertIsEqual<OmitKeysWithPrefix<{ foo_a: 1; b: 2 }, 'foo'>, { b: 2 }>()
-
 export const getFromEnumLooselyOrThrow = <
   $Record extends { [_ in keyof $Record]: unknown },
   $Key extends string,
@@ -613,4 +599,12 @@ export type StringKeyof<T> = keyof T & string
 
 export const keysStrict = <T extends object>(obj: T): (keyof T)[] => {
   return Object.keys(obj) as (keyof T)[]
+}
+
+export type HasKeys<T> = keyof T extends never ? false : true
+
+export type IsHasIndexType<T> = string extends keyof T ? true : false
+
+export const isString = (value: unknown): value is string => {
+  return typeof value === 'string'
 }

@@ -1,4 +1,5 @@
 /* eslint-disable */
+import type * as Utilities from 'graffle/utilities-for-generated'
 import type * as Data from './Data.js'
 import type * as MethodsRoot from './MethodsRoot.js'
 import type * as Schema from './SchemaBuildtime.js'
@@ -29,6 +30,7 @@ export interface Index {
   }
   unions: {}
   interfaces: {}
+  customScalars: Utilities.SchemaIndexBase['customScalars']
   error: {
     objects: {}
     objectsTypename: {}

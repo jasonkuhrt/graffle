@@ -19,16 +19,14 @@ const graffle = Graffle
     })
   })
 
-const result = await graffle.rawString({
-  document: `
+const result = await graffle.gql`
     query trainers {
       pokemon { name }
     }
     query pokemon {
       trainers { name }
     }
-  `,
-  operationName: `queryCountries`,
-})
+  `
+  .send(`queryCountries`)
 
 show(result)

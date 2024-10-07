@@ -19,7 +19,7 @@ const graffle = Graffle
     return exchange()
   })
 
-await graffle.rawString({ document: `{ pokemons { name } }` })
+await graffle.gql`{ pokemons { name } }`.send()
 ```
 <!-- dprint-ignore-end -->
 

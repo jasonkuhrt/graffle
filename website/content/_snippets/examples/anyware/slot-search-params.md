@@ -20,17 +20,15 @@ const graffle = Graffle
     })
   })
 
-const result = await graffle.rawString({
-  document: `
+const result = await graffle.gql`
     query trainers {
       pokemon { name }
     }
     query pokemon {
       trainers { name }
     }
-  `,
-  operationName: `queryCountries`,
-})
+  `
+  .send(`queryCountries`)
 
 console.log(result)
 ```
@@ -47,10 +45,7 @@ ContextualError: There was an error in the core implementation of hook "pack".
     at runPipeline (/some/path/to/runPipeline.ts:XX:XX:18)
     at async runPipeline (/some/path/to/runPipeline.ts:XX:XX:14)
     at async Object.run (/some/path/to/main.ts:XX:XX:22)
-    at async run (/some/path/to/client.ts:XX:XX:20)
-    at async runRaw (/some/path/to/client.ts:XX:XX:12)
-    at async Object.raw (/some/path/to/client.ts:XX:XX:14)
-    at async Proxy.rawString (/some/path/to/client.ts:XX:XX:14)
+    at async Object.send (/some/path/to/gql.ts:XX:XX:26)
     at async <anonymous> (/some/path/to/anyware_slot_slot-body__slot-search-params.ts:XX:XX:16) {
   context: { hookName: 'pack', source: 'implementation' },
   cause: Error: Unexpected null value.

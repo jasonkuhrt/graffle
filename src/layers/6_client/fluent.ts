@@ -1,15 +1,14 @@
 import type { Anyware } from '../../lib/anyware/__.js'
 import type { Fluent } from '../../lib/fluent/__.js'
-import type { SchemaIndex } from '../4_generator/generators/SchemaIndex.js'
 import type { GlobalRegistry } from '../4_generator/globalRegistry.js'
-import type { Core } from '../5_core/__.js'
+import type { RequestCore } from '../5_request/__.js'
 import type { Extension } from './extension/extension.js'
 import type { Config } from './Settings/Config.js'
 import type { InputStatic } from './Settings/Input.js'
+import { inputToConfig } from './Settings/InputToConfig.js'
 
 export type ClientContext = {
   config: Config
-  schemaIndex: SchemaIndex | null
 }
 
 export type FnClient<$Context extends ClientContext = ClientContext> = Fluent.Create<$Context>
@@ -40,14 +39,31 @@ export const defineProperties = (
 //   }
 // }
 
-// export const createTerminus = (property: (state: CreateState) => unknown) => {
-//   return (state: CreateState) => {
-//     return property(state)
-//   }
-// }
+type TerminusDefinitions = Record<string, unknown>
+
+export const defineTerminus = (property: (state: State) => TerminusDefinitions) => {
+  return (state: State) => {
+    return property(state)
+  }
+}
 
 export interface State {
   input: InputStatic<GlobalRegistry.SchemaUnion>
-  retry: Anyware.Extension2<Core.Core, { retrying: true }> | null
+  config: Config
+  retry: Anyware.Extension2<RequestCore.Core, { retrying: true }> | null
   extensions: Extension[]
 }
+
+export const createState = (stateWithoutConfig: StateWithoutConfig): State => {
+  let config: Config | null
+
+  return {
+    ...stateWithoutConfig,
+    get config(): Config {
+      const configFound = config ?? inputToConfig(stateWithoutConfig.input)
+      return configFound as any
+    },
+  }
+}
+
+export type StateWithoutConfig = Omit<State, 'config'>

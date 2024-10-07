@@ -10,6 +10,6 @@ const graffle = Graffle.create({
   output: Preset.traditionalGraphqlOutput,
 })
 
-const result = await graffle.rawString({ document: `{ query { thisWillError } }` })
+const result = await graffle.gql(`{ query { thisWillError } }`).send()
 
 show(result)

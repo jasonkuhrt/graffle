@@ -8,12 +8,13 @@ import { Upload } from './Upload.js'
 
 import { type SchemaService, serveSchema } from '../../../../tests/_/lib/serveSchema.js'
 import type { Client } from '../../6_client/client.js'
-import type { Config, OutputConfigDefault } from '../../6_client/Settings/Config.js'
+import type { OutputConfigDefault, TransportConfigHttp } from '../../6_client/Settings/Config.js'
 
 let schemaServer: SchemaService
 let graffle: Client<{
   config: {
-    transport: { type: 'http'; config: Config['transport']['config'] }
+    schemaIndex: null
+    transport: TransportConfigHttp
     output: OutputConfigDefault
     initialInput: { schema: URL }
     name: 'default'
@@ -36,15 +37,12 @@ afterAll(async () => {
 })
 
 test(`upload`, async () => {
-  const data = await graffle.rawString({
-    document: `
-      mutation ($blob: Upload!) {
-        readTextFile(blob: $blob)
-      }
-    `,
-    variables: {
-      blob: new Blob([`Hello World`], { type: `text/plain` }) as any,
-    },
+  const data = await graffle.gql`
+    mutation ($blob: Upload!) {
+      readTextFile(blob: $blob)
+    }
+  `.send({
+    blob: new Blob([`Hello World`], { type: `text/plain` }) as any,
   })
   expect(data).toMatchInlineSnapshot(`
     {

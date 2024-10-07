@@ -20,15 +20,14 @@ const graffle = Graffle.create({
 const resultPromise = graffle
   .with({ transport: { signal: abortController.signal } })
   //                           ^^^^^^^^^^^^^^^
-  .rawString({
-    document: `
-      {
-        pokemon {
-          name
-        }
+  .gql`
+    {
+      pokemon {
+        name
       }
-    `,
-  })
+    }
+  `
+  .send()
 
 abortController.abort()
 //              ^^^^^

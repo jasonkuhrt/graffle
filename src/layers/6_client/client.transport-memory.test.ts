@@ -2,23 +2,21 @@ import { expectTypeOf } from 'vitest'
 import { test } from '../../../tests/_/helpers.js'
 import { schema } from '../../../tests/_/schemas/kitchen-sink/schema.js'
 import { Graffle } from '../../entrypoints/main.js'
-import { Transport } from '../5_core/types.js'
+import { Transport } from '../5_request/types.js'
 
 test(`anyware hooks are typed to memory transport`, () => {
   Graffle.create({ schema }).anyware(async ({ encode }) => {
-    expectTypeOf(encode.input.transport).toEqualTypeOf(Transport.memory)
+    expectTypeOf(encode.input.transportType).toEqualTypeOf(Transport.memory)
     const { pack } = await encode()
-    expectTypeOf(pack.input.transport).toEqualTypeOf(Transport.memory)
+    expectTypeOf(pack.input.transportType).toEqualTypeOf(Transport.memory)
     const { exchange } = await pack()
-    expectTypeOf(exchange.input.transport).toEqualTypeOf(Transport.memory)
-    // @ts-expect-error any
-    exchange.input.request
+    expectTypeOf(exchange.input.transportType).toEqualTypeOf(Transport.memory)
     const { unpack } = await exchange()
-    expectTypeOf(unpack.input.transport).toEqualTypeOf(Transport.memory)
+    expectTypeOf(unpack.input.transportType).toEqualTypeOf(Transport.memory)
     // @ts-expect-error any
     unpack.input.response
     const { decode } = await unpack()
-    expectTypeOf(decode.input.transport).toEqualTypeOf(Transport.memory)
+    expectTypeOf(decode.input.transportType).toEqualTypeOf(Transport.memory)
     // @ts-expect-error any
     decode.input.response
     const result = await decode()
