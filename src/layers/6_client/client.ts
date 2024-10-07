@@ -84,7 +84,8 @@ const createWithState = (
   }
 
   const clientProxy = proxyGet(clientDirect, ({ path, property }) => {
-    // @ts-expect-error fixme "Type instantiation is excessively deep and possibly infinite"
+    // eslint-disable-next-line
+    // @ts-ignore fixme "Type instantiation is excessively deep and possibly infinite"
     const onGetHandlers = state.extensions.map(_ => _.onBuilderGet).filter(_ => _ !== undefined)
 
     for (const onGetHandler of onGetHandlers) {

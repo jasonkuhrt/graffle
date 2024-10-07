@@ -94,7 +94,7 @@ export namespace Mutation {
       defense?: number | undefined | null
       hp?: number | undefined | null
       name: string
-      type: _RefDefs._PokemonType
+      $type: _RefDefs._PokemonType
     }
   }
   export type addPokemon$Expanded = addPokemon
