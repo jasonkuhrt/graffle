@@ -182,7 +182,7 @@ describe('.errors.schema', () => {
   })
   describe('envelope.schema', () => {
     const g = G({ schema, output: { envelope: { errors: { schema: true } }, errors: { schema: 'return' } } })
-    type Config = typeof g._.context.config
+    type Config = typeof g._.config
     test('query.<resultFieldMethod>', async () => {
       // todo: once we have execution result with type variable errors, then enhance this test to assert that the result errors come through in the errors field.
       expectTypeOf(g.query.resultNonNull(resultFieldSelect)).resolves.toEqualTypeOf<

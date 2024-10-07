@@ -8,12 +8,12 @@ import { Upload } from './Upload.js'
 
 import { type SchemaService, serveSchema } from '../../../../tests/_/lib/serveSchema.js'
 import type { Client } from '../../6_client/client.js'
-import type { Config, OutputConfigDefault, TransportConfigHttp } from '../../6_client/Settings/Config.js'
+import type { OutputConfigDefault, TransportConfigHttp } from '../../6_client/Settings/Config.js'
 
 let schemaServer: SchemaService
 let graffle: Client<{
   config: {
-    schemaIndex: Config['schemaIndex']
+    schemaIndex: null
     transport: TransportConfigHttp
     output: OutputConfigDefault
     initialInput: { schema: URL }

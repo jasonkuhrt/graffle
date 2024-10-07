@@ -1,6 +1,5 @@
 import type { IsUnknown } from 'type-fest'
 import type { ConfigManager } from '../../../lib/prelude.js'
-import type { SchemaIndex } from '../../4_generator/generators/SchemaIndex.js'
 import type { GlobalRegistry } from '../../4_generator/globalRegistry.js'
 import { Transport } from '../../5_request/types.js'
 import { defaultMethodMode } from '../transportHttp/request.js'
@@ -11,7 +10,7 @@ import type { InputOutputEnvelopeLonghand, InputStatic, URLInput } from './Input
 export type InputToConfig<$Input extends InputStatic<GlobalRegistry.SchemaUnion>> = {
   initialInput: $Input
   name: HandleName<$Input>
-  schemaIndex: SchemaIndex | null
+  schemaIndex: ConfigManager.OrDefault<$Input['schemaIndex'], null>
   transport: HandleTransport<$Input>
   output: {
     defaults: {
@@ -55,7 +54,7 @@ export const inputToConfig = <$Input extends InputStatic<GlobalRegistry.SchemaUn
     // @ts-expect-error conditional type fixme
     name: input.name ?? defaultSchemaName,
     transport,
-    schemaIndex: input.schemaIndex ?? null,
+    schemaIndex: input.schemaIndex ?? null as any,
     output: {
       defaults: {
         // @ts-expect-error conditional type

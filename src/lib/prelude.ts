@@ -352,9 +352,13 @@ export namespace ConfigManager {
 
   export type ReadOrDefault<$Obj, $Path extends Path, $Default> = OrDefault<Read<$Obj, $Path>, $Default>
 
-  export type OrDefault<$Value, $Default> = IsUnknown<$Value> extends true ? $Default
-    : $Value extends undefined ? $Default
-    : $Value
+  // dprint-ignore
+  export type OrDefault<$Value, $Default> =
+    // When no value has been passed in, because the property is optional,
+    // then the inferred type is unknown.
+    IsUnknown<$Value> extends true ? $Default :
+    $Value extends undefined       ? $Default :
+                                     $Value
 
   // dprint-ignore
   export type Read<$Value, $Path extends [...string[]]> =
