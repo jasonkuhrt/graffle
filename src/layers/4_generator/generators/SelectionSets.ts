@@ -224,7 +224,12 @@ const renderObject = createCodeGenerator<{ node: GraphQLObjectType }>(
       const doc = Code.TSDoc(`
         Select the \`${field.name}\` field on the \`${node.name}\` object. Its type is ${type}.
       `)
-      const propertyRendered = Helpers.outputFieldAlisable(field.name, `${renderName(node)}.${renderName(field)}`)
+      const propertyRendered = Helpers.outputFieldAlisable(
+        field.name,
+        `${renderName(node)}.${renderName(field)}`,
+        true,
+        analyzeArgsNullability(field.args).isAllNullable,
+      )
       return doc + `\n` + propertyRendered
     }).join(`\n`)
 
@@ -295,8 +300,8 @@ const renderField = createCodeGenerator<{ field: GraphQLField<any, any> }>(
           )
           code()
           code(
-            Helpers.type(
-              `${nameRendered}$Expanded`,
+            Helpers.typeExpanded(
+              nameRendered,
               `$Utilities.UnionExpanded<$Select.Indicator.Indicator | ${nameRendered}$SelectionSet>`,
             ),
           )
@@ -306,14 +311,13 @@ const renderField = createCodeGenerator<{ field: GraphQLField<any, any> }>(
           )
           code()
         } else {
+          // 1+ arguments required.
           // todo test that a directive can be passed with the intersection that otherwise cannot be.
           code(Helpers.$interface(nameRendered, `$Select.Bases.Base`, argsRendered))
           code()
-          code(Helpers.type(`${nameRendered}$Expanded`, nameRendered))
-          code()
         }
       } else {
-        code(Helpers.type(`${nameRendered}$Expanded`, `$Select.Indicator.NoArgsIndicator$Expanded`))
+        code(Helpers.typeExpanded(nameRendered, `$Select.Indicator.NoArgsIndicator$Expanded`))
         code()
         code(Helpers.type(nameRendered, `$Select.Indicator.NoArgsIndicator`))
         code()
@@ -402,6 +406,17 @@ namespace Helpers {
   export const $interface = (name: string, extendsClause: string | null, fields: string) => {
     return `export interface ${name} ${extendsClause ? ` extends ${extendsClause}` : ``} { ${fields} }`
   }
+  export const typeExpanded = (name: string, type: string) => {
+    const jsdoc = Code.TSDoc(`
+      This is the "expanded" version of the \`${name}\` type. It is identical except for the fact
+      that IDEs will display its contents (a union type) directly, rather than the name of this type.
+      In some cases, this is a preferable DX, making the types easier to read for users.
+    `)
+    return `
+      ${jsdoc}
+      export type ${name}$Expanded = ${type}
+    `
+  }
   export const type = (name: string, type: string) => {
     return `export type ${name} = ${type}`
   }
@@ -410,9 +425,14 @@ namespace Helpers {
     return `${name}?: ${type}`
   }
 
-  export const outputFieldAlisable = (name: string, type: string, aliasable: boolean = true) => {
+  export const outputFieldAlisable = (
+    name: string,
+    type: string,
+    aliasable: boolean = true,
+    isHasExpanded: boolean = true,
+  ) => {
     const alias = aliasable ? `| $Select.SelectAlias.SelectAlias<${type}>` : ``
-    return `${name}?: ${type}$Expanded${alias}`
+    return `${name}?: ${type}${isHasExpanded ? `$Expanded` : ``}${alias}`
   }
 
   /**

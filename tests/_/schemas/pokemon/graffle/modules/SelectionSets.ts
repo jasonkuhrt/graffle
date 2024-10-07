@@ -57,7 +57,7 @@ export interface Mutation {
   /**
    * Select the `addPokemon` field on the `Mutation` object. Its type is Object.
    */
-  addPokemon?: Mutation.addPokemon$Expanded | $Select.SelectAlias.SelectAlias<Mutation.addPokemon>
+  addPokemon?: Mutation.addPokemon | $Select.SelectAlias.SelectAlias<Mutation.addPokemon>
 
   /**
    * Inline fragments for field groups.
@@ -130,7 +130,7 @@ export interface Query {
   /**
    * Select the `pokemonByName` field on the `Query` object. Its type is Object.
    */
-  pokemonByName?: Query.pokemonByName$Expanded | $Select.SelectAlias.SelectAlias<Query.pokemonByName>
+  pokemonByName?: Query.pokemonByName | $Select.SelectAlias.SelectAlias<Query.pokemonByName>
   /**
    * Select the `pokemons` field on the `Query` object. Its type is Object.
    */
@@ -138,7 +138,7 @@ export interface Query {
   /**
    * Select the `trainerByName` field on the `Query` object. Its type is Object.
    */
-  trainerByName?: Query.trainerByName$Expanded | $Select.SelectAlias.SelectAlias<Query.trainerByName>
+  trainerByName?: Query.trainerByName | $Select.SelectAlias.SelectAlias<Query.trainerByName>
   /**
    * Select the `trainers` field on the `Query` object. Its type is Object.
    */
@@ -326,10 +326,20 @@ export interface Being extends $Select.Bases.ObjectLike {
 export interface Being$FragmentInline extends Being, $Select.Directive.$Groups.InlineFragment.Fields {}
 
 export namespace Being {
+  /**
+   * This is the "expanded" version of the `id` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type id$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type id = $Select.Indicator.NoArgsIndicator
 
+  /**
+   * This is the "expanded" version of the `name` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type name$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type name = $Select.Indicator.NoArgsIndicator
@@ -410,10 +420,20 @@ export interface BattleRoyale$FragmentInline extends BattleRoyale, $Select.Direc
 export namespace BattleRoyale {
   export interface combatants extends _RefDefs._CombatantMultiPokemon {}
   export type combatants$Expanded = combatants
+  /**
+   * This is the "expanded" version of the `date` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type date$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type date = $Select.Indicator.NoArgsIndicator
 
+  /**
+   * This is the "expanded" version of the `id` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type id$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type id = $Select.Indicator.NoArgsIndicator
@@ -487,10 +507,20 @@ export namespace BattleTrainer {
   export type combatant1$Expanded = combatant1
   export interface combatant2 extends _RefDefs._CombatantSinglePokemon {}
   export type combatant2$Expanded = combatant2
+  /**
+   * This is the "expanded" version of the `date` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type date$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type date = $Select.Indicator.NoArgsIndicator
 
+  /**
+   * This is the "expanded" version of the `id` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type id$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type id = $Select.Indicator.NoArgsIndicator
@@ -564,16 +594,31 @@ export interface BattleWild$FragmentInline extends BattleWild, $Select.Directive
 // ----------------------------------------| Fields Interfaces |
 
 export namespace BattleWild {
+  /**
+   * This is the "expanded" version of the `date` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type date$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type date = $Select.Indicator.NoArgsIndicator
 
+  /**
+   * This is the "expanded" version of the `id` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type id$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type id = $Select.Indicator.NoArgsIndicator
 
   export interface pokemon extends _RefDefs._Pokemon {}
   export type pokemon$Expanded = pokemon
+  /**
+   * This is the "expanded" version of the `result` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type result$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type result = $Select.Indicator.NoArgsIndicator
@@ -751,14 +796,29 @@ export interface Patron$FragmentInline extends Patron, $Select.Directive.$Groups
 // ----------------------------------------| Fields Interfaces |
 
 export namespace Patron {
+  /**
+   * This is the "expanded" version of the `id` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type id$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type id = $Select.Indicator.NoArgsIndicator
 
+  /**
+   * This is the "expanded" version of the `money` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type money$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type money = $Select.Indicator.NoArgsIndicator
 
+  /**
+   * This is the "expanded" version of the `name` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type name$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type name = $Select.Indicator.NoArgsIndicator
@@ -837,32 +897,67 @@ export interface Pokemon$FragmentInline extends Pokemon, $Select.Directive.$Grou
 // ----------------------------------------| Fields Interfaces |
 
 export namespace Pokemon {
+  /**
+   * This is the "expanded" version of the `attack` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type attack$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type attack = $Select.Indicator.NoArgsIndicator
 
+  /**
+   * This is the "expanded" version of the `birthday` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type birthday$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type birthday = $Select.Indicator.NoArgsIndicator
 
+  /**
+   * This is the "expanded" version of the `defense` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type defense$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type defense = $Select.Indicator.NoArgsIndicator
 
+  /**
+   * This is the "expanded" version of the `hp` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type hp$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type hp = $Select.Indicator.NoArgsIndicator
 
+  /**
+   * This is the "expanded" version of the `id` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type id$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type id = $Select.Indicator.NoArgsIndicator
 
+  /**
+   * This is the "expanded" version of the `name` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type name$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type name = $Select.Indicator.NoArgsIndicator
 
   export interface trainer extends _RefDefs._Trainer {}
   export type trainer$Expanded = trainer
+  /**
+   * This is the "expanded" version of the `type` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type type$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type type = $Select.Indicator.NoArgsIndicator
@@ -929,16 +1024,31 @@ export interface Trainer$FragmentInline extends Trainer, $Select.Directive.$Grou
 // ----------------------------------------| Fields Interfaces |
 
 export namespace Trainer {
+  /**
+   * This is the "expanded" version of the `$class` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type $class$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type $class = $Select.Indicator.NoArgsIndicator
 
   export interface fans extends _RefDefs._Patron {}
   export type fans$Expanded = fans
+  /**
+   * This is the "expanded" version of the `id` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type id$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type id = $Select.Indicator.NoArgsIndicator
 
+  /**
+   * This is the "expanded" version of the `name` type. It is identical except for the fact
+   * that IDEs will display its contents (a union type) directly, rather than the name of this type.
+   * In some cases, this is a preferable DX, making the types easier to read for users.
+   */
   export type name$Expanded = $Select.Indicator.NoArgsIndicator$Expanded
 
   export type name = $Select.Indicator.NoArgsIndicator
