@@ -43,14 +43,14 @@ importers:
         version: 5.6.2
       vitepress-plugin-tabs:
         specifier: ^0.5.0
-        version: 0.5.0(vitepress@1.4.0(@algolia/client-search@5.7.0)(postcss@8.4.47)(search-insights@2.17.2)(typescript@5.6.2))(vue@3.5.11(typescript@5.6.2))
+        version: 0.5.0(vitepress@1.3.4(@algolia/client-search@5.7.0)(postcss@8.4.47)(search-insights@2.17.2)(typescript@5.6.2))(vue@3.5.11(typescript@5.6.2))
       vitepress-sidebar:
         specifier: ^1.27.1
         version: 1.27.1
     devDependencies:
       vitepress:
-        specifier: ^1.4.0
-        version: 1.4.0(@algolia/client-search@5.7.0)(postcss@8.4.47)(search-insights@2.17.2)(typescript@5.6.2)
+        specifier: ^1.3.4
+        version: 1.3.4(@algolia/client-search@5.7.0)(postcss@8.4.47)(search-insights@2.17.2)(typescript@5.6.2)
 
 packages:
 
@@ -1387,8 +1387,8 @@ packages:
     resolution: {integrity: sha512-MdqDp5urRfSzvRqck6SMJAWXt71L4ZRepe9myBSy5jI779t4/ZXnl09yew/xGvBvgUPupCaZyNCk+XLYj7Rciw==}
     engines: {node: '>=18.0.0'}
 
-  vitepress@1.4.0:
-    resolution: {integrity: sha512-JXCv4EsKTDyAFb6C/UjZr7nsGAzZ6mafVk2rx7rG5o8N+B/4QstIk+iEOe/9dKoU6V624UIC6g1pZ+K63rxhlw==}
+  vitepress@1.3.4:
+    resolution: {integrity: sha512-I1/F6OW1xl3kW4PaIMC6snxjWgf3qfziq2aqsDoFc/Gt41WbcRv++z8zjw8qGRIJ+I4bUW7ZcKFDHHN/jkH9DQ==}
     hasBin: true
     peerDependencies:
       markdown-it-mathjax3: ^4
@@ -2843,9 +2843,9 @@ snapshots:
     optionalDependencies:
       fsevents: 2.3.3
 
-  vitepress-plugin-tabs@0.5.0(vitepress@1.4.0(@algolia/client-search@5.7.0)(postcss@8.4.47)(search-insights@2.17.2)(typescript@5.6.2))(vue@3.5.11(typescript@5.6.2)):
+  vitepress-plugin-tabs@0.5.0(vitepress@1.3.4(@algolia/client-search@5.7.0)(postcss@8.4.47)(search-insights@2.17.2)(typescript@5.6.2))(vue@3.5.11(typescript@5.6.2)):
     dependencies:
-      vitepress: 1.4.0(@algolia/client-search@5.7.0)(postcss@8.4.47)(search-insights@2.17.2)(typescript@5.6.2)
+      vitepress: 1.3.4(@algolia/client-search@5.7.0)(postcss@8.4.47)(search-insights@2.17.2)(typescript@5.6.2)
       vue: 3.5.11(typescript@5.6.2)
 
   vitepress-sidebar@1.27.1:
@@ -2853,13 +2853,12 @@ snapshots:
       glob: 10.4.5
       gray-matter: 4.0.3
 
-  vitepress@1.4.0(@algolia/client-search@5.7.0)(postcss@8.4.47)(search-insights@2.17.2)(typescript@5.6.2):
+  vitepress@1.3.4(@algolia/client-search@5.7.0)(postcss@8.4.47)(search-insights@2.17.2)(typescript@5.6.2):
     dependencies:
       '@docsearch/css': 3.6.2
       '@docsearch/js': 3.6.2(@algolia/client-search@5.7.0)(search-insights@2.17.2)
       '@shikijs/core': 1.22.0
       '@shikijs/transformers': 1.22.0
-      '@shikijs/types': 1.22.0
       '@types/markdown-it': 14.1.2
       '@vitejs/plugin-vue': 5.1.4(vite@5.4.8)(vue@3.5.11(typescript@5.6.2))
       '@vue/devtools-api': 7.4.6

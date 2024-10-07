@@ -7,7 +7,7 @@
     "gen:graffle": "graffle --schema https://countries.trevorblades.com/graphql && graffle --defaultSchemaUrl http://localhost:3000/graphql --schema ../tests/_/schemas/pokemon/schema.graphql --name Pokemon --output ./pokemon"
   },
   "devDependencies": {
-    "vitepress": "^1.4.0"
+    "vitepress": "^1.3.4"
   },
   "dependencies": {
     "@shikijs/twoslash": "^1.22.0",
