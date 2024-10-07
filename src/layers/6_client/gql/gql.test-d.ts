@@ -53,9 +53,9 @@ AssertTypeOf<D | null>(await g.gql(d3).send({}))
   AssertTypeOf<D | null>(await g.gql<TypedDocument.Node<D, { x?: 1 }>              >``.send())
   AssertTypeOf<D | null>(await g.gql<TypedDocument.Node<D, { x?: 1 }>              >``.send({ x: 1 }))
   AssertTypeOf<D | null>(await g.gql<TypedDocument.Node<D, {}>                     >``.send())
-  AssertTypeOf<D | null>(await g.gql<TypedDocument.Node<D, TypedDocument.Variables>>``.send())
-  AssertTypeOf<D | null>(await g.gql<TypedDocument.Node<D, TypedDocument.Variables>>``.send({ x: 1 }))
-  AssertTypeOf<D | null>(await g.gql<TypedDocument.Node<D, TypedDocument.Variables>>``.send(`abc`, { x: 1 }))
+  AssertTypeOf<D | null>(await g.gql<TypedDocument.Node<D, TypedDocument.Variables>>``.send()) // eslint-disable-line
+  AssertTypeOf<D | null>(await g.gql<TypedDocument.Node<D, TypedDocument.Variables>>``.send({ x: 1 })) // eslint-disable-line
+  AssertTypeOf<D | null>(await g.gql<TypedDocument.Node<D, TypedDocument.Variables>>``.send(`abc`, { x: 1 }))  // eslint-disable-line
 	// @ts-expect-error - wrong argument type
   await g.gql<TypedDocument.Node<D, { x: 1 }>               >``.send({ x: 2 })
 
