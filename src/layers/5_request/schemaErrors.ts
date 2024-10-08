@@ -1,4 +1,5 @@
-import { Nodes, operationTypeNameToRootTypeName, type RootTypeName } from '../../lib/graphql-plus/graphql.js'
+import type { Grafaid } from '../../lib/grafaid/__.js'
+import { Nodes, operationTypeNameToRootTypeName } from '../../lib/grafaid/graphql.js'
 import type { SchemaIndex } from '../4_generator/generators/SchemaIndex.js'
 
 export const injectTypenameOnRootResultFields = (
@@ -26,7 +27,7 @@ export const injectTypenameOnRootResultFields = (
 const injectTypenameOnRootResultFields_ = (
   { selectionSet, schema, rootTypeName }: {
     schema: SchemaIndex
-    rootTypeName: RootTypeName
+    rootTypeName: Grafaid.Schema.RootTypeName
     selectionSet: Nodes.SelectionSetNode
   },
 ): void => {

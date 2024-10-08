@@ -1,10 +1,10 @@
 import type { GraphQLFormattedError } from 'graphql'
 import { type ExecutionResult, GraphQLError } from 'graphql'
-import type { Variables } from '../graphql-plus/graphql.js'
-import { CONTENT_TYPE_GQL, CONTENT_TYPE_JSON } from '../http.js'
-import { isRecordLikeObject } from '../prelude.js'
+import { CONTENT_TYPE_GQL, CONTENT_TYPE_JSON } from '../../http.js'
+import { isRecordLikeObject } from '../../prelude.js'
+import type { Variables } from '../graphql.js'
 
-export interface RequestInput {
+export interface RequestConfig {
   query: string
   variables?: Variables
   operationName?: string
@@ -75,7 +75,7 @@ export const getRequestHeadersRec = {
   accept: ACCEPT_REC,
 }
 
-export const getRequestEncodeSearchParameters = (request: RequestInput): Record<string, string> => {
+export const getRequestEncodeSearchParameters = (request: RequestConfig): Record<string, string> => {
   return {
     query: request.query,
     ...(request.variables ? { variables: JSON.stringify(request.variables) } : {}),
@@ -84,7 +84,7 @@ export const getRequestEncodeSearchParameters = (request: RequestInput): Record<
 }
 export type getRequestEncodeSearchParameters = typeof getRequestEncodeSearchParameters
 
-export const postRequestEncodeBody = (input: RequestInput): BodyInit => {
+export const postRequestEncodeBody = (input: RequestConfig): BodyInit => {
   return JSON.stringify({
     query: input.query,
     variables: input.variables,

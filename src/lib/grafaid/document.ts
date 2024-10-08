@@ -16,6 +16,7 @@ import {
   type ObjectFieldNode,
   type ObjectValueNode,
   type OperationDefinitionNode,
+  print as graphqlPrint,
   type SelectionSetNode,
   type StringValueNode,
   type ValueNode,
@@ -23,6 +24,8 @@ import {
   type VariableNode,
 } from 'graphql'
 import type { HasRequiredKeys } from 'type-fest'
+import { isString } from '../prelude.js'
+import { TypedDocument } from './typed-document/__.js'
 
 export type {
   ArgumentNode,
@@ -49,9 +52,11 @@ export type {
 
 export { Kind } from 'graphql'
 
+export * as Typed from './typed-document/TypedDocument.js'
+
 export { getNamedType } from 'graphql'
 
-export * as $Schema from './nodesSchema.js'
+export * as $Schema from './schema/schema.js'
 
 export type $Any =
   | DirectiveNode
@@ -233,4 +238,15 @@ export const ObjectField: Constructor<ObjectFieldNode> = (objectField) => {
     kind: Kind.OBJECT_FIELD,
     ...objectField,
   }
+}
+
+export const OperationTypeToAccessKind = {
+  query: `read`,
+  mutation: `write`,
+  subscription: `read`,
+} as const
+
+export const print = (document: TypedDocument.TypedDocument): string => {
+  const documentUntyped = TypedDocument.unType(document)
+  return isString(documentUntyped) ? documentUntyped : graphqlPrint(documentUntyped)
 }

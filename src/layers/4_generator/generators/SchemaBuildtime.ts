@@ -7,21 +7,15 @@ import type {
 } from 'graphql'
 import { getNullableType, isListType, isNamedType, isNullableType } from 'graphql'
 import { Code } from '../../../lib/Code.js'
+import { Grafaid } from '../../../lib/grafaid/__.js'
+import type { Nodes } from '../../../lib/grafaid/graphql.js'
 import {
   type AnyClass,
   type AnyField,
   type AnyNamedClassName,
   type ClassToName,
   type NamedNameToClass,
-  Nodes,
-} from '../../../lib/graphql-plus/graphql.js'
-import {
-  isAllArgsNullable,
-  isAllInputObjectFieldsNullable,
-  isGraphQLOutputField,
-  type NameToClass,
-  RootTypeName,
-} from '../../../lib/graphql-plus/graphql.js'
+} from '../../../lib/grafaid/graphql.js'
 import { entries, values } from '../../../lib/prelude.js'
 import type { Config } from '../config.js'
 import { createModuleGenerator } from '../helpers/moduleGenerator.js'
@@ -67,7 +61,7 @@ const defineConcreteRenderers = <
   },
 ): {
   [ClassName in keyof $Renderers]: (
-    node: ClassName extends keyof NameToClass ? InstanceType<NameToClass[ClassName]> | null | undefined
+    node: ClassName extends keyof Grafaid.NameToClass ? InstanceType<Grafaid.NameToClass[ClassName]> | null | undefined
       : never,
   ) => string
 } => {
@@ -134,7 +128,7 @@ const concreteRenderers = defineConcreteRenderers({
     ),
   GraphQLInputObjectType: (config, node) => {
     const doc = getDocumentation(config, node)
-    const isAllFieldsNullable = isAllInputObjectFieldsNullable(node)
+    const isAllFieldsNullable = Grafaid.Schema.isAllInputObjectFieldsNullable(node)
     const source = Code.export$(
       Code.type(
         node.name,
@@ -146,7 +140,7 @@ const concreteRenderers = defineConcreteRenderers({
     return Code.TSDocWithBlock(doc, source)
   },
   GraphQLInterfaceType: (config, node) => {
-    const implementors = Nodes.$Schema.getInterfaceImplementors(config.schema.typeMapByKind, node)
+    const implementors = Grafaid.Schema.KindMap.getInterfaceImplementors(config.schema.typeMapByKind, node)
     return Code.TSDocWithBlock(
       getDocumentation(config, node),
       Code.export$(Code.type(
@@ -158,7 +152,7 @@ const concreteRenderers = defineConcreteRenderers({
     )
   },
   GraphQLObjectType: (config, node) => {
-    const maybeRootTypeName = (RootTypeName as Record<string, RootTypeName>)[node.name]
+    const maybeRootTypeName = (Grafaid.Schema.RootTypeName as Record<string, Grafaid.Schema.RootTypeName>)[node.name]
     const type = maybeRootTypeName
       ? `$.Output.Object${maybeRootTypeName}<${renderOutputFields(config, node)}>`
       : `$.Object$2<${Code.string(node.name)}, ${renderOutputFields(config, node)}>`
@@ -212,7 +206,7 @@ const renderInputFields = (config: Config, node: AnyGraphQLFieldsType): string =
 const renderOutputField = (config: Config, field: AnyField): string => {
   const type = buildType(`output`, config, field.type)
 
-  const args = isGraphQLOutputField(field) && field.args.length > 0
+  const args = Grafaid.Schema.isGraphQLOutputField(field) && field.args.length > 0
     ? renderArgs(config, field.args)
     : null
 
@@ -254,7 +248,7 @@ const renderArgs = (config: Config, args: readonly GraphQLArgument[]) => {
         args.map((arg) => renderArg(config, arg)),
       ),
     )
-  }, ${Code.boolean(isAllArgsNullable(args))}>`
+  }, ${Code.boolean(Grafaid.Schema.Args.isAllArgsNullable(args))}>`
   return code
 }
 

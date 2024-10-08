@@ -1,6 +1,6 @@
 import { getNamedType, isUnionType } from 'graphql'
 import { Code } from '../../../lib/Code.js'
-import { hasMutation, hasQuery, hasSubscription } from '../../../lib/graphql-plus/graphql.js'
+import { Grafaid } from '../../../lib/grafaid/__.js'
 import type { Schema } from '../../1_Schema/__.js'
 import type { CodecString } from '../../3_SelectGraphQLMapper/types.js'
 import type { GlobalRegistry } from '../globalRegistry.js'
@@ -9,8 +9,28 @@ import { ModuleGeneratorData } from './Data.js'
 import { ModuleGeneratorMethodsRoot } from './MethodsRoot.js'
 import { ModuleGeneratorSchemaBuildtime } from './SchemaBuildtime.js'
 
-export type CustomScalarsIndex = {
-  [key: string]: CodecString | CustomScalarsIndex
+export interface CustomScalarsIndex {
+  [Grafaid.Schema.RootTypeName.Mutation]?: CustomScalarsIndex.OutputObject
+  [Grafaid.Schema.RootTypeName.Query]?: CustomScalarsIndex.OutputObject
+  [Grafaid.Schema.RootTypeName.Subscription]?: CustomScalarsIndex.OutputObject
+}
+
+export namespace CustomScalarsIndex {
+  export interface OutputObject {
+    [key: string]: OutputField
+  }
+
+  export interface OutputField {
+    o?: CodecString
+    i?: InputObject
+    r?: OutputObject
+  }
+
+  export interface InputObject {
+    [key: string]: InputField
+  }
+
+  export type InputField = CodecString | InputObject
 }
 
 /**
@@ -72,9 +92,9 @@ export const ModuleGeneratorSchemaIndex = createModuleGenerator(
     code()
 
     const rootTypesPresence = {
-      Query: hasQuery(config.schema.typeMapByKind),
-      Mutation: hasMutation(config.schema.typeMapByKind),
-      Subscription: hasSubscription(config.schema.typeMapByKind),
+      Query: Grafaid.Schema.KindMap.hasQuery(config.schema.typeMapByKind),
+      Mutation: Grafaid.Schema.KindMap.hasMutation(config.schema.typeMapByKind),
+      Subscription: Grafaid.Schema.KindMap.hasSubscription(config.schema.typeMapByKind),
     }
 
     const root = config.schema.typeMapByKind.GraphQLRootType.map(_ =>
@@ -133,9 +153,9 @@ export const ModuleGeneratorSchemaIndex = createModuleGenerator(
               config.schema.error.objects.map(_ => [_.name, `{ __typename: "${_.name}" }`]),
             ),
             rootResultFields: `{
-              ${!hasQuery(config.schema.typeMapByKind) ? `Query: {}` : ``}
-              ${!hasMutation(config.schema.typeMapByKind) ? `Mutation: {}` : ``}
-              ${!hasSubscription(config.schema.typeMapByKind) ? `Subscription: {}` : ``}
+              ${!Grafaid.Schema.KindMap.hasQuery(config.schema.typeMapByKind) ? `Query: {}` : ``}
+              ${!Grafaid.Schema.KindMap.hasMutation(config.schema.typeMapByKind) ? `Mutation: {}` : ``}
+              ${!Grafaid.Schema.KindMap.hasSubscription(config.schema.typeMapByKind) ? `Subscription: {}` : ``}
               ${
               Object.values(config.schema.typeMapByKind.GraphQLRootType).map((rootType) => {
                 const resultFields = Object.values(rootType.getFields()).filter((field) => {

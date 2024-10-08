@@ -1,11 +1,4 @@
-import type {
-  GraphQLArgument,
-  GraphQLEnumValue,
-  GraphQLError,
-  GraphQLField,
-  GraphQLInputField,
-  GraphQLNamedType,
-} from 'graphql'
+import type { GraphQLEnumValue, GraphQLError, GraphQLField, GraphQLInputField, GraphQLNamedType } from 'graphql'
 import {
   GraphQLEnumType,
   GraphQLInputObjectType,
@@ -18,7 +11,6 @@ import {
   isEnumType,
   isInputObjectType,
   isInterfaceType,
-  isNonNullType,
   isObjectType,
   isScalarType,
   isUnionType,
@@ -26,8 +18,8 @@ import {
 } from 'graphql'
 import type { Errors } from '../errors/__.js'
 import { isString } from '../prelude.js'
-import type { TypedDocument } from '../typed-document/__.js'
-import { type TypeMapByKind } from './nodesSchema.js'
+import { Nodes } from './_Nodes.js'
+import { TypedDocument } from './typed-document/__.js'
 
 export * from './_Nodes.js'
 
@@ -63,22 +55,6 @@ export type TypeNamedKind = `Enum` | `InputObject` | `Interface` | `Object` | `S
 
 export type TypeMapKind = TypeNamedKind | `Root`
 
-export const RootTypeName = {
-  Query: `Query`,
-  Mutation: `Mutation`,
-  Subscription: `Subscription`,
-} as const
-
-export const isRootType = (value: unknown): value is GraphQLObjectType => {
-  return isObjectType(value) && value.name in RootTypeName
-}
-
-export type RootTypeNameQuery = typeof RootTypeName['Query']
-
-export type RootTypeNameMutation = typeof RootTypeName['Mutation']
-
-export type RootTypeNameSubscription = typeof RootTypeName['Subscription']
-
 export const operationTypeNameToRootTypeName = {
   query: `Query`,
   mutation: `Mutation`,
@@ -92,8 +68,6 @@ export const RootTypeNameToOperationName = {
 } as const
 
 export type RootTypeNameToOperationName = typeof RootTypeNameToOperationName
-
-export type RootTypeName = keyof typeof RootTypeName
 
 export const isStandardScalarType = (type: GraphQLScalarType) => {
   return type.name in StandardScalarTypeNames
@@ -140,14 +114,6 @@ export type AnyNamedClassName = keyof NamedNameToClass
 
 export type AnyClass = InstanceType<NameToClass[keyof NameToClass]>
 
-export const isGraphQLOutputField = (object: object): object is AnyGraphQLOutputField => {
-  return `args` in object
-}
-
-export const hasCustomScalars = (typeMapByKind: TypeMapByKind) => {
-  return typeMapByKind.GraphQLScalarTypeCustom.length > 0
-}
-
 /**
  * Groups
  */
@@ -156,7 +122,7 @@ export type Describable =
   | GraphQLNamedType
   | AnyField
 
-export const getNodeNameAndKind = (
+export const getTypeNameAndKind = (
   node: GraphQLNamedType,
 ): { name: string; kind: 'Object' | 'Interface' | 'Union' | 'Enum' | 'Scalar' } => {
   const name = node.name
@@ -169,7 +135,7 @@ export const getNodeNameAndKind = (
   return { name, kind }
 }
 
-export const getNodeKind = <$Node extends GraphQLNamedType>(node: $Node): ClassToName<$Node> => {
+export const getTypeKind = <$Node extends GraphQLNamedType>(node: $Node): ClassToName<$Node> => {
   switch (true) {
     case isObjectType(node):
       return `GraphQLObjectType` as ClassToName<$Node>
@@ -207,17 +173,6 @@ export const getNodeKindOld = (node: Describable): NodeNamePlus => {
   }
 }
 
-// const displayNames = {
-//   GraphQLEnumType: `Enum`,
-//   GraphQLInputObjectType: `InputObject`,
-//   GraphQLInterfaceType: `Interface`,
-//   GraphQLList: `List`,
-//   GraphQLNonNull: `NonNull`,
-//   GraphQLObjectType: `Object`,
-//   GraphQLScalarType: `Scalar`,
-//   GraphQLUnionType: `Union`,
-// } satisfies Record<NodeName, string>
-
 export const getNodeDisplayName = (node: Describable) => {
   return toDisplayName(getNodeKindOld(node))
 }
@@ -230,43 +185,7 @@ export const isDeprecatableNode = (node: object): node is GraphQLEnumValue | Any
   return `deprecationReason` in node
 }
 
-export const hasQuery = (typeMapByKind: TypeMapByKind) => typeMapByKind.GraphQLRootType.find((_) => _.name === `Query`)
-
-export const hasMutation = (typeMapByKind: TypeMapByKind) =>
-  typeMapByKind.GraphQLRootType.find((_) => _.name === `Mutation`)
-
-export const hasSubscription = (typeMapByKind: TypeMapByKind) =>
-  typeMapByKind.GraphQLRootType.find((_) => _.name === `Subscription`)
-
-export const OperationTypes = {
-  query: `query`,
-  mutation: `mutation`,
-  subscription: `subscription`,
-} as const
-
-export namespace OperationType {
-  export type Query = typeof OperationTypes['query']
-  export type Mutation = typeof OperationTypes['mutation']
-  export type Subscription = typeof OperationTypes['subscription']
-}
-
-type OperationTypeQuery = typeof OperationTypes['query']
-type OperationTypeMutation = typeof OperationTypes['mutation']
-type OperationTypeSubscription = typeof OperationTypes['subscription']
-
-export type OperationTypeName = OperationTypeQuery | OperationTypeMutation
-export type OperationTypeNameAll = OperationTypeName | OperationTypeSubscription
-
-export const OperationTypeAccessTypeMap = {
-  query: `read`,
-  mutation: `write`,
-  subscription: `read`,
-} as const
-
-export const isOperationTypeName = (value: unknown): value is OperationTypeName =>
-  value === `query` || value === `mutation`
-
-export interface GraphQLRequestInput {
+export interface RequestInput {
   query: string | TypedDocument.TypedDocument
   variables?: Variables
   operationName?: string
@@ -280,20 +199,28 @@ export type SomeData = Record<string, any>
 
 export type GraphQLExecutionResultError = Errors.ContextualAggregateError<GraphQLError>
 
-const definedOperationPattern = new RegExp(`^\\b(${Object.values(OperationTypes).join(`|`)})\\b`)
+const definedOperationPattern = new RegExp(`^\\b(${Object.values(OperationTypeNode).join(`|`)})\\b`)
 
-export const parseGraphQLOperationType = (request: GraphQLRequestInput): OperationTypeNameAll | null => {
-  // todo support DocumentNode too
-  if (!isString(request.query)) return null
-
+export const parseOperationType = (request: RequestInput): OperationTypeNode | null => {
   const { operationName, query: document } = request
+
+  if (!(TypedDocument.isString(document) || isString(document))) {
+    for (const node of document.definitions) {
+      if (node.kind === Nodes.Kind.OPERATION_DEFINITION) {
+        if (operationName ? node.name?.value === operationName : true) {
+          return node.operation
+        }
+      }
+    }
+    throw new Error(`Could not parse operation type from document.`)
+  }
 
   const definedOperations = document.split(/[{}\n]+/).map(s => s.trim()).map(line => {
     const match = line.match(definedOperationPattern)
     if (!match) return null
     return {
       line,
-      operationType: match[0] as OperationTypeNameAll,
+      operationType: match[0] as OperationTypeNode,
     }
   }).filter(_ => _ !== null)
   // console.log(definedOperations)
@@ -312,7 +239,7 @@ export const parseGraphQLOperationType = (request: GraphQLRequestInput): Operati
     // Assume that the implicit query syntax is being used.
     // This is a non-validated optimistic approach for performance, not aimed at correctness.
     // For example its not checked if the document is actually of the syntactic form `{ ... }`
-    return OperationTypes.query
+    return OperationTypeNode.QUERY
   }
 
   // Continue to the full search.
@@ -325,35 +252,4 @@ export const parseGraphQLOperationType = (request: GraphQLRequestInput): Operati
   if (!definedOperationToAnalyze) return null
 
   return definedOperationToAnalyze.operationType
-}
-
-export const isAllArgsNonNullType = (args: readonly GraphQLArgument[]) => {
-  return args.every(_ => isNonNullType(_.type))
-}
-
-export const isAllArgsNullable = (args: readonly GraphQLArgument[]) => {
-  return !args.some(_ => isNonNullType(_.type))
-}
-export const analyzeArgsNullability = (args: readonly GraphQLArgument[]) => {
-  let required = 0
-  let optional = 0
-  const total = args.length
-  args.forEach(_ => {
-    if (isNonNullType(_.type)) {
-      required++
-    } else {
-      optional++
-    }
-  })
-  return {
-    hasAny: total > 0,
-    isAllNullable: optional === total,
-    required,
-    optional,
-    total,
-  }
-}
-
-export const isAllInputObjectFieldsNullable = (node: GraphQLInputObjectType) => {
-  return Object.values(node.getFields()).some(_ => !isNonNullType(_.type))
 }

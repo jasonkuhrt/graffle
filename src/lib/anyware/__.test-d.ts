@@ -5,7 +5,7 @@ import { Result } from '../../../tests/_/schemas/kitchen-sink/graffle/modules/Sc
 import { ContextualError } from '../errors/ContextualError.js'
 import { type MaybePromise } from '../prelude.js'
 import { Anyware } from './__.js'
-import { type SomeHook } from './main.js'
+import type { PublicHook } from './hook/public.js'
 
 type InputA = { valueA: string }
 type InputB = { valueB: string }
@@ -19,8 +19,8 @@ describe('without slots', () => {
       (input: {
         hookNamesOrderedBySequence: ['a', 'b']
         hooks: {
-          a: (input: { input: InputA }) => InputB
-          b: (input: { input: InputB }) => Result
+          a: (input: { input: InputA; previous: {} }) => InputB
+          b: (input: { input: InputB; previous: { a: { input: InputA } } }) => Result
         }
       }) => any
     >()
@@ -34,22 +34,24 @@ describe('without slots', () => {
         initialInput: InputA
         options?: Anyware.Options
         retryingExtension?: (input: {
-          a: SomeHook<
-            (input?: { input?: InputA }) => MaybePromise<
+          a: PublicHook<
+            (params?: { input?: InputA }) => MaybePromise<
               Error | {
-                b: SomeHook<(input?: { input?: InputB }) => MaybePromise<Error | Result>>
+                b: PublicHook<
+                  (params?: { input?: InputB }) => MaybePromise<Error | Result>
+                >
               }
             >
           >
-          b: SomeHook<(input?: { input?: InputB }) => MaybePromise<Error | Result>>
+          b: PublicHook<(params?: { input?: InputB }) => MaybePromise<Error | Result>>
         }) => Promise<Result>
         extensions: ((input: {
-          a: SomeHook<
-            (input?: { input?: InputA }) => MaybePromise<{
-              b: SomeHook<(input?: { input?: InputB }) => MaybePromise<Result>>
+          a: PublicHook<
+            (params?: { input?: InputA }) => MaybePromise<{
+              b: PublicHook<(params?: { input?: InputB }) => MaybePromise<Result>>
             }>
           >
-          b: SomeHook<(input?: { input?: InputB }) => MaybePromise<Result>>
+          b: PublicHook<(params?: { input?: InputB }) => MaybePromise<Result>>
         }) => Promise<Result>)[]
       }) => Promise<Result | ContextualError>
     >()
@@ -65,7 +67,7 @@ describe('withSlots', () => {
         hookNamesOrderedBySequence: ['a']
         hooks: {
           a: {
-            run: (input: { input: InputA }) => Result
+            run: (input: { input: InputA; previous: {} }) => Result
             slots: {
               x: (x: boolean) => number
             }
@@ -83,14 +85,14 @@ describe('withSlots', () => {
         initialInput: InputA
         options?: Anyware.Options
         extensions: ((input: {
-          a: SomeHook<
+          a: PublicHook<
             (
               input?: { input?: InputA; using?: { x?: (x: boolean) => number | undefined } },
             ) => MaybePromise<Error | Result>
           >
         }) => Promise<Result>)[]
         retryingExtension?: (input: {
-          a: SomeHook<
+          a: PublicHook<
             (input?: { input?: InputA; using?: { x?: (x: boolean) => number | undefined } }) => MaybePromise<
               Error | Result
             >

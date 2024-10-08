@@ -1,51 +1,20 @@
 import { Errors } from '../errors/__.js'
-import type { Deferred, SomeFunction } from '../prelude.js'
 import { casesExhausted, createDeferred, debugSub, errorFromMaybeError } from '../prelude.js'
-import type { Core, Extension, ResultEnvelop, SomeHookEnvelope } from './main.js'
+import type { HookResult, HookResultErrorAsync, Slots } from './hook/private.js'
+import { createPublicHook, type SomePublicHookEnvelope } from './hook/public.js'
+import type { Core, Extension, ResultEnvelop } from './main.js'
 
 type HookDoneResolver = (input: HookResult) => void
 
-export type HookResultErrorAsync = Deferred<HookResultErrorExtension>
-
-export type HookResult =
-  | { type: 'completed'; result: unknown; nextExtensionsStack: readonly Extension[] }
-  | { type: 'shortCircuited'; result: unknown }
-  | HookResultErrorUser
-  | HookResultErrorImplementation
-  | HookResultErrorExtension
-
-export type HookResultError = HookResultErrorExtension | HookResultErrorImplementation | HookResultErrorUser
-
-export type HookResultErrorUser = {
-  type: 'error'
-  hookName: string
-  source: 'user'
-  error: Errors.ContextualError
-  extensionName: string
-}
-
-export type HookResultErrorExtension = {
-  type: 'error'
-  hookName: string
-  source: 'extension'
-  error: Error
-  extensionName: string
-}
-
-export type HookResultErrorImplementation = {
-  type: 'error'
-  hookName: string
-  source: 'implementation'
-  error: Error
-}
-
-type Slots = Record<string, SomeFunction>
-
-type Input = {
+interface Input {
   core: Core
   name: string
   done: HookDoneResolver
-  originalInput: unknown
+  inputOriginalOrFromExtension: object
+  /**
+   * Information about previous hook executions, like what their input was.
+   */
+  previous: object
   customSlots: Slots
   /**
    * The extensions that are at this hook awaiting.
@@ -64,11 +33,21 @@ type Input = {
 
 const createExecutableChunk = <$Extension extends Extension>(extension: $Extension) => ({
   ...extension,
-  currentChunk: createDeferred<SomeHookEnvelope | ($Extension['retrying'] extends true ? Error : never)>(),
+  currentChunk: createDeferred<SomePublicHookEnvelope | ($Extension['retrying'] extends true ? Error : never)>(),
 })
 
 export const runHook = async (
-  { core, name, done, originalInput, extensionsStack, nextExtensionsStack, asyncErrorDeferred, customSlots }: Input,
+  {
+    core,
+    name,
+    done,
+    inputOriginalOrFromExtension,
+    previous,
+    extensionsStack,
+    nextExtensionsStack,
+    asyncErrorDeferred,
+    customSlots,
+  }: Input,
 ) => {
   const debugHook = debugSub(`hook ${name}:`)
 
@@ -100,10 +79,10 @@ export const runHook = async (
 
     debugExtension(`start`)
     let hookFailed = false
-    const hook = createHook(originalInput, (extensionInput) => {
+    const hook = createPublicHook(inputOriginalOrFromExtension, (extensionInput) => {
       debugExtension(`extension calls this hook`, extensionInput)
 
-      const inputResolved = extensionInput?.input ?? originalInput
+      const inputResolved = extensionInput?.input ?? inputOriginalOrFromExtension
       const customSlotsResolved = {
         ...customSlots,
         ...extensionInput?.using,
@@ -148,20 +127,22 @@ export const runHook = async (
             core,
             name,
             done,
-            originalInput,
+            previous,
+            inputOriginalOrFromExtension,
             asyncErrorDeferred,
             extensionsStack: [extensionRetry],
             nextExtensionsStack,
             customSlots: customSlotsResolved,
           })
           return extensionRetry.currentChunk.promise.then(async (envelope) => {
-            const envelop_ = envelope as SomeHookEnvelope // todo ... better way?
-            const hook = envelop_[name]
+            const envelop_ = envelope as SomePublicHookEnvelope // todo ... better way?
+            const hook = envelop_[name] // as (params:{input:object;previous:object;using:Slots}) =>
             if (!hook) throw new Error(`Hook not found in envelope: ${name}`)
             // todo use inputResolved ?
-            const result = await hook({ ...extensionInput, input: extensionInput?.input ?? originalInput }) as Promise<
-              SomeHookEnvelope | Error | ResultEnvelop
-            >
+            const result = await hook({
+              ...extensionInput,
+              input: extensionInput?.input ?? inputOriginalOrFromExtension,
+            }) as Promise<SomePublicHookEnvelope | Error | ResultEnvelop>
             return result
           })
         }
@@ -173,8 +154,9 @@ export const runHook = async (
           core,
           name,
           done,
+          previous,
           asyncErrorDeferred,
-          originalInput: inputResolved,
+          inputOriginalOrFromExtension: inputResolved,
           extensionsStack: extensionsStackRest,
           nextExtensionsStack: nextNextHookStack,
           customSlots: customSlotsResolved,
@@ -227,7 +209,8 @@ export const runHook = async (
             core,
             name,
             done,
-            originalInput,
+            previous,
+            inputOriginalOrFromExtension,
             asyncErrorDeferred,
             extensionsStack: extensionsStackRest,
             nextExtensionsStack,
@@ -276,7 +259,11 @@ export const runHook = async (
         ...implementation.slots as Slots, // todo is this cast needed, can we Slots type the property?
         ...customSlots,
       }
-      result = await implementation.run({ input: originalInput, slots: slotsResolved })
+      result = await implementation.run({
+        input: inputOriginalOrFromExtension,
+        slots: slotsResolved,
+        previous: previous,
+      })
     } catch (error) {
       debugHook(`implementation error`)
       const lastExtension = nextExtensionsStack[nextExtensionsStack.length - 1]
@@ -292,21 +279,11 @@ export const runHook = async (
 
     debugHook(`completed`)
 
-    done({ type: `completed`, result, nextExtensionsStack: nextExtensionsStack })
+    done({
+      type: `completed`,
+      result,
+      effectiveInput: inputOriginalOrFromExtension,
+      nextExtensionsStack: nextExtensionsStack,
+    })
   }
-}
-
-const createHook = <$X, $F extends (input?: HookInput) => any>(
-  originalInput: $X,
-  fn: $F,
-): $F & { input: $X } => {
-  // @ts-expect-error
-  fn.input = originalInput
-  // @ts-expect-error
-  return fn
-}
-
-type HookInput = {
-  input?: object
-  using?: Slots
 }

@@ -19,18 +19,15 @@ import {
 } from 'graphql'
 import { getNamedType, isNullableType, isScalarType } from 'graphql'
 import { Code } from '../../../lib/Code.js'
+import { Grafaid } from '../../../lib/grafaid/__.js'
 import {
-  analyzeArgsNullability,
-  getNodeKind,
-  getNodeNameAndKind,
-  hasCustomScalars,
-  hasMutation,
-  hasQuery,
+  getTypeNameAndKind,
   Nodes,
-  RootTypeName,
+  type StandardScalarTypeNames,
   StandardScalarTypeTypeScriptMapping,
-} from '../../../lib/graphql-plus/graphql.js'
-import type { StandardScalarTypeNames } from '../../../lib/graphql-plus/graphql.js'
+} from '../../../lib/grafaid/graphql.js'
+import { analyzeArgsNullability } from '../../../lib/grafaid/schema/args.js'
+import { RootTypeName } from '../../../lib/grafaid/schema/schema.js'
 import { Select } from '../../2_Select/__.js'
 import { createModuleGenerator } from '../helpers/moduleGenerator.js'
 import { createCodeGenerator } from '../helpers/moduleGeneratorRunner.js'
@@ -44,7 +41,7 @@ export const ModuleGeneratorSelectionSets = createModuleGenerator(
 
     code(`import type { Select as $Select } from '${config.paths.imports.grafflePackage.schema}'`)
     code(`import type * as $Utilities from '${config.paths.imports.grafflePackage.utilitiesForGenerated}'`)
-    if (hasCustomScalars(config.schema.typeMapByKind)) {
+    if (Grafaid.Schema.KindMap.hasCustomScalars(config.schema.typeMapByKind)) {
       code(`import type * as $Scalar from './${ModuleGeneratorScalar.name}.js'`)
     }
     code()
@@ -56,8 +53,8 @@ export const ModuleGeneratorSelectionSets = createModuleGenerator(
     )
     code(
       `export interface $Document {`,
-      hasQuery(config.schema.typeMapByKind) ? `query?: Record<string, Query>` : null,
-      hasMutation(config.schema.typeMapByKind) ? `mutation?: Record<string, Mutation>` : null,
+      Grafaid.Schema.KindMap.hasQuery(config.schema.typeMapByKind) ? `query?: Record<string, Query>` : null,
+      Grafaid.Schema.KindMap.hasMutation(config.schema.typeMapByKind) ? `mutation?: Record<string, Mutation>` : null,
       `}`,
     )
     code()
@@ -72,7 +69,7 @@ export const ModuleGeneratorSelectionSets = createModuleGenerator(
     ].filter(_ => _.length > 0)
 
     typesToRender.forEach((nodes) => {
-      const kind = getNodeKind(nodes[0]!)
+      const kind = Grafaid.getTypeKind(nodes[0]!)
 
       code(title1(`${kind} Types`))
       code()
@@ -163,7 +160,7 @@ const renderInterface = createCodeGenerator<{ node: GraphQLInterfaceType }>(
     const fieldsRendered = fields.map(field => {
       return Helpers.outputField(field.name, `${renderName(node)}.${renderName(field)}`)
     }).join(`\n`)
-    const implementorTypes = Nodes.$Schema.getInterfaceImplementors(config.schema.typeMapByKind, node)
+    const implementorTypes = Nodes.$Schema.KindMap.getInterfaceImplementors(config.schema.typeMapByKind, node)
     const onTypesRendered = implementorTypes.map(type =>
       Helpers.outputField(`${Select.InlineFragment.typeConditionPRefix}${type.name}`, renderName(type))
     ).join(
@@ -212,7 +209,7 @@ const renderObject = createCodeGenerator<{ node: GraphQLObjectType }>(
     code()
 
     const propertiesRendered = fields.map(field => {
-      const nodeWhat = getNodeNameAndKind(getNamedType(field.type))
+      const nodeWhat = getTypeNameAndKind(getNamedType(field.type))
       const type = nodeWhat.kind === `Scalar` ? `\`${nodeWhat.name}\` (a \`Scalar\`)` : nodeWhat.kind
       const doc = Code.TSDoc(`
         Select the \`${field.name}\` field on the \`${node.name}\` object. Its type is ${type}.

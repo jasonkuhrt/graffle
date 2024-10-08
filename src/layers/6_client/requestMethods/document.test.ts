@@ -40,25 +40,20 @@ describe(`document with two queries`, () => {
   test(`error if no operation name is provided`, async () => {
     const { run } = withTwo
     // @ts-expect-error
-    const error = await run().catch((e: unknown) => e) as Errors.ContextualError
-    // todo it doesn't really make sense that this happens in decode. If the schema didn't reject it than nor should we,
-    // and if schema will reject it than pre-send validation is what this really is.
-    expect(error).toMatchObject({
-      message: `There was an error in the core implementation of hook "decode".`,
-      cause: {
-        message: `Must provide operation name if query contains multiple operations.`,
-      },
-    })
+    const error = await run().catch((e: unknown) => e) as Errors.ContextualAggregateError
+    expect(error.message).toEqual(`One or more errors in the execution result.`)
+    expect(error.errors[0]?.message).toEqual(
+      `Must provide operation name if query contains multiple operations.`,
+    )
   })
   test(`error if wrong operation name is provided`, async () => {
     const { run } = withTwo
     // @ts-expect-error
-    await expect(run(`boo`)).rejects.toMatchObject({
-      message: `There was an error in the core implementation of hook "decode".`,
-      cause: {
-        message: `Unknown operation named "boo".`,
-      },
-    })
+    const error = await run(`boo`).catch((e: unknown) => e) as Errors.ContextualAggregateError
+    expect(error.message).toEqual(`One or more errors in the execution result.`)
+    expect(error.errors[0]?.message).toEqual(
+      `Unknown operation named "boo".`,
+    )
   })
   test(`error if no operations provided`, () => {
     expect(() => {

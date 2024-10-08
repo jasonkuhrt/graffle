@@ -1,5 +1,5 @@
 import type { Fluent } from '../../../lib/fluent/__.js'
-import type { TypedDocument } from '../../../lib/typed-document/__.js'
+import type { Grafaid } from '../../../lib/grafaid/__.js'
 import { RequestCore } from '../../5_request/__.js'
 import type { InterfaceRaw } from '../../5_request/types.js'
 import { defineTerminus } from '../fluent.js'
@@ -9,13 +9,13 @@ import { type DocumentController, resolveSendArguments, type sendArgumentsImplem
 
 // dprint-ignore
 export interface gql<$Config extends Config = Config> {
-  <$Document extends TypedDocument.TypedDocument>(document: $Document                            ): DocumentController<$Config, $Document>
-  <$Document extends TypedDocument.TypedDocument>(parts: TemplateStringsArray, ...args: unknown[]): DocumentController<$Config, $Document>
+  <$Document extends Grafaid.Nodes.Typed.TypedDocument>(document: $Document                            ): DocumentController<$Config, $Document>
+  <$Document extends Grafaid.Nodes.Typed.TypedDocument>(parts: TemplateStringsArray, ...args: unknown[]): DocumentController<$Config, $Document>
 }
 
 type TemplateStringsArguments = [TemplateStringsArray, ...unknown[]]
 
-type gqlArguments = [TypedDocument.TypedDocument] | TemplateStringsArguments
+type gqlArguments = [Grafaid.Nodes.Typed.TypedDocument] | TemplateStringsArguments
 
 const resolveGqlArguments = (args: gqlArguments) => {
   const document = isTemplateStringArguments(args) ? joinTemplateStringArrayAndArgs(args) : args[0]

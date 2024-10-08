@@ -1,26 +1,29 @@
 import type { Errors } from '../errors/__.js'
 import { ContextualError } from '../errors/ContextualError.js'
 import { casesExhausted, createDeferred, debug } from '../prelude.js'
+import type { HookResult, HookResultErrorAsync } from './hook/private.js'
 import { defaultFunctionName } from './lib.js'
 import type { Core, Extension, ResultEnvelop } from './main.js'
 import { createResultEnvelope } from './main.js'
-import type { HookResult, HookResultErrorAsync } from './runHook.js'
 import { runHook } from './runHook.js'
 
+interface Input {
+  core: Core
+  hookNamesOrderedBySequence: readonly string[]
+  originalInputOrResult: unknown
+  extensionsStack: readonly Extension[]
+  asyncErrorDeferred: HookResultErrorAsync
+  previous: object
+}
+
 export const runPipeline = async (
-  { core, hookNamesOrderedBySequence, originalInput, extensionsStack, asyncErrorDeferred }: {
-    core: Core
-    hookNamesOrderedBySequence: readonly string[]
-    originalInput: unknown
-    extensionsStack: readonly Extension[]
-    asyncErrorDeferred: HookResultErrorAsync
-  },
+  { core, hookNamesOrderedBySequence, originalInputOrResult, extensionsStack, asyncErrorDeferred, previous }: Input,
 ): Promise<ResultEnvelop | Errors.ContextualError> => {
   const [hookName, ...hookNamesRest] = hookNamesOrderedBySequence
 
   if (!hookName) {
     debug(`pipeline: ending`)
-    const result = await runPipelineEnd({ extensionsStack, result: originalInput })
+    const result = await runPipelineEnd({ extensionsStack, result: originalInputOrResult })
     debug(`pipeline: returning`)
     return createResultEnvelope(result)
   }
@@ -33,7 +36,8 @@ export const runPipeline = async (
     core,
     name: hookName,
     done: done.resolve,
-    originalInput,
+    inputOriginalOrFromExtension: originalInputOrResult as object,
+    previous,
     extensionsStack,
     asyncErrorDeferred,
     customSlots: {},
@@ -46,12 +50,19 @@ export const runPipeline = async (
 
   switch (signal.type) {
     case `completed`: {
-      const { result, nextExtensionsStack } = signal
+      const { result, effectiveInput, nextExtensionsStack } = signal
+      const nextPrevious = {
+        ...previous,
+        [hookName]: {
+          input: effectiveInput,
+        },
+      }
       return await runPipeline({
         core,
         hookNamesOrderedBySequence: hookNamesRest,
-        originalInput: result,
+        originalInputOrResult: result,
         extensionsStack: nextExtensionsStack,
+        previous: nextPrevious,
         asyncErrorDeferred,
       })
     }

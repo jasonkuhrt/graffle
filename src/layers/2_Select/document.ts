@@ -1,10 +1,5 @@
 import type { OperationTypeNode } from 'graphql'
-import { RootTypeName, RootTypeNameToOperationName } from '../../lib/graphql-plus/graphql.js'
-import {
-  type OperationType,
-  type RootTypeNameMutation,
-  type RootTypeNameQuery,
-} from '../../lib/graphql-plus/graphql.js'
+import { Grafaid } from '../../lib/grafaid/__.js'
 import type { FirstNonUnknownNever, IsKeyInObjectOptional, Values } from '../../lib/prelude.js'
 import type { Select } from './__.js'
 
@@ -39,8 +34,8 @@ export type GetOperationNames<$Document extends SomeDocument> = Values<
 
 // dprint-ignore
 export type GetRootTypeNameOfOperation<$Document extends SomeDocument, $Name extends OperationName> =
-  IsKeyInObjectOptional<$Document[OperationType.Mutation], $Name> extends true  ? RootTypeNameMutation :
-  IsKeyInObjectOptional<$Document[OperationType.Query], $Name> extends true     ? RootTypeNameQuery    :
+  IsKeyInObjectOptional<$Document[OperationTypeNode.MUTATION], $Name> extends true  ? Grafaid.Schema.RootTypeNameMutation :
+  IsKeyInObjectOptional<$Document[OperationTypeNode.QUERY], $Name> extends true     ? Grafaid.Schema.RootTypeNameQuery    :
                                                                                   never
 
 // dprint-ignore
@@ -55,7 +50,7 @@ export type GetOperation<$Document extends SomeDocument, $Name extends string> =
 export interface OperationNormalized {
   name: string | null
   type: OperationTypeNode
-  rootType: RootTypeName
+  rootType: Grafaid.Schema.RootTypeName
   selectionSet: Select.SelectionSet.AnySelectionSet
 }
 
@@ -74,14 +69,14 @@ export interface DocumentNormalized {
 export const createDocumentNormalized = (document: DocumentNormalized) => document
 
 export const createDocumentNormalizedFromRootTypeSelection = (
-  rootTypeName: RootTypeName,
+  rootTypeName: Grafaid.Schema.RootTypeName,
   selectionSet: Select.SelectionSet.AnySelectionSet,
 ) =>
   createDocumentNormalized({
     operations: {
       [defaultOperationName]: {
         name: null,
-        type: RootTypeNameToOperationName[rootTypeName],
+        type: Grafaid.RootTypeNameToOperationName[rootTypeName],
         rootType: rootTypeName,
         selectionSet,
       },
@@ -89,9 +84,9 @@ export const createDocumentNormalizedFromRootTypeSelection = (
     facts: {
       hasMultipleOperations: false,
       hasRootType: {
-        query: rootTypeName === RootTypeName.Query,
-        mutation: rootTypeName === RootTypeName.Mutation,
-        subscription: rootTypeName === RootTypeName.Subscription,
+        query: rootTypeName === Grafaid.Schema.RootTypeName.Query,
+        mutation: rootTypeName === Grafaid.Schema.RootTypeName.Mutation,
+        subscription: rootTypeName === Grafaid.Schema.RootTypeName.Subscription,
       },
     },
   })
@@ -101,16 +96,16 @@ export const normalizeOrThrow = (document: DocumentObject): DocumentNormalized =
     [name, selectionSet],
   ): [name: string, OperationNormalized] => [name, {
     name,
-    type: RootTypeNameToOperationName[RootTypeName.Query],
-    rootType: RootTypeName.Query,
+    type: Grafaid.RootTypeNameToOperationName[Grafaid.Schema.RootTypeName.Query],
+    rootType: Grafaid.Schema.RootTypeName.Query,
     selectionSet,
   }])
   const mutationOperations = Object.entries(document.mutation ?? {}).map((
     [name, selectionSet],
   ): [name: string, OperationNormalized] => [name, {
     name,
-    type: RootTypeNameToOperationName[RootTypeName.Mutation],
-    rootType: RootTypeName.Mutation,
+    type: Grafaid.RootTypeNameToOperationName[Grafaid.Schema.RootTypeName.Mutation],
+    rootType: Grafaid.Schema.RootTypeName.Mutation,
     selectionSet,
   }])
   const operations = [

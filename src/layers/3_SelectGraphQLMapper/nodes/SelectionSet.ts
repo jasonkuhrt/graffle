@@ -1,4 +1,4 @@
-import { Nodes } from '../../../lib/graphql-plus/_Nodes.js'
+import { Nodes } from '../../../lib/grafaid/_Nodes.js'
 import { casesExhausted } from '../../../lib/prelude.js'
 import { Select } from '../../2_Select/__.js'
 import { advanceIndex, type GraphQLNodeMapper } from '../types.js'

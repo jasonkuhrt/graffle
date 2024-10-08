@@ -1,24 +1,22 @@
-import { type ExecutionResult, parse, print } from 'graphql'
+import { type ExecutionResult, parse } from 'graphql'
 import { Anyware } from '../../lib/anyware/__.js'
+import type { Grafaid } from '../../lib/grafaid/__.js'
+import { OperationTypeToAccessKind, print } from '../../lib/grafaid/document.js'
+import { execute } from '../../lib/grafaid/execute.js'
+import type { Nodes } from '../../lib/grafaid/graphql.js'
+import { parseOperationType, type Variables } from '../../lib/grafaid/graphql.js'
 import {
   getRequestEncodeSearchParameters,
   getRequestHeadersRec,
   parseExecutionResult,
   postRequestEncodeBody,
   postRequestHeadersRec,
-} from '../../lib/graphql-http/graphqlHTTP.js'
-import { execute } from '../../lib/graphql-plus/execute.js'
-import type { Nodes } from '../../lib/graphql-plus/graphql.js'
-import {
-  OperationTypeAccessTypeMap,
-  parseGraphQLOperationType,
-  type Variables,
-} from '../../lib/graphql-plus/graphql.js'
+} from '../../lib/grafaid/http/http.js'
+import type { TypedDocument } from '../../lib/grafaid/typed-document/__.js'
 import { mergeRequestInit, searchParamsAppendAll } from '../../lib/http.js'
 import { casesExhausted, isString, throwNull } from '../../lib/prelude.js'
-import { Select } from '../2_Select/__.js'
-import { ResultSet } from '../3_Result/__.js'
 import { SelectionSetGraphqlMapper } from '../3_SelectGraphQLMapper/__.js'
+import { decode } from '../6_client/customScalar/decode.js'
 import type { GraffleExecutionResultVar } from '../6_client/handleOutput.js'
 import type { Config } from '../6_client/Settings/Config.js'
 import { MethodMode, type MethodModeGetReads } from '../6_client/transportHttp/request.js'
@@ -44,39 +42,34 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
   hookNamesOrderedBySequence,
   hooks: {
     encode: ({ input }) => {
-      let documentString: string
+      let document: string | TypedDocument.TypedDocument
 
       // todo: the other case where we're going to need to parse document is for custom scalar support of raw
       const isWillInjectTypename = input.state.config.output.errors.schema && input.schemaIndex
 
       if (isWillInjectTypename) {
-        const documentObject: Nodes.DocumentNode = input.interfaceType === `raw`
+        document = input.interfaceType === `raw`
           ? isString(input.request.query)
             ? parse(input.request.query)
             : input.request.query as Nodes.DocumentNode
           : SelectionSetGraphqlMapper.toGraphQL({
-            // schema: input.schemaIndex!,
             document: input.request.document,
             customScalarsIndex: input.schemaIndex!.customScalars.input,
           })
 
         injectTypenameOnRootResultFields({
-          document: documentObject,
+          document,
           operationName: input.request.operationName,
           schema: input.schemaIndex!,
         })
-
-        documentString = print(documentObject)
       } else {
-        documentString = input.interfaceType === `raw`
-          ? isString(input.request.query)
-            ? input.request.query
-            : print(input.request.query as Nodes.DocumentNode)
-          : print(SelectionSetGraphqlMapper.toGraphQL({
+        document = input.interfaceType === `raw`
+          ? input.request.query
+          : SelectionSetGraphqlMapper.toGraphQL({
             // schema: input.schemaIndex!,
             document: input.request.document,
             customScalarsIndex: input.schemaIndex!.customScalars.input,
-          }))
+          })
       }
 
       const variables: Variables | undefined = input.interfaceType === `raw`
@@ -87,7 +80,7 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
       return {
         ...input,
         request: {
-          query: documentString,
+          query: document,
           variables,
           operationName: input.request.operationName,
         },
@@ -99,17 +92,18 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
         body: postRequestEncodeBody,
       },
       run: ({ input, slots }) => {
+        const graphqlRequest: Grafaid.HTTP.RequestConfig = {
+          ...input.request,
+          query: print(input.request.query),
+        }
+
         // TODO thrown error here is swallowed in examples.
         switch (input.transportType) {
           case `memory`: {
-            return input
-            // return {
-            //   ...input,
-            //   request: {
-            //     ...input.request,
-            //     schema: input.schema,
-            //   },
-            // }
+            return {
+              ...input,
+              request: graphqlRequest,
+            }
           }
           case `http`: {
             if (input.state.config.transport.type !== Transport.http) throw new Error(`transport type is not http`)
@@ -119,11 +113,11 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
             //      1. If using TS interface then work with initially submitted structured data to already know the operation type
             //      2. Maybe: Memoize over request.{ operationName, query }
             //      3. Maybe: Keep a cache of parsed request.{ query }
-            const operationType = throwNull(parseGraphQLOperationType(input.request)) // todo better feedback here than throwNull
+            const operationType = throwNull(parseOperationType(input.request)) // todo better feedback here than throwNull
             const requestMethod = methodMode === MethodMode.post
               ? `post`
               : methodMode === MethodMode.getReads // eslint-disable-line
-              ? OperationTypeAccessTypeMap[operationType] === `read` ? `get` : `post`
+              ? OperationTypeToAccessKind[operationType] === `read` ? `get` : `post`
               : casesExhausted(methodMode)
 
             const baseProperties = mergeRequestInit(
@@ -148,14 +142,14 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
                 methodMode: methodMode as MethodModeGetReads,
                 ...baseProperties,
                 method: `get`,
-                url: searchParamsAppendAll(input.url, slots.searchParams(input.request)),
+                url: searchParamsAppendAll(input.url, slots.searchParams(graphqlRequest)),
               }
               : {
                 methodMode: methodMode,
                 ...baseProperties,
                 method: `post`,
                 url: input.url,
-                body: slots.body(input.request),
+                body: slots.body(graphqlRequest),
               }
             return {
               ...input,
@@ -218,36 +212,16 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
           throw casesExhausted(input)
       }
     },
-    // todo
-    // Given that we manipulate the selection set in encode, and given decode relies on the sent selection set
-    // it follows that the decode hook depends on the output of the encode hook. that means we need to plumb
-    // through the hooks that data built during encode. Yet encode doesn't output it currently, but rather prints it.
-    // Hooks could have a new optional field "schema". When present certain enhanced features would be allowed.
-    // like custom scalars and result fields.
-    decode: ({ input }) => {
-      // todo decode scalars regardless of the interface type.
-
-      // if there are no custom scalar index, then skip decoding.
-
-      // To decode, three things:
-      // 1. The result
-      // 2. The selection set (which may contain aliases)
-      // 3. The customs scalars schema index
-
-      // Requirement (2) means that we have to parse the selection set.
-      // If the user told us that they were not using any aliases, then we could skip that.
-      // Let's keep that potential optimization for the future.
-      // that means now building a decoder that will optionally consider aliases, but not require it.
+    decode: ({ input, previous }) => {
       const data = input.result.data
-      ResultSet.decode({
-        data,
-        // todo do not assume Query object
-        customScalarsIndex: input.schemaIndex.customScalars.input.Query,
-      })
-      // const operation = Select.Document.getOperationOrThrow(input.document!, input.operationName)
-      // getOptionalNullablePropertyOrThrow(input.schemaIndex.Root, operation.rootType),
-      // operation.selectionSet,
-      // input.result.data,
+
+      if (input.schemaIndex) {
+        decode({
+          data,
+          customScalarsIndex: input.schemaIndex.customScalars.input, // todo drop input/output separation
+          request: previous.pack.input.request,
+        })
+      }
 
       switch (input.interfaceType) {
         // todo this depends on the return mode

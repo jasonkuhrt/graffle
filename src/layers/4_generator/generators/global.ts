@@ -1,5 +1,5 @@
 import { Code } from '../../../lib/Code.js'
-import { hasCustomScalars } from '../../../lib/graphql-plus/graphql.js'
+import { Grafaid } from '../../../lib/grafaid/__.js'
 import { createModuleGenerator } from '../helpers/moduleGenerator.js'
 import { ModuleGeneratorData } from './Data.js'
 import { ModuleGeneratorMethodsDocument } from './MethodsDocument.js'
@@ -12,7 +12,7 @@ export const ModuleGeneratorGlobal = createModuleGenerator(
   `Global`,
   ({ config, code }) => {
     const StandardScalarNamespace = `StandardScalar`
-    const needsDefaultCustomScalarImplementation = hasCustomScalars(config.schema.typeMapByKind)
+    const needsDefaultCustomScalarImplementation = Grafaid.Schema.KindMap.hasCustomScalars(config.schema.typeMapByKind)
       && !config.options.customScalars
 
     code(

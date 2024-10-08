@@ -3,10 +3,10 @@ import { Code } from '../../../lib/Code.js'
 import {
   type Describable,
   getNodeDisplayName,
-  getNodeNameAndKind,
+  getTypeNameAndKind,
   isDeprecatableNode,
   type TypeMapKind,
-} from '../../../lib/graphql-plus/graphql.js'
+} from '../../../lib/grafaid/graphql.js'
 import { borderThickFullWidth, borderThinFullWidth, centerTo } from '../../../lib/text.js'
 import type { Config } from '../config.js'
 
@@ -32,7 +32,7 @@ export const title1 = (title: string) => {
 }
 
 export const typeTitle2 = (category: string) => (node: GraphQLNamedType) => {
-  const nameKind = getNodeNameAndKind(node)
+  const nameKind = getTypeNameAndKind(node)
   const nameOrKind = nameKind.kind === `Scalar` ? nameKind.name : nameKind.kind
   const typeLabel = nameOrKind
   const title = `

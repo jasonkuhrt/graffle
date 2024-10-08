@@ -1,7 +1,7 @@
 import type { ExecutionResult, GraphQLError } from 'graphql'
 import type { Simplify } from 'type-fest'
 import { Errors } from '../../lib/errors/__.js'
-import type { GraphQLExecutionResultError } from '../../lib/graphql-plus/graphql.js'
+import type { GraphQLExecutionResultError } from '../../lib/grafaid/graphql.js'
 import { isRecordLikeObject, type SimplifyExceptError, type Values } from '../../lib/prelude.js'
 import type { SchemaIndex } from '../4_generator/generators/SchemaIndex.js'
 import type { TransportHttp } from '../5_request/types.js'
