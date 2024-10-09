@@ -215,7 +215,11 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
     decode: ({ input, previous }) => {
       const data = input.result.data
 
-      if (input.schemaIndex) {
+      // If there has been an error and we definitely don't have any data, such as when
+      // giving an operation name that doesn't match any in the document,
+      // then don't attempt to decode.
+      const isError = !input.result.data && (input.result.errors?.length ?? 0) > 0
+      if (input.schemaIndex && !isError) {
         decode({
           data,
           customScalarsIndex: input.schemaIndex.customScalars.input, // todo drop input/output separation

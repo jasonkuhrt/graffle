@@ -204,8 +204,10 @@ const definedOperationPattern = new RegExp(`^\\b(${Object.values(OperationTypeNo
 export const parseOperationType = (request: RequestInput): OperationTypeNode | null => {
   const { operationName, query: document } = request
 
-  if (!(TypedDocument.isString(document) || isString(document))) {
-    for (const node of document.definitions) {
+  const documentUntyped = TypedDocument.unType(document)
+
+  if (!isString(documentUntyped)) {
+    for (const node of documentUntyped.definitions) {
       if (node.kind === Nodes.Kind.OPERATION_DEFINITION) {
         if (operationName ? node.name?.value === operationName : true) {
           return node.operation
@@ -215,7 +217,7 @@ export const parseOperationType = (request: RequestInput): OperationTypeNode | n
     throw new Error(`Could not parse operation type from document.`)
   }
 
-  const definedOperations = document.split(/[{}\n]+/).map(s => s.trim()).map(line => {
+  const definedOperations = documentUntyped.split(/[{}\n]+/).map(s => s.trim()).map(line => {
     const match = line.match(definedOperationPattern)
     if (!match) return null
     return {
