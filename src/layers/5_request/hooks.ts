@@ -1,7 +1,6 @@
 import type { ExecutionResult, GraphQLSchema } from 'graphql'
-import type { GraphQLHTTP } from '../../lib/graphql-http/__.js'
-import type { getRequestEncodeSearchParameters, postRequestEncodeBody } from '../../lib/graphql-http/graphqlHTTP.js'
-import type { GraphQLRequestInput } from '../../lib/graphql-plus/graphql.js'
+import type { Grafaid } from '../../lib/grafaid/__.js'
+import type { getRequestEncodeSearchParameters, postRequestEncodeBody } from '../../lib/grafaid/http/http.js'
 import type { httpMethodGet, httpMethodPost } from '../../lib/http.js'
 import type { Select } from '../2_Select/__.js'
 import type { SchemaIndex } from '../4_generator/generators/SchemaIndex.js'
@@ -51,7 +50,7 @@ export type HookDefEncode<$Config extends Config> = {
     & HookInputBase
     & InterfaceInput<
       { request: { document: Select.Document.DocumentNormalized; operationName?: string } },
-      { request: GraphQLRequestInput }
+      { request: Grafaid.RequestInput }
     >
     & TransportInput<$Config>
 }
@@ -65,7 +64,7 @@ export type HookDefPack<$Config extends Config> = {
       // todo why is headers here but not other http request properties?
       { headers?: HeadersInit }
     >
-    & { request: GraphQLHTTP.RequestInput }
+    & { request: Grafaid.RequestInput }
   slots: {
     /**
      * When request will be sent using GET this slot is called to create the value that will be used for the HTTP Search Parameters.
@@ -87,8 +86,8 @@ export type HookDefExchange<$Config extends Config> = {
     & InterfaceInput
     & TransportInput<
       $Config,
-      { request: CoreExchangePostRequest | CoreExchangeGetRequest },
-      { request: GraphQLHTTP.RequestInput }
+      { request: CoreExchangePostRequest | CoreExchangeGetRequest; headers?: HeadersInit },
+      { request: Grafaid.HTTP.RequestConfig }
     >
 }
 

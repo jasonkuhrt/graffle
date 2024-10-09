@@ -169,6 +169,7 @@ export const Query = $.Object$(`Query`, {
   // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
   dateInterface1: $.field('dateInterface1', $.Output.Nullable(() => DateInterface1)),
   dateList: $.field('dateList', $.Output.Nullable($.Output.List($Scalar.Date))),
+  dateListList: $.field('dateListList', $.Output.Nullable($.Output.List($.Output.List($Scalar.Date)))),
   dateListNonNull: $.field('dateListNonNull', $.Output.List($Scalar.Date)),
   dateNonNull: $.field('dateNonNull', $Scalar.Date),
   // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.

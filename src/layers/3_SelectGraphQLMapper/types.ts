@@ -1,11 +1,10 @@
-import type { Nodes } from '../../lib/graphql-plus/_Nodes.js'
+import type { Nodes } from '../../lib/grafaid/_Nodes.js'
 import type { Codec } from '../1_Schema/Hybrid/types/Scalar/codec.js'
 import type { Select } from '../2_Select/__.js'
-import type { CustomScalarsIndex, SchemaIndex } from '../4_generator/generators/SchemaIndex.js'
+import type { CustomScalarsIndex } from '../4_generator/generators/SchemaIndex.js'
 import type { ValueMapper } from './nodes/Value.js'
 
 export interface Context {
-  schema: SchemaIndex
   captures: Captures
   hooks?: {
     value?: ValueMapper
@@ -59,12 +58,21 @@ export type CodecString = Codec<any, string>
 export const isCodec = (value: unknown): value is CodecString =>
   typeof value === `object` && value !== null && `encode` in value && typeof value.encode === `function`
 
-type IndexPointer = CustomScalarsIndex | CodecString | null
+type RootIndexPointer =
+  | CustomScalarsIndex
+  | IndexPointer
 
-export const advanceIndex = (pointer: IndexPointer, key: string) => {
+type IndexPointer =
+  | CustomScalarsIndex
+  | CustomScalarsIndex.OutputObject
+  | CustomScalarsIndex.InputObject
+  | CustomScalarsIndex.InputField
+  | null
+
+export const advanceIndex = (pointer: RootIndexPointer, rootTypeOrSomeKey: string): IndexPointer => {
   if (pointer === null) return pointer
   if (isCodec(pointer)) return pointer
-  return pointer[key] ?? null
+  return (pointer as any)[rootTypeOrSomeKey] ?? null
 }
 
 export type GraphQLNodeMapper<

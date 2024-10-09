@@ -1,5 +1,4 @@
-import { Nodes } from '../../../lib/graphql-plus/_Nodes.js'
-import { getOptionalNullablePropertyOrThrow } from '../../../lib/prelude.js'
+import { Nodes } from '../../../lib/grafaid/_Nodes.js'
 import type { Select } from '../../2_Select/__.js'
 import type { GraphQLNodeMapper } from '../types.js'
 import { toGraphQLSelectionSet } from './SelectionSet.js'
@@ -12,8 +11,7 @@ export const toGraphQLOperationDefinition: GraphQLNodeMapper<
   index,
   operation,
 ) => {
-  const type = getOptionalNullablePropertyOrThrow(context.schema.Root, operation.rootType)
-  const selectionSet = toGraphQLSelectionSet(context, index, type, operation.selectionSet, undefined)
+  const selectionSet = toGraphQLSelectionSet(context, index, operation.selectionSet, undefined)
 
   const name = operation.name
     ? Nodes.Name({ value: operation.name })

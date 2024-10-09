@@ -1,14 +1,12 @@
-import { Nodes } from '../../../lib/graphql-plus/_Nodes.js'
-import type { Schema } from '../../1_Schema/__.js'
+import { Nodes } from '../../../lib/grafaid/_Nodes.js'
 import { Select } from '../../2_Select/__.js'
 import { advanceIndex, type Field } from '../types.js'
 import type { GraphQLNodeMapper } from '../types.js'
 import { type SelectionSetContext, toGraphQLSelectionSet } from './SelectionSet.js'
 
-export const toGraphQLField: GraphQLNodeMapper<Nodes.FieldNode, [type: Schema.Output.ObjectLike, field: Field]> = (
+export const toGraphQLField: GraphQLNodeMapper<Nodes.FieldNode, [field: Field]> = (
   context,
   index,
-  type,
   field,
 ) => {
   const alias = field.alias
@@ -26,13 +24,11 @@ export const toGraphQLField: GraphQLNodeMapper<Nodes.FieldNode, [type: Schema.Ou
     kind: `Field`,
     arguments: [],
     directives: [],
-    type: type.fields[field.name] as Schema.SomeField,
   }
 
   const selectionSet = toGraphQLSelectionSet(
     context,
     advanceIndex(index, field.name),
-    type,
     field.value as any, // todo fix any
     selectionSetContext,
   )

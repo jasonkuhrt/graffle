@@ -3,24 +3,27 @@ import { beforeEach, vi } from 'vitest'
 import { Anyware } from './__.js'
 import { type ExtensionInput, type Options } from './main.js'
 
-export type Input = {
+type PrivateHookRunnerInput = {
   input: { value: string }
   slots: { append: (hookName: string) => string; appendExtra: (hookName: string) => string }
+  previous: object
 }
 
-export const initialInput: Input['input'] = { value: `initial` }
+type PrivateHookRunner = (input: PrivateHookRunnerInput) => any
+
+export const initialInput: PrivateHookRunnerInput['input'] = { value: `initial` }
 
 type $Core = ReturnType<typeof createAnyware> & {
   hooks: {
     a: {
-      run: Mock
+      run: Mock<PrivateHookRunner>
       slots: {
         append: Mock<(hookName: string) => string>
         appendExtra: Mock<(hookName: string) => string>
       }
     }
     b: {
-      run: Mock
+      run: Mock<PrivateHookRunner>
       slots: {
         append: Mock<(hookName: string) => string>
         appendExtra: Mock<(hookName: string) => string>
@@ -46,7 +49,7 @@ export const createAnyware = () => {
         return ``
       }),
     },
-    run: vi.fn().mockImplementation(({ input, slots }: Input) => {
+    run: vi.fn().mockImplementation(({ input, slots }: PrivateHookRunnerInput) => {
       const extra = slots.appendExtra(`a`)
       return { value: input.value + `+` + slots.append(`a`) + extra }
     }),
@@ -60,13 +63,13 @@ export const createAnyware = () => {
         return ``
       }),
     },
-    run: vi.fn().mockImplementation(({ input, slots }: Input) => {
+    run: vi.fn().mockImplementation(({ input, slots }: PrivateHookRunnerInput) => {
       const extra = slots.appendExtra(`b`)
       return { value: input.value + `+` + slots.append(`b`) + extra }
     }),
   })
 
-  return Anyware.create<['a', 'b'], Anyware.HookMap<['a', 'b']>, Input>({
+  return Anyware.create<['a', 'b'], Anyware.HookDefinitionMap<['a', 'b']>, PrivateHookRunnerInput>({
     hookNamesOrderedBySequence: [`a`, `b`],
     hooks: { a, b },
   })

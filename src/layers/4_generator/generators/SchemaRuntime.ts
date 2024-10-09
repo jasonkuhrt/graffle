@@ -25,14 +25,8 @@ import {
   isUnionType,
 } from 'graphql'
 import { Code } from '../../../lib/Code.js'
-import type { AnyClass, AnyGraphQLOutputField } from '../../../lib/graphql-plus/graphql.js'
-import {
-  hasMutation,
-  hasQuery,
-  hasSubscription,
-  isAllArgsNullable,
-  isAllInputObjectFieldsNullable,
-} from '../../../lib/graphql-plus/graphql.js'
+import { Grafaid } from '../../../lib/grafaid/__.js'
+import type { AnyClass, AnyGraphQLOutputField } from '../../../lib/grafaid/graphql.js'
 import type { Config } from '../config.js'
 import { createModuleGenerator } from '../helpers/moduleGenerator.js'
 import { ModuleGeneratorData } from './Data.js'
@@ -83,9 +77,9 @@ export const ModuleGeneratorSchemaRuntime = createModuleGenerator(
 
 const index = (config: Config) => {
   const rootTypesPresence = {
-    Query: hasQuery(config.schema.typeMapByKind),
-    Mutation: hasMutation(config.schema.typeMapByKind),
-    Subscription: hasSubscription(config.schema.typeMapByKind),
+    Query: Grafaid.Schema.KindMap.hasQuery(config.schema.typeMapByKind),
+    Mutation: Grafaid.Schema.KindMap.hasMutation(config.schema.typeMapByKind),
+    Subscription: Grafaid.Schema.KindMap.hasSubscription(config.schema.typeMapByKind),
   }
   // todo input objects for decode/encode input object fields
   const unions = config.schema.typeMapByKind.GraphQLUnionType.map(type => type.name).join(`,\n`)
@@ -136,9 +130,9 @@ const index = (config: Config) => {
          ${config.schema.error.objects.map(_ => `${_.name}: { __typename: "${_.name}" }`).join(`,\n`)}
         },
         rootResultFields: {
-          ${!hasQuery(config.schema.typeMapByKind) ? `Query: {},` : ``}
-          ${!hasMutation(config.schema.typeMapByKind) ? `Mutation: {},` : ``}
-          ${!hasSubscription(config.schema.typeMapByKind) ? `Subscription: {},` : ``}
+          ${!Grafaid.Schema.KindMap.hasQuery(config.schema.typeMapByKind) ? `Query: {},` : ``}
+          ${!Grafaid.Schema.KindMap.hasMutation(config.schema.typeMapByKind) ? `Mutation: {},` : ``}
+          ${!Grafaid.Schema.KindMap.hasSubscription(config.schema.typeMapByKind) ? `Subscription: {},` : ``}
           ${
     Object.values(config.schema.typeMapByKind.GraphQLRootType).map((rootType) => {
       const resultFields = Object.values(rootType.getFields()).filter((field) => {
@@ -202,7 +196,7 @@ const object = (config: Config, type: GraphQLObjectType) => {
 }
 
 const inputObject = (config: Config, type: GraphQLInputObjectType) => {
-  const isFieldsAllNullable = isAllInputObjectFieldsNullable(type)
+  const isFieldsAllNullable = Grafaid.Schema.isAllInputObjectFieldsNullable(type)
   const fields = Object.values(type.getFields()).map((field) => `${field.name}: ${inputField(config, field)}`).join(
     `,\n`,
   )
@@ -227,7 +221,7 @@ const outputField = (config: Config, field: AnyGraphQLOutputField): string => {
 }
 
 const renderArgs = (config: Config, args: readonly GraphQLArgument[]) => {
-  const isFieldsAllNullable = isAllArgsNullable(args)
+  const isFieldsAllNullable = Grafaid.Schema.Args.isAllArgsNullable(args)
   return `$.Args({${args.map(arg => renderArg(config, arg)).join(`, `)}}, ${Code.boolean(isFieldsAllNullable)})`
 }
 

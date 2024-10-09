@@ -1,6 +1,6 @@
 import type { HKT } from '../../../entrypoints/utilities-for-generated.js'
 import type { Fluent } from '../../../lib/fluent/__.js'
-import type { RootTypeName, Variables } from '../../../lib/graphql-plus/graphql.js'
+import type { Grafaid } from '../../../lib/grafaid/__.js'
 import { readMaybeThunk } from '../../1_Schema/_.js'
 import { Schema } from '../../1_Schema/__.js'
 import { Select } from '../../2_Select/__.js'
@@ -52,7 +52,7 @@ export const createMethodDocument = (state: State) => (document: Select.Document
   }
 }
 
-const createMethodRootType = (state: State, rootTypeName: RootTypeName) => {
+const createMethodRootType = (state: State, rootTypeName: Grafaid.Schema.RootTypeName) => {
   return new Proxy({}, {
     get: (_, key) => {
       if (typeof key === `symbol`) throw new Error(`Symbols not supported.`)
@@ -71,7 +71,7 @@ const createMethodRootType = (state: State, rootTypeName: RootTypeName) => {
 
 const executeRootTypeField = async (
   state: State,
-  rootTypeName: RootTypeName,
+  rootTypeName: Grafaid.Schema.RootTypeName,
   rootTypeFieldName: string,
   argsOrSelectionSet?: Select.SelectionSet.AnySelectionSet | Select.Arguments.ArgsObject,
 ) => {
@@ -113,7 +113,7 @@ const executeRootTypeField = async (
 
 const executeRootType = async (
   state: State,
-  rootTypeName: RootTypeName,
+  rootTypeName: Grafaid.Schema.RootTypeName,
   rootTypeSelectionSet: Select.SelectionSet.AnySelectionSet,
 ) => {
   return executeDocument(
@@ -129,7 +129,7 @@ export const executeDocument = async (
   state: State,
   document: Select.Document.DocumentNormalized,
   operationName?: string,
-  variables?: Variables,
+  variables?: Grafaid.Variables,
 ) => {
   const transportType = state.config.transport.type
   const interfaceType = `typed`

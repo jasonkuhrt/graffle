@@ -180,6 +180,14 @@ export interface QueryMethods<$Config extends Utils.Config> {
       ResultSet.InferField<true, Index['Root']['Query']['fields']['dateList'], Index>
     >
   >
+  dateListList: () => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      'dateListList',
+      ResultSet.InferField<true, Index['Root']['Query']['fields']['dateListList'], Index>
+    >
+  >
   dateListNonNull: () => Promise<
     Utils.ResolveOutputReturnRootField<
       $Config,

@@ -74,6 +74,7 @@ export namespace Root {
     >
     dateInterface1: $.Field<'dateInterface1', $.Output.Nullable<Interface.DateInterface1>, null>
     dateList: $.Field<'dateList', $.Output.Nullable<$.Output.List<$Scalar.Date>>, null>
+    dateListList: $.Field<'dateListList', $.Output.Nullable<$.Output.List<$.Output.List<$Scalar.Date>>>, null>
     dateListNonNull: $.Field<'dateListNonNull', $.Output.List<$Scalar.Date>, null>
     dateNonNull: $.Field<'dateNonNull', $Scalar.Date, null>
     dateObject1: $.Field<'dateObject1', $.Output.Nullable<Object.DateObject1>, null>

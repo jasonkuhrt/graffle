@@ -1,23 +1,19 @@
-import type {
-  RootTypeNameMutation,
-  RootTypeNameQuery,
-  RootTypeNameSubscription,
-} from '../../../../lib/graphql-plus/graphql.js'
+import type { Grafaid } from '../../../../lib/grafaid/__.js'
 import { __typename } from './__typename.js'
 import type { Field, SomeFields } from './Field.js'
 import { field } from './Field.js'
 
 export interface ObjectQuery<
   $Fields extends SomeFields = SomeFields,
-> extends Object$2<RootTypeNameQuery, $Fields> {}
+> extends Object$2<Grafaid.Schema.RootTypeNameQuery, $Fields> {}
 
 export interface ObjectMutation<
   $Fields extends SomeFields = SomeFields,
-> extends Object$2<RootTypeNameMutation, $Fields> {}
+> extends Object$2<Grafaid.Schema.RootTypeNameMutation, $Fields> {}
 
 export interface ObjectSubscription<
   $Fields extends SomeFields = SomeFields,
-> extends Object$2<RootTypeNameSubscription, $Fields> {}
+> extends Object$2<Grafaid.Schema.RootTypeNameSubscription, $Fields> {}
 
 export type RootType = ObjectQuery | ObjectMutation | ObjectSubscription
 

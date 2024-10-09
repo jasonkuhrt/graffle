@@ -125,6 +125,7 @@ type Query {
   dateArgNonNullListNonNull(date: [Date!]!): Date
   dateInterface1: DateInterface1
   dateList: [Date!]
+  dateListList: [[Date!]!]
   dateListNonNull: [Date!]!
   dateNonNull: Date!
   dateObject1: DateObject1

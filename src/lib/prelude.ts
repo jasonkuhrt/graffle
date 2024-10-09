@@ -314,12 +314,29 @@ export type MinusOneUpToTen<n extends number> = n extends 10 ? 9
   : n extends 1 ? 0
   : never
 
-export type findIndexForValue<value, list extends readonly [any, ...any[]]> = findIndexForValue_<value, list, 0>
-type findIndexForValue_<value, list extends readonly [any, ...any[]], i extends number> = value extends list[i] ? i
-  : findIndexForValue_<value, list, PlusOneUpToTen<i>>
+// dprint-ignore
+export type findIndexForValue<value, list extends AnyReadOnlyListNonEmpty> =
+  findIndexForValue_<value, list, 0>
 
-export type FindValueAfter<value, list extends readonly [any, ...any[]]> =
+// dprint-ignore
+type findIndexForValue_<value, list extends AnyReadOnlyListNonEmpty, i extends number> =
+  value extends list[i]
+    ? i
+    : findIndexForValue_<value, list, PlusOneUpToTen<i>>
+
+export type FindValueAfter<value, list extends AnyReadOnlyListNonEmpty> =
   list[PlusOneUpToTen<findIndexForValue<value, list>>]
+
+// dprint-ignore
+export type TakeValuesBefore<$Value, $List extends AnyReadOnlyList> =
+  $List extends readonly [infer $ListFirst, ...infer $ListRest]
+    ? $Value extends $ListFirst
+      ? []
+      : [$ListFirst, ...TakeValuesBefore<$Value, $ListRest>]
+    : []
+
+type AnyReadOnlyListNonEmpty = readonly [any, ...any[]]
+type AnyReadOnlyList = readonly [...any[]]
 
 export type ValueOr<value, orValue> = value extends undefined ? orValue : value
 

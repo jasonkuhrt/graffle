@@ -1,9 +1,12 @@
-import type { RequestInput } from '../../../lib/graphql-http/graphqlHTTP.js'
+import type { RequestConfig } from '../../../lib/grafaid/http/http.js'
 import extractFiles from './extractFiles.js'
 
-export const createBody = (input: RequestInput): FormData => {
+export const createBody = (input: RequestConfig): FormData => {
   const { clone, files } = extractFiles(
-    { query: input.query, variables: input.variables },
+    {
+      query: input.query,
+      variables: input.variables,
+    },
     (value: unknown) => value instanceof Blob,
     ``,
   )

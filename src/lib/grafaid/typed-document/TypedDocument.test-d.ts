@@ -1,5 +1,5 @@
 import type { DocumentNode } from 'graphql'
-import { AssertEqual } from '../assert-equal.js'
+import { AssertEqual } from '../../assert-equal.js'
 import type {
   GetVariablesInputKind,
   Node,

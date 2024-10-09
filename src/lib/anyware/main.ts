@@ -3,12 +3,14 @@ import { partitionAndAggregateErrors } from '../errors/ContextualAggregateError.
 import type { Deferred, FindValueAfter, IsLastValue, MaybePromise } from '../prelude.js'
 import { casesExhausted, createDeferred } from '../prelude.js'
 import { getEntrypoint } from './getEntrypoint.js'
-import type { HookResultError, HookResultErrorExtension } from './runHook.js'
+import type { HookDefinitionMap, HookName, HookSequence, InferDefinition } from './hook/definition.js'
+import type { HookPrivateInput, HookResultErrorExtension, PrivateHook } from './hook/private.js'
+import type { InferPublicHooks, SomePublicHookEnvelope } from './hook/public.js'
 import { runPipeline } from './runPipeline.js'
 
-type HookSequence = readonly [string, ...string[]]
+export { type HookDefinitionMap } from './hook/definition.js'
 
-type ExtensionOptions = {
+export type ExtensionOptions = {
   retrying: boolean
 }
 
@@ -16,7 +18,7 @@ export type Extension2<
   $Core extends Core = Core,
   $Options extends ExtensionOptions = ExtensionOptions,
 > = (
-  hooks: ExtensionHooks<
+  hooks: InferPublicHooks<
     $Core[PrivateTypesSymbol]['hookSequence'],
     $Core[PrivateTypesSymbol]['hookMap'],
     $Core[PrivateTypesSymbol]['result'],
@@ -24,17 +26,8 @@ export type Extension2<
   >,
 ) => Promise<
   | $Core[PrivateTypesSymbol]['result']
-  | SomeHookEnvelope
+  | SomePublicHookEnvelope
 >
-
-type ExtensionHooks<
-  $HookSequence extends HookSequence,
-  $HookMap extends Record<$HookSequence[number], HookDef> = Record<$HookSequence[number], HookDef>,
-  $Result = unknown,
-  $Options extends ExtensionOptions = ExtensionOptions,
-> = {
-  [$HookName in $HookSequence[number]]: Hook<$HookSequence, $HookMap, $Result, $HookName, $Options>
-}
 
 type CoreInitialInput<$Core extends Core> =
   $Core[PrivateTypesSymbol]['hookMap'][$Core[PrivateTypesSymbol]['hookSequence'][0]]['input']
@@ -43,77 +36,9 @@ const PrivateTypesSymbol = Symbol(`private`)
 
 export type PrivateTypesSymbol = typeof PrivateTypesSymbol
 
-const hookSymbol = Symbol(`hook`)
-
-type HookSymbol = typeof hookSymbol
-
-export type SomeHookEnvelope = {
-  [name: string]: SomeHook
-}
-
-export type SomeHook<
-  fn extends (input?: { input?: any; using?: any }) => any = (input?: { input?: any; using?: any }) => any,
-> = fn & {
-  [hookSymbol]: HookSymbol
-  // todo the result is unknown, but if we build a EndEnvelope, then we can work with this type more logically and put it here.
-  // E.g. adding `| unknown` would destroy the knowledge of hook envelope case
-  // todo this is not strictly true, it could also be the final result
-  input: Exclude<Parameters<fn>[0], undefined>['input']
-}
-
-export type HookMap<$HookSequence extends HookSequence> = Record<
-  $HookSequence[number],
-  HookDef
->
-export type HookDef = {
-  input: any /* object <- type error but more accurate */
-  slots?: any /* object <- type error but more accurate */
-}
-
-type Hook<
-  $HookSequence extends HookSequence,
-  $HookMap extends HookMap<$HookSequence> = HookMap<$HookSequence>,
-  $Result = unknown,
-  $Name extends $HookSequence[number] = $HookSequence[number],
-  $Options extends ExtensionOptions = ExtensionOptions,
-> =
-  & (<$$Input extends $HookMap[$Name]['input']>(
-    input?: {
-      input?: $$Input
-    } & (keyof $HookMap[$Name]['slots'] extends never ? {} : { using?: SlotInputify<$HookMap[$Name]['slots']> }),
-  ) => HookReturn<$HookSequence, $HookMap, $Result, $Name, $Options>)
-  & {
-    [hookSymbol]: HookSymbol
-    input: $HookMap[$Name]['input']
-  }
-
-type SlotInputify<$Slots extends Record<string, (...args: any) => any>> = {
-  [K in keyof $Slots]?: SlotInput<$Slots[K]>
-}
-
-type SlotInput<F extends (...args: any) => any> = (...args: Parameters<F>) => ReturnType<F> | undefined
-
-type HookReturn<
-  $HookSequence extends HookSequence,
-  $HookMap extends HookMap<$HookSequence> = HookMap<$HookSequence>,
-  $Result = unknown,
-  $Name extends $HookSequence[number] = $HookSequence[number],
-  $Options extends ExtensionOptions = ExtensionOptions,
-> = Promise<
-  | ($Options['retrying'] extends true ? Error : never)
-  | (IsLastValue<$Name, $HookSequence> extends true ? $Result : {
-    [$NameNext in FindValueAfter<$Name, $HookSequence>]: Hook<
-      $HookSequence,
-      $HookMap,
-      $Result,
-      $NameNext
-    >
-  })
->
-
 export type Core<
   $HookSequence extends HookSequence = HookSequence,
-  $HookMap extends HookMap<$HookSequence> = HookMap<$HookSequence>,
+  $HookMap extends HookDefinitionMap<$HookSequence> = HookDefinitionMap<$HookSequence>,
   $Result = unknown,
 > = {
   [PrivateTypesSymbol]: {
@@ -122,67 +47,35 @@ export type Core<
     result: $Result
   }
   hookNamesOrderedBySequence: $HookSequence
+  // dprint-ignore
   hooks: {
-    [$HookName in $HookSequence[number]]: {
-      slots: $HookMap[$HookName]['slots']
-      run: (input: {
-        input: $HookMap[$HookName]['input']
-        slots: $HookMap[$HookName]['slots']
-      }) => MaybePromise<
-        IsLastValue<$HookName, $HookSequence> extends true ? $Result
+    [$HookName in $HookSequence[number]]:
+      PrivateHook<
+        $HookMap[$HookName]['slots'],
+        HookPrivateInput<
+          $HookMap[$HookName]['input'],
+          $HookMap[$HookName]['slots']
+        >,
+        IsLastValue<$HookName, $HookSequence> extends true
+          ? $Result
           : $HookMap[FindValueAfter<$HookName, $HookSequence>]
       >
-    }
+    // [$HookName in $HookSequence[number]]: {
+    //   slots: $HookMap[$HookName]['slots']
+    //   run: (
+    //     input: HookPrivateInput<
+    //       $HookMap[$HookName]['input'],
+    //       $HookMap[$HookName]['slots']
+    //     >,
+    //   ) => MaybePromise<
+    //     IsLastValue<$HookName, $HookSequence> extends true ? $Result
+    //       : $HookMap[FindValueAfter<$HookName, $HookSequence>]
+    //   >
+    // }
   }
-  passthroughErrorInstanceOf?: CoreInput['passthroughErrorInstanceOf']
-  passthroughErrorWith?: CoreInput['passthroughErrorWith']
+  passthroughErrorInstanceOf?: InferDefinition['passthroughErrorInstanceOf']
+  passthroughErrorWith?: InferDefinition['passthroughErrorWith']
 }
-
-export type CoreInput<
-  $HookSequence extends HookSequence = HookSequence,
-  $HookMap extends HookMap<$HookSequence> = HookMap<$HookSequence>,
-  $Result = unknown,
-> = {
-  hookNamesOrderedBySequence: $HookSequence
-  hooks: {
-    [$HookName in $HookSequence[number]]: keyof $HookMap[$HookName]['slots'] extends never ? (input: {
-        input: $HookMap[$HookName]['input']
-        slots: $HookMap[$HookName]['slots']
-      }
-      ) => MaybePromise<
-        IsLastValue<$HookName, $HookSequence> extends true ? $Result
-          : $HookMap[FindValueAfter<$HookName, $HookSequence>]['input']
-      >
-      : {
-        slots: $HookMap[$HookName]['slots']
-        run: (input: {
-          input: $HookMap[$HookName]['input']
-          slots: $HookMap[$HookName]['slots']
-        }) => MaybePromise<
-          IsLastValue<$HookName, $HookSequence> extends true ? $Result
-            : $HookMap[FindValueAfter<$HookName, $HookSequence>]['input']
-        >
-      }
-  }
-  /**
-   * If a hook results in a thrown error but is an instance of one of these classes then return it as-is
-   * rather than wrapping it in a ContextualError.
-   *
-   * This can be useful when there are known kinds of errors such as Abort Errors from AbortController
-   * which are actually a signaling mechanism.
-   */
-  passthroughErrorInstanceOf?: Function[]
-  /**
-   * If a hook results in a thrown error but returns true from this function then return the error as-is
-   * rather than wrapping it in a ContextualError.
-   *
-   * This can be useful when there are known kinds of errors such as Abort Errors from AbortController
-   * which are actually a signaling mechanism.
-   */
-  passthroughErrorWith?: (signal: HookResultError) => boolean
-}
-
-export type HookName = string
 
 export type Extension = NonRetryingExtension | RetryingExtension
 
@@ -191,7 +84,7 @@ export type NonRetryingExtension = {
   name: string
   entrypoint: string
   body: Deferred<unknown>
-  currentChunk: Deferred<SomeHookEnvelope /* | unknown (result) */>
+  currentChunk: Deferred<SomePublicHookEnvelope /* | unknown (result) */>
 }
 
 export type RetryingExtension = {
@@ -199,7 +92,7 @@ export type RetryingExtension = {
   name: string
   entrypoint: string
   body: Deferred<unknown>
-  currentChunk: Deferred<SomeHookEnvelope | Error /* | unknown (result) */>
+  currentChunk: Deferred<SomePublicHookEnvelope | Error /* | unknown (result) */>
 }
 
 export const createRetryingExtension = (extension: NonRetryingExtensionInput): RetryingExtensionInput => {
@@ -237,7 +130,7 @@ export const createResultEnvelope = <T>(result: T): ResultEnvelop<T> => ({
   result,
 })
 
-const createPassthrough = (hookName: string) => async (hookEnvelope: SomeHookEnvelope) => {
+const createPassthrough = (hookName: string) => async (hookEnvelope: SomePublicHookEnvelope) => {
   const hook = hookEnvelope[hookName]
   if (!hook) {
     throw new Errors.ContextualError(`Hook not found in hook envelope`, { hookName })
@@ -274,17 +167,17 @@ export type Builder<$Core extends Core = Core> = {
 
 export const create = <
   $HookSequence extends HookSequence = HookSequence,
-  $HookMap extends HookMap<$HookSequence> = HookMap<$HookSequence>,
+  $HookMap extends HookDefinitionMap<$HookSequence> = HookDefinitionMap<$HookSequence>,
   $Result = unknown,
 >(
-  coreInput: CoreInput<$HookSequence, $HookMap, $Result>,
+  definition: InferDefinition<$HookSequence, $HookMap, $Result>,
 ): Builder<Core<$HookSequence, $HookMap, $Result>> => {
   type $Core = Core<$HookSequence, $HookMap, $Result>
 
   const core = {
-    ...coreInput,
+    ...definition,
     hooks: Object.fromEntries(
-      Object.entries(coreInput.hooks).map(([k, v]) => {
+      Object.entries(definition.hooks).map(([k, v]) => {
         return [k, typeof v === `function` ? { slots: {}, run: v } : v]
       }),
     ),
@@ -304,10 +197,11 @@ export const create = <
       const result = await runPipeline({
         core,
         hookNamesOrderedBySequence: core.hookNamesOrderedBySequence,
-        originalInput: initialInput,
-        // @ts-expect-error fixme
-        extensionsStack: initialHookStack,
+        originalInputOrResult: initialInput,
+        // todo fix any
+        extensionsStack: initialHookStack as any,
         asyncErrorDeferred,
+        previous: {},
       })
       if (result instanceof Error) return result
 
@@ -319,7 +213,7 @@ export const create = <
 }
 
 const toInternalExtension = (core: Core, config: Config, extension: ExtensionInput) => {
-  const currentChunk = createDeferred<SomeHookEnvelope>()
+  const currentChunk = createDeferred<SomePublicHookEnvelope>()
   const body = createDeferred()
   const extensionRun = typeof extension === `function` ? extension : extension.run
   const retrying = typeof extension === `function` ? false : extension.retrying

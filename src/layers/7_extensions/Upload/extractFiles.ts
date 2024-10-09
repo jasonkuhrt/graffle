@@ -2,76 +2,10 @@
 
 import isPlainObject from 'is-plain-obj'
 
-/** @typedef {import("./isExtractableFile.mjs").default} isExtractableFile */
-
-/**
- * Recursively extracts files and their {@link ObjectPath object paths} within a
- * value, replacing them with `null` in a deep clone without mutating the
- * original value.
- * [`FileList`](https://developer.mozilla.org/en-US/docs/Web/API/Filelist)
- * instances are treated as
- * [`File`](https://developer.mozilla.org/en-US/docs/Web/API/File) instance
- * arrays.
- * @template Extractable Extractable file type.
- * @param {unknown} value Value to extract files from. Typically an object tree.
- * @param {(value: unknown) => value is Extractable} isExtractable Matches
- *   extractable files. Typically {@linkcode isExtractableFile}.
- * @param {ObjectPath} [path] Prefix for object paths for extracted files.
- *   Defaults to `""`.
- * @returns {Extraction<Extractable>} Extraction result.
- * @example
- * Extracting files from an object.
- *
- * For the following:
- *
- * ```js
- * import extractFiles from "extract-files/extractFiles.mjs";
- * import isExtractableFile from "extract-files/isExtractableFile.mjs";
- *
- * const file1 = new File(["1"], "1.txt", { type: "text/plain" });
- * const file2 = new File(["2"], "2.txt", { type: "text/plain" });
- * const value = {
- *   a: file1,
- *   b: [file1, file2],
- * };
- *
- * const { clone, files } = extractFiles(value, isExtractableFile, "prefix");
- * ```
- *
- * `value` remains the same.
- *
- * `clone` is:
- *
- * ```json
- * {
- *   "a": null,
- *   "b": [null, null]
- * }
- * ```
- *
- * `files` is a
- * [`Map`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)
- * instance containing:
- *
- * | Key     | Value                        |
- * | :------ | :--------------------------- |
- * | `file1` | `["prefix.a", "prefix.b.0"]` |
- * | `file2` | `["prefix.b.1"]`             |
- */
-export default function extractFiles(value: any, isExtractable: any, path = ``): {
+const extractFiles = (value: any, isExtractable: (value: unknown) => boolean, path: string): {
   clone: object
   files: Map<string, string[]>
-} {
-  if (!arguments.length) throw new TypeError(`Argument 1 \`value\` is required.`)
-
-  if (typeof isExtractable !== `function`) {
-    throw new TypeError(`Argument 2 \`isExtractable\` must be a function.`)
-  }
-
-  if (typeof path !== `string`) {
-    throw new TypeError(`Argument 3 \`path\` must be a string.`)
-  }
-
+} => {
   /**
    * Deeply clonable value.
    * @typedef {Array<unknown> | FileList | {
@@ -105,7 +39,7 @@ export default function extractFiles(value: any, isExtractable: any, path = ``):
    *   recursion of circular references within the input value.
    * @returns {unknown} Clone of the value with files replaced with `null`.
    */
-  function recurse(value: any, path: any, recursed: any) {
+  function recurse(value: any, path: string, recursed: Set<any>) {
     if (isExtractable(value)) {
       const filePaths = files.get(value)
 
@@ -116,6 +50,7 @@ export default function extractFiles(value: any, isExtractable: any, path = ``):
 
     const valueIsList = Array.isArray(value)
       || (typeof FileList !== `undefined` && value instanceof FileList)
+
     const valueIsPlainObject = isPlainObject(value)
 
     if (valueIsList || valueIsPlainObject) {
@@ -177,6 +112,64 @@ export default function extractFiles(value: any, isExtractable: any, path = ``):
     files,
   }
 }
+
+/** @typedef {import("./isExtractableFile.mjs").default} isExtractableFile */
+
+/**
+ * Recursively extracts files and their {@link ObjectPath object paths} within a
+ * value, replacing them with `null` in a deep clone without mutating the
+ * original value.
+ * [`FileList`](https://developer.mozilla.org/en-US/docs/Web/API/Filelist)
+ * instances are treated as
+ * [`File`](https://developer.mozilla.org/en-US/docs/Web/API/File) instance
+ * arrays.
+ * @template Extractable Extractable file type.
+ * @param {unknown} value Value to extract files from. Typically an object tree.
+ * @param {(value: unknown) => value is Extractable} isExtractable Matches
+ *   extractable files. Typically {@linkcode isExtractableFile}.
+ * @param {ObjectPath} [path] Prefix for object paths for extracted files.
+ *   Defaults to `""`.
+ * @returns {Extraction<Extractable>} Extraction result.
+ * @example
+ * Extracting files from an object.
+ *
+ * For the following:
+ *
+ * ```js
+ * import extractFiles from "extract-files/extractFiles.mjs";
+ * import isExtractableFile from "extract-files/isExtractableFile.mjs";
+ *
+ * const file1 = new File(["1"], "1.txt", { type: "text/plain" });
+ * const file2 = new File(["2"], "2.txt", { type: "text/plain" });
+ * const value = {
+ *   a: file1,
+ *   b: [file1, file2],
+ * };
+ *
+ * const { clone, files } = extractFiles(value, isExtractableFile, "prefix");
+ * ```
+ *
+ * `value` remains the same.
+ *
+ * `clone` is:
+ *
+ * ```json
+ * {
+ *   "a": null,
+ *   "b": [null, null]
+ * }
+ * ```
+ *
+ * `files` is a
+ * [`Map`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)
+ * instance containing:
+ *
+ * | Key     | Value                        |
+ * | :------ | :--------------------------- |
+ * | `file1` | `["prefix.a", "prefix.b.0"]` |
+ * | `file2` | `["prefix.b.1"]`             |
+ */
+export default extractFiles
 
 /**
  * An extraction result.

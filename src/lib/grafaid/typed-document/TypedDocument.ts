@@ -1,12 +1,12 @@
 import type { DocumentTypeDecoration } from '@graphql-typed-document-node/core'
 import type { DocumentNode, TypedQueryDocumentNode } from 'graphql'
 import type { HasRequiredKeys, IsNever, IsUnknown } from 'type-fest'
-import { type HasKeys, type IsHasIndexType } from '../../lib/prelude.js'
-import type { SomeData, Variables } from '../graphql-plus/graphql.js'
+import { type HasKeys, type IsHasIndexType } from '../../prelude.js'
+import type { SomeData, Variables } from '../graphql.js'
+
+export type { SomeData, Variables } from '../graphql.js'
 
 export { type TypedQueryDocumentNode as Query } from 'graphql'
-
-export type { SomeData, Variables } from '../graphql-plus/graphql.js'
 
 // We default to `any` because otherwise when this type is used as a constraint
 // it will reject apparent subtypes. The reason I think has to do with co/contra-variant stuff
@@ -76,6 +76,8 @@ export type VariablesInputKindOptional = 'optional'
 export const isString = <$TypedDocument extends TypedDocument>(
   document: $TypedDocument,
 ): document is Exclude<$TypedDocument, TypedDocumentNode | TypedQueryDocumentNode> => typeof document === `string`
+
+export const unType = (document: TypedDocument): string | DocumentNode => document as any
 
 // dprint-ignore
 export type ResultOf<$Document extends TypedDocument> =

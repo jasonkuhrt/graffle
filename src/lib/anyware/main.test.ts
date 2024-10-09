@@ -5,7 +5,7 @@ import { Errors } from '../errors/__.js'
 import type { ContextualError } from '../errors/ContextualError.js'
 import { Anyware } from './__.js'
 import { createRetryingExtension } from './main.js'
-import { core, createHook, type Input, oops, run, runWithOptions } from './specHelpers.js'
+import { core, createHook, initialInput, oops, run, runWithOptions } from './specHelpers.js'
 
 describe(`no extensions`, () => {
   test(`passthrough to implementation`, async () => {
@@ -255,7 +255,7 @@ describe(`errors`, () => {
     })
 
     test('via passthroughErrorInstanceOf (one)', async () => {
-      const anyware = Anyware.create<['a'], Anyware.HookMap<['a']>>({
+      const anyware = Anyware.create<['a'], Anyware.HookDefinitionMap<['a']>>({
         hookNamesOrderedBySequence: [`a`],
         hooks: { a },
         passthroughErrorInstanceOf: [SpecialError1],
@@ -266,7 +266,7 @@ describe(`errors`, () => {
       expect(anyware.run({ initialInput: { throws: new SpecialError1('oops') }, extensions: [] })).resolves.toBeInstanceOf(SpecialError1)
     })
     test('via passthroughErrorInstanceOf (multiple)', async () => {
-      const anyware = Anyware.create<['a'], Anyware.HookMap<['a']>>({
+      const anyware = Anyware.create<['a'], Anyware.HookDefinitionMap<['a']>>({
         hookNamesOrderedBySequence: [`a`],
         hooks: { a },
         passthroughErrorInstanceOf: [SpecialError1, SpecialError2],
@@ -277,7 +277,7 @@ describe(`errors`, () => {
       expect(anyware.run({ initialInput: { throws: new SpecialError2('oops') }, extensions: [] })).resolves.toBeInstanceOf(SpecialError2)
     })
     test('via passthroughWith', async () => {
-      const anyware = Anyware.create<['a'], Anyware.HookMap<['a']>>({
+      const anyware = Anyware.create<['a'], Anyware.HookDefinitionMap<['a']>>({
         hookNamesOrderedBySequence: [`a`],
         hooks: { a },
         // todo type-safe hook name according to values passed to constructor
@@ -388,5 +388,24 @@ describe('slots', () => {
     expect(core.hooks.a.slots.append).not.toBeCalled()
     expect(core.hooks.b.slots.append).not.toBeCalled()
     expect(result).toEqual({ value: 'initial+x+y' })
+  })
+})
+
+describe('private hook parameter - previous', () => {
+  test('contains inputs of previous hooks', async () => {
+    await run(async ({ a }) => {
+      return a()
+    })
+    expect(core.hooks.a.run.mock.calls[0]?.[0].previous).toEqual({})
+    expect(core.hooks.b.run.mock.calls[0]?.[0].previous).toEqual({ a: { input: initialInput } })
+  })
+
+  test('contains the final input actually passed to the hook', async () => {
+    const customInput = { value: 'custom' }
+    await run(async ({ a }) => {
+      return a({ input: customInput })
+    })
+    expect(core.hooks.a.run.mock.calls[0]?.[0].previous).toEqual({})
+    expect(core.hooks.b.run.mock.calls[0]?.[0].previous).toEqual({ a: { input: customInput } })
   })
 })

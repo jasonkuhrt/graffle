@@ -1,10 +1,10 @@
 import type { ExecutionResult, GraphQLSchema } from 'graphql'
 import { execute as graphqlExecute, graphql } from 'graphql'
-import { TypedDocument } from '../typed-document/__.js'
-import type { GraphQLRequestInput } from './graphql.js'
+import type { RequestInput } from './graphql.js'
+import { TypedDocument } from './typed-document/__.js'
 
 export type ExecuteInput = {
-  request: GraphQLRequestInput
+  request: RequestInput
   schema: GraphQLSchema
 }
 

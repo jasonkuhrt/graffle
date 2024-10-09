@@ -1,4 +1,4 @@
-import { hasCustomScalars } from '../../../lib/graphql-plus/graphql.js'
+import { Grafaid } from '../../../lib/grafaid/__.js'
 import { createModuleGenerator } from '../helpers/moduleGenerator.js'
 import { typeTitle2 } from '../helpers/render.js'
 
@@ -6,7 +6,7 @@ export const ModuleGeneratorScalar = createModuleGenerator(
   `Scalar`,
   ({ config, code }) => {
     // todo test case for when this is true
-    const needsDefaultCustomScalarImplementation = hasCustomScalars(config.schema.typeMapByKind)
+    const needsDefaultCustomScalarImplementation = Grafaid.Schema.KindMap.hasCustomScalars(config.schema.typeMapByKind)
       && !config.options.customScalars
 
     const CustomScalarsNamespace = `CustomScalars`
@@ -16,7 +16,7 @@ export const ModuleGeneratorScalar = createModuleGenerator(
       code(`import * as ${StandardScalarNamespace} from '${config.paths.imports.grafflePackage.scalars}'`)
     }
 
-    if (hasCustomScalars(config.schema.typeMapByKind)) {
+    if (Grafaid.Schema.KindMap.hasCustomScalars(config.schema.typeMapByKind)) {
       code(`import type { Schema } from '${config.paths.imports.grafflePackage.schema}'`)
       code(`import * as ${CustomScalarsNamespace} from '${config.paths.imports.customScalarCodecs}'`)
       code()

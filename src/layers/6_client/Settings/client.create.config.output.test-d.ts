@@ -5,7 +5,7 @@ import { expectTypeOf, test } from 'vitest'
 import { Graffle } from '../../../../tests/_/schemas/kitchen-sink/graffle/__.js'
 import { schema } from '../../../../tests/_/schemas/kitchen-sink/schema.js'
 import { AssertEqual } from '../../../lib/assert-equal.js'
-import { type GraphQLExecutionResultError } from '../../../lib/graphql-plus/graphql.js'
+import { type GraphQLExecutionResultError } from '../../../lib/grafaid/graphql.js'
 import type { Envelope, ErrorsOther } from '../handleOutput.js'
 
 const G = Graffle.create

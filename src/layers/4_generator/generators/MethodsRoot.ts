@@ -1,6 +1,6 @@
 // todo remove use of Utils.Aug when schema errors not in use
 import { getNamedType, type GraphQLObjectType, isScalarType } from 'graphql'
-import { isAllArgsNullable, RootTypeNameToOperationName } from '../../../lib/graphql-plus/graphql.js'
+import { Grafaid } from '../../../lib/grafaid/__.js'
 import { createModuleGenerator } from '../helpers/moduleGenerator.js'
 import { createCodeGenerator } from '../helpers/moduleGeneratorRunner.js'
 import { renderDocumentation, renderName } from '../helpers/render.js'
@@ -27,7 +27,8 @@ export const ModuleGeneratorMethodsRoot = createModuleGenerator(
       export interface BuilderMethodsRoot<$Config extends Utils.Config> {
         ${
       config.schema.typeMapByKind.GraphQLRootType.map(node => {
-        const operationName = RootTypeNameToOperationName[node.name as keyof typeof RootTypeNameToOperationName]
+        const operationName =
+          Grafaid.RootTypeNameToOperationName[node.name as keyof typeof Grafaid.RootTypeNameToOperationName]
         return `${operationName}: ${node.name}Methods<$Config>`
       }).join(`\n`)
     }
@@ -85,7 +86,7 @@ const renderFieldMethods = createCodeGenerator<{ node: GraphQLObjectType }>(({ n
     const fieldTypeUnwrapped = getNamedType(field.type)
 
     if (isScalarType(fieldTypeUnwrapped)) {
-      const isArgsAllNullable_ = isAllArgsNullable(field.args)
+      const isArgsAllNullable_ = Grafaid.Schema.Args.isAllArgsNullable(field.args)
       const parametersCode = field.args.length > 0
         ? `<$SelectionSet>(args${isArgsAllNullable_ ? `?` : ``}: Utils.Exact<$SelectionSet, SelectionSet.${
           renderName(node)

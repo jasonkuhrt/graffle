@@ -1,5 +1,5 @@
 // todo jsdoc
-import { getNodeNameAndKind, isRootType } from '../../../lib/graphql-plus/graphql.js'
+import { Grafaid } from '../../../lib/grafaid/__.js'
 import { createModuleGenerator } from '../helpers/moduleGenerator.js'
 import { renderName, title1 } from '../helpers/render.js'
 import { ModuleGeneratorSelectionSets } from './SelectionSets.js'
@@ -32,8 +32,8 @@ export const ModuleGeneratorMethodsSelect = createModuleGenerator(
     code()
 
     for (const graphqlTypeGroup of graphqlTypeGroups) {
-      const { kind } = getNodeNameAndKind(graphqlTypeGroup[0]!)
-      const titleText = isRootType(graphqlTypeGroup[0]!) ? `Root` : kind
+      const { kind } = Grafaid.getTypeNameAndKind(graphqlTypeGroup[0]!)
+      const titleText = Grafaid.Schema.isRootType(graphqlTypeGroup[0]!) ? `Root` : kind
       code(title1(titleText))
       code()
 

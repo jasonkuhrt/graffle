@@ -1,20 +1,20 @@
 import { AssertEqual } from '../../../lib/assert-equal.js'
-import type { TypedDocument } from '../../../lib/typed-document/__.js'
+import type { Grafaid } from '../../../lib/grafaid/__.js'
 import type { SendArguments } from './send.js'
 
 AssertEqual<
-  SendArguments<TypedDocument.Query<{ y: 0 }, { x: 1 }>>,
+  SendArguments<Grafaid.Nodes.Typed.Query<{ y: 0 }, { x: 1 }>>,
   [string, { x: 1 }] | [{ x: 1 }]
 >()
 AssertEqual<
-  SendArguments<TypedDocument.Query<{ y: 0 }, { x?: 1 }>>,
+  SendArguments<Grafaid.Nodes.Typed.Query<{ y: 0 }, { x?: 1 }>>,
   [x?: string] | [x?: string, x?: { x?: 1 }] | [x?: { x?: 1 }]
 >()
 AssertEqual<
-  SendArguments<TypedDocument.Query<{ y: 0 }, {}>>,
+  SendArguments<Grafaid.Nodes.Typed.Query<{ y: 0 }, {}>>,
   [x?: string]
 >()
 AssertEqual<
-  SendArguments<TypedDocument.Query<{ y: 0 }, TypedDocument.Variables>>,
-  [x?: string] | [x?: string, x?: TypedDocument.Variables] | [x?: TypedDocument.Variables]
+  SendArguments<Grafaid.Nodes.Typed.Query<{ y: 0 }, Grafaid.Nodes.Typed.Variables>>,
+  [x?: string] | [x?: string, x?: Grafaid.Nodes.Typed.Variables] | [x?: Grafaid.Nodes.Typed.Variables]
 >()

@@ -1,5 +1,5 @@
 import type { ValueNode } from 'graphql'
-import { Nodes } from '../../../lib/graphql-plus/_Nodes.js'
+import { Nodes } from '../../../lib/grafaid/_Nodes.js'
 import { advanceIndex, type CodecString, type GraphQLNodeMapper, isCodec } from '../types.js'
 
 export const toGraphQLValue: ValueMapper = (context, index, value) => {
