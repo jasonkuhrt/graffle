@@ -27,10 +27,10 @@ import {
 import { Code } from '../../../lib/Code.js'
 import { Grafaid } from '../../../lib/grafaid/__.js'
 import type { AnyClass, AnyGraphQLOutputField } from '../../../lib/grafaid/graphql.js'
+import { ModuleGeneratorRuntimeCustomScalars } from '../../7_customScalars/RuntimeIndexCustomScalars.js'
 import type { Config } from '../config.js'
 import { createModuleGenerator } from '../helpers/moduleGenerator.js'
 import { ModuleGeneratorData } from './Data.js'
-import { ModuleGeneratorRuntimeCustomScalars } from './RuntimeIndexCustomScalars.js'
 import { ModuleGeneratorScalar } from './Scalar.js'
 import { ModuleGeneratorSchemaIndex } from './SchemaIndex.js'
 
