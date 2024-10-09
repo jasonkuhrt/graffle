@@ -18,5 +18,12 @@ export const toGraphQL = (input: {
 
   const customScalarsIndex: CustomScalarsIndex = input.customScalarsIndex ?? {}
 
-  return toGraphQLDocument(context, customScalarsIndex, input.document)
+  const document = toGraphQLDocument(context, customScalarsIndex, input.document)
+
+  const variables = {} // todo
+
+  return {
+    variables,
+    document,
+  }
 }
