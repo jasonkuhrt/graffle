@@ -1,4 +1,4 @@
-import { Kind } from 'graphql'
+import { Kind, parse } from 'graphql'
 import type { Grafaid } from '../../../lib/grafaid/__.js'
 import { operationTypeNameToRootTypeName, parseOperationType } from '../../../lib/grafaid/graphql.js'
 import { unType } from '../../../lib/grafaid/typed-document/TypedDocument.js'
@@ -21,7 +21,9 @@ export const decode = (input: {
   if (!customScalarsIndex) return
 
   const queryUntyped = unType(input.request.query)
-  const document = isString(queryUntyped) ? null : queryUntyped
+  // todo expose an option to optimize string interface by not parsing it. Explain the caveat of losing support for custom scalars in aliased positions.
+  // const document = isString(queryUntyped) ? null : queryUntyped
+  const document = (isString(queryUntyped) ? parse(queryUntyped) : queryUntyped) as Grafaid.Nodes.DocumentNode | null
   const documentOperations = document?.definitions.filter(d => d.kind === Kind.OPERATION_DEFINITION)
   const selectionSet = (documentOperations?.length === 1 ? documentOperations[0] : documentOperations?.find(d => {
     return d.name?.value === input.request.operationName
@@ -43,22 +45,19 @@ const decode_ = (input: {
   if (!data) return
 
   for (const [k, v] of Object.entries(data)) {
-    const documentField = documentPart?.selections.find(s => {
-      return s.kind === Kind.FIELD && (s.alias?.value ?? s.name.value) === k
-    }) as Grafaid.Nodes.FieldNode | undefined
+    // todo: test case of a custom scalar whose encoded value would be falsy in JS, like 0 or empty string
+    if (v === null) continue
+
+    const documentField = findDocumentField(documentPart, k)
+
     const kSchema = documentField?.name.value ?? k
-    // console.log({ k, kSchema, documentField })
 
     const indexField = customScalarsIndex[kSchema]
     if (!indexField) continue
 
     const codec = indexField.o
     if (codec) {
-      if (Array.isArray(v)) {
-        data[k] = decodeListValue(v, codec)
-      } else {
-        data[k] = codec.decode(v)
-      }
+      data[k] = decodeValue(v, codec)
       continue
     }
 
@@ -76,9 +75,28 @@ const decode_ = (input: {
   }
 }
 
-const decodeListValue = (value: any, codec: CodecString): any => {
+const decodeValue = (value: any, codec: CodecString): any => {
   if (Array.isArray(value)) {
-    return value.map(item => decodeListValue(item, codec))
+    return value.map(item => decodeValue(item, codec))
   }
   return codec.decode(value)
+}
+
+const findDocumentField = (
+  selectionSet: null | Grafaid.Nodes.SelectionSetNode,
+  k: string,
+): Grafaid.Nodes.FieldNode | null => {
+  if (!selectionSet) return null
+
+  for (const selection of selectionSet.selections) {
+    if (selection.kind === Kind.FIELD && (selection.alias?.value ?? selection.name.value) === k) {
+      return selection
+    }
+    if (selection.kind === Kind.INLINE_FRAGMENT) {
+      const result = findDocumentField(selection.selectionSet, k)
+      if (result !== null) return result
+    }
+  }
+
+  return null
 }
