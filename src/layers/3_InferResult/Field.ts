@@ -3,7 +3,9 @@ import type { TSError } from '../../lib/TSError.js'
 import type { Schema } from '../1_Schema/__.js'
 import type { Select } from '../2_Select/__.js'
 import type { SchemaIndex } from '../4_generator/generators/SchemaIndex.js'
-import type { Interface, Object, Union } from './root.js'
+import type { Interface } from './Interface.js'
+import type { Object } from './Object.js'
+import type { Union } from './Union.js'
 
 // dprint-ignore
 export type Field<$SelectionSet, $Field extends Schema.SomeField, $Schema extends SchemaIndex> =
@@ -36,11 +38,11 @@ type FieldType<
 // dprint-ignore
 type FieldDirectiveInclude<$SelectionSet> =
   $SelectionSet extends Select.Directive.Include.Field  ? $SelectionSet extends Select.Directive.Include.FieldStates.Positive ? never
-																																																																					: null
-																															: never
+																																																															: null
+																												: never
 
 // dprint-ignore
 type FieldDirectiveSkip<$SelectionSet> =
   $SelectionSet extends Select.Directive.Skip.Field     ? $SelectionSet extends Select.Directive.Skip.FieldStates.Negative 	? never 
-																																																																				: null
-																															: never
+																																																														: null
+																												: never

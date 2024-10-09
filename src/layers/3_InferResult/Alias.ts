@@ -5,7 +5,7 @@ import type { SchemaIndex } from '../4_generator/generators/SchemaIndex.js'
 import type { Field } from './Field.js'
 
 // dprint-ignore
-export type InferSelectionSelectAlias<
+export type Alias<
 	$SelectionSet,
 	$Schema extends SchemaIndex,
 	$Node extends Schema.Output.Object$2
@@ -28,7 +28,7 @@ export type InferSelectionSelectAlias<
   >
 
 // dprint-ignore
-export type InferSelectAlias<
+type InferSelectAlias<
   $SelectAlias extends Select.SelectAlias.SelectAlias,
   $FieldName extends string,
   $Schema extends SchemaIndex,
