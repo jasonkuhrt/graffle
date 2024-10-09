@@ -1,11 +1,10 @@
 import { print } from 'graphql'
 import { describe, expect, test } from 'vitest'
-import { db } from '../../../../tests/_/schemas/db.js'
-import { $index as customScalarsIndex } from '../../../../tests/_/schemas/kitchen-sink/graffle/modules/RuntimeCustomScalars.js'
-import type * as SelectionSets from '../../../../tests/_/schemas/kitchen-sink/graffle/modules/SelectionSets.js'
-import { Select } from '../../2_Select/__.js'
-import type { Context } from '../types.js'
-import { toGraphQLDocument } from './Document.js'
+import { db } from '../../../tests/_/schemas/db.js'
+import { $index as customScalarsIndex } from '../../../tests/_/schemas/kitchen-sink/graffle/modules/RuntimeCustomScalars.js'
+import type * as SelectionSets from '../../../tests/_/schemas/kitchen-sink/graffle/modules/SelectionSets.js'
+import { Select } from '../2_Select/__.js'
+import { toGraphQL } from './toGraphQL.js'
 
 type CasesQuery = [selectionSet: SelectionSets.Query]
 
@@ -16,18 +15,10 @@ const testEachArguments = [
   (...args: CasesQuery | CasesDescriptiveQuery) => {
     const [description, selectionSet] = args.length === 1 ? [undefined, args[0]] : args
 
-    const context: Context = {
-      captures: {
-        variables: [],
-        customScalarOutputs: [],
-      },
-    }
-    const documentNormalized = Select.Document.createDocumentNormalizedFromRootTypeSelection(
-      `Query`,
-      selectionSet as any,
-    )
-
-    const graphqlDocument = toGraphQLDocument(context, customScalarsIndex as any, documentNormalized)
+    const { document: graphqlDocument } = toGraphQL({
+      document: Select.Document.createDocumentNormalizedFromQuerySelection(selectionSet as any),
+      customScalarsIndex,
+    })
     const graphqlDocumentStringFormatted = print(graphqlDocument)
 
     const beforeAfter = `\n`

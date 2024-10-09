@@ -32,7 +32,7 @@ const withGqlDocument: TestCaseWith = [
   async ([_, query, responseData, expectedData], { fetch, kitchenSinkHttp: kitchenSink }) => {
     fetch.mockResolvedValueOnce(createResponse({ data: responseData }))
     const { document } = SelectionSetGraphqlMapper.toGraphQL({
-      document: Select.Document.normalizeOrThrow({ query: { foo: query as any } }),
+      document: Select.Document.createDocumentNormalizedFromQuerySelection(query as any),
     })
     expect(await kitchenSink.gql(document).send()).toEqual(expectedData)
   },

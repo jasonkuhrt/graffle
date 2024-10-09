@@ -11,10 +11,9 @@ const date0Encoded = db.date0.toISOString()
 const date1Encoded = db.date1.toISOString()
 
 type TestCase = [
-  describe: string,
+  description: string,
   query: Graffle.SelectionSets.Query,
   expectedVariables: object,
-  // expectedDocument: object,
 ]
 
 // dprint-ignore
@@ -32,7 +31,7 @@ const testCases = test.for<TestCase>([
 
 testCases(`%s`, async ([_, query, expectedVariables], { kitchenSink }) => {
   const { document, variables } = SelectionSetGraphqlMapper.toGraphQL({
-    document: Select.Document.normalizeOrThrow({ query: { foo: query as any } }),
+    document: Select.Document.createDocumentNormalizedFromQuerySelection(query as any),
   })
   await kitchenSink.use(Spy()).gql(document).send(variables)
   expect(Spy.data.pack.input?.request.variables).toEqual(expectedVariables)
