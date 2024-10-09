@@ -1,19 +1,23 @@
-import type * as Schema from '../../../../tests/_/schemas/kitchen-sink/graffle/modules/SchemaBuildtime.js'
-import type { Index } from '../../../../tests/_/schemas/kitchen-sink/graffle/modules/SchemaIndex.js'
-import type * as SelectionSets from '../../../../tests/_/schemas/kitchen-sink/graffle/modules/SelectionSets.js'
-import { AssertEqual } from '../../../lib/assert-equal.js'
-import type { ResultSet } from '../__.js'
-import type { PickSelectsPositiveIndicatorAndNotSelectAlias } from './root.js'
+import type * as Schema from '../../../tests/_/schemas/kitchen-sink/graffle/modules/SchemaBuildtime.js'
+import type { Index } from '../../../tests/_/schemas/kitchen-sink/graffle/modules/SchemaIndex.js'
+import type * as SelectionSets from '../../../tests/_/schemas/kitchen-sink/graffle/modules/SelectionSets.js'
+import { AssertEqual } from '../../lib/assert-equal.js'
+import type { InferResult } from './__.js'
+import type { PickSelectsPositiveIndicatorAndNotSelectAlias } from './Object.js'
 
-type $<$SelectionSet extends SelectionSets.Query> = ResultSet.Query<$SelectionSet, Index>
+type $<$SelectionSet extends SelectionSets.Query> = InferResult.Query<$SelectionSet, Index>
+
+// dprint-ignore
+{
+	
+AssertEqual<PickSelectsPositiveIndicatorAndNotSelectAlias<{ a: true }>, 'a'>()
+AssertEqual<PickSelectsPositiveIndicatorAndNotSelectAlias<{ a: ['b', true]; b: true }>, 'b'>()
+
+}
 
 // dprint-ignore
 {
 
-AssertEqual<PickSelectsPositiveIndicatorAndNotSelectAlias<{ a: true }>, 'a'>()
-AssertEqual<PickSelectsPositiveIndicatorAndNotSelectAlias<{ a: ['b', true]; b: true }>, 'b'>()
-
-// dprint-ignore
 AssertEqual<$<{ __typename: true }>, { __typename: 'Query' }>()
 
 // Scalar
@@ -84,8 +88,8 @@ AssertEqual<$<{ id: ['id2', true] }>, { id2: null | string }>()
 AssertEqual<$<{ idNonNull: ['id2', true] }>, { id2: string }>()
 // multi
 AssertEqual<$<{ id: [['id1', true],['id2', true]] }>, { id1: null | string; id2: null | string }>()
-// AssertEqual<RS<{ id_as: true }>, { id_as: ResultSet.Errors.UnknownFieldName<'id_as', Schema.Root.Query> }>()
-// AssertEqual<RS<{ id_as_$: true }>, { id_as_$: ResultSet.Errors.UnknownFieldName<'id_as_$', Schema.Root.Query> }>()
+// AssertEqual<RS<{ id_as: true }>, { id_as: InferResult.Errors.UnknownFieldName<'id_as', Schema.Root.Query> }>()
+// AssertEqual<RS<{ id_as_$: true }>, { id_as_$: InferResult.Errors.UnknownFieldName<'id_as_$', Schema.Root.Query> }>()
 // union fragment
 AssertEqual<$<{ unionFooBar: { ___on_Foo: { id: ['id2', true] } } }>, { unionFooBar: null | {} | { id2: null|string } }>()
 
@@ -133,6 +137,6 @@ AssertEqual<$<{ stringWithArgs: { $: { string: '' } } }>, { stringWithArgs: null
 // @ts-expect-error invalid query
 type Result =  $<{ id2: true }>
 // unknown field
-AssertEqual<Result, { id2: ResultSet.Errors.UnknownFieldName<'id2', Schema.Root.Query> }>()
+AssertEqual<Result, { id2: InferResult.Errors.UnknownFieldName<'id2', Schema.Root.Query> }>()
 
 }

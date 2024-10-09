@@ -1,11 +1,11 @@
-import type { mergeObjectArray, ValuesOrEmptyObject } from '../../../lib/prelude.js'
-import type { Schema } from '../../1_Schema/__.js'
-import type { Select } from '../../2_Select/__.js'
-import type { SchemaIndex } from '../../4_generator/generators/SchemaIndex.js'
-import type { InferField } from './Field.js'
+import type { mergeObjectArray, ValuesOrEmptyObject } from '../../lib/prelude.js'
+import type { Schema } from '../1_Schema/__.js'
+import type { Select } from '../2_Select/__.js'
+import type { SchemaIndex } from '../4_generator/generators/SchemaIndex.js'
+import type { Field } from './Field.js'
 
 // dprint-ignore
-export type InferSelectionSelectAlias<
+export type Alias<
 	$SelectionSet,
 	$Schema extends SchemaIndex,
 	$Node extends Schema.Output.Object$2
@@ -28,7 +28,7 @@ export type InferSelectionSelectAlias<
   >
 
 // dprint-ignore
-export type InferSelectAlias<
+type InferSelectAlias<
   $SelectAlias extends Select.SelectAlias.SelectAlias,
   $FieldName extends string,
   $Schema extends SchemaIndex,
@@ -55,5 +55,5 @@ type InferSelectAliasOne<
   $Schema extends SchemaIndex,
   $Node extends Schema.Output.Object$2,
 > = {
-  [_ in $SelectAliasOne[0]]: InferField<$SelectAliasOne[1], $Node['fields'][$FieldName], $Schema>
+  [_ in $SelectAliasOne[0]]: Field<$SelectAliasOne[1], $Node['fields'][$FieldName], $Schema>
 }

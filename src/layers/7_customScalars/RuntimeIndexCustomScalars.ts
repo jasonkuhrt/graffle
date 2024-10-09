@@ -1,13 +1,13 @@
 // todo we are going to run into recursion with input types such as two input
 // objects each having their own custom scalars and also referencing one another.
 // to solve this we'll need to either use thunks or some kind of indirect look up table?
-import { Code } from '../../../lib/Code.js'
-import { Nodes } from '../../../lib/grafaid/graphql.js'
-import { entries } from '../../../lib/prelude.js'
-import { createModuleGenerator } from '../helpers/moduleGenerator.js'
-import { createCodeGenerator } from '../helpers/moduleGeneratorRunner.js'
-import { title1 } from '../helpers/render.js'
-import { ModuleGeneratorScalar } from './Scalar.js'
+import { Code } from '../../lib/Code.js'
+import { Grafaid } from '../../lib/grafaid/__.js'
+import { entries } from '../../lib/prelude.js'
+import { ModuleGeneratorScalar } from '../4_generator/generators/Scalar.js'
+import { createModuleGenerator } from '../4_generator/helpers/moduleGenerator.js'
+import { createCodeGenerator } from '../4_generator/helpers/moduleGeneratorRunner.js'
+import { title1 } from '../4_generator/helpers/render.js'
 
 const identifiers = {
   $CustomScalars: `CustomScalars`,
@@ -20,11 +20,11 @@ export const ModuleGeneratorRuntimeCustomScalars = createModuleGenerator(
 
     // dprint-ignore
     const kindsFiltered = {
-      GraphQLInputObjectType: config.schema.typeMapByKind.GraphQLInputObjectType.filter(Nodes.$Schema.CustomScalars.isHasCustomScalars),
-      GraphQLObjectType: config.schema.typeMapByKind.GraphQLObjectType.filter(Nodes.$Schema.CustomScalars.isHasCustomScalars),
-      GraphQLInterfaceType: config.schema.typeMapByKind.GraphQLInterfaceType.filter(Nodes.$Schema.CustomScalars.isHasCustomScalars),
-      GraphQLUnionType: config.schema.typeMapByKind.GraphQLUnionType.filter(Nodes.$Schema.CustomScalars.isHasCustomScalars),
-      GraphQLRootType: config.schema.typeMapByKind.GraphQLRootType.filter(Nodes.$Schema.CustomScalars.isHasCustomScalars),
+      GraphQLInputObjectType: config.schema.typeMapByKind.GraphQLInputObjectType.filter(Grafaid.Nodes.$Schema.CustomScalars.isHasCustomScalars),
+      GraphQLObjectType: config.schema.typeMapByKind.GraphQLObjectType.filter(Grafaid.Nodes.$Schema.CustomScalars.isHasCustomScalars),
+      GraphQLInterfaceType: config.schema.typeMapByKind.GraphQLInterfaceType.filter(Grafaid.Nodes.$Schema.CustomScalars.isHasCustomScalars),
+      GraphQLUnionType: config.schema.typeMapByKind.GraphQLUnionType.filter(Grafaid.Nodes.$Schema.CustomScalars.isHasCustomScalars),
+      GraphQLRootType: config.schema.typeMapByKind.GraphQLRootType.filter(Grafaid.Nodes.$Schema.CustomScalars.isHasCustomScalars),
     }
 
     for (const [kindName, nodes] of entries(kindsFiltered)) {
@@ -62,7 +62,7 @@ export const ModuleGeneratorRuntimeCustomScalars = createModuleGenerator(
 //
 
 const UnionType = createCodeGenerator<
-  { type: Nodes.$Schema.GraphQLUnionType }
+  { type: Grafaid.Nodes.$Schema.GraphQLUnionType }
 >(
   ({ code, type }) => {
     // This takes advantage of the fact that in GraphQL, in a union type, all members that happen
@@ -75,7 +75,7 @@ const UnionType = createCodeGenerator<
     // that they could never conflict.
     code(`const ${type.name} = {`)
     for (const memberType of type.getTypes()) {
-      if (Nodes.$Schema.CustomScalars.isHasCustomScalars(memberType)) {
+      if (Grafaid.Nodes.$Schema.CustomScalars.isHasCustomScalars(memberType)) {
         code(`...${memberType.name},`)
       }
     }
@@ -84,13 +84,13 @@ const UnionType = createCodeGenerator<
 )
 
 const InterfaceType = createCodeGenerator<
-  { type: Nodes.$Schema.GraphQLInterfaceType }
+  { type: Grafaid.Nodes.$Schema.GraphQLInterfaceType }
 >(
   ({ code, type, config }) => {
-    const implementorTypes = Nodes.$Schema.KindMap.getInterfaceImplementors(config.schema.typeMapByKind, type)
+    const implementorTypes = Grafaid.Nodes.$Schema.KindMap.getInterfaceImplementors(config.schema.typeMapByKind, type)
     code(`const ${type.name} = {`)
     for (const implementorType of implementorTypes) {
-      if (Nodes.$Schema.CustomScalars.isHasCustomScalars(implementorType)) {
+      if (Grafaid.Nodes.$Schema.CustomScalars.isHasCustomScalars(implementorType)) {
         code(`...${implementorType.name},`)
       }
     }
@@ -98,23 +98,23 @@ const InterfaceType = createCodeGenerator<
   },
 )
 
-const ObjectType = createCodeGenerator<{ type: Nodes.$Schema.GraphQLObjectType }>(
+const ObjectType = createCodeGenerator<{ type: Grafaid.Nodes.$Schema.GraphQLObjectType }>(
   ({ code, type }) => {
     code(`const ${type.name} = {`)
 
-    const fields = Object.values(type.getFields()).filter(Nodes.$Schema.CustomScalars.isHasCustomScalars)
+    const fields = Object.values(type.getFields()).filter(Grafaid.Nodes.$Schema.CustomScalars.isHasCustomScalars)
     for (const field of fields) {
       code(Code.termField(field.name, `{`, { comma: false }))
 
       // Field Arguments
-      const args = field.args.filter(Nodes.$Schema.CustomScalars.isHasCustomScalarInputs)
+      const args = field.args.filter(Grafaid.Nodes.$Schema.CustomScalars.isHasCustomScalarInputs)
       if (args.length > 0) {
         code(Code.termField(`i`, `{`, { comma: false }))
         for (const arg of args) {
-          const argType = Nodes.getNamedType(arg.type)
-          if (Nodes.$Schema.isScalarTypeAndCustom(argType)) {
+          const argType = Grafaid.Nodes.getNamedType(arg.type)
+          if (Grafaid.Nodes.$Schema.isScalarTypeAndCustom(argType)) {
             code(Code.termField(arg.name, `${identifiers.$CustomScalars}.${argType.name}.codec`))
-          } else if (Nodes.$Schema.isInputObjectType(argType)) {
+          } else if (Grafaid.Nodes.$Schema.isInputObjectType(argType)) {
             code(Code.termField(arg.name, argType.name))
           } else {
             throw new Error(`Failed to complete index for argument ${arg.name} of ${argType.toString()}`)
@@ -123,14 +123,14 @@ const ObjectType = createCodeGenerator<{ type: Nodes.$Schema.GraphQLObjectType }
         code(`},`)
       }
 
-      const fieldType = Nodes.getNamedType(field.type)
+      const fieldType = Grafaid.Nodes.getNamedType(field.type)
 
-      if (Nodes.$Schema.CustomScalars.isHasCustomScalars(fieldType)) {
-        if (Nodes.$Schema.isScalarTypeAndCustom(fieldType)) {
+      if (Grafaid.Nodes.$Schema.CustomScalars.isHasCustomScalars(fieldType)) {
+        if (Grafaid.Nodes.$Schema.isScalarTypeAndCustom(fieldType)) {
           code(Code.termField(`o`, `${identifiers.$CustomScalars}.${fieldType.name}.codec`))
         } else if (
-          Nodes.$Schema.isUnionType(fieldType) || Nodes.$Schema.isObjectType(fieldType)
-          || Nodes.$Schema.isInterfaceType(fieldType)
+          Grafaid.Nodes.$Schema.isUnionType(fieldType) || Grafaid.Nodes.$Schema.isObjectType(fieldType)
+          || Grafaid.Nodes.$Schema.isInterfaceType(fieldType)
         ) {
           code(Code.termField(`r`, fieldType.name))
           // // todo make kitchen sink schema have a pattern where this code path will be traversed.
@@ -148,15 +148,18 @@ const ObjectType = createCodeGenerator<{ type: Nodes.$Schema.GraphQLObjectType }
   },
 )
 
-const InputObjectType = createCodeGenerator<{ type: Nodes.$Schema.GraphQLInputObjectType }>(
+const InputObjectType = createCodeGenerator<{ type: Grafaid.Nodes.$Schema.GraphQLInputObjectType }>(
   ({ code, type }) => {
     code(`const ${type.name} = {`)
 
     for (const field of Object.values(type.getFields())) {
-      const type = Nodes.getNamedType(field.type)
-      if (Nodes.$Schema.isScalarTypeAndCustom(type)) {
+      const type = Grafaid.Nodes.getNamedType(field.type)
+      if (Grafaid.Nodes.$Schema.isScalarTypeAndCustom(type)) {
         code(Code.termField(field.name, `${identifiers.$CustomScalars}.${type.name}.codec`))
-      } else if (Nodes.$Schema.isInputObjectType(type) && Nodes.$Schema.CustomScalars.isHasCustomScalarInputs(type)) {
+      } else if (
+        Grafaid.Nodes.$Schema.isInputObjectType(type)
+        && Grafaid.Nodes.$Schema.CustomScalars.isHasCustomScalarInputs(type)
+      ) {
         code(Code.termField(field.name, type.name))
       }
     }

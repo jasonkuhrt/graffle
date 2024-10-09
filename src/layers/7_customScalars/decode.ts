@@ -1,15 +1,15 @@
 import { Kind, parse } from 'graphql'
-import type { Grafaid } from '../../../lib/grafaid/__.js'
-import { operationTypeNameToRootTypeName, parseOperationType } from '../../../lib/grafaid/graphql.js'
-import { unType } from '../../../lib/grafaid/typed-document/TypedDocument.js'
-import { isString } from '../../../lib/prelude.js'
-import type { CodecString } from '../../3_SelectGraphQLMapper/types.js'
-import type { CustomScalarsIndex } from '../../4_generator/generators/SchemaIndex.js'
+import type { Grafaid } from '../../lib/grafaid/__.js'
+import { operationTypeNameToRootTypeName, parseOperationType } from '../../lib/grafaid/graphql.js'
+import { unType } from '../../lib/grafaid/typed-document/TypedDocument.js'
+import { isString } from '../../lib/prelude.js'
+import type { CodecString } from '../3_SelectGraphQLMapper/types.js'
+import type { CustomScalarsIndex } from '../4_generator/generators/SchemaIndex.js'
 
 /**
  * If a document is given then aliases will be decoded as well.
  */
-export const decode = (input: {
+export const decodeCustomScalars = (input: {
   data: Grafaid.SomeData | null | undefined
   customScalarsIndex: CustomScalarsIndex
   request: Grafaid.RequestInput

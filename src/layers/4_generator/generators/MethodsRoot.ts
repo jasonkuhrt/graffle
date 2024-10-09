@@ -11,7 +11,7 @@ export const ModuleGeneratorMethodsRoot = createModuleGenerator(
   `MethodsRoot`,
   ({ config, code }) => {
     code(`import type * as Utils  from '${config.paths.imports.grafflePackage.utilitiesForGenerated}';`)
-    code(`import type { ResultSet } from '${config.paths.imports.grafflePackage.schema}';`)
+    code(`import type { InferResult } from '${config.paths.imports.grafflePackage.schema}';`)
     code(`import type { Index } from './${ModuleGeneratorSchemaIndex.name}.js'`)
     code(`import type * as SelectionSet from './${ModuleGeneratorSelectionSets.name}.js'`)
     code()
@@ -58,7 +58,7 @@ const renderRootType = createCodeGenerator<{ node: GraphQLObjectType }>(({ node,
           Utils.ResolveOutputReturnRootType<
             $Config,
             Index,
-            ResultSet.${node.name}<
+            InferResult.${node.name}<
               Utils.AddTypenameToSelectedRootTypeResultFields<$Config, Index, '${node.name}', $SelectionSet>,
               Index
             >
@@ -115,7 +115,7 @@ namespace Helpers {
           $Config,
           Index,
           '${fieldName}',
-          ResultSet.InferField<${selectionSet}, Index['Root']['${rootName}']['fields']['${fieldName}'], Index>
+          InferResult.Field<${selectionSet}, Index['Root']['${rootName}']['fields']['${fieldName}'], Index>
         >
       >
     `

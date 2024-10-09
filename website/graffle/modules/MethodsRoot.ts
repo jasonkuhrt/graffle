@@ -1,4 +1,4 @@
-import type { ResultSet } from 'graffle/schema'
+import type { InferResult } from 'graffle/schema'
 import type * as Utils from 'graffle/utilities-for-generated'
 import type { Index } from './SchemaIndex.js'
 import type * as SelectionSet from './SelectionSets.js'
@@ -9,7 +9,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Utils.ResolveOutputReturnRootType<
       $Config,
       Index,
-      ResultSet.Query<
+      InferResult.Query<
         Utils.AddTypenameToSelectedRootTypeResultFields<$Config, Index, 'Query', $SelectionSet>,
         Index
       >
@@ -29,7 +29,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'continent',
-      ResultSet.InferField<$SelectionSet, Index['Root']['Query']['fields']['continent'], Index>
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['continent'], Index>
     >
   >
   continents: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.continents>) => Promise<
@@ -37,7 +37,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'continents',
-      ResultSet.InferField<$SelectionSet, Index['Root']['Query']['fields']['continents'], Index>
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['continents'], Index>
     >
   >
   countries: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.countries>) => Promise<
@@ -45,7 +45,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'countries',
-      ResultSet.InferField<$SelectionSet, Index['Root']['Query']['fields']['countries'], Index>
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['countries'], Index>
     >
   >
   country: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.country>) => Promise<
@@ -53,7 +53,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'country',
-      ResultSet.InferField<$SelectionSet, Index['Root']['Query']['fields']['country'], Index>
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['country'], Index>
     >
   >
   language: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.language>) => Promise<
@@ -61,7 +61,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'language',
-      ResultSet.InferField<$SelectionSet, Index['Root']['Query']['fields']['language'], Index>
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['language'], Index>
     >
   >
   languages: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.languages>) => Promise<
@@ -69,7 +69,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'languages',
-      ResultSet.InferField<$SelectionSet, Index['Root']['Query']['fields']['languages'], Index>
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['languages'], Index>
     >
   >
 }

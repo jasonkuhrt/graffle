@@ -16,7 +16,6 @@ import type { TypedDocument } from '../../lib/grafaid/typed-document/__.js'
 import { mergeRequestInit, searchParamsAppendAll } from '../../lib/http.js'
 import { casesExhausted, isString, throwNull } from '../../lib/prelude.js'
 import { SelectionSetGraphqlMapper } from '../3_SelectGraphQLMapper/__.js'
-import { decode } from '../6_client/customScalar/decode.js'
 import type { GraffleExecutionResultVar } from '../6_client/handleOutput.js'
 import type { Config } from '../6_client/Settings/Config.js'
 import { MethodMode, type MethodModeGetReads } from '../6_client/transportHttp/request.js'
@@ -212,61 +211,15 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
           throw casesExhausted(input)
       }
     },
-    decode: ({ input, previous }) => {
-      const data = input.result.data
-
-      // If there has been an error and we definitely don't have any data, such as when
-      // giving an operation name that doesn't match any in the document,
-      // then don't attempt to decode.
-      const isError = !input.result.data && (input.result.errors?.length ?? 0) > 0
-      if (input.schemaIndex && !isError) {
-        decode({
-          data,
-          customScalarsIndex: input.schemaIndex.customScalars.input, // todo drop input/output separation
-          request: previous.pack.input.request,
-        })
-      }
-
-      switch (input.interfaceType) {
-        // todo this depends on the return mode
-        case `raw`: {
-          switch (input.transportType) {
-            case `http`: {
-              return {
-                ...input.result,
-                response: input.response,
-              }
-            }
-            case `memory`: {
-              return input.result
-            }
-            default:
-              throw casesExhausted(input)
-          }
+    decode: ({ input }) => {
+      const result = input.transportType === `http`
+        ? {
+          ...input.result,
+          response: input.response,
         }
-        case `typed`: {
-          if (!input.schemaIndex) throw new Error(`schemaIndex is required for typed decode`)
+        : input.result
 
-          // todo optimize
-          // 1. Generate a map of possible custom scalar paths (tree structure)
-          // 2. When traversing the result, skip keys that are not in the map
-          // console.log(input.context.schemaIndex.Root)
-          // console.log(getOptionalNullablePropertyOrThrow(input.context.schemaIndex.Root, operation.rootType))
-
-          switch (input.transportType) {
-            case `memory`: {
-              return { ...input.result, data }
-            }
-            case `http`: {
-              return { ...input.result, data, response: input.response }
-            }
-            default:
-              throw casesExhausted(input)
-          }
-        }
-        default:
-          throw casesExhausted(input)
-      }
+      return result
     },
   },
   // todo expose return handling as part of the pipeline?
