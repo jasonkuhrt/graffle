@@ -1,4 +1,4 @@
-import type { ResultSet } from '../../../../../../src/entrypoints/schema.js'
+import type { InferResult } from '../../../../../../src/entrypoints/schema.js'
 import type * as Utils from '../../../../../../src/entrypoints/utilities-for-generated.js'
 import type { Index } from './SchemaIndex.js'
 import type * as SelectionSet from './SelectionSets.js'
@@ -9,7 +9,7 @@ export interface MutationMethods<$Config extends Utils.Config> {
     Utils.ResolveOutputReturnRootType<
       $Config,
       Index,
-      ResultSet.Mutation<
+      InferResult.Mutation<
         Utils.AddTypenameToSelectedRootTypeResultFields<$Config, Index, 'Mutation', $SelectionSet>,
         Index
       >
@@ -29,7 +29,7 @@ export interface MutationMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'id',
-      ResultSet.InferField<true, Index['Root']['Mutation']['fields']['id'], Index>
+      InferResult.InferField<true, Index['Root']['Mutation']['fields']['id'], Index>
     >
   >
   idNonNull: () => Promise<
@@ -37,7 +37,7 @@ export interface MutationMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'idNonNull',
-      ResultSet.InferField<true, Index['Root']['Mutation']['fields']['idNonNull'], Index>
+      InferResult.InferField<true, Index['Root']['Mutation']['fields']['idNonNull'], Index>
     >
   >
 }

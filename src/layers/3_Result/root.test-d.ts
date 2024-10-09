@@ -1,11 +1,11 @@
-import type * as Schema from '../../../../tests/_/schemas/kitchen-sink/graffle/modules/SchemaBuildtime.js'
-import type { Index } from '../../../../tests/_/schemas/kitchen-sink/graffle/modules/SchemaIndex.js'
-import type * as SelectionSets from '../../../../tests/_/schemas/kitchen-sink/graffle/modules/SelectionSets.js'
-import { AssertEqual } from '../../../lib/assert-equal.js'
-import type { ResultSet } from '../__.js'
+import type * as Schema from '../../../tests/_/schemas/kitchen-sink/graffle/modules/SchemaBuildtime.js'
+import type { Index } from '../../../tests/_/schemas/kitchen-sink/graffle/modules/SchemaIndex.js'
+import type * as SelectionSets from '../../../tests/_/schemas/kitchen-sink/graffle/modules/SelectionSets.js'
+import { AssertEqual } from '../../lib/assert-equal.js'
+import type { InferResult } from './__.js'
 import type { PickSelectsPositiveIndicatorAndNotSelectAlias } from './root.js'
 
-type $<$SelectionSet extends SelectionSets.Query> = ResultSet.Query<$SelectionSet, Index>
+type $<$SelectionSet extends SelectionSets.Query> = InferResult.Query<$SelectionSet, Index>
 
 // dprint-ignore
 {
@@ -133,6 +133,6 @@ AssertEqual<$<{ stringWithArgs: { $: { string: '' } } }>, { stringWithArgs: null
 // @ts-expect-error invalid query
 type Result =  $<{ id2: true }>
 // unknown field
-AssertEqual<Result, { id2: ResultSet.Errors.UnknownFieldName<'id2', Schema.Root.Query> }>()
+AssertEqual<Result, { id2: InferResult.Errors.UnknownFieldName<'id2', Schema.Root.Query> }>()
 
 }

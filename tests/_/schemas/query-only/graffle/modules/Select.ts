@@ -1,4 +1,4 @@
-import type { ResultSet } from '../../../../../../src/entrypoints/schema.js'
+import type { InferResult } from '../../../../../../src/entrypoints/schema.js'
 import * as Data from './Data.js'
 import type { Index } from './SchemaIndex.js'
 import type * as SelectionSets from './SelectionSets.js'
@@ -40,7 +40,7 @@ export const Select = createSelect(Data.Name)
 export namespace Select {
   // Root Types
   // ----------
-  export type Query<$SelectionSet extends SelectionSets.Query> = ResultSet.InferRoot<$SelectionSet, Index, 'Query'>
+  export type Query<$SelectionSet extends SelectionSets.Query> = InferResult.InferRoot<$SelectionSet, Index, 'Query'>
   // Object Types
   // ------------
 

@@ -1,1 +1,1 @@
-export * as ResultSet from './_.js'
+export * as InferResult from './_.js'

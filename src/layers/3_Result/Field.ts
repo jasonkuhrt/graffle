@@ -1,8 +1,8 @@
 import type { Simplify } from 'type-fest'
-import type { TSError } from '../../../lib/TSError.js'
-import type { Schema } from '../../1_Schema/__.js'
-import type { Select } from '../../2_Select/__.js'
-import type { SchemaIndex } from '../../4_generator/generators/SchemaIndex.js'
+import type { TSError } from '../../lib/TSError.js'
+import type { Schema } from '../1_Schema/__.js'
+import type { Select } from '../2_Select/__.js'
+import type { SchemaIndex } from '../4_generator/generators/SchemaIndex.js'
 import type { InferInterface, InferObject, InferUnion } from './root.js'
 
 // dprint-ignore
