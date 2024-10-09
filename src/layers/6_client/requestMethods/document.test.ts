@@ -1,4 +1,3 @@
-import console from 'console'
 import { describe, expect, test } from 'vitest'
 import { db } from '../../../../tests/_/schemas/db.js'
 import { Graffle } from '../../../../tests/_/schemas/kitchen-sink/graffle/__.js'

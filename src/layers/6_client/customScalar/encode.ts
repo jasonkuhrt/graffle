@@ -1,5 +1,5 @@
-import { describe, test } from 'vitest'
-import { db } from '../../../../tests/_/schemas/db.js'
+// import { describe, test } from 'vitest'
+// import { db } from '../../../../tests/_/schemas/db.js'
 
 // // dprint-ignore
 // describe(`custom scalars`, () => {
