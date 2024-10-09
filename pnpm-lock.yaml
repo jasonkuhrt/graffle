@@ -44,13 +44,13 @@ importers:
         version: 1.26.0(@opentelemetry/api@1.9.0)
       '@pothos/core':
         specifier: ^4.2.0
-        version: 4.2.0(graphql@16.9.0)
+        version: 4.3.0(graphql@16.9.0)
       '@pothos/plugin-simple-objects':
         specifier: ^4.1.0
-        version: 4.1.0(@pothos/core@4.2.0(graphql@16.9.0))(graphql@16.9.0)
+        version: 4.1.0(@pothos/core@4.3.0(graphql@16.9.0))(graphql@16.9.0)
       '@pothos/plugin-zod':
         specifier: ^4.1.0
-        version: 4.1.0(@pothos/core@4.2.0(graphql@16.9.0))(graphql@16.9.0)(zod@3.23.8)
+        version: 4.1.0(@pothos/core@4.3.0(graphql@16.9.0))(graphql@16.9.0)(zod@3.23.8)
       '@tsconfig/node20':
         specifier: ^20.1.4
         version: 20.1.4
@@ -924,8 +924,8 @@ packages:
     resolution: {integrity: sha512-sAay1RrB+ONOem0OZanAR1ZI/k7yDpnOQSQmTMuGImUQb2y8EbSaCJ94FQluM74xoU03vlb2d2U90hZluL6nQg==}
     engines: {node: '>=14'}
 
-  '@pothos/core@4.2.0':
-    resolution: {integrity: sha512-dEoQCaA/pCPg3MhjGCwBF1QRbtOPysXm4nivQQsq6OrOvC7pU+KJNVdBSwpi1ZtTLtd4wg+PCC8Js9GrCyh9sw==}
+  '@pothos/core@4.3.0':
+    resolution: {integrity: sha512-i4nyI8wSCjxdHUomqQ2K3FH0Glklomfv4tJNifQVU9lPtQKoKaS69VxGv+fru0HAZzb1eC1XPEPN3XPCYcvZ7Q==}
     peerDependencies:
       graphql: '>=16.6.0'
 
@@ -4730,18 +4730,18 @@ snapshots:
 
   '@opentelemetry/semantic-conventions@1.27.0': {}
 
-  '@pothos/core@4.2.0(graphql@16.9.0)':
+  '@pothos/core@4.3.0(graphql@16.9.0)':
     dependencies:
       graphql: 16.9.0
 
-  '@pothos/plugin-simple-objects@4.1.0(@pothos/core@4.2.0(graphql@16.9.0))(graphql@16.9.0)':
+  '@pothos/plugin-simple-objects@4.1.0(@pothos/core@4.3.0(graphql@16.9.0))(graphql@16.9.0)':
     dependencies:
-      '@pothos/core': 4.2.0(graphql@16.9.0)
+      '@pothos/core': 4.3.0(graphql@16.9.0)
       graphql: 16.9.0
 
-  '@pothos/plugin-zod@4.1.0(@pothos/core@4.2.0(graphql@16.9.0))(graphql@16.9.0)(zod@3.23.8)':
+  '@pothos/plugin-zod@4.1.0(@pothos/core@4.3.0(graphql@16.9.0))(graphql@16.9.0)(zod@3.23.8)':
     dependencies:
-      '@pothos/core': 4.2.0(graphql@16.9.0)
+      '@pothos/core': 4.3.0(graphql@16.9.0)
       graphql: 16.9.0
       zod: 3.23.8
 
