@@ -2,6 +2,8 @@
 
 exports[`alias > Query - { id: [ 'x', { 'undefined': true } ] } 1`] = `
 "
+
+--------------GRAFFLE QUERY-------------
 {
   "id": [
     "x",
@@ -10,30 +12,38 @@ exports[`alias > Query - { id: [ 'x', { 'undefined': true } ] } 1`] = `
     }
   ]
 }
---------------
+--------GRAPHQL DOCUMENT & VARIABLES--------
 {
   x: id @skip(if: true)
 }
+----------------
+{}
 "
 `;
 
 exports[`alias > Query - { id: [ 'x', true ] } 1`] = `
 "
+
+--------------GRAFFLE QUERY-------------
 {
   "id": [
     "x",
     true
   ]
 }
---------------
+--------GRAPHQL DOCUMENT & VARIABLES--------
 {
   x: id
 }
+----------------
+{}
 "
 `;
 
 exports[`alias > Query - { id: [ [ 'x', true ], [ 'id2', true ] ] } 1`] = `
 "
+
+--------------GRAFFLE QUERY-------------
 {
   "id": [
     [
@@ -46,16 +56,20 @@ exports[`alias > Query - { id: [ [ 'x', true ], [ 'id2', true ] ] } 1`] = `
     ]
   ]
 }
---------------
+--------GRAPHQL DOCUMENT & VARIABLES--------
 {
   x: id
   id2: id
 }
+----------------
+{}
 "
 `;
 
 exports[`alias > Query - { object: [ 'x', { 'undefined': true, id: true } ] } 1`] = `
 "
+
+--------------GRAFFLE QUERY-------------
 {
   "object": [
     "x",
@@ -65,17 +79,21 @@ exports[`alias > Query - { object: [ 'x', { 'undefined': true, id: true } ] } 1`
     }
   ]
 }
---------------
+--------GRAPHQL DOCUMENT & VARIABLES--------
 {
   x: object @skip(if: true) {
     id
   }
 }
+----------------
+{}
 "
 `;
 
 exports[`arguments > Query - { objectWithArgs: { '$': { id: '' }, id: true } } 1`] = `
 "
+
+--------------GRAFFLE QUERY-------------
 {
   "objectWithArgs": {
     "$": {
@@ -84,34 +102,42 @@ exports[`arguments > Query - { objectWithArgs: { '$': { id: '' }, id: true } } 1
     "id": true
   }
 }
---------------
+--------GRAPHQL DOCUMENT & VARIABLES--------
 {
   objectWithArgs(id: "") {
     id
   }
 }
+----------------
+{}
 "
 `;
 
 exports[`arguments > Query - { objectWithArgs: { '$': {}, id: true } } 1`] = `
 "
+
+--------------GRAFFLE QUERY-------------
 {
   "objectWithArgs": {
     "$": {},
     "id": true
   }
 }
---------------
+--------GRAPHQL DOCUMENT & VARIABLES--------
 {
   objectWithArgs {
     id
   }
 }
+----------------
+{}
 "
 `;
 
 exports[`arguments > Query - { stringWithArgs: { '$': { boolean: true, float: 1 } } } 1`] = `
 "
+
+--------------GRAFFLE QUERY-------------
 {
   "stringWithArgs": {
     "$": {
@@ -120,29 +146,37 @@ exports[`arguments > Query - { stringWithArgs: { '$': { boolean: true, float: 1 
     }
   }
 }
---------------
+--------GRAPHQL DOCUMENT & VARIABLES--------
 {
   stringWithArgs(boolean: true, float: 1)
 }
+----------------
+{}
 "
 `;
 
 exports[`arguments > Query - { stringWithArgs: { '$': {} } } 1`] = `
 "
+
+--------------GRAFFLE QUERY-------------
 {
   "stringWithArgs": {
     "$": {}
   }
 }
---------------
+--------GRAPHQL DOCUMENT & VARIABLES--------
 {
   stringWithArgs
 }
+----------------
+{}
 "
 `;
 
 exports[`arguments > custom scalars > Query - arg field > arg field 1`] = `
 "
+
+--------------GRAFFLE QUERY-------------
 {
   "dateArg": {
     "$": {
@@ -150,15 +184,19 @@ exports[`arguments > custom scalars > Query - arg field > arg field 1`] = `
     }
   }
 }
---------------
+--------GRAPHQL DOCUMENT & VARIABLES--------
 {
   dateArg(date: {})
 }
+----------------
+{}
 "
 `;
 
 exports[`arguments > custom scalars > Query - arg field in list (null) > arg field in list (null) 1`] = `
 "
+
+--------------GRAFFLE QUERY-------------
 {
   "dateArgList": {
     "$": {
@@ -166,15 +204,19 @@ exports[`arguments > custom scalars > Query - arg field in list (null) > arg fie
     }
   }
 }
---------------
+--------GRAPHQL DOCUMENT & VARIABLES--------
 {
   dateArgList(date: null)
 }
+----------------
+{}
 "
 `;
 
 exports[`arguments > custom scalars > Query - arg field in list > arg field in list 1`] = `
 "
+
+--------------GRAFFLE QUERY-------------
 {
   "dateArgList": {
     "$": {
@@ -185,15 +227,19 @@ exports[`arguments > custom scalars > Query - arg field in list > arg field in l
     }
   }
 }
---------------
+--------GRAPHQL DOCUMENT & VARIABLES--------
 {
   dateArgList(date: [{}, {}])
 }
+----------------
+{}
 "
 `;
 
 exports[`arguments > custom scalars > Query - arg field in non-null > arg field in non-null 1`] = `
 "
+
+--------------GRAFFLE QUERY-------------
 {
   "dateArgNonNull": {
     "$": {
@@ -201,15 +247,19 @@ exports[`arguments > custom scalars > Query - arg field in non-null > arg field 
     }
   }
 }
---------------
+--------GRAPHQL DOCUMENT & VARIABLES--------
 {
   dateArgNonNull(date: {})
 }
+----------------
+{}
 "
 `;
 
 exports[`arguments > custom scalars > Query - arg field in non-null list (with list) > arg field in non-null list (with list) 1`] = `
 "
+
+--------------GRAFFLE QUERY-------------
 {
   "dateArgNonNullList": {
     "$": {
@@ -220,15 +270,19 @@ exports[`arguments > custom scalars > Query - arg field in non-null list (with l
     }
   }
 }
---------------
+--------GRAPHQL DOCUMENT & VARIABLES--------
 {
   dateArgNonNullList(date: [{}, {}])
 }
+----------------
+{}
 "
 `;
 
 exports[`arguments > custom scalars > Query - arg field in non-null list (with null) > arg field in non-null list (with null) 1`] = `
 "
+
+--------------GRAFFLE QUERY-------------
 {
   "dateArgNonNullList": {
     "$": {
@@ -239,15 +293,19 @@ exports[`arguments > custom scalars > Query - arg field in non-null list (with n
     }
   }
 }
---------------
+--------GRAPHQL DOCUMENT & VARIABLES--------
 {
   dateArgNonNullList(date: [null, {}])
 }
+----------------
+{}
 "
 `;
 
 exports[`arguments > custom scalars > Query - arg field in non-null list non-null > arg field in non-null list non-null 1`] = `
 "
+
+--------------GRAFFLE QUERY-------------
 {
   "dateArgNonNullListNonNull": {
     "$": {
@@ -258,15 +316,19 @@ exports[`arguments > custom scalars > Query - arg field in non-null list non-nul
     }
   }
 }
---------------
+--------GRAPHQL DOCUMENT & VARIABLES--------
 {
   dateArgNonNullListNonNull(date: [{}, {}])
 }
+----------------
+{}
 "
 `;
 
 exports[`arguments > custom scalars > Query - input object field > input object field 1`] = `
 "
+
+--------------GRAFFLE QUERY-------------
 {
   "dateArgInputObject": {
     "$": {
@@ -278,15 +340,19 @@ exports[`arguments > custom scalars > Query - input object field > input object 
     }
   }
 }
---------------
+--------GRAPHQL DOCUMENT & VARIABLES--------
 {
   dateArgInputObject(input: {idRequired: "", dateRequired: {}, date: {}})
 }
+----------------
+{}
 "
 `;
 
 exports[`arguments > custom scalars > Query - nested input object field > nested input object field 1`] = `
 "
+
+--------------GRAFFLE QUERY-------------
 {
   "InputObjectNested": {
     "$": {
@@ -300,17 +366,21 @@ exports[`arguments > custom scalars > Query - nested input object field > nested
     }
   }
 }
---------------
+--------GRAPHQL DOCUMENT & VARIABLES--------
 {
   InputObjectNested(
     input: {InputObject: {idRequired: "", dateRequired: {}, date: {}}}
   )
 }
+----------------
+{}
 "
 `;
 
 exports[`directive > $include > Query - { object: { 'undefined': { if: false }, id: true } } 1`] = `
 "
+
+--------------GRAFFLE QUERY-------------
 {
   "object": {
     "$include": {
@@ -319,17 +389,21 @@ exports[`directive > $include > Query - { object: { 'undefined': { if: false }, 
     "id": true
   }
 }
---------------
+--------GRAPHQL DOCUMENT & VARIABLES--------
 {
   object @include(if: false) {
     id
   }
 }
+----------------
+{}
 "
 `;
 
 exports[`directive > $include > Query - { object: { 'undefined': { if: true }, id: true } } 1`] = `
 "
+
+--------------GRAFFLE QUERY-------------
 {
   "object": {
     "$include": {
@@ -338,101 +412,125 @@ exports[`directive > $include > Query - { object: { 'undefined': { if: true }, i
     "id": true
   }
 }
---------------
+--------GRAPHQL DOCUMENT & VARIABLES--------
 {
   object @include(if: true) {
     id
   }
 }
+----------------
+{}
 "
 `;
 
 exports[`directive > $include > Query - { object: { 'undefined': { if: undefined }, id: true } } 1`] = `
 "
+
+--------------GRAFFLE QUERY-------------
 {
   "object": {
     "$include": {},
     "id": true
   }
 }
---------------
+--------GRAPHQL DOCUMENT & VARIABLES--------
 {
   object @include(if: true) {
     id
   }
 }
+----------------
+{}
 "
 `;
 
 exports[`directive > $include > Query - { object: { 'undefined': {}, id: true } } 1`] = `
 "
+
+--------------GRAFFLE QUERY-------------
 {
   "object": {
     "$include": {},
     "id": true
   }
 }
---------------
+--------GRAPHQL DOCUMENT & VARIABLES--------
 {
   object @include(if: true) {
     id
   }
 }
+----------------
+{}
 "
 `;
 
 exports[`directive > $include > Query - { object: { 'undefined': false, id: true } } 1`] = `
 "
+
+--------------GRAFFLE QUERY-------------
 {
   "object": {
     "$include": false,
     "id": true
   }
 }
---------------
+--------GRAPHQL DOCUMENT & VARIABLES--------
 {
   object @include(if: false) {
     id
   }
 }
+----------------
+{}
 "
 `;
 
 exports[`directive > $include > Query - { object: { 'undefined': true, id: true } } 1`] = `
 "
+
+--------------GRAFFLE QUERY-------------
 {
   "object": {
     "$include": true,
     "id": true
   }
 }
---------------
+--------GRAPHQL DOCUMENT & VARIABLES--------
 {
   object @include(if: true) {
     id
   }
 }
+----------------
+{}
 "
 `;
 
 exports[`directive > $include > Query - { object: { 'undefined': undefined, id: true } } 1`] = `
 "
+
+--------------GRAFFLE QUERY-------------
 {
   "object": {
     "id": true
   }
 }
---------------
+--------GRAPHQL DOCUMENT & VARIABLES--------
 {
   object {
     id
   }
 }
+----------------
+{}
 "
 `;
 
 exports[`directive > $skip > Query - { object: { 'undefined': { if: false }, id: true } } 1`] = `
 "
+
+--------------GRAFFLE QUERY-------------
 {
   "object": {
     "$skip": {
@@ -441,17 +539,21 @@ exports[`directive > $skip > Query - { object: { 'undefined': { if: false }, id:
     "id": true
   }
 }
---------------
+--------GRAPHQL DOCUMENT & VARIABLES--------
 {
   object @skip(if: false) {
     id
   }
 }
+----------------
+{}
 "
 `;
 
 exports[`directive > $skip > Query - { object: { 'undefined': { if: true }, id: true } } 1`] = `
 "
+
+--------------GRAFFLE QUERY-------------
 {
   "object": {
     "$skip": {
@@ -460,101 +562,125 @@ exports[`directive > $skip > Query - { object: { 'undefined': { if: true }, id: 
     "id": true
   }
 }
---------------
+--------GRAPHQL DOCUMENT & VARIABLES--------
 {
   object @skip(if: true) {
     id
   }
 }
+----------------
+{}
 "
 `;
 
 exports[`directive > $skip > Query - { object: { 'undefined': { if: undefined }, id: true } } 1`] = `
 "
+
+--------------GRAFFLE QUERY-------------
 {
   "object": {
     "$skip": {},
     "id": true
   }
 }
---------------
+--------GRAPHQL DOCUMENT & VARIABLES--------
 {
   object @skip(if: true) {
     id
   }
 }
+----------------
+{}
 "
 `;
 
 exports[`directive > $skip > Query - { object: { 'undefined': {}, id: true } } 1`] = `
 "
+
+--------------GRAFFLE QUERY-------------
 {
   "object": {
     "$skip": {},
     "id": true
   }
 }
---------------
+--------GRAPHQL DOCUMENT & VARIABLES--------
 {
   object @skip(if: true) {
     id
   }
 }
+----------------
+{}
 "
 `;
 
 exports[`directive > $skip > Query - { object: { 'undefined': false, id: true } } 1`] = `
 "
+
+--------------GRAFFLE QUERY-------------
 {
   "object": {
     "$skip": false,
     "id": true
   }
 }
---------------
+--------GRAPHQL DOCUMENT & VARIABLES--------
 {
   object @skip(if: false) {
     id
   }
 }
+----------------
+{}
 "
 `;
 
 exports[`directive > $skip > Query - { object: { 'undefined': true, id: true } } 1`] = `
 "
+
+--------------GRAFFLE QUERY-------------
 {
   "object": {
     "$skip": true,
     "id": true
   }
 }
---------------
+--------GRAPHQL DOCUMENT & VARIABLES--------
 {
   object @skip(if: true) {
     id
   }
 }
+----------------
+{}
 "
 `;
 
 exports[`directive > $skip > Query - { object: { 'undefined': undefined, id: true } } 1`] = `
 "
+
+--------------GRAFFLE QUERY-------------
 {
   "object": {
     "id": true
   }
 }
---------------
+--------GRAPHQL DOCUMENT & VARIABLES--------
 {
   object {
     id
   }
 }
+----------------
+{}
 "
 `;
 
 exports[`enum > Query - { result: { '$': { 'undefined': 'Object1' }, __typename: true } } 1`] = `
 "
+
+--------------GRAFFLE QUERY-------------
 {
   "result": {
     "$": {
@@ -563,34 +689,42 @@ exports[`enum > Query - { result: { '$': { 'undefined': 'Object1' }, __typename:
     "__typename": true
   }
 }
---------------
+--------GRAPHQL DOCUMENT & VARIABLES--------
 {
   result(case: Object1) {
     __typename
   }
 }
+----------------
+{}
 "
 `;
 
 exports[`inline fragment > field group > Query - directive > directive 1`] = `
 "
+
+--------------GRAFFLE QUERY-------------
 {
   "___": {
     "__typename": true,
     "$include": true
   }
 }
---------------
+--------GRAPHQL DOCUMENT & VARIABLES--------
 {
   ... @include(if: true) {
     __typename
   }
 }
+----------------
+{}
 "
 `;
 
 exports[`inline fragment > field group > Query - interface > interface 1`] = `
 "
+
+--------------GRAFFLE QUERY-------------
 {
   "interface": {
     "___": {
@@ -598,7 +732,7 @@ exports[`inline fragment > field group > Query - interface > interface 1`] = `
     }
   }
 }
---------------
+--------GRAPHQL DOCUMENT & VARIABLES--------
 {
   interface {
     ... {
@@ -606,11 +740,15 @@ exports[`inline fragment > field group > Query - interface > interface 1`] = `
     }
   }
 }
+----------------
+{}
 "
 `;
 
 exports[`inline fragment > field group > Query - multiple > multiple 1`] = `
 "
+
+--------------GRAFFLE QUERY-------------
 {
   "___": [
     {
@@ -621,7 +759,7 @@ exports[`inline fragment > field group > Query - multiple > multiple 1`] = `
     }
   ]
 }
---------------
+--------GRAPHQL DOCUMENT & VARIABLES--------
 {
   ... {
     __typename
@@ -630,27 +768,35 @@ exports[`inline fragment > field group > Query - multiple > multiple 1`] = `
     abcEnum
   }
 }
+----------------
+{}
 "
 `;
 
 exports[`inline fragment > field group > Query - one > one 1`] = `
 "
+
+--------------GRAFFLE QUERY-------------
 {
   "___": {
     "__typename": true
   }
 }
---------------
+--------GRAPHQL DOCUMENT & VARIABLES--------
 {
   ... {
     __typename
   }
 }
+----------------
+{}
 "
 `;
 
 exports[`inline fragment > field group > Query - union > union 1`] = `
 "
+
+--------------GRAFFLE QUERY-------------
 {
   "unionFooBar": {
     "___": {
@@ -658,7 +804,7 @@ exports[`inline fragment > field group > Query - union > union 1`] = `
     }
   }
 }
---------------
+--------GRAPHQL DOCUMENT & VARIABLES--------
 {
   unionFooBar {
     ... {
@@ -666,27 +812,35 @@ exports[`inline fragment > field group > Query - union > union 1`] = `
     }
   }
 }
+----------------
+{}
 "
 `;
 
 exports[`inline fragment > type condition union > Query - __typename (no fragment) > __typename (no fragment) 1`] = `
 "
+
+--------------GRAFFLE QUERY-------------
 {
   "unionFooBar": {
     "__typename": true
   }
 }
---------------
+--------GRAPHQL DOCUMENT & VARIABLES--------
 {
   unionFooBar {
     __typename
   }
 }
+----------------
+{}
 "
 `;
 
 exports[`inline fragment > type condition union > Query - directive > directive 1`] = `
 "
+
+--------------GRAFFLE QUERY-------------
 {
   "unionFooBar": {
     "___on_Bar": {
@@ -695,7 +849,7 @@ exports[`inline fragment > type condition union > Query - directive > directive 
     }
   }
 }
---------------
+--------GRAPHQL DOCUMENT & VARIABLES--------
 {
   unionFooBar {
     ... on Bar @skip(if: true) {
@@ -703,11 +857,15 @@ exports[`inline fragment > type condition union > Query - directive > directive 
     }
   }
 }
+----------------
+{}
 "
 `;
 
 exports[`inline fragment > type condition union > Query - scalar > scalar 1`] = `
 "
+
+--------------GRAFFLE QUERY-------------
 {
   "unionFooBar": {
     "___on_Bar": {
@@ -715,7 +873,7 @@ exports[`inline fragment > type condition union > Query - scalar > scalar 1`] = 
     }
   }
 }
---------------
+--------GRAPHQL DOCUMENT & VARIABLES--------
 {
   unionFooBar {
     ... on Bar {
@@ -723,64 +881,84 @@ exports[`inline fragment > type condition union > Query - scalar > scalar 1`] = 
     }
   }
 }
+----------------
+{}
 "
 `;
 
 exports[`other > Query - { __typename: true } 1`] = `
 "
+
+--------------GRAFFLE QUERY-------------
 {
   "__typename": true
 }
---------------
+--------GRAPHQL DOCUMENT & VARIABLES--------
 {
   __typename
 }
+----------------
+{}
 "
 `;
 
 exports[`other > Query - { id: true, string: false } 1`] = `
 "
+
+--------------GRAFFLE QUERY-------------
 {
   "id": true,
   "string": false
 }
---------------
+--------GRAPHQL DOCUMENT & VARIABLES--------
 {
   id
 }
+----------------
+{}
 "
 `;
 
 exports[`other > Query - { id: true, string: undefined } 1`] = `
 "
+
+--------------GRAFFLE QUERY-------------
 {
   "id": true
 }
---------------
+--------GRAPHQL DOCUMENT & VARIABLES--------
 {
   id
 }
+----------------
+{}
 "
 `;
 
 exports[`other > Query - { object: { id: true } } 1`] = `
 "
+
+--------------GRAFFLE QUERY-------------
 {
   "object": {
     "id": true
   }
 }
---------------
+--------GRAPHQL DOCUMENT & VARIABLES--------
 {
   object {
     id
   }
 }
+----------------
+{}
 "
 `;
 
 exports[`other > Query - { objectNested: { object: { string: true, id: true, int: { 'undefined': true } } } } 1`] = `
 "
+
+--------------GRAFFLE QUERY-------------
 {
   "objectNested": {
     "object": {
@@ -792,7 +970,7 @@ exports[`other > Query - { objectNested: { object: { string: true, id: true, int
     }
   }
 }
---------------
+--------GRAPHQL DOCUMENT & VARIABLES--------
 {
   objectNested {
     object {
@@ -802,11 +980,15 @@ exports[`other > Query - { objectNested: { object: { string: true, id: true, int
     }
   }
 }
+----------------
+{}
 "
 `;
 
 exports[`other > Query - { objectNested: { object: { string: true, id: true, int: false } } } 1`] = `
 "
+
+--------------GRAFFLE QUERY-------------
 {
   "objectNested": {
     "object": {
@@ -816,7 +998,7 @@ exports[`other > Query - { objectNested: { object: { string: true, id: true, int
     }
   }
 }
---------------
+--------GRAPHQL DOCUMENT & VARIABLES--------
 {
   objectNested {
     object {
@@ -825,17 +1007,23 @@ exports[`other > Query - { objectNested: { object: { string: true, id: true, int
     }
   }
 }
+----------------
+{}
 "
 `;
 
 exports[`other > Query - { string: true } 1`] = `
 "
+
+--------------GRAFFLE QUERY-------------
 {
   "string": true
 }
---------------
+--------GRAPHQL DOCUMENT & VARIABLES--------
 {
   string
 }
+----------------
+{}
 "
 `;
