@@ -4,14 +4,14 @@ import type { TSError } from '../../lib/TSError.js'
 import type { Schema } from '../1_Schema/__.js'
 import type { Select } from '../2_Select/__.js'
 import type { SchemaIndex } from '../4_generator/generators/SchemaIndex.js'
-import type { InferField } from './Field.js'
+import type { Field } from './Field.js'
 import type { InferSelectionSelectAlias } from './SelectAlias.js'
 
 export type RootViaObject<
   $SelectionSet,
   $Schema extends SchemaIndex,
   $RootType extends Schema.Output.RootType,
-> = InferRoot<
+> = Root<
   $SelectionSet,
   $Schema,
   $RootType['fields']['__typename']['type']['type']
@@ -19,39 +19,39 @@ export type RootViaObject<
 
 // dprint-ignore
 export type Query<$SelectionSet, $Schema extends SchemaIndex> =
-  InferRoot<$SelectionSet, $Schema, 'Query'>
+  Root<$SelectionSet, $Schema, 'Query'>
 
 // dprint-ignore
 export type Mutation<$SelectionSet, $Schema extends SchemaIndex> =
-  InferRoot<$SelectionSet, $Schema, 'Mutation'>
+  Root<$SelectionSet, $Schema, 'Mutation'>
 
 // dprint-ignore
 export type Subscription<$SelectionSet, $Schema extends SchemaIndex> =
-  InferRoot<$SelectionSet, $Schema, 'Subscription'>
+  Root<$SelectionSet, $Schema, 'Subscription'>
 
-export type InferRoot<
+export type Root<
   $SelectionSet,
   $Schema extends SchemaIndex,
   $RootTypeName extends Schema.RootTypeName,
-> = InferObject<$SelectionSet, $Schema, ExcludeNull<$Schema['Root'][$RootTypeName]>>
+> = Object<$SelectionSet, $Schema, ExcludeNull<$Schema['Root'][$RootTypeName]>>
 
 // dprint-ignore
-export type InferObject<$SelectionSet, $Schema extends SchemaIndex, $Node extends Schema.Output.Object$2> =
+export type Object<$SelectionSet, $Schema extends SchemaIndex, $Node extends Schema.Output.Object$2> =
   Select.SelectScalarsWildcard.IsSelectScalarsWildcard<$SelectionSet> extends true
     // todo what about when scalars wildcard is combined with other fields like relations?
-    ? InferSelectScalarsWildcard<$SelectionSet, $Schema,$Node>
+    ? SelectScalarsWildcard<$SelectionSet, $Schema,$Node>
     :
       Simplify<(
-        & InferSelectionNonSelectAlias<$SelectionSet, $Schema, $Node>
+        & SelectionNonSelectAlias<$SelectionSet, $Schema, $Node>
         & InferSelectionSelectAlias<$SelectionSet, $Schema, $Node>
       )>
 
 // dprint-ignore
-type InferSelectionNonSelectAlias<$SelectionSet , $Schema extends SchemaIndex, $Node extends Schema.Output.Object$2> =
+type SelectionNonSelectAlias<$SelectionSet , $Schema extends SchemaIndex, $Node extends Schema.Output.Object$2> =
   {
     [$Select in PickSelectsPositiveIndicatorAndNotSelectAlias<$SelectionSet>]:
       $Select extends keyof $Node['fields']
-        ? InferField<$SelectionSet[$Select], $Node['fields'][$Select], $Schema>
+        ? Field<$SelectionSet[$Select], $Node['fields'][$Select], $Schema>
         : Errors.UnknownFieldName<$Select, $Node>
   }
 
@@ -66,12 +66,12 @@ export type PickSelectsPositiveIndicatorAndNotSelectAlias<$SelectionSet> = Strin
   ]: 0
 }>
 
-type InferSelectScalarsWildcard<
+type SelectScalarsWildcard<
   $SelectionSet,
   $Index extends SchemaIndex,
   $Node extends Schema.Output.Object$2,
 > = {
-  [$Key in keyof PickScalarFields<$Node>]: InferField<$SelectionSet, $Node['fields'][$Key], $Index>
+  [$Key in keyof PickScalarFields<$Node>]: Field<$SelectionSet, $Node['fields'][$Key], $Index>
 }
 
 // todo could we use this since the valuesoremptyobject could drop the nevers?
@@ -93,17 +93,17 @@ type InferSelectScalarsWildcard<
 // >
 
 // dprint-ignore
-export type InferUnion<$SelectionSet, $Index extends SchemaIndex, $Node extends Schema.Output.Union> =
-  InferInlineFragmentTypeConditional<$SelectionSet, $Node['members'][number], $Index>
+export type Union<$SelectionSet, $Index extends SchemaIndex, $Node extends Schema.Output.Union> =
+  InlineFragmentTypeConditional<$SelectionSet, $Node['members'][number], $Index>
 
 // dprint-ignore
-export type InferInterface<$SelectionSet, $Index extends SchemaIndex, $Node extends Schema.Output.Interface> =
-  InferInlineFragmentTypeConditional<$SelectionSet, $Node['implementors'][number], $Index>
+export type Interface<$SelectionSet, $Index extends SchemaIndex, $Node extends Schema.Output.Interface> =
+  InlineFragmentTypeConditional<$SelectionSet, $Node['implementors'][number], $Index>
 
 // dprint-ignore
-type InferInlineFragmentTypeConditional<$SelectionSet, $Node extends Schema.Output.Object$2, $Index extends SchemaIndex> =
+type InlineFragmentTypeConditional<$SelectionSet, $Node extends Schema.Output.Object$2, $Index extends SchemaIndex> =
   $Node extends any // force distribution
-    ? InferObject<
+    ? Object<
         & GetKeyOr<
             $SelectionSet,
             `${Select.InlineFragment.TypeConditionalKeyPrefix}${$Node['fields']['__typename']['type']['type']}`,

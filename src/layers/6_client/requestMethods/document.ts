@@ -21,7 +21,7 @@ export type DocumentRunner<
       ResolveOutputReturnRootType<
         $$Config,
         $$Index,
-        InferResult.InferRoot<
+        InferResult.Root<
           AddTypenameToSelectedRootTypeResultFields<
             $$Config,
             $$Index,

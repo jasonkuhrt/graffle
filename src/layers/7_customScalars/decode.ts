@@ -9,7 +9,7 @@ import type { CustomScalarsIndex } from '../4_generator/generators/SchemaIndex.j
 /**
  * If a document is given then aliases will be decoded as well.
  */
-export const decode = (input: {
+export const decodeCustomScalars = (input: {
   data: Grafaid.SomeData | null | undefined
   customScalarsIndex: CustomScalarsIndex
   request: Grafaid.RequestInput

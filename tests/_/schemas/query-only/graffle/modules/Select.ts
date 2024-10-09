@@ -40,7 +40,7 @@ export const Select = createSelect(Data.Name)
 export namespace Select {
   // Root Types
   // ----------
-  export type Query<$SelectionSet extends SelectionSets.Query> = InferResult.InferRoot<$SelectionSet, Index, 'Query'>
+  export type Query<$SelectionSet extends SelectionSets.Query> = InferResult.Root<$SelectionSet, Index, 'Query'>
   // Object Types
   // ------------
 

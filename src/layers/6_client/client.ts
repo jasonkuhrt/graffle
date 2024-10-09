@@ -2,6 +2,7 @@ import type { Fluent } from '../../lib/fluent/__.js'
 import { proxyGet } from '../../lib/prelude.js'
 import type { SchemaIndex } from '../4_generator/generators/SchemaIndex.js'
 import type { GlobalRegistry } from '../4_generator/globalRegistry.js'
+import { CustomScalars } from '../7_customScalars/extension.js'
 import { type UseFn, useProperties } from './extension/use.js'
 import { type ClientContext, createState, type FnParametersProperty, type StateWithoutConfig } from './fluent.js'
 import { type FnGql, gqlProperties } from './gql/gql.js'
@@ -51,7 +52,7 @@ type Create = <$Input extends InputStatic<GlobalRegistry.SchemaUnion>>(input: $I
 
 export const create: Create = (input) => {
   const initialState = createState({
-    extensions: [],
+    extensions: [CustomScalars()],
     retry: null,
     input,
   })

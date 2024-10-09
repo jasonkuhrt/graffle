@@ -29,7 +29,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'id',
-      InferResult.InferField<true, Index['Root']['Query']['fields']['id'], Index>
+      InferResult.Field<true, Index['Root']['Query']['fields']['id'], Index>
     >
   >
   idNonNull: () => Promise<
@@ -37,7 +37,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'idNonNull',
-      InferResult.InferField<true, Index['Root']['Query']['fields']['idNonNull'], Index>
+      InferResult.Field<true, Index['Root']['Query']['fields']['idNonNull'], Index>
     >
   >
 }

@@ -10,7 +10,7 @@ export const ModuleGeneratorSelect = createModuleGenerator(
   ({ config, code }) => {
     code(`import * as Data from './${ModuleGeneratorData.name}.js'`)
     code(`import type { Index } from './${ModuleGeneratorSchemaIndex.name}.js'`)
-    code(`import type { ResultSet } from '${config.paths.imports.grafflePackage.schema}'`)
+    code(`import type { InferResult } from '${config.paths.imports.grafflePackage.schema}'`)
     code(`import type * as SelectionSets from './${ModuleGeneratorSelectionSets.name}.js'`)
     code()
 
@@ -29,7 +29,7 @@ export const ModuleGeneratorSelect = createModuleGenerator(
     code(...config.schema.typeMapByKind.GraphQLRootType.map((type) => {
       return `export type ${type.name}<$SelectionSet extends SelectionSets.${
         renderName(type)
-      }> = ResultSet.InferRoot<$SelectionSet, Index, '${type.name}'>`
+      }> = InferResult.Root<$SelectionSet, Index, '${type.name}'>`
     }))
 
     code(typeTitle(config, `Object`))
@@ -38,7 +38,7 @@ export const ModuleGeneratorSelect = createModuleGenerator(
     code(...config.schema.typeMapByKind.GraphQLObjectType.map((type) => {
       return `export type ${type.name}<$SelectionSet extends SelectionSets.${
         renderName(type)
-      }> = ResultSet.InferObject<$SelectionSet, Index, Index['allTypes']['${type.name}']>`
+      }> = InferResult.Object<$SelectionSet, Index, Index['allTypes']['${type.name}']>`
     }))
 
     code(typeTitle(config, `Union`))
@@ -46,7 +46,7 @@ export const ModuleGeneratorSelect = createModuleGenerator(
     code(...config.schema.typeMapByKind.GraphQLUnionType.map((type) => {
       return `export type ${type.name}<$SelectionSet extends SelectionSets.${
         renderName(type)
-      }> = ResultSet.InferUnion<$SelectionSet, Index, Index['allTypes']['${type.name}']>`
+      }> = InferResult.Union<$SelectionSet, Index, Index['allTypes']['${type.name}']>`
     }))
 
     code(typeTitle(config, `Interface`))
@@ -54,7 +54,7 @@ export const ModuleGeneratorSelect = createModuleGenerator(
     code(...config.schema.typeMapByKind.GraphQLInterfaceType.map((type) => {
       return `export type ${type.name}<$SelectionSet extends SelectionSets.${
         renderName(type)
-      }> = ResultSet.InferInterface<$SelectionSet, Index, Index['allTypes']['${type.name}']>`
+      }> = InferResult.Interface<$SelectionSet, Index, Index['allTypes']['${type.name}']>`
     }))
 
     code(`}`) // namespace Select

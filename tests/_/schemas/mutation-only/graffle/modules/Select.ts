@@ -40,7 +40,7 @@ export const Select = createSelect(Data.Name)
 export namespace Select {
   // Root Types
   // ----------
-  export type Mutation<$SelectionSet extends SelectionSets.Mutation> = InferResult.InferRoot<
+  export type Mutation<$SelectionSet extends SelectionSets.Mutation> = InferResult.Root<
     $SelectionSet,
     Index,
     'Mutation'

@@ -29,7 +29,7 @@ export interface MutationMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'addPokemon',
-      InferResult.InferField<$SelectionSet, Index['Root']['Mutation']['fields']['addPokemon'], Index>
+      InferResult.Field<$SelectionSet, Index['Root']['Mutation']['fields']['addPokemon'], Index>
     >
   >
 }
@@ -60,7 +60,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'battles',
-      InferResult.InferField<$SelectionSet, Index['Root']['Query']['fields']['battles'], Index>
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['battles'], Index>
     >
   >
   beings: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.beings>) => Promise<
@@ -68,7 +68,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'beings',
-      InferResult.InferField<$SelectionSet, Index['Root']['Query']['fields']['beings'], Index>
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['beings'], Index>
     >
   >
   pokemon: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.pokemon>) => Promise<
@@ -76,7 +76,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'pokemon',
-      InferResult.InferField<$SelectionSet, Index['Root']['Query']['fields']['pokemon'], Index>
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['pokemon'], Index>
     >
   >
   pokemonByName: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.pokemonByName>) => Promise<
@@ -84,7 +84,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'pokemonByName',
-      InferResult.InferField<$SelectionSet, Index['Root']['Query']['fields']['pokemonByName'], Index>
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['pokemonByName'], Index>
     >
   >
   pokemons: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.pokemons>) => Promise<
@@ -92,7 +92,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'pokemons',
-      InferResult.InferField<$SelectionSet, Index['Root']['Query']['fields']['pokemons'], Index>
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['pokemons'], Index>
     >
   >
   trainerByName: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.trainerByName>) => Promise<
@@ -100,7 +100,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'trainerByName',
-      InferResult.InferField<$SelectionSet, Index['Root']['Query']['fields']['trainerByName'], Index>
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['trainerByName'], Index>
     >
   >
   trainers: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.trainers>) => Promise<
@@ -108,7 +108,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       $Config,
       Index,
       'trainers',
-      InferResult.InferField<$SelectionSet, Index['Root']['Query']['fields']['trainers'], Index>
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['trainers'], Index>
     >
   >
 }
