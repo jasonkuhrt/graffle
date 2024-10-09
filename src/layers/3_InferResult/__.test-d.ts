@@ -9,11 +9,15 @@ type $<$SelectionSet extends SelectionSets.Query> = InferResult.Query<$Selection
 
 // dprint-ignore
 {
-
+	
 AssertEqual<PickSelectsPositiveIndicatorAndNotSelectAlias<{ a: true }>, 'a'>()
 AssertEqual<PickSelectsPositiveIndicatorAndNotSelectAlias<{ a: ['b', true]; b: true }>, 'b'>()
 
+}
+
 // dprint-ignore
+{
+
 AssertEqual<$<{ __typename: true }>, { __typename: 'Query' }>()
 
 // Scalar
