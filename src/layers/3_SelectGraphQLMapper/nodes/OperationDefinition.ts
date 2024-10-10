@@ -1,29 +1,50 @@
+import type { Grafaid } from '../../../lib/grafaid/__.js'
 import { Nodes } from '../../../lib/grafaid/_Nodes.js'
 import type { Select } from '../../2_Select/__.js'
-import type { GraphQLNodeMapper } from '../types.js'
+import type { Context, GraphQLPreOperationMapper } from '../types.js'
 import { toGraphQLSelectionSet } from './SelectionSet.js'
 
-export const toGraphQLOperationDefinition: GraphQLNodeMapper<
-  Nodes.OperationDefinitionNode,
+export const toGraphQLOperationDefinition: GraphQLPreOperationMapper<
+  { operation: Nodes.OperationDefinitionNode; variables: Grafaid.Variables },
   [operation: Select.Document.OperationNormalized]
 > = (
-  context,
   index,
   operation,
 ) => {
-  const selectionSet = toGraphQLSelectionSet(context, index, operation.selectionSet, undefined)
+  const context: Context = {
+    captures: {
+      variables: [],
+    },
+  }
 
   const name = operation.name
     ? Nodes.Name({ value: operation.name })
     : undefined
 
-  return Nodes.OperationDefinition({
+  const selectionSet = toGraphQLSelectionSet(context, index, operation.selectionSet, undefined)
+
+  const variableDefinitions = context.captures.variables.map((captured) => {
+    return Nodes.VariableDefinition({
+      variable: Nodes.Variable({ name: Nodes.Name({ value: captured.name }) }),
+      type: Nodes.NamedType({ name: Nodes.Name({ value: captured.typeName }) }),
+    })
+  })
+
+  const graphqlOperation = Nodes.OperationDefinition({
     operation: operation.type,
     name,
     selectionSet,
+    variableDefinitions,
     // todo support directives on operations ??? Check what this feature/capability is about
     // directives
-    // todo, we have to extract variables from the context after traversal.
-    // variableDefinitions: [],
   })
+
+  const variables: Grafaid.Variables = Object.fromEntries(context.captures.variables.map(_ => {
+    return [_.name, _.value as any]
+  }))
+
+  return {
+    operation: graphqlOperation,
+    variables,
+  }
 }

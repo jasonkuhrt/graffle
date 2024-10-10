@@ -1,9 +1,9 @@
 import { Nodes } from '../../../lib/grafaid/_Nodes.js'
 import type { Select } from '../../2_Select/__.js'
-import type { GraphQLNodeMapper } from '../types.js'
+import type { GraphQLPostOperationMapper } from '../types.js'
 import { type SelectionSetContext, toGraphQLSelectionSet } from './SelectionSet.js'
 
-export const toGraphQLInlineFragment: GraphQLNodeMapper<
+export const toGraphQLInlineFragment: GraphQLPostOperationMapper<
   Nodes.InlineFragmentNode,
   [inlineFragment: InlineFragmentNormalized]
 > = (

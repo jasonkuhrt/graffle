@@ -1,10 +1,10 @@
 import { Nodes } from '../../../lib/grafaid/_Nodes.js'
 import { Select } from '../../2_Select/__.js'
 import { advanceIndex, type Field } from '../types.js'
-import type { GraphQLNodeMapper } from '../types.js'
+import type { GraphQLPostOperationMapper } from '../types.js'
 import { type SelectionSetContext, toGraphQLSelectionSet } from './SelectionSet.js'
 
-export const toGraphQLField: GraphQLNodeMapper<Nodes.FieldNode, [field: Field]> = (
+export const toGraphQLField: GraphQLPostOperationMapper<Nodes.FieldNode, [field: Field]> = (
   context,
   index,
   field,

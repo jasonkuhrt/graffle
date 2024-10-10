@@ -17,7 +17,7 @@ exports[`alias > Query - { id: [ 'x', { 'undefined': true } ] } 1`] = `
   x: id @skip(if: true)
 }
 ----------------
-{}
+null
 "
 `;
 
@@ -36,7 +36,7 @@ exports[`alias > Query - { id: [ 'x', true ] } 1`] = `
   x: id
 }
 ----------------
-{}
+null
 "
 `;
 
@@ -62,7 +62,7 @@ exports[`alias > Query - { id: [ [ 'x', true ], [ 'id2', true ] ] } 1`] = `
   id2: id
 }
 ----------------
-{}
+null
 "
 `;
 
@@ -86,7 +86,7 @@ exports[`alias > Query - { object: [ 'x', { 'undefined': true, id: true } ] } 1`
   }
 }
 ----------------
-{}
+null
 "
 `;
 
@@ -109,7 +109,7 @@ exports[`arguments > Query - { objectWithArgs: { '$': { id: '' }, id: true } } 1
   }
 }
 ----------------
-{}
+null
 "
 `;
 
@@ -130,7 +130,30 @@ exports[`arguments > Query - { objectWithArgs: { '$': {}, id: true } } 1`] = `
   }
 }
 ----------------
-{}
+null
+"
+`;
+
+exports[`arguments > Query - { result: { '$': { 'undefined': 'Object1' }, __typename: true } } 1`] = `
+"
+
+--------------GRAFFLE QUERY-------------
+{
+  "result": {
+    "$": {
+      "$case": "Object1"
+    },
+    "__typename": true
+  }
+}
+--------GRAPHQL DOCUMENT & VARIABLES--------
+{
+  result(case: Object1) {
+    __typename
+  }
+}
+----------------
+null
 "
 `;
 
@@ -151,7 +174,7 @@ exports[`arguments > Query - { stringWithArgs: { '$': { boolean: true, float: 1 
   stringWithArgs(boolean: true, float: 1)
 }
 ----------------
-{}
+null
 "
 `;
 
@@ -169,7 +192,7 @@ exports[`arguments > Query - { stringWithArgs: { '$': {} } } 1`] = `
   stringWithArgs
 }
 ----------------
-{}
+null
 "
 `;
 
@@ -189,7 +212,7 @@ exports[`arguments > custom scalars > Query - arg field > arg field 1`] = `
   dateArg(date: {})
 }
 ----------------
-{}
+null
 "
 `;
 
@@ -209,7 +232,7 @@ exports[`arguments > custom scalars > Query - arg field in list (null) > arg fie
   dateArgList(date: null)
 }
 ----------------
-{}
+null
 "
 `;
 
@@ -232,7 +255,7 @@ exports[`arguments > custom scalars > Query - arg field in list > arg field in l
   dateArgList(date: [{}, {}])
 }
 ----------------
-{}
+null
 "
 `;
 
@@ -252,7 +275,7 @@ exports[`arguments > custom scalars > Query - arg field in non-null > arg field 
   dateArgNonNull(date: {})
 }
 ----------------
-{}
+null
 "
 `;
 
@@ -275,7 +298,7 @@ exports[`arguments > custom scalars > Query - arg field in non-null list (with l
   dateArgNonNullList(date: [{}, {}])
 }
 ----------------
-{}
+null
 "
 `;
 
@@ -298,7 +321,7 @@ exports[`arguments > custom scalars > Query - arg field in non-null list (with n
   dateArgNonNullList(date: [null, {}])
 }
 ----------------
-{}
+null
 "
 `;
 
@@ -321,7 +344,7 @@ exports[`arguments > custom scalars > Query - arg field in non-null list non-nul
   dateArgNonNullListNonNull(date: [{}, {}])
 }
 ----------------
-{}
+null
 "
 `;
 
@@ -345,7 +368,7 @@ exports[`arguments > custom scalars > Query - input object field > input object 
   dateArgInputObject(input: {idRequired: "", dateRequired: {}, date: {}})
 }
 ----------------
-{}
+null
 "
 `;
 
@@ -373,7 +396,7 @@ exports[`arguments > custom scalars > Query - nested input object field > nested
   )
 }
 ----------------
-{}
+null
 "
 `;
 
@@ -396,7 +419,7 @@ exports[`directive > $include > Query - { object: { 'undefined': { if: false }, 
   }
 }
 ----------------
-{}
+null
 "
 `;
 
@@ -419,7 +442,7 @@ exports[`directive > $include > Query - { object: { 'undefined': { if: true }, i
   }
 }
 ----------------
-{}
+null
 "
 `;
 
@@ -440,7 +463,7 @@ exports[`directive > $include > Query - { object: { 'undefined': { if: undefined
   }
 }
 ----------------
-{}
+null
 "
 `;
 
@@ -461,7 +484,7 @@ exports[`directive > $include > Query - { object: { 'undefined': {}, id: true } 
   }
 }
 ----------------
-{}
+null
 "
 `;
 
@@ -482,7 +505,7 @@ exports[`directive > $include > Query - { object: { 'undefined': false, id: true
   }
 }
 ----------------
-{}
+null
 "
 `;
 
@@ -503,7 +526,7 @@ exports[`directive > $include > Query - { object: { 'undefined': true, id: true 
   }
 }
 ----------------
-{}
+null
 "
 `;
 
@@ -523,7 +546,7 @@ exports[`directive > $include > Query - { object: { 'undefined': undefined, id: 
   }
 }
 ----------------
-{}
+null
 "
 `;
 
@@ -546,7 +569,7 @@ exports[`directive > $skip > Query - { object: { 'undefined': { if: false }, id:
   }
 }
 ----------------
-{}
+null
 "
 `;
 
@@ -569,7 +592,7 @@ exports[`directive > $skip > Query - { object: { 'undefined': { if: true }, id: 
   }
 }
 ----------------
-{}
+null
 "
 `;
 
@@ -590,7 +613,7 @@ exports[`directive > $skip > Query - { object: { 'undefined': { if: undefined },
   }
 }
 ----------------
-{}
+null
 "
 `;
 
@@ -611,7 +634,7 @@ exports[`directive > $skip > Query - { object: { 'undefined': {}, id: true } } 1
   }
 }
 ----------------
-{}
+null
 "
 `;
 
@@ -632,7 +655,7 @@ exports[`directive > $skip > Query - { object: { 'undefined': false, id: true } 
   }
 }
 ----------------
-{}
+null
 "
 `;
 
@@ -653,7 +676,7 @@ exports[`directive > $skip > Query - { object: { 'undefined': true, id: true } }
   }
 }
 ----------------
-{}
+null
 "
 `;
 
@@ -673,30 +696,7 @@ exports[`directive > $skip > Query - { object: { 'undefined': undefined, id: tru
   }
 }
 ----------------
-{}
-"
-`;
-
-exports[`enum > Query - { result: { '$': { 'undefined': 'Object1' }, __typename: true } } 1`] = `
-"
-
---------------GRAFFLE QUERY-------------
-{
-  "result": {
-    "$": {
-      "$case": "Object1"
-    },
-    "__typename": true
-  }
-}
---------GRAPHQL DOCUMENT & VARIABLES--------
-{
-  result(case: Object1) {
-    __typename
-  }
-}
-----------------
-{}
+null
 "
 `;
 
@@ -717,7 +717,7 @@ exports[`inline fragment > field group > Query - directive > directive 1`] = `
   }
 }
 ----------------
-{}
+null
 "
 `;
 
@@ -741,7 +741,7 @@ exports[`inline fragment > field group > Query - interface > interface 1`] = `
   }
 }
 ----------------
-{}
+null
 "
 `;
 
@@ -769,7 +769,7 @@ exports[`inline fragment > field group > Query - multiple > multiple 1`] = `
   }
 }
 ----------------
-{}
+null
 "
 `;
 
@@ -789,7 +789,7 @@ exports[`inline fragment > field group > Query - one > one 1`] = `
   }
 }
 ----------------
-{}
+null
 "
 `;
 
@@ -813,7 +813,7 @@ exports[`inline fragment > field group > Query - union > union 1`] = `
   }
 }
 ----------------
-{}
+null
 "
 `;
 
@@ -833,7 +833,7 @@ exports[`inline fragment > type condition union > Query - __typename (no fragmen
   }
 }
 ----------------
-{}
+null
 "
 `;
 
@@ -858,7 +858,7 @@ exports[`inline fragment > type condition union > Query - directive > directive 
   }
 }
 ----------------
-{}
+null
 "
 `;
 
@@ -882,7 +882,7 @@ exports[`inline fragment > type condition union > Query - scalar > scalar 1`] = 
   }
 }
 ----------------
-{}
+null
 "
 `;
 
@@ -898,7 +898,7 @@ exports[`other > Query - { __typename: true } 1`] = `
   __typename
 }
 ----------------
-{}
+null
 "
 `;
 
@@ -915,7 +915,7 @@ exports[`other > Query - { id: true, string: false } 1`] = `
   id
 }
 ----------------
-{}
+null
 "
 `;
 
@@ -931,7 +931,7 @@ exports[`other > Query - { id: true, string: undefined } 1`] = `
   id
 }
 ----------------
-{}
+null
 "
 `;
 
@@ -951,7 +951,7 @@ exports[`other > Query - { object: { id: true } } 1`] = `
   }
 }
 ----------------
-{}
+null
 "
 `;
 
@@ -981,7 +981,7 @@ exports[`other > Query - { objectNested: { object: { string: true, id: true, int
   }
 }
 ----------------
-{}
+null
 "
 `;
 
@@ -1008,7 +1008,7 @@ exports[`other > Query - { objectNested: { object: { string: true, id: true, int
   }
 }
 ----------------
-{}
+null
 "
 `;
 
@@ -1024,6 +1024,6 @@ exports[`other > Query - { string: true } 1`] = `
   string
 }
 ----------------
-{}
+null
 "
 `;

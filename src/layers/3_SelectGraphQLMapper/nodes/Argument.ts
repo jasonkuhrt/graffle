@@ -1,6 +1,6 @@
 import { Nodes } from '../../../lib/grafaid/_Nodes.js'
 import { Select } from '../../2_Select/__.js'
-import { advanceIndex, type GraphQLNodeMapper } from '../types.js'
+import { advanceIndex, type GraphQLPostOperationMapper } from '../types.js'
 import { toGraphQLValue } from './Value.js'
 
 export interface Argument {
@@ -8,7 +8,7 @@ export interface Argument {
   value: Select.Arguments.ArgValue
 }
 
-export const toGraphQLArgument: GraphQLNodeMapper<
+export const toGraphQLArgument: GraphQLPostOperationMapper<
   Nodes.ArgumentNode,
   [arg: Argument]
 > = (

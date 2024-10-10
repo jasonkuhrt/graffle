@@ -1,10 +1,10 @@
 import { Nodes } from '../../../lib/grafaid/_Nodes.js'
 import { getFromEnumLooselyOrThrow } from '../../../lib/prelude.js'
 import { Select } from '../../2_Select/__.js'
-import type { GraphQLNodeMapper } from '../types.js'
+import type { GraphQLPostOperationMapper } from '../types.js'
 import { toGraphQLValue } from './Value.js'
 
-export const toGraphQLDirective: GraphQLNodeMapper<
+export const toGraphQLDirective: GraphQLPostOperationMapper<
   Nodes.DirectiveNode,
   [directive: Select.Directive.DirectiveLike]
 > = (
@@ -21,12 +21,16 @@ export const toGraphQLDirective: GraphQLNodeMapper<
         throw new Error(`Argument ${argumentName} is required`)
       }
 
-      // todo lift directive arguments to document variables
       const value = toGraphQLValue({ ...context, value: { isEnum: false } }, location, argumentValue)
+      const name = Nodes.Name({ value: argumentName })
+      // todo: when we have RSDDM then we can capture variables
+      // context.captures.variables.push({
+      //   name: argumentName,
+      //   value: argumentValue,
+      //   typeName: argumentType.name,
+      // })
       return Nodes.Argument({
-        name: Nodes.Name({
-          value: argumentName,
-        }),
+        name,
         value,
       })
     },

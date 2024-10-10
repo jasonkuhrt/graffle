@@ -1,6 +1,6 @@
 import type { ValueNode } from 'graphql'
 import { Nodes } from '../../../lib/grafaid/_Nodes.js'
-import { advanceIndex, type CodecString, type GraphQLNodeMapper, isCodec } from '../types.js'
+import { advanceIndex, type CodecString, type GraphQLPostOperationMapper, isCodec } from '../types.js'
 
 export const toGraphQLValue: ValueMapper = (context, index, value) => {
   // todo remove? unused.
@@ -56,7 +56,7 @@ export const toGraphQLValue: ValueMapper = (context, index, value) => {
   throw new Error(`Unsupported value: ${String(value)}`)
 }
 
-export type ValueMapper = GraphQLNodeMapper<
+export type ValueMapper = GraphQLPostOperationMapper<
   ValueNode,
   [value: unknown],
   { value: ValueContext }

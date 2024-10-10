@@ -16,7 +16,7 @@ const tester = [
   (args: CasesQuery | CasesDescriptiveQuery) => {
     const [description, graffleQuery] = args.length === 1 ? [undefined, args[0]] : args
 
-    const { document, variables } = toGraphQL({
+    const { document, operationsVariables } = toGraphQL({
       document: Select.Document.createDocumentNormalizedFromQuerySelection(graffleQuery as any),
     })
 
@@ -26,7 +26,7 @@ const tester = [
       + `\n--------GRAPHQL DOCUMENT & VARIABLES--------\n`
       + Grafaid.Nodes.print(document)
       + `\n----------------\n`
-      + JSON.stringify(variables, null, 2)
+      + JSON.stringify(operationsVariables, null, 2)
       + `\n`
 
     expect(beforeAndAfter).toMatchSnapshot(description)
@@ -54,12 +54,6 @@ describe(`inline fragment`, () => {
   })
 })
 
-describe(`enum`, () => {
-  testEachQuery([
-    [{ result: { $: { $case: `Object1` }, __typename: true } }],
-  ])(...tester)
-})
-
 describe(`alias`, () => {
   testEachQuery([
     [{ id: [`x`, true] }],
@@ -71,6 +65,7 @@ describe(`alias`, () => {
 
 describe(`arguments`, () => {
   testEachQuery([
+    [{ result: { $: { $case: `Object1` }, __typename: true } }],
     [{ stringWithArgs: { $: { boolean: true, float: 1 } } }],
     [{ stringWithArgs: { $: {} } }],
     // s({ objectWithArgs: { $: { id: `` } } }), // todo should be static error

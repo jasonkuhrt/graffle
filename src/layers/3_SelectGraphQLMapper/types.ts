@@ -1,7 +1,7 @@
 import type { Nodes } from '../../lib/grafaid/_Nodes.js'
 import type { Codec } from '../1_Schema/Hybrid/types/Scalar/codec.js'
 import type { Select } from '../2_Select/__.js'
-import type { CustomScalarsIndex } from '../4_generator/generators/SchemaIndex.js'
+import type { SchemaDrivenDataMap } from '../7_customScalars/generator/SchemaDrivenDataMap.js'
 import type { ValueMapper } from './nodes/Value.js'
 
 export interface Context {
@@ -18,14 +18,13 @@ export interface Parsed {
 
 export interface Captures {
   variables: CapturedVariable[]
-  customScalarOutputs: CapturedCustomScalarOutput[]
 }
 
 export interface CapturedVariable {
   name: string
-  type: unknown
+  typeName: string
   value: unknown
-  location: VariableLocation
+  // location: VariableLocation
 }
 
 export interface CapturedCustomScalarOutput {
@@ -59,14 +58,14 @@ export const isCodec = (value: unknown): value is CodecString =>
   typeof value === `object` && value !== null && `encode` in value && typeof value.encode === `function`
 
 type RootIndexPointer =
-  | CustomScalarsIndex
+  | SchemaDrivenDataMap
   | IndexPointer
 
 type IndexPointer =
-  | CustomScalarsIndex
-  | CustomScalarsIndex.OutputObject
-  | CustomScalarsIndex.InputObject
-  | CustomScalarsIndex.InputField
+  | SchemaDrivenDataMap
+  | SchemaDrivenDataMap.OutputObject
+  | SchemaDrivenDataMap.InputObject
+  | SchemaDrivenDataMap.ArgumentOrInputField
   | null
 
 export const advanceIndex = (pointer: RootIndexPointer, rootTypeOrSomeKey: string): IndexPointer => {
@@ -75,7 +74,17 @@ export const advanceIndex = (pointer: RootIndexPointer, rootTypeOrSomeKey: strin
   return (pointer as any)[rootTypeOrSomeKey] ?? null
 }
 
-export type GraphQLNodeMapper<
+export type GraphQLPreOperationMapper<
+  $Return,
+  $Args extends [...any[]] = [],
+> = (
+  ...args: [
+    customScalarsIndexPointer: IndexPointer,
+    ...$Args,
+  ]
+) => $Return
+
+export type GraphQLPostOperationMapper<
   $Return extends Nodes.$Any,
   $Args extends [...any[]] = [],
   $ContextExtension extends object = {},

@@ -1,7 +1,7 @@
 import { Nodes } from '../../../lib/grafaid/_Nodes.js'
 import { casesExhausted } from '../../../lib/prelude.js'
 import { Select } from '../../2_Select/__.js'
-import { advanceIndex, type GraphQLNodeMapper } from '../types.js'
+import { advanceIndex, type GraphQLPostOperationMapper } from '../types.js'
 import { toGraphQLArgument } from './Argument.js'
 import { toGraphQLDirective } from './Directive.js'
 import { toGraphQLField } from './Field.js'
@@ -16,7 +16,7 @@ export type SelectionSetContext = {
   directives: Nodes.DirectiveNode[]
 }
 
-export const toGraphQLSelectionSet: GraphQLNodeMapper<
+export const toGraphQLSelectionSet: GraphQLPostOperationMapper<
   Nodes.SelectionSetNode,
   [
     selectionSet: Select.SelectionSet.AnySelectionSet,
@@ -46,11 +46,16 @@ export const toGraphQLSelectionSet: GraphQLNodeMapper<
         const index_ = advanceIndex(index, `i`)
         for (const argName in keyParsed.arguments) {
           const argValue = keyParsed.arguments[argName]
-          // We don't do client side validation, let server handle schema errors.
           const arg = {
             name: argName,
             value: argValue,
           }
+          // todo: when we have RSDDM then we can capture variables
+          // context.captures.variables.push({
+          //   name: argName.replace(/^\$/, ``), // todo use constants
+          //   value: argValue,
+          //   typeName: `?`,
+          // })
           selectionSetContext.arguments.push(toGraphQLArgument(context, index_, arg))
         }
         continue

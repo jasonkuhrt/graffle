@@ -47,6 +47,7 @@ export type {
   SelectionSetNode,
   StringValueNode,
   ValueNode,
+  VariableDefinitionNode,
   VariableNode,
 } from 'graphql'
 

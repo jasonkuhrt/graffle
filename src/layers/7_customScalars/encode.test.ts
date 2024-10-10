@@ -18,6 +18,7 @@ type TestCase = [
 
 // dprint-ignore
 const testCases = test.for<TestCase>([
+	[`arg enum`                                , { stringWithArgEnum: { $: { $ABCEnum: `A` } } }                                                                               , { ABCEnum: `A` }],
 	[`arg field`                               , { dateArg: { $: { date: db.date0 } } }                                                                                        , { date: date0Encoded }],
 	[`arg field in non-null`                   , { dateArgNonNull: { $: { date: db.date0 } } }                                                                                 , { date: date0Encoded }],
 	[`arg field in list`                       , { dateArgList: { $: { date: [db.date0, db.date1] } } }                                                                        , { date: date0Encoded, date1: date1Encoded } ],
@@ -30,9 +31,9 @@ const testCases = test.for<TestCase>([
 ])
 
 testCases(`%s`, async ([_, query, expectedVariables], { kitchenSink }) => {
-  const { document, variables } = SelectionSetGraphqlMapper.toGraphQL({
+  const { document, operationsVariables } = SelectionSetGraphqlMapper.toGraphQL({
     document: Select.Document.createDocumentNormalizedFromQuerySelection(query as any),
   })
-  await kitchenSink.use(Spy()).gql(document).send(variables)
+  await kitchenSink.use(Spy()).gql(document).send(operationsVariables?.$default)
   expect(Spy.data.pack.input?.request.variables).toEqual(expectedVariables)
 })
