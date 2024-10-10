@@ -2,10 +2,14 @@ import type { Select } from '../2_Select/__.js'
 import type { SchemaDrivenDataMap } from '../7_customScalars/generator/SchemaDrivenDataMap.js'
 import { toGraphQLDocument } from './nodes/Document.js'
 
+export interface Options {
+  sddm: SchemaDrivenDataMap
+  extractOperationVariables?: boolean
+}
+
 export const toGraphQL = (input: {
   document: Select.Document.DocumentNormalized
-  sddm?: SchemaDrivenDataMap
+  options?: Options
 }) => {
-  const sddm: SchemaDrivenDataMap = input.sddm ?? {}
-  return toGraphQLDocument(sddm, input.document)
+  return toGraphQLDocument(input.document, input.options)
 }

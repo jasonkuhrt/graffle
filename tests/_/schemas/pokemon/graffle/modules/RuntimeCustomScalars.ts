@@ -57,91 +57,107 @@ const StringFilter: $Utilities.SchemaDrivenDataMap.InputObject = {
 //
 
 const BattleRoyale: $Utilities.SchemaDrivenDataMap.OutputObject = {
-  combatants: {
-    // nt: CombatantMultiPokemon, <-- Assigned later to avoid potential circular dependency.
-  },
-  date: {},
-  id: {},
-  winner: {
-    // nt: Trainer, <-- Assigned later to avoid potential circular dependency.
+  f: {
+    combatants: {
+      // nt: CombatantMultiPokemon, <-- Assigned later to avoid potential circular dependency.
+    },
+    date: {},
+    id: {},
+    winner: {
+      // nt: Trainer, <-- Assigned later to avoid potential circular dependency.
+    },
   },
 }
 
 const BattleTrainer: $Utilities.SchemaDrivenDataMap.OutputObject = {
-  combatant1: {
-    // nt: CombatantSinglePokemon, <-- Assigned later to avoid potential circular dependency.
-  },
-  combatant2: {
-    // nt: CombatantSinglePokemon, <-- Assigned later to avoid potential circular dependency.
-  },
-  date: {},
-  id: {},
-  winner: {
-    // nt: Trainer, <-- Assigned later to avoid potential circular dependency.
+  f: {
+    combatant1: {
+      // nt: CombatantSinglePokemon, <-- Assigned later to avoid potential circular dependency.
+    },
+    combatant2: {
+      // nt: CombatantSinglePokemon, <-- Assigned later to avoid potential circular dependency.
+    },
+    date: {},
+    id: {},
+    winner: {
+      // nt: Trainer, <-- Assigned later to avoid potential circular dependency.
+    },
   },
 }
 
 const BattleWild: $Utilities.SchemaDrivenDataMap.OutputObject = {
-  date: {},
-  id: {},
-  pokemon: {
-    // nt: Pokemon, <-- Assigned later to avoid potential circular dependency.
-  },
-  result: {},
-  trainer: {
-    // nt: Trainer, <-- Assigned later to avoid potential circular dependency.
-  },
-  wildPokemons: {
-    // nt: Pokemon, <-- Assigned later to avoid potential circular dependency.
+  f: {
+    date: {},
+    id: {},
+    pokemon: {
+      // nt: Pokemon, <-- Assigned later to avoid potential circular dependency.
+    },
+    result: {},
+    trainer: {
+      // nt: Trainer, <-- Assigned later to avoid potential circular dependency.
+    },
+    wildPokemons: {
+      // nt: Pokemon, <-- Assigned later to avoid potential circular dependency.
+    },
   },
 }
 
 const CombatantMultiPokemon: $Utilities.SchemaDrivenDataMap.OutputObject = {
-  pokemons: {
-    // nt: Pokemon, <-- Assigned later to avoid potential circular dependency.
-  },
-  trainer: {
-    // nt: Trainer, <-- Assigned later to avoid potential circular dependency.
+  f: {
+    pokemons: {
+      // nt: Pokemon, <-- Assigned later to avoid potential circular dependency.
+    },
+    trainer: {
+      // nt: Trainer, <-- Assigned later to avoid potential circular dependency.
+    },
   },
 }
 
 const CombatantSinglePokemon: $Utilities.SchemaDrivenDataMap.OutputObject = {
-  pokemon: {
-    // nt: Pokemon, <-- Assigned later to avoid potential circular dependency.
-  },
-  trainer: {
-    // nt: Trainer, <-- Assigned later to avoid potential circular dependency.
+  f: {
+    pokemon: {
+      // nt: Pokemon, <-- Assigned later to avoid potential circular dependency.
+    },
+    trainer: {
+      // nt: Trainer, <-- Assigned later to avoid potential circular dependency.
+    },
   },
 }
 
 const Patron: $Utilities.SchemaDrivenDataMap.OutputObject = {
-  id: {},
-  money: {},
-  name: {},
+  f: {
+    id: {},
+    money: {},
+    name: {},
+  },
 }
 
 const Pokemon: $Utilities.SchemaDrivenDataMap.OutputObject = {
-  attack: {},
-  birthday: {},
-  defense: {},
-  hp: {},
-  id: {},
-  name: {},
-  trainer: {
-    // nt: Trainer, <-- Assigned later to avoid potential circular dependency.
+  f: {
+    attack: {},
+    birthday: {},
+    defense: {},
+    hp: {},
+    id: {},
+    name: {},
+    trainer: {
+      // nt: Trainer, <-- Assigned later to avoid potential circular dependency.
+    },
+    type: {},
   },
-  type: {},
 }
 
 const Trainer: $Utilities.SchemaDrivenDataMap.OutputObject = {
-  class: {},
-  fans: {
-    // nt: Patron, <-- Assigned later to avoid potential circular dependency.
-  },
-  id: {},
-  name: {},
-  pokemon: {
-    // nt: Pokemon, <-- Assigned later to avoid potential circular dependency.
+  f: {
+    class: {},
+    fans: {
+      // nt: Patron, <-- Assigned later to avoid potential circular dependency.
+    },
+    id: {},
+    name: {},
+    pokemon: {
+      // nt: Pokemon, <-- Assigned later to avoid potential circular dependency.
+    },
   },
 }
 
@@ -161,7 +177,7 @@ const Trainer: $Utilities.SchemaDrivenDataMap.OutputObject = {
 //
 //
 
-const Being = {}
+const Being = { f: {} }
 
 //
 //
@@ -179,7 +195,7 @@ const Being = {}
 //
 //
 
-const Battle = {}
+const Battle = { f: {} }
 
 //
 //
@@ -198,57 +214,67 @@ const Battle = {}
 //
 
 const Mutation: $Utilities.SchemaDrivenDataMap.OutputObject = {
-  addPokemon: {
-    a: {
-      attack: {
-        it: [0],
+  f: {
+    addPokemon: {
+      a: {
+        attack: {
+          it: [0],
+          nt: CustomScalars.Int,
+        },
+        defense: {
+          it: [0],
+          nt: CustomScalars.Int,
+        },
+        hp: {
+          it: [0],
+          nt: CustomScalars.Int,
+        },
+        name: {
+          it: [1],
+          nt: CustomScalars.String,
+        },
       },
-      defense: {
-        it: [0],
-      },
-      hp: {
-        it: [0],
-      },
-      name: {
-        it: [1],
-      },
+      // nt: Pokemon, <-- Assigned later to avoid potential circular dependency.
     },
-    // nt: Pokemon, <-- Assigned later to avoid potential circular dependency.
   },
 }
 
 const Query: $Utilities.SchemaDrivenDataMap.OutputObject = {
-  battles: {
-    // nt: Battle, <-- Assigned later to avoid potential circular dependency.
-  },
-  beings: {
-    // nt: Being, <-- Assigned later to avoid potential circular dependency.
-  },
-  pokemon: {
-    // nt: Pokemon, <-- Assigned later to avoid potential circular dependency.
-  },
-  pokemonByName: {
-    a: {
-      name: {
-        it: [1],
-      },
+  f: {
+    battles: {
+      // nt: Battle, <-- Assigned later to avoid potential circular dependency.
     },
-    // nt: Pokemon, <-- Assigned later to avoid potential circular dependency.
-  },
-  pokemons: {
-    a: {},
-    // nt: Pokemon, <-- Assigned later to avoid potential circular dependency.
-  },
-  trainerByName: {
-    a: {
-      name: {
-        it: [1],
-      },
+    beings: {
+      // nt: Being, <-- Assigned later to avoid potential circular dependency.
     },
-    // nt: Trainer, <-- Assigned later to avoid potential circular dependency.
-  },
-  trainers: {
-    // nt: Trainer, <-- Assigned later to avoid potential circular dependency.
+    pokemon: {
+      // nt: Pokemon, <-- Assigned later to avoid potential circular dependency.
+    },
+    pokemonByName: {
+      a: {
+        name: {
+          it: [1],
+          nt: CustomScalars.String,
+        },
+      },
+      // nt: Pokemon, <-- Assigned later to avoid potential circular dependency.
+    },
+    pokemons: {
+      a: {},
+      // nt: Pokemon, <-- Assigned later to avoid potential circular dependency.
+    },
+    trainerByName: {
+      a: {
+        name: {
+          it: [1],
+          nt: CustomScalars.String,
+        },
+      },
+      // nt: Trainer, <-- Assigned later to avoid potential circular dependency.
+    },
+    trainers: {
+      // nt: Trainer, <-- Assigned later to avoid potential circular dependency.
+    },
   },
 }
 
@@ -269,29 +295,29 @@ const Query: $Utilities.SchemaDrivenDataMap.OutputObject = {
 //
 //
 
-BattleRoyale['combatants']!.nt = CombatantMultiPokemon
-BattleRoyale['winner']!.nt = Trainer
-BattleTrainer['combatant1']!.nt = CombatantSinglePokemon
-BattleTrainer['combatant2']!.nt = CombatantSinglePokemon
-BattleTrainer['winner']!.nt = Trainer
-BattleWild['pokemon']!.nt = Pokemon
-BattleWild['trainer']!.nt = Trainer
-BattleWild['wildPokemons']!.nt = Pokemon
-CombatantMultiPokemon['pokemons']!.nt = Pokemon
-CombatantMultiPokemon['trainer']!.nt = Trainer
-CombatantSinglePokemon['pokemon']!.nt = Pokemon
-CombatantSinglePokemon['trainer']!.nt = Trainer
-Pokemon['trainer']!.nt = Trainer
-Trainer['fans']!.nt = Patron
-Trainer['pokemon']!.nt = Pokemon
-Mutation['addPokemon']!.nt = Pokemon
-Query['battles']!.nt = Battle
-Query['beings']!.nt = Being
-Query['pokemon']!.nt = Pokemon
-Query['pokemonByName']!.nt = Pokemon
-Query['pokemons']!.nt = Pokemon
-Query['trainerByName']!.nt = Trainer
-Query['trainers']!.nt = Trainer
+BattleRoyale.f['combatants']!.nt = CombatantMultiPokemon
+BattleRoyale.f['winner']!.nt = Trainer
+BattleTrainer.f['combatant1']!.nt = CombatantSinglePokemon
+BattleTrainer.f['combatant2']!.nt = CombatantSinglePokemon
+BattleTrainer.f['winner']!.nt = Trainer
+BattleWild.f['pokemon']!.nt = Pokemon
+BattleWild.f['trainer']!.nt = Trainer
+BattleWild.f['wildPokemons']!.nt = Pokemon
+CombatantMultiPokemon.f['pokemons']!.nt = Pokemon
+CombatantMultiPokemon.f['trainer']!.nt = Trainer
+CombatantSinglePokemon.f['pokemon']!.nt = Pokemon
+CombatantSinglePokemon.f['trainer']!.nt = Trainer
+Pokemon.f['trainer']!.nt = Trainer
+Trainer.f['fans']!.nt = Patron
+Trainer.f['pokemon']!.nt = Pokemon
+Mutation.f['addPokemon']!.nt = Pokemon
+Query.f['battles']!.nt = Battle
+Query.f['beings']!.nt = Being
+Query.f['pokemon']!.nt = Pokemon
+Query.f['pokemonByName']!.nt = Pokemon
+Query.f['pokemons']!.nt = Pokemon
+Query.f['trainerByName']!.nt = Trainer
+Query.f['trainers']!.nt = Trainer
 
 //
 //

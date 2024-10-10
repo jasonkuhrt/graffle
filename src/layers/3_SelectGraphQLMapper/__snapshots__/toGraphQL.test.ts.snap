@@ -17,7 +17,9 @@ exports[`alias > Query - { id: [ 'x', { 'undefined': true } ] } 1`] = `
   x: id @skip(if: true)
 }
 ----------------
-null
+{
+  "$default": {}
+}
 "
 `;
 
@@ -36,7 +38,9 @@ exports[`alias > Query - { id: [ 'x', true ] } 1`] = `
   x: id
 }
 ----------------
-null
+{
+  "$default": {}
+}
 "
 `;
 
@@ -62,7 +66,9 @@ exports[`alias > Query - { id: [ [ 'x', true ], [ 'id2', true ] ] } 1`] = `
   id2: id
 }
 ----------------
-null
+{
+  "$default": {}
+}
 "
 `;
 
@@ -86,7 +92,9 @@ exports[`alias > Query - { object: [ 'x', { 'undefined': true, id: true } ] } 1`
   }
 }
 ----------------
-null
+{
+  "$default": {}
+}
 "
 `;
 
@@ -103,13 +111,17 @@ exports[`arguments > Query - { objectWithArgs: { '$': { id: '' }, id: true } } 1
   }
 }
 --------GRAPHQL DOCUMENT & VARIABLES--------
-{
-  objectWithArgs(id: "") {
+query ($id: ID) {
+  objectWithArgs(id: $id) {
     id
   }
 }
 ----------------
-null
+{
+  "$default": {
+    "id": ""
+  }
+}
 "
 `;
 
@@ -130,7 +142,9 @@ exports[`arguments > Query - { objectWithArgs: { '$': {}, id: true } } 1`] = `
   }
 }
 ----------------
-null
+{
+  "$default": {}
+}
 "
 `;
 
@@ -153,7 +167,9 @@ exports[`arguments > Query - { result: { '$': { 'undefined': 'Object1' }, __type
   }
 }
 ----------------
-null
+{
+  "$default": {}
+}
 "
 `;
 
@@ -170,11 +186,16 @@ exports[`arguments > Query - { stringWithArgs: { '$': { boolean: true, float: 1 
   }
 }
 --------GRAPHQL DOCUMENT & VARIABLES--------
-{
-  stringWithArgs(boolean: true, float: 1)
+query ($boolean: Boolean, $float: Float) {
+  stringWithArgs(boolean: $boolean, float: $float)
 }
 ----------------
-null
+{
+  "$default": {
+    "boolean": true,
+    "float": 1
+  }
+}
 "
 `;
 
@@ -192,7 +213,9 @@ exports[`arguments > Query - { stringWithArgs: { '$': {} } } 1`] = `
   stringWithArgs
 }
 ----------------
-null
+{
+  "$default": {}
+}
 "
 `;
 
@@ -208,11 +231,15 @@ exports[`arguments > custom scalars > Query - arg field > arg field 1`] = `
   }
 }
 --------GRAPHQL DOCUMENT & VARIABLES--------
-{
-  dateArg(date: {})
+query ($date: Date) {
+  dateArg(date: $date)
 }
 ----------------
-null
+{
+  "$default": {
+    "date": "1970-01-01T00:00:00.000Z"
+  }
+}
 "
 `;
 
@@ -228,11 +255,15 @@ exports[`arguments > custom scalars > Query - arg field in list (null) > arg fie
   }
 }
 --------GRAPHQL DOCUMENT & VARIABLES--------
-{
-  dateArgList(date: null)
+query ($date: [Date!]) {
+  dateArgList(date: $date)
 }
 ----------------
-null
+{
+  "$default": {
+    "date": null
+  }
+}
 "
 `;
 
@@ -251,11 +282,18 @@ exports[`arguments > custom scalars > Query - arg field in list > arg field in l
   }
 }
 --------GRAPHQL DOCUMENT & VARIABLES--------
-{
-  dateArgList(date: [{}, {}])
+query ($date: [Date!]) {
+  dateArgList(date: $date)
 }
 ----------------
-null
+{
+  "$default": {
+    "date": [
+      "1970-01-01T00:00:00.000Z",
+      "1970-01-01T00:00:00.001Z"
+    ]
+  }
+}
 "
 `;
 
@@ -271,11 +309,15 @@ exports[`arguments > custom scalars > Query - arg field in non-null > arg field 
   }
 }
 --------GRAPHQL DOCUMENT & VARIABLES--------
-{
-  dateArgNonNull(date: {})
+query ($date: Date!) {
+  dateArgNonNull(date: $date)
 }
 ----------------
-null
+{
+  "$default": {
+    "date": "1970-01-01T00:00:00.000Z"
+  }
+}
 "
 `;
 
@@ -294,11 +336,18 @@ exports[`arguments > custom scalars > Query - arg field in non-null list (with l
   }
 }
 --------GRAPHQL DOCUMENT & VARIABLES--------
-{
-  dateArgNonNullList(date: [{}, {}])
+query ($date: [Date]!) {
+  dateArgNonNullList(date: $date)
 }
 ----------------
-null
+{
+  "$default": {
+    "date": [
+      "1970-01-01T00:00:00.000Z",
+      "1970-01-01T00:00:00.001Z"
+    ]
+  }
+}
 "
 `;
 
@@ -317,11 +366,18 @@ exports[`arguments > custom scalars > Query - arg field in non-null list (with n
   }
 }
 --------GRAPHQL DOCUMENT & VARIABLES--------
-{
-  dateArgNonNullList(date: [null, {}])
+query ($date: [Date]!) {
+  dateArgNonNullList(date: $date)
 }
 ----------------
-null
+{
+  "$default": {
+    "date": [
+      null,
+      "1970-01-01T00:00:00.000Z"
+    ]
+  }
+}
 "
 `;
 
@@ -340,11 +396,18 @@ exports[`arguments > custom scalars > Query - arg field in non-null list non-nul
   }
 }
 --------GRAPHQL DOCUMENT & VARIABLES--------
-{
-  dateArgNonNullListNonNull(date: [{}, {}])
+query ($date: [Date!]!) {
+  dateArgNonNullListNonNull(date: $date)
 }
 ----------------
-null
+{
+  "$default": {
+    "date": [
+      "1970-01-01T00:00:00.000Z",
+      "1970-01-01T00:00:00.001Z"
+    ]
+  }
+}
 "
 `;
 
@@ -368,7 +431,9 @@ exports[`arguments > custom scalars > Query - input object field > input object 
   dateArgInputObject(input: {idRequired: "", dateRequired: {}, date: {}})
 }
 ----------------
-null
+{
+  "$default": {}
+}
 "
 `;
 
@@ -396,7 +461,9 @@ exports[`arguments > custom scalars > Query - nested input object field > nested
   )
 }
 ----------------
-null
+{
+  "$default": {}
+}
 "
 `;
 
@@ -419,7 +486,9 @@ exports[`directive > $include > Query - { object: { 'undefined': { if: false }, 
   }
 }
 ----------------
-null
+{
+  "$default": {}
+}
 "
 `;
 
@@ -442,7 +511,9 @@ exports[`directive > $include > Query - { object: { 'undefined': { if: true }, i
   }
 }
 ----------------
-null
+{
+  "$default": {}
+}
 "
 `;
 
@@ -463,7 +534,9 @@ exports[`directive > $include > Query - { object: { 'undefined': { if: undefined
   }
 }
 ----------------
-null
+{
+  "$default": {}
+}
 "
 `;
 
@@ -484,7 +557,9 @@ exports[`directive > $include > Query - { object: { 'undefined': {}, id: true } 
   }
 }
 ----------------
-null
+{
+  "$default": {}
+}
 "
 `;
 
@@ -505,7 +580,9 @@ exports[`directive > $include > Query - { object: { 'undefined': false, id: true
   }
 }
 ----------------
-null
+{
+  "$default": {}
+}
 "
 `;
 
@@ -526,7 +603,9 @@ exports[`directive > $include > Query - { object: { 'undefined': true, id: true 
   }
 }
 ----------------
-null
+{
+  "$default": {}
+}
 "
 `;
 
@@ -546,7 +625,9 @@ exports[`directive > $include > Query - { object: { 'undefined': undefined, id: 
   }
 }
 ----------------
-null
+{
+  "$default": {}
+}
 "
 `;
 
@@ -569,7 +650,9 @@ exports[`directive > $skip > Query - { object: { 'undefined': { if: false }, id:
   }
 }
 ----------------
-null
+{
+  "$default": {}
+}
 "
 `;
 
@@ -592,7 +675,9 @@ exports[`directive > $skip > Query - { object: { 'undefined': { if: true }, id: 
   }
 }
 ----------------
-null
+{
+  "$default": {}
+}
 "
 `;
 
@@ -613,7 +698,9 @@ exports[`directive > $skip > Query - { object: { 'undefined': { if: undefined },
   }
 }
 ----------------
-null
+{
+  "$default": {}
+}
 "
 `;
 
@@ -634,7 +721,9 @@ exports[`directive > $skip > Query - { object: { 'undefined': {}, id: true } } 1
   }
 }
 ----------------
-null
+{
+  "$default": {}
+}
 "
 `;
 
@@ -655,7 +744,9 @@ exports[`directive > $skip > Query - { object: { 'undefined': false, id: true } 
   }
 }
 ----------------
-null
+{
+  "$default": {}
+}
 "
 `;
 
@@ -676,7 +767,9 @@ exports[`directive > $skip > Query - { object: { 'undefined': true, id: true } }
   }
 }
 ----------------
-null
+{
+  "$default": {}
+}
 "
 `;
 
@@ -696,7 +789,9 @@ exports[`directive > $skip > Query - { object: { 'undefined': undefined, id: tru
   }
 }
 ----------------
-null
+{
+  "$default": {}
+}
 "
 `;
 
@@ -717,7 +812,9 @@ exports[`inline fragment > field group > Query - directive > directive 1`] = `
   }
 }
 ----------------
-null
+{
+  "$default": {}
+}
 "
 `;
 
@@ -741,7 +838,9 @@ exports[`inline fragment > field group > Query - interface > interface 1`] = `
   }
 }
 ----------------
-null
+{
+  "$default": {}
+}
 "
 `;
 
@@ -769,7 +868,9 @@ exports[`inline fragment > field group > Query - multiple > multiple 1`] = `
   }
 }
 ----------------
-null
+{
+  "$default": {}
+}
 "
 `;
 
@@ -789,7 +890,9 @@ exports[`inline fragment > field group > Query - one > one 1`] = `
   }
 }
 ----------------
-null
+{
+  "$default": {}
+}
 "
 `;
 
@@ -813,7 +916,9 @@ exports[`inline fragment > field group > Query - union > union 1`] = `
   }
 }
 ----------------
-null
+{
+  "$default": {}
+}
 "
 `;
 
@@ -833,7 +938,9 @@ exports[`inline fragment > type condition union > Query - __typename (no fragmen
   }
 }
 ----------------
-null
+{
+  "$default": {}
+}
 "
 `;
 
@@ -858,7 +965,9 @@ exports[`inline fragment > type condition union > Query - directive > directive 
   }
 }
 ----------------
-null
+{
+  "$default": {}
+}
 "
 `;
 
@@ -882,7 +991,9 @@ exports[`inline fragment > type condition union > Query - scalar > scalar 1`] = 
   }
 }
 ----------------
-null
+{
+  "$default": {}
+}
 "
 `;
 
@@ -898,7 +1009,9 @@ exports[`other > Query - { __typename: true } 1`] = `
   __typename
 }
 ----------------
-null
+{
+  "$default": {}
+}
 "
 `;
 
@@ -915,7 +1028,9 @@ exports[`other > Query - { id: true, string: false } 1`] = `
   id
 }
 ----------------
-null
+{
+  "$default": {}
+}
 "
 `;
 
@@ -931,7 +1046,9 @@ exports[`other > Query - { id: true, string: undefined } 1`] = `
   id
 }
 ----------------
-null
+{
+  "$default": {}
+}
 "
 `;
 
@@ -951,7 +1068,9 @@ exports[`other > Query - { object: { id: true } } 1`] = `
   }
 }
 ----------------
-null
+{
+  "$default": {}
+}
 "
 `;
 
@@ -981,7 +1100,9 @@ exports[`other > Query - { objectNested: { object: { string: true, id: true, int
   }
 }
 ----------------
-null
+{
+  "$default": {}
+}
 "
 `;
 
@@ -1008,7 +1129,9 @@ exports[`other > Query - { objectNested: { object: { string: true, id: true, int
   }
 }
 ----------------
-null
+{
+  "$default": {}
+}
 "
 `;
 
@@ -1024,6 +1147,8 @@ exports[`other > Query - { string: true } 1`] = `
   string
 }
 ----------------
-null
+{
+  "$default": {}
+}
 "
 `;

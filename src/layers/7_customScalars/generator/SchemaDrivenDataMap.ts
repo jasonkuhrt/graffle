@@ -1,5 +1,5 @@
 import type { Grafaid } from '../../../lib/grafaid/__.js'
-import type { CodecString } from '../../3_SelectGraphQLMapper/types.js'
+import { Scalar, type Scalar as SchemaScalar } from '../../1_Schema/_.js'
 
 export interface SchemaDrivenDataMap {
   [Grafaid.Schema.RootTypeName.Mutation]?: SchemaDrivenDataMap.OutputObject
@@ -8,8 +8,29 @@ export interface SchemaDrivenDataMap {
 }
 
 export namespace SchemaDrivenDataMap {
+  export type OutputLike = SchemaScalar.Scalar | OutputObject
+
+  export type InputLike = SchemaScalar.Scalar | InputObject
+
+  export type Node =
+    | OutputObject
+    | InputObject
+    | ArgumentsOrInputObjectFields
+    | ArgumentOrInputField
+    | InlineType
+    | SchemaDrivenDataMap
+    | Scalar
+
   export interface OutputObject {
-    [key: string]: OutputField
+    f: {
+      [key: string]: OutputField
+    }
+  }
+
+  export const isScalar = Scalar.isScalar
+
+  export const isOutputObject = (node?: Node): node is OutputObject => {
+    return node ? `f` in node : false
   }
 
   export interface OutputField {
@@ -28,7 +49,10 @@ export namespace SchemaDrivenDataMap {
      * - `CodecString` when customScalars enabled and this field's named type is a custom scalar.
      * - `OutputObject` when customScalars enabled and this field's type contains custom scalars.
      */
-    nt?: CodecString | OutputObject
+    nt?: OutputLike
+  }
+  export const isOutputField = (node?: Node): node is OutputField => {
+    return node ? `a` in node : false
   }
 
   export interface ArgumentsOrInputObjectFields {
@@ -43,7 +67,7 @@ export namespace SchemaDrivenDataMap {
     /**
      * Named type of this argument or input field. Only present when customScalars is enabled.
      */
-    nt?: CodecString | InputObject
+    nt?: InputLike
   }
 
   /**
@@ -72,4 +96,6 @@ export namespace SchemaDrivenDataMap {
       [key: string]: ArgumentOrInputField
     }
   }
+
+  export type Scalar = SchemaScalar.Scalar
 }

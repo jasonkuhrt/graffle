@@ -141,13 +141,13 @@ const UnionType = createCodeGenerator<
     //
     // So what we do is inline all the custom scalar paths of all union members knowing
     // that they could never conflict.
-    code(`const ${type.name} = {`)
+    code(`const ${type.name} = { f: {`)
     for (const memberType of type.getTypes()) {
       if (Grafaid.Nodes.$Schema.CustomScalars.isHasCustomScalars(memberType)) {
         code(`...${memberType.name},`)
       }
     }
-    code(`}`)
+    code(`}, }`)
   },
 )
 
@@ -156,13 +156,13 @@ const InterfaceType = createCodeGenerator<
 >(
   ({ code, type, config }) => {
     const implementorTypes = Grafaid.Nodes.$Schema.KindMap.getInterfaceImplementors(config.schema.typeMapByKind, type)
-    code(`const ${type.name} = {`)
+    code(`const ${type.name} = { f: {`)
     for (const implementorType of implementorTypes) {
       if (Grafaid.Nodes.$Schema.CustomScalars.isHasCustomScalars(implementorType)) {
         code(`...${implementorType.name},`)
       }
     }
-    code(`}`)
+    code(`}, }`)
   },
 )
 
@@ -171,6 +171,8 @@ const ObjectType = createCodeGenerator<
 >(
   ({ config, code, type, referenceAssignments }) => {
     code(`const ${type.name}: $Utilities.SchemaDrivenDataMap.OutputObject = {`)
+    code(`f: {`)
+
     const condition = typeCondition(config)
 
     const outputFields = Object.values(type.getFields()).filter(condition)
@@ -190,7 +192,8 @@ const ObjectType = createCodeGenerator<
             const nt = (Grafaid.Nodes.$Schema.isInputObjectType(argType) && config.runtimeFeatures.operationVariables)
               ? Code.termField(`nt`, argType.name)
               : (Grafaid.Nodes.$Schema.isScalarTypeAndCustom(argType) && config.runtimeFeatures.customScalars)
-              ? Code.termField(`nt`, `${identifiers.$CustomScalars}.${argType.name}.codec`)
+                  || (Grafaid.Nodes.$Schema.isScalarType(argType) && config.runtimeFeatures.operationVariables)
+              ? Code.termField(`nt`, `${identifiers.$CustomScalars}.${argType.name}`)
               : ``
             const it = config.runtimeFeatures.operationVariables
               ? Code.termField(`it`, inlineType(arg.type))
@@ -212,13 +215,13 @@ const ObjectType = createCodeGenerator<
       if (condition(outputFieldType)) {
         if (Grafaid.Nodes.$Schema.isScalarTypeAndCustom(outputFieldType)) {
           if (config.runtimeFeatures.customScalars) {
-            code(Code.termField(`nt`, `${identifiers.$CustomScalars}.${outputFieldType.name}.codec`))
+            code(Code.termField(`nt`, `${identifiers.$CustomScalars}.${outputFieldType.name}`))
           }
         } else if (
           Grafaid.Nodes.$Schema.isUnionType(outputFieldType) || Grafaid.Nodes.$Schema.isObjectType(outputFieldType)
           || Grafaid.Nodes.$Schema.isInterfaceType(outputFieldType)
         ) {
-          referenceAssignments.push(`${type.name}['${outputField.name}']!.nt = ${outputFieldType.name}`)
+          referenceAssignments.push(`${type.name}.f['${outputField.name}']!.nt = ${outputFieldType.name}`)
           const hint = `// ${
             Code.termField(`nt`, outputFieldType.name)
           } <-- Assigned later to avoid potential circular dependency.`
@@ -234,6 +237,7 @@ const ObjectType = createCodeGenerator<
 
       code(`},`)
     }
+    code(`},`)
     code(`}`)
   },
 )
@@ -265,7 +269,7 @@ const InputObjectType = createCodeGenerator<
 
       let nt = ``
       if (Grafaid.Nodes.$Schema.isScalarTypeAndCustom(inputFieldType)) {
-        nt = Code.termField(`nt`, `${identifiers.$CustomScalars}.${inputFieldType.name}.codec`)
+        nt = Code.termField(`nt`, `${identifiers.$CustomScalars}.${inputFieldType.name}`)
       } else if (
         Grafaid.Nodes.$Schema.isInputObjectType(inputFieldType)
         && Grafaid.Nodes.$Schema.CustomScalars.isHasCustomScalarInputs(inputFieldType)

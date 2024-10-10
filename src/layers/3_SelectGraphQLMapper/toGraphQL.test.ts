@@ -1,5 +1,6 @@
 import { describe, expect, test } from 'vitest'
 import { db } from '../../../tests/_/schemas/db.js'
+import { $index } from '../../../tests/_/schemas/kitchen-sink/graffle/modules/RuntimeCustomScalars.js'
 import type * as SelectionSets from '../../../tests/_/schemas/kitchen-sink/graffle/modules/SelectionSets.js'
 import { Grafaid } from '../../lib/grafaid/__.js'
 import { Select } from '../2_Select/__.js'
@@ -18,6 +19,10 @@ const tester = [
 
     const { document, operationsVariables } = toGraphQL({
       document: Select.Document.createDocumentNormalizedFromQuerySelection(graffleQuery as any),
+      options: {
+        sddm: $index,
+        extractOperationVariables: true,
+      },
     })
 
     const beforeAndAfter = `\n`

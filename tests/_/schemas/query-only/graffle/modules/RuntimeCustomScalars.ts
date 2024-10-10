@@ -89,8 +89,10 @@ import * as CustomScalars from './Scalar.js'
 //
 
 const Query: $Utilities.SchemaDrivenDataMap.OutputObject = {
-  id: {},
-  idNonNull: {},
+  f: {
+    id: {},
+    idNonNull: {},
+  },
 }
 
 //

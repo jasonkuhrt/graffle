@@ -89,8 +89,10 @@ import * as CustomScalars from './Scalar.js'
 //
 
 const Mutation: $Utilities.SchemaDrivenDataMap.OutputObject = {
-  id: {},
-  idNonNull: {},
+  f: {
+    id: {},
+    idNonNull: {},
+  },
 }
 
 //
