@@ -7,6 +7,32 @@ import * as CustomScalars from './Scalar.js'
 //
 //
 // ==================================================================================================
+//                                          GraphQLEnumType
+// ==================================================================================================
+//
+//
+//
+//
+//
+//
+
+const ABCEnum: $Utilities.SchemaDrivenDataMap.Enum = {
+  k: 'enum',
+  n: 'ABCEnum',
+}
+
+const Case: $Utilities.SchemaDrivenDataMap.Enum = {
+  k: 'enum',
+  n: 'Case',
+}
+
+//
+//
+//
+//
+//
+//
+// ==================================================================================================
 //                                       GraphQLInputObjectType
 // ==================================================================================================
 //
@@ -252,14 +278,29 @@ const Mutation: $Utilities.SchemaDrivenDataMap.OutputObject = {
 const Query: $Utilities.SchemaDrivenDataMap.OutputObject = {
   f: {
     InputObjectNested: {
-      a: {},
+      a: {
+        input: {
+          it: [0],
+          nt: InputObjectNested,
+        },
+      },
     },
     InputObjectNestedNonNull: {
-      a: {},
+      a: {
+        input: {
+          it: [1],
+          nt: InputObjectNestedNonNull,
+        },
+      },
     },
     abcEnum: {},
     argInputObjectCircular: {
-      a: {},
+      a: {
+        input: {
+          it: [0],
+          nt: InputObjectCircular,
+        },
+      },
     },
     date: {
       nt: CustomScalars.Date,
@@ -274,7 +315,12 @@ const Query: $Utilities.SchemaDrivenDataMap.OutputObject = {
       nt: CustomScalars.Date,
     },
     dateArgInputObject: {
-      a: {},
+      a: {
+        input: {
+          it: [0],
+          nt: InputObject,
+        },
+      },
       nt: CustomScalars.Date,
     },
     dateArgList: {
@@ -407,22 +453,47 @@ const Query: $Utilities.SchemaDrivenDataMap.OutputObject = {
       // nt: Object1, <-- Assigned later to avoid potential circular dependency.
     },
     result: {
-      a: {},
+      a: {
+        case: {
+          it: [1],
+          nt: Case,
+        },
+      },
       // nt: Result, <-- Assigned later to avoid potential circular dependency.
     },
     resultNonNull: {
-      a: {},
+      a: {
+        case: {
+          it: [0],
+          nt: Case,
+        },
+      },
       // nt: Result, <-- Assigned later to avoid potential circular dependency.
     },
     string: {},
     stringWithArgEnum: {
-      a: {},
+      a: {
+        ABCEnum: {
+          it: [0],
+          nt: ABCEnum,
+        },
+      },
     },
     stringWithArgInputObject: {
-      a: {},
+      a: {
+        input: {
+          it: [0],
+          nt: InputObject,
+        },
+      },
     },
     stringWithArgInputObjectRequired: {
-      a: {},
+      a: {
+        input: {
+          it: [1],
+          nt: InputObject,
+        },
+      },
     },
     stringWithArgs: {
       a: {

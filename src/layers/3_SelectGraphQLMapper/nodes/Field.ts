@@ -15,7 +15,6 @@ export const toGraphQLField: GraphQLPostOperationMapper<
   sddm,
   field,
 ) => {
-  const sddmNamedType = sddm?.nt
   const fieldSelection = Select.parseSelectionField(field.name, field.value)
 
   const alias = field.alias
@@ -40,12 +39,13 @@ export const toGraphQLField: GraphQLPostOperationMapper<
       case `Arguments`: {
         const sddmArguments = sddm?.a
         for (const argName in keyParsed.arguments) {
-          const sddmArgument = sddmArguments?.[argName]
+          const argNameSchema = argName.replace(/^\$/, ``)
+          const sddmArgument = sddmArguments?.[argNameSchema]
           const argValue = keyParsed.arguments[argName]
 
           if (context.extractOperationVariables && sddmArgument) {
             const argument = context.captureVariableForArgument({
-              name: argName,
+              name: argNameSchema,
               value: argValue,
               sddmArgument,
             })
@@ -59,8 +59,8 @@ export const toGraphQLField: GraphQLPostOperationMapper<
       }
       default: {
         // dprint-ignore
-        if (SchemaDrivenDataMap.isScalar(sddmNamedType)) throw new Error(`schema map scalar on non-scalar graffle selection.`)
-        collectForInlineFragmentLike(context, sddmNamedType, keyParsed, {
+        if (SchemaDrivenDataMap.isOutputObject(sddm?.nt)) throw new Error(`schema map scalar on non-scalar graffle selection.`)
+        collectForInlineFragmentLike(context, sddm?.nt, keyParsed, {
           directives,
           selections,
         })

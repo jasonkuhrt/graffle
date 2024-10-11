@@ -18,7 +18,7 @@ export const toGraphQLSelectionSetRoot: GraphQLPostOperationMapper<
   return Nodes.SelectionSet({
     selections: Object
       .entries(selectionSet)
-      .map(([key, v]) => Select.parseSelectionRoot(key, v))
+      .map(([key, value]) => Select.parseSelectionRoot(key, value))
       .flatMap(keyParsed => fromGraffleSelectionObjectLevel(context, sddm, keyParsed)),
   })
 }

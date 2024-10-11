@@ -82,6 +82,7 @@ const getKinds = (config: Config) => {
   const { schema: { typeMapByKind } } = config
   const condition = typeCondition(config)
   return {
+    GraphQLEnumType: typeMapByKind.GraphQLEnumType.filter(() => config.runtimeFeatures.operationVariables),
     GraphQLInputObjectType: typeMapByKind.GraphQLInputObjectType.filter(condition),
     GraphQLObjectType: typeMapByKind.GraphQLObjectType.filter(condition),
     GraphQLInterfaceType: typeMapByKind.GraphQLInterfaceType.filter(condition),
@@ -186,10 +187,11 @@ const ObjectType = createCodeGenerator<
         code(`a: {`)
         for (const arg of args) {
           const argType = Grafaid.Nodes.getNamedType(arg.type)
-          const isNeeded = (config.runtimeFeatures.operationVariables && Grafaid.Nodes.$Schema.isScalarType(argType))
+          const isNeeded = (config.runtimeFeatures.operationVariables)
             || (config.runtimeFeatures.customScalars && Grafaid.Nodes.$Schema.isScalarTypeAndCustom(argType))
           if (isNeeded) {
-            const nt = (Grafaid.Nodes.$Schema.isInputObjectType(argType) && config.runtimeFeatures.operationVariables)
+            const nt = ((Grafaid.Nodes.$Schema.isInputObjectType(argType) || Grafaid.Nodes.$Schema.isEnumType(argType))
+                && config.runtimeFeatures.operationVariables)
               ? Code.termField(`nt`, argType.name)
               : (Grafaid.Nodes.$Schema.isScalarTypeAndCustom(argType) && config.runtimeFeatures.customScalars)
                   || (Grafaid.Nodes.$Schema.isScalarType(argType) && config.runtimeFeatures.operationVariables)
@@ -242,6 +244,17 @@ const ObjectType = createCodeGenerator<
   },
 )
 
+const EnumType = createCodeGenerator<
+  { type: Grafaid.Nodes.$Schema.GraphQLEnumType; referenceAssignments: ReferenceAssignments }
+>(
+  ({ config, code, type, referenceAssignments }) => {
+    code(`const ${type.name}: $Utilities.SchemaDrivenDataMap.Enum = {`)
+    code(Code.termField(`k`, Code.string(`enum`)))
+    code(Code.termField(`n`, Code.string(type.name)))
+    code(`}`)
+  },
+)
+
 const InputObjectType = createCodeGenerator<
   { type: Grafaid.Nodes.$Schema.GraphQLInputObjectType; referenceAssignments: ReferenceAssignments }
 >(
@@ -289,6 +302,7 @@ const InputObjectType = createCodeGenerator<
 )
 
 const kindRenders = {
+  GraphQLEnumType: EnumType,
   GraphQLUnionType: UnionType,
   GraphQLInterfaceType: InterfaceType,
   GraphQLInputObjectType: InputObjectType,

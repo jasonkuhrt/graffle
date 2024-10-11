@@ -15,6 +15,7 @@ import type { AnyGraphQLOutputField } from '../graphql.js'
 
 export {
   getNullableType,
+  GraphQLEnumType,
   GraphQLInputObjectType,
   type GraphQLInputType,
   GraphQLInterfaceType,

@@ -7,10 +7,10 @@ import { toGraphQLOperationDefinition } from './OperationDefinition.js'
 const defaultOperationName = `$default`
 
 export const toGraphQLDocument = (
-  document: Select.Document.DocumentNormalized,
+  graffleDocument: Select.Document.DocumentNormalized,
   options?: Options,
 ) => {
-  const operations = Object.values(document.operations)
+  const operations = Object.values(graffleDocument.operations)
   const sddm: SchemaDrivenDataMap = options?.sddm ?? {}
 
   const operationsAndVariables = operations.map(operation => {

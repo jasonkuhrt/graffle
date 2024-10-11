@@ -7,6 +7,37 @@ import * as CustomScalars from './Scalar.js'
 //
 //
 // ==================================================================================================
+//                                          GraphQLEnumType
+// ==================================================================================================
+//
+//
+//
+//
+//
+//
+
+const BattleWildResult: $Utilities.SchemaDrivenDataMap.Enum = {
+  k: 'enum',
+  n: 'BattleWildResult',
+}
+
+const PokemonType: $Utilities.SchemaDrivenDataMap.Enum = {
+  k: 'enum',
+  n: 'PokemonType',
+}
+
+const TrainerClass: $Utilities.SchemaDrivenDataMap.Enum = {
+  k: 'enum',
+  n: 'TrainerClass',
+}
+
+//
+//
+//
+//
+//
+//
+// ==================================================================================================
 //                                       GraphQLInputObjectType
 // ==================================================================================================
 //
@@ -233,6 +264,10 @@ const Mutation: $Utilities.SchemaDrivenDataMap.OutputObject = {
           it: [1],
           nt: CustomScalars.String,
         },
+        type: {
+          it: [1],
+          nt: PokemonType,
+        },
       },
       // nt: Pokemon, <-- Assigned later to avoid potential circular dependency.
     },
@@ -260,7 +295,12 @@ const Query: $Utilities.SchemaDrivenDataMap.OutputObject = {
       // nt: Pokemon, <-- Assigned later to avoid potential circular dependency.
     },
     pokemons: {
-      a: {},
+      a: {
+        filter: {
+          it: [0],
+          nt: PokemonFilter,
+        },
+      },
       // nt: Pokemon, <-- Assigned later to avoid potential circular dependency.
     },
     trainerByName: {

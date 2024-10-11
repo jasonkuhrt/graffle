@@ -8,9 +8,14 @@ export interface SchemaDrivenDataMap {
 }
 
 export namespace SchemaDrivenDataMap {
-  export type OutputLike = SchemaScalar.Scalar | OutputObject
+  export type OutputLike = SchemaScalar.Scalar | OutputObject | Enum
 
-  export type InputLike = SchemaScalar.Scalar | InputObject
+  export type InputLike = SchemaScalar.Scalar | InputObject | Enum
+
+  export type Enum = {
+    k: `enum`
+    n: string
+  }
 
   export type Node =
     | OutputObject
