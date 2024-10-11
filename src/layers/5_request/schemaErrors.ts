@@ -1,4 +1,5 @@
 import type { Grafaid } from '../../lib/grafaid/__.js'
+import { getOperationDefinition } from '../../lib/grafaid/document.js'
 import { Nodes, operationTypeNameToRootTypeName } from '../../lib/grafaid/graphql.js'
 import type { SchemaIndex } from '../4_generator/generators/SchemaIndex.js'
 
@@ -9,19 +10,13 @@ export const injectTypenameOnRootResultFields = (
     document: Nodes.DocumentNode
   },
 ): void => {
-  const operationDefinition = document.definitions.find(_ =>
-    _.kind === Nodes.Kind.OPERATION_DEFINITION && (operationName ? _.name?.value === operationName : true)
-  ) as Nodes.OperationDefinitionNode | undefined
+  const operationDefinition = getOperationDefinition(document, operationName)
+  if (!operationDefinition) return
 
-  if (!operationDefinition) {
-    throw new Error(`Operation not found`)
-  }
+  const rootTypeName = operationTypeNameToRootTypeName[operationDefinition.operation]
+  const selectionSet = operationDefinition.selectionSet
 
-  injectTypenameOnRootResultFields_({
-    rootTypeName: operationTypeNameToRootTypeName[operationDefinition.operation],
-    schema,
-    selectionSet: operationDefinition.selectionSet,
-  })
+  injectTypenameOnRootResultFields_({ rootTypeName, schema, selectionSet })
 }
 
 const injectTypenameOnRootResultFields_ = (

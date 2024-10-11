@@ -1,7 +1,7 @@
 import type { Grafaid } from '../../../lib/grafaid/__.js'
 import { Nodes } from '../../../lib/grafaid/_Nodes.js'
 import type { Select } from '../../2_Select/__.js'
-import type { SchemaDrivenDataMap } from '../../7_customScalars/generator/SchemaDrivenDataMap.js'
+import type { SchemaDrivenDataMap } from '../../7_customScalars/schemaDrivenDataMap/types.js'
 import { inferTypeName } from '../inferVariableTypeName.js'
 import type { Options } from '../toGraphQL.js'
 import type { Context, GraphQLPreOperationMapper } from '../types.js'
@@ -17,7 +17,7 @@ export const toGraphQLOperationDefinition: GraphQLPreOperationMapper<
   options,
 ) => {
   const context: Context = {
-    extractOperationVariables: options?.extractOperationVariables ?? true,
+    variablesEnabled: options?.operationVariables ?? true,
     captureVariableForArgument: (input) => {
       const variableName = input.name
 

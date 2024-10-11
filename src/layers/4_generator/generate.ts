@@ -1,5 +1,5 @@
 import fs from 'node:fs/promises'
-import { ModuleGeneratorRuntimeSchemaDrivenData } from '../7_customScalars/generator/RuntimeIndexCustomScalars.js'
+import { ModuleGeneratorRuntimeSchemaDrivenData } from '../7_customScalars/schemaDrivenDataMap/generator.js'
 import { type Config, createConfig, type Input } from './config.js'
 import { ModuleGenerator_ } from './generators/_.js'
 import { ModuleGenerator__ } from './generators/__.js'

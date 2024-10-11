@@ -629,3 +629,10 @@ export const isString = (value: unknown): value is string => {
 export const isNonNull = <$Value>(value: $Value): value is ExcludeNull<$Value> => {
   return value !== null
 }
+
+export const findTyped = <$Value, $Result>(
+  values: readonly $Value[],
+  looker: (value: $Value) => null | $Result,
+): undefined | $Result => {
+  return values.find((value) => Boolean(looker(value))) as undefined | $Result
+}

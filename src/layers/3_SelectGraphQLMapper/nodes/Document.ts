@@ -1,6 +1,6 @@
+import type { Grafaid } from '../../../lib/grafaid/__.js'
 import { Nodes } from '../../../lib/grafaid/_Nodes.js'
 import type { Select } from '../../2_Select/__.js'
-import type { SchemaDrivenDataMap } from '../../7_customScalars/generator/SchemaDrivenDataMap.js'
 import type { Options } from '../toGraphQL.js'
 import { toGraphQLOperationDefinition } from './OperationDefinition.js'
 
@@ -10,19 +10,20 @@ export const toGraphQLDocument = (
   graffleDocument: Select.Document.DocumentNormalized,
   options?: Options,
 ) => {
-  const operations = Object.values(graffleDocument.operations)
-  const sddm: SchemaDrivenDataMap = options?.sddm ?? {}
-
-  const operationsAndVariables = operations.map(operation => {
-    return toGraphQLOperationDefinition(sddm[operation.rootType], operation, options)
-  })
+  const operationsAndVariables = Object
+    .values(graffleDocument.operations)
+    .map(graffleOperation => {
+      const sddm = options?.sddm?.roots[graffleOperation.rootType]
+      return toGraphQLOperationDefinition(sddm, graffleOperation, options)
+    })
 
   const graphqlDocument = Nodes.Document({
     definitions: operationsAndVariables.map(_ => _.operation),
   })
 
-  const operationsVariables = Object.fromEntries(operationsAndVariables.map(_ => {
-    return [_.operation.name ?? defaultOperationName, _.variables]
+  const operationsVariables = Object.fromEntries(operationsAndVariables.map((_): [string, Grafaid.Variables] => {
+    const name = _.operation.name?.value ?? defaultOperationName
+    return [name, _.variables]
   }))
 
   return {

@@ -1,8 +1,8 @@
 /* eslint-disable */
 import * as $ from '../../../../../../src/entrypoints/schema.js'
 import * as Data from './Data.js'
-import { $index as $customScalarsIndex } from './RuntimeCustomScalars.js'
 import * as $Scalar from './Scalar.js'
+import { $index as $customScalarsIndex } from './SchemaDrivenDataMap.js'
 import type { Index } from './SchemaIndex.js'
 export const $defaultSchemaUrl = undefined
 

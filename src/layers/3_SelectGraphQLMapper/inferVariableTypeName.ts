@@ -1,5 +1,5 @@
 import { isScalar } from '../1_Schema/Hybrid/types/Scalar/Scalar.js'
-import type { SchemaDrivenDataMap } from '../7_customScalars/generator/SchemaDrivenDataMap.js'
+import type { SchemaDrivenDataMap } from '../7_customScalars/schemaDrivenDataMap/types.js'
 
 export const inferTypeName = (sddmArgLike: SchemaDrivenDataMap.ArgumentOrInputField): string => {
   if (sddmArgLike.it) {

@@ -12,13 +12,13 @@ import {
   postRequestEncodeBody,
   postRequestHeadersRec,
 } from '../../lib/grafaid/http/http.js'
-import type { TypedDocument } from '../../lib/grafaid/typed-document/__.js'
 import { mergeRequestInit, searchParamsAppendAll } from '../../lib/http.js'
 import { casesExhausted, isString, throwNull } from '../../lib/prelude.js'
 import { SelectionSetGraphqlMapper } from '../3_SelectGraphQLMapper/__.js'
 import type { GraffleExecutionResultVar } from '../6_client/handleOutput.js'
 import type { Config } from '../6_client/Settings/Config.js'
 import { MethodMode, type MethodModeGetReads } from '../6_client/transportHttp/request.js'
+import { encodeVariables } from '../7_customScalars/encode.js'
 import {
   type CoreExchangeGetRequest,
   type CoreExchangePostRequest,
@@ -41,40 +41,61 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
   hookNamesOrderedBySequence,
   hooks: {
     encode: ({ input }) => {
-      let document: string | TypedDocument.TypedDocument
+      let document: string | Grafaid.Nodes.DocumentNode
+      let variables: Variables | undefined = input.interfaceType === `raw`
+        ? input.request.variables
+        : undefined
 
-      // todo: the other case where we're going to need to parse document is for custom scalar support of raw
-      const isWillInjectTypename = input.state.config.output.errors.schema && input.schemaIndex
+      // todo way to opt out
+      const isEnabledEncodeCustomScalars = true
+      const isEnabledSchemaErrors = input.schemaIndex?.customScalars.input
 
-      if (isWillInjectTypename) {
-        document = input.interfaceType === `raw`
-          ? isString(input.request.query)
-            ? parse(input.request.query)
-            : input.request.query as Nodes.DocumentNode
-          : SelectionSetGraphqlMapper.toGraphQL({
-            document: input.request.document,
-            sddm: input.schemaIndex!.customScalars.input,
-          }).document
+      const isManipulatingDocument = input.schemaIndex?.customScalars.input && (
+        input.state.config.output.errors.schema
+        || isEnabledEncodeCustomScalars
+      )
 
-        injectTypenameOnRootResultFields({
-          document,
-          operationName: input.request.operationName,
-          schema: input.schemaIndex!,
-        })
+      if (input.interfaceType === `raw`) {
+        document = (isManipulatingDocument && isString(input.request.query))
+          ? parse(input.request.query)
+          : input.request.query as Nodes.DocumentNode
       } else {
-        document = input.interfaceType === `raw`
-          ? input.request.query
-          : SelectionSetGraphqlMapper.toGraphQL({
-            // schema: input.schemaIndex!,
-            document: input.request.document,
-            sddm: input.schemaIndex!.customScalars.input,
-          }).document
+        const result = SelectionSetGraphqlMapper.toGraphQL({
+          document: input.request.document,
+          options: {
+            sddm: input.schemaIndex?.customScalars.input,
+          },
+        })
+        document = result.document
+        // We get back variables for every operation in the Graffle document.
+        // However, we only need the variables for the operation that was selected to be executed.
+        // If there was NO operation name provided then we assume that the first operation in the document is the one that should be executed.
+        // If there are MULTIPLE operations in the Graffle document AND the user has supplied an invalid operation name (either none or given matches none)
+        // then what happens here is the variables from one operation can be mixed into another operation.
+        // This shouldn't matter because such a state would be rejected by the server since it wouldn't know what operation to execute.
+        variables = input.operationName
+          ? result.operationsVariables[input.operationName]
+          : Object.values(result.operationsVariables)[0]
       }
 
-      const variables: Variables | undefined = input.interfaceType === `raw`
-        ? input.request.variables
-        // todo turn inputs into variables
-        : undefined
+      if (input.schemaIndex) {
+        if (isEnabledSchemaErrors) {
+          injectTypenameOnRootResultFields({
+            document,
+            operationName: input.request.operationName,
+            schema: input.schemaIndex,
+          })
+        }
+
+        if (isEnabledEncodeCustomScalars) {
+          encodeVariables({
+            document,
+            operationName: input.request.operationName,
+            variables,
+            sddm: input.schemaIndex.customScalars.input,
+          })
+        }
+      }
 
       return {
         ...input,

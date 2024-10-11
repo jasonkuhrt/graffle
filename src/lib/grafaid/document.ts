@@ -20,12 +20,13 @@ import {
   print as graphqlPrint,
   type SelectionSetNode,
   type StringValueNode,
+  type TypeNode,
   type ValueNode,
   type VariableDefinitionNode,
   type VariableNode,
 } from 'graphql'
 import type { HasRequiredKeys } from 'type-fest'
-import { isString } from '../prelude.js'
+import { casesExhausted, findTyped, isString } from '../prelude.js'
 import { TypedDocument } from './typed-document/__.js'
 
 export type {
@@ -56,8 +57,6 @@ export type {
 export { Kind } from 'graphql'
 
 export * as Typed from './typed-document/TypedDocument.js'
-
-export { getNamedType } from 'graphql'
 
 export * as $Schema from './schema/schema.js'
 
@@ -168,6 +167,10 @@ export const NamedType: Constructor<NamedTypeNode> = (namedType) => {
   }
 }
 
+export const isNamedType = (value: unknown): value is NamedTypeNode => {
+  return typeof value === `object` && value !== null && `kind` in value && value.kind === Kind.NAMED_TYPE
+}
+
 export const Field: Constructor<FieldNode> = (field) => {
   return {
     kind: Kind.FIELD,
@@ -253,4 +256,24 @@ export const OperationTypeToAccessKind = {
 export const print = (document: TypedDocument.TypedDocument): string => {
   const documentUntyped = TypedDocument.unType(document)
   return isString(documentUntyped) ? documentUntyped : graphqlPrint(documentUntyped)
+}
+
+export const getNamedType = (type: TypeNode): NamedTypeNode => {
+  if (type.kind === Kind.NAMED_TYPE) return type
+  if (type.kind === Kind.LIST_TYPE) return getNamedType(type.type)
+  if (type.kind === Kind.NON_NULL_TYPE) return getNamedType(type.type)
+  throw casesExhausted(type)
+}
+
+export const getOperationDefinition = (
+  document: DocumentNode,
+  operationName?: string,
+): OperationDefinitionNode | null => {
+  if (!operationName) {
+    return document.definitions.find(d => d.kind === `OperationDefinition`) ?? null // eslint-disable-line
+  }
+  return findTyped(
+    document.definitions,
+    value => value.kind === `OperationDefinition` && value.name?.value === operationName ? value : null, // eslint-disable-line
+  ) ?? null
 }

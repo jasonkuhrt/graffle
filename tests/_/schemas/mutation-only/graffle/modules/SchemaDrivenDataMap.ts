@@ -1,4 +1,63 @@
-import * as CustomScalars from './Scalar.js'
+import type * as $Utilities from '../../../../../../src/entrypoints/utilities-for-generated.js'
+import * as $Scalar from './Scalar.js'
+//
+//
+//
+//
+//
+//
+// ==================================================================================================
+//                                         GraphQLScalarType
+// ==================================================================================================
+//
+//
+//
+//
+//
+//
+
+const ID = $Scalar.ID
+
+const Boolean = $Scalar.Boolean
+
+const String = $Scalar.String
+
+//
+//
+//
+//
+//
+//
+// ==================================================================================================
+//                                      GraphQLScalarTypeCustom
+// ==================================================================================================
+//
+//
+//
+//
+//
+//
+
+// None of your GraphQLScalarTypeCustoms have custom scalars.
+
+//
+//
+//
+//
+//
+//
+// ==================================================================================================
+//                                          GraphQLEnumType
+// ==================================================================================================
+//
+//
+//
+//
+//
+//
+
+// None of your GraphQLEnumTypes have custom scalars.
+
 //
 //
 //
@@ -87,7 +146,31 @@ import * as CustomScalars from './Scalar.js'
 //
 //
 
-// None of your GraphQLRootTypes have custom scalars.
+const Mutation: $Utilities.SchemaDrivenDataMap.OutputObject = {
+  f: {
+    id: {},
+    idNonNull: {},
+  },
+}
+
+//
+//
+//
+//
+//
+//
+// ==================================================================================================
+//                                       Reference Assignments
+//                                (avoids circular assignment issues)
+// ==================================================================================================
+//
+//
+//
+//
+//
+//
+
+// None of your types have references to other non-scalar/enum types.
 
 //
 //
@@ -105,4 +188,14 @@ import * as CustomScalars from './Scalar.js'
 //
 //
 
-export const $index = {}
+export const $index: $Utilities.SchemaDrivenDataMap = {
+  roots: {
+    Mutation,
+  },
+  types: {
+    ID,
+    Boolean,
+    String,
+    Mutation,
+  },
+}

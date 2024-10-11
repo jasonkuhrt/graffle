@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`( extractOperationVariables: false ) - Query - $include (empty object) > $include (empty object) 1`] = `
+exports[`( variables: false ) - Query - $include (empty object) > $include (empty object) 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -23,7 +23,7 @@ exports[`( extractOperationVariables: false ) - Query - $include (empty object) 
 "
 `;
 
-exports[`( extractOperationVariables: false ) - Query - $include (false) > $include (false) 1`] = `
+exports[`( variables: false ) - Query - $include (false) > $include (false) 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -46,7 +46,7 @@ exports[`( extractOperationVariables: false ) - Query - $include (false) > $incl
 "
 `;
 
-exports[`( extractOperationVariables: false ) - Query - $include (if false) > $include (if false) 1`] = `
+exports[`( variables: false ) - Query - $include (if false) > $include (if false) 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -71,7 +71,7 @@ exports[`( extractOperationVariables: false ) - Query - $include (if false) > $i
 "
 `;
 
-exports[`( extractOperationVariables: false ) - Query - $include (if true) > $include (if true) 1`] = `
+exports[`( variables: false ) - Query - $include (if true) > $include (if true) 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -96,7 +96,7 @@ exports[`( extractOperationVariables: false ) - Query - $include (if true) > $in
 "
 `;
 
-exports[`( extractOperationVariables: false ) - Query - $include (if undefined) > $include (if undefined) 1`] = `
+exports[`( variables: false ) - Query - $include (if undefined) > $include (if undefined) 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -119,7 +119,7 @@ exports[`( extractOperationVariables: false ) - Query - $include (if undefined) 
 "
 `;
 
-exports[`( extractOperationVariables: false ) - Query - $include (undefined) > $include (undefined) 1`] = `
+exports[`( variables: false ) - Query - $include (undefined) > $include (undefined) 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -141,7 +141,7 @@ exports[`( extractOperationVariables: false ) - Query - $include (undefined) > $
 "
 `;
 
-exports[`( extractOperationVariables: false ) - Query - $include > $include 1`] = `
+exports[`( variables: false ) - Query - $include > $include 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -164,7 +164,7 @@ exports[`( extractOperationVariables: false ) - Query - $include > $include 1`] 
 "
 `;
 
-exports[`( extractOperationVariables: false ) - Query - $skip (empty object) > $skip (empty object) 1`] = `
+exports[`( variables: false ) - Query - $skip (empty object) > $skip (empty object) 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -187,7 +187,7 @@ exports[`( extractOperationVariables: false ) - Query - $skip (empty object) > $
 "
 `;
 
-exports[`( extractOperationVariables: false ) - Query - $skip (false) > $skip (false) 1`] = `
+exports[`( variables: false ) - Query - $skip (false) > $skip (false) 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -210,7 +210,7 @@ exports[`( extractOperationVariables: false ) - Query - $skip (false) > $skip (f
 "
 `;
 
-exports[`( extractOperationVariables: false ) - Query - $skip (if false) > $skip (if false) 1`] = `
+exports[`( variables: false ) - Query - $skip (if false) > $skip (if false) 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -235,7 +235,7 @@ exports[`( extractOperationVariables: false ) - Query - $skip (if false) > $skip
 "
 `;
 
-exports[`( extractOperationVariables: false ) - Query - $skip (if true) > $skip (if true) 1`] = `
+exports[`( variables: false ) - Query - $skip (if true) > $skip (if true) 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -260,7 +260,7 @@ exports[`( extractOperationVariables: false ) - Query - $skip (if true) > $skip 
 "
 `;
 
-exports[`( extractOperationVariables: false ) - Query - $skip (if undefined) > $skip (if undefined) 1`] = `
+exports[`( variables: false ) - Query - $skip (if undefined) > $skip (if undefined) 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -283,7 +283,7 @@ exports[`( extractOperationVariables: false ) - Query - $skip (if undefined) > $
 "
 `;
 
-exports[`( extractOperationVariables: false ) - Query - $skip (true) > $skip (true) 1`] = `
+exports[`( variables: false ) - Query - $skip (true) > $skip (true) 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -306,7 +306,7 @@ exports[`( extractOperationVariables: false ) - Query - $skip (true) > $skip (tr
 "
 `;
 
-exports[`( extractOperationVariables: false ) - Query - $skip (undefined) > $skip (undefined) 1`] = `
+exports[`( variables: false ) - Query - $skip (undefined) > $skip (undefined) 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -328,7 +328,7 @@ exports[`( extractOperationVariables: false ) - Query - $skip (undefined) > $ski
 "
 `;
 
-exports[`( extractOperationVariables: false ) - Query - alias - scalar > alias - scalar 1`] = `
+exports[`( variables: false ) - Query - alias - scalar > alias - scalar 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -349,7 +349,7 @@ exports[`( extractOperationVariables: false ) - Query - alias - scalar > alias -
 "
 `;
 
-exports[`( extractOperationVariables: false ) - Query - alias - scalar directive > alias - scalar directive 1`] = `
+exports[`( variables: false ) - Query - alias - scalar directive > alias - scalar directive 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -372,7 +372,7 @@ exports[`( extractOperationVariables: false ) - Query - alias - scalar directive
 "
 `;
 
-exports[`( extractOperationVariables: false ) - Query - alias - scalar directive+select > alias - scalar directive+select 1`] = `
+exports[`( variables: false ) - Query - alias - scalar directive+select > alias - scalar directive+select 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -398,7 +398,7 @@ exports[`( extractOperationVariables: false ) - Query - alias - scalar directive
 "
 `;
 
-exports[`( extractOperationVariables: false ) - Query - alias - scalar x2 > alias - scalar x2 1`] = `
+exports[`( variables: false ) - Query - alias - scalar x2 > alias - scalar x2 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -426,7 +426,7 @@ exports[`( extractOperationVariables: false ) - Query - alias - scalar x2 > alia
 "
 `;
 
-exports[`( extractOperationVariables: false ) - Query - args - custom scalar - arg field > args - custom scalar - arg field 1`] = `
+exports[`( variables: false ) - Query - args - custom scalar - arg field > args - custom scalar - arg field 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -448,7 +448,7 @@ exports[`( extractOperationVariables: false ) - Query - args - custom scalar - a
 "
 `;
 
-exports[`( extractOperationVariables: false ) - Query - args - custom scalar - arg field in list (null) > args - custom scalar - arg field in list (null) 1`] = `
+exports[`( variables: false ) - Query - args - custom scalar - arg field in list (null) > args - custom scalar - arg field in list (null) 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -470,7 +470,7 @@ exports[`( extractOperationVariables: false ) - Query - args - custom scalar - a
 "
 `;
 
-exports[`( extractOperationVariables: false ) - Query - args - custom scalar - arg field in list > args - custom scalar - arg field in list 1`] = `
+exports[`( variables: false ) - Query - args - custom scalar - arg field in list > args - custom scalar - arg field in list 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -495,7 +495,7 @@ exports[`( extractOperationVariables: false ) - Query - args - custom scalar - a
 "
 `;
 
-exports[`( extractOperationVariables: false ) - Query - args - custom scalar - arg field in non-null > args - custom scalar - arg field in non-null 1`] = `
+exports[`( variables: false ) - Query - args - custom scalar - arg field in non-null > args - custom scalar - arg field in non-null 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -517,7 +517,7 @@ exports[`( extractOperationVariables: false ) - Query - args - custom scalar - a
 "
 `;
 
-exports[`( extractOperationVariables: false ) - Query - args - custom scalar - arg field in non-null list (with list) > args - custom scalar - arg field in non-null list (with list) 1`] = `
+exports[`( variables: false ) - Query - args - custom scalar - arg field in non-null list (with list) > args - custom scalar - arg field in non-null list (with list) 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -544,7 +544,7 @@ exports[`( extractOperationVariables: false ) - Query - args - custom scalar - a
 "
 `;
 
-exports[`( extractOperationVariables: false ) - Query - args - custom scalar - arg field in non-null list (with null) > args - custom scalar - arg field in non-null list (with null) 1`] = `
+exports[`( variables: false ) - Query - args - custom scalar - arg field in non-null list (with null) > args - custom scalar - arg field in non-null list (with null) 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -569,7 +569,7 @@ exports[`( extractOperationVariables: false ) - Query - args - custom scalar - a
 "
 `;
 
-exports[`( extractOperationVariables: false ) - Query - args - custom scalar - arg field in non-null list non-null > args - custom scalar - arg field in non-null list non-null 1`] = `
+exports[`( variables: false ) - Query - args - custom scalar - arg field in non-null list non-null > args - custom scalar - arg field in non-null list non-null 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -596,7 +596,7 @@ exports[`( extractOperationVariables: false ) - Query - args - custom scalar - a
 "
 `;
 
-exports[`( extractOperationVariables: false ) - Query - args - custom scalar - input object field > args - custom scalar - input object field 1`] = `
+exports[`( variables: false ) - Query - args - custom scalar - input object field > args - custom scalar - input object field 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -613,7 +613,9 @@ exports[`( extractOperationVariables: false ) - Query - args - custom scalar - i
 }
 --------GRAPHQL DOCUMENT & VARIABLES--------
 {
-  dateArgInputObject(input: {idRequired: "", dateRequired: {}, date: {}})
+  dateArgInputObject(
+    input: {idRequired: "", dateRequired: "1970-01-01T00:00:00.000Z", date: "1970-01-01T00:00:00.001Z"}
+  )
 }
 ----------------
 {
@@ -622,7 +624,7 @@ exports[`( extractOperationVariables: false ) - Query - args - custom scalar - i
 "
 `;
 
-exports[`( extractOperationVariables: false ) - Query - args - custom scalar - nested input object field > args - custom scalar - nested input object field 1`] = `
+exports[`( variables: false ) - Query - args - custom scalar - nested input object field > args - custom scalar - nested input object field 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -642,7 +644,7 @@ exports[`( extractOperationVariables: false ) - Query - args - custom scalar - n
 --------GRAPHQL DOCUMENT & VARIABLES--------
 {
   InputObjectNested(
-    input: {InputObject: {idRequired: "", dateRequired: {}, date: {}}}
+    input: {InputObject: {idRequired: "", dateRequired: "1970-01-01T00:00:00.000Z", date: "1970-01-01T00:00:00.001Z"}}
   )
 }
 ----------------
@@ -652,7 +654,7 @@ exports[`( extractOperationVariables: false ) - Query - args - custom scalar - n
 "
 `;
 
-exports[`( extractOperationVariables: false ) - Query - args - object with args (empty object) > args - object with args (empty object) 1`] = `
+exports[`( variables: false ) - Query - args - object with args (empty object) > args - object with args (empty object) 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -675,7 +677,7 @@ exports[`( extractOperationVariables: false ) - Query - args - object with args 
 "
 `;
 
-exports[`( extractOperationVariables: false ) - Query - args - object with args > args - object with args 1`] = `
+exports[`( variables: false ) - Query - args - object with args > args - object with args 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -700,7 +702,7 @@ exports[`( extractOperationVariables: false ) - Query - args - object with args 
 "
 `;
 
-exports[`( extractOperationVariables: false ) - Query - args - on union > args - on union 1`] = `
+exports[`( variables: false ) - Query - args - on union > args - on union 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -725,7 +727,7 @@ exports[`( extractOperationVariables: false ) - Query - args - on union > args -
 "
 `;
 
-exports[`( extractOperationVariables: false ) - Query - args - string with args (empty object) > args - string with args (empty object) 1`] = `
+exports[`( variables: false ) - Query - args - string with args (empty object) > args - string with args (empty object) 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -745,7 +747,7 @@ exports[`( extractOperationVariables: false ) - Query - args - string with args 
 "
 `;
 
-exports[`( extractOperationVariables: false ) - Query - args - string with args > args - string with args 1`] = `
+exports[`( variables: false ) - Query - args - string with args > args - string with args 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -768,7 +770,25 @@ exports[`( extractOperationVariables: false ) - Query - args - string with args 
 "
 `;
 
-exports[`( extractOperationVariables: false ) - Query - fg - directive > fg - directive 1`] = `
+exports[`( variables: false ) - Query - custom operation name > custom operation name 1`] = `
+"
+
+--------------GRAFFLE QUERY-------------
+{
+  "id": true
+}
+--------GRAPHQL DOCUMENT & VARIABLES--------
+query foobar {
+  id
+}
+----------------
+{
+  "foobar": {}
+}
+"
+`;
+
+exports[`( variables: false ) - Query - fg - directive > fg - directive 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -791,7 +811,7 @@ exports[`( extractOperationVariables: false ) - Query - fg - directive > fg - di
 "
 `;
 
-exports[`( extractOperationVariables: false ) - Query - fg - in union > fg - in union 1`] = `
+exports[`( variables: false ) - Query - fg - in union > fg - in union 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -817,7 +837,7 @@ exports[`( extractOperationVariables: false ) - Query - fg - in union > fg - in 
 "
 `;
 
-exports[`( extractOperationVariables: false ) - Query - fg - interface > fg - interface 1`] = `
+exports[`( variables: false ) - Query - fg - interface > fg - interface 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -843,7 +863,7 @@ exports[`( extractOperationVariables: false ) - Query - fg - interface > fg - in
 "
 `;
 
-exports[`( extractOperationVariables: false ) - Query - fg - multiple > fg - multiple 1`] = `
+exports[`( variables: false ) - Query - fg - multiple > fg - multiple 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -873,7 +893,7 @@ exports[`( extractOperationVariables: false ) - Query - fg - multiple > fg - mul
 "
 `;
 
-exports[`( extractOperationVariables: false ) - Query - fg - one > fg - one 1`] = `
+exports[`( variables: false ) - Query - fg - one > fg - one 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -895,7 +915,7 @@ exports[`( extractOperationVariables: false ) - Query - fg - one > fg - one 1`] 
 "
 `;
 
-exports[`( extractOperationVariables: false ) - Query - id string false > id string false 1`] = `
+exports[`( variables: false ) - Query - id string false > id string false 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -914,7 +934,7 @@ exports[`( extractOperationVariables: false ) - Query - id string false > id str
 "
 `;
 
-exports[`( extractOperationVariables: false ) - Query - id string undefined > id string undefined 1`] = `
+exports[`( variables: false ) - Query - id string undefined > id string undefined 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -932,7 +952,7 @@ exports[`( extractOperationVariables: false ) - Query - id string undefined > id
 "
 `;
 
-exports[`( extractOperationVariables: false ) - Query - object nested > object nested 1`] = `
+exports[`( variables: false ) - Query - object nested > object nested 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -961,7 +981,7 @@ exports[`( extractOperationVariables: false ) - Query - object nested > object n
 "
 `;
 
-exports[`( extractOperationVariables: false ) - Query - object nested scalar $skip > object nested scalar $skip 1`] = `
+exports[`( variables: false ) - Query - object nested scalar $skip > object nested scalar $skip 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -993,7 +1013,7 @@ exports[`( extractOperationVariables: false ) - Query - object nested scalar $sk
 "
 `;
 
-exports[`( extractOperationVariables: false ) - Query - object scalar > object scalar 1`] = `
+exports[`( variables: false ) - Query - object scalar > object scalar 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -1015,7 +1035,7 @@ exports[`( extractOperationVariables: false ) - Query - object scalar > object s
 "
 `;
 
-exports[`( extractOperationVariables: false ) - Query - other > other 1`] = `
+exports[`( variables: false ) - Query - other > other 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -1033,7 +1053,7 @@ exports[`( extractOperationVariables: false ) - Query - other > other 1`] = `
 "
 `;
 
-exports[`( extractOperationVariables: false ) - Query - string > string 1`] = `
+exports[`( variables: false ) - Query - string > string 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -1051,7 +1071,7 @@ exports[`( extractOperationVariables: false ) - Query - string > string 1`] = `
 "
 `;
 
-exports[`( extractOperationVariables: false ) - Query - union - __typename (no fragment) > union - __typename (no fragment) 1`] = `
+exports[`( variables: false ) - Query - union - __typename (no fragment) > union - __typename (no fragment) 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -1073,7 +1093,7 @@ exports[`( extractOperationVariables: false ) - Query - union - __typename (no f
 "
 `;
 
-exports[`( extractOperationVariables: false ) - Query - union - directive > union - directive 1`] = `
+exports[`( variables: false ) - Query - union - directive > union - directive 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -1100,7 +1120,7 @@ exports[`( extractOperationVariables: false ) - Query - union - directive > unio
 "
 `;
 
-exports[`( extractOperationVariables: false ) - Query - union - scalar > union - scalar 1`] = `
+exports[`( variables: false ) - Query - union - scalar > union - scalar 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -1126,7 +1146,7 @@ exports[`( extractOperationVariables: false ) - Query - union - scalar > union -
 "
 `;
 
-exports[`( extractOperationVariables: true ) - Query - $include (empty object) > $include (empty object) 1`] = `
+exports[`( variables: true ) - Query - $include (empty object) > $include (empty object) 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -1149,7 +1169,7 @@ exports[`( extractOperationVariables: true ) - Query - $include (empty object) >
 "
 `;
 
-exports[`( extractOperationVariables: true ) - Query - $include (false) > $include (false) 1`] = `
+exports[`( variables: true ) - Query - $include (false) > $include (false) 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -1172,7 +1192,7 @@ exports[`( extractOperationVariables: true ) - Query - $include (false) > $inclu
 "
 `;
 
-exports[`( extractOperationVariables: true ) - Query - $include (if false) > $include (if false) 1`] = `
+exports[`( variables: true ) - Query - $include (if false) > $include (if false) 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -1197,7 +1217,7 @@ exports[`( extractOperationVariables: true ) - Query - $include (if false) > $in
 "
 `;
 
-exports[`( extractOperationVariables: true ) - Query - $include (if true) > $include (if true) 1`] = `
+exports[`( variables: true ) - Query - $include (if true) > $include (if true) 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -1222,7 +1242,7 @@ exports[`( extractOperationVariables: true ) - Query - $include (if true) > $inc
 "
 `;
 
-exports[`( extractOperationVariables: true ) - Query - $include (if undefined) > $include (if undefined) 1`] = `
+exports[`( variables: true ) - Query - $include (if undefined) > $include (if undefined) 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -1245,7 +1265,7 @@ exports[`( extractOperationVariables: true ) - Query - $include (if undefined) >
 "
 `;
 
-exports[`( extractOperationVariables: true ) - Query - $include (undefined) > $include (undefined) 1`] = `
+exports[`( variables: true ) - Query - $include (undefined) > $include (undefined) 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -1267,7 +1287,7 @@ exports[`( extractOperationVariables: true ) - Query - $include (undefined) > $i
 "
 `;
 
-exports[`( extractOperationVariables: true ) - Query - $include > $include 1`] = `
+exports[`( variables: true ) - Query - $include > $include 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -1290,7 +1310,7 @@ exports[`( extractOperationVariables: true ) - Query - $include > $include 1`] =
 "
 `;
 
-exports[`( extractOperationVariables: true ) - Query - $skip (empty object) > $skip (empty object) 1`] = `
+exports[`( variables: true ) - Query - $skip (empty object) > $skip (empty object) 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -1313,7 +1333,7 @@ exports[`( extractOperationVariables: true ) - Query - $skip (empty object) > $s
 "
 `;
 
-exports[`( extractOperationVariables: true ) - Query - $skip (false) > $skip (false) 1`] = `
+exports[`( variables: true ) - Query - $skip (false) > $skip (false) 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -1336,7 +1356,7 @@ exports[`( extractOperationVariables: true ) - Query - $skip (false) > $skip (fa
 "
 `;
 
-exports[`( extractOperationVariables: true ) - Query - $skip (if false) > $skip (if false) 1`] = `
+exports[`( variables: true ) - Query - $skip (if false) > $skip (if false) 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -1361,7 +1381,7 @@ exports[`( extractOperationVariables: true ) - Query - $skip (if false) > $skip 
 "
 `;
 
-exports[`( extractOperationVariables: true ) - Query - $skip (if true) > $skip (if true) 1`] = `
+exports[`( variables: true ) - Query - $skip (if true) > $skip (if true) 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -1386,7 +1406,7 @@ exports[`( extractOperationVariables: true ) - Query - $skip (if true) > $skip (
 "
 `;
 
-exports[`( extractOperationVariables: true ) - Query - $skip (if undefined) > $skip (if undefined) 1`] = `
+exports[`( variables: true ) - Query - $skip (if undefined) > $skip (if undefined) 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -1409,7 +1429,7 @@ exports[`( extractOperationVariables: true ) - Query - $skip (if undefined) > $s
 "
 `;
 
-exports[`( extractOperationVariables: true ) - Query - $skip (true) > $skip (true) 1`] = `
+exports[`( variables: true ) - Query - $skip (true) > $skip (true) 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -1432,7 +1452,7 @@ exports[`( extractOperationVariables: true ) - Query - $skip (true) > $skip (tru
 "
 `;
 
-exports[`( extractOperationVariables: true ) - Query - $skip (undefined) > $skip (undefined) 1`] = `
+exports[`( variables: true ) - Query - $skip (undefined) > $skip (undefined) 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -1454,7 +1474,7 @@ exports[`( extractOperationVariables: true ) - Query - $skip (undefined) > $skip
 "
 `;
 
-exports[`( extractOperationVariables: true ) - Query - alias - scalar > alias - scalar 1`] = `
+exports[`( variables: true ) - Query - alias - scalar > alias - scalar 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -1475,7 +1495,7 @@ exports[`( extractOperationVariables: true ) - Query - alias - scalar > alias - 
 "
 `;
 
-exports[`( extractOperationVariables: true ) - Query - alias - scalar directive > alias - scalar directive 1`] = `
+exports[`( variables: true ) - Query - alias - scalar directive > alias - scalar directive 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -1498,7 +1518,7 @@ exports[`( extractOperationVariables: true ) - Query - alias - scalar directive 
 "
 `;
 
-exports[`( extractOperationVariables: true ) - Query - alias - scalar directive+select > alias - scalar directive+select 1`] = `
+exports[`( variables: true ) - Query - alias - scalar directive+select > alias - scalar directive+select 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -1524,7 +1544,7 @@ exports[`( extractOperationVariables: true ) - Query - alias - scalar directive+
 "
 `;
 
-exports[`( extractOperationVariables: true ) - Query - alias - scalar x2 > alias - scalar x2 1`] = `
+exports[`( variables: true ) - Query - alias - scalar x2 > alias - scalar x2 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -1552,7 +1572,7 @@ exports[`( extractOperationVariables: true ) - Query - alias - scalar x2 > alias
 "
 `;
 
-exports[`( extractOperationVariables: true ) - Query - args - custom scalar - arg field > args - custom scalar - arg field 1`] = `
+exports[`( variables: true ) - Query - args - custom scalar - arg field > args - custom scalar - arg field 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -1576,7 +1596,7 @@ query ($date: Date) {
 "
 `;
 
-exports[`( extractOperationVariables: true ) - Query - args - custom scalar - arg field in list (null) > args - custom scalar - arg field in list (null) 1`] = `
+exports[`( variables: true ) - Query - args - custom scalar - arg field in list (null) > args - custom scalar - arg field in list (null) 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -1600,7 +1620,7 @@ query ($date: [Date!]) {
 "
 `;
 
-exports[`( extractOperationVariables: true ) - Query - args - custom scalar - arg field in list > args - custom scalar - arg field in list 1`] = `
+exports[`( variables: true ) - Query - args - custom scalar - arg field in list > args - custom scalar - arg field in list 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -1630,7 +1650,7 @@ query ($date: [Date!]) {
 "
 `;
 
-exports[`( extractOperationVariables: true ) - Query - args - custom scalar - arg field in non-null > args - custom scalar - arg field in non-null 1`] = `
+exports[`( variables: true ) - Query - args - custom scalar - arg field in non-null > args - custom scalar - arg field in non-null 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -1654,7 +1674,7 @@ query ($date: Date!) {
 "
 `;
 
-exports[`( extractOperationVariables: true ) - Query - args - custom scalar - arg field in non-null list (with list) > args - custom scalar - arg field in non-null list (with list) 1`] = `
+exports[`( variables: true ) - Query - args - custom scalar - arg field in non-null list (with list) > args - custom scalar - arg field in non-null list (with list) 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -1684,7 +1704,7 @@ query ($date: [Date]!) {
 "
 `;
 
-exports[`( extractOperationVariables: true ) - Query - args - custom scalar - arg field in non-null list (with null) > args - custom scalar - arg field in non-null list (with null) 1`] = `
+exports[`( variables: true ) - Query - args - custom scalar - arg field in non-null list (with null) > args - custom scalar - arg field in non-null list (with null) 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -1714,7 +1734,7 @@ query ($date: [Date]!) {
 "
 `;
 
-exports[`( extractOperationVariables: true ) - Query - args - custom scalar - arg field in non-null list non-null > args - custom scalar - arg field in non-null list non-null 1`] = `
+exports[`( variables: true ) - Query - args - custom scalar - arg field in non-null list non-null > args - custom scalar - arg field in non-null list non-null 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -1744,7 +1764,7 @@ query ($date: [Date!]!) {
 "
 `;
 
-exports[`( extractOperationVariables: true ) - Query - args - custom scalar - input object field > args - custom scalar - input object field 1`] = `
+exports[`( variables: true ) - Query - args - custom scalar - input object field > args - custom scalar - input object field 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -1760,17 +1780,23 @@ exports[`( extractOperationVariables: true ) - Query - args - custom scalar - in
   }
 }
 --------GRAPHQL DOCUMENT & VARIABLES--------
-{
-  dateArgInputObject(input: {idRequired: "", dateRequired: {}, date: {}})
+query ($input: InputObject) {
+  dateArgInputObject(input: $input)
 }
 ----------------
 {
-  "$default": {}
+  "$default": {
+    "input": {
+      "idRequired": "",
+      "dateRequired": "1970-01-01T00:00:00.000Z",
+      "date": "1970-01-01T00:00:00.001Z"
+    }
+  }
 }
 "
 `;
 
-exports[`( extractOperationVariables: true ) - Query - args - custom scalar - nested input object field > args - custom scalar - nested input object field 1`] = `
+exports[`( variables: true ) - Query - args - custom scalar - nested input object field > args - custom scalar - nested input object field 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -1788,19 +1814,25 @@ exports[`( extractOperationVariables: true ) - Query - args - custom scalar - ne
   }
 }
 --------GRAPHQL DOCUMENT & VARIABLES--------
-{
-  InputObjectNested(
-    input: {InputObject: {idRequired: "", dateRequired: {}, date: {}}}
-  )
+query ($input: InputObjectNested) {
+  InputObjectNested(input: $input)
 }
 ----------------
 {
-  "$default": {}
+  "$default": {
+    "input": {
+      "InputObject": {
+        "idRequired": "",
+        "dateRequired": "1970-01-01T00:00:00.000Z",
+        "date": "1970-01-01T00:00:00.001Z"
+      }
+    }
+  }
 }
 "
 `;
 
-exports[`( extractOperationVariables: true ) - Query - args - object with args (empty object) > args - object with args (empty object) 1`] = `
+exports[`( variables: true ) - Query - args - object with args (empty object) > args - object with args (empty object) 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -1823,7 +1855,7 @@ exports[`( extractOperationVariables: true ) - Query - args - object with args (
 "
 `;
 
-exports[`( extractOperationVariables: true ) - Query - args - object with args > args - object with args 1`] = `
+exports[`( variables: true ) - Query - args - object with args > args - object with args 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -1850,7 +1882,7 @@ query ($id: ID) {
 "
 `;
 
-exports[`( extractOperationVariables: true ) - Query - args - on union > args - on union 1`] = `
+exports[`( variables: true ) - Query - args - on union > args - on union 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -1863,19 +1895,21 @@ exports[`( extractOperationVariables: true ) - Query - args - on union > args - 
   }
 }
 --------GRAPHQL DOCUMENT & VARIABLES--------
-{
-  result(case: Object1) {
+query ($case: Case!) {
+  result(case: $case) {
     __typename
   }
 }
 ----------------
 {
-  "$default": {}
+  "$default": {
+    "case": "Object1"
+  }
 }
 "
 `;
 
-exports[`( extractOperationVariables: true ) - Query - args - string with args (empty object) > args - string with args (empty object) 1`] = `
+exports[`( variables: true ) - Query - args - string with args (empty object) > args - string with args (empty object) 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -1895,7 +1929,7 @@ exports[`( extractOperationVariables: true ) - Query - args - string with args (
 "
 `;
 
-exports[`( extractOperationVariables: true ) - Query - args - string with args > args - string with args 1`] = `
+exports[`( variables: true ) - Query - args - string with args > args - string with args 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -1921,7 +1955,25 @@ query ($boolean: Boolean, $float: Float) {
 "
 `;
 
-exports[`( extractOperationVariables: true ) - Query - fg - directive > fg - directive 1`] = `
+exports[`( variables: true ) - Query - custom operation name > custom operation name 1`] = `
+"
+
+--------------GRAFFLE QUERY-------------
+{
+  "id": true
+}
+--------GRAPHQL DOCUMENT & VARIABLES--------
+query foobar {
+  id
+}
+----------------
+{
+  "foobar": {}
+}
+"
+`;
+
+exports[`( variables: true ) - Query - fg - directive > fg - directive 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -1944,7 +1996,7 @@ exports[`( extractOperationVariables: true ) - Query - fg - directive > fg - dir
 "
 `;
 
-exports[`( extractOperationVariables: true ) - Query - fg - in union > fg - in union 1`] = `
+exports[`( variables: true ) - Query - fg - in union > fg - in union 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -1970,7 +2022,7 @@ exports[`( extractOperationVariables: true ) - Query - fg - in union > fg - in u
 "
 `;
 
-exports[`( extractOperationVariables: true ) - Query - fg - interface > fg - interface 1`] = `
+exports[`( variables: true ) - Query - fg - interface > fg - interface 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -1996,7 +2048,7 @@ exports[`( extractOperationVariables: true ) - Query - fg - interface > fg - int
 "
 `;
 
-exports[`( extractOperationVariables: true ) - Query - fg - multiple > fg - multiple 1`] = `
+exports[`( variables: true ) - Query - fg - multiple > fg - multiple 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -2026,7 +2078,7 @@ exports[`( extractOperationVariables: true ) - Query - fg - multiple > fg - mult
 "
 `;
 
-exports[`( extractOperationVariables: true ) - Query - fg - one > fg - one 1`] = `
+exports[`( variables: true ) - Query - fg - one > fg - one 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -2048,7 +2100,7 @@ exports[`( extractOperationVariables: true ) - Query - fg - one > fg - one 1`] =
 "
 `;
 
-exports[`( extractOperationVariables: true ) - Query - id string false > id string false 1`] = `
+exports[`( variables: true ) - Query - id string false > id string false 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -2067,7 +2119,7 @@ exports[`( extractOperationVariables: true ) - Query - id string false > id stri
 "
 `;
 
-exports[`( extractOperationVariables: true ) - Query - id string undefined > id string undefined 1`] = `
+exports[`( variables: true ) - Query - id string undefined > id string undefined 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -2085,7 +2137,7 @@ exports[`( extractOperationVariables: true ) - Query - id string undefined > id 
 "
 `;
 
-exports[`( extractOperationVariables: true ) - Query - object nested > object nested 1`] = `
+exports[`( variables: true ) - Query - object nested > object nested 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -2114,7 +2166,7 @@ exports[`( extractOperationVariables: true ) - Query - object nested > object ne
 "
 `;
 
-exports[`( extractOperationVariables: true ) - Query - object nested scalar $skip > object nested scalar $skip 1`] = `
+exports[`( variables: true ) - Query - object nested scalar $skip > object nested scalar $skip 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -2146,7 +2198,7 @@ exports[`( extractOperationVariables: true ) - Query - object nested scalar $ski
 "
 `;
 
-exports[`( extractOperationVariables: true ) - Query - object scalar > object scalar 1`] = `
+exports[`( variables: true ) - Query - object scalar > object scalar 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -2168,7 +2220,7 @@ exports[`( extractOperationVariables: true ) - Query - object scalar > object sc
 "
 `;
 
-exports[`( extractOperationVariables: true ) - Query - other > other 1`] = `
+exports[`( variables: true ) - Query - other > other 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -2186,7 +2238,7 @@ exports[`( extractOperationVariables: true ) - Query - other > other 1`] = `
 "
 `;
 
-exports[`( extractOperationVariables: true ) - Query - string > string 1`] = `
+exports[`( variables: true ) - Query - string > string 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -2204,7 +2256,7 @@ exports[`( extractOperationVariables: true ) - Query - string > string 1`] = `
 "
 `;
 
-exports[`( extractOperationVariables: true ) - Query - union - __typename (no fragment) > union - __typename (no fragment) 1`] = `
+exports[`( variables: true ) - Query - union - __typename (no fragment) > union - __typename (no fragment) 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -2226,7 +2278,7 @@ exports[`( extractOperationVariables: true ) - Query - union - __typename (no fr
 "
 `;
 
-exports[`( extractOperationVariables: true ) - Query - union - directive > union - directive 1`] = `
+exports[`( variables: true ) - Query - union - directive > union - directive 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------
@@ -2253,7 +2305,7 @@ exports[`( extractOperationVariables: true ) - Query - union - directive > union
 "
 `;
 
-exports[`( extractOperationVariables: true ) - Query - union - scalar > union - scalar 1`] = `
+exports[`( variables: true ) - Query - union - scalar > union - scalar 1`] = `
 "
 
 --------------GRAFFLE QUERY-------------

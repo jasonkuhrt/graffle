@@ -9,3 +9,5 @@ export const createCodec = <$Decoded, $Encoded extends StandardScalarRuntimeType
   encode: (value: $Decoded) => $Encoded
   decode: (value: $Encoded) => $Decoded
 }): Codec<$Decoded, $Encoded> => codec
+
+export type Mapper = (value: any) => any

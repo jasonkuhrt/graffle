@@ -1,25 +1,36 @@
 import { expect, test } from 'vitest'
 import { db } from '../../../tests/_/schemas/db.js'
-import { $index } from '../../../tests/_/schemas/kitchen-sink/graffle/modules/RuntimeCustomScalars.js'
+import { $index } from '../../../tests/_/schemas/kitchen-sink/graffle/modules/SchemaDrivenDataMap.js'
 import type * as SelectionSets from '../../../tests/_/schemas/kitchen-sink/graffle/modules/SelectionSets.js'
 import { Grafaid } from '../../lib/grafaid/__.js'
 import { Select } from '../2_Select/__.js'
 import { toGraphQL } from './toGraphQL.js'
 
-type CasesDescriptiveQuery = [description: string, selectionSet: SelectionSets.Query]
+type CasesDescriptiveQuery = [
+  description: string,
+  selectionSet: SelectionSets.Query,
+  options?: { operationName?: string },
+]
 const testEachQueryWithDescription = test.for.bind(test)<CasesDescriptiveQuery>
 
-const tester = (input: { extractOperationVariables: boolean }) =>
+const tester = (input: { variables: boolean }) =>
   [
-    `( extractOperationVariables: ${String(input.extractOperationVariables)} ) - Query - %s`,
+    `( variables: ${String(input.variables)} ) - Query - %s`,
     (args: CasesDescriptiveQuery) => {
-      const [description, graffleQuery] = args
+      const [description, graffleQuery, options] = args
 
+      // console.log(Select.Document.createDocumentNormalizedFromQuerySelection(
+      //   graffleQuery as any,
+      //   options?.operationName,
+      // ))
       const { document, operationsVariables } = toGraphQL({
-        document: Select.Document.createDocumentNormalizedFromQuerySelection(graffleQuery as any),
+        document: Select.Document.createDocumentNormalizedFromQuerySelection(
+          graffleQuery as any,
+          options?.operationName,
+        ),
         options: {
           sddm: $index,
-          extractOperationVariables: input.extractOperationVariables,
+          operationVariables: input.variables,
         },
       })
 
@@ -36,6 +47,7 @@ const tester = (input: { extractOperationVariables: boolean }) =>
     },
   ] as const
 
+// todo test a case where we provide an operation name
 // dprint-ignore
 const cases = testEachQueryWithDescription([
   [`fg - one`             , { ___: { __typename: true } }],
@@ -89,6 +101,7 @@ const cases = testEachQueryWithDescription([
   [`$skip (empty object)`                 , { object: { $skip: {}, id: true } }],
   [`object nested scalar $skip`           , { objectNested: { object: { string: true, id: true, int: { $skip: true } } } }],
   // other
+  [`custom operation name`                , { id: true }, {operationName: `foobar` }],
   [`other`                                , { __typename: true }],
   [`string`                               , { string: true }],
   // [{ string: 1 }],
@@ -99,5 +112,5 @@ const cases = testEachQueryWithDescription([
   [`object scalar`                        , { object: { id: true } }],
   [`object nested`                        , { objectNested: { object: { string: true, id: true, int: false } } }],
 ])
-cases(...tester({ extractOperationVariables: true }))
-cases(...tester({ extractOperationVariables: false }))
+cases(...tester({ variables: true }))
+cases(...tester({ variables: false }))

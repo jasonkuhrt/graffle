@@ -356,7 +356,8 @@ const renderArguments = createCodeGenerator<{ field: GraphQLField<any, any> }>((
 
 const renderArgumentLike = createCodeGenerator<{ arg: GraphQLArgument | GraphQLInputField }>(
   ({ config, arg, code }) => {
-    const enumKeyPrefix = isEnumType(Nodes.getNamedType(arg.type)) ? Select.Arguments.enumKeyPrefix : ``
+    // todo do not import whole of graphql package here. Just import getNamedType.
+    const enumKeyPrefix = isEnumType(Grafaid.Schema.getNamedType(arg.type)) ? Select.Arguments.enumKeyPrefix : ``
     const typeRendered = renderArgType(arg.type)
     const doc = getDocumentation(config, arg)
     code(doc)

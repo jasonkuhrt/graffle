@@ -1,5 +1,5 @@
 import type { GlobalRegistry } from '../../../../4_generator/globalRegistry.js'
-import type { Codec } from './codec.js'
+import type { Codec, Mapper } from './codec.js'
 import { JavaScriptScalarCodecs } from './nativeScalarCodecs.js'
 
 export { JavaScriptScalarCodecs } from './nativeScalarCodecs.js'
@@ -44,6 +44,28 @@ export interface Scalar<
   kind: ScalarKind
   name: $Name
   codec: Codec<$Decoded, $Encoded>
+}
+
+/**
+ * Apply a codec's mapper function (decode or encode) to a GraphQL value.
+ *
+ * If value is an array then its members are traversed recursively.
+ *
+ * Null values are returned as is.
+ */
+export const applyCodec = <$Mapper extends Mapper>(
+  mapper: $Mapper,
+  value: any,
+): null | ReturnType<$Mapper> | ReturnType<$Mapper>[] => {
+  if (value === null) {
+    return null
+  }
+
+  if (Array.isArray(value)) {
+    return value.map(item => applyCodec(mapper, item)) as ReturnType<$Mapper>
+  }
+
+  return mapper(value) as ReturnType<$Mapper>
 }
 
 export const isScalar = (value: unknown): value is Scalar =>

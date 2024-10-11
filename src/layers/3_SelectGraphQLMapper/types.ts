@@ -1,14 +1,13 @@
 import type { Grafaid } from '../../lib/grafaid/__.js'
-import type { Codec } from '../1_Schema/Hybrid/types/Scalar/codec.js'
 import type { Select } from '../2_Select/__.js'
-import type { SchemaDrivenDataMap } from '../7_customScalars/generator/SchemaDrivenDataMap.js'
+import type { SchemaDrivenDataMap } from '../7_customScalars/schemaDrivenDataMap/types.js'
 import type { ValueMapper } from './nodes/Value.js'
 
 export interface Context {
   /**
    * Should variables be used for arguments?
    */
-  extractOperationVariables: boolean
+  variablesEnabled: boolean
   captures: Captures
   captureVariableForArgument: (input: {
     name: string
@@ -50,6 +49,7 @@ export type VariableLocation = Location
 
 export type OutputLocation = LocationStepField[]
 
+// todo remove location stuff
 export type Location = LocationStep[]
 
 export type LocationStep = LocationStepRootType | LocationDirectiveArgument | LocationStepField | LocationStepArgument
@@ -59,8 +59,6 @@ export type LocationStepRootType = { type: 'rootType'; name: string }
 export type LocationStepField = { type: 'field'; name: string }
 
 export type LocationStepArgument = { type: 'argument'; name: string }
-
-export type CodecString = Codec<any, string>
 
 export type GraphQLPreOperationMapper<
   $SDDMNode extends SchemaDrivenDataMap.Node,

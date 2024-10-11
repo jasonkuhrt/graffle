@@ -27,7 +27,7 @@ import {
 import { Code } from '../../../lib/Code.js'
 import { Grafaid } from '../../../lib/grafaid/__.js'
 import type { AnyClass, AnyGraphQLOutputField } from '../../../lib/grafaid/graphql.js'
-import { ModuleGeneratorRuntimeSchemaDrivenData } from '../../7_customScalars/generator/RuntimeIndexCustomScalars.js'
+import { ModuleGeneratorRuntimeSchemaDrivenData } from '../../7_customScalars/schemaDrivenDataMap/generator.js'
 import type { Config } from '../config.js'
 import { createModuleGenerator } from '../helpers/moduleGenerator.js'
 import { ModuleGeneratorData } from './Data.js'

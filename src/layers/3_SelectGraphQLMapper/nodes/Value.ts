@@ -2,7 +2,7 @@ import type { Grafaid } from '../../../lib/grafaid/__.js'
 import { Nodes } from '../../../lib/grafaid/_Nodes.js'
 import type { Scalar } from '../../1_Schema/_.js'
 import { isScalar } from '../../1_Schema/Hybrid/types/Scalar/Scalar.js'
-import type { SchemaDrivenDataMap } from '../../7_customScalars/generator/SchemaDrivenDataMap.js'
+import type { SchemaDrivenDataMap } from '../../7_customScalars/schemaDrivenDataMap/types.js'
 import { type Context, type GraphQLPostOperationMapper } from '../types.js'
 
 export const toGraphQLValue: ValueMapper = (context, sddm, value) => {

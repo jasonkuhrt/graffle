@@ -1,8 +1,8 @@
 /* eslint-disable */
 import * as $ from 'graffle/schema'
 import * as Data from './Data.js'
-import { $index as $customScalarsIndex } from './RuntimeCustomScalars.js'
 import * as $Scalar from './Scalar.js'
+import { $index as $customScalarsIndex } from './SchemaDrivenDataMa'
 import type { Index } from './SchemaIndex.js'
 export const $defaultSchemaUrl = new URL('https://countries.trevorblades.com/graphql')
 

@@ -3,8 +3,8 @@ import type { Grafaid } from '../../lib/grafaid/__.js'
 import { operationTypeNameToRootTypeName, parseOperationType } from '../../lib/grafaid/graphql.js'
 import { unType } from '../../lib/grafaid/typed-document/TypedDocument.js'
 import { isString } from '../../lib/prelude.js'
-import type { CodecString } from '../3_SelectGraphQLMapper/types.js'
-import type { SchemaDrivenDataMap } from './generator/SchemaDrivenDataMap.js'
+import { applyCodec } from '../1_Schema/Hybrid/types/Scalar/Scalar.js'
+import { SchemaDrivenDataMap } from './schemaDrivenDataMap/types.js'
 
 /**
  * If a document is given then aliases will be decoded as well.
@@ -17,7 +17,7 @@ export const decodeCustomScalars = (input: {
   const rootType = parseOperationType(input.request)
   if (!rootType) return
 
-  const sddmOutputObject = input.sddm[operationTypeNameToRootTypeName[rootType]]
+  const sddmOutputObject = input.sddm.roots[operationTypeNameToRootTypeName[rootType]]
   if (!sddmOutputObject) return
 
   const queryUntyped = unType(input.request.query)
@@ -36,10 +36,6 @@ export const decodeCustomScalars = (input: {
   })
 }
 
-const isCodecString = (value: unknown): value is CodecString => {
-  return typeof value === `object` && value !== null && `encode` in value && typeof value.encode === `function`
-}
-
 const decode_ = (input: {
   data: Grafaid.SomeData | null | undefined
   sddmOutputObject: SchemaDrivenDataMap.OutputObject
@@ -56,30 +52,24 @@ const decode_ = (input: {
 
     const kSchema = documentField?.name.value ?? k
 
-    const sddmOutputField = sddmOutputObject[kSchema]
+    const sddmOutputField = sddmOutputObject.f[kSchema]
     if (!sddmOutputField) continue
 
-    const node = sddmOutputField.nt
+    const sddmNode = sddmOutputField.nt
 
-    if (isCodecString(node)) {
-      data[k] = decodeValue(v, node)
-    } else if (node) {
+    // console.log(sddmNode)
+    if (SchemaDrivenDataMap.isScalar(sddmNode)) {
+      data[k] = applyCodec(sddmNode.codec.decode, v)
+    } else if (SchemaDrivenDataMap.isOutputObject(sddmNode)) {
       decode_({
         data: v,
-        sddmOutputObject: node,
+        sddmOutputObject: sddmNode,
         documentPart: documentField?.selectionSet ?? null,
       })
     } else {
-      throw new Error(`Unknown index item: ${String(sddmOutputField)}`)
+      // enums not decoded.
     }
   }
-}
-
-const decodeValue = (value: any, codec: CodecString): any => {
-  if (Array.isArray(value)) {
-    return value.map(item => decodeValue(item, codec))
-  }
-  return codec.decode(value)
 }
 
 const findDocumentField = (

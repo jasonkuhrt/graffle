@@ -1,6 +1,6 @@
 import type { Grafaid } from '../../../lib/grafaid/__.js'
 import type { Select } from '../../2_Select/__.js'
-import type { SchemaDrivenDataMap } from '../../7_customScalars/generator/SchemaDrivenDataMap.js'
+import type { SchemaDrivenDataMap } from '../../7_customScalars/schemaDrivenDataMap/types.js'
 import type { GraphQLPostOperationMapper } from '../types.js'
 import { toGraphQLDirective } from './Directive.js'
 import { fromGraffleSelectionObjectLevel } from './GraffleSelectionObjectLevel.js'

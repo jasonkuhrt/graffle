@@ -1,7 +1,7 @@
 import { Nodes } from '../../../lib/grafaid/_Nodes.js'
 import { getFromEnumLooselyOrThrow } from '../../../lib/prelude.js'
 import { Select } from '../../2_Select/__.js'
-import type { SchemaDrivenDataMap } from '../../7_customScalars/generator/SchemaDrivenDataMap.js'
+import type { SchemaDrivenDataMap } from '../../7_customScalars/schemaDrivenDataMap/types.js'
 import type { GraphQLPostOperationMapper } from '../types.js'
 import { toGraphQLValue } from './Value.js'
 
