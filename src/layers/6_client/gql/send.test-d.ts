@@ -18,3 +18,7 @@ AssertEqual<
   SendArguments<Grafaid.Nodes.Typed.Query<{ y: 0 }, Grafaid.Nodes.Typed.Variables>>,
   [x?: string] | [x?: string, x?: Grafaid.Nodes.Typed.Variables] | [x?: Grafaid.Nodes.Typed.Variables]
 >()
+AssertEqual<
+  SendArguments<string>,
+  [x?: string] | [x?: string, x?: Grafaid.Nodes.Typed.Variables] | [x?: Grafaid.Nodes.Typed.Variables]
+>()

@@ -68,5 +68,11 @@ AssertTypeOf<D | null>(await g.gql(d3).send({}))
   AssertTypeOf<D | null>(await g.gql<Grafaid.Nodes.Typed.String<D, Grafaid.Nodes.Typed.Variables>>``.send(`abc`, { x: 1 })) // eslint-disable-line
 	// @ts-expect-error - wrong argument type
   await g.gql<Grafaid.Nodes.Typed.String<D, { x: 1 }>               >``.send({ x: 2 })
+  
+  
+  AssertTypeOf<Grafaid.SomeData | null>(await g.gql``.send())
+  AssertTypeOf<Grafaid.SomeData | null>(await g.gql``.send(`foo`))
+  AssertTypeOf<Grafaid.SomeData | null>(await g.gql``.send(`foo`, { x: 1 }))
+  AssertTypeOf<Grafaid.SomeData | null>(await g.gql``.send({ x: 1 }))
 
 }

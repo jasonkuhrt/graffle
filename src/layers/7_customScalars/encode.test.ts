@@ -41,6 +41,6 @@ testCases(`%s`, async ([_, query, expectedVariables], { kitchenSink }) => {
     },
   })
   const documentString = Grafaid.Nodes.print(document)
-  await kitchenSink.use(Spy()).gql(documentString).send(operationsVariables?.$default)
+  await kitchenSink.use(Spy()).gql(documentString).send(operationsVariables[`$default`])
   expect(Spy.data.pack.input?.request.variables).toEqual(expectedVariables)
 })

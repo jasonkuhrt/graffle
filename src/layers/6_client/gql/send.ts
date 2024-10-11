@@ -4,8 +4,10 @@ import type { ResolveOutputGql } from '../handleOutput.js'
 import type { Config } from '../Settings/Config.js'
 
 // dprint-ignore
-export type SendArguments<$TypedDocument extends Grafaid.Nodes.Typed.TypedDocument> =
-	SendArguments_<Grafaid.Nodes.Typed.VariablesOf<$TypedDocument>>
+export type SendArguments<$TypedDocument extends string | Grafaid.Nodes.Typed.TypedDocument> =
+  $TypedDocument extends string 
+    ? ([operationName?: string] | [operationName?: string, variables?: Grafaid.Nodes.Typed.Variables] | [variables?: Grafaid.Nodes.Typed.Variables])
+    : SendArguments_<Grafaid.Nodes.Typed.VariablesOf<$TypedDocument>>
 
 // dprint-ignore
 type SendArguments_<$Variables extends Grafaid.Nodes.Typed.Variables> =
