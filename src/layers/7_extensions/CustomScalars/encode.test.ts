@@ -2,7 +2,7 @@ import { expect } from 'vitest'
 import { test } from '../../../../tests/_/helpers.js'
 import { db } from '../../../../tests/_/schemas/db.js'
 import type { Graffle } from '../../../../tests/_/schemas/kitchen-sink/graffle/__.js'
-import { SchemaDrivenDataMap } from '../../../../tests/_/schemas/kitchen-sink/graffle/modules/SchemaDrivenDataMap.js'
+import { schemaDrivenDataMap } from '../../../../tests/_/schemas/kitchen-sink/graffle/modules/SchemaDrivenDataMap.js'
 import { Spy } from '../../../../tests/_/SpyExtension.js'
 import { Grafaid } from '../../../lib/grafaid/__.js'
 import { Select } from '../../2_Select/__.js'
@@ -36,7 +36,7 @@ testCases(`%s`, async ([_, query, expectedVariables], { kitchenSink }) => {
   const { document, operationsVariables } = SelectionSetGraphqlMapper.toGraphQL({
     document: Select.Document.createDocumentNormalizedFromQuerySelection(query as any),
     options: {
-      sddm: SchemaDrivenDataMap,
+      sddm: schemaDrivenDataMap,
       operationVariables: true,
     },
   })

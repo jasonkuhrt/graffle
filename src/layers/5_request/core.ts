@@ -14,6 +14,7 @@ import {
 import { mergeRequestInit, searchParamsAppendAll } from '../../lib/http.js'
 import { casesExhausted, isString } from '../../lib/prelude.js'
 import { SelectionSetGraphqlMapper } from '../3_SelectGraphQLMapper/__.js'
+import type { MappedResult } from '../3_SelectGraphQLMapper/toGraphQL.js'
 import type { GraffleExecutionResultVar } from '../6_client/handleOutput.js'
 import type { Config } from '../6_client/Settings/Config.js'
 import { MethodMode, type MethodModeGetReads } from '../6_client/transportHttp/request.js'
@@ -25,6 +26,32 @@ import {
   type HookSequence,
 } from './hooks.js'
 import { Transport } from './types.js'
+
+export const graffleMappedToRequest = (
+  { document, operationsVariables }: MappedResult,
+  operationName?: string,
+): Grafaid.RequestAnalyzedDocumentNodeInput => {
+  // We get back variables for every operation in the Graffle document.
+  // However, we only need the variables for the operation that was selected to be executed.
+  // If there was NO operation name provided then we assume that the first operation in the document is the one that should be executed.
+  // If there are MULTIPLE operations in the Graffle document AND the user has supplied an invalid operation name (either none or given matches none)
+  // then what happens here is the variables from one operation can be mixed into another operation.
+  // This shouldn't matter because such a state would be rejected by the server since it wouldn't know what operation to execute.
+  const variables_ = operationName
+    ? operationsVariables[operationName]
+    : Object.values(operationsVariables)[0]
+
+  const operation_ = getOperationDefinition({ query: document, operationName })
+  if (!operation_) throw new Error(`Impossible.`)
+
+  return {
+    rootType: operationTypeToRootType[operation_.operation],
+    operationName,
+    operation: operation_,
+    query: document,
+    variables: variables_,
+  }
+}
 
 export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
   // If core errors caused by an abort error then raise it as a direct error.
@@ -43,32 +70,12 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
       if (input.interfaceType === `raw`) {
         request = input.request
       } else {
-        const { document, operationsVariables } = SelectionSetGraphqlMapper.toGraphQL({
+        request = graffleMappedToRequest(SelectionSetGraphqlMapper.toGraphQL({
           document: input.request.document,
           options: {
             sddm: input.state.config.schemaMap,
           },
-        })
-        // We get back variables for every operation in the Graffle document.
-        // However, we only need the variables for the operation that was selected to be executed.
-        // If there was NO operation name provided then we assume that the first operation in the document is the one that should be executed.
-        // If there are MULTIPLE operations in the Graffle document AND the user has supplied an invalid operation name (either none or given matches none)
-        // then what happens here is the variables from one operation can be mixed into another operation.
-        // This shouldn't matter because such a state would be rejected by the server since it wouldn't know what operation to execute.
-        const variables_ = input.request.operationName
-          ? operationsVariables[input.request.operationName]
-          : Object.values(operationsVariables)[0]
-
-        const operation_ = getOperationDefinition({ query: document, operationName: input.request.operationName })
-        if (!operation_) throw new Error(`Impossible.`)
-
-        request = {
-          rootType: operationTypeToRootType[operation_.operation],
-          operationName: input.request.operationName,
-          operation: operation_,
-          query: document,
-          variables: variables_,
-        }
+        }))
       }
 
       return {

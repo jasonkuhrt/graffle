@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest'
 import { db } from '../../../tests/_/schemas/db.js'
-import { $index } from '../../../tests/_/schemas/kitchen-sink/graffle/modules/SchemaDrivenDataMap.js'
+import { schemaDrivenDataMap } from '../../../tests/_/schemas/kitchen-sink/graffle/modules/SchemaDrivenDataMap.js'
 import type * as SelectionSets from '../../../tests/_/schemas/kitchen-sink/graffle/modules/SelectionSets.js'
 import { Grafaid } from '../../lib/grafaid/__.js'
 import { Select } from '../2_Select/__.js'
@@ -29,7 +29,7 @@ const tester = (input: { variables: boolean }) =>
           options?.operationName,
         ),
         options: {
-          sddm: $index,
+          sddm: schemaDrivenDataMap,
           operationVariables: input.variables,
         },
       })

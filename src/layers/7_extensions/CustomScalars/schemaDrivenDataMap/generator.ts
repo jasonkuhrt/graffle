@@ -1,6 +1,3 @@
-// todo we are going to run into recursion with input types such as two input
-// objects each having their own custom scalars and also referencing one another.
-// to solve this we'll need to either use thunks or some kind of indirect look up table?
 import { Code } from '../../../../lib/Code.js'
 import { Grafaid } from '../../../../lib/grafaid/__.js'
 import { entries } from '../../../../lib/prelude.js'
@@ -56,7 +53,7 @@ export const ModuleGeneratorSchemaDrivenDataMap = createModuleGenerator(
 
     code(title1(`Index`))
     code()
-    code(`const $SchemaDrivenDataMap: $Utilities.SchemaDrivenDataMap =`)
+    code(`const $schemaDrivenDataMap: $Utilities.SchemaDrivenDataMap =`)
     code(Code.termObject({
       roots: Code.termObjectWith({
         $literal: kinds.GraphQLRootType.map(type => type.name + `,`).join(`\n`),
@@ -73,7 +70,7 @@ export const ModuleGeneratorSchemaDrivenDataMap = createModuleGenerator(
       }),
     }))
     code()
-    code(`export { $SchemaDrivenDataMap as SchemaDrivenDataMap }`)
+    code(`export { $schemaDrivenDataMap as schemaDrivenDataMap }`)
   },
 )
 

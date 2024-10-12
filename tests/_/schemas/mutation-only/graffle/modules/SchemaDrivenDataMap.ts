@@ -188,7 +188,7 @@ const Mutation: $Utilities.SchemaDrivenDataMap.OutputObject = {
 //
 //
 
-const $SchemaDrivenDataMap: $Utilities.SchemaDrivenDataMap = {
+const $schemaDrivenDataMap: $Utilities.SchemaDrivenDataMap = {
   roots: {
     Mutation,
   },
@@ -200,4 +200,4 @@ const $SchemaDrivenDataMap: $Utilities.SchemaDrivenDataMap = {
   },
 }
 
-export { $SchemaDrivenDataMap as SchemaDrivenDataMap }
+export { $schemaDrivenDataMap as schemaDrivenDataMap }

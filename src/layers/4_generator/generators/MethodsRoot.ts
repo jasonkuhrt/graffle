@@ -87,11 +87,18 @@ const renderFieldMethods = createCodeGenerator<{ node: Grafaid.Schema.ObjectType
     const isOptional = Grafaid.Schema.isScalarType(fieldTypeUnwrapped)
       && Grafaid.Schema.Args.isAllArgsNullable(field.args)
 
-    // dprint-ignore
-    code(`
-      ${field.name}: <$SelectionSet>(selectionSet${isOptional ? `?` : ``}: Utils.Exact<$SelectionSet, SelectionSet.${renderName(node)}.${renderName(field)}>) =>
-        ${Helpers.returnType(node.name, field.name, `$SelectionSet`)}
-    `)
+    if (Grafaid.Schema.isScalarType(fieldTypeUnwrapped) && field.args.length === 0) {
+      // dprint-ignore
+      code(`
+        ${field.name}: () => ${Helpers.returnType(node.name, field.name)}
+      `)
+    } else {
+      // dprint-ignore
+      code(`
+        ${field.name}: <$SelectionSet>(selectionSet${isOptional ? `?` : ``}: Utils.Exact<$SelectionSet, SelectionSet.${renderName(node)}.${renderName(field)}>) =>
+          ${Helpers.returnType(node.name, field.name, `$SelectionSet`)}
+      `)
+    }
   }
 })
 
