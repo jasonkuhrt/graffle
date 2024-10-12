@@ -1,7 +1,7 @@
 import { Nodes } from '../../../lib/grafaid/_Nodes.js'
 import { getFromEnumLooselyOrThrow } from '../../../lib/prelude.js'
 import { Select } from '../../2_Select/__.js'
-import type { SchemaDrivenDataMap } from '../../7_extensions/CustomScalars/schemaDrivenDataMap/types.js'
+import { SchemaDrivenDataMap } from '../../7_extensions/CustomScalars/schemaDrivenDataMap/types.js'
 import type { GraphQLPostOperationMapper } from '../types.js'
 import { toGraphQLValue } from './Value.js'
 
@@ -26,6 +26,11 @@ export const toGraphQLDirective: GraphQLPostOperationMapper<
     const argumentType = definition.type.arguments[argumentName]?.type
     if (argumentType === undefined) {
       throw new Error(`Argument ${argumentName} is required`)
+    }
+
+    // todo adjust initial types to eliminate this case.
+    if (SchemaDrivenDataMap.isOutputObject(sddm)) {
+      throw new Error(`fixme`)
     }
 
     const value = toGraphQLValue(

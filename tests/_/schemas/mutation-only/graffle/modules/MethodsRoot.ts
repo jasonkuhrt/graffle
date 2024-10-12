@@ -24,7 +24,7 @@ export interface MutationMethods<$Config extends Utils.Config> {
       'Mutation'
     >
   >
-  id: <$SelectionSet>() => Promise<
+  id: <$SelectionSet>(selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Mutation.id>) => Promise<
     Utils.ResolveOutputReturnRootField<
       $Config,
       Index,
@@ -32,7 +32,7 @@ export interface MutationMethods<$Config extends Utils.Config> {
       InferResult.Field<$SelectionSet, Index['Root']['Mutation']['fields']['id'], Index>
     >
   >
-  idNonNull: <$SelectionSet>() => Promise<
+  idNonNull: <$SelectionSet>(selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Mutation.idNonNull>) => Promise<
     Utils.ResolveOutputReturnRootField<
       $Config,
       Index,

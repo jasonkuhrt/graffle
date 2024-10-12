@@ -24,7 +24,7 @@ export interface MutationMethods<$Config extends Utils.Config> {
       'Mutation'
     >
   >
-  id: <$SelectionSet>() => Promise<
+  id: <$SelectionSet>(selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Mutation.id>) => Promise<
     Utils.ResolveOutputReturnRootField<
       $Config,
       Index,
@@ -32,7 +32,7 @@ export interface MutationMethods<$Config extends Utils.Config> {
       InferResult.Field<$SelectionSet, Index['Root']['Mutation']['fields']['id'], Index>
     >
   >
-  idNonNull: <$SelectionSet>() => Promise<
+  idNonNull: <$SelectionSet>(selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Mutation.idNonNull>) => Promise<
     Utils.ResolveOutputReturnRootField<
       $Config,
       Index,
@@ -104,7 +104,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['argInputObjectCircular'], Index>
     >
   >
-  date: <$SelectionSet>() => Promise<
+  date: <$SelectionSet>(selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.date>) => Promise<
     Utils.ResolveOutputReturnRootField<
       $Config,
       Index,
@@ -178,7 +178,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['dateInterface1'], Index>
     >
   >
-  dateList: <$SelectionSet>() => Promise<
+  dateList: <$SelectionSet>(selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.dateList>) => Promise<
     Utils.ResolveOutputReturnRootField<
       $Config,
       Index,
@@ -186,7 +186,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['dateList'], Index>
     >
   >
-  dateListList: <$SelectionSet>() => Promise<
+  dateListList: <$SelectionSet>(selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.dateListList>) => Promise<
     Utils.ResolveOutputReturnRootField<
       $Config,
       Index,
@@ -194,7 +194,9 @@ export interface QueryMethods<$Config extends Utils.Config> {
       InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['dateListList'], Index>
     >
   >
-  dateListNonNull: <$SelectionSet>() => Promise<
+  dateListNonNull: <$SelectionSet>(
+    selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.dateListNonNull>,
+  ) => Promise<
     Utils.ResolveOutputReturnRootField<
       $Config,
       Index,
@@ -202,7 +204,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['dateListNonNull'], Index>
     >
   >
-  dateNonNull: <$SelectionSet>() => Promise<
+  dateNonNull: <$SelectionSet>(selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.dateNonNull>) => Promise<
     Utils.ResolveOutputReturnRootField<
       $Config,
       Index,
@@ -234,7 +236,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['error'], Index>
     >
   >
-  id: <$SelectionSet>() => Promise<
+  id: <$SelectionSet>(selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.id>) => Promise<
     Utils.ResolveOutputReturnRootField<
       $Config,
       Index,
@@ -242,7 +244,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['id'], Index>
     >
   >
-  idNonNull: <$SelectionSet>() => Promise<
+  idNonNull: <$SelectionSet>(selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.idNonNull>) => Promise<
     Utils.ResolveOutputReturnRootField<
       $Config,
       Index,
@@ -278,7 +280,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['interfaceWithArgs'], Index>
     >
   >
-  listInt: <$SelectionSet>() => Promise<
+  listInt: <$SelectionSet>(selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.listInt>) => Promise<
     Utils.ResolveOutputReturnRootField<
       $Config,
       Index,
@@ -286,7 +288,9 @@ export interface QueryMethods<$Config extends Utils.Config> {
       InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['listInt'], Index>
     >
   >
-  listIntNonNull: <$SelectionSet>() => Promise<
+  listIntNonNull: <$SelectionSet>(
+    selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.listIntNonNull>,
+  ) => Promise<
     Utils.ResolveOutputReturnRootField<
       $Config,
       Index,
@@ -294,7 +298,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['listIntNonNull'], Index>
     >
   >
-  listListInt: <$SelectionSet>() => Promise<
+  listListInt: <$SelectionSet>(selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.listListInt>) => Promise<
     Utils.ResolveOutputReturnRootField<
       $Config,
       Index,
@@ -302,7 +306,9 @@ export interface QueryMethods<$Config extends Utils.Config> {
       InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['listListInt'], Index>
     >
   >
-  listListIntNonNull: <$SelectionSet>() => Promise<
+  listListIntNonNull: <$SelectionSet>(
+    selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.listListIntNonNull>,
+  ) => Promise<
     Utils.ResolveOutputReturnRootField<
       $Config,
       Index,
@@ -388,7 +394,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['resultNonNull'], Index>
     >
   >
-  string: <$SelectionSet>() => Promise<
+  string: <$SelectionSet>(selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.$string>) => Promise<
     Utils.ResolveOutputReturnRootField<
       $Config,
       Index,

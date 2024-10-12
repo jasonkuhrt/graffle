@@ -24,7 +24,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       'Query'
     >
   >
-  id: <$SelectionSet>() => Promise<
+  id: <$SelectionSet>(selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.id>) => Promise<
     Utils.ResolveOutputReturnRootField<
       $Config,
       Index,
@@ -32,7 +32,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
       InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['id'], Index>
     >
   >
-  idNonNull: <$SelectionSet>() => Promise<
+  idNonNull: <$SelectionSet>(selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.idNonNull>) => Promise<
     Utils.ResolveOutputReturnRootField<
       $Config,
       Index,

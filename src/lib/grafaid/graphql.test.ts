@@ -15,7 +15,7 @@ type CaseParameters = [
   result: null | OperationTypeNode,
 ]
 
-describe(`parseGraphQLOperationType`, () => {
+describe(`getOperationType`, () => {
   // dprint-ignore
   test.each<CaseParameters>([
     
@@ -30,6 +30,6 @@ describe(`parseGraphQLOperationType`, () => {
     [ `mutation if only operation without name and no operation given `, 									  { query: `mutation { user { name } }` }, 						                    OperationTypeNode.MUTATION ],
     [ `overloaded terms do not confuse parser`, 	                                          { query: docOverloadedTerms },                                          OperationTypeNode.QUERY ],
   ])(`%s`, (_, request, result) => {
-    expect(Grafaid.parseOperationType(request)).toEqual(result)
+    expect(Grafaid.Document.getOperationType(request)).toEqual(result)
   })
 })

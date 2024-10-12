@@ -1,8 +1,7 @@
 import type { Grafaid } from '../../../lib/grafaid/__.js'
 import { Nodes } from '../../../lib/grafaid/_Nodes.js'
 import type { Scalar } from '../../1_Schema/_.js'
-import { isScalar } from '../../1_Schema/Hybrid/types/Scalar/Scalar.js'
-import type { SchemaDrivenDataMap } from '../../7_extensions/CustomScalars/schemaDrivenDataMap/types.js'
+import { SchemaDrivenDataMap } from '../../7_extensions/CustomScalars/schemaDrivenDataMap/types.js'
 import { type Context, type GraphQLPostOperationMapper } from '../types.js'
 
 export const toGraphQLValue: ValueMapper = (context, sddm, value) => {
@@ -10,8 +9,12 @@ export const toGraphQLValue: ValueMapper = (context, sddm, value) => {
   // const hookResult = context.hooks?.value?.(context, index, value)
   // if (hookResult) return hookResult
 
-  if (isScalar(sddm?.nt)) {
+  if (SchemaDrivenDataMap.isScalar(sddm?.nt)) {
     return applyScalar(context, sddm.nt, value)
+  }
+
+  if (SchemaDrivenDataMap.isEnum(sddm?.nt)) {
+    return Nodes.EnumValue({ value: String(value) })
   }
 
   if (value === null) {

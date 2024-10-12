@@ -40,6 +40,9 @@ export type IncrementWthNewConfig<
 
 // dprint-ignore
 type Create = <$Input extends InputStatic>(input: $Input) =>
+  // todo fixme
+  // eslint-disable-next-line
+  // @ts-ignore
   Client<{ config: NormalizeInput<$Input> }>
 
 export const create: Create = (input) => {
