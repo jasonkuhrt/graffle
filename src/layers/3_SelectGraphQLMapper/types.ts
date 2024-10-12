@@ -1,6 +1,6 @@
 import type { Grafaid } from '../../lib/grafaid/__.js'
 import type { Select } from '../2_Select/__.js'
-import type { SchemaDrivenDataMap } from '../7_customScalars/schemaDrivenDataMap/types.js'
+import type { SchemaDrivenDataMap } from '../7_extensions/CustomScalars/schemaDrivenDataMap/types.js'
 import type { ValueMapper } from './nodes/Value.js'
 
 export interface Context {
@@ -13,7 +13,7 @@ export interface Context {
     name: string
     value: any
     sddmArgument: SchemaDrivenDataMap.ArgumentOrInputField
-  }) => Grafaid.Nodes.ArgumentNode
+  }) => Grafaid.Document.ArgumentNode
   hooks?: {
     value?: ValueMapper
   }

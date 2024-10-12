@@ -188,7 +188,7 @@ const Query: $Utilities.SchemaDrivenDataMap.OutputObject = {
 //
 //
 
-export const $index: $Utilities.SchemaDrivenDataMap = {
+const $SchemaDrivenDataMap: $Utilities.SchemaDrivenDataMap = {
   roots: {
     Query,
   },
@@ -199,3 +199,5 @@ export const $index: $Utilities.SchemaDrivenDataMap = {
     Query,
   },
 }
+
+export { $SchemaDrivenDataMap as SchemaDrivenDataMap }

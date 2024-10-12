@@ -1,10 +1,9 @@
-import { type ExecutionResult, parse } from 'graphql'
+import { type ExecutionResult } from 'graphql'
 import { Anyware } from '../../lib/anyware/__.js'
 import type { Grafaid } from '../../lib/grafaid/__.js'
-import { OperationTypeToAccessKind, print } from '../../lib/grafaid/document.js'
+import { getOperationDefinition, OperationTypeToAccessKind, print } from '../../lib/grafaid/document.js'
 import { execute } from '../../lib/grafaid/execute.js'
-import type { Nodes } from '../../lib/grafaid/graphql.js'
-import { parseOperationType, type Variables } from '../../lib/grafaid/graphql.js'
+import { operationTypeToRootType } from '../../lib/grafaid/graphql.js'
 import {
   getRequestEncodeSearchParameters,
   getRequestHeadersRec,
@@ -13,12 +12,11 @@ import {
   postRequestHeadersRec,
 } from '../../lib/grafaid/http/http.js'
 import { mergeRequestInit, searchParamsAppendAll } from '../../lib/http.js'
-import { casesExhausted, isString, throwNull } from '../../lib/prelude.js'
+import { casesExhausted, isString } from '../../lib/prelude.js'
 import { SelectionSetGraphqlMapper } from '../3_SelectGraphQLMapper/__.js'
 import type { GraffleExecutionResultVar } from '../6_client/handleOutput.js'
 import type { Config } from '../6_client/Settings/Config.js'
 import { MethodMode, type MethodModeGetReads } from '../6_client/transportHttp/request.js'
-import { encodeVariables } from '../7_customScalars/encode.js'
 import {
   type CoreExchangeGetRequest,
   type CoreExchangePostRequest,
@@ -26,7 +24,6 @@ import {
   hookNamesOrderedBySequence,
   type HookSequence,
 } from './hooks.js'
-import { injectTypenameOnRootResultFields } from './schemaErrors.js'
 import { Transport } from './types.js'
 
 export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
@@ -41,69 +38,42 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
   hookNamesOrderedBySequence,
   hooks: {
     encode: ({ input }) => {
-      let document: string | Grafaid.Nodes.DocumentNode
-      let variables: Variables | undefined = input.interfaceType === `raw`
-        ? input.request.variables
-        : undefined
-
-      // todo way to opt out
-      const isEnabledEncodeCustomScalars = true
-      const isEnabledSchemaErrors = input.schemaIndex?.customScalars.input
-
-      const isManipulatingDocument = input.schemaIndex?.customScalars.input && (
-        input.state.config.output.errors.schema
-        || isEnabledEncodeCustomScalars
-      )
+      let request: Grafaid.RequestAnalyzedInput
 
       if (input.interfaceType === `raw`) {
-        document = (isManipulatingDocument && isString(input.request.query))
-          ? parse(input.request.query)
-          : input.request.query as Nodes.DocumentNode
+        request = input.request
       } else {
-        const result = SelectionSetGraphqlMapper.toGraphQL({
+        const { document, operationsVariables } = SelectionSetGraphqlMapper.toGraphQL({
           document: input.request.document,
           options: {
-            sddm: input.schemaIndex?.customScalars.input,
+            sddm: input.state.config.schemaMap,
           },
         })
-        document = result.document
         // We get back variables for every operation in the Graffle document.
         // However, we only need the variables for the operation that was selected to be executed.
         // If there was NO operation name provided then we assume that the first operation in the document is the one that should be executed.
         // If there are MULTIPLE operations in the Graffle document AND the user has supplied an invalid operation name (either none or given matches none)
         // then what happens here is the variables from one operation can be mixed into another operation.
         // This shouldn't matter because such a state would be rejected by the server since it wouldn't know what operation to execute.
-        variables = input.operationName
-          ? result.operationsVariables[input.operationName]
-          : Object.values(result.operationsVariables)[0]
-      }
+        const variables_ = input.request.operationName
+          ? operationsVariables[input.request.operationName]
+          : Object.values(operationsVariables)[0]
 
-      if (input.schemaIndex) {
-        if (isEnabledSchemaErrors) {
-          injectTypenameOnRootResultFields({
-            document,
-            operationName: input.request.operationName,
-            schema: input.schemaIndex,
-          })
-        }
+        const operation_ = getOperationDefinition({ query: document, operationName: input.request.operationName })
+        if (!operation_) throw new Error(`Impossible.`)
 
-        if (isEnabledEncodeCustomScalars) {
-          encodeVariables({
-            document,
-            operationName: input.request.operationName,
-            variables,
-            sddm: input.schemaIndex.customScalars.input,
-          })
+        request = {
+          rootType: operationTypeToRootType[operation_.operation],
+          operationName: input.request.operationName,
+          operation: operation_,
+          query: document,
+          variables: variables_,
         }
       }
 
       return {
         ...input,
-        request: {
-          query: document,
-          variables,
-          operationName: input.request.operationName,
-        },
+        request,
       }
     },
     pack: {
@@ -128,12 +98,10 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
           case `http`: {
             if (input.state.config.transport.type !== Transport.http) throw new Error(`transport type is not http`)
 
+            const operationType = isString(input.request.operation)
+              ? input.request.operation
+              : input.request.operation.operation
             const methodMode = input.state.config.transport.config.methodMode
-            // todo parsing here can be optimized.
-            //      1. If using TS interface then work with initially submitted structured data to already know the operation type
-            //      2. Maybe: Memoize over request.{ operationName, query }
-            //      3. Maybe: Keep a cache of parsed request.{ query }
-            const operationType = throwNull(parseOperationType(input.request)) // todo better feedback here than throwNull
             const requestMethod = methodMode === MethodMode.post
               ? `post`
               : methodMode === MethodMode.getReads // eslint-disable-line

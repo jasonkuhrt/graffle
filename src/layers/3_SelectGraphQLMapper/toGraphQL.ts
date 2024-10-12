@@ -1,9 +1,9 @@
 import type { Select } from '../2_Select/__.js'
-import type { SchemaDrivenDataMap } from '../7_customScalars/schemaDrivenDataMap/types.js'
+import type { SchemaDrivenDataMap } from '../7_extensions/CustomScalars/schemaDrivenDataMap/types.js'
 import { toGraphQLDocument } from './nodes/Document.js'
 
 export interface Options {
-  sddm?: SchemaDrivenDataMap
+  sddm?: SchemaDrivenDataMap | null
   operationVariables?: boolean
 }
 

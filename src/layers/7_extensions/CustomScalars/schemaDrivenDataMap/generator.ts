@@ -1,14 +1,14 @@
 // todo we are going to run into recursion with input types such as two input
 // objects each having their own custom scalars and also referencing one another.
 // to solve this we'll need to either use thunks or some kind of indirect look up table?
-import { Code } from '../../../lib/Code.js'
-import { Grafaid } from '../../../lib/grafaid/__.js'
-import { entries } from '../../../lib/prelude.js'
-import type { Config } from '../../4_generator/config.js'
-import { ModuleGeneratorScalar } from '../../4_generator/generators/Scalar.js'
-import { createModuleGenerator } from '../../4_generator/helpers/moduleGenerator.js'
-import { createCodeGenerator } from '../../4_generator/helpers/moduleGeneratorRunner.js'
-import { title1 } from '../../4_generator/helpers/render.js'
+import { Code } from '../../../../lib/Code.js'
+import { Grafaid } from '../../../../lib/grafaid/__.js'
+import { entries } from '../../../../lib/prelude.js'
+import type { Config } from '../../../4_generator/config.js'
+import { ModuleGeneratorScalar } from '../../../4_generator/generators/Scalar.js'
+import { createModuleGenerator } from '../../../4_generator/helpers/moduleGenerator.js'
+import { createCodeGenerator } from '../../../4_generator/helpers/moduleGeneratorRunner.js'
+import { title1 } from '../../../4_generator/helpers/render.js'
 import { propertyNames, SchemaDrivenDataMap } from './types.js'
 
 const identifiers = {
@@ -17,7 +17,7 @@ const identifiers = {
 
 type ReferenceAssignments = string[]
 
-export const ModuleGeneratorRuntimeSchemaDrivenData = createModuleGenerator(
+export const ModuleGeneratorSchemaDrivenDataMap = createModuleGenerator(
   `SchemaDrivenDataMap`,
   ({ config, code }) => {
     code(`
@@ -56,7 +56,7 @@ export const ModuleGeneratorRuntimeSchemaDrivenData = createModuleGenerator(
 
     code(title1(`Index`))
     code()
-    code(`export const $index: $Utilities.SchemaDrivenDataMap =`)
+    code(`const $SchemaDrivenDataMap: $Utilities.SchemaDrivenDataMap =`)
     code(Code.termObject({
       roots: Code.termObjectWith({
         $literal: kinds.GraphQLRootType.map(type => type.name + `,`).join(`\n`),
@@ -72,6 +72,8 @@ export const ModuleGeneratorRuntimeSchemaDrivenData = createModuleGenerator(
         ].join(`,\n`),
       }),
     }))
+    code()
+    code(`export { $SchemaDrivenDataMap as SchemaDrivenDataMap }`)
   },
 )
 
@@ -148,7 +150,7 @@ const inputTypeCondition = (config: Config) => {
 //
 //
 const ScalarType = createCodeGenerator<
-  { type: Grafaid.Schema.GraphQLScalarType }
+  { type: Grafaid.Schema.ScalarType }
 >(
   ({ code, type }) => {
     code(Code.termConst(type.name, `${identifiers.$Scalar}.${type.name}`))
@@ -156,7 +158,7 @@ const ScalarType = createCodeGenerator<
 )
 
 const UnionType = createCodeGenerator<
-  { type: Grafaid.Schema.GraphQLUnionType; referenceAssignments: ReferenceAssignments }
+  { type: Grafaid.Schema.UnionType; referenceAssignments: ReferenceAssignments }
 >(
   ({ code, type }) => {
     // This takes advantage of the fact that in GraphQL, in a union type, all members that happen
@@ -182,7 +184,7 @@ const UnionType = createCodeGenerator<
 )
 
 const InterfaceType = createCodeGenerator<
-  { type: Grafaid.Schema.GraphQLInterfaceType; referenceAssignments: ReferenceAssignments }
+  { type: Grafaid.Schema.InterfaceType; referenceAssignments: ReferenceAssignments }
 >(
   ({ code, type, config }) => {
     const implementorTypes = Grafaid.Schema.KindMap.getInterfaceImplementors(config.schema.typeMapByKind, type)
@@ -201,7 +203,7 @@ const InterfaceType = createCodeGenerator<
 )
 
 const ObjectType = createCodeGenerator<
-  { type: Grafaid.Schema.GraphQLObjectType; referenceAssignments: ReferenceAssignments }
+  { type: Grafaid.Schema.ObjectType; referenceAssignments: ReferenceAssignments }
 >(
   ({ config, code, type, referenceAssignments }) => {
     const of: Code.TermObject = {}
@@ -272,7 +274,7 @@ const ObjectType = createCodeGenerator<
 )
 
 const EnumType = createCodeGenerator<
-  { type: Grafaid.Schema.GraphQLEnumType; referenceAssignments: ReferenceAssignments }
+  { type: Grafaid.Schema.EnumType; referenceAssignments: ReferenceAssignments }
 >(
   ({ code, type }) => {
     code(Code.termConstTyped(
@@ -287,7 +289,7 @@ const EnumType = createCodeGenerator<
 )
 
 const InputObjectType = createCodeGenerator<
-  { type: Grafaid.Schema.GraphQLInputObjectType; referenceAssignments: ReferenceAssignments }
+  { type: Grafaid.Schema.ObjectType; referenceAssignments: ReferenceAssignments }
 >(
   ({ config, code, type, referenceAssignments }) => {
     const o: Code.TermObject = {}
@@ -353,7 +355,7 @@ const kindRenders = {
   GraphQLRootType: ObjectType,
 }
 
-const inlineType = (type: Grafaid.Schema.GraphQLInputType): string => {
+const inlineType = (type: Grafaid.Schema.InputTypes): string => {
   const [ofType, nonNull] = Grafaid.Schema.isNonNullType(type)
     ? [type.ofType, true]
     : [type, false]

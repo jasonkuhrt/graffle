@@ -423,7 +423,7 @@ Query.f['trainers']!.nt = Trainer
 //
 //
 
-export const $index: $Utilities.SchemaDrivenDataMap = {
+const $SchemaDrivenDataMap: $Utilities.SchemaDrivenDataMap = {
   roots: {
     Mutation,
     Query,
@@ -454,3 +454,5 @@ export const $index: $Utilities.SchemaDrivenDataMap = {
     Query,
   },
 }
+
+export { $SchemaDrivenDataMap as SchemaDrivenDataMap }

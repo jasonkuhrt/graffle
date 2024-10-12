@@ -1,45 +1,39 @@
-import { Kind, parse } from 'graphql'
-import type { Grafaid } from '../../lib/grafaid/__.js'
-import { operationTypeNameToRootTypeName, parseOperationType } from '../../lib/grafaid/graphql.js'
-import { unType } from '../../lib/grafaid/typed-document/TypedDocument.js'
-import { isString } from '../../lib/prelude.js'
-import { applyCodec } from '../1_Schema/Hybrid/types/Scalar/Scalar.js'
+import { Kind } from 'graphql'
+import type { Grafaid } from '../../../lib/grafaid/__.js'
+import { applyCodec } from '../../1_Schema/Hybrid/types/Scalar/Scalar.js'
 import { SchemaDrivenDataMap } from './schemaDrivenDataMap/types.js'
 
 /**
  * If a document is given then aliases will be decoded as well.
  */
-export const decodeCustomScalars = (input: {
+export const decodeResultData = ({ request, data, sddm }: {
+  /**
+   * Result data to decode.
+   */
   data: Grafaid.SomeData | null | undefined
+  /**
+   * Schema Driven Data Map that contains codecs for custom scalars.
+   */
   sddm: SchemaDrivenDataMap
-  request: Grafaid.RequestInput
+  /**
+   * Request is used to traverse aliases if any were used.
+   */
+  request: Grafaid.RequestAnalyzedDocumentNodeInput
 }) => {
-  const rootType = parseOperationType(input.request)
-  if (!rootType) return
-
-  const sddmOutputObject = input.sddm.roots[operationTypeNameToRootTypeName[rootType]]
+  const sddmOutputObject = sddm.roots[request.rootType]
   if (!sddmOutputObject) return
 
-  const queryUntyped = unType(input.request.query)
-  // todo expose an option to optimize string interface by not parsing it. Explain the caveat of losing support for custom scalars in aliased positions.
-  // const document = isString(queryUntyped) ? null : queryUntyped
-  const document = (isString(queryUntyped) ? parse(queryUntyped) : queryUntyped) as Grafaid.Nodes.DocumentNode | null
-  const documentOperations = document?.definitions.filter(d => d.kind === Kind.OPERATION_DEFINITION)
-  const selectionSet = (documentOperations?.length === 1 ? documentOperations[0] : documentOperations?.find(d => {
-    return d.name?.value === input.request.operationName
-  }))?.selectionSet ?? null
-
-  decode_({
-    data: input.data,
+  decodeResultData_({
+    data,
     sddmOutputObject,
-    documentPart: selectionSet,
+    documentPart: request.operation.selectionSet,
   })
 }
 
-const decode_ = (input: {
+const decodeResultData_ = (input: {
   data: Grafaid.SomeData | null | undefined
   sddmOutputObject: SchemaDrivenDataMap.OutputObject
-  documentPart: null | Grafaid.Nodes.SelectionSetNode
+  documentPart: null | Grafaid.Document.SelectionSetNode
 }): void => {
   const { data, sddmOutputObject, documentPart } = input
   if (!data) return
@@ -61,7 +55,7 @@ const decode_ = (input: {
     if (SchemaDrivenDataMap.isScalar(sddmNode)) {
       data[k] = applyCodec(sddmNode.codec.decode, v)
     } else if (SchemaDrivenDataMap.isOutputObject(sddmNode)) {
-      decode_({
+      decodeResultData_({
         data: v,
         sddmOutputObject: sddmNode,
         documentPart: documentField?.selectionSet ?? null,
@@ -73,9 +67,9 @@ const decode_ = (input: {
 }
 
 const findDocumentField = (
-  selectionSet: null | Grafaid.Nodes.SelectionSetNode,
+  selectionSet: null | Grafaid.Document.SelectionSetNode,
   k: string,
-): Grafaid.Nodes.FieldNode | null => {
+): Grafaid.Document.FieldNode | null => {
   if (!selectionSet) return null
 
   for (const selection of selectionSet.selections) {

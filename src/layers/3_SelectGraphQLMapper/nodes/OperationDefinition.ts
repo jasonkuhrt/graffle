@@ -1,7 +1,7 @@
 import type { Grafaid } from '../../../lib/grafaid/__.js'
 import { Nodes } from '../../../lib/grafaid/_Nodes.js'
 import type { Select } from '../../2_Select/__.js'
-import type { SchemaDrivenDataMap } from '../../7_customScalars/schemaDrivenDataMap/types.js'
+import type { SchemaDrivenDataMap } from '../../7_extensions/CustomScalars/schemaDrivenDataMap/types.js'
 import { inferTypeName } from '../inferVariableTypeName.js'
 import type { Options } from '../toGraphQL.js'
 import type { Context, GraphQLPreOperationMapper } from '../types.js'

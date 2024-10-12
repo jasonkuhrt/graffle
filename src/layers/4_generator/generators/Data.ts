@@ -7,7 +7,11 @@ export const ModuleGeneratorData = createModuleGenerator(
       `export const Name = \`${config.name}\``,
       `export type Name = '${config.name}'`,
     )
-
-    return code
+    code()
+    code(
+      `export const defaultSchemaUrl = ${
+        config.options.defaultSchemaUrl ? `new URL("${config.options.defaultSchemaUrl.href}")` : `undefined`
+      }`,
+    )
   },
 )

@@ -13,13 +13,12 @@ import type { OutputConfigDefault, TransportConfigHttp } from '../../6_client/Se
 let schemaServer: SchemaService
 let graffle: Client<{
   config: {
-    schemaIndex: null
+    schemaMap: null
     transport: TransportConfigHttp
     output: OutputConfigDefault
     initialInput: { schema: URL }
     name: 'default'
   }
-  schemaIndex: null
 }>
 
 beforeAll(async () => {

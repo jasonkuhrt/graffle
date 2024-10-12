@@ -38,7 +38,7 @@ const tester = (input: { variables: boolean }) =>
         + `\n--------------GRAFFLE QUERY-------------\n`
         + JSON.stringify(graffleQuery, null, 2)
         + `\n--------GRAPHQL DOCUMENT & VARIABLES--------\n`
-        + Grafaid.Nodes.print(document)
+        + Grafaid.Document.print(document)
         + `\n----------------\n`
         + JSON.stringify(operationsVariables, null, 2)
         + `\n`

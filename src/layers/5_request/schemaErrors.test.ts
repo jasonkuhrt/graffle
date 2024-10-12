@@ -1,7 +1,7 @@
 import { parse } from 'graphql'
 import { expect } from 'vitest'
 import { test } from '../../../tests/_/helpers.js'
-import { $Index as schema } from '../../../tests/_/schemas/kitchen-sink/graffle/modules/SchemaRuntime.js'
+import { SchemaDrivenDataMap } from '../../../tests/_/schemas/kitchen-sink/graffle/modules/SchemaDrivenDataMap.js'
 import type { Query } from '../../../tests/_/schemas/kitchen-sink/graffle/modules/SelectionSets.js'
 import { Select } from '../2_Select/__.js'
 import { SelectionSetGraphqlMapper } from '../3_SelectGraphQLMapper/__.js'
@@ -29,7 +29,7 @@ test.each<CasesQuery>([
   })
   injectTypenameOnRootResultFields({
     document: documentWithoutTypename,
-    schema,
+    sddm: SchemaDrivenDataMap,
   })
 	expect(documentWithoutTypename).toMatchObject(documentWithTypename)
 })

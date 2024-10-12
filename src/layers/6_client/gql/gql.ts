@@ -1,5 +1,12 @@
 import type { Fluent } from '../../../lib/fluent/__.js'
 import type { Grafaid } from '../../../lib/grafaid/__.js'
+import { getOperationType } from '../../../lib/grafaid/document.js'
+import { operationTypeToRootType } from '../../../lib/grafaid/graphql.js'
+import {
+  isTemplateStringArguments,
+  joinTemplateStringArrayAndArgs,
+  type TemplateStringsArguments,
+} from '../../../lib/template-string.js'
 import { RequestCore } from '../../5_request/__.js'
 import type { InterfaceRaw } from '../../5_request/types.js'
 import { defineTerminus } from '../fluent.js'
@@ -9,13 +16,11 @@ import { type DocumentController, resolveSendArguments, type sendArgumentsImplem
 
 // dprint-ignore
 export interface gql<$Config extends Config = Config> {
-  <$Document extends Grafaid.Nodes.Typed.TypedDocument>(document: $Document                            ): DocumentController<$Config, $Document>
-  <$Document extends Grafaid.Nodes.Typed.TypedDocument>(parts: TemplateStringsArray, ...args: unknown[]): DocumentController<$Config, $Document>
+  <$Document extends Grafaid.Document.Typed.TypedDocumentLike>(document: $Document                            ): DocumentController<$Config, $Document>
+  <$Document extends Grafaid.Document.Typed.TypedDocumentLike>(parts: TemplateStringsArray, ...args: unknown[]): DocumentController<$Config, $Document>
 }
 
-type TemplateStringsArguments = [TemplateStringsArray, ...unknown[]]
-
-type gqlArguments = [Grafaid.Nodes.Typed.TypedDocument] | TemplateStringsArguments
+type gqlArguments = [Grafaid.Document.Typed.TypedDocumentLike] | TemplateStringsArguments
 
 const resolveGqlArguments = (args: gqlArguments) => {
   const document = isTemplateStringArguments(args) ? joinTemplateStringArrayAndArgs(args) : args[0]
@@ -32,52 +37,50 @@ export interface FnGql extends Fluent.FnProperty<'gql'> {
 export const gqlProperties = defineTerminus((state) => {
   return {
     gql: (...args: gqlArguments) => {
-      const { document } = resolveGqlArguments(args)
+      const { document: query } = resolveGqlArguments(args)
+      const interfaceType: InterfaceRaw = `raw`
+      const transportType = state.config.transport.type
+      const url = state.config.transport.type === `http` ? state.config.transport.url : undefined
+      const schema = state.config.transport.type === `http` ? undefined : state.config.transport.schema
 
       return {
         send: async (...args: sendArgumentsImplementation) => {
           const { operationName, variables } = resolveSendArguments(args)
-          const interfaceType: InterfaceRaw = `raw`
-          const transportType = state.config.transport.type
-          const url = state.config.transport.type === `http` ? state.config.transport.url : undefined
-          const schema = state.config.transport.type === `http` ? undefined : state.config.transport.schema
+          const request = {
+            query,
+            variables,
+            operationName,
+          }
+          const operationType = getOperationType(request)
+          if (!operationType) throw new Error(`Could not get operation type`)
+
+          const analyzedRequest = {
+            rootType: operationTypeToRootType[operationType],
+            operation: operationType,
+            query,
+            variables,
+            operationName,
+          }
+
           const initialInput = {
             interfaceType,
             transportType,
             state,
             url,
             schema,
-            schemaIndex: state.config.schemaIndex,
-            request: {
-              query: document,
-              variables,
-              operationName,
-            },
+            // request,
+            request: analyzedRequest,
           } as RequestCore.Hooks.HookDefEncode<Config>['input']
+
           const result = await RequestCore.anyware.run({
             initialInput,
             retryingExtension: state.retry as any,
             extensions: state.extensions.filter(_ => _.onRequest !== undefined).map(_ => _.onRequest!) as any,
           })
-          return handleOutput(state, result)
+
+          return handleOutput(state, analyzedRequest.rootType, result)
         },
       } as any
     },
   }
 })
-
-const isTemplateStringArguments = (args: [...unknown[]]): args is TemplateStringsArguments => {
-  return isTemplateStringArray(args[0])
-}
-
-const isTemplateStringArray = (arg: any): arg is TemplateStringsArray => {
-  return Array.isArray(arg) && `raw` in arg && arg.raw !== undefined
-}
-
-const joinTemplateStringArrayAndArgs = (args: TemplateStringsArguments): string => {
-  const [templateParts, ...templateArgs] = args
-  return templateParts.reduce(
-    (string, part, index) => `${string}${part}${index in templateArgs ? String(templateArgs[index]) : ``}`,
-    ``,
-  )
-}

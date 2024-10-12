@@ -1,5 +1,5 @@
 import type { DocumentTypeDecoration } from '@graphql-typed-document-node/core'
-import type { DocumentNode, TypedQueryDocumentNode } from 'graphql'
+import { type DocumentNode, type TypedQueryDocumentNode } from 'graphql'
 import type { HasRequiredKeys, IsNever, IsUnknown } from 'type-fest'
 import { type HasKeys, type IsHasIndexType } from '../../prelude.js'
 import type { SomeData, Variables } from '../graphql.js'
@@ -14,10 +14,14 @@ export { type TypedQueryDocumentNode as Query } from 'graphql'
 // types are allowed.
 
 // dprint-ignore
-export type TypedDocument<$Result extends SomeData = SomeData, $Variables extends Variables = any> =
+export type TypedDocumentLike<$Result extends SomeData = SomeData, $Variables extends Variables = any> =
   | TypedQueryDocumentNode<$Result, $Variables>
   | TypedDocumentString   <$Result, $Variables>
   | TypedDocumentNode     <$Result, $Variables>
+
+export type TypedDocumentNodeLike<$Result extends SomeData = SomeData, $Variables extends Variables = any> =
+  | TypedQueryDocumentNode<$Result, $Variables>
+  | TypedDocumentNode<$Result, $Variables>
 
 /**
  * @remarks From package \@graphql-typed-document-node/core in theory but not exported
@@ -73,21 +77,21 @@ export type VariablesInputKindOptional = 'optional'
 //
 // Document Helpers
 
-export const isString = <$TypedDocument extends TypedDocument>(
+export const isString = <$TypedDocument extends TypedDocumentLike>(
   document: $TypedDocument,
 ): document is Exclude<$TypedDocument, TypedDocumentNode | TypedQueryDocumentNode> => typeof document === `string`
 
-export const unType = (document: TypedDocument): string | DocumentNode => document as any
+export const unType = (document: TypedDocumentLike): string | DocumentNode => document as any
 
 // dprint-ignore
-export type ResultOf<$Document extends TypedDocument> =
+export type ResultOf<$Document extends TypedDocumentLike> =
   $Document extends TypedQueryDocumentNode <infer $R, infer _>   ? $R :
   $Document extends TypedDocumentNode      <infer $R, infer _>   ? $R :
   $Document extends TypedDocumentString    <infer $R, infer _>   ? $R :
                                                                    never
 
 // dprint-ignore
-export type VariablesOf<$Document extends TypedDocument> =
+export type VariablesOf<$Document extends TypedDocumentLike> =
   $Document extends TypedDocumentString    <infer _, infer $V>   ? $V :
   $Document extends TypedQueryDocumentNode <infer _, infer $V>   ? $V :
   $Document extends TypedDocumentNode      <infer _, infer $V>   ? IsUnknown<$V> extends true

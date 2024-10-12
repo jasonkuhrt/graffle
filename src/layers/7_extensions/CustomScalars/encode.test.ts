@@ -1,12 +1,12 @@
 import { expect } from 'vitest'
-import { test } from '../../../tests/_/helpers.js'
-import { db } from '../../../tests/_/schemas/db.js'
-import type { Graffle } from '../../../tests/_/schemas/kitchen-sink/graffle/__.js'
-import { $index } from '../../../tests/_/schemas/kitchen-sink/graffle/modules/SchemaDrivenDataMap.js'
-import { Spy } from '../../../tests/_/SpyExtension.js'
-import { Grafaid } from '../../lib/grafaid/__.js'
-import { Select } from '../2_Select/__.js'
-import { SelectionSetGraphqlMapper } from '../3_SelectGraphQLMapper/__.js'
+import { test } from '../../../../tests/_/helpers.js'
+import { db } from '../../../../tests/_/schemas/db.js'
+import type { Graffle } from '../../../../tests/_/schemas/kitchen-sink/graffle/__.js'
+import { SchemaDrivenDataMap } from '../../../../tests/_/schemas/kitchen-sink/graffle/modules/SchemaDrivenDataMap.js'
+import { Spy } from '../../../../tests/_/SpyExtension.js'
+import { Grafaid } from '../../../lib/grafaid/__.js'
+import { Select } from '../../2_Select/__.js'
+import { SelectionSetGraphqlMapper } from '../../3_SelectGraphQLMapper/__.js'
 
 const date0Encoded = db.date0.toISOString()
 const date1Encoded = db.date1.toISOString()
@@ -36,11 +36,11 @@ testCases(`%s`, async ([_, query, expectedVariables], { kitchenSink }) => {
   const { document, operationsVariables } = SelectionSetGraphqlMapper.toGraphQL({
     document: Select.Document.createDocumentNormalizedFromQuerySelection(query as any),
     options: {
-      sddm: $index,
+      sddm: SchemaDrivenDataMap,
       operationVariables: true,
     },
   })
-  const documentString = Grafaid.Nodes.print(document)
+  const documentString = Grafaid.Document.print(document)
   await kitchenSink.use(Spy()).gql(documentString).send(operationsVariables[`$default`])
   expect(Spy.data.pack.input?.request.variables).toEqual(expectedVariables)
 })

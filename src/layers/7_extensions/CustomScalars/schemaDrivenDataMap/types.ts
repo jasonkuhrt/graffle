@@ -1,5 +1,5 @@
-import type { Grafaid } from '../../../lib/grafaid/__.js'
-import { Scalar, type Scalar as SchemaScalar } from '../../1_Schema/_.js'
+import type { Grafaid } from '../../../../lib/grafaid/__.js'
+import { Scalar, type Scalar as SchemaScalar } from '../../../1_Schema/_.js'
 
 export const propertyNames = {
   k: `k`,
@@ -18,6 +18,12 @@ export interface SchemaDrivenDataMap {
     [Grafaid.Schema.RootTypeName.Subscription]?: SchemaDrivenDataMap.OutputObject
   }
   types: Record<string, SchemaDrivenDataMap.NamedLike>
+  // todo, actually generate this
+  schemaErrors?: {
+    [Grafaid.Schema.RootTypeName.Mutation]?: Record<string, SchemaDrivenDataMap.OutputObject>
+    [Grafaid.Schema.RootTypeName.Query]?: Record<string, SchemaDrivenDataMap.OutputObject>
+    [Grafaid.Schema.RootTypeName.Subscription]?: Record<string, SchemaDrivenDataMap.OutputObject>
+  }
 }
 
 export namespace SchemaDrivenDataMap {

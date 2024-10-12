@@ -1,12 +1,6 @@
-import { type GraphQLEnumValue, type GraphQLField, type GraphQLNamedType, isEnumType } from 'graphql'
 import { Code } from '../../../lib/Code.js'
-import {
-  type Describable,
-  getNodeDisplayName,
-  getTypeNameAndKind,
-  isDeprecatableNode,
-  type TypeMapKind,
-} from '../../../lib/grafaid/graphql.js'
+import { Grafaid } from '../../../lib/grafaid/__.js'
+import { getNodeDisplayName } from '../../../lib/grafaid/graphql.js'
 import { borderThickFullWidth, borderThinFullWidth, centerTo } from '../../../lib/text.js'
 import type { Config } from '../config.js'
 
@@ -31,9 +25,9 @@ export const title1 = (title: string, subTitle?: string) => {
   return titleDecorated
 }
 
-export const typeTitle2 = (category: string) => (node: GraphQLNamedType) => {
-  const nameKind = getTypeNameAndKind(node)
-  const nameOrKind = nameKind.kind === `Scalar` ? nameKind.name : nameKind.kind
+export const typeTitle2 = (category: string) => (type: Grafaid.Schema.NamedTypes) => {
+  const typeKind = Grafaid.getTypeNameAndKind(type)
+  const nameOrKind = typeKind.kind === `Scalar` ? typeKind.name : typeKind.kind
   const typeLabel = nameOrKind
   const title = `
     //
@@ -43,7 +37,7 @@ export const typeTitle2 = (category: string) => (node: GraphQLNamedType) => {
     // ${category.toUpperCase()}
     // ${typeLabel.toUpperCase()}
     // ${borderThinFullWidth}
-    // ${centerTo(borderThinFullWidth, node.name)}
+    // ${centerTo(borderThinFullWidth, type.name)}
     // ${borderThinFullWidth}
     //
     //
@@ -54,9 +48,9 @@ export const typeTitle2 = (category: string) => (node: GraphQLNamedType) => {
 
 export const typeTitle2SelectionSet = typeTitle2(`GRAPHQL SELECTION SET`)
 
-export const typeTitle = (config: Config, typeName: TypeMapKind) => {
-  const hasItems = config.schema.typeMapByKind[`GraphQL${typeName}Type`].length > 0
-  const title = `${typeName} Types`
+export const typeTitle = (config: Config, typeKind: Grafaid.Schema.NamedTypeKind) => {
+  const hasItems = config.schema.typeMapByKind[`GraphQL${typeKind}Type`].length > 0
+  const title = `${typeKind} Types`
   const titleDecorated = `// ${title}\n// ${`-`.repeat(title.length)}\n`
   if (hasItems) {
     return titleDecorated
@@ -65,20 +59,21 @@ export const typeTitle = (config: Config, typeName: TypeMapKind) => {
   }
 }
 
-const defaultDescription = (node: Describable) => `There is no documentation for this ${getNodeDisplayName(node)}.`
+const defaultDescription = (node: Grafaid.Schema.DescribableTypes) =>
+  `There is no documentation for this ${getNodeDisplayName(node)}.`
 
-export const renderDocumentation = (config: Config, node: Describable) => {
+export const renderDocumentation = (config: Config, node: Grafaid.Schema.DescribableTypes) => {
   return Code.TSDoc(getDocumentation(config, node))
 }
-export const getDocumentation = (config: Config, node: Describable) => {
+export const getDocumentation = (config: Config, node: Grafaid.Schema.DescribableTypes) => {
   const generalDescription = node.description
     ?? (config.options.TSDoc.noDocPolicy === `message` ? defaultDescription(node) : null)
 
-  const deprecationDescription = isDeprecatableNode(node) && node.deprecationReason
+  const deprecationDescription = Grafaid.Schema.isDeprecatableNode(node) && node.deprecationReason
     ? `@deprecated ${node.deprecationReason}`
     : null
 
-  const enumMemberDescriptions: string[] = isEnumType(node)
+  const enumMemberDescriptions: string[] = Grafaid.Schema.isEnumType(node)
     ? node
       .getValues()
       .map((_) => {
@@ -96,7 +91,7 @@ export const getDocumentation = (config: Config, node: Describable) => {
           .join(` `)
         return [_, content] as const
       })
-      .filter((_): _ is [GraphQLEnumValue, string] => _ !== null)
+      .filter((_): _ is [Grafaid.Schema.EnumValue, string] => _ !== null)
       .map(([node, description]) => {
         const content = `"${node.name}" - ${description}`
         return content
@@ -123,7 +118,7 @@ export const getDocumentation = (config: Config, node: Describable) => {
  * this guards against GraphQL type or property names that
  * would be illegal in TypeScript such as `namespace` or `interface`.
  */
-export const renderName = (type: GraphQLNamedType | GraphQLField<any, any>) => {
+export const renderName = (type: Grafaid.Schema.NamedTypes | Grafaid.Schema.Field<any, any>) => {
   if (Code.reservedTypeScriptInterfaceNames.includes(type.name as any)) {
     return `$${type.name}`
   }

@@ -1,31 +1,8 @@
 // todo: generate in JSDoc how the feature maps to GQL syntax.
 // todo: on union fields, JSDoc that mentions the syntax `on*`
 
-import type {
-  GraphQLEnumType,
-  GraphQLInputObjectType,
-  GraphQLInterfaceType,
-  GraphQLNamedType,
-  GraphQLUnionType,
-} from 'graphql'
-import {
-  getNullableType,
-  type GraphQLArgument,
-  type GraphQLField,
-  type GraphQLInputField,
-  type GraphQLObjectType,
-  type GraphQLType,
-  isEnumType,
-} from 'graphql'
-import { getNamedType, isNullableType, isScalarType } from 'graphql'
 import { Code } from '../../../lib/Code.js'
 import { Grafaid } from '../../../lib/grafaid/__.js'
-import {
-  getTypeNameAndKind,
-  Nodes,
-  type StandardScalarTypeNames,
-  StandardScalarTypeTypeScriptMapping,
-} from '../../../lib/grafaid/graphql.js'
 import { analyzeArgsNullability } from '../../../lib/grafaid/schema/args.js'
 import { RootTypeName } from '../../../lib/grafaid/schema/schema.js'
 import { Select } from '../../2_Select/__.js'
@@ -69,7 +46,7 @@ export const ModuleGeneratorSelectionSets = createModuleGenerator(
     ].filter(_ => _.length > 0)
 
     typesToRender.forEach((nodes) => {
-      const kind = Grafaid.getTypeKind(nodes[0]!)
+      const kind = Grafaid.Schema.getTypeKind(nodes[0]!)
 
       code(title1(`${kind} Types`))
       code()
@@ -93,7 +70,7 @@ export const ModuleGeneratorSelectionSets = createModuleGenerator(
   },
 )
 
-const renderRefDefs = createCodeGenerator<{ nodes: GraphQLNamedType[] }>(
+const renderRefDefs = createCodeGenerator<{ nodes: Grafaid.Schema.NamedTypes[] }>(
   ({ nodes, code }) => {
     const refDefsRendered = nodes.map(node => `export type _${renderName(node)} = ${renderName(node)}`).join(`\n`)
     const namespaceRendered = `
@@ -106,7 +83,7 @@ const renderRefDefs = createCodeGenerator<{ nodes: GraphQLNamedType[] }>(
   },
 )
 
-const renderUnion = createCodeGenerator<{ node: GraphQLUnionType }>(
+const renderUnion = createCodeGenerator<{ node: Grafaid.Schema.UnionType }>(
   ({ config, node, code }) => {
     const doc = renderDocumentation(config, node)
     code(doc)
@@ -130,7 +107,7 @@ const renderUnion = createCodeGenerator<{ node: GraphQLUnionType }>(
   },
 )
 
-const renderEnum = createCodeGenerator<{ node: GraphQLEnumType }>(
+const renderEnum = createCodeGenerator<{ node: Grafaid.Schema.EnumType }>(
   ({ config, node, code }) => {
     const doc = renderDocumentation(config, node)
     code(doc)
@@ -140,7 +117,7 @@ const renderEnum = createCodeGenerator<{ node: GraphQLEnumType }>(
   },
 )
 
-const renderInputObject = createCodeGenerator<{ node: GraphQLInputObjectType }>(
+const renderInputObject = createCodeGenerator<{ node: Grafaid.Schema.InputObjectType }>(
   ({ config, node, code }) => {
     const doc = renderDocumentation(config, node)
     code(doc)
@@ -154,13 +131,13 @@ const renderInputObject = createCodeGenerator<{ node: GraphQLInputObjectType }>(
   },
 )
 
-const renderInterface = createCodeGenerator<{ node: GraphQLInterfaceType }>(
+const renderInterface = createCodeGenerator<{ node: Grafaid.Schema.InterfaceType }>(
   ({ config, node, code }) => {
     const fields = Object.values(node.getFields())
     const fieldsRendered = fields.map(field => {
       return Helpers.outputField(field.name, `${renderName(node)}.${renderName(field)}`)
     }).join(`\n`)
-    const implementorTypes = Nodes.$Schema.KindMap.getInterfaceImplementors(config.schema.typeMapByKind, node)
+    const implementorTypes = Grafaid.Schema.KindMap.getInterfaceImplementors(config.schema.typeMapByKind, node)
     const onTypesRendered = implementorTypes.map(type =>
       Helpers.outputField(`${Select.InlineFragment.typeConditionPRefix}${type.name}`, renderName(type))
     ).join(
@@ -198,7 +175,7 @@ const renderInterface = createCodeGenerator<{ node: GraphQLInterfaceType }>(
   },
 )
 
-const renderObject = createCodeGenerator<{ node: GraphQLObjectType }>(
+const renderObject = createCodeGenerator<{ node: Grafaid.Schema.ObjectType }>(
   ({ config, node, code }) => {
     const fields = Object.values(node.getFields())
 
@@ -209,7 +186,7 @@ const renderObject = createCodeGenerator<{ node: GraphQLObjectType }>(
     code()
 
     const propertiesRendered = fields.map(field => {
-      const nodeWhat = getTypeNameAndKind(getNamedType(field.type))
+      const nodeWhat = Grafaid.getTypeNameAndKind(Grafaid.Schema.getNamedType(field.type))
       const type = nodeWhat.kind === `Scalar` ? `\`${nodeWhat.name}\` (a \`Scalar\`)` : nodeWhat.kind
       const doc = Code.TSDoc(`
         Select the \`${field.name}\` field on the \`${node.name}\` object. Its type is ${type}.
@@ -262,16 +239,16 @@ const kindRenderLookup = {
   GraphQLUnionType: renderUnion,
 }
 
-const renderField = createCodeGenerator<{ field: GraphQLField<any, any> }>(
+const renderField = createCodeGenerator<{ field: Grafaid.Schema.Field<any, any> }>(
   ({ config, field, code }) => {
-    const namedType = getNamedType(field.type)
+    const namedType = Grafaid.Schema.getNamedType(field.type)
     const nameRendered = renderName(field)
 
     // code()
     // code(`// -- .${nameRendered} --`)
     // code()
 
-    if (isScalarType(namedType) || isEnumType(namedType)) {
+    if (Grafaid.Schema.isScalarType(namedType) || Grafaid.Schema.isEnumType(namedType)) {
       const argsAnalysis = analyzeArgsNullability(field.args)
       const argFieldsRendered = renderArguments({ config, field })
       const argsRendered = renderArgumentsKey({
@@ -322,7 +299,7 @@ const renderField = createCodeGenerator<{ field: GraphQLField<any, any> }>(
   },
 )
 
-const renderArgumentsKey = createCodeGenerator<{ field: GraphQLField<any, any>; argFieldsRendered: string }>(
+const renderArgumentsKey = createCodeGenerator<{ field: Grafaid.Schema.Field<any, any>; argFieldsRendered: string }>(
   ({ field, code, argFieldsRendered }) => {
     const argsAnalysis = analyzeArgsNullability(field.args)
 
@@ -346,7 +323,7 @@ const renderArgumentsKey = createCodeGenerator<{ field: GraphQLField<any, any>; 
   },
 )
 
-const renderArguments = createCodeGenerator<{ field: GraphQLField<any, any> }>(({ config, field, code }) => {
+const renderArguments = createCodeGenerator<{ field: Grafaid.Schema.Field<any, any> }>(({ config, field, code }) => {
   const argFieldsRendered = field.args.map(arg => renderArgumentLike({ config, arg })).join(`\n`)
   if (argFieldsRendered) {
     code(`{\n${argFieldsRendered}\n}`)
@@ -354,10 +331,12 @@ const renderArguments = createCodeGenerator<{ field: GraphQLField<any, any> }>((
   }
 })
 
-const renderArgumentLike = createCodeGenerator<{ arg: GraphQLArgument | GraphQLInputField }>(
+const renderArgumentLike = createCodeGenerator<{ arg: Grafaid.Schema.Argument | Grafaid.Schema.InputField }>(
   ({ config, arg, code }) => {
     // todo do not import whole of graphql package here. Just import getNamedType.
-    const enumKeyPrefix = isEnumType(Grafaid.Schema.getNamedType(arg.type)) ? Select.Arguments.enumKeyPrefix : ``
+    const enumKeyPrefix = Grafaid.Schema.isEnumType(Grafaid.Schema.getNamedType(arg.type))
+      ? Select.Arguments.enumKeyPrefix
+      : ``
     const typeRendered = renderArgType(arg.type)
     const doc = getDocumentation(config, arg)
     code(doc)
@@ -365,22 +344,23 @@ const renderArgumentLike = createCodeGenerator<{ arg: GraphQLArgument | GraphQLI
   },
 )
 
-const renderArgType = (type: Nodes.$Schema.GraphQLType): string => {
-  const sansNullabilityType = Nodes.$Schema.getNullableType(type)
+const renderArgType = (type: Grafaid.Schema.InputTypes): string => {
+  const sansNullabilityType = Grafaid.Schema.getNullableType(type)
 
-  const nullableRendered = Nodes.$Schema.isNullableType(type) ? `| undefined | null` : ``
+  const nullableRendered = Grafaid.Schema.isNullableType(type) ? `| undefined | null` : ``
 
-  if (Nodes.$Schema.isListType(sansNullabilityType)) {
-    const innerType = getNullableType(sansNullabilityType.ofType)
+  if (Grafaid.Schema.isListType(sansNullabilityType)) {
+    const innerType = Grafaid.Schema.getNullableType(sansNullabilityType.ofType)
     return `Array<${renderArgType(innerType)}> ${nullableRendered}`
   }
 
-  if (Nodes.$Schema.isScalarType(sansNullabilityType)) {
-    if (Nodes.$Schema.isScalarTypeCustom(sansNullabilityType)) {
+  if (Grafaid.Schema.isScalarType(sansNullabilityType)) {
+    if (Grafaid.Schema.isScalarTypeCustom(sansNullabilityType)) {
       const scalarTypeRendered = `$Scalar.${sansNullabilityType.name}Decoded`
       return `${scalarTypeRendered} ${nullableRendered}`
     }
-    const scalarTypeRendered = StandardScalarTypeTypeScriptMapping[sansNullabilityType.name as StandardScalarTypeNames]
+    const scalarTypeRendered =
+      Grafaid.StandardScalarTypeTypeScriptMapping[sansNullabilityType.name as Grafaid.StandardScalarTypeNames]
     return `${scalarTypeRendered} ${nullableRendered}`
   }
 
@@ -388,8 +368,8 @@ const renderArgType = (type: Nodes.$Schema.GraphQLType): string => {
 }
 
 namespace Helpers {
-  export const propOpt = (type: GraphQLType) => {
-    return isNullableType(type) ? `?` : ``
+  export const propOpt = (type: Grafaid.Schema.Types) => {
+    return Grafaid.Schema.isNullableType(type) ? `?` : ``
   }
   export const maybeList = (type: string) => {
     return `${type} | Array<${type}>`
@@ -438,12 +418,16 @@ namespace Helpers {
 
   const fragmentInlineNameSuffix = `$FragmentInline`
 
-  export const fragmentInlineInterface = (node: GraphQLObjectType | GraphQLUnionType | GraphQLInterfaceType) => {
+  export const fragmentInlineInterface = (
+    node: Grafaid.Schema.ObjectType | Grafaid.Schema.UnionType | Grafaid.Schema.InterfaceType,
+  ) => {
     const name = `${renderName(node)}${fragmentInlineNameSuffix}`
     return `export interface ${name} extends ${renderName(node)}, $Select.Directive.$Groups.InlineFragment.Fields {}`
   }
 
-  export const fragmentInlineField = (node: GraphQLObjectType | GraphQLUnionType | GraphQLInterfaceType) => {
+  export const fragmentInlineField = (
+    node: Grafaid.Schema.ObjectType | Grafaid.Schema.UnionType | Grafaid.Schema.InterfaceType,
+  ) => {
     const doc = Code.TSDoc(`
       Inline fragments for field groups. 
      

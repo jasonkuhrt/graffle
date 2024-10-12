@@ -2,14 +2,14 @@ import type { Grafaid } from '../../../lib/grafaid/__.js'
 import { Nodes } from '../../../lib/grafaid/_Nodes.js'
 import { casesExhausted, isNonNull } from '../../../lib/prelude.js'
 import type { ParsedSelectionObjectLevel } from '../../2_Select/_.js'
-import type { SchemaDrivenDataMap } from '../../7_customScalars/schemaDrivenDataMap/types.js'
+import type { SchemaDrivenDataMap } from '../../7_extensions/CustomScalars/schemaDrivenDataMap/types.js'
 import type { GraphQLPostOperationMapper } from '../types.js'
 import { toGraphQLField } from './Field.js'
 import { toGraphQLInlineFragments } from './InlineFragments.js'
 
 export const fromGraffleSelectionObjectLevel: GraphQLPostOperationMapper<
   SchemaDrivenDataMap.OutputObject,
-  Grafaid.Nodes.SelectionNode[],
+  Grafaid.Document.SelectionNode[],
   [
     keyParsed: ParsedSelectionObjectLevel,
   ]

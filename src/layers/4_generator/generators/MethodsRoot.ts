@@ -1,5 +1,4 @@
 // todo remove use of Utils.Aug when schema errors not in use
-import { getNamedType, type GraphQLObjectType, isScalarType } from 'graphql'
 import { Grafaid } from '../../../lib/grafaid/__.js'
 import { createModuleGenerator } from '../helpers/moduleGenerator.js'
 import { createCodeGenerator } from '../helpers/moduleGeneratorRunner.js'
@@ -47,7 +46,7 @@ export const ModuleGeneratorMethodsRoot = createModuleGenerator(
   },
 )
 
-const renderRootType = createCodeGenerator<{ node: GraphQLObjectType }>(({ node, config, code }) => {
+const renderRootType = createCodeGenerator<{ node: Grafaid.Schema.ObjectType }>(({ node, config, code }) => {
   const fieldMethods = renderFieldMethods({ config, node })
 
   code(`
@@ -78,32 +77,21 @@ const renderRootType = createCodeGenerator<{ node: GraphQLObjectType }>(({ node,
     }`)
 })
 
-const renderFieldMethods = createCodeGenerator<{ node: GraphQLObjectType }>(({ node, config, code }) => {
+const renderFieldMethods = createCodeGenerator<{ node: Grafaid.Schema.ObjectType }>(({ node, config, code }) => {
   for (const field of Object.values(node.getFields())) {
     const doc = renderDocumentation(config, field)
     code(doc)
 
-    const fieldTypeUnwrapped = getNamedType(field.type)
+    const fieldTypeUnwrapped = Grafaid.Schema.getNamedType(field.type)
 
-    if (isScalarType(fieldTypeUnwrapped)) {
-      const isArgsAllNullable_ = Grafaid.Schema.Args.isAllArgsNullable(field.args)
-      const parametersCode = field.args.length > 0
-        ? `<$SelectionSet>(args${isArgsAllNullable_ ? `?` : ``}: Utils.Exact<$SelectionSet, SelectionSet.${
-          renderName(node)
-        }.${renderName(field)}$SelectionSetArguments>)`
-        : `()`
+    const isOptional = Grafaid.Schema.isScalarType(fieldTypeUnwrapped)
+      && Grafaid.Schema.Args.isAllArgsNullable(field.args)
 
-      code(`
-        ${field.name}: ${parametersCode} =>
-          ${Helpers.returnType(node.name, field.name, `true`)}
-      `)
-    } else {
-      code(`
-        ${field.name}: <$SelectionSet>
-        (selectionSet: Utils.Exact<$SelectionSet, SelectionSet.${renderName(node)}.${renderName(field)}>) =>
-          ${Helpers.returnType(node.name, field.name, `$SelectionSet`)}
-      `)
-    }
+    // dprint-ignore
+    code(`
+      ${field.name}: <$SelectionSet>(selectionSet${isOptional ? `?` : ``}: Utils.Exact<$SelectionSet, SelectionSet.${renderName(node)}.${renderName(field)}>) =>
+        ${Helpers.returnType(node.name, field.name, `$SelectionSet`)}
+    `)
   }
 })
 

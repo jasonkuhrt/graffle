@@ -1,24 +1,17 @@
-import {} from 'graphql'
-import { Grafaid } from '../../lib/grafaid/__.js'
-import { getOperationDefinition } from '../../lib/grafaid/document.js'
-import { applyCodec } from '../1_Schema/Hybrid/types/Scalar/Scalar.js'
+import { Grafaid } from '../../../lib/grafaid/__.js'
+import { applyCodec } from '../../1_Schema/Hybrid/types/Scalar/Scalar.js'
 import { SchemaDrivenDataMap } from './schemaDrivenDataMap/types.js'
 
-export const encodeVariables = (input: {
-  document: Grafaid.Nodes.DocumentNode
+export const encodeRequestVariables = ({ sddm, request }: {
   sddm: SchemaDrivenDataMap
-  operationName?: string
-  variables?: Grafaid.Variables
+  request: Grafaid.RequestAnalyzedDocumentNodeInput
 }): void => {
-  const operation = getOperationDefinition(input.document, input.operationName)
-  if (!operation) return
-
-  const variableDefinitions = operation.variableDefinitions
+  const variableDefinitions = request.operation.variableDefinitions
   if (!variableDefinitions) return
 
   const variableDefinitionsMap = new Map(variableDefinitions.map(v => [v.variable.name.value, v]))
 
-  const variables = input.variables ?? {}
+  const variables = request.variables ?? {}
 
   // todo align the iteration strategy with other func.
   for (const variableName in variables) {
@@ -28,8 +21,8 @@ export const encodeVariables = (input: {
     const value = variables[variableName]
     if (value === undefined) continue
 
-    const namedType = Grafaid.Nodes.getNamedType(definition.type)
-    const sddmNamedType = input.sddm.types[namedType.name.value]
+    const namedType = Grafaid.Document.getNamedType(definition.type)
+    const sddmNamedType = sddm.types[namedType.name.value]
     if (!sddmNamedType) continue // todo in a strict mode could be error.
 
     encodeInputFieldLike(variables, variableName, value, sddmNamedType)

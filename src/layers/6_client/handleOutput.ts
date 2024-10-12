@@ -1,8 +1,9 @@
 import type { ExecutionResult, GraphQLError } from 'graphql'
 import type { Simplify } from 'type-fest'
 import { Errors } from '../../lib/errors/__.js'
+import type { Grafaid } from '../../lib/grafaid/__.js'
 import type { GraphQLExecutionResultError } from '../../lib/grafaid/graphql.js'
-import { isRecordLikeObject, type SimplifyExceptError, type Values } from '../../lib/prelude.js'
+import { isRecordLikeObject, isString, type SimplifyExceptError, type Values } from '../../lib/prelude.js'
 import type { SchemaIndex } from '../4_generator/generators/SchemaIndex.js'
 import type { TransportHttp } from '../5_request/types.js'
 import type { State } from './fluent.js'
@@ -43,7 +44,7 @@ export type GraffleExecutionResultVar<$Config extends Config = Config> =
 
 export const handleOutput = (
   state: State,
-  // context: RequestContext,
+  rootTypeName: Grafaid.Schema.RootTypeName,
   result: GraffleExecutionResultVar,
 ) => {
   if (isContextConfigTraditionalGraphQLOutput(state.config)) {
@@ -90,7 +91,7 @@ export const handleOutput = (
     return isEnvelope ? { ...result, errors: [...result.errors ?? [], error] } : error
   }
 
-  if (state.input.schemaIndex) {
+  if (state.input.schemaMap) {
     if (c.errors.schema !== false) {
       if (!isRecordLikeObject(result.data)) throw new Error(`Expected data to be an object.`)
       const schemaErrors = Object.entries(result.data).map(([rootFieldName, rootFieldValue]) => {
@@ -104,13 +105,11 @@ export const handleOutput = (
         if (!isRecordLikeObject(rootFieldValue)) return null
 
         const __typename = rootFieldValue[`__typename`]
-        if (typeof __typename !== `string`) {
+        if (!isString(__typename)) {
           return new Error(`Expected __typename to be selected and a string.`)
         }
 
-        const isErrorObject = Boolean(
-          state.input.schemaIndex?.error.objectsTypename[__typename],
-        )
+        const isErrorObject = Boolean(state.input.schemaMap?.schemaErrors?.[rootTypeName]?.[__typename])
         if (!isErrorObject) return null
         // todo extract message
         // todo allow mapping error instances to schema errors

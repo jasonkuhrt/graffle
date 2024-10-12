@@ -3,18 +3,13 @@ import type { Grafaid } from '../../lib/grafaid/__.js'
 import type { getRequestEncodeSearchParameters, postRequestEncodeBody } from '../../lib/grafaid/http/http.js'
 import type { httpMethodGet, httpMethodPost } from '../../lib/http.js'
 import type { Select } from '../2_Select/__.js'
-import type { SchemaIndex } from '../4_generator/generators/SchemaIndex.js'
 import type { State } from '../6_client/fluent.js'
 import type { Config } from '../6_client/Settings/Config.js'
 import type { MethodModeGetReads, MethodModePost } from '../6_client/transportHttp/request.js'
 import type { InterfaceRaw, InterfaceTyped, TransportHttp, TransportMemory } from './types.js'
 
 interface HookInputBase {
-  schemaIndex: SchemaIndex | null
   state: State
-  // todo remove these
-  document?: Select.Document.DocumentNormalized
-  operationName?: string
 }
 
 type InterfaceInput<TypedProperties = {}, RawProperties = {}> =
@@ -45,12 +40,15 @@ type TransportInput<$Config extends Config, $HttpProperties = {}, $MemoryPropert
         : never
     )
 
+// ---------------------------
+
 export type HookDefEncode<$Config extends Config> = {
   input:
     & HookInputBase
     & InterfaceInput<
       { request: { document: Select.Document.DocumentNormalized; operationName?: string } },
-      { request: Grafaid.RequestInput }
+      // { request: Grafaid.RequestInput }
+      { request: Grafaid.RequestAnalyzedInput }
     >
     & TransportInput<$Config>
 }
@@ -64,7 +62,7 @@ export type HookDefPack<$Config extends Config> = {
       // todo why is headers here but not other http request properties?
       { headers?: HeadersInit }
     >
-    & { request: Grafaid.RequestInput }
+    & { request: Grafaid.RequestAnalyzedInput }
   slots: {
     /**
      * When request will be sent using GET this slot is called to create the value that will be used for the HTTP Search Parameters.

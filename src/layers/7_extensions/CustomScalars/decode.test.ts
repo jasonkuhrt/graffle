@@ -1,10 +1,10 @@
 import { describe, expect } from 'vitest'
-import { createResponse, test } from '../../../tests/_/helpers.js'
-import { db } from '../../../tests/_/schemas/db.js'
-import type { Graffle } from '../../../tests/_/schemas/kitchen-sink/graffle/__.js'
-import { Grafaid } from '../../lib/grafaid/__.js'
-import { Select } from '../2_Select/__.js'
-import { SelectionSetGraphqlMapper } from '../3_SelectGraphQLMapper/__.js'
+import { createResponse, test } from '../../../../tests/_/helpers.js'
+import { db } from '../../../../tests/_/schemas/db.js'
+import type { Graffle } from '../../../../tests/_/schemas/kitchen-sink/graffle/__.js'
+import { Grafaid } from '../../../lib/grafaid/__.js'
+import { Select } from '../../2_Select/__.js'
+import { SelectionSetGraphqlMapper } from '../../3_SelectGraphQLMapper/__.js'
 
 const date0Encoded = db.date0.toISOString()
 
@@ -46,7 +46,7 @@ const withGqlString: TestCaseWith = [
     const { document } = SelectionSetGraphqlMapper.toGraphQL({
       document: Select.Document.normalizeOrThrow({ query: { foo: query as any } }),
     })
-    expect(await kitchenSink.gql(Grafaid.Nodes.print(document)).send()).toEqual(expectedData)
+    expect(await kitchenSink.gql(Grafaid.Document.print(document)).send()).toEqual(expectedData)
   },
 ]
 

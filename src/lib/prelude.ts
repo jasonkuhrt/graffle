@@ -626,6 +626,10 @@ export const isString = (value: unknown): value is string => {
   return typeof value === 'string'
 }
 
+export const isSymbol = (value: unknown): value is symbol => {
+  return typeof value === 'symbol'
+}
+
 export const isNonNull = <$Value>(value: $Value): value is ExcludeNull<$Value> => {
   return value !== null
 }

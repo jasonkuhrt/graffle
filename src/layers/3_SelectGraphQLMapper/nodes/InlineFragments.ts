@@ -1,13 +1,13 @@
 import type { Grafaid } from '../../../lib/grafaid/__.js'
 import { Nodes } from '../../../lib/grafaid/_Nodes.js'
 import { Select } from '../../2_Select/__.js'
-import type { SchemaDrivenDataMap } from '../../7_customScalars/schemaDrivenDataMap/types.js'
+import type { SchemaDrivenDataMap } from '../../7_extensions/CustomScalars/schemaDrivenDataMap/types.js'
 import type { GraphQLPostOperationMapper } from '../types.js'
 import { collectForInlineFragmentLike } from './_collect.js'
 
 export const toGraphQLInlineFragments: GraphQLPostOperationMapper<
   SchemaDrivenDataMap.OutputObject,
-  Grafaid.Nodes.InlineFragmentNode[],
+  Grafaid.Document.InlineFragmentNode[],
   [inlineFragments: Select.ParsedSelectionInlineFragments]
 > = (
   context,
@@ -24,7 +24,7 @@ export const toGraphQLInlineFragments: GraphQLPostOperationMapper<
 
 const toGraphQLInlineFragment: GraphQLPostOperationMapper<
   SchemaDrivenDataMap.OutputObject,
-  Grafaid.Nodes.InlineFragmentNode,
+  Grafaid.Document.InlineFragmentNode,
   [inlineFragment: InlineFragment]
 > = (
   context,

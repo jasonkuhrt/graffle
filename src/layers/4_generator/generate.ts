@@ -1,5 +1,5 @@
 import fs from 'node:fs/promises'
-import { ModuleGeneratorRuntimeSchemaDrivenData } from '../7_customScalars/schemaDrivenDataMap/generator.js'
+import { ModuleGeneratorSchemaDrivenDataMap } from '../7_extensions/CustomScalars/schemaDrivenDataMap/generator.js'
 import { type Config, createConfig, type Input } from './config.js'
 import { ModuleGenerator_ } from './generators/_.js'
 import { ModuleGenerator__ } from './generators/__.js'
@@ -13,7 +13,6 @@ import { ModuleGeneratorMethodsSelect } from './generators/MethodsSelect.js'
 import { ModuleGeneratorScalar } from './generators/Scalar.js'
 import { ModuleGeneratorSchemaBuildtime } from './generators/SchemaBuildtime.js'
 import { ModuleGeneratorSchemaIndex } from './generators/SchemaIndex.js'
-import { ModuleGeneratorSchemaRuntime } from './generators/SchemaRuntime.js'
 import { ModuleGeneratorSelect } from './generators/Select.js'
 import { ModuleGeneratorSelectionSets } from './generators/SelectionSets.js'
 import type { GeneratedModule } from './helpers/moduleGenerator.js'
@@ -55,8 +54,7 @@ const generateCode = async (config: Config): Promise<GeneratedModule[]> => {
     // Schema Stuff
     ModuleGeneratorSchemaIndex,
     ModuleGeneratorSchemaBuildtime,
-    ModuleGeneratorSchemaRuntime,
-    ModuleGeneratorRuntimeSchemaDrivenData,
+    ModuleGeneratorSchemaDrivenDataMap,
     // Interface Stuff
     ModuleGeneratorSelectionSets,
     ModuleGeneratorSelect,
