@@ -1,55 +1,45 @@
+import type { SchemaDrivenDataMap } from '../../../entrypoints/utilities-for-generated.js'
 import { Nodes } from '../../../lib/grafaid/_Nodes.js'
-import { getFromEnumLooselyOrThrow } from '../../../lib/prelude.js'
-import { Select } from '../../2_Select/__.js'
-import { SchemaDrivenDataMap } from '../../7_extensions/CustomScalars/schemaDrivenDataMap/types.js'
+import type { Select } from '../../2_Select/__.js'
 import type { GraphQLPostOperationMapper } from '../types.js'
 import { toGraphQLValue } from './Value.js'
 
 export const toGraphQLDirective: GraphQLPostOperationMapper<
-  | SchemaDrivenDataMap.OutputField // field directive
-  | SchemaDrivenDataMap.OutputObject, // inline-fragment directive
+  SchemaDrivenDataMap.ArgumentsOrInputObjectFields,
   Nodes.DirectiveNode | null,
-  [directive: Select.ParsedSelectionDirective]
+  [graffleExpressions: Select.ParsedSelectionDirective]
 > = (
   context,
-  sddm,
+  sddmArguments,
   directive,
 ) => {
   if (directive.arguments === null) return null
-
-  const definition = getFromEnumLooselyOrThrow(Select.Directive.definitionsByName, directive.name)
 
   const arguments_: Nodes.ArgumentNode[] = []
 
   for (const argumentName in directive.arguments.parsed) {
     const argumentValue = directive.arguments.parsed[argumentName]
-    const argumentType = definition.type.arguments[argumentName]?.type
-    if (argumentType === undefined) {
-      throw new Error(`Argument ${argumentName} is required`)
+
+    const sddmArgument = sddmArguments?.[argumentName]
+    let argument: Nodes.ArgumentNode
+
+    if (context.variablesEnabled && sddmArgument) {
+      argument = context.captureVariableForArgument({
+        name: argumentName,
+        value: argumentValue,
+        sddmArgument,
+      })
+    } else {
+      const name = Nodes.Name({ value: argumentName })
+      const value = toGraphQLValue(
+        { ...context, value: { isEnum: false } },
+        sddmArgument,
+        argumentValue,
+      )
+      argument = Nodes.Argument({ name, value })
     }
 
-    // todo adjust initial types to eliminate this case.
-    if (SchemaDrivenDataMap.isOutputObject(sddm)) {
-      throw new Error(`fixme`)
-    }
-
-    const value = toGraphQLValue(
-      { ...context, value: { isEnum: false } },
-      sddm,
-      argumentValue,
-    )
-
-    const name = Nodes.Name({ value: argumentName })
-    // todo: we need sddm definition for directives
-    // context.captures.variables.push({
-    //   name: argumentName,
-    //   value: argumentValue,
-    //   typeName: argumentType.name,
-    // })
-    arguments_.push(Nodes.Argument({
-      name,
-      value,
-    }))
+    arguments_.push(argument)
   }
 
   return Nodes.Directive({

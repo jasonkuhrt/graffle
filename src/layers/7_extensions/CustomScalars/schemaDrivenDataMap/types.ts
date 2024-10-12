@@ -18,6 +18,7 @@ export interface SchemaDrivenDataMap {
     [Grafaid.Schema.RootTypeName.Subscription]?: SchemaDrivenDataMap.OutputObject
   }
   types: Record<string, SchemaDrivenDataMap.NamedLike>
+  directives: Record<string, SchemaDrivenDataMap.ArgumentsOrInputObjectFields>
   // todo, actually generate this
   schemaErrors?: {
     [Grafaid.Schema.RootTypeName.Mutation]?: Record<string, SchemaDrivenDataMap.OutputObject>

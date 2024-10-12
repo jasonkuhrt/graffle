@@ -8,6 +8,7 @@ export interface Context {
    * Should variables be used for arguments?
    */
   variablesEnabled: boolean
+  sddm?: SchemaDrivenDataMap
   captures: Captures
   captureVariableForArgument: (input: {
     name: string

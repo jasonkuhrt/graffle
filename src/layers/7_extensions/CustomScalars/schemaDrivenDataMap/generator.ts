@@ -58,6 +58,7 @@ export const ModuleGeneratorSchemaDrivenDataMap = createModuleGenerator(
       roots: Code.termObjectWith({
         $literal: kinds.GraphQLRootType.map(type => type.name + `,`).join(`\n`),
       }),
+      directives: `{}`,
       types: Code.termObjectWith({
         $literal: [
           ...kindsList.map(([, _]) => _).flat().map((_) => _.name),

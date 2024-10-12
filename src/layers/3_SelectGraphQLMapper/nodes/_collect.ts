@@ -23,7 +23,7 @@ export const collectForInlineFragmentLike: GraphQLPostOperationMapper<
 ) => {
   switch (keyParsed.type) {
     case `Directive`: {
-      const directive = toGraphQLDirective(context, sddm, keyParsed)
+      const directive = toGraphQLDirective(context, context.sddm?.directives[keyParsed.name], keyParsed)
       if (directive) basket.directives.push(directive)
       break
     }

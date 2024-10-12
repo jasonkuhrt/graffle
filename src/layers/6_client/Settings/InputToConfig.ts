@@ -54,7 +54,7 @@ export const inputToConfig = <$Input extends InputStatic>(
     // @ts-expect-error conditional type fixme
     name: input.name ?? defaultSchemaName,
     transport,
-    schemaIndex: input.schemaMap ?? null as any,
+    schemaMap: input.schemaMap ?? null as any,
     output: {
       defaults: {
         // @ts-expect-error conditional type

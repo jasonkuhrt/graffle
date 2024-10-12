@@ -10,14 +10,18 @@ import { toGraphQLSelectionSetRoot } from './GraffleSelectionSetRoot.js'
 export const toGraphQLOperationDefinition: GraphQLPreOperationMapper<
   SchemaDrivenDataMap.OutputObject,
   { operation: Nodes.OperationDefinitionNode; variables: Grafaid.Variables },
-  [operation: Select.Document.OperationNormalized, options?: Options]
+  [
+    operation: Select.Document.OperationNormalized,
+    options?: Options,
+  ]
 > = (
-  sddm,
+  sddmNode,
   operation,
   options,
 ) => {
   const context: Context = {
     variablesEnabled: options?.operationVariables ?? true,
+    sddm: options?.sddm ?? undefined,
     captureVariableForArgument: (input) => {
       const variableName = input.name
 
@@ -43,7 +47,7 @@ export const toGraphQLOperationDefinition: GraphQLPreOperationMapper<
     ? Nodes.Name({ value: operation.name })
     : undefined
 
-  const selectionSet = toGraphQLSelectionSetRoot(context, sddm, operation.selectionSet)
+  const selectionSet = toGraphQLSelectionSetRoot(context, sddmNode, operation.selectionSet)
 
   const variableDefinitions = context.captures.variables.map((captured) => {
     return Nodes.VariableDefinition({

@@ -689,6 +689,7 @@ const $schemaDrivenDataMap: $Utilities.SchemaDrivenDataMap = {
     Mutation,
     Query,
   },
+  directives: {},
   types: {
     Int,
     String,

@@ -192,6 +192,7 @@ const $schemaDrivenDataMap: $Utilities.SchemaDrivenDataMap = {
   roots: {
     Mutation,
   },
+  directives: {},
   types: {
     ID,
     Boolean,

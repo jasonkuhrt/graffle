@@ -192,6 +192,7 @@ const $schemaDrivenDataMap: $Utilities.SchemaDrivenDataMap = {
   roots: {
     Query,
   },
+  directives: {},
   types: {
     ID,
     Boolean,
