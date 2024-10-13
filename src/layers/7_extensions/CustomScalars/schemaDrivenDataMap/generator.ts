@@ -204,8 +204,19 @@ const ObjectType = createCodeGenerator<
   { type: Grafaid.Schema.ObjectType; referenceAssignments: ReferenceAssignments }
 >(
   ({ config, code, type, referenceAssignments }) => {
+    const o: Code.TermObject = {}
+
+    // Indicate if this is an error type.
+    // ----------------------------------
+    console.log(config.schema.error.objects.find(_ => _.name === type.name))
+    if (config.schema.error.objects.find(_ => _.name === type.name)) {
+      o[propertyNames.e] = 1
+    }
+
+    // Fields of this object.
+    // ---------------------
     const of: Code.TermObject = {}
-    const o: Code.TermObject = { f: of }
+    o[propertyNames.f] = of
 
     const condition = typeCondition(config)
 
@@ -244,6 +255,8 @@ const ObjectType = createCodeGenerator<
         }
       }
 
+      // Indicate if the field is a "result field"
+      // ------------------------------------------
       const memberTypes = Grafaid.Schema.isUnionType(outputFieldNamedType) ? outputFieldNamedType.getTypes() : null
       if (
         config.schema.error.enabled

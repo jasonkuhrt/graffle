@@ -6,6 +6,7 @@ import { Throws } from './Throws.js'
 
 const graffle = Graffle.create({ schema }).use(Throws())
 
+// todo test schema error with alias field
 describe(`document`, () => {
   describe(`query result field`, () => {
     test(`with __typename`, async () => {
@@ -54,11 +55,10 @@ describe(`$batch`, () => {
   })
 })
 
-describe(`root field`, () => {
+describe(`query field`, () => {
   test(`without error`, async () => {
     await expect(graffle.throws().query.objectWithArgs({ $: { id: `x` }, id: true })).resolves.toEqual({
       id: `x`,
-      __typename: `Object1`,
     })
   })
   test(`with error`, async () => {

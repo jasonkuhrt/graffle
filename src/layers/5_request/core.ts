@@ -70,12 +70,15 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
       if (input.interfaceType === `raw`) {
         request = input.request
       } else {
-        request = graffleMappedToRequest(SelectionSetGraphqlMapper.toGraphQL({
-          document: input.request.document,
-          options: {
-            sddm: input.state.config.schemaMap,
-          },
-        }))
+        request = graffleMappedToRequest(
+          SelectionSetGraphqlMapper.toGraphQL({
+            document: input.request.document,
+            options: {
+              sddm: input.state.config.schemaMap,
+            },
+          }),
+          input.request.operationName,
+        )
       }
 
       return {

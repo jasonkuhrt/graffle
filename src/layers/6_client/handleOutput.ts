@@ -99,16 +99,16 @@ export const handleOutput = (
         // todo this check would be nice but it doesn't account for aliases right now. To achieve this we would
         // need to have the selection set available to use and then do a costly analysis for all fields that were aliases.
         // So costly that we would probably instead want to create an index of them on the initial encoding step and
-        // then make available down stream. Also, note, here, the hardcoding of Query, needs to be any root type.
-        // const isResultField = Boolean(schemaIndex.error.rootResultFields.Query[rootFieldName])
-        // if (!isResultField) return null
+        // then make available down stream.
+        // const sddmNodeField = state.input.schemaMap?.roots[rootTypeName]?.f[rootFieldName]
+        // if (!sddmNodeField) return null
         // if (!isPlainObject(rootFieldValue)) return new Error(`Expected result field to be an object.`)
         if (!isRecordLikeObject(rootFieldValue)) return null
 
+        // If __typename is not selected we assume that this is not a result field.
+        // The extension makes sure that the __typename would have been selected if it were a result field.
         const __typename = rootFieldValue[`__typename`]
-        if (!isString(__typename)) {
-          return new Error(`Expected __typename to be selected and a string.`)
-        }
+        if (!isString(__typename)) return null
 
         const sddmNode = state.input.schemaMap?.types[__typename]
         const isErrorObject = SchemaDrivenDataMap.isOutputObject(sddmNode) && Boolean(sddmNode.e)

@@ -173,6 +173,7 @@ const DateObject2: $Utilities.SchemaDrivenDataMap.OutputObject = {
 }
 
 const ErrorOne: $Utilities.SchemaDrivenDataMap.OutputObject = {
+  e: 1,
   f: {
     infoId: {},
     message: {},
@@ -180,6 +181,7 @@ const ErrorOne: $Utilities.SchemaDrivenDataMap.OutputObject = {
 }
 
 const ErrorTwo: $Utilities.SchemaDrivenDataMap.OutputObject = {
+  e: 1,
   f: {
     infoInt: {},
     message: {},
