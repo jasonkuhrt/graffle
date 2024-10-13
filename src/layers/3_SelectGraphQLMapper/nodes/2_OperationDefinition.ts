@@ -2,10 +2,10 @@ import type { Grafaid } from '../../../lib/grafaid/__.js'
 import { Nodes } from '../../../lib/grafaid/_Nodes.js'
 import type { Select } from '../../2_Select/__.js'
 import type { SchemaDrivenDataMap } from '../../7_extensions/CustomScalars/schemaDrivenDataMap/types.js'
-import { inferTypeName } from '../inferVariableTypeName.js'
-import type { Options } from '../toGraphQL.js'
-import type { Context, GraphQLPreOperationMapper } from '../types.js'
-import { toGraphQLSelectionSetRoot } from './GraffleSelectionSetRoot.js'
+import { createOperationContext } from '../context.js'
+import { type GraphQLPreOperationMapper } from '../mapper.js'
+import type { Options } from './1_Document.js'
+import { toGraphQLSelectionSetRoot } from './3_GraffleSelectionSetRoot.js'
 
 export const toGraphQLOperationDefinition: GraphQLPreOperationMapper<
   SchemaDrivenDataMap.OutputObject,
@@ -19,29 +19,7 @@ export const toGraphQLOperationDefinition: GraphQLPreOperationMapper<
   operation,
   options,
 ) => {
-  const context: Context = {
-    variablesEnabled: options?.operationVariables ?? true,
-    sddm: options?.sddm ?? undefined,
-    captureVariableForArgument: (input) => {
-      const variableName = input.name
-
-      context.captures.variables.push({
-        name: variableName,
-        typeName: inferTypeName(input.sddmArgument),
-        value: input.value,
-      })
-
-      return Nodes.Argument({
-        name: Nodes.Name({ value: input.name }),
-        value: Nodes.Variable({
-          name: Nodes.Name({ value: variableName }),
-        }),
-      })
-    },
-    captures: {
-      variables: [],
-    },
-  }
+  const context = createOperationContext(options)
 
   const name = operation.name
     ? Nodes.Name({ value: operation.name })
@@ -49,7 +27,7 @@ export const toGraphQLOperationDefinition: GraphQLPreOperationMapper<
 
   const selectionSet = toGraphQLSelectionSetRoot(context, sddmNode, operation.selectionSet)
 
-  const variableDefinitions = context.captures.variables.map((captured) => {
+  const variableDefinitions = context.variables.data.map((captured) => {
     return Nodes.VariableDefinition({
       variable: Nodes.Variable({ name: Nodes.Name({ value: captured.name }) }),
       type: Nodes.NamedType({ name: Nodes.Name({ value: captured.typeName }) }),
@@ -65,7 +43,7 @@ export const toGraphQLOperationDefinition: GraphQLPreOperationMapper<
     // directives
   })
 
-  const variables: Grafaid.Variables = Object.fromEntries(context.captures.variables.map(_ => {
+  const variables: Grafaid.Variables = Object.fromEntries(context.variables.data.map(_ => {
     return [_.name, _.value as any]
   }))
 

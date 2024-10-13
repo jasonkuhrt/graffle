@@ -426,6 +426,33 @@ exports[`( variables: false ) - Query - alias - scalar x2 > alias - scalar x2 1`
 "
 `;
 
+exports[`( variables: false ) - Query - args - alias > args - alias 1`] = `
+"
+
+--------------GRAFFLE QUERY-------------
+{
+  "stringWithArgs": [
+    [
+      "a",
+      {
+        "$": {
+          "id": ""
+        }
+      }
+    ]
+  ]
+}
+--------GRAPHQL DOCUMENT & VARIABLES--------
+{
+  a: stringWithArgs(id: "")
+}
+----------------
+{
+  "$default": {}
+}
+"
+`;
+
 exports[`( variables: false ) - Query - args - custom scalar - arg field > args - custom scalar - arg field 1`] = `
 "
 
@@ -762,6 +789,42 @@ exports[`( variables: false ) - Query - args - string with args > args - string 
 --------GRAPHQL DOCUMENT & VARIABLES--------
 {
   stringWithArgs(boolean: true, float: 1)
+}
+----------------
+{
+  "$default": {}
+}
+"
+`;
+
+exports[`( variables: false ) - Query - args - x2 same > args - x2 same 1`] = `
+"
+
+--------------GRAFFLE QUERY-------------
+{
+  "stringWithArgs": [
+    [
+      "a",
+      {
+        "$": {
+          "id": ""
+        }
+      }
+    ],
+    [
+      "b",
+      {
+        "$": {
+          "id": ""
+        }
+      }
+    ]
+  ]
+}
+--------GRAPHQL DOCUMENT & VARIABLES--------
+{
+  a: stringWithArgs(id: "")
+  b: stringWithArgs(id: "")
 }
 ----------------
 {
@@ -1572,6 +1635,35 @@ exports[`( variables: true ) - Query - alias - scalar x2 > alias - scalar x2 1`]
 "
 `;
 
+exports[`( variables: true ) - Query - args - alias > args - alias 1`] = `
+"
+
+--------------GRAFFLE QUERY-------------
+{
+  "stringWithArgs": [
+    [
+      "a",
+      {
+        "$": {
+          "id": ""
+        }
+      }
+    ]
+  ]
+}
+--------GRAPHQL DOCUMENT & VARIABLES--------
+query ($id: ID) {
+  a: stringWithArgs(id: $id)
+}
+----------------
+{
+  "$default": {
+    "id": ""
+  }
+}
+"
+`;
+
 exports[`( variables: true ) - Query - args - custom scalar - arg field > args - custom scalar - arg field 1`] = `
 "
 
@@ -1950,6 +2042,45 @@ query ($boolean: Boolean, $float: Float) {
   "$default": {
     "boolean": true,
     "float": 1
+  }
+}
+"
+`;
+
+exports[`( variables: true ) - Query - args - x2 same > args - x2 same 1`] = `
+"
+
+--------------GRAFFLE QUERY-------------
+{
+  "stringWithArgs": [
+    [
+      "a",
+      {
+        "$": {
+          "id": ""
+        }
+      }
+    ],
+    [
+      "b",
+      {
+        "$": {
+          "id": ""
+        }
+      }
+    ]
+  ]
+}
+--------GRAPHQL DOCUMENT & VARIABLES--------
+query ($id: ID, $id_2: ID) {
+  a: stringWithArgs(id: $id)
+  b: stringWithArgs(id: $id_2)
+}
+----------------
+{
+  "$default": {
+    "id": "",
+    "id_2": ""
   }
 }
 "

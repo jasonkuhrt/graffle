@@ -14,7 +14,7 @@ import {
 import { mergeRequestInit, searchParamsAppendAll } from '../../lib/http.js'
 import { casesExhausted, isString } from '../../lib/prelude.js'
 import { SelectionSetGraphqlMapper } from '../3_SelectGraphQLMapper/__.js'
-import type { MappedResult } from '../3_SelectGraphQLMapper/toGraphQL.js'
+import type { Encoded } from '../3_SelectGraphQLMapper/toGraphQL.js'
 import type { GraffleExecutionResultVar } from '../6_client/handleOutput.js'
 import type { Config } from '../6_client/Settings/Config.js'
 import { MethodMode, type MethodModeGetReads } from '../6_client/transportHttp/request.js'
@@ -28,7 +28,7 @@ import {
 import { Transport } from './types.js'
 
 export const graffleMappedToRequest = (
-  { document, operationsVariables }: MappedResult,
+  { document, operationsVariables }: Encoded,
   operationName?: string,
 ): Grafaid.RequestAnalyzedDocumentNodeInput => {
   // We get back variables for every operation in the Graffle document.

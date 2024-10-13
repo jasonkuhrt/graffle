@@ -4,7 +4,7 @@ import { schemaDrivenDataMap } from '../../../tests/_/schemas/kitchen-sink/graff
 import type * as SelectionSets from '../../../tests/_/schemas/kitchen-sink/graffle/modules/SelectionSets.js'
 import { Grafaid } from '../../lib/grafaid/__.js'
 import { Select } from '../2_Select/__.js'
-import { toGraphQL } from './toGraphQL.js'
+import { toGraphQLDocument } from './nodes/1_Document.js'
 
 type CasesDescriptiveQuery = [
   description: string,
@@ -19,20 +19,16 @@ const tester = (input: { variables: boolean }) =>
     (args: CasesDescriptiveQuery) => {
       const [description, graffleQuery, options] = args
 
-      // console.log(Select.Document.createDocumentNormalizedFromQuerySelection(
-      //   graffleQuery as any,
-      //   options?.operationName,
-      // ))
-      const { document, operationsVariables } = toGraphQL({
-        document: Select.Document.createDocumentNormalizedFromQuerySelection(
+      const { document, operationsVariables } = toGraphQLDocument(
+        Select.Document.createDocumentNormalizedFromQuerySelection(
           graffleQuery as any,
           options?.operationName,
         ),
-        options: {
+        {
           sddm: schemaDrivenDataMap,
           operationVariables: input.variables,
         },
-      })
+      )
 
       const beforeAndAfter = `\n`
         + `\n--------------GRAFFLE QUERY-------------\n`
@@ -68,6 +64,8 @@ const cases = testEachQueryWithDescription([
     // arguments
   [`args - on union`                             , { result: { $: { $case: `Object1` }, __typename: true } }],
   [`args - string with args`                     , { stringWithArgs: { $: { boolean: true, float: 1 } } }],
+  [`args - alias`                                , { stringWithArgs: [[`a`, { $: { id: `` }}]] }],
+  [`args - x2 same`                              , { stringWithArgs: [[`a`, { $: { id: `` }}], [`b`,{$:{id:``}}]] }],
   [`args - string with args (empty object)`      , { stringWithArgs: { $: {} } }],
   // arguments custom scalars
   [`args - custom scalar - arg field`                                , { dateArg: { $: { date: db.date0 } } }],

@@ -11,7 +11,7 @@ export type SelectAliasMultiple<$SelectionSet = AnyExceptAlias> = [
 ]
 
 export const isSelectAlias = (value: unknown): value is SelectAlias<any> => {
-  return Array.isArray(value) && (value.length === 2 || isSelectAlias(value[1]))
+  return Array.isArray(value) && ((value.length === 2 && typeof value[0] === `string`) || isSelectAlias(value[0]))
 }
 
 export const isSelectAliasOne = (selectAlias: SelectAlias): selectAlias is SelectAliasOne => {

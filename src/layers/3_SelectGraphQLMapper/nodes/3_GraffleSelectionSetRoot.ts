@@ -1,8 +1,8 @@
 import { Nodes } from '../../../lib/grafaid/_Nodes.js'
 import { Select } from '../../2_Select/__.js'
 import type { SchemaDrivenDataMap } from '../../7_extensions/CustomScalars/schemaDrivenDataMap/types.js'
-import { type GraphQLPostOperationMapper } from '../types.js'
-import { fromGraffleSelectionObjectLevel } from './GraffleSelectionObjectLevel.js'
+import { type GraphQLPostOperationMapper } from '../mapper.js'
+import { fromGraffleSelectionObjectLevel } from './4_GraffleSelectionObjectLevel.js'
 
 export const toGraphQLSelectionSetRoot: GraphQLPostOperationMapper<
   SchemaDrivenDataMap.OutputObject,

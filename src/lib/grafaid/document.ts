@@ -309,7 +309,6 @@ export const getOperationType = (request: RequestInput): OperationTypeNode | nul
       operationType: match[0] as OperationTypeNode,
     }
   }).filter(_ => _ !== null)
-  // console.log(definedOperations)
 
   // Handle obviously invalid cases that are zero cost to compute.
 

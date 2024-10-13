@@ -1,7 +1,7 @@
 import type { SchemaDrivenDataMap } from '../../../entrypoints/utilities-for-generated.js'
 import { Nodes } from '../../../lib/grafaid/_Nodes.js'
 import type { Select } from '../../2_Select/__.js'
-import type { GraphQLPostOperationMapper } from '../types.js'
+import type { GraphQLPostOperationMapper } from '../mapper.js'
 import { toGraphQLValue } from './Value.js'
 
 export const toGraphQLDirective: GraphQLPostOperationMapper<
@@ -23,8 +23,8 @@ export const toGraphQLDirective: GraphQLPostOperationMapper<
     const sddmArgument = sddmArguments?.[argumentName]
     let argument: Nodes.ArgumentNode
 
-    if (context.variablesEnabled && sddmArgument) {
-      argument = context.captureVariableForArgument({
+    if (context.variables.enabled && sddmArgument) {
+      argument = context.variables.capture({
         name: argumentName,
         value: argumentValue,
         sddmArgument,

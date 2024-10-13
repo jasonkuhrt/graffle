@@ -1,8 +1,7 @@
 import { Nodes } from '../../../lib/grafaid/_Nodes.js'
 import { Select } from '../../2_Select/__.js'
 import { SchemaDrivenDataMap } from '../../7_extensions/CustomScalars/schemaDrivenDataMap/types.js'
-import { type Field } from '../types.js'
-import type { GraphQLPostOperationMapper } from '../types.js'
+import type { GraphQLPostOperationMapper } from '../mapper.js'
 import { collectForInlineFragmentLike } from './_collect.js'
 import { toGraphQLArgument } from './Argument.js'
 
@@ -43,8 +42,8 @@ export const toGraphQLField: GraphQLPostOperationMapper<
           const sddmArgument = sddmArguments?.[argNameSchema]
           const argValue = keyParsed.arguments[argName]
 
-          if (context.variablesEnabled && sddmArgument) {
-            const argument = context.captureVariableForArgument({
+          if (context.variables.enabled && sddmArgument) {
+            const argument = context.variables.capture({
               name: argNameSchema,
               value: argValue,
               sddmArgument,
@@ -79,4 +78,10 @@ export const toGraphQLField: GraphQLPostOperationMapper<
       selections,
     }),
   })
+}
+
+export interface Field {
+  name: string
+  alias: string | null
+  value: Select.SelectionSet.Any
 }
