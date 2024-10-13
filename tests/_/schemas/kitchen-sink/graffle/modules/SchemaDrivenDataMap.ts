@@ -517,6 +517,7 @@ const Query: $Utilities.SchemaDrivenDataMap.OutputObject = {
           it: [1],
         },
       },
+      r: 1,
       // nt: Result, <-- Assigned later to avoid potential circular dependency.
     },
     resultNonNull: {
@@ -526,6 +527,7 @@ const Query: $Utilities.SchemaDrivenDataMap.OutputObject = {
           it: [0],
         },
       },
+      r: 1,
       // nt: Result, <-- Assigned later to avoid potential circular dependency.
     },
     string: {},

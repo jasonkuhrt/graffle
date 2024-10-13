@@ -25,7 +25,8 @@ const injectTypenameOnRootResultFields_ = (
   for (const selection of selectionSet.selections) {
     switch (selection.kind) {
       case Nodes.Kind.FIELD: {
-        if (sddm.schemaErrors?.[rootTypeName]?.[selection.name.value]) {
+        const isResultField = Boolean(sddm.roots[rootTypeName]?.f[selection.name.value]?.r)
+        if (isResultField) {
           // @ts-expect-error selections is typed as readonly
           // @see https://github.com/graphql/graphql-js/discussions/4212
           selection.selectionSet?.selections.push(Nodes.Field({ name: Nodes.Name({ value: `__typename` }) }))

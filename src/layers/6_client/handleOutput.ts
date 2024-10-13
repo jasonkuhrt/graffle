@@ -1,5 +1,6 @@
 import type { ExecutionResult, GraphQLError } from 'graphql'
 import type { Simplify } from 'type-fest'
+import { SchemaDrivenDataMap } from '../../layers/7_extensions/CustomScalars/schemaDrivenDataMap/types.js'
 import { Errors } from '../../lib/errors/__.js'
 import type { Grafaid } from '../../lib/grafaid/__.js'
 import type { GraphQLExecutionResultError } from '../../lib/grafaid/graphql.js'
@@ -109,7 +110,8 @@ export const handleOutput = (
           return new Error(`Expected __typename to be selected and a string.`)
         }
 
-        const isErrorObject = Boolean(state.input.schemaMap?.schemaErrors?.[rootTypeName]?.[__typename])
+        const sddmNode = state.input.schemaMap?.types[__typename]
+        const isErrorObject = SchemaDrivenDataMap.isOutputObject(sddmNode) && Boolean(sddmNode.e)
         if (!isErrorObject) return null
         // todo extract message
         // todo allow mapping error instances to schema errors

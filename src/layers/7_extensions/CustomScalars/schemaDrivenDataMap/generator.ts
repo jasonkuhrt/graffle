@@ -211,6 +211,7 @@ const ObjectType = createCodeGenerator<
 
     const outputFields = Object.values(type.getFields()).filter(condition)
     for (const outputField of outputFields) {
+      const outputFieldNamedType = Grafaid.Schema.getNamedType(outputField.type)
       const ofItem: Code.TermObjectWithLike<Code.TermObject> = {
         $fields: {},
       }
@@ -243,20 +244,27 @@ const ObjectType = createCodeGenerator<
         }
       }
 
-      const outputFieldType = Grafaid.Schema.getNamedType(outputField.type)
+      const memberTypes = Grafaid.Schema.isUnionType(outputFieldNamedType) ? outputFieldNamedType.getTypes() : null
+      if (
+        config.schema.error.enabled
+        && memberTypes
+        && config.schema.error.objects.find(_ => memberTypes.find(__ => __.name === _.name))
+      ) {
+        ofItem.$fields[propertyNames.r] = 1
+      }
 
-      if (condition(outputFieldType)) {
-        if (Grafaid.Schema.isScalarTypeAndCustom(outputFieldType)) {
+      if (condition(outputFieldNamedType)) {
+        if (Grafaid.Schema.isScalarTypeAndCustom(outputFieldNamedType)) {
           if (config.runtimeFeatures.customScalars) {
-            ofItem.$fields[propertyNames.nt] = outputFieldType.name
+            ofItem.$fields[propertyNames.nt] = outputFieldNamedType.name
           }
         } else if (
-          Grafaid.Schema.isUnionType(outputFieldType) || Grafaid.Schema.isObjectType(outputFieldType)
-          || Grafaid.Schema.isInterfaceType(outputFieldType)
+          Grafaid.Schema.isUnionType(outputFieldNamedType) || Grafaid.Schema.isObjectType(outputFieldNamedType)
+          || Grafaid.Schema.isInterfaceType(outputFieldNamedType)
         ) {
-          referenceAssignments.push(`${type.name}.f['${outputField.name}']!.nt = ${outputFieldType.name}`)
+          referenceAssignments.push(`${type.name}.f['${outputField.name}']!.nt = ${outputFieldNamedType.name}`)
           // dprint-ignore
-          ofItem.$literal = `// ${Code.termField(propertyNames.nt, outputFieldType.name)} <-- Assigned later to avoid potential circular dependency.`
+          ofItem.$literal = `// ${Code.termField(propertyNames.nt, outputFieldNamedType.name)} <-- Assigned later to avoid potential circular dependency.`
           // // todo make kitchen sink schema have a pattern where this code path will be traversed.
           // // We just need to have arguments on a field on a nested object.
           // // Nested objects that in turn have custom scalar arguments

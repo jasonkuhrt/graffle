@@ -1,4 +1,4 @@
-import { isString } from './prelude.js'
+import { entries, isString } from './prelude.js'
 import { linesPrepend, linesTrim } from './text.js'
 
 type FieldTuple = [k: string, v: string]
@@ -13,6 +13,9 @@ export namespace Code {
     $fields?: TermObject | TermObjectWith
     $literal?: string
   }
+
+  export type TermPrimitive = string | number | boolean
+
   export type TermObjectWithLike<$Fields extends null | TermObject | TermObjectWith = null> = {
     $spread?: string[]
     $literal?: string
@@ -24,7 +27,7 @@ export namespace Code {
   }
 
   export interface TermObject {
-    [key: string]: string | TermObjectWith | TermObject
+    [key: string]: TermPrimitive | TermObjectWith | TermObject
   }
 
   export type TermObjectOf<T> = {
@@ -53,12 +56,12 @@ export namespace Code {
   }
   export const termObjectFields = (object: TermObject | TermObjectWith): string =>
     termFieldsFromTuples(
-      Object.entries(object).map(([key, value]): FieldTuple => {
+      entries(object).map(([key, value]): FieldTuple => {
         const valueNormalized = isTermObjectWith(value)
           ? termObjectWith(value)
-          : isString(value)
-          ? value
-          : termObject(value)
+          : isString(value) || typeof value === `number` || typeof value === `boolean`
+          ? String(value)
+          : termObject(value as any)
         return [key, valueNormalized]
       }),
     )

@@ -9,6 +9,9 @@ export const propertyNames = {
   f: `f`,
   a: `a`,
   nt: `nt`,
+  // schema errors
+  r: `r`,
+  e: `e`,
 } as const
 
 export interface SchemaDrivenDataMap {
@@ -20,11 +23,11 @@ export interface SchemaDrivenDataMap {
   types: Record<string, SchemaDrivenDataMap.NamedLike>
   directives: Record<string, SchemaDrivenDataMap.ArgumentsOrInputObjectFields>
   // todo, actually generate this
-  schemaErrors?: {
-    [Grafaid.Schema.RootTypeName.Mutation]?: Record<string, SchemaDrivenDataMap.OutputObject>
-    [Grafaid.Schema.RootTypeName.Query]?: Record<string, SchemaDrivenDataMap.OutputObject>
-    [Grafaid.Schema.RootTypeName.Subscription]?: Record<string, SchemaDrivenDataMap.OutputObject>
-  }
+  // schemaErrors?: {
+  //   [Grafaid.Schema.RootTypeName.Mutation]?: Record<string, SchemaDrivenDataMap.OutputObject>
+  //   [Grafaid.Schema.RootTypeName.Query]?: Record<string, SchemaDrivenDataMap.OutputObject>
+  //   [Grafaid.Schema.RootTypeName.Subscription]?: Record<string, SchemaDrivenDataMap.OutputObject>
+  // }
 }
 
 export namespace SchemaDrivenDataMap {
@@ -53,6 +56,13 @@ export namespace SchemaDrivenDataMap {
     | Enum
 
   export interface OutputObject {
+    /**
+     * Indicates that this object represents an error type.
+     */
+    e?: 1
+    /**
+     * Fields of this output object.
+     */
     f: {
       [key: string]: OutputField
     }
@@ -65,6 +75,10 @@ export namespace SchemaDrivenDataMap {
   }
 
   export interface OutputField {
+    /**
+     * Indicates that this is a "result field".
+     */
+    r?: 1
     /**
      * The field's arguments, if any.
      *
