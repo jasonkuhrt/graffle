@@ -60,7 +60,7 @@ await graffle.gql`query { pokemonByName(name: "Nano") { hp } }`.send()
     searchParams: URLSearchParams {},
     hash: ''
   },
-  body: '{"query":"mutation { addPokemon(attack:0, defense:0, hp:1, name:\\"Nano\\", type: grass) { name } }"}'
+  body: '{"query":"mutation {\\n  addPokemon(attack: 0, defense: 0, hp: 1, name: \\"Nano\\", type: grass) {\\n    name\\n  }\\n}"}'
 }
 ```
 <!-- dprint-ignore-end -->
@@ -75,7 +75,7 @@ await graffle.gql`query { pokemonByName(name: "Nano") { hp } }`.send()
   signal: undefined,
   method: 'get',
   url: URL {
-    href: 'http://localhost:3000/graphql?query=query+%7B+pokemonByName%28name%3A+%22Nano%22%29+%7B+hp+%7D+%7D',
+    href: 'http://localhost:3000/graphql?query=%7B%0A++pokemonByName%28name%3A+%22Nano%22%29+%7B%0A++++hp%0A++%7D%0A%7D',
     origin: 'http://localhost:3000',
     protocol: 'http:',
     username: '',
@@ -84,8 +84,8 @@ await graffle.gql`query { pokemonByName(name: "Nano") { hp } }`.send()
     hostname: 'localhost',
     port: '3000',
     pathname: '/graphql',
-    search: '?query=query+%7B+pokemonByName%28name%3A+%22Nano%22%29+%7B+hp+%7D+%7D',
-    searchParams: URLSearchParams { 'query' => 'query { pokemonByName(name: "Nano") { hp } }' },
+    search: '?query=%7B%0A++pokemonByName%28name%3A+%22Nano%22%29+%7B%0A++++hp%0A++%7D%0A%7D',
+    searchParams: URLSearchParams { 'query' => '{\n  pokemonByName(name: "Nano") {\n    hp\n  }\n}' },
     hash: ''
   }
 }

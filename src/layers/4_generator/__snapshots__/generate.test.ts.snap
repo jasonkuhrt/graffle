@@ -2,9 +2,10 @@
 
 exports[`schema2 1`] = `
 "import { createPrefilled } from '../../../../../../src/entrypoints/client.js'
-import { $defaultSchemaUrl, $Index } from './SchemaRuntime.js'
+import { defaultSchemaUrl } from './Data.js'
+import { schemaDrivenDataMap } from './SchemaDrivenDataMap.js'
 
-export const create = createPrefilled(\`default\`, $Index, $defaultSchemaUrl)
+export const create = createPrefilled(\`default\`, schemaDrivenDataMap, defaultSchemaUrl)
 "
 `;
 
@@ -321,6 +322,13 @@ export namespace Root {
      * Query enum field documentation.
      */
     abcEnum: $.Field<'abcEnum', $.Output.Nullable<Enum.ABCEnum>, null>
+    argInputObjectCircular: $.Field<
+      'argInputObjectCircular',
+      $.Output.Nullable<$Scalar.String>,
+      $.Args<{
+        input: $.Input.Field<$.Input.Nullable<InputObject.InputObjectCircular>>
+      }, true>
+    >
     date: $.Field<'date', $.Output.Nullable<$Scalar.Date>, null>
     dateArg: $.Field<
       'dateArg',
@@ -525,6 +533,11 @@ export namespace InputObject {
     idRequired: $.Input.Field<$Scalar.ID>
   }, true>
 
+  export type InputObjectCircular = $.InputObject<'InputObjectCircular', {
+    circular: $.Input.Field<$.Input.Nullable<InputObject.InputObjectCircular>>
+    date: $.Input.Field<$.Input.Nullable<$Scalar.Date>>
+  }, true>
+
   export type InputObjectNested = $.InputObject<'InputObjectNested', {
     InputObject: $.Input.Field<$.Input.Nullable<InputObject.InputObject>>
   }, true>
@@ -670,375 +683,1503 @@ export type DateEncoded = Schema.Scalar.GetEncoded<Date_>
 `;
 
 exports[`schema2 9`] = `
-"/* eslint-disable */
-import * as $ from '../../../../../../src/entrypoints/schema.js'
-import * as Data from './Data.js'
-import { $index as $customScalarsIndex } from './RuntimeCustomScalars.js'
+"import type * as $Utilities from '../../../../../../src/entrypoints/utilities-for-generated.js'
 import * as $Scalar from './Scalar.js'
-import type { Index } from './SchemaIndex.js'
-export const $defaultSchemaUrl = undefined
-export const ABCEnum = $.Enum(\`ABCEnum\`, [\`A\`, \`B\`, \`C\`])
-export const Case = $.Enum(\`Case\`, [\`ErrorOne\`, \`ErrorTwo\`, \`Object1\`])
-export const InputObject = $.InputObject(\`InputObject\`, {
-  date: $.Input.Field($.Input.Nullable($Scalar.Date)),
-  dateRequired: $.Input.Field($Scalar.Date),
-  id: $.Input.Field($.Input.Nullable($Scalar.ID)),
-  idRequired: $.Input.Field($Scalar.ID),
-}, true)
+//
+//
+//
+//
+//
+//
+// ==================================================================================================
+//                                         GraphQLScalarType
+// ==================================================================================================
+//
+//
+//
+//
+//
+//
 
-export const InputObjectNested = $.InputObject(\`InputObjectNested\`, {
-  InputObject: $.Input.Field(() => $.Input.Nullable(InputObject)),
-}, true)
+const Int = $Scalar.Int
 
-export const InputObjectNestedNonNull = $.InputObject(\`InputObjectNestedNonNull\`, {
-  InputObject: $.Input.Field(() => InputObject),
-}, false)
-// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-export const Bar = $.Object$(\`Bar\`, {
-  int: $.field('int', $.Output.Nullable($Scalar.Int)),
-})
+const String = $Scalar.String
 
-// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-export const DateObject1 = $.Object$(\`DateObject1\`, {
-  date1: $.field('date1', $.Output.Nullable($Scalar.Date)),
-})
+const ID = $Scalar.ID
 
-// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-export const DateObject2 = $.Object$(\`DateObject2\`, {
-  date2: $.field('date2', $.Output.Nullable($Scalar.Date)),
-})
+const Boolean = $Scalar.Boolean
 
-// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-export const ErrorOne = $.Object$(\`ErrorOne\`, {
-  infoId: $.field('infoId', $.Output.Nullable($Scalar.ID)),
-  message: $.field('message', $Scalar.String),
-})
+const Float = $Scalar.Float
 
-// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-export const ErrorTwo = $.Object$(\`ErrorTwo\`, {
-  infoInt: $.field('infoInt', $.Output.Nullable($Scalar.Int)),
-  message: $.field('message', $Scalar.String),
-})
+//
+//
+//
+//
+//
+//
+// ==================================================================================================
+//                                      GraphQLScalarTypeCustom
+// ==================================================================================================
+//
+//
+//
+//
+//
+//
 
-// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-export const Foo = $.Object$(\`Foo\`, {
-  id: $.field('id', $.Output.Nullable($Scalar.ID)),
-})
+const Date = $Scalar.Date
 
-// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-export const Object1 = $.Object$(\`Object1\`, {
-  boolean: $.field('boolean', $.Output.Nullable($Scalar.Boolean)),
-  float: $.field('float', $.Output.Nullable($Scalar.Float)),
-  id: $.field('id', $.Output.Nullable($Scalar.ID)),
-  int: $.field('int', $.Output.Nullable($Scalar.Int)),
-  string: $.field('string', $.Output.Nullable($Scalar.String)),
-})
+//
+//
+//
+//
+//
+//
+// ==================================================================================================
+//                                          GraphQLEnumType
+// ==================================================================================================
+//
+//
+//
+//
+//
+//
 
-// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-export const Object1ImplementingInterface = $.Object$(\`Object1ImplementingInterface\`, {
-  id: $.field('id', $.Output.Nullable($Scalar.ID)),
-  int: $.field('int', $.Output.Nullable($Scalar.Int)),
-})
+const ABCEnum: $Utilities.SchemaDrivenDataMap.Enum = {
+  k: 'enum',
+  n: 'ABCEnum',
+}
 
-// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-export const Object2ImplementingInterface = $.Object$(\`Object2ImplementingInterface\`, {
-  boolean: $.field('boolean', $.Output.Nullable($Scalar.Boolean)),
-  id: $.field('id', $.Output.Nullable($Scalar.ID)),
-})
+const Case: $Utilities.SchemaDrivenDataMap.Enum = {
+  k: 'enum',
+  n: 'Case',
+}
 
-// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-export const ObjectNested = $.Object$(\`ObjectNested\`, {
-  id: $.field('id', $.Output.Nullable($Scalar.ID)),
-  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-  object: $.field('object', $.Output.Nullable(() => Object1)),
-})
+//
+//
+//
+//
+//
+//
+// ==================================================================================================
+//                                       GraphQLInputObjectType
+// ==================================================================================================
+//
+//
+//
+//
+//
+//
 
-// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-export const ObjectUnion = $.Object$(\`ObjectUnion\`, {
-  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-  fooBarUnion: $.field('fooBarUnion', $.Output.Nullable(() => FooBarUnion)),
-})
-
-// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-export const lowerCaseObject = $.Object$(\`lowerCaseObject\`, {
-  id: $.field('id', $.Output.Nullable($Scalar.ID)),
-})
-
-// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-export const lowerCaseObject2 = $.Object$(\`lowerCaseObject2\`, {
-  int: $.field('int', $.Output.Nullable($Scalar.Int)),
-})
-// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-export const DateUnion = $.Union(\`DateUnion\`, [DateObject1, DateObject2])
-
-// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-export const FooBarUnion = $.Union(\`FooBarUnion\`, [Bar, Foo])
-
-// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-export const Result = $.Union(\`Result\`, [ErrorOne, ErrorTwo, Object1])
-
-// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-export const lowerCaseUnion = $.Union(\`lowerCaseUnion\`, [lowerCaseObject, lowerCaseObject2])
-export const DateInterface1 = $.Interface(\`DateInterface1\`, {
-  date1: $.field('date1', $.Output.Nullable($Scalar.Date)),
-}, [DateObject1])
-export const Error = $.Interface(\`Error\`, { message: $.field('message', $Scalar.String) }, [ErrorOne, ErrorTwo])
-export const Interface = $.Interface(\`Interface\`, { id: $.field('id', $.Output.Nullable($Scalar.ID)) }, [
-  Object1ImplementingInterface,
-  Object2ImplementingInterface,
-])
-// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-export const Mutation = $.Object$(\`Mutation\`, {
-  id: $.field('id', $.Output.Nullable($Scalar.ID)),
-  idNonNull: $.field('idNonNull', $Scalar.ID),
-})
-
-// @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-export const Query = $.Object$(\`Query\`, {
-  InputObjectNested: $.field(
-    'InputObjectNested',
-    $.Output.Nullable($Scalar.ID),
-    $.Args({ input: $.Input.Field($.Input.Nullable(InputObjectNested)) }, true),
-  ),
-  InputObjectNestedNonNull: $.field(
-    'InputObjectNestedNonNull',
-    $.Output.Nullable($Scalar.ID),
-    $.Args({ input: $.Input.Field(InputObjectNestedNonNull) }, false),
-  ),
-  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-  abcEnum: $.field('abcEnum', $.Output.Nullable(ABCEnum)),
-  date: $.field('date', $.Output.Nullable($Scalar.Date)),
-  dateArg: $.field(
-    'dateArg',
-    $.Output.Nullable($Scalar.Date),
-    $.Args({ date: $.Input.Field($.Input.Nullable($Scalar.Date)) }, true),
-  ),
-  dateArgInputObject: $.field(
-    'dateArgInputObject',
-    $.Output.Nullable($Scalar.Date),
-    $.Args({ input: $.Input.Field($.Input.Nullable(InputObject)) }, true),
-  ),
-  dateArgList: $.field(
-    'dateArgList',
-    $.Output.Nullable($Scalar.Date),
-    $.Args({ date: $.Input.Field($.Input.Nullable($.Input.List($Scalar.Date))) }, true),
-  ),
-  dateArgNonNull: $.field(
-    'dateArgNonNull',
-    $.Output.Nullable($Scalar.Date),
-    $.Args({ date: $.Input.Field($Scalar.Date) }, false),
-  ),
-  dateArgNonNullList: $.field(
-    'dateArgNonNullList',
-    $.Output.Nullable($Scalar.Date),
-    $.Args({ date: $.Input.Field($.Input.List($.Input.Nullable($Scalar.Date))) }, false),
-  ),
-  dateArgNonNullListNonNull: $.field(
-    'dateArgNonNullListNonNull',
-    $.Output.Nullable($Scalar.Date),
-    $.Args({ date: $.Input.Field($.Input.List($Scalar.Date)) }, false),
-  ),
-  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-  dateInterface1: $.field('dateInterface1', $.Output.Nullable(() => DateInterface1)),
-  dateList: $.field('dateList', $.Output.Nullable($.Output.List($Scalar.Date))),
-  dateListList: $.field('dateListList', $.Output.Nullable($.Output.List($.Output.List($Scalar.Date)))),
-  dateListNonNull: $.field('dateListNonNull', $.Output.List($Scalar.Date)),
-  dateNonNull: $.field('dateNonNull', $Scalar.Date),
-  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-  dateObject1: $.field('dateObject1', $.Output.Nullable(() => DateObject1)),
-  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-  dateUnion: $.field('dateUnion', $.Output.Nullable(() => DateUnion)),
-  error: $.field(
-    'error',
-    $.Output.Nullable($Scalar.String),
-    $.Args({ case: $.Input.Field($.Input.Nullable($Scalar.String)) }, true),
-  ),
-  id: $.field('id', $.Output.Nullable($Scalar.ID)),
-  idNonNull: $.field('idNonNull', $Scalar.ID),
-  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-  interface: $.field('interface', $.Output.Nullable(() => Interface)),
-  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-  interfaceNonNull: $.field('interfaceNonNull', () => Interface),
-  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-  interfaceWithArgs: $.field(
-    'interfaceWithArgs',
-    $.Output.Nullable(() => Interface),
-    $.Args({ id: $.Input.Field($Scalar.ID) }, false),
-  ),
-  listInt: $.field('listInt', $.Output.Nullable($.Output.List($.Output.Nullable($Scalar.Int)))),
-  listIntNonNull: $.field('listIntNonNull', $.Output.List($Scalar.Int)),
-  listListInt: $.field(
-    'listListInt',
-    $.Output.Nullable($.Output.List($.Output.Nullable($.Output.List($.Output.Nullable($Scalar.Int))))),
-  ),
-  listListIntNonNull: $.field('listListIntNonNull', $.Output.List($.Output.List($Scalar.Int))),
-  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-  lowerCaseUnion: $.field('lowerCaseUnion', $.Output.Nullable(() => lowerCaseUnion)),
-  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-  object: $.field('object', $.Output.Nullable(() => Object1)),
-  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-  objectList: $.field('objectList', $.Output.Nullable($.Output.List(() => Object1))),
-  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-  objectListNonNull: $.field('objectListNonNull', $.Output.List(() => Object1)),
-  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-  objectNested: $.field('objectNested', $.Output.Nullable(() => ObjectNested)),
-  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-  objectNonNull: $.field('objectNonNull', () => Object1),
-  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-  objectWithArgs: $.field(
-    'objectWithArgs',
-    $.Output.Nullable(() => Object1),
-    $.Args({
-      boolean: $.Input.Field($.Input.Nullable($Scalar.Boolean)),
-      float: $.Input.Field($.Input.Nullable($Scalar.Float)),
-      id: $.Input.Field($.Input.Nullable($Scalar.ID)),
-      int: $.Input.Field($.Input.Nullable($Scalar.Int)),
-      string: $.Input.Field($.Input.Nullable($Scalar.String)),
-    }, true),
-  ),
-  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-  result: $.field('result', $.Output.Nullable(() => Result), $.Args({ case: $.Input.Field(Case) }, false)),
-  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-  resultNonNull: $.field('resultNonNull', () => Result, $.Args({ case: $.Input.Field($.Input.Nullable(Case)) }, true)),
-  string: $.field('string', $.Output.Nullable($Scalar.String)),
-  stringWithArgEnum: $.field(
-    'stringWithArgEnum',
-    $.Output.Nullable($Scalar.String),
-    $.Args({ ABCEnum: $.Input.Field($.Input.Nullable(ABCEnum)) }, true),
-  ),
-  stringWithArgInputObject: $.field(
-    'stringWithArgInputObject',
-    $.Output.Nullable($Scalar.String),
-    $.Args({ input: $.Input.Field($.Input.Nullable(InputObject)) }, true),
-  ),
-  stringWithArgInputObjectRequired: $.field(
-    'stringWithArgInputObjectRequired',
-    $.Output.Nullable($Scalar.String),
-    $.Args({ input: $.Input.Field(InputObject) }, false),
-  ),
-  stringWithArgs: $.field(
-    'stringWithArgs',
-    $.Output.Nullable($Scalar.String),
-    $.Args({
-      boolean: $.Input.Field($.Input.Nullable($Scalar.Boolean)),
-      float: $.Input.Field($.Input.Nullable($Scalar.Float)),
-      id: $.Input.Field($.Input.Nullable($Scalar.ID)),
-      int: $.Input.Field($.Input.Nullable($Scalar.Int)),
-      string: $.Input.Field($.Input.Nullable($Scalar.String)),
-    }, true),
-  ),
-  stringWithListArg: $.field(
-    'stringWithListArg',
-    $.Output.Nullable($Scalar.String),
-    $.Args({ ints: $.Input.Field($.Input.Nullable($.Input.List($.Input.Nullable($Scalar.Int)))) }, true),
-  ),
-  stringWithListArgRequired: $.field(
-    'stringWithListArgRequired',
-    $.Output.Nullable($Scalar.String),
-    $.Args({ ints: $.Input.Field($.Input.List($Scalar.Int)) }, false),
-  ),
-  stringWithRequiredArg: $.field(
-    'stringWithRequiredArg',
-    $.Output.Nullable($Scalar.String),
-    $.Args({ string: $.Input.Field($Scalar.String) }, false),
-  ),
-  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-  unionFooBar: $.field('unionFooBar', $.Output.Nullable(() => FooBarUnion)),
-  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-  unionFooBarNonNull: $.field('unionFooBarNonNull', () => FooBarUnion),
-  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-  unionFooBarWithArgs: $.field(
-    'unionFooBarWithArgs',
-    $.Output.Nullable(() => FooBarUnion),
-    $.Args({ id: $.Input.Field($.Input.Nullable($Scalar.ID)) }, true),
-  ),
-  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-  unionObject: $.field('unionObject', $.Output.Nullable(() => ObjectUnion)),
-  // @ts-ignore - circular types cannot infer. Ignore in case there are any. This comment is always added, it does not indicate if this particular type could infer or not.
-  unionObjectNonNull: $.field('unionObjectNonNull', () => ObjectUnion),
-})
-export const $Index: Index = {
-  name: Data.Name,
-  RootTypesPresent: ['Mutation', 'Query'] as const,
-  RootUnion: undefined as any, // Type level only.
-  Root: {
-    Query,
-    Mutation,
-    Subscription: null,
-  },
-  allTypes: {
-    Mutation,
-    Query,
-    DateUnion,
-    FooBarUnion,
-    Result,
-    lowerCaseUnion,
-    Bar,
-    DateObject1,
-    DateObject2,
-    ErrorOne,
-    ErrorTwo,
-    Foo,
-    Object1,
-    Object1ImplementingInterface,
-    Object2ImplementingInterface,
-    ObjectNested,
-    ObjectUnion,
-    lowerCaseObject,
-    lowerCaseObject2,
-    DateInterface1,
-    Error,
-    Interface,
-    ABCEnum,
-    Case,
-  },
-  objects: {
-    Bar,
-    DateObject1,
-    DateObject2,
-    ErrorOne,
-    ErrorTwo,
-    Foo,
-    Object1,
-    Object1ImplementingInterface,
-    Object2ImplementingInterface,
-    ObjectNested,
-    ObjectUnion,
-    lowerCaseObject,
-    lowerCaseObject2,
-  },
-  unions: {
-    DateUnion,
-    FooBarUnion,
-    Result,
-    lowerCaseUnion,
-  },
-  interfaces: {
-    DateInterface1,
-    Error,
-    Interface,
-  },
-  customScalars: {
-    input: $customScalarsIndex,
-  },
-  error: {
-    objects: {
-      ErrorOne,
-      ErrorTwo,
+const InputObject: $Utilities.SchemaDrivenDataMap.InputObject = {
+  n: 'InputObject',
+  fcs: ['date', 'dateRequired'],
+  f: {
+    date: {
+      nt: Date,
     },
-    objectsTypename: {
-      ErrorOne: { __typename: 'ErrorOne' },
-      ErrorTwo: { __typename: 'ErrorTwo' },
+    dateRequired: {
+      nt: Date,
     },
-    rootResultFields: {
-      Subscription: {},
-      Mutation: {},
-      Query: {
-        result: 'result' as const,
-        resultNonNull: 'resultNonNull' as const,
+    id: {},
+    idRequired: {},
+  },
+}
+
+const InputObjectCircular: $Utilities.SchemaDrivenDataMap.InputObject = {
+  n: 'InputObjectCircular',
+  fcs: ['circular', 'date'],
+  f: {
+    circular: {
+      // nt: InputObjectCircular, <-- Assigned later to avoid potential circular dependency.
+    },
+    date: {
+      nt: Date,
+    },
+  },
+}
+
+const InputObjectNested: $Utilities.SchemaDrivenDataMap.InputObject = {
+  n: 'InputObjectNested',
+  fcs: ['InputObject'],
+  f: {
+    InputObject: {
+      // nt: InputObject, <-- Assigned later to avoid potential circular dependency.
+    },
+  },
+}
+
+const InputObjectNestedNonNull: $Utilities.SchemaDrivenDataMap.InputObject = {
+  n: 'InputObjectNestedNonNull',
+  fcs: ['InputObject'],
+  f: {
+    InputObject: {
+      // nt: InputObject, <-- Assigned later to avoid potential circular dependency.
+    },
+  },
+}
+
+//
+//
+//
+//
+//
+//
+// ==================================================================================================
+//                                         GraphQLObjectType
+// ==================================================================================================
+//
+//
+//
+//
+//
+//
+
+const Bar: $Utilities.SchemaDrivenDataMap.OutputObject = {
+  f: {
+    int: {},
+  },
+}
+
+const DateObject1: $Utilities.SchemaDrivenDataMap.OutputObject = {
+  f: {
+    date1: {
+      nt: Date,
+    },
+  },
+}
+
+const DateObject2: $Utilities.SchemaDrivenDataMap.OutputObject = {
+  f: {
+    date2: {
+      nt: Date,
+    },
+  },
+}
+
+const ErrorOne: $Utilities.SchemaDrivenDataMap.OutputObject = {
+  e: 1,
+  f: {
+    infoId: {},
+    message: {},
+  },
+}
+
+const ErrorTwo: $Utilities.SchemaDrivenDataMap.OutputObject = {
+  e: 1,
+  f: {
+    infoInt: {},
+    message: {},
+  },
+}
+
+const Foo: $Utilities.SchemaDrivenDataMap.OutputObject = {
+  f: {
+    id: {},
+  },
+}
+
+const Object1: $Utilities.SchemaDrivenDataMap.OutputObject = {
+  f: {
+    boolean: {},
+    float: {},
+    id: {},
+    int: {},
+    string: {},
+  },
+}
+
+const Object1ImplementingInterface: $Utilities.SchemaDrivenDataMap.OutputObject = {
+  f: {
+    id: {},
+    int: {},
+  },
+}
+
+const Object2ImplementingInterface: $Utilities.SchemaDrivenDataMap.OutputObject = {
+  f: {
+    boolean: {},
+    id: {},
+  },
+}
+
+const ObjectNested: $Utilities.SchemaDrivenDataMap.OutputObject = {
+  f: {
+    id: {},
+    object: {
+      // nt: Object1, <-- Assigned later to avoid potential circular dependency.
+    },
+  },
+}
+
+const ObjectUnion: $Utilities.SchemaDrivenDataMap.OutputObject = {
+  f: {
+    fooBarUnion: {
+      // nt: FooBarUnion, <-- Assigned later to avoid potential circular dependency.
+    },
+  },
+}
+
+const lowerCaseObject: $Utilities.SchemaDrivenDataMap.OutputObject = {
+  f: {
+    id: {},
+  },
+}
+
+const lowerCaseObject2: $Utilities.SchemaDrivenDataMap.OutputObject = {
+  f: {
+    int: {},
+  },
+}
+
+//
+//
+//
+//
+//
+//
+// ==================================================================================================
+//                                        GraphQLInterfaceType
+// ==================================================================================================
+//
+//
+//
+//
+//
+//
+
+const DateInterface1: $Utilities.SchemaDrivenDataMap.OutputObject = {
+  f: {
+    ...DateObject1.f,
+  },
+}
+
+const Error: $Utilities.SchemaDrivenDataMap.OutputObject = {
+  f: {},
+}
+
+const Interface: $Utilities.SchemaDrivenDataMap.OutputObject = {
+  f: {},
+}
+
+//
+//
+//
+//
+//
+//
+// ==================================================================================================
+//                                          GraphQLUnionType
+// ==================================================================================================
+//
+//
+//
+//
+//
+//
+
+const DateUnion: $Utilities.SchemaDrivenDataMap.OutputObject = {
+  f: {
+    ...DateObject1.f,
+    ...DateObject2.f,
+  },
+}
+
+const FooBarUnion: $Utilities.SchemaDrivenDataMap.OutputObject = {
+  f: {},
+}
+
+const Result: $Utilities.SchemaDrivenDataMap.OutputObject = {
+  f: {},
+}
+
+const lowerCaseUnion: $Utilities.SchemaDrivenDataMap.OutputObject = {
+  f: {},
+}
+
+//
+//
+//
+//
+//
+//
+// ==================================================================================================
+//                                          GraphQLRootType
+// ==================================================================================================
+//
+//
+//
+//
+//
+//
+
+const Mutation: $Utilities.SchemaDrivenDataMap.OutputObject = {
+  f: {
+    id: {},
+    idNonNull: {},
+  },
+}
+
+const Query: $Utilities.SchemaDrivenDataMap.OutputObject = {
+  f: {
+    InputObjectNested: {
+      a: {
+        input: {
+          nt: InputObjectNested,
+          it: [0],
+        },
       },
     },
+    InputObjectNestedNonNull: {
+      a: {
+        input: {
+          nt: InputObjectNestedNonNull,
+          it: [1],
+        },
+      },
+    },
+    abcEnum: {},
+    argInputObjectCircular: {
+      a: {
+        input: {
+          nt: InputObjectCircular,
+          it: [0],
+        },
+      },
+    },
+    date: {
+      nt: Date,
+    },
+    dateArg: {
+      a: {
+        date: {
+          nt: Date,
+          it: [0],
+        },
+      },
+      nt: Date,
+    },
+    dateArgInputObject: {
+      a: {
+        input: {
+          nt: InputObject,
+          it: [0],
+        },
+      },
+      nt: Date,
+    },
+    dateArgList: {
+      a: {
+        date: {
+          nt: Date,
+          it: [0, [1]],
+        },
+      },
+      nt: Date,
+    },
+    dateArgNonNull: {
+      a: {
+        date: {
+          nt: Date,
+          it: [1],
+        },
+      },
+      nt: Date,
+    },
+    dateArgNonNullList: {
+      a: {
+        date: {
+          nt: Date,
+          it: [1, [0]],
+        },
+      },
+      nt: Date,
+    },
+    dateArgNonNullListNonNull: {
+      a: {
+        date: {
+          nt: Date,
+          it: [1, [1]],
+        },
+      },
+      nt: Date,
+    },
+    dateInterface1: {
+      // nt: DateInterface1, <-- Assigned later to avoid potential circular dependency.
+    },
+    dateList: {
+      nt: Date,
+    },
+    dateListList: {
+      nt: Date,
+    },
+    dateListNonNull: {
+      nt: Date,
+    },
+    dateNonNull: {
+      nt: Date,
+    },
+    dateObject1: {
+      // nt: DateObject1, <-- Assigned later to avoid potential circular dependency.
+    },
+    dateUnion: {
+      // nt: DateUnion, <-- Assigned later to avoid potential circular dependency.
+    },
+    error: {
+      a: {
+        case: {
+          nt: String,
+          it: [0],
+        },
+      },
+    },
+    id: {},
+    idNonNull: {},
+    interface: {
+      // nt: Interface, <-- Assigned later to avoid potential circular dependency.
+    },
+    interfaceNonNull: {
+      // nt: Interface, <-- Assigned later to avoid potential circular dependency.
+    },
+    interfaceWithArgs: {
+      a: {
+        id: {
+          nt: ID,
+          it: [1],
+        },
+      },
+      // nt: Interface, <-- Assigned later to avoid potential circular dependency.
+    },
+    listInt: {},
+    listIntNonNull: {},
+    listListInt: {},
+    listListIntNonNull: {},
+    lowerCaseUnion: {
+      // nt: lowerCaseUnion, <-- Assigned later to avoid potential circular dependency.
+    },
+    object: {
+      // nt: Object1, <-- Assigned later to avoid potential circular dependency.
+    },
+    objectList: {
+      // nt: Object1, <-- Assigned later to avoid potential circular dependency.
+    },
+    objectListNonNull: {
+      // nt: Object1, <-- Assigned later to avoid potential circular dependency.
+    },
+    objectNested: {
+      // nt: ObjectNested, <-- Assigned later to avoid potential circular dependency.
+    },
+    objectNonNull: {
+      // nt: Object1, <-- Assigned later to avoid potential circular dependency.
+    },
+    objectWithArgs: {
+      a: {
+        boolean: {
+          nt: Boolean,
+          it: [0],
+        },
+        float: {
+          nt: Float,
+          it: [0],
+        },
+        id: {
+          nt: ID,
+          it: [0],
+        },
+        int: {
+          nt: Int,
+          it: [0],
+        },
+        string: {
+          nt: String,
+          it: [0],
+        },
+      },
+      // nt: Object1, <-- Assigned later to avoid potential circular dependency.
+    },
+    result: {
+      a: {
+        case: {
+          nt: Case,
+          it: [1],
+        },
+      },
+      r: 1,
+      // nt: Result, <-- Assigned later to avoid potential circular dependency.
+    },
+    resultNonNull: {
+      a: {
+        case: {
+          nt: Case,
+          it: [0],
+        },
+      },
+      r: 1,
+      // nt: Result, <-- Assigned later to avoid potential circular dependency.
+    },
+    string: {},
+    stringWithArgEnum: {
+      a: {
+        ABCEnum: {
+          nt: ABCEnum,
+          it: [0],
+        },
+      },
+    },
+    stringWithArgInputObject: {
+      a: {
+        input: {
+          nt: InputObject,
+          it: [0],
+        },
+      },
+    },
+    stringWithArgInputObjectRequired: {
+      a: {
+        input: {
+          nt: InputObject,
+          it: [1],
+        },
+      },
+    },
+    stringWithArgs: {
+      a: {
+        boolean: {
+          nt: Boolean,
+          it: [0],
+        },
+        float: {
+          nt: Float,
+          it: [0],
+        },
+        id: {
+          nt: ID,
+          it: [0],
+        },
+        int: {
+          nt: Int,
+          it: [0],
+        },
+        string: {
+          nt: String,
+          it: [0],
+        },
+      },
+    },
+    stringWithListArg: {
+      a: {
+        ints: {
+          nt: Int,
+          it: [0, [0]],
+        },
+      },
+    },
+    stringWithListArgRequired: {
+      a: {
+        ints: {
+          nt: Int,
+          it: [1, [1]],
+        },
+      },
+    },
+    stringWithRequiredArg: {
+      a: {
+        string: {
+          nt: String,
+          it: [1],
+        },
+      },
+    },
+    unionFooBar: {
+      // nt: FooBarUnion, <-- Assigned later to avoid potential circular dependency.
+    },
+    unionFooBarNonNull: {
+      // nt: FooBarUnion, <-- Assigned later to avoid potential circular dependency.
+    },
+    unionFooBarWithArgs: {
+      a: {
+        id: {
+          nt: ID,
+          it: [0],
+        },
+      },
+      // nt: FooBarUnion, <-- Assigned later to avoid potential circular dependency.
+    },
+    unionObject: {
+      // nt: ObjectUnion, <-- Assigned later to avoid potential circular dependency.
+    },
+    unionObjectNonNull: {
+      // nt: ObjectUnion, <-- Assigned later to avoid potential circular dependency.
+    },
   },
+}
+
+//
+//
+//
+//
+//
+//
+// ==================================================================================================
+//                                       Reference Assignments
+//                                (avoids circular assignment issues)
+// ==================================================================================================
+//
+//
+//
+//
+//
+//
+
+InputObjectCircular.f!['circular']!.nt = InputObjectCircular
+InputObjectNested.f!['InputObject']!.nt = InputObject
+InputObjectNestedNonNull.f!['InputObject']!.nt = InputObject
+ObjectNested.f['object']!.nt = Object1
+ObjectUnion.f['fooBarUnion']!.nt = FooBarUnion
+Query.f['dateInterface1']!.nt = DateInterface1
+Query.f['dateObject1']!.nt = DateObject1
+Query.f['dateUnion']!.nt = DateUnion
+Query.f['interface']!.nt = Interface
+Query.f['interfaceNonNull']!.nt = Interface
+Query.f['interfaceWithArgs']!.nt = Interface
+Query.f['lowerCaseUnion']!.nt = lowerCaseUnion
+Query.f['object']!.nt = Object1
+Query.f['objectList']!.nt = Object1
+Query.f['objectListNonNull']!.nt = Object1
+Query.f['objectNested']!.nt = ObjectNested
+Query.f['objectNonNull']!.nt = Object1
+Query.f['objectWithArgs']!.nt = Object1
+Query.f['result']!.nt = Result
+Query.f['resultNonNull']!.nt = Result
+Query.f['unionFooBar']!.nt = FooBarUnion
+Query.f['unionFooBarNonNull']!.nt = FooBarUnion
+Query.f['unionFooBarWithArgs']!.nt = FooBarUnion
+Query.f['unionObject']!.nt = ObjectUnion
+Query.f['unionObjectNonNull']!.nt = ObjectUnion
+
+//
+//
+//
+//
+//
+//
+// ==================================================================================================
+//                                               Index
+// ==================================================================================================
+//
+//
+//
+//
+//
+//
+
+const $schemaDrivenDataMap: $Utilities.SchemaDrivenDataMap = {
+  roots: {
+    Mutation,
+    Query,
+  },
+  directives: {},
+  types: {
+    Int,
+    String,
+    ID,
+    Boolean,
+    Float,
+    Date,
+    ABCEnum,
+    Case,
+    InputObject,
+    InputObjectCircular,
+    InputObjectNested,
+    InputObjectNestedNonNull,
+    Bar,
+    DateObject1,
+    DateObject2,
+    ErrorOne,
+    ErrorTwo,
+    Foo,
+    Object1,
+    Object1ImplementingInterface,
+    Object2ImplementingInterface,
+    ObjectNested,
+    ObjectUnion,
+    lowerCaseObject,
+    lowerCaseObject2,
+    DateInterface1,
+    Error,
+    Interface,
+    DateUnion,
+    FooBarUnion,
+    Result,
+    lowerCaseUnion,
+    Mutation,
+    Query,
+  },
+}
+
+export { $schemaDrivenDataMap as schemaDrivenDataMap }
+"
+`;
+
+exports[`schema2 10`] = `
+"import type * as Utilities from '../../../../../../src/entrypoints/utilities-for-generated.js'
+import type { Index } from './SchemaIndex.js'
+import type * as SelectionSets from './SelectionSets.js'
+
+export interface Document<$Config extends Utilities.Config> {
+  <$Document>(document: Utilities.ExactNonEmpty<$Document, SelectionSets.$Document>): Utilities.DocumentRunner<
+    $Config,
+    Index,
+    // @ts-expect-error We use Exact instead of constraint on this function. TypeScript does not see that as
+    // Satisfying the constraint on the DocumentRunner type.
+    $Document
+  >
+}
+
+export interface BuilderMethodsDocumentFn extends Utilities.HKT.Fn {
+  // @ts-expect-error parameter is Untyped.
+  return: Document<this['params']['config']>
+}
+"
+`;
+
+exports[`schema2 11`] = `
+"import type { InferResult } from '../../../../../../src/entrypoints/schema.js'
+import type * as Utils from '../../../../../../src/entrypoints/utilities-for-generated.js'
+import type { Index } from './SchemaIndex.js'
+import type * as SelectionSet from './SelectionSets.js'
+
+export interface MutationMethods<$Config extends Utils.Config> {
+  // todo Use a static type here?
+  $batch: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Mutation>) => Promise<
+    Utils.ResolveOutputReturnRootType<
+      $Config,
+      Index,
+      InferResult.Mutation<
+        Utils.AddTypenameToSelectedRootTypeResultFields<$Config, Index, 'Mutation', $SelectionSet>,
+        Index
+      >
+    >
+  >
+  // todo Use a static type here?
+  __typename: () => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      '__typename',
+      'Mutation'
+    >
+  >
+  id: <$SelectionSet>(selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Mutation.id>) => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      'id',
+      InferResult.Field<$SelectionSet, Index['Root']['Mutation']['fields']['id'], Index>
+    >
+  >
+  idNonNull: <$SelectionSet>(selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Mutation.idNonNull>) => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      'idNonNull',
+      InferResult.Field<$SelectionSet, Index['Root']['Mutation']['fields']['idNonNull'], Index>
+    >
+  >
+}
+
+export interface QueryMethods<$Config extends Utils.Config> {
+  // todo Use a static type here?
+  $batch: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query>) => Promise<
+    Utils.ResolveOutputReturnRootType<
+      $Config,
+      Index,
+      InferResult.Query<
+        Utils.AddTypenameToSelectedRootTypeResultFields<$Config, Index, 'Query', $SelectionSet>,
+        Index
+      >
+    >
+  >
+  // todo Use a static type here?
+  __typename: () => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      '__typename',
+      'Query'
+    >
+  >
+  InputObjectNested: <$SelectionSet>(
+    selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.InputObjectNested>,
+  ) => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      'InputObjectNested',
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['InputObjectNested'], Index>
+    >
+  >
+  InputObjectNestedNonNull: <$SelectionSet>(
+    selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.InputObjectNestedNonNull>,
+  ) => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      'InputObjectNestedNonNull',
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['InputObjectNestedNonNull'], Index>
+    >
+  >
+  /**
+   * Query enum field documentation.
+   */
+  abcEnum: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.abcEnum>) => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      'abcEnum',
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['abcEnum'], Index>
+    >
+  >
+  argInputObjectCircular: <$SelectionSet>(
+    selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.argInputObjectCircular>,
+  ) => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      'argInputObjectCircular',
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['argInputObjectCircular'], Index>
+    >
+  >
+  date: <$SelectionSet>(selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.date>) => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      'date',
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['date'], Index>
+    >
+  >
+  dateArg: <$SelectionSet>(selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.dateArg>) => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      'dateArg',
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['dateArg'], Index>
+    >
+  >
+  dateArgInputObject: <$SelectionSet>(
+    selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.dateArgInputObject>,
+  ) => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      'dateArgInputObject',
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['dateArgInputObject'], Index>
+    >
+  >
+  dateArgList: <$SelectionSet>(selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.dateArgList>) => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      'dateArgList',
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['dateArgList'], Index>
+    >
+  >
+  dateArgNonNull: <$SelectionSet>(
+    selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.dateArgNonNull>,
+  ) => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      'dateArgNonNull',
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['dateArgNonNull'], Index>
+    >
+  >
+  dateArgNonNullList: <$SelectionSet>(
+    selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.dateArgNonNullList>,
+  ) => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      'dateArgNonNullList',
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['dateArgNonNullList'], Index>
+    >
+  >
+  dateArgNonNullListNonNull: <$SelectionSet>(
+    selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.dateArgNonNullListNonNull>,
+  ) => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      'dateArgNonNullListNonNull',
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['dateArgNonNullListNonNull'], Index>
+    >
+  >
+  dateInterface1: <$SelectionSet>(
+    selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.dateInterface1>,
+  ) => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      'dateInterface1',
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['dateInterface1'], Index>
+    >
+  >
+  dateList: <$SelectionSet>(selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.dateList>) => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      'dateList',
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['dateList'], Index>
+    >
+  >
+  dateListList: <$SelectionSet>(selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.dateListList>) => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      'dateListList',
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['dateListList'], Index>
+    >
+  >
+  dateListNonNull: <$SelectionSet>(
+    selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.dateListNonNull>,
+  ) => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      'dateListNonNull',
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['dateListNonNull'], Index>
+    >
+  >
+  dateNonNull: <$SelectionSet>(selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.dateNonNull>) => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      'dateNonNull',
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['dateNonNull'], Index>
+    >
+  >
+  dateObject1: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.dateObject1>) => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      'dateObject1',
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['dateObject1'], Index>
+    >
+  >
+  dateUnion: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.dateUnion>) => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      'dateUnion',
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['dateUnion'], Index>
+    >
+  >
+  error: <$SelectionSet>(selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.error>) => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      'error',
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['error'], Index>
+    >
+  >
+  id: <$SelectionSet>(selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.id>) => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      'id',
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['id'], Index>
+    >
+  >
+  idNonNull: <$SelectionSet>(selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.idNonNull>) => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      'idNonNull',
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['idNonNull'], Index>
+    >
+  >
+  interface: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.$interface>) => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      'interface',
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['interface'], Index>
+    >
+  >
+  interfaceNonNull: <$SelectionSet>(
+    selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.interfaceNonNull>,
+  ) => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      'interfaceNonNull',
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['interfaceNonNull'], Index>
+    >
+  >
+  interfaceWithArgs: <$SelectionSet>(
+    selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.interfaceWithArgs>,
+  ) => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      'interfaceWithArgs',
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['interfaceWithArgs'], Index>
+    >
+  >
+  listInt: <$SelectionSet>(selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.listInt>) => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      'listInt',
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['listInt'], Index>
+    >
+  >
+  listIntNonNull: <$SelectionSet>(
+    selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.listIntNonNull>,
+  ) => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      'listIntNonNull',
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['listIntNonNull'], Index>
+    >
+  >
+  listListInt: <$SelectionSet>(selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.listListInt>) => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      'listListInt',
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['listListInt'], Index>
+    >
+  >
+  listListIntNonNull: <$SelectionSet>(
+    selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.listListIntNonNull>,
+  ) => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      'listListIntNonNull',
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['listListIntNonNull'], Index>
+    >
+  >
+  lowerCaseUnion: <$SelectionSet>(
+    selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.lowerCaseUnion>,
+  ) => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      'lowerCaseUnion',
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['lowerCaseUnion'], Index>
+    >
+  >
+  object: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.$object>) => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      'object',
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['object'], Index>
+    >
+  >
+  objectList: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.objectList>) => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      'objectList',
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['objectList'], Index>
+    >
+  >
+  objectListNonNull: <$SelectionSet>(
+    selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.objectListNonNull>,
+  ) => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      'objectListNonNull',
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['objectListNonNull'], Index>
+    >
+  >
+  objectNested: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.objectNested>) => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      'objectNested',
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['objectNested'], Index>
+    >
+  >
+  objectNonNull: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.objectNonNull>) => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      'objectNonNull',
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['objectNonNull'], Index>
+    >
+  >
+  objectWithArgs: <$SelectionSet>(
+    selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.objectWithArgs>,
+  ) => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      'objectWithArgs',
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['objectWithArgs'], Index>
+    >
+  >
+  result: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.result>) => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      'result',
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['result'], Index>
+    >
+  >
+  resultNonNull: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.resultNonNull>) => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      'resultNonNull',
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['resultNonNull'], Index>
+    >
+  >
+  string: <$SelectionSet>(selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.$string>) => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      'string',
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['string'], Index>
+    >
+  >
+  stringWithArgEnum: <$SelectionSet>(
+    selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.stringWithArgEnum>,
+  ) => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      'stringWithArgEnum',
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['stringWithArgEnum'], Index>
+    >
+  >
+  stringWithArgInputObject: <$SelectionSet>(
+    selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.stringWithArgInputObject>,
+  ) => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      'stringWithArgInputObject',
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['stringWithArgInputObject'], Index>
+    >
+  >
+  stringWithArgInputObjectRequired: <$SelectionSet>(
+    selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.stringWithArgInputObjectRequired>,
+  ) => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      'stringWithArgInputObjectRequired',
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['stringWithArgInputObjectRequired'], Index>
+    >
+  >
+  /**
+   * The given arguments are reflected back as a JSON string.
+   */
+  stringWithArgs: <$SelectionSet>(
+    selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.stringWithArgs>,
+  ) => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      'stringWithArgs',
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['stringWithArgs'], Index>
+    >
+  >
+  stringWithListArg: <$SelectionSet>(
+    selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.stringWithListArg>,
+  ) => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      'stringWithListArg',
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['stringWithListArg'], Index>
+    >
+  >
+  stringWithListArgRequired: <$SelectionSet>(
+    selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.stringWithListArgRequired>,
+  ) => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      'stringWithListArgRequired',
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['stringWithListArgRequired'], Index>
+    >
+  >
+  stringWithRequiredArg: <$SelectionSet>(
+    selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.stringWithRequiredArg>,
+  ) => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      'stringWithRequiredArg',
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['stringWithRequiredArg'], Index>
+    >
+  >
+  unionFooBar: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.unionFooBar>) => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      'unionFooBar',
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['unionFooBar'], Index>
+    >
+  >
+  unionFooBarNonNull: <$SelectionSet>(
+    selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.unionFooBarNonNull>,
+  ) => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      'unionFooBarNonNull',
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['unionFooBarNonNull'], Index>
+    >
+  >
+  unionFooBarWithArgs: <$SelectionSet>(
+    selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.unionFooBarWithArgs>,
+  ) => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      'unionFooBarWithArgs',
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['unionFooBarWithArgs'], Index>
+    >
+  >
+  unionObject: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.unionObject>) => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      'unionObject',
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['unionObject'], Index>
+    >
+  >
+  unionObjectNonNull: <$SelectionSet>(
+    selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.unionObjectNonNull>,
+  ) => Promise<
+    Utils.ResolveOutputReturnRootField<
+      $Config,
+      Index,
+      'unionObjectNonNull',
+      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['unionObjectNonNull'], Index>
+    >
+  >
+}
+
+export interface BuilderMethodsRoot<$Config extends Utils.Config> {
+  mutation: MutationMethods<$Config>
+  query: QueryMethods<$Config>
+}
+
+export interface BuilderMethodsRootFn extends Utils.HKT.Fn {
+  // @ts-expect-error parameter is Untyped.
+  return: BuilderMethodsRoot<this['params']['config']>
+}
+"
+`;
+
+exports[`schema2 12`] = `
+"import type * as $Utilities from '../../../../../../src/entrypoints/utilities-for-generated.js'
+import type * as $SelectionSets from './SelectionSets.js'
+
+//
+//
+//
+//
+//
+//
+// ==================================================================================================
+//                                      Select Methods Interface
+// ==================================================================================================
+//
+//
+//
+//
+//
+//
+
+export interface $MethodsSelect {
+  Mutation: Mutation
+  Query: Query
+  Bar: Bar
+  DateObject1: DateObject1
+  DateObject2: DateObject2
+  ErrorOne: ErrorOne
+  ErrorTwo: ErrorTwo
+  Foo: Foo
+  Object1: Object1
+  Object1ImplementingInterface: Object1ImplementingInterface
+  Object2ImplementingInterface: Object2ImplementingInterface
+  ObjectNested: ObjectNested
+  ObjectUnion: ObjectUnion
+  lowerCaseObject: lowerCaseObject
+  lowerCaseObject2: lowerCaseObject2
+  DateUnion: DateUnion
+  FooBarUnion: FooBarUnion
+  Result: Result
+  lowerCaseUnion: lowerCaseUnion
+  DateInterface1: DateInterface1
+  Error: Error
+  Interface: Interface
+}
+
+//
+//
+//
+//
+//
+//
+// ==================================================================================================
+//                                                Root
+// ==================================================================================================
+//
+//
+//
+//
+//
+//
+
+export interface Mutation {
+  <$SelectionSet>(selectionSet: $Utilities.Exact<$SelectionSet, $SelectionSets.Mutation>): $SelectionSet
+}
+
+export interface Query {
+  <$SelectionSet>(selectionSet: $Utilities.Exact<$SelectionSet, $SelectionSets.Query>): $SelectionSet
+}
+
+//
+//
+//
+//
+//
+//
+// ==================================================================================================
+//                                               Object
+// ==================================================================================================
+//
+//
+//
+//
+//
+//
+
+export interface Bar {
+  <$SelectionSet>(selectionSet: $Utilities.Exact<$SelectionSet, $SelectionSets.Bar>): $SelectionSet
+}
+
+export interface DateObject1 {
+  <$SelectionSet>(selectionSet: $Utilities.Exact<$SelectionSet, $SelectionSets.DateObject1>): $SelectionSet
+}
+
+export interface DateObject2 {
+  <$SelectionSet>(selectionSet: $Utilities.Exact<$SelectionSet, $SelectionSets.DateObject2>): $SelectionSet
+}
+
+export interface ErrorOne {
+  <$SelectionSet>(selectionSet: $Utilities.Exact<$SelectionSet, $SelectionSets.ErrorOne>): $SelectionSet
+}
+
+export interface ErrorTwo {
+  <$SelectionSet>(selectionSet: $Utilities.Exact<$SelectionSet, $SelectionSets.ErrorTwo>): $SelectionSet
+}
+
+export interface Foo {
+  <$SelectionSet>(selectionSet: $Utilities.Exact<$SelectionSet, $SelectionSets.Foo>): $SelectionSet
+}
+
+export interface Object1 {
+  <$SelectionSet>(selectionSet: $Utilities.Exact<$SelectionSet, $SelectionSets.Object1>): $SelectionSet
+}
+
+export interface Object1ImplementingInterface {
+  <$SelectionSet>(
+    selectionSet: $Utilities.Exact<$SelectionSet, $SelectionSets.Object1ImplementingInterface>,
+  ): $SelectionSet
+}
+
+export interface Object2ImplementingInterface {
+  <$SelectionSet>(
+    selectionSet: $Utilities.Exact<$SelectionSet, $SelectionSets.Object2ImplementingInterface>,
+  ): $SelectionSet
+}
+
+export interface ObjectNested {
+  <$SelectionSet>(selectionSet: $Utilities.Exact<$SelectionSet, $SelectionSets.ObjectNested>): $SelectionSet
+}
+
+export interface ObjectUnion {
+  <$SelectionSet>(selectionSet: $Utilities.Exact<$SelectionSet, $SelectionSets.ObjectUnion>): $SelectionSet
+}
+
+export interface lowerCaseObject {
+  <$SelectionSet>(selectionSet: $Utilities.Exact<$SelectionSet, $SelectionSets.lowerCaseObject>): $SelectionSet
+}
+
+export interface lowerCaseObject2 {
+  <$SelectionSet>(selectionSet: $Utilities.Exact<$SelectionSet, $SelectionSets.lowerCaseObject2>): $SelectionSet
+}
+
+//
+//
+//
+//
+//
+//
+// ==================================================================================================
+//                                               Union
+// ==================================================================================================
+//
+//
+//
+//
+//
+//
+
+export interface DateUnion {
+  <$SelectionSet>(selectionSet: $Utilities.Exact<$SelectionSet, $SelectionSets.DateUnion>): $SelectionSet
+}
+
+export interface FooBarUnion {
+  <$SelectionSet>(selectionSet: $Utilities.Exact<$SelectionSet, $SelectionSets.FooBarUnion>): $SelectionSet
+}
+
+export interface Result {
+  <$SelectionSet>(selectionSet: $Utilities.Exact<$SelectionSet, $SelectionSets.Result>): $SelectionSet
+}
+
+export interface lowerCaseUnion {
+  <$SelectionSet>(selectionSet: $Utilities.Exact<$SelectionSet, $SelectionSets.lowerCaseUnion>): $SelectionSet
+}
+
+//
+//
+//
+//
+//
+//
+// ==================================================================================================
+//                                             Interface
+// ==================================================================================================
+//
+//
+//
+//
+//
+//
+
+export interface DateInterface1 {
+  <$SelectionSet>(selectionSet: $Utilities.Exact<$SelectionSet, $SelectionSets.DateInterface1>): $SelectionSet
+}
+
+export interface Error {
+  <$SelectionSet>(selectionSet: $Utilities.Exact<$SelectionSet, $SelectionSets.Error>): $SelectionSet
+}
+
+export interface Interface {
+  <$SelectionSet>(selectionSet: $Utilities.Exact<$SelectionSet, $SelectionSets.Interface>): $SelectionSet
 }
 "
 `;

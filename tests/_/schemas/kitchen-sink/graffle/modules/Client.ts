@@ -1,4 +1,5 @@
 import { createPrefilled } from '../../../../../../src/entrypoints/client.js'
-import { $defaultSchemaUrl, $Index } from './SchemaRuntime.js'
+import { defaultSchemaUrl } from './Data.js'
+import { schemaDrivenDataMap } from './SchemaDrivenDataMap.js'
 
-export const create = createPrefilled(`default`, $Index, $defaultSchemaUrl)
+export const create = createPrefilled(`default`, schemaDrivenDataMap, defaultSchemaUrl)

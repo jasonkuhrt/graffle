@@ -24,20 +24,20 @@ export interface MutationMethods<$Config extends Utils.Config> {
       'Mutation'
     >
   >
-  id: () => Promise<
+  id: <$SelectionSet>(selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Mutation.id>) => Promise<
     Utils.ResolveOutputReturnRootField<
       $Config,
       Index,
       'id',
-      InferResult.Field<true, Index['Root']['Mutation']['fields']['id'], Index>
+      InferResult.Field<$SelectionSet, Index['Root']['Mutation']['fields']['id'], Index>
     >
   >
-  idNonNull: () => Promise<
+  idNonNull: <$SelectionSet>(selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Mutation.idNonNull>) => Promise<
     Utils.ResolveOutputReturnRootField<
       $Config,
       Index,
       'idNonNull',
-      InferResult.Field<true, Index['Root']['Mutation']['fields']['idNonNull'], Index>
+      InferResult.Field<$SelectionSet, Index['Root']['Mutation']['fields']['idNonNull'], Index>
     >
   >
 }

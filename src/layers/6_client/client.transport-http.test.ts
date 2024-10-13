@@ -36,8 +36,8 @@ import type { CoreExchangeGetRequest, CoreExchangePostRequest } from '../5_reque
 
 test(`when envelope is used then response property is present even if relying on schema url default`, async () => {
   const service = await serveSchema({ schema: schemaPokemon })
-  const atlas = Pokemon.create({ output: { envelope: true } })
-  const result = await atlas.query.pokemons({ name: true })
+  const pokemon = Pokemon.create({ output: { envelope: true } })
+  const result = await pokemon.query.pokemons({ name: true })
   await service.stop()
   expectTypeOf(result.response).toEqualTypeOf<Response>()
 })

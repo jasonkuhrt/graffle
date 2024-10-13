@@ -7,7 +7,7 @@ declare global {
   export namespace GraffleGlobalTypes {
     interface Schemas {}
     // Use this is for manual internal type testing.
-    // interface SchemasAlwaysEmpty {}
+    interface SchemasAlwaysEmpty {}
   }
 }
 

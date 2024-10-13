@@ -1,6 +1,6 @@
 import type { GraphQLSchema } from 'graphql'
-import type { SchemaIndex } from '../../4_generator/generators/SchemaIndex.js'
 import type { GlobalRegistry } from '../../4_generator/globalRegistry.js'
+import type { SchemaDrivenDataMap } from '../../7_extensions/CustomScalars/schemaDrivenDataMap/types.js'
 import type { WithInput } from './inputIncrementable/inputIncrementable.js'
 
 export type URLInput = URL | string
@@ -19,7 +19,7 @@ export type InputOutputEnvelopeLonghand = {
 /**
  * @remarks This input extends base with properties that can be filled with exports from the generated client.
  */
-export type InputStatic<$Schema extends GlobalRegistry.SchemaUnion> =
+export type InputStatic<$Schema extends GlobalRegistry.SchemaUnion = GlobalRegistry.SchemaUnion> =
   & InputBase<$Schema>
   & {
     /**
@@ -31,17 +31,9 @@ export type InputStatic<$Schema extends GlobalRegistry.SchemaUnion> =
      */
     name?: $Schema['index']['name']
     /**
-     * Used internally.
-     *
-     * When custom scalars are being used, this runtime schema is used to
-     * encode/decode them before/after your application sends/receives them.
-     *
-     * When using root type field methods, this runtime schema is used to assist how arguments on scalars versus objects
-     * are constructed into the sent GraphQL document.
+     * todo
      */
-    readonly schemaIndex?: SchemaIndex | null
-    // todo way to hide Relay input pattern of nested input
-    // elideInputKey: true,
+    readonly schemaMap?: SchemaDrivenDataMap | null
   }
 
 // TODO use code generation to display

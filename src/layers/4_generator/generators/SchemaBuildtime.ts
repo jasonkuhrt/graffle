@@ -1,21 +1,5 @@
-import type {
-  GraphQLArgument,
-  GraphQLInputObjectType,
-  GraphQLInterfaceType,
-  GraphQLNamedType,
-  GraphQLObjectType,
-} from 'graphql'
-import { getNullableType, isListType, isNamedType, isNullableType } from 'graphql'
 import { Code } from '../../../lib/Code.js'
 import { Grafaid } from '../../../lib/grafaid/__.js'
-import type { Nodes } from '../../../lib/grafaid/graphql.js'
-import {
-  type AnyClass,
-  type AnyField,
-  type AnyNamedClassName,
-  type ClassToName,
-  type NamedNameToClass,
-} from '../../../lib/grafaid/graphql.js'
 import { entries, values } from '../../../lib/prelude.js'
 import type { Config } from '../config.js'
 import { createModuleGenerator } from '../helpers/moduleGenerator.js'
@@ -29,39 +13,41 @@ const namespaceNames = {
   GraphQLObjectType: `Object`,
   GraphQLScalarType: `Scalar`,
   GraphQLUnionType: `Union`,
-} satisfies Record<AnyNamedClassName, string>
+} satisfies Record<Grafaid.Schema.AnyNamedClassName, string>
 
 type AnyGraphQLFieldsType =
-  | GraphQLObjectType
-  | GraphQLInterfaceType
-  | GraphQLInputObjectType
+  | Grafaid.Schema.ObjectType
+  | Grafaid.Schema.InterfaceType
+  | Grafaid.Schema.InputObjectType
 
 const defineReferenceRenderers = <
-  $Renderers extends { [ClassName in keyof NamedNameToClass]: any },
+  $Renderers extends { [ClassName in keyof Grafaid.Schema.NamedNameToClass]: any },
 >(
   renderers: {
     [ClassName in keyof $Renderers]: (
       config: Config,
-      node: ClassName extends keyof NamedNameToClass ? InstanceType<NamedNameToClass[ClassName]>
+      node: ClassName extends keyof Grafaid.Schema.NamedNameToClass
+        ? InstanceType<Grafaid.Schema.NamedNameToClass[ClassName]>
         : never,
     ) => string
   },
 ) => renderers
 
 const defineConcreteRenderers = <
-  $Renderers extends { [ClassName in keyof Nodes.$Schema.NameToClassNamedType]: any },
+  $Renderers extends { [ClassName in keyof Grafaid.Schema.NameToClassNamedType]: any },
 >(
   renderers: {
     [ClassName in keyof $Renderers]: (
       config: Config,
-      node: ClassName extends keyof Nodes.$Schema.NameToClassNamedType
-        ? InstanceType<Nodes.$Schema.NameToClassNamedType[ClassName]>
+      node: ClassName extends keyof Grafaid.Schema.NameToClassNamedType
+        ? InstanceType<Grafaid.Schema.NameToClassNamedType[ClassName]>
         : never,
     ) => string
   },
 ): {
   [ClassName in keyof $Renderers]: (
-    node: ClassName extends keyof Grafaid.NameToClass ? InstanceType<Grafaid.NameToClass[ClassName]> | null | undefined
+    node: ClassName extends keyof Grafaid.Schema.NameToClass
+      ? InstanceType<Grafaid.Schema.NameToClass[ClassName]> | null | undefined
       : never,
   ) => string
 } => {
@@ -78,18 +64,10 @@ const defineConcreteRenderers = <
   ) as any
 }
 
-const dispatchToReferenceRenderer = (config: Config, node: AnyClass): string =>
-  // @ts-expect-error fixme
-  getReferenceRenderer(node)(config, node as any)
-
-// @ts-expect-error fixme
-const getReferenceRenderer = <N extends AnyClass>(node: N): (typeof referenceRenderers)[ClassToName<N>] => {
-  // @ts-expect-error lookup
-  const renderer = referenceRenderers[node.constructor.name]
-  if (!renderer) {
-    throw new Error(`No renderer found for class: ${node.constructor.name}`)
-  }
-  return renderer
+const dispatchToReferenceRenderer = (config: Config, type: Grafaid.Schema.Types): string => {
+  const renderer = (referenceRenderers as any)[type.constructor.name]
+  if (!renderer) throw new Error(`No renderer found for class: ${type.constructor.name}`)
+  return renderer(config, type as any)
 }
 
 const referenceRenderers = defineReferenceRenderers({
@@ -105,7 +83,7 @@ const referenceRenderers = defineReferenceRenderers({
 
 const dispatchToConcreteRenderer = (
   config: Config,
-  node: GraphQLNamedType,
+  node: Grafaid.Schema.NamedTypes,
 ): string => {
   // @ts-expect-error lookup
   const renderer = concreteRenderers[node.constructor.name]
@@ -203,7 +181,7 @@ const renderInputFields = (config: Config, node: AnyGraphQLFieldsType): string =
   ]))
 }
 
-const renderOutputField = (config: Config, field: AnyField): string => {
+const renderOutputField = (config: Config, field: Grafaid.Schema.InputOrOutputField): string => {
   const type = buildType(`output`, config, field.type)
 
   const args = Grafaid.Schema.isGraphQLOutputField(field) && field.args.length > 0
@@ -213,16 +191,16 @@ const renderOutputField = (config: Config, field: AnyField): string => {
   return `$.Field<'${field.name}', ${type}${args ? `, ${args}` : `, null`}>`
 }
 
-const renderInputField = (config: Config, field: AnyField): string => {
+const renderInputField = (config: Config, field: Grafaid.Schema.InputOrOutputField): string => {
   return `$.Input.Field<${buildType(`input`, config, field.type)}>`
 }
 
-const buildType = (direction: 'input' | 'output', config: Config, node: AnyClass) => {
+const buildType = (direction: 'input' | 'output', config: Config, node: Grafaid.Schema.Types) => {
   const ns = direction === `input` ? `Input` : `Output`
-  const nullable = isNullableType(node)
-  const nodeInner = getNullableType(node)
+  const nullable = Grafaid.Schema.isNullableType(node)
+  const nodeInner = Grafaid.Schema.getNullableType(node)
 
-  if (isNamedType(nodeInner)) {
+  if (Grafaid.Schema.isNamedType(nodeInner)) {
     const namedTypeReference = dispatchToReferenceRenderer(config, nodeInner)
     // const namedTypeCode = `_.Named<${namedTypeReference}>`
     const namedTypeCode = namedTypeReference
@@ -231,7 +209,7 @@ const buildType = (direction: 'input' | 'output', config: Config, node: AnyClass
       : namedTypeCode
   }
 
-  if (isListType(nodeInner)) {
+  if (Grafaid.Schema.isListType(nodeInner)) {
     const fieldType = `$.${ns}.List<${buildType(direction, config, nodeInner.ofType)}>` as any as string
     return nullable
       ? `$.${ns}.Nullable<${fieldType}>`
@@ -241,7 +219,7 @@ const buildType = (direction: 'input' | 'output', config: Config, node: AnyClass
   throw new Error(`Unhandled type: ${String(node)}`)
 }
 
-const renderArgs = (config: Config, args: readonly GraphQLArgument[]) => {
+const renderArgs = (config: Config, args: readonly Grafaid.Schema.Argument[]) => {
   const code = `$.Args<${
     Code.object(
       Code.fields(
@@ -252,7 +230,7 @@ const renderArgs = (config: Config, args: readonly GraphQLArgument[]) => {
   return code
 }
 
-const renderArg = (config: Config, arg: GraphQLArgument) => {
+const renderArg = (config: Config, arg: Grafaid.Schema.Argument) => {
   // const { nullable } = unwrapToNonNull(arg.type)
   // hasRequiredArgs = hasRequiredArgs || !nullable
   const type = buildType(`input`, config, arg.type)

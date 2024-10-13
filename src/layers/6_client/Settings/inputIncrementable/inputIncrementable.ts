@@ -2,7 +2,7 @@ import type { GlobalRegistry } from '../../../4_generator/globalRegistry.js'
 import type { Transport, TransportMemory } from '../../../5_request/types.js'
 import type { TransportHttpInput } from '../../transportHttp/request.js'
 import type { Config } from '../Config.js'
-import type { InputToConfig } from '../InputToConfig.js'
+import type { NormalizeInput } from '../InputToConfig.js'
 import type { OutputInput } from './output.js'
 
 // dprint-ignore
@@ -28,4 +28,4 @@ export type IncrementableInputContext = {
 
 // dprint-ignore
 export type AddIncrementalInput<$Config extends Config, $Input extends WithInput> =
-  InputToConfig<$Config['initialInput'] & $Input>
+  NormalizeInput<$Config['initialInput'] & $Input>

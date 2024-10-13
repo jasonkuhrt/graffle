@@ -1,6 +1,5 @@
 import type { Anyware } from '../../lib/anyware/__.js'
 import type { Fluent } from '../../lib/fluent/__.js'
-import type { GlobalRegistry } from '../4_generator/globalRegistry.js'
 import type { RequestCore } from '../5_request/__.js'
 import type { Extension } from './extension/extension.js'
 import type { Config } from './Settings/Config.js'
@@ -48,7 +47,7 @@ export const defineTerminus = (property: (state: State) => TerminusDefinitions) 
 }
 
 export interface State {
-  input: InputStatic<GlobalRegistry.SchemaUnion>
+  input: InputStatic
   config: Config
   retry: Anyware.Extension2<RequestCore.Core, { retrying: true }> | null
   extensions: Extension[]

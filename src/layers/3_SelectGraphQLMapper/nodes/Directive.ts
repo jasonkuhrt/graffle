@@ -1,41 +1,49 @@
+import type { SchemaDrivenDataMap } from '../../../entrypoints/utilities-for-generated.js'
 import { Nodes } from '../../../lib/grafaid/_Nodes.js'
-import { getFromEnumLooselyOrThrow } from '../../../lib/prelude.js'
-import { Select } from '../../2_Select/__.js'
-import type { GraphQLNodeMapper } from '../types.js'
+import type { Select } from '../../2_Select/__.js'
+import type { GraphQLPostOperationMapper } from '../mapper.js'
 import { toGraphQLValue } from './Value.js'
 
-export const toGraphQLDirective: GraphQLNodeMapper<
-  Nodes.DirectiveNode,
-  [directive: Select.Directive.DirectiveLike]
+export const toGraphQLDirective: GraphQLPostOperationMapper<
+  SchemaDrivenDataMap.ArgumentsOrInputObjectFields,
+  Nodes.DirectiveNode | null,
+  [graffleExpressions: Select.ParsedSelectionDirective]
 > = (
   context,
-  location,
+  sddmArguments,
   directive,
 ) => {
-  const definition = getFromEnumLooselyOrThrow(Select.Directive.definitionsByName, directive.name)
+  if (directive.arguments === null) return null
 
-  const graphqlArguments = Object.entries(directive.arguments).map(
-    ([argumentName, argumentValue]) => {
-      const argumentType = definition.type.arguments[argumentName]?.type
-      if (argumentType === undefined) {
-        throw new Error(`Argument ${argumentName} is required`)
-      }
+  const arguments_: Nodes.ArgumentNode[] = []
 
-      // todo lift directive arguments to document variables
-      const value = toGraphQLValue({ ...context, value: { isEnum: false } }, location, argumentValue)
-      return Nodes.Argument({
-        name: Nodes.Name({
-          value: argumentName,
-        }),
-        value,
+  for (const argumentName in directive.arguments.parsed) {
+    const argumentValue = directive.arguments.parsed[argumentName]
+
+    const sddmArgument = sddmArguments?.[argumentName]
+    let argument: Nodes.ArgumentNode
+
+    if (context.variables.enabled && sddmArgument) {
+      argument = context.variables.capture({
+        name: argumentName,
+        value: argumentValue,
+        sddmArgument,
       })
-    },
-  )
+    } else {
+      const name = Nodes.Name({ value: argumentName })
+      const value = toGraphQLValue(
+        { ...context, value: { isEnum: false } },
+        sddmArgument,
+        argumentValue,
+      )
+      argument = Nodes.Argument({ name, value })
+    }
 
-  const graphqlDirective = Nodes.Directive({
+    arguments_.push(argument)
+  }
+
+  return Nodes.Directive({
     name: Nodes.Name({ value: directive.name }),
-    arguments: graphqlArguments,
+    arguments: arguments_,
   })
-
-  return graphqlDirective
 }

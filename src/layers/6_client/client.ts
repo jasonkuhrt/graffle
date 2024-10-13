@@ -1,8 +1,7 @@
 import type { Fluent } from '../../lib/fluent/__.js'
 import { proxyGet } from '../../lib/prelude.js'
-import type { SchemaIndex } from '../4_generator/generators/SchemaIndex.js'
-import type { GlobalRegistry } from '../4_generator/globalRegistry.js'
-import { CustomScalars } from '../7_customScalars/extension.js'
+import { CustomScalars } from '../7_extensions/CustomScalars/CustomScalars.js'
+import { SchemaErrors } from '../7_extensions/SchemaErrors/SchemaErrors.js'
 import { type UseFn, useProperties } from './extension/use.js'
 import { type ClientContext, createState, type FnParametersProperty, type StateWithoutConfig } from './fluent.js'
 import { type FnGql, gqlProperties } from './gql/gql.js'
@@ -12,7 +11,7 @@ import { type FnRetry, retryProperties } from './properties/retry.js'
 import { type FnWith, withProperties } from './properties/with.js'
 import { type FnRequestMethods, requestMethodsProperties } from './requestMethods/requestMethods.js'
 import { type InputStatic } from './Settings/Input.js'
-import { type InputToConfig } from './Settings/InputToConfig.js'
+import { type NormalizeInput } from './Settings/InputToConfig.js'
 
 export type Client<$Context extends ClientContext> = Fluent.Materialize<
   Fluent.AddMany<
@@ -40,19 +39,15 @@ export type IncrementWthNewConfig<
 >
 
 // dprint-ignore
-type Create = <$Input extends InputStatic<GlobalRegistry.SchemaUnion>>(input: $Input) =>
+type Create = <$Input extends InputStatic>(input: $Input) =>
+  // todo fixme
   // eslint-disable-next-line
-  // @ts-ignore fixme
-  Client<{
-    config: InputToConfig<$Input>,
-    schemaIndex: $Input['schemaIndex'] extends SchemaIndex
-      ? GlobalRegistry.GetSchemaIndexOrDefault<$Input['name']>
-      : null
-  }>
+  // @ts-ignore
+  Client<{ config: NormalizeInput<$Input> }>
 
 export const create: Create = (input) => {
   const initialState = createState({
-    extensions: [CustomScalars()],
+    extensions: [CustomScalars(), SchemaErrors()],
     retry: null,
     input,
   })
@@ -78,7 +73,7 @@ const createWithState = (
   // The schema index nullability will affect more granular features within..
   // So, we are going to need a different check than this one.
 
-  if (state.input.schemaIndex) {
+  if (state.input.schemaMap) {
     Object.assign(clientDirect, {
       ...requestMethodsProperties(state),
     })

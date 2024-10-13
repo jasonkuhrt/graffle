@@ -1,8 +1,8 @@
 /* eslint-disable */
 import * as $ from 'graffle/schema'
 import * as Data from './Data.js'
-import { $index as $customScalarsIndex } from './RuntimeCustomScalars.js'
 import * as $Scalar from './Scalar.js'
+import { $index as $customScalarsIndex } from './SchemaDrivenDataMap.js'
 import type { Index } from './SchemaIndex.js'
 export const $defaultSchemaUrl = new URL('http://localhost:3000/graphql')
 export const BattleWildResult = $.Enum(`BattleWildResult`, [`pokemonsCaptured`, `pokemonsDefeated`, `trainerDefeated`])

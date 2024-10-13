@@ -49,7 +49,7 @@ ContextualAggregateError: One or more errors in the execution result.
     at handleOutput (/some/path/to/handleOutput.ts:XX:XX:19)
     at executeDocument (/some/path/to/requestMethods.ts:XX:XX:10)
     at process.processTicksAndRejections (node:internal/process/task_queues:XX:XX)
-    at async executeRootTypeField (/some/path/to/requestMethods.ts:XX:XX:18)
+    at async executeRootField (/some/path/to/requestMethods.ts:XX:XX:18)
     at async <anonymous> (/some/path/to/output_return-error_return-error-execution__return-error-execution.ts:XX:XX:16) {
   context: {},
   cause: undefined,
@@ -67,9 +67,9 @@ ContextualAggregateError: One or more errors in the execution result.
         ]
       }
     ]
-        at <anonymous> (/some/path/to/graphqlHTTP.ts:XX:XX:47)
+        at <anonymous> (/some/path/to/http.ts:XX:XX:47)
         at Array.map (<anonymous>)
-        at parseExecutionResult (/some/path/to/graphqlHTTP.ts:XX:XX:28)
+        at parseExecutionResult (/some/path/to/http.ts:XX:XX:28)
         at Object.unpack (/some/path/to/core.ts:XX:XX:26)
         at process.processTicksAndRejections (node:internal/process/task_queues:XX:XX)
         at async runHook (/some/path/to/runHook.ts:XX:XX:16) {
@@ -88,7 +88,7 @@ ContextualError: There was an error in the extension "anonymous" (use named func
     at process.processTicksAndRejections (node:internal/process/task_queues:XX:XX)
     at async Object.run (/some/path/to/main.ts:XX:XX:22)
     at async executeDocument (/some/path/to/requestMethods.ts:XX:XX:18)
-    at async executeRootTypeField (/some/path/to/requestMethods.ts:XX:XX:18)
+    at async executeRootField (/some/path/to/requestMethods.ts:XX:XX:18)
     at async <anonymous> (/some/path/to/output_return-error_return-error-execution__return-error-execution.ts:XX:XX:3) {
   context: {
     hookName: 'encode',

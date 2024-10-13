@@ -4,7 +4,7 @@ import fs from 'node:fs/promises'
 import * as Path from 'node:path'
 import { Graffle } from '../../entrypoints/__Graffle.js'
 import { Introspection } from '../../entrypoints/extensions.js'
-import { Nodes } from '../../lib/grafaid/_Nodes.js'
+import { Grafaid } from '../../lib/grafaid/__.js'
 import { omitUndefinedKeys } from '../../lib/prelude.js'
 import { fileExists, isPathToADirectory } from './helpers/fs.js'
 
@@ -74,11 +74,15 @@ export interface Config {
   schema: {
     sdl: string
     instance: GraphQLSchema
-    typeMapByKind: Nodes.$Schema.KindMap.KindMap
+    typeMapByKind: Grafaid.Schema.KindMap.KindMap
     error: {
       objects: GraphQLObjectType[]
       enabled: boolean
     }
+  }
+  runtimeFeatures: {
+    customScalars: boolean
+    operationVariables: boolean
   }
   options: {
     defaultSchemaUrl: URL | null
@@ -132,12 +136,16 @@ export const createConfig = async (input: Input): Promise<Config> => {
   const sourceSchema = await resolveSourceSchema(input)
 
   const schema = buildSchema(sourceSchema.content)
-  const typeMapByKind = Nodes.$Schema.KindMap.getKindMap(schema)
+  const typeMapByKind = Grafaid.Schema.KindMap.getKindMap(schema)
   const errorObjects = errorTypeNamePattern
     ? Object.values(typeMapByKind.GraphQLObjectType).filter(_ => _.name.match(errorTypeNamePattern))
     : []
 
   return {
+    runtimeFeatures: {
+      customScalars: true, // todo do not assume true
+      operationVariables: true, // todo do not assume true
+    },
     name: input.name ?? defaultName,
     paths: {
       project: {

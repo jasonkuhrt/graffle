@@ -5,6 +5,7 @@ import type { Select } from '../../2_Select/__.js'
 import type { SchemaIndex } from '../../4_generator/generators/SchemaIndex.js'
 import type { GlobalRegistry } from '../../4_generator/globalRegistry.js'
 import type { TransportHttp, TransportMemory } from '../../5_request/types.js'
+import type { SchemaDrivenDataMap } from '../../7_extensions/CustomScalars/schemaDrivenDataMap/types.js'
 import type { ConfigGetOutputError } from '../handleOutput.js'
 import type { TransportHttpInput } from '../transportHttp/request.js'
 import type { InputStatic } from './Input.js'
@@ -119,10 +120,10 @@ export type Config = {
   /**
    * The initial input that was given to derive this config.
    */
-  initialInput: InputStatic<any> // InputStatic<GlobalRegistry.SchemaUnion>
+  initialInput: InputStatic
   name: GlobalRegistry.SchemaNames
   output: OutputConfig
-  schemaIndex: SchemaIndex | null
+  schemaMap: SchemaDrivenDataMap | null
   transport: TransportConfigHttp | TransportConfigMemory
 }
 

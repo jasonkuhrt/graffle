@@ -66,16 +66,20 @@ export interface DocumentNormalized {
   }
 }
 
-export const createDocumentNormalized = (document: DocumentNormalized) => document
+export const createDocumentNormalizedFromQuerySelection = (
+  selectionSet: Select.SelectionSet.AnySelectionSet,
+  operationName?: string,
+): DocumentNormalized => createDocumentNormalizedFromRootTypeSelection(`Query`, selectionSet, operationName)
 
 export const createDocumentNormalizedFromRootTypeSelection = (
   rootTypeName: Grafaid.Schema.RootTypeName,
   selectionSet: Select.SelectionSet.AnySelectionSet,
-) =>
+  operationName?: string,
+): DocumentNormalized =>
   createDocumentNormalized({
     operations: {
-      [defaultOperationName]: {
-        name: null,
+      [operationName ?? defaultOperationName]: {
+        name: operationName ?? null,
         type: Grafaid.RootTypeNameToOperationName[rootTypeName],
         rootType: rootTypeName,
         selectionSet,
@@ -169,3 +173,5 @@ export const getOperationOrThrow = (
   }
   return document.operations[operationName]!
 }
+
+const createDocumentNormalized = (document: DocumentNormalized) => document

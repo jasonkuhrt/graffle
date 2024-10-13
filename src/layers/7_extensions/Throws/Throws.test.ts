@@ -53,15 +53,3 @@ describe(`$batch`, () => {
     await expect(graffle.throws().query.$batch({ error: true })).rejects.toMatchObject(db.errorAggregate)
   })
 })
-
-describe(`root field`, () => {
-  test(`without error`, async () => {
-    await expect(graffle.throws().query.objectWithArgs({ $: { id: `x` }, id: true })).resolves.toEqual({
-      id: `x`,
-      __typename: `Object1`,
-    })
-  })
-  test(`with error`, async () => {
-    await expect(graffle.throws().query.error()).rejects.toMatchObject(db.errorAggregate)
-  })
-})

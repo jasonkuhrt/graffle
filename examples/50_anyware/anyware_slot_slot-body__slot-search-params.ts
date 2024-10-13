@@ -12,7 +12,7 @@ const graffle = Graffle
         searchParams: (graphqlRequest) => {
           return {
             query: graphqlRequest.query,
-            operationName: `queryContinents`,
+            operationName: `getPokemon`,
           }
         },
       },
@@ -20,13 +20,13 @@ const graffle = Graffle
   })
 
 const result = await graffle.gql`
-    query trainers {
-      pokemon { name }
-    }
-    query pokemon {
+    query getTrainers {
       trainers { name }
     }
+    query getPokemon {
+      pokemon { name }
+    }
   `
-  .send(`queryCountries`)
+  .send(`getTrainers`)
 
 show(result)

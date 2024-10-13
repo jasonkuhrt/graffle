@@ -1,8 +1,10 @@
 import type { ExecutionResult, GraphQLError } from 'graphql'
 import type { Simplify } from 'type-fest'
+import { SchemaDrivenDataMap } from '../../layers/7_extensions/CustomScalars/schemaDrivenDataMap/types.js'
 import { Errors } from '../../lib/errors/__.js'
+import type { Grafaid } from '../../lib/grafaid/__.js'
 import type { GraphQLExecutionResultError } from '../../lib/grafaid/graphql.js'
-import { isRecordLikeObject, type SimplifyExceptError, type Values } from '../../lib/prelude.js'
+import { isRecordLikeObject, isString, type SimplifyExceptError, type Values } from '../../lib/prelude.js'
 import type { SchemaIndex } from '../4_generator/generators/SchemaIndex.js'
 import type { TransportHttp } from '../5_request/types.js'
 import type { State } from './fluent.js'
@@ -43,7 +45,7 @@ export type GraffleExecutionResultVar<$Config extends Config = Config> =
 
 export const handleOutput = (
   state: State,
-  // context: RequestContext,
+  rootTypeName: Grafaid.Schema.RootTypeName,
   result: GraffleExecutionResultVar,
 ) => {
   if (isContextConfigTraditionalGraphQLOutput(state.config)) {
@@ -90,27 +92,26 @@ export const handleOutput = (
     return isEnvelope ? { ...result, errors: [...result.errors ?? [], error] } : error
   }
 
-  if (state.input.schemaIndex) {
+  if (state.input.schemaMap) {
     if (c.errors.schema !== false) {
       if (!isRecordLikeObject(result.data)) throw new Error(`Expected data to be an object.`)
       const schemaErrors = Object.entries(result.data).map(([rootFieldName, rootFieldValue]) => {
         // todo this check would be nice but it doesn't account for aliases right now. To achieve this we would
         // need to have the selection set available to use and then do a costly analysis for all fields that were aliases.
         // So costly that we would probably instead want to create an index of them on the initial encoding step and
-        // then make available down stream. Also, note, here, the hardcoding of Query, needs to be any root type.
-        // const isResultField = Boolean(schemaIndex.error.rootResultFields.Query[rootFieldName])
-        // if (!isResultField) return null
+        // then make available down stream.
+        // const sddmNodeField = state.input.schemaMap?.roots[rootTypeName]?.f[rootFieldName]
+        // if (!sddmNodeField) return null
         // if (!isPlainObject(rootFieldValue)) return new Error(`Expected result field to be an object.`)
         if (!isRecordLikeObject(rootFieldValue)) return null
 
+        // If __typename is not selected we assume that this is not a result field.
+        // The extension makes sure that the __typename would have been selected if it were a result field.
         const __typename = rootFieldValue[`__typename`]
-        if (typeof __typename !== `string`) {
-          return new Error(`Expected __typename to be selected and a string.`)
-        }
+        if (!isString(__typename)) return null
 
-        const isErrorObject = Boolean(
-          state.input.schemaIndex?.error.objectsTypename[__typename],
-        )
+        const sddmNode = state.input.schemaMap?.types[__typename]
+        const isErrorObject = SchemaDrivenDataMap.isOutputObject(sddmNode) && Boolean(sddmNode.e)
         if (!isErrorObject) return null
         // todo extract message
         // todo allow mapping error instances to schema errors

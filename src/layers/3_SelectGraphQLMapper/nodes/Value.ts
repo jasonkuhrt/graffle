@@ -1,14 +1,21 @@
-import type { ValueNode } from 'graphql'
+import type { Grafaid } from '../../../lib/grafaid/__.js'
 import { Nodes } from '../../../lib/grafaid/_Nodes.js'
-import { advanceIndex, type CodecString, type GraphQLNodeMapper, isCodec } from '../types.js'
+import type { Scalar } from '../../1_Schema/_.js'
+import { SchemaDrivenDataMap } from '../../7_extensions/CustomScalars/schemaDrivenDataMap/types.js'
+import type { OperationContext } from '../context.js'
+import { type GraphQLPostOperationMapper } from '../mapper.js'
 
-export const toGraphQLValue: ValueMapper = (context, index, value) => {
+export const toGraphQLValue: ValueMapper = (context, sddm, value) => {
   // todo remove? unused.
   // const hookResult = context.hooks?.value?.(context, index, value)
   // if (hookResult) return hookResult
 
-  if (isCodec(index)) {
-    return applyCodec(index, value)
+  if (SchemaDrivenDataMap.isScalar(sddm?.nt)) {
+    return applyScalar(context, sddm.nt, value)
+  }
+
+  if (SchemaDrivenDataMap.isEnum(sddm?.nt)) {
+    return Nodes.EnumValue({ value: String(value) })
   }
 
   if (value === null) {
@@ -20,7 +27,7 @@ export const toGraphQLValue: ValueMapper = (context, index, value) => {
       values: value.map(oneValue =>
         toGraphQLValue(
           context,
-          index,
+          sddm,
           oneValue,
         )
       ),
@@ -28,11 +35,12 @@ export const toGraphQLValue: ValueMapper = (context, index, value) => {
   }
 
   if (typeof value === `object`) {
+    const sddmInputObject = sddm?.nt
     return Nodes.ObjectValue({
       fields: Object.entries(value).map(([fieldName, fieldValue]) => {
         return Nodes.ObjectField({
           name: Nodes.Name({ value: fieldName }),
-          value: toGraphQLValue(context, advanceIndex(index, fieldName), fieldValue),
+          value: toGraphQLValue(context, sddmInputObject?.f?.[fieldName], fieldValue),
         })
       }),
     })
@@ -56,27 +64,33 @@ export const toGraphQLValue: ValueMapper = (context, index, value) => {
   throw new Error(`Unsupported value: ${String(value)}`)
 }
 
-export type ValueMapper = GraphQLNodeMapper<
-  ValueNode,
+export type ValueMapper = GraphQLPostOperationMapper<
+  SchemaDrivenDataMap.ArgumentOrInputField,
+  Grafaid.Document.ValueNode,
   [value: unknown],
-  { value: ValueContext }
+  AdditionalContext
 >
 
-type ValueContext = {
-  isEnum: boolean
+interface AdditionalContext {
+  value: {
+    isEnum: boolean
+  }
 }
 
-const applyCodec = (
-  codec: CodecString,
+const applyScalar = (
+  context: OperationContext & AdditionalContext,
+  scalar: Scalar.Scalar,
   value: unknown,
-): Nodes.ListValueNode | Nodes.StringValueNode | Nodes.NullValueNode => {
+): Grafaid.Document.ValueNode => {
   if (value === null) return Nodes.NullValue()
 
   if (Array.isArray(value)) {
     return Nodes.ListValue({
-      values: value.map(oneValue => applyCodec(codec, oneValue)),
+      values: value.map(oneValue => applyScalar(context, scalar, oneValue)),
     })
   }
 
-  return Nodes.StringValue({ value: codec.encode(value) })
+  const valueEncoded = scalar.codec.encode(value)
+
+  return toGraphQLValue(context, undefined, valueEncoded)
 }

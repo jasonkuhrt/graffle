@@ -43,7 +43,7 @@ console.log(result)
         at runPipeline (/some/path/to/runPipeline.ts:XX:XX:18)
         at async Object.run (/some/path/to/main.ts:XX:XX:22)
         at async executeDocument (/some/path/to/requestMethods.ts:XX:XX:18)
-        at async executeRootTypeField (/some/path/to/requestMethods.ts:XX:XX:18)
+        at async executeRootField (/some/path/to/requestMethods.ts:XX:XX:18)
         at async <anonymous> (/some/path/to/output_envelope_envelope-error__envelope-error.ts:XX:XX:16) {
       context: {
         hookName: 'encode',
