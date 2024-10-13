@@ -208,7 +208,6 @@ const ObjectType = createCodeGenerator<
 
     // Indicate if this is an error type.
     // ----------------------------------
-    console.log(config.schema.error.objects.find(_ => _.name === type.name))
     if (config.schema.error.objects.find(_ => _.name === type.name)) {
       o[propertyNames.e] = 1
     }

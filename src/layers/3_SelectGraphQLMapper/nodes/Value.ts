@@ -2,7 +2,8 @@ import type { Grafaid } from '../../../lib/grafaid/__.js'
 import { Nodes } from '../../../lib/grafaid/_Nodes.js'
 import type { Scalar } from '../../1_Schema/_.js'
 import { SchemaDrivenDataMap } from '../../7_extensions/CustomScalars/schemaDrivenDataMap/types.js'
-import { type GraphQLPostOperationMapper, type OperationContext } from '../mapper.js'
+import type { OperationContext } from '../context.js'
+import { type GraphQLPostOperationMapper } from '../mapper.js'
 
 export const toGraphQLValue: ValueMapper = (context, sddm, value) => {
   // todo remove? unused.
