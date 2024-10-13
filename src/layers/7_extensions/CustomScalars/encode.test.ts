@@ -1,5 +1,5 @@
 import { expect } from 'vitest'
-import { kitchenSink, test } from '../../../../tests/_/helpers.js'
+import { test } from '../../../../tests/_/helpers.js'
 import { db } from '../../../../tests/_/schemas/db.js'
 import type { Graffle } from '../../../../tests/_/schemas/kitchen-sink/graffle/__.js'
 import { schemaDrivenDataMap } from '../../../../tests/_/schemas/kitchen-sink/graffle/modules/SchemaDrivenDataMap.js'
