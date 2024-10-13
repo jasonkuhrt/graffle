@@ -89,7 +89,8 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
       },
       run: ({ input, slots }) => {
         const graphqlRequest: Grafaid.HTTP.RequestConfig = {
-          ...input.request,
+          operationName: input.request.operationName,
+          variables: input.request.variables,
           query: print(input.request.query),
         }
 

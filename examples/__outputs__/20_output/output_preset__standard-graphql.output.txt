@@ -14,16 +14,14 @@ ContextualError: There was an error in the core implementation of hook "exchange
   [cause]: TypeError: Failed to parse URL from ...
       at new Request (node:internal/deps/undici/undici:XX:XX)
       at Object.run (/some/path/to/core.ts:XX:XX:29)
-      ... 3 lines matching cause stack trace ...
-      at async applyBody (/some/path/to/main.ts:XX:XX:22) {
+      at runHook (/some/path/to/runHook.ts:XX:XX:37)
+      at runHook (/some/path/to/runHook.ts:XX:XX:16) {
     [cause]: TypeError: Invalid URL
         at new URL (node:internal/url:XX:XX)
         at new Request (node:internal/deps/undici/undici:XX:XX)
         at Object.run (/some/path/to/core.ts:XX:XX:29)
         at runHook (/some/path/to/runHook.ts:XX:XX:37)
-        at <anonymous> (/some/path/to/runHook.ts:XX:XX:14)
-        at onRequest (/some/path/to/extension.ts:XX:XX:32)
-        at async applyBody (/some/path/to/main.ts:XX:XX:22) {
+        at runHook (/some/path/to/runHook.ts:XX:XX:16) {
       code: 'ERR_INVALID_URL',
       input: '...'
     }
