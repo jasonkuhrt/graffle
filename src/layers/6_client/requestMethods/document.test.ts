@@ -41,13 +41,13 @@ describe(`document with two queries`, () => {
     const { run } = withTwo
     // @ts-expect-error
     const error = await run().catch((e: unknown) => e) as Errors.ContextualAggregateError
-    expect(error.message).toEqual(`Must provide operation name if query contains multiple operations.`)
+    expect(error.errors[0]?.message).toEqual(`Must provide operation name if query contains multiple operations.`)
   })
   test(`error if wrong operation name is provided`, async () => {
     const { run } = withTwo
     // @ts-expect-error
     const error = await run(`boo`).catch((e: unknown) => e) as Errors.ContextualAggregateError
-    expect(error.message).toEqual(`Unknown operation named "boo".`)
+    expect(error.cause?.message).toEqual(`Unknown operation named "boo".`)
   })
   test(`error if no operations provided`, () => {
     expect(() => {

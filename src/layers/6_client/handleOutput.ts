@@ -1,9 +1,7 @@
 import type { ExecutionResult, GraphQLError } from 'graphql'
-import { SchemaDrivenDataMap } from '../../layers/7_extensions/CustomScalars/schemaDrivenDataMap/types.js'
 import { Errors } from '../../lib/errors/__.js'
-import type { Grafaid } from '../../lib/grafaid/__.js'
 import type { GraphQLExecutionResultError } from '../../lib/grafaid/graphql.js'
-import { isRecordLikeObject, isString, type Values } from '../../lib/prelude.js'
+import { type Values } from '../../lib/prelude.js'
 import type { SchemaIndex } from '../4_generator/generators/SchemaIndex.js'
 import type { TransportHttp } from '../5_request/types.js'
 import type { State } from './fluent.js'
@@ -44,7 +42,6 @@ export type GraffleExecutionResultVar<$Config extends Config = Config> =
 
 export const handleOutput = (
   state: State,
-  rootTypeName: Grafaid.Schema.RootTypeName,
   result: GraffleExecutionResultVar,
 ) => {
   if (isContextConfigTraditionalGraphQLOutput(state.config)) {
@@ -69,10 +66,6 @@ export const handleOutput = (
   const isReturnExecution = readConfigErrorCategoryOutputChannel(config, `execution`) === `return`
     && (!c.envelope.enabled || !c.envelope.errors.execution)
 
-  const isThrowSchema = readConfigErrorCategoryOutputChannel(config, `schema`) === `throw`
-
-  const isReturnSchema = readConfigErrorCategoryOutputChannel(config, `schema`) === `return`
-
   if (result instanceof Error) {
     if (isThrowOther) throw result
     if (isReturnOther) return result
@@ -89,50 +82,6 @@ export const handleOutput = (
     if (isThrowExecution) throw error
     if (isReturnExecution) return error
     return isEnvelope ? { ...result, errors: [...result.errors ?? [], error] } : error
-  }
-
-  if (state.input.schemaMap) {
-    if (c.errors.schema !== false) {
-      if (!isRecordLikeObject(result.data)) throw new Error(`Expected data to be an object.`)
-      const schemaErrors = Object.entries(result.data).map(([rootFieldName, rootFieldValue]) => {
-        // todo this check would be nice but it doesn't account for aliases right now. To achieve this we would
-        // need to have the selection set available to use and then do a costly analysis for all fields that were aliases.
-        // So costly that we would probably instead want to create an index of them on the initial encoding step and
-        // then make available down stream.
-        // const sddmNodeField = state.input.schemaMap?.roots[rootTypeName]?.f[rootFieldName]
-        // if (!sddmNodeField) return null
-        // if (!isPlainObject(rootFieldValue)) return new Error(`Expected result field to be an object.`)
-        if (!isRecordLikeObject(rootFieldValue)) return null
-
-        // If __typename is not selected we assume that this is not a result field.
-        // The extension makes sure that the __typename would have been selected if it were a result field.
-        const __typename = rootFieldValue[`__typename`]
-        if (!isString(__typename)) return null
-
-        const sddmNode = state.input.schemaMap?.types[__typename]
-        const isErrorObject = SchemaDrivenDataMap.isOutputObject(sddmNode) && Boolean(sddmNode.e)
-        if (!isErrorObject) return null
-        // todo extract message
-        // todo allow mapping error instances to schema errors
-        return new Error(`Failure on field ${rootFieldName}: ${__typename}`)
-      }).filter((_): _ is Error => _ !== null)
-
-      const error = (schemaErrors.length === 1)
-        ? schemaErrors[0]!
-        : schemaErrors.length > 0
-        ? new Errors.ContextualAggregateError(
-          `Two or more schema errors in the execution result.`,
-          {},
-          schemaErrors,
-        )
-        : null
-      if (error) {
-        if (isThrowSchema) throw error
-        if (isReturnSchema) {
-          return isEnvelope ? { ...result, errors: [...result.errors ?? [], error] } : error
-        }
-      }
-    }
   }
 
   if (isEnvelope) {

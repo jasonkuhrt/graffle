@@ -3,7 +3,6 @@ import type { Fluent } from '../../../lib/fluent/__.js'
 import type { Grafaid } from '../../../lib/grafaid/__.js'
 import { isSymbol } from '../../../lib/prelude.js'
 import { Select } from '../../2_Select/__.js'
-import { getOperationOrThrow } from '../../2_Select/document.js'
 import type { GlobalRegistry } from '../../4_generator/globalRegistry.js'
 import { RequestCore } from '../../5_request/__.js'
 import { type ClientContext, defineTerminus, type State } from '../fluent.js'
@@ -112,8 +111,6 @@ export const executeDocument = async (
   const url = state.config.transport.type === `http` ? state.config.transport.url : undefined
   const schema = state.config.transport.type === `http` ? undefined : state.config.transport.schema
 
-  const { rootType } = getOperationOrThrow(document, operationName)
-
   const initialInput = {
     state,
     interfaceType,
@@ -133,5 +130,5 @@ export const executeDocument = async (
     extensions: state.extensions.filter(_ => _.onRequest !== undefined).map(_ => _.onRequest!) as any,
   })
 
-  return handleOutput(state, rootType, result)
+  return handleOutput(state, result)
 }

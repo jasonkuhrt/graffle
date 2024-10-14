@@ -78,7 +78,7 @@ export const gqlProperties = defineTerminus((state) => {
             extensions: state.extensions.filter(_ => _.onRequest !== undefined).map(_ => _.onRequest!) as any,
           })
 
-          return handleOutput(state, analyzedRequest.rootType, result)
+          return handleOutput(state, result)
         },
       } as any
     },
