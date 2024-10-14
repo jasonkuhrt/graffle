@@ -1,6 +1,6 @@
 import type { InferResult } from 'graffle/schema'
 import type * as Utils from 'graffle/utilities-for-generated'
-import { Simplify } from 'type-fest'
+import { type Simplify } from 'type-fest'
 import type { Index } from './SchemaIndex.js'
 import type * as SelectionSet from './SelectionSets.js'
 

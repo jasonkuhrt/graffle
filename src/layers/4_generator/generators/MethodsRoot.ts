@@ -9,7 +9,7 @@ import { ModuleGeneratorSelectionSets } from './SelectionSets.js'
 export const ModuleGeneratorMethodsRoot = createModuleGenerator(
   `MethodsRoot`,
   ({ config, code }) => {
-    code(`import { Simplify } from 'type-fest'`)
+    code(`import { type Simplify } from 'type-fest'`)
     code(`import type * as Utils  from '${config.paths.imports.grafflePackage.utilitiesForGenerated}';`)
     code(`import type { InferResult } from '${config.paths.imports.grafflePackage.schema}';`)
     code(`import type { Index } from './${ModuleGeneratorSchemaIndex.name}.js'`)
