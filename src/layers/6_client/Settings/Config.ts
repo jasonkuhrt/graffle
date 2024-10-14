@@ -138,13 +138,13 @@ type TypenameSelection = { __typename: true }
 // dprint-ignore
 export type AddTypenameToSelectedRootTypeResultFields<
   $Config extends Config,
-  $Index extends SchemaIndex,
+  $Schema extends SchemaIndex,
   $RootTypeName extends Schema.RootTypeName,
   $Selection,
-> = IsNeedSelectionTypename<$Config, $Index> extends true
+> = IsNeedSelectionTypename<$Config, $Schema> extends true
   ? {
       [$RootFieldName in StringKeyof<$Selection>]:
-        IsResultField<$Index, $RootTypeName, $RootFieldName> extends false
+        IsResultField<$Schema, $RootTypeName, $RootFieldName> extends false
         ? $Selection[$RootFieldName]
         : $Selection[$RootFieldName] extends Select.SelectAlias.SelectAlias
           ? AddTypenameToAliasInput<$Selection[$RootFieldName]>

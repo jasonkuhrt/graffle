@@ -8,9 +8,8 @@ export interface MutationMethods<$Config extends Utils.Config> {
   // todo Use a static type here?
   $batch: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Mutation>) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootType<
+      Utils.HandleOutput<
         $Config,
-        Index,
         InferResult.Mutation<
           Utils.AddTypenameToSelectedRootTypeResultFields<$Config, Index, 'Mutation', $SelectionSet>,
           Index
@@ -21,21 +20,19 @@ export interface MutationMethods<$Config extends Utils.Config> {
   // todo Use a static type here?
   __typename: () => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        '__typename',
-        'Mutation'
+        'Mutation',
+        '__typename'
       >
     >
   >
   addPokemon: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Mutation.addPokemon>) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'addPokemon',
-        InferResult.Field<$SelectionSet, Index['Root']['Mutation']['fields']['addPokemon'], Index>
+        InferResult.Mutation<{ addPokemon: $SelectionSet }, Index>,
+        'addPokemon'
       >
     >
   >
@@ -45,9 +42,8 @@ export interface QueryMethods<$Config extends Utils.Config> {
   // todo Use a static type here?
   $batch: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query>) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootType<
+      Utils.HandleOutput<
         $Config,
-        Index,
         InferResult.Query<
           Utils.AddTypenameToSelectedRootTypeResultFields<$Config, Index, 'Query', $SelectionSet>,
           Index
@@ -58,81 +54,73 @@ export interface QueryMethods<$Config extends Utils.Config> {
   // todo Use a static type here?
   __typename: () => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        '__typename',
-        'Query'
+        'Query',
+        '__typename'
       >
     >
   >
   battles: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.battles>) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'battles',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['battles'], Index>
+        InferResult.Query<{ battles: $SelectionSet }, Index>,
+        'battles'
       >
     >
   >
   beings: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.beings>) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'beings',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['beings'], Index>
+        InferResult.Query<{ beings: $SelectionSet }, Index>,
+        'beings'
       >
     >
   >
   pokemon: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.pokemon>) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'pokemon',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['pokemon'], Index>
+        InferResult.Query<{ pokemon: $SelectionSet }, Index>,
+        'pokemon'
       >
     >
   >
   pokemonByName: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.pokemonByName>) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'pokemonByName',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['pokemonByName'], Index>
+        InferResult.Query<{ pokemonByName: $SelectionSet }, Index>,
+        'pokemonByName'
       >
     >
   >
   pokemons: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.pokemons>) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'pokemons',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['pokemons'], Index>
+        InferResult.Query<{ pokemons: $SelectionSet }, Index>,
+        'pokemons'
       >
     >
   >
   trainerByName: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.trainerByName>) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'trainerByName',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['trainerByName'], Index>
+        InferResult.Query<{ trainerByName: $SelectionSet }, Index>,
+        'trainerByName'
       >
     >
   >
   trainers: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.trainers>) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'trainers',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['trainers'], Index>
+        InferResult.Query<{ trainers: $SelectionSet }, Index>,
+        'trainers'
       >
     >
   >

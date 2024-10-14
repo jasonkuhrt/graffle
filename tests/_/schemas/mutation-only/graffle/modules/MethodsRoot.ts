@@ -8,9 +8,8 @@ export interface MutationMethods<$Config extends Utils.Config> {
   // todo Use a static type here?
   $batch: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Mutation>) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootType<
+      Utils.HandleOutput<
         $Config,
-        Index,
         InferResult.Mutation<
           Utils.AddTypenameToSelectedRootTypeResultFields<$Config, Index, 'Mutation', $SelectionSet>,
           Index
@@ -21,31 +20,28 @@ export interface MutationMethods<$Config extends Utils.Config> {
   // todo Use a static type here?
   __typename: () => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        '__typename',
-        'Mutation'
+        'Mutation',
+        '__typename'
       >
     >
   >
   id: <$SelectionSet>(selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Mutation.id>) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'id',
-        InferResult.Field<$SelectionSet, Index['Root']['Mutation']['fields']['id'], Index>
+        InferResult.Mutation<{ id: $SelectionSet }, Index>,
+        'id'
       >
     >
   >
   idNonNull: <$SelectionSet>(selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Mutation.idNonNull>) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'idNonNull',
-        InferResult.Field<$SelectionSet, Index['Root']['Mutation']['fields']['idNonNull'], Index>
+        InferResult.Mutation<{ idNonNull: $SelectionSet }, Index>,
+        'idNonNull'
       >
     >
   >

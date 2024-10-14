@@ -8,9 +8,8 @@ export interface MutationMethods<$Config extends Utils.Config> {
   // todo Use a static type here?
   $batch: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Mutation>) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootType<
+      Utils.HandleOutput<
         $Config,
-        Index,
         InferResult.Mutation<
           Utils.AddTypenameToSelectedRootTypeResultFields<$Config, Index, 'Mutation', $SelectionSet>,
           Index
@@ -21,31 +20,28 @@ export interface MutationMethods<$Config extends Utils.Config> {
   // todo Use a static type here?
   __typename: () => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        '__typename',
-        'Mutation'
+        'Mutation',
+        '__typename'
       >
     >
   >
   id: <$SelectionSet>(selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Mutation.id>) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'id',
-        InferResult.Field<$SelectionSet, Index['Root']['Mutation']['fields']['id'], Index>
+        InferResult.Mutation<{ id: $SelectionSet }, Index>,
+        'id'
       >
     >
   >
   idNonNull: <$SelectionSet>(selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Mutation.idNonNull>) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'idNonNull',
-        InferResult.Field<$SelectionSet, Index['Root']['Mutation']['fields']['idNonNull'], Index>
+        InferResult.Mutation<{ idNonNull: $SelectionSet }, Index>,
+        'idNonNull'
       >
     >
   >
@@ -55,9 +51,8 @@ export interface QueryMethods<$Config extends Utils.Config> {
   // todo Use a static type here?
   $batch: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query>) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootType<
+      Utils.HandleOutput<
         $Config,
-        Index,
         InferResult.Query<
           Utils.AddTypenameToSelectedRootTypeResultFields<$Config, Index, 'Query', $SelectionSet>,
           Index
@@ -68,11 +63,10 @@ export interface QueryMethods<$Config extends Utils.Config> {
   // todo Use a static type here?
   __typename: () => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        '__typename',
-        'Query'
+        'Query',
+        '__typename'
       >
     >
   >
@@ -80,11 +74,10 @@ export interface QueryMethods<$Config extends Utils.Config> {
     selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.InputObjectNested>,
   ) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'InputObjectNested',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['InputObjectNested'], Index>
+        InferResult.Query<{ InputObjectNested: $SelectionSet }, Index>,
+        'InputObjectNested'
       >
     >
   >
@@ -92,11 +85,10 @@ export interface QueryMethods<$Config extends Utils.Config> {
     selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.InputObjectNestedNonNull>,
   ) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'InputObjectNestedNonNull',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['InputObjectNestedNonNull'], Index>
+        InferResult.Query<{ InputObjectNestedNonNull: $SelectionSet }, Index>,
+        'InputObjectNestedNonNull'
       >
     >
   >
@@ -105,11 +97,10 @@ export interface QueryMethods<$Config extends Utils.Config> {
    */
   abcEnum: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.abcEnum>) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'abcEnum',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['abcEnum'], Index>
+        InferResult.Query<{ abcEnum: $SelectionSet }, Index>,
+        'abcEnum'
       >
     >
   >
@@ -117,31 +108,28 @@ export interface QueryMethods<$Config extends Utils.Config> {
     selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.argInputObjectCircular>,
   ) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'argInputObjectCircular',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['argInputObjectCircular'], Index>
+        InferResult.Query<{ argInputObjectCircular: $SelectionSet }, Index>,
+        'argInputObjectCircular'
       >
     >
   >
   date: <$SelectionSet>(selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.date>) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'date',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['date'], Index>
+        InferResult.Query<{ date: $SelectionSet }, Index>,
+        'date'
       >
     >
   >
   dateArg: <$SelectionSet>(selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.dateArg>) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'dateArg',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['dateArg'], Index>
+        InferResult.Query<{ dateArg: $SelectionSet }, Index>,
+        'dateArg'
       >
     >
   >
@@ -149,21 +137,19 @@ export interface QueryMethods<$Config extends Utils.Config> {
     selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.dateArgInputObject>,
   ) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'dateArgInputObject',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['dateArgInputObject'], Index>
+        InferResult.Query<{ dateArgInputObject: $SelectionSet }, Index>,
+        'dateArgInputObject'
       >
     >
   >
   dateArgList: <$SelectionSet>(selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.dateArgList>) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'dateArgList',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['dateArgList'], Index>
+        InferResult.Query<{ dateArgList: $SelectionSet }, Index>,
+        'dateArgList'
       >
     >
   >
@@ -171,11 +157,10 @@ export interface QueryMethods<$Config extends Utils.Config> {
     selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.dateArgNonNull>,
   ) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'dateArgNonNull',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['dateArgNonNull'], Index>
+        InferResult.Query<{ dateArgNonNull: $SelectionSet }, Index>,
+        'dateArgNonNull'
       >
     >
   >
@@ -183,11 +168,10 @@ export interface QueryMethods<$Config extends Utils.Config> {
     selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.dateArgNonNullList>,
   ) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'dateArgNonNullList',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['dateArgNonNullList'], Index>
+        InferResult.Query<{ dateArgNonNullList: $SelectionSet }, Index>,
+        'dateArgNonNullList'
       >
     >
   >
@@ -195,11 +179,10 @@ export interface QueryMethods<$Config extends Utils.Config> {
     selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.dateArgNonNullListNonNull>,
   ) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'dateArgNonNullListNonNull',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['dateArgNonNullListNonNull'], Index>
+        InferResult.Query<{ dateArgNonNullListNonNull: $SelectionSet }, Index>,
+        'dateArgNonNullListNonNull'
       >
     >
   >
@@ -207,31 +190,28 @@ export interface QueryMethods<$Config extends Utils.Config> {
     selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.dateInterface1>,
   ) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'dateInterface1',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['dateInterface1'], Index>
+        InferResult.Query<{ dateInterface1: $SelectionSet }, Index>,
+        'dateInterface1'
       >
     >
   >
   dateList: <$SelectionSet>(selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.dateList>) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'dateList',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['dateList'], Index>
+        InferResult.Query<{ dateList: $SelectionSet }, Index>,
+        'dateList'
       >
     >
   >
   dateListList: <$SelectionSet>(selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.dateListList>) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'dateListList',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['dateListList'], Index>
+        InferResult.Query<{ dateListList: $SelectionSet }, Index>,
+        'dateListList'
       >
     >
   >
@@ -239,81 +219,73 @@ export interface QueryMethods<$Config extends Utils.Config> {
     selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.dateListNonNull>,
   ) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'dateListNonNull',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['dateListNonNull'], Index>
+        InferResult.Query<{ dateListNonNull: $SelectionSet }, Index>,
+        'dateListNonNull'
       >
     >
   >
   dateNonNull: <$SelectionSet>(selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.dateNonNull>) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'dateNonNull',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['dateNonNull'], Index>
+        InferResult.Query<{ dateNonNull: $SelectionSet }, Index>,
+        'dateNonNull'
       >
     >
   >
   dateObject1: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.dateObject1>) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'dateObject1',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['dateObject1'], Index>
+        InferResult.Query<{ dateObject1: $SelectionSet }, Index>,
+        'dateObject1'
       >
     >
   >
   dateUnion: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.dateUnion>) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'dateUnion',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['dateUnion'], Index>
+        InferResult.Query<{ dateUnion: $SelectionSet }, Index>,
+        'dateUnion'
       >
     >
   >
   error: <$SelectionSet>(selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.error>) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'error',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['error'], Index>
+        InferResult.Query<{ error: $SelectionSet }, Index>,
+        'error'
       >
     >
   >
   id: <$SelectionSet>(selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.id>) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'id',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['id'], Index>
+        InferResult.Query<{ id: $SelectionSet }, Index>,
+        'id'
       >
     >
   >
   idNonNull: <$SelectionSet>(selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.idNonNull>) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'idNonNull',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['idNonNull'], Index>
+        InferResult.Query<{ idNonNull: $SelectionSet }, Index>,
+        'idNonNull'
       >
     >
   >
   interface: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.$interface>) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'interface',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['interface'], Index>
+        InferResult.Query<{ interface: $SelectionSet }, Index>,
+        'interface'
       >
     >
   >
@@ -321,11 +293,10 @@ export interface QueryMethods<$Config extends Utils.Config> {
     selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.interfaceNonNull>,
   ) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'interfaceNonNull',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['interfaceNonNull'], Index>
+        InferResult.Query<{ interfaceNonNull: $SelectionSet }, Index>,
+        'interfaceNonNull'
       >
     >
   >
@@ -333,21 +304,19 @@ export interface QueryMethods<$Config extends Utils.Config> {
     selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.interfaceWithArgs>,
   ) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'interfaceWithArgs',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['interfaceWithArgs'], Index>
+        InferResult.Query<{ interfaceWithArgs: $SelectionSet }, Index>,
+        'interfaceWithArgs'
       >
     >
   >
   listInt: <$SelectionSet>(selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.listInt>) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'listInt',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['listInt'], Index>
+        InferResult.Query<{ listInt: $SelectionSet }, Index>,
+        'listInt'
       >
     >
   >
@@ -355,21 +324,19 @@ export interface QueryMethods<$Config extends Utils.Config> {
     selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.listIntNonNull>,
   ) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'listIntNonNull',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['listIntNonNull'], Index>
+        InferResult.Query<{ listIntNonNull: $SelectionSet }, Index>,
+        'listIntNonNull'
       >
     >
   >
   listListInt: <$SelectionSet>(selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.listListInt>) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'listListInt',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['listListInt'], Index>
+        InferResult.Query<{ listListInt: $SelectionSet }, Index>,
+        'listListInt'
       >
     >
   >
@@ -377,11 +344,10 @@ export interface QueryMethods<$Config extends Utils.Config> {
     selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.listListIntNonNull>,
   ) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'listListIntNonNull',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['listListIntNonNull'], Index>
+        InferResult.Query<{ listListIntNonNull: $SelectionSet }, Index>,
+        'listListIntNonNull'
       >
     >
   >
@@ -389,31 +355,28 @@ export interface QueryMethods<$Config extends Utils.Config> {
     selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.lowerCaseUnion>,
   ) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'lowerCaseUnion',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['lowerCaseUnion'], Index>
+        InferResult.Query<{ lowerCaseUnion: $SelectionSet }, Index>,
+        'lowerCaseUnion'
       >
     >
   >
   object: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.$object>) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'object',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['object'], Index>
+        InferResult.Query<{ object: $SelectionSet }, Index>,
+        'object'
       >
     >
   >
   objectList: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.objectList>) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'objectList',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['objectList'], Index>
+        InferResult.Query<{ objectList: $SelectionSet }, Index>,
+        'objectList'
       >
     >
   >
@@ -421,31 +384,28 @@ export interface QueryMethods<$Config extends Utils.Config> {
     selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.objectListNonNull>,
   ) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'objectListNonNull',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['objectListNonNull'], Index>
+        InferResult.Query<{ objectListNonNull: $SelectionSet }, Index>,
+        'objectListNonNull'
       >
     >
   >
   objectNested: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.objectNested>) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'objectNested',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['objectNested'], Index>
+        InferResult.Query<{ objectNested: $SelectionSet }, Index>,
+        'objectNested'
       >
     >
   >
   objectNonNull: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.objectNonNull>) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'objectNonNull',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['objectNonNull'], Index>
+        InferResult.Query<{ objectNonNull: $SelectionSet }, Index>,
+        'objectNonNull'
       >
     >
   >
@@ -453,41 +413,37 @@ export interface QueryMethods<$Config extends Utils.Config> {
     selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.objectWithArgs>,
   ) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'objectWithArgs',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['objectWithArgs'], Index>
+        InferResult.Query<{ objectWithArgs: $SelectionSet }, Index>,
+        'objectWithArgs'
       >
     >
   >
   result: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.result>) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'result',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['result'], Index>
+        InferResult.Query<{ result: $SelectionSet }, Index>,
+        'result'
       >
     >
   >
   resultNonNull: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.resultNonNull>) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'resultNonNull',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['resultNonNull'], Index>
+        InferResult.Query<{ resultNonNull: $SelectionSet }, Index>,
+        'resultNonNull'
       >
     >
   >
   string: <$SelectionSet>(selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.$string>) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'string',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['string'], Index>
+        InferResult.Query<{ string: $SelectionSet }, Index>,
+        'string'
       >
     >
   >
@@ -495,11 +451,10 @@ export interface QueryMethods<$Config extends Utils.Config> {
     selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.stringWithArgEnum>,
   ) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'stringWithArgEnum',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['stringWithArgEnum'], Index>
+        InferResult.Query<{ stringWithArgEnum: $SelectionSet }, Index>,
+        'stringWithArgEnum'
       >
     >
   >
@@ -507,11 +462,10 @@ export interface QueryMethods<$Config extends Utils.Config> {
     selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.stringWithArgInputObject>,
   ) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'stringWithArgInputObject',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['stringWithArgInputObject'], Index>
+        InferResult.Query<{ stringWithArgInputObject: $SelectionSet }, Index>,
+        'stringWithArgInputObject'
       >
     >
   >
@@ -519,11 +473,10 @@ export interface QueryMethods<$Config extends Utils.Config> {
     selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.stringWithArgInputObjectRequired>,
   ) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'stringWithArgInputObjectRequired',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['stringWithArgInputObjectRequired'], Index>
+        InferResult.Query<{ stringWithArgInputObjectRequired: $SelectionSet }, Index>,
+        'stringWithArgInputObjectRequired'
       >
     >
   >
@@ -534,11 +487,10 @@ export interface QueryMethods<$Config extends Utils.Config> {
     selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.stringWithArgs>,
   ) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'stringWithArgs',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['stringWithArgs'], Index>
+        InferResult.Query<{ stringWithArgs: $SelectionSet }, Index>,
+        'stringWithArgs'
       >
     >
   >
@@ -546,11 +498,10 @@ export interface QueryMethods<$Config extends Utils.Config> {
     selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.stringWithListArg>,
   ) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'stringWithListArg',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['stringWithListArg'], Index>
+        InferResult.Query<{ stringWithListArg: $SelectionSet }, Index>,
+        'stringWithListArg'
       >
     >
   >
@@ -558,11 +509,10 @@ export interface QueryMethods<$Config extends Utils.Config> {
     selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.stringWithListArgRequired>,
   ) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'stringWithListArgRequired',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['stringWithListArgRequired'], Index>
+        InferResult.Query<{ stringWithListArgRequired: $SelectionSet }, Index>,
+        'stringWithListArgRequired'
       >
     >
   >
@@ -570,21 +520,19 @@ export interface QueryMethods<$Config extends Utils.Config> {
     selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.stringWithRequiredArg>,
   ) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'stringWithRequiredArg',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['stringWithRequiredArg'], Index>
+        InferResult.Query<{ stringWithRequiredArg: $SelectionSet }, Index>,
+        'stringWithRequiredArg'
       >
     >
   >
   unionFooBar: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.unionFooBar>) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'unionFooBar',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['unionFooBar'], Index>
+        InferResult.Query<{ unionFooBar: $SelectionSet }, Index>,
+        'unionFooBar'
       >
     >
   >
@@ -592,11 +540,10 @@ export interface QueryMethods<$Config extends Utils.Config> {
     selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.unionFooBarNonNull>,
   ) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'unionFooBarNonNull',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['unionFooBarNonNull'], Index>
+        InferResult.Query<{ unionFooBarNonNull: $SelectionSet }, Index>,
+        'unionFooBarNonNull'
       >
     >
   >
@@ -604,21 +551,19 @@ export interface QueryMethods<$Config extends Utils.Config> {
     selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.unionFooBarWithArgs>,
   ) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'unionFooBarWithArgs',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['unionFooBarWithArgs'], Index>
+        InferResult.Query<{ unionFooBarWithArgs: $SelectionSet }, Index>,
+        'unionFooBarWithArgs'
       >
     >
   >
   unionObject: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.unionObject>) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'unionObject',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['unionObject'], Index>
+        InferResult.Query<{ unionObject: $SelectionSet }, Index>,
+        'unionObject'
       >
     >
   >
@@ -626,11 +571,10 @@ export interface QueryMethods<$Config extends Utils.Config> {
     selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.unionObjectNonNull>,
   ) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'unionObjectNonNull',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['unionObjectNonNull'], Index>
+        InferResult.Query<{ unionObjectNonNull: $SelectionSet }, Index>,
+        'unionObjectNonNull'
       >
     >
   >

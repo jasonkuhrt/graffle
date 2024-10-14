@@ -42,9 +42,9 @@ export type GetRootTypeNameOfOperation<$Document extends SomeDocument, $Name ext
 export type GetOperation<$Document extends SomeDocument, $Name extends string> =
   FirstNonUnknownNever<[
     // @ts-expect-error could be unknown
-    $Document[OperationType.Mutation][$Name],
+    $Document[OperationTypeNode.MUTATION][$Name],
     // @ts-expect-error could be unknown
-    $Document[OperationType.Query][$Name]
+    $Document[OperationTypeNode.QUERY][$Name]
   ]>
 
 export interface OperationNormalized {

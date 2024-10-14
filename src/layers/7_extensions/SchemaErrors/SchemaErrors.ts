@@ -2,8 +2,9 @@ import { Errors } from '../../../lib/errors/__.js'
 import { normalizeRequestToNode } from '../../../lib/grafaid/request.js'
 import { isString } from '../../../lib/prelude.js'
 import { isRecordLikeObject } from '../../../lib/prelude.js'
+import type { SchemaIndex } from '../../4_generator/generators/SchemaIndex.js'
 import { injectTypenameOnRootResultFields } from '../../5_request/schemaErrors.js'
-import { createExtension } from '../../6_client/extension/extension.js'
+import { createExtension, type Extension } from '../../6_client/extension/extension.js'
 import { SchemaDrivenDataMap } from '../CustomScalars/schemaDrivenDataMap/types.js'
 
 // todo?: augment config to include how schema errors should be handled in the output
@@ -11,7 +12,7 @@ import { SchemaDrivenDataMap } from '../CustomScalars/schemaDrivenDataMap/types.
 // todo: manipulate the types
 
 export const SchemaErrors = () => {
-  return createExtension({
+  return createExtension<SchemaErrorsExtension>({
     name: `SchemaErrors`,
     onRequest: async ({ pack }) => {
       const state = pack.input.state
@@ -73,3 +74,37 @@ export const SchemaErrors = () => {
     },
   })
 }
+
+interface SchemaErrorsExtension extends Extension {
+  onRequestResult: SchemaErrorsOnRequestResultFn
+}
+
+export interface SchemaErrorsOnRequestResultFn extends Extension.Hooks.OnRequestResult {
+  // @ts-expect-error untyped params
+  return: SchemaErrorsOnRequestResult<this['params']>
+}
+
+type SchemaErrorsOnRequestResult<$Params extends Extension.Hooks.OnRequestResult.Params> = ExcludeSchemaErrors<
+  $Params['schema'],
+  $Params['result']
+>
+
+// dprint-ignore
+// export type IfConfiguredStripSchemaErrorsFromDataRootField<$Config extends Config, $Index extends SchemaIndex, $Data> =
+//   $Config['output']['errors']['schema'] extends false
+//     ? $Data
+//     : ExcludeSchemaErrors<$Index, $Data>
+
+// dprint-ignore
+type ExcludeSchemaErrors<$Schema extends SchemaIndex, $Data> =
+  Exclude<
+    $Data,
+    $Schema['error']['objectsTypename'][keyof $Schema['error']['objectsTypename']]
+  >
+
+// // dprint-ignore
+// export type IfConfiguredStripSchemaErrorsFromDataRootType<$Config extends Config, $Index extends SchemaIndex, $Data> =
+//   & {
+//       [$RootFieldName in keyof $Data]: IfConfiguredStripSchemaErrorsFromDataRootField<$Config, $Index, $Data[$RootFieldName]>
+//     }
+//   & {}

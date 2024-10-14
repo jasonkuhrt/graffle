@@ -4,16 +4,30 @@ import type { HKT } from '../../../lib/hkt/__.js'
 import type { Fn } from '../../../lib/hkt/hkt.js'
 import type { RequestCore } from '../../5_request/__.js'
 import type { Client } from '../client.js'
+import type { GraffleExecutionResultVar } from '../handleOutput.js'
 import type { Config } from '../Settings/Config.js'
 
 export interface TypeHooks {
   /**
-   * TODO
+   * Extend chaining interface with new methods.
    */
   property?: FnProperty
+  /**
+   * Intercept result type from request.
+   */
+  onRequestResult?: Extension.Hooks.OnRequestResult
 }
 
 export interface Extension extends Base, Fn, TypeHooks {}
+
+export namespace Extension {
+  export namespace Hooks {
+    export interface OnRequestResult extends Fn {}
+    export namespace OnRequestResult {
+      export type Params = GraffleExecutionResultVar
+    }
+  }
+}
 
 interface Base {
   /**

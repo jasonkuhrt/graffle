@@ -8,9 +8,8 @@ export interface QueryMethods<$Config extends Utils.Config> {
   // todo Use a static type here?
   $batch: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query>) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootType<
+      Utils.HandleOutput<
         $Config,
-        Index,
         InferResult.Query<
           Utils.AddTypenameToSelectedRootTypeResultFields<$Config, Index, 'Query', $SelectionSet>,
           Index
@@ -21,31 +20,28 @@ export interface QueryMethods<$Config extends Utils.Config> {
   // todo Use a static type here?
   __typename: () => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        '__typename',
-        'Query'
+        'Query',
+        '__typename'
       >
     >
   >
   id: <$SelectionSet>(selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.id>) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'id',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['id'], Index>
+        InferResult.Query<{ id: $SelectionSet }, Index>,
+        'id'
       >
     >
   >
   idNonNull: <$SelectionSet>(selectionSet?: Utils.Exact<$SelectionSet, SelectionSet.Query.idNonNull>) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'idNonNull',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['idNonNull'], Index>
+        InferResult.Query<{ idNonNull: $SelectionSet }, Index>,
+        'idNonNull'
       >
     >
   >
