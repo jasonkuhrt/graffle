@@ -41,7 +41,7 @@ export const graffleMappedToRequest = (
     : Object.values(operationsVariables)[0]
 
   const operation_ = getOperationDefinition({ query: document, operationName })
-  if (!operation_) throw new Error(`Impossible.`)
+  if (!operation_) throw new Error(`Unknown operation named "${String(operationName)}".`)
 
   return {
     rootType: operationTypeToRootType[operation_.operation],
