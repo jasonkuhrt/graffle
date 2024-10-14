@@ -84,8 +84,12 @@ AssertEqual<$<{ interfaceWithArgs: { $:{id:'abc'}; id: true }}>, { interfaceWith
 // todo alias on interfaces, interface fragments
 // Alias
 // scalar
-AssertEqual<$<{ id: ['id2', true] }>, { id2: null | string }>()
-AssertEqual<$<{ idNonNull: ['id2', true] }>, { id2: string }>()
+AssertEqual<$<{ id: ['x', true] }>, { x: null | string }>()
+AssertEqual<$<{ idNonNull: ['x', true] }>, { x: string }>()
+// object
+AssertEqual<$<{ object: ['x', { id: true }] }>, { x: { id: null|string } | null }>()
+// argument
+AssertEqual<$<{objectWithArgs: ['x', { $: {id:''}; id:true }]}>, { x: { id: null|string } | null }>()
 // multi
 AssertEqual<$<{ id: [['id1', true],['id2', true]] }>, { id1: null | string; id2: null | string }>()
 // AssertEqual<RS<{ id_as: true }>, { id_as: InferResult.Errors.UnknownFieldName<'id_as', Schema.Root.Query> }>()

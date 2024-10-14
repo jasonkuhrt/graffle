@@ -4,14 +4,14 @@ import type { Indicator } from './Indicator/__.js'
 import { type SelectAlias } from './SelectAlias.js'
 
 export type AnySelectionSet = {
-  [k: string]: FieldValue
-} & SpecialFields
+  [k: string]: FieldValue | ArgsObject
+} // & SpecialFields
 
-interface SpecialFields extends Directive.$Fields {
-  // todo - this requires having the schema at runtime to know which fields to select.
-  // $scalars?: SelectionSet.Indicator
-  $?: ArgsObject
-}
+// interface SpecialFields extends Directive.$Fields {
+//   // todo - this requires having the schema at runtime to know which fields to select.
+//   // $scalars?: SelectionSet.Indicator
+//   // $?: any // ArgsObject
+// }
 
 export type FieldValue = AnySelectionSet | Indicator.Indicator
 

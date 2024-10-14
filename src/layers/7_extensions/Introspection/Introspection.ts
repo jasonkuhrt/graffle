@@ -60,5 +60,5 @@ interface IntrospectFn extends Fluent.FnProperty<`introspect`> {
 }
 
 interface Introspect<$Args extends FnParametersProperty> {
-  (): Promise<ResolveOutputGql<$Args['state']['context']['config'], IntrospectionQuery>>
+  (): Promise<ResolveOutputGql<$Args['state']['context']['config'], IntrospectionQuery> & {}>
 }

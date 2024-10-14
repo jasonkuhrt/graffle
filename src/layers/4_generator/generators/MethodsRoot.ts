@@ -9,6 +9,7 @@ import { ModuleGeneratorSelectionSets } from './SelectionSets.js'
 export const ModuleGeneratorMethodsRoot = createModuleGenerator(
   `MethodsRoot`,
   ({ config, code }) => {
+    code(`import { Simplify } from 'type-fest'`)
     code(`import type * as Utils  from '${config.paths.imports.grafflePackage.utilitiesForGenerated}';`)
     code(`import type { InferResult } from '${config.paths.imports.grafflePackage.schema}';`)
     code(`import type { Index } from './${ModuleGeneratorSchemaIndex.name}.js'`)
@@ -54,23 +55,27 @@ const renderRootType = createCodeGenerator<{ node: Grafaid.Schema.ObjectType }>(
       // todo Use a static type here?
       $batch: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.${node.name}>) =>
         Promise<
-          Utils.ResolveOutputReturnRootType<
-            $Config,
-            Index,
-            InferResult.${node.name}<
-              Utils.AddTypenameToSelectedRootTypeResultFields<$Config, Index, '${node.name}', $SelectionSet>,
-              Index
+          Simplify<
+            Utils.ResolveOutputReturnRootType<
+              $Config,
+              Index,
+              InferResult.${node.name}<
+                Utils.AddTypenameToSelectedRootTypeResultFields<$Config, Index, '${node.name}', $SelectionSet>,
+                Index
+              >
             >
           >
         >
       // todo Use a static type here?
       __typename: () =>
         Promise<
-          Utils.ResolveOutputReturnRootField<
-            $Config,
-            Index,
-            '__typename',
-            '${node.name}'
+          Simplify<
+            Utils.ResolveOutputReturnRootField<
+              $Config,
+              Index,
+              '__typename',
+              '${node.name}'
+            >
           >
         >
       ${fieldMethods}
@@ -99,11 +104,13 @@ namespace Helpers {
   export const returnType = (rootName: string, fieldName: string, selectionSet: string) => {
     return `
       Promise<
-        Utils.ResolveOutputReturnRootField<
-          $Config,
-          Index,
-          '${fieldName}',
-          InferResult.Field<${selectionSet}, Index['Root']['${rootName}']['fields']['${fieldName}'], Index>
+        Simplify<
+          Utils.ResolveOutputReturnRootField<
+            $Config,
+            Index,
+            '${fieldName}',
+            InferResult.Field<${selectionSet}, Index['Root']['${rootName}']['fields']['${fieldName}'], Index>
+          >
         >
       >
     `
