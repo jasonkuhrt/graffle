@@ -640,3 +640,5 @@ export const findTyped = <$Value, $Result>(
 ): undefined | $Result => {
   return values.find((value) => Boolean(looker(value))) as undefined | $Result
 }
+
+export type SimplifyNullable<T> = null extends T ? (T & {}) | null : T & {}

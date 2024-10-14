@@ -40,6 +40,7 @@ type InferPublicHook<
 //   input: $HookMap[$Name]['input']
 // }
 
+// dprint-ignore
 type InferPublicHookReturn<
   $HookSequence extends HookSequence,
   $HookMap extends HookDefinitionMap<$HookSequence> = HookDefinitionMap<$HookSequence>,
@@ -48,14 +49,17 @@ type InferPublicHookReturn<
   $Options extends ExtensionOptions = ExtensionOptions,
 > = Promise<
   | ($Options['retrying'] extends true ? Error : never)
-  | (IsLastValue<$Name, $HookSequence> extends true ? $Result : {
-    [$NameNext in FindValueAfter<$Name, $HookSequence>]: InferPublicHook<
-      $HookSequence,
-      $HookMap,
-      $Result,
-      $NameNext
-    >
-  })
+  | (IsLastValue<$Name, $HookSequence> extends true
+      ? $Result
+      : {
+          [$NameNext in FindValueAfter<$Name, $HookSequence>]: InferPublicHook<
+            $HookSequence,
+            $HookMap,
+            $Result,
+            $NameNext
+          >
+        }
+    )
 >
 
 type SlotInputify<$Slots extends Record<string, (...args: any) => any>> = {

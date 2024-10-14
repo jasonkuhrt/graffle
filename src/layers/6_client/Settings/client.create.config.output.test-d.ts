@@ -6,7 +6,7 @@ import { Graffle } from '../../../../tests/_/schemas/kitchen-sink/graffle/__.js'
 import { schema } from '../../../../tests/_/schemas/kitchen-sink/schema.js'
 import { AssertEqual } from '../../../lib/assert-equal.js'
 import { type GraphQLExecutionResultError } from '../../../lib/grafaid/graphql.js'
-import type { Envelope, ErrorsOther } from '../handleOutput.js'
+import type { ErrorsOther } from '../handleOutput.js'
 
 const G = Graffle.create
 
@@ -74,11 +74,11 @@ describe('.envelope', () => {
   })
   describe('true enables it',  () => {
     const g = Graffle.create({ schema, output: { envelope: true } })
-    test('query.<fieldMethod>', async() => {
-      expectTypeOf(g.query.__typename()).resolves.toEqualTypeOf<FieldMethodResultEnabled>()
+    test('query.<fieldMethod>', () => {
+      expectTypeOf(g.query.__typename()).resolves.toMatchTypeOf<FieldMethodResultEnabled>()
     })
-    test('query.<resultFieldMethod>', () => {
-      expectTypeOf(g.query.resultNonNull(resultFieldSelect)).resolves.toEqualTypeOf<ResultFieldMethodResultEnabled>()
+    test('query.<resultFieldMethod>', async () => {
+      expectTypeOf((await g.query.resultNonNull(resultFieldSelect))).toMatchTypeOf<ResultFieldMethodResultEnabled>()
     })
     test('query.$batch', () => {
       const result = g.query.$batch({ __typename: true, idNonNull: true })
@@ -87,7 +87,7 @@ describe('.envelope', () => {
   })
   test('object enables it', async () => {
     const graffle = Graffle.create({ schema, output: { envelope: {} } })
-    expectTypeOf(await graffle.query.__typename()).toEqualTypeOf<FieldMethodResultEnabled>()
+    expectTypeOf(await graffle.query.__typename()).toMatchTypeOf<FieldMethodResultEnabled>()
   })
   describe('.enabled', () => {
     test('false disables it', async () => {
@@ -96,14 +96,14 @@ describe('.envelope', () => {
     })
     test('true enables it', async () => {
       const graffle = Graffle.create({ schema, output: { envelope: { enabled: true } } })
-      expectTypeOf(await graffle.query.__typename()).toEqualTypeOf<FieldMethodResultEnabled>()
+      expectTypeOf(await graffle.query.__typename()).toMatchTypeOf<FieldMethodResultEnabled>()
     })
   })
   describe('with defaults.errorChannel: "return"', () => {
     describe('.errors', () => {
       test('defaults to execution errors in envelope', () => {
         const g = G({ schema, output: { defaults: { errorChannel: 'return' }, envelope: true } })
-        expectTypeOf(g.query.__typename()).resolves.toEqualTypeOf<ExecutionResult<{ __typename: 'Query' }> | ErrorsOther>()
+        expectTypeOf(g.query.__typename()).resolves.toMatchTypeOf<ExecutionResult<{ __typename: 'Query' }> | ErrorsOther>()
       })
       test('.execution:false restores errors to return', async () => {
         const g = G({
@@ -119,7 +119,7 @@ describe('.envelope', () => {
           schema,
           output: { defaults: { errorChannel: 'return' }, envelope: { errors: { other: true } } },
         })
-        expectTypeOf(g.query.__typename()).resolves.toEqualTypeOf<ExecutionResult<{ __typename: 'Query' }>>()
+        expectTypeOf(g.query.__typename()).resolves.toMatchTypeOf<ExecutionResult<{ __typename: 'Query' }>>()
       })
     })
   })

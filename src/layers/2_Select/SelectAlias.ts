@@ -4,7 +4,12 @@ export type SelectAlias<$SelectionSet = AnyExceptAlias> =
   | SelectAliasOne<$SelectionSet>
   | SelectAliasMultiple<$SelectionSet>
 
-export type SelectAliasOne<$SelectionSet = AnyExceptAlias> = [alias: string, selectionSet: $SelectionSet]
+// dprint-ignore
+export type SelectAliasOne<$SelectionSet = AnyExceptAlias> =
+  [
+    alias: string,
+    selectionSet: $SelectionSet
+  ]
 
 export type SelectAliasMultiple<$SelectionSet = AnyExceptAlias> = [
   ...SelectAliasOne<$SelectionSet>[],

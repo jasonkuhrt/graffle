@@ -85,6 +85,7 @@ export const unType = (document: TypedDocumentLike): string | DocumentNode => do
 
 // dprint-ignore
 export type ResultOf<$Document extends TypedDocumentLike> =
+  $Document extends string                                       ? SomeData :
   $Document extends TypedQueryDocumentNode <infer $R, infer _>   ? $R :
   $Document extends TypedDocumentNode      <infer $R, infer _>   ? $R :
   $Document extends TypedDocumentString    <infer $R, infer _>   ? $R :

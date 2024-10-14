@@ -36,7 +36,7 @@ type InferSelectAlias<
 > =
   $SelectAlias extends Select.SelectAlias.SelectAliasOne      ? InferSelectAliasOne<$SelectAlias, $FieldName, $Schema, $Node> :
   $SelectAlias extends Select.SelectAlias.SelectAliasMultiple ? InferSelectAliasMultiple<$SelectAlias, $FieldName, $Schema, $Node> :
-                                                                            never
+                                                                never
 
 type InferSelectAliasMultiple<
   $SelectAliasMultiple extends Select.SelectAlias.SelectAliasMultiple,

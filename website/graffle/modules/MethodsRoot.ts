@@ -1,75 +1,92 @@
 import type { InferResult } from 'graffle/schema'
 import type * as Utils from 'graffle/utilities-for-generated'
+import { type Simplify } from 'type-fest'
 import type { Index } from './SchemaIndex.js'
 import type * as SelectionSet from './SelectionSets.js'
 
 export interface QueryMethods<$Config extends Utils.Config> {
   // todo Use a static type here?
   $batch: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query>) => Promise<
-    Utils.ResolveOutputReturnRootType<
-      $Config,
-      Index,
-      InferResult.Query<
-        Utils.AddTypenameToSelectedRootTypeResultFields<$Config, Index, 'Query', $SelectionSet>,
-        Index
+    Simplify<
+      Utils.ResolveOutputReturnRootType<
+        $Config,
+        Index,
+        InferResult.Query<
+          Utils.AddTypenameToSelectedRootTypeResultFields<$Config, Index, 'Query', $SelectionSet>,
+          Index
+        >
       >
     >
   >
   // todo Use a static type here?
   __typename: () => Promise<
-    Utils.ResolveOutputReturnRootField<
-      $Config,
-      Index,
-      '__typename',
-      'Query'
+    Simplify<
+      Utils.ResolveOutputReturnRootField<
+        $Config,
+        Index,
+        '__typename',
+        'Query'
+      >
     >
   >
   continent: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.continent>) => Promise<
-    Utils.ResolveOutputReturnRootField<
-      $Config,
-      Index,
-      'continent',
-      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['continent'], Index>
+    Simplify<
+      Utils.ResolveOutputReturnRootField<
+        $Config,
+        Index,
+        'continent',
+        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['continent'], Index>
+      >
     >
   >
   continents: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.continents>) => Promise<
-    Utils.ResolveOutputReturnRootField<
-      $Config,
-      Index,
-      'continents',
-      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['continents'], Index>
+    Simplify<
+      Utils.ResolveOutputReturnRootField<
+        $Config,
+        Index,
+        'continents',
+        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['continents'], Index>
+      >
     >
   >
   countries: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.countries>) => Promise<
-    Utils.ResolveOutputReturnRootField<
-      $Config,
-      Index,
-      'countries',
-      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['countries'], Index>
+    Simplify<
+      Utils.ResolveOutputReturnRootField<
+        $Config,
+        Index,
+        'countries',
+        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['countries'], Index>
+      >
     >
   >
   country: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.country>) => Promise<
-    Utils.ResolveOutputReturnRootField<
-      $Config,
-      Index,
-      'country',
-      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['country'], Index>
+    Simplify<
+      Utils.ResolveOutputReturnRootField<
+        $Config,
+        Index,
+        'country',
+        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['country'], Index>
+      >
     >
   >
   language: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.language>) => Promise<
-    Utils.ResolveOutputReturnRootField<
-      $Config,
-      Index,
-      'language',
-      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['language'], Index>
+    Simplify<
+      Utils.ResolveOutputReturnRootField<
+        $Config,
+        Index,
+        'language',
+        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['language'], Index>
+      >
     >
   >
   languages: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.languages>) => Promise<
-    Utils.ResolveOutputReturnRootField<
-      $Config,
-      Index,
-      'languages',
-      InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['languages'], Index>
+    Simplify<
+      Utils.ResolveOutputReturnRootField<
+        $Config,
+        Index,
+        'languages',
+        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['languages'], Index>
+      >
     >
   >
 }

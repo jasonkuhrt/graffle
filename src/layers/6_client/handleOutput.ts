@@ -1,10 +1,9 @@
 import type { ExecutionResult, GraphQLError } from 'graphql'
-import type { Simplify } from 'type-fest'
 import { SchemaDrivenDataMap } from '../../layers/7_extensions/CustomScalars/schemaDrivenDataMap/types.js'
 import { Errors } from '../../lib/errors/__.js'
 import type { Grafaid } from '../../lib/grafaid/__.js'
 import type { GraphQLExecutionResultError } from '../../lib/grafaid/graphql.js'
-import { isRecordLikeObject, isString, type SimplifyExceptError, type Values } from '../../lib/prelude.js'
+import { isRecordLikeObject, isString, type Values } from '../../lib/prelude.js'
 import type { SchemaIndex } from '../4_generator/generators/SchemaIndex.js'
 import type { TransportHttp } from '../5_request/types.js'
 import type { State } from './fluent.js'
@@ -149,7 +148,6 @@ export const handleOutput = (
 
 // dprint-ignore
 export type ResolveOutputGql<$Config extends Config, $Data> =
-  SimplifyExceptError<
    | IfConfiguredGetOutputErrorReturns<$Config>
    | (
         $Config['output']['envelope']['enabled'] extends true
@@ -166,18 +164,15 @@ export type ResolveOutputGql<$Config extends Config, $Data> =
           // todo We need to integrate this reality into the the other typed non-envelope output types too. 
           : $Data | null
      )
- >
 
 // dprint-ignore
 export type ResolveOutputReturnRootType<$Config extends Config, $Index extends SchemaIndex, $Data> =
-  SimplifyExceptError<
    | IfConfiguredGetOutputErrorReturns<$Config>
    | (
         $Config['output']['envelope']['enabled'] extends true
           ? Envelope<$Config, IfConfiguredStripSchemaErrorsFromDataRootType<$Config, $Index, $Data>>
           : IfConfiguredStripSchemaErrorsFromDataRootType<$Config, $Index, $Data>
      )
- >
 
 // dprint-ignore
 export type ResolveOutputReturnRootField<$Config extends Config, $Index extends SchemaIndex, $RootFieldName extends string, $Data> =
@@ -198,9 +193,10 @@ type IfConfiguredGetOutputErrorReturns<$Config extends Config> =
 
 // dprint-ignore
 type IfConfiguredStripSchemaErrorsFromDataRootType<$Config extends Config, $Index extends SchemaIndex, $Data> =
-  Simplify<{
-    [$RootFieldName in keyof $Data]: IfConfiguredStripSchemaErrorsFromDataRootField<$Config, $Index, $Data[$RootFieldName]>
-  }>
+  & {
+      [$RootFieldName in keyof $Data]: IfConfiguredStripSchemaErrorsFromDataRootField<$Config, $Index, $Data[$RootFieldName]>
+    }
+  & {} // Simplify type display.
 
 // dprint-ignore
 type IfConfiguredStripSchemaErrorsFromDataRootField<$Config extends Config, $Index extends SchemaIndex, $Data> =
@@ -235,27 +231,25 @@ type ConfigResolveOutputErrorChannel<$Config extends Config, $Channel extends Ou
 // dprint-ignore
 // todo use ObjMap for $Data
 export type Envelope<$Config extends Config, $Data = unknown, $Errors extends ReadonlyArray<Error> = ReadonlyArray<GraphQLError>> = 
-  Simplify<
-    & {
-        data?: $Data | null
-        extensions?: ObjMap
-      }
-    & (
-        $Config['transport']['type'] extends 'http'
-        ? { response: Response }
-        : {}  
-      )
-      // todo remove use of errors type variable. Rely only on $Config.
-    & (
-        $Errors extends []
-        ? {}  
-        : IsEnvelopeWithoutErrors<$Config> extends true
-        ? {}  
-        : {
-            errors?: ReadonlyArray<GraphQLError>
-          }
-      )
-    >
+	& {
+			data?: $Data | null
+			extensions?: ObjMap
+		}
+	& (
+			$Config['transport']['type'] extends 'http'
+			? { response: Response }
+			: {}  
+		)
+		// todo remove use of errors type variable. Rely only on $Config.
+	& (
+			$Errors extends []
+			? {}  
+			: IsEnvelopeWithoutErrors<$Config> extends true
+			? {}  
+			: {
+					errors?: ReadonlyArray<GraphQLError>
+				}
+		)
 
 type ObjMap<T = unknown> = {
   [key: string]: T
