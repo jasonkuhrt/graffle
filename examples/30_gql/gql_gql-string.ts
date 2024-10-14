@@ -9,14 +9,12 @@ const graffle = Graffle.create({
   schema: publicGraphQLSchemaEndpoints.Pokemon,
 })
 
-const document = /* gql */ `
+const data = await graffle.gql`
   {
     pokemon {
       name
     }
-  }	
-`
-
-const data = await graffle.gql(document).send()
+  }
+`.send()
 
 show(data)

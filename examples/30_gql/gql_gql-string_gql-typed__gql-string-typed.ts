@@ -1,7 +1,7 @@
 /**
  * This example shows how to send a request using a string for the GraphQL document while also being typesafe in regards to the passed variables and return type.
- * Note that the typing is a cast and would not catch if the actual GraphQL document disagreed with the types. As the comment suggests below, ideally some sort
- * of automation would generate the types for you.
+ * Note that the typing of a string is effectively a cast here and so would not catch if the actual GraphQL document disagreed with your types. As the comment
+ * suggests below, ideally some sort of automation would generate the types for you.
  */
 
 import { Graffle, type TypedDocument } from '../../src/entrypoints/main.js'
@@ -33,7 +33,7 @@ type Document = TypedDocument.String<
   { name: string }
 >
 
-const document: Document = /* gql */ `
+const data = await graffle.gql<Document>`
   query pokemonByName ($name: String!) {
     pokemonByName (name: $name) {
       name
@@ -45,8 +45,6 @@ const document: Document = /* gql */ `
       }
     }
   }
-`
-
-const data = await graffle.gql(document).send({ name: `Pikachu` })
+`.send({ name: `Pikachu` })
 
 show(data?.pokemonByName)

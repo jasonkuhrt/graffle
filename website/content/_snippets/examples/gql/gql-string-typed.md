@@ -31,7 +31,7 @@ type Document = TypedDocument.String<
   { name: string }
 >
 
-const document: Document = /* gql */ `
+const data = await graffle.gql<Document>`
   query pokemonByName ($name: String!) {
     pokemonByName (name: $name) {
       name
@@ -43,9 +43,7 @@ const document: Document = /* gql */ `
       }
     }
   }
-`
-
-const data = await graffle.gql(document).send({ name: `Pikachu` })
+`.send({ name: `Pikachu` })
 
 console.log(data?.pokemonByName)
 ```

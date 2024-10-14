@@ -11,15 +11,13 @@ const graffle = Graffle.create({
   schema: `http://localhost:3000/graphql`,
 })
 
-const document = /* gql */ `
+const data = await graffle.gql`
   {
     pokemon {
       name
     }
-  }	
-`
-
-const data = await graffle.gql(document).send()
+  }
+`.send()
 
 console.log(data)
 ```
