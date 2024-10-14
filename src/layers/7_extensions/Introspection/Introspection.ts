@@ -1,5 +1,5 @@
 import { getIntrospectionQuery, type IntrospectionQuery } from 'graphql'
-import type { Extension } from '../../../entrypoints/main.js'
+import type { Extension, SimplifyNullable } from '../../../entrypoints/main.js'
 import type { Fluent } from '../../../lib/fluent/__.js'
 import { createExtension } from '../../6_client/extension/extension.js'
 import type { FnParametersProperty } from '../../6_client/fluent.js'
@@ -60,5 +60,5 @@ interface IntrospectFn extends Fluent.FnProperty<`introspect`> {
 }
 
 interface Introspect<$Args extends FnParametersProperty> {
-  (): Promise<ResolveOutputGql<$Args['state']['context']['config'], IntrospectionQuery> & {}>
+  (): Promise<SimplifyNullable<ResolveOutputGql<$Args['state']['context']['config'], IntrospectionQuery>>>
 }

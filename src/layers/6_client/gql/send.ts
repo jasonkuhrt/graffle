@@ -1,5 +1,5 @@
 import type { Grafaid } from '../../../lib/grafaid/__.js'
-import { isString } from '../../../lib/prelude.js'
+import { isString, type SimplifyNullable } from '../../../lib/prelude.js'
 import type { ResolveOutputGql } from '../handleOutput.js'
 import type { Config } from '../Settings/Config.js'
 
@@ -22,7 +22,7 @@ type SendArguments__<$Variables extends Grafaid.Document.Typed.Variables, $Varia
 
 // dprint-ignore
 export interface DocumentController<$Config extends Config, $TypedDocument extends Grafaid.Document.Typed.TypedDocumentLike> {
-  send(...args: SendArguments<$TypedDocument>): Promise<ResolveOutputGql<$Config, Grafaid.Document.Typed.ResultOf<$TypedDocument>> & {}>
+  send(...args: SendArguments<$TypedDocument>): Promise<SimplifyNullable<ResolveOutputGql<$Config, Grafaid.Document.Typed.ResultOf<$TypedDocument>>>>
 }
 
 export type sendArgumentsImplementation =
