@@ -1,4 +1,4 @@
-import type { HKT } from '../../hkt/__.js'
+import type { TypeFunction } from '../../type-function/__.js'
 import type { FnCallFluent, FnFluent, State } from '../Fluent.js'
 
 export type ToFnPropertyObject<$PropertyFn extends FnProperty> = {
@@ -26,11 +26,11 @@ export type MaterializeProperties<$FluentFn extends FnFluent, $State extends Sta
   >
 }
 
-export interface FnProperty<$Name extends string = string> extends HKT.Fn {
+export interface FnProperty<$Name extends string = string> extends TypeFunction.Fn {
   name: $Name
 }
 
-export type FnCallProperty<$PropertyFn extends FnProperty, $Params extends FnParametersProperty> = HKT.Call<
+export type FnCallProperty<$PropertyFn extends FnProperty, $Params extends FnParametersProperty> = TypeFunction.Call<
   $PropertyFn,
   $Params
 >

@@ -37,7 +37,7 @@ export const ModuleGeneratorMethodsRoot = createModuleGenerator(
     code()
 
     code(`
-      export interface BuilderMethodsRootFn extends Utils.HKT.Fn {
+      export interface BuilderMethodsRootFn extends Utils.TypeFunction.Fn {
         // @ts-expect-error parameter is Untyped.
         return: BuilderMethodsRoot<this['params']['config']>
       }
@@ -58,10 +58,7 @@ const renderRootType = createCodeGenerator<{ node: Grafaid.Schema.ObjectType }>(
           Simplify<
             Utils.HandleOutput<
               $Config,
-              InferResult.${node.name}<
-                Utils.AddTypenameToSelectedRootTypeResultFields<$Config, Index, '${node.name}', $SelectionSet>,
-                Index
-              >
+              InferResult.${node.name}<$SelectionSet, Index>
             >
           >
         >

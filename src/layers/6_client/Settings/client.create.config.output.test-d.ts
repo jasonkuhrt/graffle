@@ -4,7 +4,7 @@ import { describe } from 'node:test'
 import { expectTypeOf, test } from 'vitest'
 import { Graffle } from '../../../../tests/_/schemas/kitchen-sink/graffle/__.js'
 import { schema } from '../../../../tests/_/schemas/kitchen-sink/schema.js'
-import { AssertEqual } from '../../../lib/assert-equal.js'
+import { assertEqual } from '../../../lib/assert-equal.js'
 import { type GraphQLExecutionResultError } from '../../../lib/grafaid/graphql.js'
 import type { ErrorsOther } from '../handleOutput.js'
 
@@ -79,7 +79,7 @@ describe('.envelope', () => {
     // })
     test('query.$batch', () => {
       const result = g.query.$batch({ __typename: true, idNonNull: true })
-      AssertEqual<typeof result, ExecutionResult<{ __typename: 'Query'; idNonNull: string }>>
+      assertEqual<typeof result, ExecutionResult<{ __typename: 'Query'; idNonNull: string }>>
     })
   })
   test('object enables it', async () => {

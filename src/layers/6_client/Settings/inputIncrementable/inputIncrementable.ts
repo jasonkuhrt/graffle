@@ -28,4 +28,7 @@ export type IncrementableInputContext = {
 
 // dprint-ignore
 export type AddIncrementalInput<$Config extends Config, $Input extends WithInput> =
-  NormalizeInput<$Config['initialInput'] & $Input>
+  & Omit<NormalizeInput<$Config['initialInput'] & $Input>, 'typeHooks'>
+  & {
+      typeHooks: $Config['typeHooks']
+    }

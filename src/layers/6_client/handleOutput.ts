@@ -9,7 +9,9 @@ import {
   type GetOrNever,
   type Values,
 } from '../../lib/prelude.js'
+import type { GlobalRegistry } from '../4_generator/globalRegistry.js'
 import type { TransportHttp } from '../5_request/types.js'
+import type { RunTypeHookOnRequestResult } from './extension/extension.js'
 import type { State } from './fluent.js'
 import {
   type Config,
@@ -122,8 +124,13 @@ export type HandleOutput<$Config extends Config, $Data extends SomeObjectData> =
   HandleOutput_Extensions<$Config, Envelope<$Config, $Data>>
 
 type HandleOutput_Extensions<$Config extends Config, $Envelope extends GraffleExecutionResultEnvelope> =
-  // todo reduce envelope through each registered extension hook. Each hook MAY progressively manipulate the envelope.
-  HandleOutput_ErrorsReturn<$Config, $Envelope>
+  HandleOutput_ErrorsReturn<
+    $Config,
+    RunTypeHookOnRequestResult<$Config, {
+      result: $Envelope
+      registeredSchema: GlobalRegistry.GetOrDefault<$Config['name']>
+    }>['result']
+  >
 
 type HandleOutput_ErrorsReturn<$Config extends Config, $Envelope extends GraffleExecutionResultEnvelope> =
   | IfConfiguredGetOutputErrorReturns<$Config>
@@ -178,8 +185,6 @@ type HandleOutput_Envelope<$Config extends Config, $Envelope extends GraffleExec
 type IfConfiguredGetOutputErrorReturns<$Config extends Config> =
   | (ConfigGetOutputError<$Config, 'execution'>  extends 'return'  ? GraphQLExecutionResultError  : never)
   | (ConfigGetOutputError<$Config, 'other'>      extends 'return'  ? ErrorsOther                  : never)
-  // todo remove
-  | (ConfigGetOutputError<$Config, 'schema'>     extends 'return'  ? Error                        : never)
 
 // dprint-ignore
 export type ConfigGetOutputError<$Config extends Config, $ErrorCategory extends ErrorCategory> =

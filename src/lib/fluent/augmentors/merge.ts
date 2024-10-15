@@ -1,8 +1,8 @@
-import type { HKT } from '../../hkt/__.js'
 import type { mergeObjectArray } from '../../prelude.js'
+import type { TypeFunction } from '../../type-function/__.js'
 import type { Context, FnCallFluent, FnFluent, State } from '../Fluent.js'
 
-export interface FnMerge extends HKT.Fn {
+export interface FnMerge extends TypeFunction.Fn {
   Kind: 'MergeFn'
 }
 
@@ -19,6 +19,6 @@ export type AddFnMerge<
 
 export type MaterializeMerges<$Merges extends [...FnMerge[]], $State extends State> = mergeObjectArray<
   {
-    [$Index in keyof $Merges]: HKT.Call<$Merges[$Index], $State['context']>
+    [$Index in keyof $Merges]: TypeFunction.Call<$Merges[$Index], $State['context']>
   }
 >

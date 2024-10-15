@@ -10,10 +10,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutput<
         $Config,
-        InferResult.Query<
-          Utils.AddTypenameToSelectedRootTypeResultFields<$Config, Index, 'Query', $SelectionSet>,
-          Index
-        >
+        InferResult.Query<$SelectionSet, Index>
       >
     >
   >
@@ -51,7 +48,7 @@ export interface BuilderMethodsRoot<$Config extends Utils.Config> {
   query: QueryMethods<$Config>
 }
 
-export interface BuilderMethodsRootFn extends Utils.HKT.Fn {
+export interface BuilderMethodsRootFn extends Utils.TypeFunction.Fn {
   // @ts-expect-error parameter is Untyped.
   return: BuilderMethodsRoot<this['params']['config']>
 }

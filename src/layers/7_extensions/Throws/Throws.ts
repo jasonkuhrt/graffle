@@ -1,7 +1,7 @@
 import { type BuilderConfig, createExtension, type Extension, type WithInput } from '../../../entrypoints/main.js'
+import type { ConfigManager } from '../../../lib/config-manager/__.js'
 // todo: no deep imports, rethink these utilities and/or how they are exported from the graffle package.
 import type { Fluent } from '../../../lib/fluent/__.js'
-import { type ConfigManager } from '../../../lib/prelude.js'
 import type { IncrementWthNewConfig } from '../../6_client/client.js'
 import type { FnParametersProperty } from '../../6_client/fluent.js'
 
@@ -29,11 +29,11 @@ export const Throws = () => {
   })
 }
 
-interface ThrowsExtension extends Extension {
+type ThrowsExtension = Extension<{
   property: ThrowsFn
-}
+}>
 
-export interface ThrowsFn extends Fluent.FnProperty<`throws`> {
+interface ThrowsFn extends Fluent.FnProperty<`throws`> {
   // @ts-expect-error untyped params
   return: Throws<this['params']>
 }
@@ -49,5 +49,5 @@ interface Throws<$Args extends FnParametersProperty> {
 type ThrowsifyConfig<$BuilderConfig extends BuilderConfig> = ConfigManager.Set<
   $BuilderConfig,
   ['output', 'errors'],
-  { other: 'throw'; execution: 'throw'; schema: 'throw' }
+  { other: 'throw'; execution: 'throw' }
 >

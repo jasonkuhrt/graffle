@@ -1,7 +1,6 @@
 import type { Fluent } from '../../lib/fluent/__.js'
 import { proxyGet } from '../../lib/prelude.js'
 import { CustomScalars } from '../7_extensions/CustomScalars/CustomScalars.js'
-import { SchemaErrors } from '../7_extensions/SchemaErrors/SchemaErrors.js'
 import { type UseFn, useProperties } from './extension/use.js'
 import { type ClientContext, createState, type FnParametersProperty, type StateWithoutConfig } from './fluent.js'
 import { type FnGql, gqlProperties } from './gql/gql.js'
@@ -47,7 +46,7 @@ type Create = <$Input extends InputStatic>(input: $Input) =>
 
 export const create: Create = (input) => {
   const initialState = createState({
-    extensions: [CustomScalars(), SchemaErrors()],
+    extensions: [CustomScalars()],
     retry: null,
     input,
   })

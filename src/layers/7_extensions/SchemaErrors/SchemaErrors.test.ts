@@ -11,6 +11,7 @@ import { Select } from '../../2_Select/__.js'
 import { SelectionSetGraphqlMapper } from '../../3_SelectGraphQLMapper/__.js'
 import { graffleMappedToRequest } from '../../5_request/core.js'
 import { injectTypenameOnRootResultFields } from '../../5_request/schemaErrors.js'
+import { SchemaErrors } from './SchemaErrors.js'
 
 const graffle = Graffle
   .create({ schema })
@@ -20,6 +21,7 @@ const graffle = Graffle
       errors: { schema: `default` },
     },
   })
+  .use(SchemaErrors())
 
 describe(`document`, () => {
   describe(`query result field`, () => {

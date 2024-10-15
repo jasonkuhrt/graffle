@@ -4,7 +4,7 @@ import type { Select } from '../../2_Select/__.js'
 import type { InferResult } from '../../3_InferResult/__.js'
 import type { SchemaIndex } from '../../4_generator/generators/SchemaIndex.js'
 import { type HandleOutput } from '../handleOutput.js'
-import type { AddTypenameToSelectedRootTypeResultFields, Config } from '../Settings/Config.js'
+import type { Config } from '../Settings/Config.js'
 
 // dprint-ignore
 export type DocumentRunner<
@@ -21,14 +21,15 @@ export type DocumentRunner<
       HandleOutput<
         $$Config,
         InferResult.Root<
-          AddTypenameToSelectedRootTypeResultFields<
-            $$Config,
-            $$Index,
-            Select.Document.GetRootTypeNameOfOperation<$$Document, $Name>,
-            Select.Document.GetOperation<$$Document, $Name>
-          >,
-          $$Index,
-          Select.Document.GetRootTypeNameOfOperation<$$Document, $Name>
+        // todo iterate through extensions
+        //   AddTypenameToSelectedRootTypeResultFields<
+        //     $$Config,
+        //     $$Index,
+        //     Select.Document.GetRootTypeNameOfOperation<$$Document, $Name>,
+        //     Select.Document.GetOperation<$$Document, $Name>
+        //   >,
+        //   $$Index,
+        //   Select.Document.GetRootTypeNameOfOperation<$$Document, $Name>
         >
       >
       & {}

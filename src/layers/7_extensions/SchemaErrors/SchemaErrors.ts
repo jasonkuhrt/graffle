@@ -1,11 +1,15 @@
 import { Errors } from '../../../lib/errors/__.js'
+import type { Grafaid } from '../../../lib/grafaid/__.js'
 import { normalizeRequestToNode } from '../../../lib/grafaid/request.js'
-import { isString } from '../../../lib/prelude.js'
+import { type ExcludeNullAndUndefined, isString, type StringKeyof } from '../../../lib/prelude.js'
 import { isRecordLikeObject } from '../../../lib/prelude.js'
+import type { Schema } from '../../1_Schema/__.js'
+import type { Select } from '../../2_Select/__.js'
 import type { SchemaIndex } from '../../4_generator/generators/SchemaIndex.js'
 import { injectTypenameOnRootResultFields } from '../../5_request/schemaErrors.js'
 import { createExtension, type Extension } from '../../6_client/extension/extension.js'
 import { SchemaDrivenDataMap } from '../CustomScalars/schemaDrivenDataMap/types.js'
+import type { Config } from '../Introspection/config.js'
 
 // todo?: augment config to include how schema errors should be handled in the output
 // todo: manipulate results: 1) schema errors should be thrown or returned (outside envelope) depending on config.
@@ -17,9 +21,8 @@ export const SchemaErrors = () => {
     onRequest: async ({ pack }) => {
       const state = pack.input.state
       const sddm = state.config.schemaMap
-      const config = state.config
 
-      if (!sddm || !config.output.errors.schema) return pack()
+      if (!sddm) return pack()
 
       const request = normalizeRequestToNode(pack.input.request)
 
@@ -75,19 +78,35 @@ export const SchemaErrors = () => {
   })
 }
 
-interface SchemaErrorsExtension extends Extension {
-  onRequestResult: SchemaErrorsOnRequestResultFn
-}
+type SchemaErrorsExtension = Extension<{
+  onRequestDocumentRootType: OnRequestDocumentRootTypeFn
+  onRequestResult: OnRequestResultFn
+}>
 
-export interface SchemaErrorsOnRequestResultFn extends Extension.Hooks.OnRequestResult {
-  // @ts-expect-error untyped params
-  return: SchemaErrorsOnRequestResult<this['params']>
-}
+type OnRequestDocumentRootType<$Params extends Extension.Hooks.OnRequestDocumentRootType.Params> =
+  $Params['selectionRootType']
 
-type SchemaErrorsOnRequestResult<$Params extends Extension.Hooks.OnRequestResult.Params> = ExcludeSchemaErrors<
-  $Params['schema'],
-  $Params['result']
->
+// dprint-ignore
+type OnRequestResult<$Params extends Extension.Hooks.OnRequestResult.Params> =
+  {
+    result: {
+      data?:
+        | null
+        | {
+            [$Key in keyof ExcludeNullAndUndefined<$Params['result']['data']>]:
+              Exclude<
+                ExcludeNullAndUndefined<$Params['result']['data']>[$Key],
+                $Params['registeredSchema']['index']['error']['objectsTypename'][keyof $Params['registeredSchema']['index']['error']['objectsTypename']]
+              >
+          }
+    } & Omit<$Params['result'], 'data'>
+    registeredSchema: $Params['registeredSchema']
+  }
+
+// ExcludeSchemaErrors<
+//   $Params['registeredSchema']['index'],
+//   $Params['result']
+// >
 
 // dprint-ignore
 // export type IfConfiguredStripSchemaErrorsFromDataRootField<$Config extends Config, $Index extends SchemaIndex, $Data> =
@@ -95,12 +114,12 @@ type SchemaErrorsOnRequestResult<$Params extends Extension.Hooks.OnRequestResult
 //     ? $Data
 //     : ExcludeSchemaErrors<$Index, $Data>
 
-// dprint-ignore
-type ExcludeSchemaErrors<$Schema extends SchemaIndex, $Data> =
-  Exclude<
-    $Data,
-    $Schema['error']['objectsTypename'][keyof $Schema['error']['objectsTypename']]
-  >
+// // dprint-ignore
+// type ExcludeSchemaErrors<$Schema extends SchemaIndex, $Data extends Grafaid.SomeObjectData> =
+//   Exclude<
+//     $Data,
+//     $Schema['error']['objectsTypename'][keyof $Schema['error']['objectsTypename']]
+//   >
 
 // // dprint-ignore
 // export type IfConfiguredStripSchemaErrorsFromDataRootType<$Config extends Config, $Index extends SchemaIndex, $Data> =
@@ -108,3 +127,53 @@ type ExcludeSchemaErrors<$Schema extends SchemaIndex, $Data> =
 //       [$RootFieldName in keyof $Data]: IfConfiguredStripSchemaErrorsFromDataRootField<$Config, $Index, $Data[$RootFieldName]>
 //     }
 //   & {}
+
+// dprint-ignore
+// type IsResultField<
+//   $Schema extends SchemaIndex,
+//   $RootTypeName extends Grafaid.Schema.RootTypeName,
+//   $RootFieldName extends string,
+// > =
+//   (
+//     & $RootFieldName
+//     & $Schema['error']['rootResultFields'][$RootTypeName]
+//   ) extends never
+//     ? false
+//     : true
+
+// dprint-ignore
+// export type AddTypenameToRootTypeResultFields<
+//   $Schema extends SchemaIndex,
+//   $RootTypeName extends Schema.RootTypeName,
+//   $DocumentNode extends Select,
+// > =
+//   {
+//     [$RootFieldName in StringKeyof<$DocumentNode>]:
+//       IsResultField<$Schema, $RootTypeName, $RootFieldName> extends false
+//       ? $DocumentNode[$RootFieldName]
+//       : $DocumentNode[$RootFieldName] extends Select.SelectAlias.SelectAlias
+//         ? AddTypenameToAliasInput<$DocumentNode[$RootFieldName]>
+//         : $DocumentNode[$RootFieldName] & TypenameSelection
+//   }
+
+// // dprint-ignore
+// type AddTypenameToAliasInput<$AliasInput extends Select.SelectAlias.SelectAlias> = {
+//   [$Index in keyof $AliasInput]:
+//     $AliasInput[$Index] extends Select.SelectAlias.SelectAlias
+//       ? [$AliasInput[$Index][0], $AliasInput[$Index][1] & TypenameSelection]
+//       : $AliasInput[$Index]
+// }
+
+// --------- Boilerplate Types ---------
+
+interface OnRequestDocumentRootTypeFn extends Extension.Hooks.OnRequestDocumentRootType {
+  // @ts-expect-error untyped params
+  return: OnRequestDocumentRootType<this['params']>
+}
+
+interface OnRequestResultFn extends Extension.Hooks.OnRequestResult {
+  // @ts-expect-error untyped params
+  return: OnRequestResult<this['params']>
+}
+
+// --------- Boilerplate Types ---------

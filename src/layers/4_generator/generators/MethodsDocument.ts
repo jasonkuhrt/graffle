@@ -24,7 +24,7 @@ export const ModuleGeneratorMethodsDocument = createModuleGenerator(
     code()
 
     code(`
-      export interface BuilderMethodsDocumentFn extends Utilities.HKT.Fn {
+      export interface BuilderMethodsDocumentFn extends Utilities.TypeFunction.Fn {
         // @ts-expect-error parameter is Untyped.
         return: Document<this['params']['config']>
       }

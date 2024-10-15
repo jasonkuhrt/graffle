@@ -1,5 +1,5 @@
 import type { IsUnknown } from 'type-fest'
-import type { ConfigManager } from '../../../lib/prelude.js'
+import type { ConfigManager } from '../../../lib/config-manager/__.js'
 import type { GlobalRegistry } from '../../4_generator/globalRegistry.js'
 import { Transport } from '../../5_request/types.js'
 import { defaultMethodMode } from '../transportHttp/request.js'
@@ -12,6 +12,11 @@ export type NormalizeInput<$Input extends InputStatic> = {
   name: HandleName<$Input>
   schemaMap: ConfigManager.OrDefault<$Input['schemaMap'], null>
   transport: HandleTransport<$Input>
+  typeHooks: {
+    property: []
+    onRequestDocumentRootType: []
+    onRequestResult: []
+  },
   output: {
     defaults: {
       errorChannel: ConfigManager.ReadOrDefault<$Input, ['output', 'defaults', 'errorChannel'], 'throw'>

@@ -10,10 +10,7 @@ export interface MutationMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutput<
         $Config,
-        InferResult.Mutation<
-          Utils.AddTypenameToSelectedRootTypeResultFields<$Config, Index, 'Mutation', $SelectionSet>,
-          Index
-        >
+        InferResult.Mutation<$SelectionSet, Index>
       >
     >
   >
@@ -51,7 +48,7 @@ export interface BuilderMethodsRoot<$Config extends Utils.Config> {
   mutation: MutationMethods<$Config>
 }
 
-export interface BuilderMethodsRootFn extends Utils.HKT.Fn {
+export interface BuilderMethodsRootFn extends Utils.TypeFunction.Fn {
   // @ts-expect-error parameter is Untyped.
   return: BuilderMethodsRoot<this['params']['config']>
 }

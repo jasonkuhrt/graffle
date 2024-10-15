@@ -1,10 +1,13 @@
 import type { Anyware } from '../../../lib/anyware/__.js'
 import type { FnProperty } from '../../../lib/fluent/Fluent.js'
-import type { HKT } from '../../../lib/hkt/__.js'
-import type { Fn } from '../../../lib/hkt/hkt.js'
+import type { AssertConstraint } from '../../../lib/prelude.js'
+import type { TypeFunction } from '../../../lib/type-function/__.js'
+import type { Fn } from '../../../lib/type-function/TypeFunction.js'
+import type { Select } from '../../2_Select/__.js'
+import type { GlobalRegistry } from '../../4_generator/globalRegistry.js'
 import type { RequestCore } from '../../5_request/__.js'
 import type { Client } from '../client.js'
-import type { GraffleExecutionResultVar } from '../handleOutput.js'
+import type { GraffleExecutionResultEnvelope } from '../handleOutput.js'
 import type { Config } from '../Settings/Config.js'
 
 export interface TypeHooks {
@@ -13,18 +16,53 @@ export interface TypeHooks {
    */
   property?: FnProperty
   /**
-   * Intercept result type from request.
+   * Manipulate the execution result of a request.
+   *
+   * Applies to all requests.
    */
   onRequestResult?: Extension.Hooks.OnRequestResult
+  /**
+   * Manipulate the root type in a document in a request.
+   *
+   * Applies to all requests with typed documents which is all of them except `gql` method when passed a `string`.
+   *
+   * The root type received is the one that the request's operation name pointed to.
+   *
+   * Note: There is no way to manipulate the whole document.
+   */
+  onRequestDocumentRootType?: Extension.Hooks.OnRequestDocumentRootType
 }
 
-export interface Extension extends Base, Fn, TypeHooks {}
+export type RunTypeHookOnRequestResult<$Config extends Config, $Params extends Extension.Hooks.OnRequestResult.Params> =
+  AssertConstraint<
+    Extension.Hooks.OnRequestResult.Params,
+    TypeFunction.CallPipeline<$Config['typeHooks']['onRequestResult'], $Params>
+  >
+
+interface EmptyTypeHooks {
+  property: undefined
+  onRequestResult: undefined
+  onRequestDocumentRootType: undefined
+}
+
+export interface Extension<$TypeHooks extends TypeHooks = TypeHooks> extends Base, Fn {
+  typeHooks: $TypeHooks
+}
 
 export namespace Extension {
   export namespace Hooks {
+    export interface OnRequestDocumentRootType extends Fn {}
+    export namespace OnRequestDocumentRootType {
+      export interface Params {
+        selectionRootType: Select.SelectionSet.RootType
+      }
+    }
     export interface OnRequestResult extends Fn {}
     export namespace OnRequestResult {
-      export type Params = GraffleExecutionResultVar
+      export interface Params {
+        result: GraffleExecutionResultEnvelope
+        registeredSchema: GlobalRegistry.RegisteredSchema
+      }
     }
   }
 }
@@ -62,9 +100,9 @@ interface Base {
   ) => unknown
 }
 
-export const createExtension = <$Extension extends Extension = Extension>(
+export const createExtension = <$Extension extends Extension = Extension<EmptyTypeHooks>>(
   // type hooks
-  extension: Omit<HKT.UnFn<$Extension>, keyof TypeHooks>,
+  extension: Omit<TypeFunction.UnFn<$Extension>, 'typeHooks'>,
 ): $Extension => {
   return extension as $Extension
 }

@@ -1,9 +1,10 @@
 import type { Simplify } from 'type-fest'
-import type { HKT } from '../hkt/__.js'
+import type { TypeFunction } from '../type-function/__.js'
 import type { AddFnMerge, FnMerge, MaterializeMerges } from './augmentors/merge.js'
 import type { AddFnProperty, FnParametersProperty, FnProperty, MaterializeProperties } from './augmentors/property.js'
 
 export * from './augmentors/merge.js'
+
 export * from './augmentors/property.js'
 
 export type Context = object
@@ -24,13 +25,13 @@ interface StateInitial {
   context: {}
 }
 
-export interface FnFluent<$StateCurrent extends State = StateInitial> extends HKT.Fn {
+export interface FnFluent<$StateCurrent extends State = StateInitial> extends TypeFunction.Fn {
   StateCurrent: $StateCurrent
   // @ts-expect-error untyped params
   return: FnFluent<this['params']>
 }
 
-export type FnCallFluent<$FnFluent extends FnFluent, $State extends State> = HKT.Call<$FnFluent, $State>
+export type FnCallFluent<$FnFluent extends FnFluent, $State extends State> = TypeFunction.Call<$FnFluent, $State>
 
 export type Create<$Context = Context> = FnFluent<StateInitial & { context: $Context }>
 
@@ -68,11 +69,38 @@ export type AddMany<$FnFluent extends FnFluent<any>, $AugmentationFns extends [.
 
 export type IncrementNothing<$Args extends FnParametersProperty> = Materialize<$Args['fnFluent']>
 
-export type IncrementUsingMerge<
+export type IncrementWithStateMerged<
+  $Context extends Context,
+  $Params extends FnParametersProperty,
+  $NewState extends {
+    context?: $Context
+    properties?: State['properties']
+  },
+> = Materialize<
+  FnCallFluent<$Params['fnFluent'], $Params['state'] & $NewState>
+>
+
+export type IncrementWithStateSet<
+  $Context extends Context,
+  $Params extends FnParametersProperty,
+  $NewState extends {
+    context: $Context
+    properties: State['properties']
+  },
+> = Materialize<
+  FnCallFluent<$Params['fnFluent'], {
+    context: $NewState['context']
+    properties: $NewState['properties']
+    merges: $Params['state']['merges']
+  }>
+>
+
+export type IncrementUsing<
+  $Context extends Context,
   $Params extends FnParametersProperty,
   $NewState extends {
     properties?: State['properties']
-    context?: State['context']
+    context?: $Context
   },
 > = Materialize<
   FnCallFluent<$Params['fnFluent'], $Params['state'] & $NewState>
