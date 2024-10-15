@@ -1,6 +1,7 @@
 import type { GraphQLError } from 'graphql'
 import { Errors } from '../../lib/errors/__.js'
-import type { GraphQLExecutionResultError, SomeObjectData } from '../../lib/grafaid/graphql.js'
+import type { SomeObjectData } from '../../lib/grafaid/graphql.js'
+import type { GraphQLExecutionResultError } from '../../lib/grafaid/graphql.js'
 import {
   type ExcludeNull,
   type ExcludeNullAndUndefined,
