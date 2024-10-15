@@ -642,3 +642,9 @@ export const findTyped = <$Value, $Result>(
 }
 
 export type SimplifyNullable<T> = null extends T ? (T & {}) | null : T & {}
+
+// dprint-ignore
+export type GetOrNever<$O extends object, $P extends string> =
+  $P extends keyof $O
+    ? $O[$P]
+    : never

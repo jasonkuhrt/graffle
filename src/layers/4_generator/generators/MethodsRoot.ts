@@ -71,7 +71,7 @@ const renderRootType = createCodeGenerator<{ node: Grafaid.Schema.ObjectType }>(
           Simplify<
             Utils.HandleOutputGraffleRootField<
               $Config,
-              '${node.name}',
+              { __typename: '${node.name}' },
               '__typename'
             >
           >

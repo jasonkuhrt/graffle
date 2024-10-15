@@ -5,7 +5,7 @@ import type {
   Node,
   Query,
   ResultOf,
-  SomeData,
+  SomeObjectData,
   String,
   Variables,
   VariablesInputKindNone,
@@ -32,7 +32,7 @@ import type { TypedDocumentNode as Node2 } from '@graphql-typed-document-node/co
   AssertEqual<VariablesOf<Query   <{x:1},{}>>, {}>()
   AssertEqual<VariablesOf<String  <{x:1},{}>>, {}>()
 
-  AssertEqual<ResultOf<string>           , SomeData>()
+  AssertEqual<ResultOf<string>           , SomeObjectData>()
   AssertEqual<ResultOf<Node2  <{x:1},{}>>, {x:1}>()
   AssertEqual<ResultOf<Node   <{x:1},{}>>, {x:1}>()
   AssertEqual<ResultOf<Query  <{x:1},{}>>, {x:1}>()

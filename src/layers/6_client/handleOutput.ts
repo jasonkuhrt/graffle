@@ -1,7 +1,13 @@
-import type { ExecutionResult, GraphQLError } from 'graphql'
+import type { GraphQLError } from 'graphql'
 import { Errors } from '../../lib/errors/__.js'
-import type { GraphQLExecutionResultError, SomeData } from '../../lib/grafaid/graphql.js'
-import { type Values } from '../../lib/prelude.js'
+import type { GraphQLExecutionResultError, SomeObjectData } from '../../lib/grafaid/graphql.js'
+import {
+  type ExcludeNull,
+  type ExcludeNullAndUndefined,
+  type ExcludeUndefined,
+  type GetOrNever,
+  type Values,
+} from '../../lib/prelude.js'
 import type { TransportHttp } from '../5_request/types.js'
 import type { State } from './fluent.js'
 import {
@@ -21,7 +27,12 @@ export type ErrorsOther =
   | DOMException
 
 export type GraffleExecutionResultEnvelope<$Config extends Config = Config> =
-  & ExecutionResult
+  // & ExecutionResult
+  & {
+    errors?: ReadonlyArray<GraphQLError>
+    data?: SomeObjectData | null
+    extensions?: ObjMap
+  }
   & ($Config['transport']['type'] extends TransportHttp ? {
       /**
        * If transport was HTTP, then the raw response is available here.
@@ -95,29 +106,18 @@ export const handleOutput = (
  * Types for output handling.
  */
 
-// 1. Wrap data in an envelope.
-// 2. Reduce envelope through each registered extension hook. Each hook MAY progressively manipulate the envelope.
-// 3. If output-mode is error-return, then adjust envelope and add errors union
-// 4. a. If output-mode is data, then ditch envelope, add envelope data
-//    b. If true, and if interface is graffle root field, access root field on data.
+// dprint-ignore
+export type HandleOutputGraffleRootField<$Config extends Config, $Data extends SomeObjectData, $RootFieldName extends string> =
+  HandleOutputGraffleRootField_Data<ExcludeNull<HandleOutput<$Config, $Data>>, $RootFieldName>
 
 // dprint-ignore
-export type HandleOutputGraffleRootField<$Config extends Config, $Data, $RootFieldName extends string> =
-  HandleOutputGraffleRootField_Data<$Config, HandleOutput<$Config, $Data>, $RootFieldName>
+type HandleOutputGraffleRootField_Data<$Output extends Error | SomeObjectData | GraffleExecutionResultEnvelope, $RootFieldName extends string> =
+  $Output extends Error | GraffleExecutionResultEnvelope
+    ? $Output
+    : GetOrNever<ExcludeNullAndUndefined<$Output>, $RootFieldName>
 
 // dprint-ignore
-type HandleOutputGraffleRootField_Data<$Config extends Config, $EnvelopeOrData extends SomeData|GraffleExecutionResultEnvelope, $RootFieldName extends string> =
-  $Config['output']['envelope']['enabled'] extends true
-    ? $EnvelopeOrData
-    : $EnvelopeOrData extends SomeData
-      ? $EnvelopeOrData[$RootFieldName]
-      // Unknown case. Generally impossible.
-      // todo?: should we pass through the unknown type variable?
-      //        Would that help extensions do more things?
-      : never // $EnvelopeOrData
-
-// dprint-ignore
-export type HandleOutput<$Config extends Config, $Data> =
+export type HandleOutput<$Config extends Config, $Data extends SomeObjectData> =
   HandleOutput_Extensions<$Config, Envelope<$Config, $Data>>
 
 type HandleOutput_Extensions<$Config extends Config, $Envelope extends GraffleExecutionResultEnvelope> =
@@ -132,7 +132,7 @@ type HandleOutput_ErrorsReturn<$Config extends Config, $Envelope extends Graffle
 type HandleOutput_Envelope<$Config extends Config, $Envelope extends GraffleExecutionResultEnvelope> =
   $Config['output']['envelope']['enabled'] extends true
     ? $Envelope
-    : $Envelope['data']
+    : ExcludeUndefined<$Envelope['data']> // todo make data field not undefinable
 
 // type HandleOutputGql_Envelope
 

@@ -70,9 +70,9 @@ AssertTypeOf<D | null>(await g.gql(d3).send({}))
   await g.gql<Grafaid.Document.Typed.String<D, { x: 1 }>               >``.send({ x: 2 })
   
   
-  AssertTypeOf<Grafaid.SomeData | null>(await g.gql``.send())
-  AssertTypeOf<Grafaid.SomeData | null>(await g.gql``.send(`foo`))
-  AssertTypeOf<Grafaid.SomeData | null>(await g.gql``.send(`foo`, { x: 1 }))
-  AssertTypeOf<Grafaid.SomeData | null>(await g.gql``.send({ x: 1 }))
+  AssertTypeOf<Grafaid.SomeObjectData | null>(await g.gql``.send())
+  AssertTypeOf<Grafaid.SomeObjectData | null>(await g.gql``.send(`foo`))
+  AssertTypeOf<Grafaid.SomeObjectData | null>(await g.gql``.send(`foo`, { x: 1 }))
+  AssertTypeOf<Grafaid.SomeObjectData | null>(await g.gql``.send({ x: 1 }))
 
 }

@@ -22,7 +22,7 @@ export interface MutationMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        'Mutation',
+        { __typename: 'Mutation' },
         '__typename'
       >
     >

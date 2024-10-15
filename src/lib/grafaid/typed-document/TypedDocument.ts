@@ -2,9 +2,9 @@ import type { DocumentTypeDecoration } from '@graphql-typed-document-node/core'
 import { type DocumentNode, type TypedQueryDocumentNode } from 'graphql'
 import type { HasRequiredKeys, IsNever, IsUnknown } from 'type-fest'
 import { type HasKeys, type IsHasIndexType } from '../../prelude.js'
-import type { SomeData, Variables } from '../graphql.js'
+import type { SomeObjectData, Variables } from '../graphql.js'
 
-export type { SomeData, Variables } from '../graphql.js'
+export type { SomeObjectData, Variables } from '../graphql.js'
 
 export { type TypedQueryDocumentNode as Query } from 'graphql'
 
@@ -14,12 +14,12 @@ export { type TypedQueryDocumentNode as Query } from 'graphql'
 // types are allowed.
 
 // dprint-ignore
-export type TypedDocumentLike<$Result extends SomeData = SomeData, $Variables extends Variables = any> =
+export type TypedDocumentLike<$Result extends SomeObjectData = SomeObjectData, $Variables extends Variables = any> =
   | TypedQueryDocumentNode<$Result, $Variables>
   | TypedDocumentString   <$Result, $Variables>
   | TypedDocumentNode     <$Result, $Variables>
 
-export type TypedDocumentNodeLike<$Result extends SomeData = SomeData, $Variables extends Variables = any> =
+export type TypedDocumentNodeLike<$Result extends SomeObjectData = SomeObjectData, $Variables extends Variables = any> =
   | TypedQueryDocumentNode<$Result, $Variables>
   | TypedDocumentNode<$Result, $Variables>
 
@@ -28,7 +28,7 @@ export type TypedDocumentNodeLike<$Result extends SomeData = SomeData, $Variable
  * @see https://github.com/dotansimha/graphql-typed-document-node/issues/163
  */
 // dprint-ignore
-interface TypedDocumentString<$Result = SomeData, $Variables = Variables> extends String, DocumentTypeDecoration<$Result, $Variables> {
+interface TypedDocumentString<$Result = SomeObjectData, $Variables = Variables> extends String, DocumentTypeDecoration<$Result, $Variables> {
  // nothing
 }
 
@@ -40,7 +40,7 @@ interface TypedDocumentString<$Result = SomeData, $Variables = Variables> extend
  * @see https://github.com/dotansimha/graphql-typed-document-node
  */
 // dprint-ignore
-interface TypedDocumentNode<$Result = SomeData, $Variables = Variables> extends DocumentNode, DocumentTypeDecoration<$Result, $Variables> {
+interface TypedDocumentNode<$Result = SomeObjectData, $Variables = Variables> extends DocumentNode, DocumentTypeDecoration<$Result, $Variables> {
   // nothing
 }
 
@@ -85,10 +85,10 @@ export const unType = (document: TypedDocumentLike): string | DocumentNode => do
 
 // dprint-ignore
 export type ResultOf<$Document extends TypedDocumentLike> =
-  $Document extends string                                       ? SomeData :
-  $Document extends TypedQueryDocumentNode <infer $R, infer _>   ? $R :
-  $Document extends TypedDocumentNode      <infer $R, infer _>   ? $R :
-  $Document extends TypedDocumentString    <infer $R, infer _>   ? $R :
+  $Document extends string                                                              ? SomeObjectData :
+  $Document extends TypedQueryDocumentNode <infer $R extends SomeObjectData, infer _>   ? $R :
+  $Document extends TypedDocumentNode      <infer $R extends SomeObjectData, infer _>   ? $R :
+  $Document extends TypedDocumentString    <infer $R extends SomeObjectData, infer _>   ? $R :
                                                                    never
 
 // dprint-ignore

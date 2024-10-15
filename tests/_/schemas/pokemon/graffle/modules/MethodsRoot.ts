@@ -22,7 +22,7 @@ export interface MutationMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        'Mutation',
+        { __typename: 'Mutation' },
         '__typename'
       >
     >
@@ -56,7 +56,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        'Query',
+        { __typename: 'Query' },
         '__typename'
       >
     >

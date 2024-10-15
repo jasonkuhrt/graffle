@@ -22,7 +22,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        'Query',
+        { __typename: 'Query' },
         '__typename'
       >
     >
