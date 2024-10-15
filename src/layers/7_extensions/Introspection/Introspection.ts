@@ -50,9 +50,9 @@ export const Introspection = (input?: Input) => {
   })
 }
 
-interface IntrospectionExtension extends Extension {
+type IntrospectionExtension = Extension<{
   property: IntrospectFn
-}
+}>
 
 interface IntrospectFn extends Fluent.FnProperty<`introspect`> {
   // @ts-expect-error untyped params

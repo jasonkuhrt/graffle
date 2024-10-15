@@ -155,14 +155,14 @@ describe(`document query result field`, () => {
         query: { x: { resultNonNull: { $: { $case: `ErrorOne` }, __typename: true } } },
       })
       .run()
-      .catch((_: unknown) => _)
+      .catch((_: unknown) => _) as Errors.ContextualAggregateError
     expect(result.errors[0]).toMatchInlineSnapshot(`[Error: Failure on field resultNonNull: ErrorOne]`)
   })
   test(`without __typename still works, __typename is dynamically added at runtime`, async () => {
     const result = await graffle
       .document({ query: { x: { resultNonNull: { $: { $case: `ErrorOne` } } } } })
       .run()
-      .catch((_: unknown) => _)
+      .catch((_: unknown) => _) as Errors.ContextualAggregateError
     expect(result.errors[0]).toMatchInlineSnapshot(
       `[Error: Failure on field resultNonNull: ErrorOne]`,
     )
