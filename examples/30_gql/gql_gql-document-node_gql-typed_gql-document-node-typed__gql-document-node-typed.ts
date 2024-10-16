@@ -40,6 +40,5 @@ const document = parse(`
   `) as Document
 
 const data = await graffle.gql(document).send({ name: `Pikachu` })
-type Data = typeof data
 
 show(data?.pokemonByName)
