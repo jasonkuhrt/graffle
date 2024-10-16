@@ -22,12 +22,6 @@ export interface SchemaDrivenDataMap {
   }
   types: Record<string, SchemaDrivenDataMap.NamedLike>
   directives: Record<string, SchemaDrivenDataMap.ArgumentsOrInputObjectFields>
-  // todo, actually generate this
-  // schemaErrors?: {
-  //   [Grafaid.Schema.RootTypeName.Mutation]?: Record<string, SchemaDrivenDataMap.OutputObject>
-  //   [Grafaid.Schema.RootTypeName.Query]?: Record<string, SchemaDrivenDataMap.OutputObject>
-  //   [Grafaid.Schema.RootTypeName.Subscription]?: Record<string, SchemaDrivenDataMap.OutputObject>
-  // }
 }
 
 export namespace SchemaDrivenDataMap {

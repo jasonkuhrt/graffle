@@ -1,4 +1,3 @@
-import { ModuleGeneratorError } from '../../7_extensions/SchemaErrors/Error.js'
 import { createModuleGenerator } from '../helpers/moduleGenerator.js'
 import { ModuleGeneratorClient } from './Client.js'
 import { ModuleGeneratorSelect } from './Select.js'
@@ -15,7 +14,6 @@ export const ModuleGenerator_ = createModuleGenerator(
       `import './modules/Global.js'`,
       ``,
       `export { Select } from './modules/${ModuleGeneratorSelect.name}.js'`,
-      `export { isError } from './modules/${ModuleGeneratorError.name}.js'`,
       `export { create } from './modules/${ModuleGeneratorClient.name}.js'`,
       `export * as SelectionSets from './modules/${ModuleGeneratorSelectionSets.name}.js'`,
     )

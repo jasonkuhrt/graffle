@@ -16,10 +16,7 @@ declare global {
           Root: MethodsRoot.BuilderMethodsRootFn
         }
         customScalars: {}
-        // schemaCustomScalarsIndex: SchemaCustomScalarIndex
-        featureOptions: {
-          schemaErrors: true
-        }
+
         /**
          * https://countries.trevorblades.com/graphql
          */

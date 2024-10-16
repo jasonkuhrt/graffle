@@ -19,10 +19,7 @@ declare global {
         customScalars: {
           Date: Scalar.Date
         }
-        // schemaCustomScalarsIndex: SchemaCustomScalarIndex
-        featureOptions: {
-          schemaErrors: true
-        }
+
         defaultSchemaUrl: null
       }
     }
