@@ -54,10 +54,7 @@ export const ModuleGeneratorGlobal = createModuleGenerator(
               customScalars: {
                 ${customScalarsProperties}
               }
-              //schemaCustomScalarsIndex: SchemaCustomScalarIndex
-              featureOptions: {
-                schemaErrors: ${config.options.errorTypeNamePattern ? `true` : `false`}
-              }${defaultSchemaUrlTsDoc}
+              ${defaultSchemaUrlTsDoc}
               defaultSchemaUrl: ${config.options.defaultSchemaUrl ? `string` : `null`}
           }
         }

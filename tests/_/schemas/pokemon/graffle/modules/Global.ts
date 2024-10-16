@@ -16,10 +16,7 @@ declare global {
           Root: MethodsRoot.BuilderMethodsRootFn
         }
         customScalars: {}
-        // schemaCustomScalarsIndex: SchemaCustomScalarIndex
-        featureOptions: {
-          schemaErrors: false
-        }
+
         /**
          * http://localhost:3000/graphql
          */

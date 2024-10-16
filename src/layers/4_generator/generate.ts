@@ -1,6 +1,5 @@
 import fs from 'node:fs/promises'
 import { ModuleGeneratorSchemaDrivenDataMap } from '../7_extensions/CustomScalars/schemaDrivenDataMap/generator.js'
-import { ModuleGeneratorError } from '../7_extensions/SchemaErrors/Error.js'
 import { type Config, createConfig, type Input } from './config.js'
 import { ModuleGenerator_ } from './generators/_.js'
 import { ModuleGenerator__ } from './generators/__.js'
@@ -46,7 +45,6 @@ const generateCode = async (config: Config): Promise<GeneratedModule[]> => {
     ModuleGeneratorGlobal,
     ModuleGeneratorClient,
     ModuleGeneratorData,
-    ModuleGeneratorError,
     ModuleGeneratorScalar,
     // Packaging Stuff
     ModuleGenerator__,
