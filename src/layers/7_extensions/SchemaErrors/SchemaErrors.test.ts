@@ -18,7 +18,6 @@ const graffle = Graffle
   .with({
     output: {
       defaults: { errorChannel: `return` },
-      errors: { schema: `default` },
     },
   })
   .use(SchemaErrors())
@@ -114,7 +113,6 @@ test(`gql string request`, async ({ kitchenSink }) => {
   // This makes me think of a feature we need to have. Make it easy to get static types of the client in its various configured states.
   const result = await kitchenSink
     .use(SchemaErrors())
-    .with({ output: { errors: { schema: `default` } } })
     .gql`query { resultNonNull (case: Object1) { ... on Object1 { id } } }`
     .send()
   expect(result).toMatchObject({ resultNonNull: { __typename: `Object1`, id: `abc` } })
@@ -123,7 +121,6 @@ test(`gql string request`, async ({ kitchenSink }) => {
 test(`gql document request`, async ({ kitchenSink }) => {
   const result = await kitchenSink
     .use(SchemaErrors())
-    .with({ output: { errors: { schema: `default` } } })
     .gql(parse(`query { resultNonNull (case: Object1) { ... on Object1 { id } } }`))
     .send()
   expect(result).toMatchObject({ resultNonNull: { __typename: `Object1`, id: `abc` } })

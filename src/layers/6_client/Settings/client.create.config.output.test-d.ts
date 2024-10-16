@@ -29,7 +29,6 @@ describe('default is errors thrown, no envelope, no schema errors', async () => 
       errors: {
         execution: 'default',
         other: 'default',
-        schema: false,
       },
     },
   })
@@ -125,7 +124,7 @@ describe('.envelope', () => {
         schema,
         // todo allow this shorthand
         // output: { envelope: false },
-        output: { envelope: { errors: { execution:false, other:false, schema:false } } },
+        output: { envelope: { errors: { execution:false, other:false } } },
       })
       const result = await g.query.__typename()
       expectTypeOf<keyof typeof result>().toEqualTypeOf<'data'|'extensions'> // no errors
