@@ -22,7 +22,8 @@ type SendArguments__<$Variables extends Grafaid.Document.Typed.Variables, $Varia
 
 // dprint-ignore
 export interface DocumentController<$Config extends Config, $TypedDocument extends Grafaid.Document.Typed.TypedDocumentLike> {
-  send(...args: SendArguments<$TypedDocument>): Promise<SimplifyNullable<HandleOutput<$Config, Grafaid.Document.Typed.ResultOf<$TypedDocument>>>>
+  send(...args: SendArguments<$TypedDocument>):
+    Promise<SimplifyNullable<HandleOutput<$Config, Grafaid.Document.Typed.ResultOf<$TypedDocument>>>>
 }
 
 export type sendArgumentsImplementation =

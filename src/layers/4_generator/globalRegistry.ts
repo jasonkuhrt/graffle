@@ -27,7 +27,7 @@ export namespace GlobalRegistry {
   export interface RegisteredSchema {
     name: string
     index: SchemaIndex
-    featureOptions: {}
+    // featureOptions: {}
     interfaces: {
       Root: TypeFunction.Fn
       Document: TypeFunction.Fn
