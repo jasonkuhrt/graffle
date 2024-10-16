@@ -1,5 +1,5 @@
-import { Grafaid } from '../../../lib/grafaid/__.js'
-import { applyCodec } from '../../1_Schema/Hybrid/types/Scalar/Scalar.js'
+import { applyCodec } from '../../layers/1_Schema/Hybrid/types/Scalar/Scalar.js'
+import { Grafaid } from '../../lib/grafaid/__.js'
 import { SchemaDrivenDataMap } from './schemaDrivenDataMap/types.js'
 
 export const encodeRequestVariables = ({ sddm, request }: {

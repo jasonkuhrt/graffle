@@ -1,7 +1,7 @@
 import { describe, expectTypeOf, test } from 'vitest'
-import { Graffle } from '../../../../tests/_/schemas/kitchen-sink/graffle/__.js'
-import { schema } from '../../../../tests/_/schemas/kitchen-sink/schema.js'
-import { type Extension } from '../../6_client/extension/extension.js'
+import { Graffle } from '../../../tests/_/schemas/kitchen-sink/graffle/__.js'
+import { schema } from '../../../tests/_/schemas/kitchen-sink/schema.js'
+import { type Extension } from '../../layers/6_client/extension/extension.js'
 import { SchemaErrors } from './SchemaErrors.js'
 
 const g = Graffle.create({ schema }).use(SchemaErrors())

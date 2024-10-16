@@ -1,5 +1,5 @@
-import { isScalar } from '../1_Schema/Hybrid/types/Scalar/Scalar.js'
-import type { SchemaDrivenDataMap } from '../7_extensions/CustomScalars/schemaDrivenDataMap/types.js'
+import type { SchemaDrivenDataMap } from '../../extensions/CustomScalars/schemaDrivenDataMap/types.js'
+import { isScalar } from '../../layers/1_Schema/Hybrid/types/Scalar/Scalar.js'
 
 /**
  * Infer the type of a variable for the given argument.

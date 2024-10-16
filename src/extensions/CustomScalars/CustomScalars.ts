@@ -1,5 +1,5 @@
-import { normalizeRequestToNode } from '../../../lib/grafaid/request.js'
-import { createExtension } from '../../6_client/extension/extension.js'
+import { createExtension } from '../../layers/6_client/extension/extension.js'
+import { normalizeRequestToNode } from '../../lib/grafaid/request.js'
 import { decodeResultData } from './decode.js'
 import { encodeRequestVariables } from './encode.js'
 

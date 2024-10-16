@@ -1,1 +1,1 @@
-<!--@include: ../../../../src/layers/7_extensions/Throws/documentation.md-->
+<!--@include: ../../../../src/layers/extensions/Throws/documentation.md-->

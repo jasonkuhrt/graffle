@@ -8,8 +8,6 @@ const graffle = Graffle.create({ schema: Schema.schema })
 const x = await graffle.query.id({ $include: false })
 // dprint-ignore
 test(`query`, async () => {
-  const x = await graffle.query.idNonNull()
-  type _x = typeof x
   // scalar
   expectTypeOf(await graffle.query.id()).toEqualTypeOf<string | null>()
   // scalar none-nullable

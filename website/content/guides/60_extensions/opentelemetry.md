@@ -1,1 +1,1 @@
-<!--@include: ../../../../src/layers/7_extensions/Opentelemetry/documentation.md-->
+<!--@include: ../../../../src/layers/extensions/Opentelemetry/documentation.md-->

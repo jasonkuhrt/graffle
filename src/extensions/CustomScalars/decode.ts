@@ -1,6 +1,6 @@
 import { Kind } from 'graphql'
-import type { Grafaid } from '../../../lib/grafaid/__.js'
-import { applyCodec } from '../../1_Schema/Hybrid/types/Scalar/Scalar.js'
+import { applyCodec } from '../../layers/1_Schema/Hybrid/types/Scalar/Scalar.js'
+import type { Grafaid } from '../../lib/grafaid/__.js'
 import { SchemaDrivenDataMap } from './schemaDrivenDataMap/types.js'
 
 /**
