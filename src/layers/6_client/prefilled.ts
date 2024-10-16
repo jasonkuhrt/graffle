@@ -1,5 +1,5 @@
 import type { HasRequiredKeys } from 'type-fest'
-import type { SchemaDrivenDataMap } from '../../extensions/CustomScalars/schemaDrivenDataMap/types.js'
+import type { SchemaDrivenDataMap } from '../../extensions/CustomScalars/schemaDrivenDataMap/__.js'
 import type { Exact } from '../../lib/prelude.js'
 import type { GlobalRegistry } from '../4_generator/globalRegistry.js'
 import { type Client, create } from './client.js'

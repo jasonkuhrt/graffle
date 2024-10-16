@@ -6,7 +6,7 @@ import { title1 } from '../../../layers/4_generator/helpers/render.js'
 import { Code } from '../../../lib/Code.js'
 import { Grafaid } from '../../../lib/grafaid/__.js'
 import { entries } from '../../../lib/prelude.js'
-import { propertyNames, SchemaDrivenDataMap } from './types.js'
+import { nullabilityFlags, propertyNames } from './types.js'
 
 const identifiers = {
   $Scalar: `$Scalar`,
@@ -379,8 +379,8 @@ const inlineType = (type: Grafaid.Schema.InputTypes): string => {
     : [type, false]
 
   const nullFlag = nonNull
-    ? SchemaDrivenDataMap.nullabilityFlags.nonNull
-    : SchemaDrivenDataMap.nullabilityFlags.nullable
+    ? nullabilityFlags.nonNull
+    : nullabilityFlags.nullable
 
   const rest = Grafaid.Schema.isListType(ofType)
     ? inlineType(ofType.ofType)

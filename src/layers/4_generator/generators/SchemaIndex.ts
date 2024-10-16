@@ -1,5 +1,4 @@
-import { getNamedType, isUnionType } from 'graphql'
-import type { SchemaDrivenDataMap } from '../../../extensions/CustomScalars/schemaDrivenDataMap/types.js'
+import type { SchemaDrivenDataMap } from '../../../extensions/CustomScalars/schemaDrivenDataMap/__.js'
 import { Code } from '../../../lib/Code.js'
 import { Grafaid } from '../../../lib/grafaid/__.js'
 import type { Schema } from '../../1_Schema/__.js'
@@ -119,32 +118,32 @@ export const ModuleGeneratorSchemaIndex = createModuleGenerator(
           unions: Code.objectFromEntries(unions),
           interfaces: Code.objectFromEntries(interfaces),
           customScalars: `${identifiers.Utilities}.SchemaIndexBase['customScalars']`,
-          // todo jsdoc comment saying:
-          // Objects that match this pattern name: /.../
-          error: Code.objectFrom({
-            objects: Code.objectFromEntries(
-              config.schema.error.objects.map(_ => [_.name, `${SchemaBuildtimeNamespace}.Object.${_.name}`]),
-            ),
-            objectsTypename: Code.objectFromEntries(
-              config.schema.error.objects.map(_ => [_.name, `{ __typename: "${_.name}" }`]),
-            ),
-            rootResultFields: `{
-              ${!Grafaid.Schema.KindMap.hasQuery(config.schema.typeMapByKind) ? `Query: {}` : ``}
-              ${!Grafaid.Schema.KindMap.hasMutation(config.schema.typeMapByKind) ? `Mutation: {}` : ``}
-              ${!Grafaid.Schema.KindMap.hasSubscription(config.schema.typeMapByKind) ? `Subscription: {}` : ``}
-              ${
-              Object.values(config.schema.typeMapByKind.GraphQLRootType).map((rootType) => {
-                const resultFields = Object.values(rootType.getFields()).filter((field) => {
-                  const type = getNamedType(field.type)
-                  return isUnionType(type)
-                    && type.getTypes().some(_ => config.schema.error.objects.some(__ => __.name === _.name))
-                }).map((field) => field.name)
+          // // todo jsdoc comment saying:
+          // // Objects that match this pattern name: /.../
+          // error: Code.objectFrom({
+          //   objects: Code.objectFromEntries(
+          //     config.schema.error.objects.map(_ => [_.name, `${SchemaBuildtimeNamespace}.Object.${_.name}`]),
+          //   ),
+          //   objectsTypename: Code.objectFromEntries(
+          //     config.schema.error.objects.map(_ => [_.name, `{ __typename: "${_.name}" }`]),
+          //   ),
+          //   rootResultFields: `{
+          //     ${!Grafaid.Schema.KindMap.hasQuery(config.schema.typeMapByKind) ? `Query: {}` : ``}
+          //     ${!Grafaid.Schema.KindMap.hasMutation(config.schema.typeMapByKind) ? `Mutation: {}` : ``}
+          //     ${!Grafaid.Schema.KindMap.hasSubscription(config.schema.typeMapByKind) ? `Subscription: {}` : ``}
+          //     ${
+          //     Object.values(config.schema.typeMapByKind.GraphQLRootType).map((rootType) => {
+          //       const resultFields = Object.values(rootType.getFields()).filter((field) => {
+          //         const type = getNamedType(field.type)
+          //         return isUnionType(type)
+          //           && type.getTypes().some(_ => config.schema.error.objects.some(__ => __.name === _.name))
+          //       }).map((field) => field.name)
 
-                return `${rootType.name}: {\n${resultFields.map(_ => `${_}: "${_}"`).join(`,\n`)} }`
-              }).join(`\n`)
-            }
-          }`,
-          }),
+          //       return `${rootType.name}: {\n${resultFields.map(_ => `${_}: "${_}"`).join(`,\n`)} }`
+          //     }).join(`\n`)
+          //   }
+          // }`,
+          // }),
         }),
       ),
     ))

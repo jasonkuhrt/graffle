@@ -9,8 +9,8 @@ import { schema } from '../../../tests/_/schemas/kitchen-sink/schema.js'
 import { Select } from '../../layers/2_Select/__.js'
 import { SelectionSetGraphqlMapper } from '../../layers/3_SelectGraphQLMapper/__.js'
 import { graffleMappedToRequest } from '../../layers/5_request/core.js'
-import { injectTypenameOnRootResultFields } from '../../layers/5_request/schemaErrors.js'
 import type { Errors } from '../../lib/errors/__.js'
+import { injectTypenameOnRootResultFields } from './injectTypenameOnRootResultFields.js'
 import { SchemaErrors } from './SchemaErrors.js'
 
 const graffle = Graffle

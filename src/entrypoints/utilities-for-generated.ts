@@ -1,5 +1,5 @@
 export { type Simplify } from 'type-fest'
-export { type SchemaDrivenDataMap } from '../extensions/CustomScalars/schemaDrivenDataMap/types.js'
+export { type SchemaDrivenDataMap } from '../extensions/CustomScalars/schemaDrivenDataMap/__.js'
 export * from '../layers/2_Select/__.js'
 export { type SchemaIndex as SchemaIndexBase } from '../layers/4_generator/generators/SchemaIndex.js'
 export type {

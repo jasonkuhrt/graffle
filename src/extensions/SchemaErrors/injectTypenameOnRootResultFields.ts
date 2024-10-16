@@ -1,6 +1,25 @@
-import type { SchemaDrivenDataMap } from '../../extensions/CustomScalars/schemaDrivenDataMap/types.js'
 import type { Grafaid } from '../../lib/grafaid/__.js'
 import { Nodes } from '../../lib/grafaid/graphql.js'
+import type { SchemaDrivenDataMap } from '../CustomScalars/schemaDrivenDataMap/__.js'
+
+declare global {
+  namespace GraffleTypes {
+    namespace SchemaDrivenDataMap {
+      interface OutputObject {
+        /**
+         * Is this output object an error object?
+         */
+        e?: 1
+      }
+      interface OutputField {
+        /**
+         * Is this output field a result field?
+         */
+        r?: 1
+      }
+    }
+  }
+}
 
 export const injectTypenameOnRootResultFields = (
   { request, sddm }: {
