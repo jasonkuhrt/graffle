@@ -1,6 +1,6 @@
 import type { TypeFunction } from '../../entrypoints/utilities-for-generated.js'
 import type { Values } from '../../lib/prelude.js'
-import type { TSErrorDescriptive } from '../../lib/TSError.js'
+import type { TSErrorDescriptive } from '../../lib/ts-error.js'
 import type { SchemaIndex } from './generators/SchemaIndex.js'
 
 declare global {

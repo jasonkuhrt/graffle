@@ -206,11 +206,11 @@ const ObjectType = createCodeGenerator<
   ({ config, code, type, referenceAssignments }) => {
     const o: Code.TermObject = {}
 
-    // Indicate if this is an error type.
-    // ----------------------------------
-    if (config.schema.error.objects.find(_ => _.name === type.name)) {
-      o[propertyNames.e] = 1
-    }
+    // // Indicate if this is an error type.
+    // // ----------------------------------
+    // if (config.schema.error.objects.find(_ => _.name === type.name)) {
+    //   o[propertyNames.e] = 1
+    // }
 
     // Fields of this object.
     // ---------------------
@@ -254,16 +254,16 @@ const ObjectType = createCodeGenerator<
         }
       }
 
-      // Indicate if the field is a "result field"
-      // ------------------------------------------
-      const memberTypes = Grafaid.Schema.isUnionType(outputFieldNamedType) ? outputFieldNamedType.getTypes() : null
-      if (
-        config.schema.error.enabled
-        && memberTypes
-        && config.schema.error.objects.find(_ => memberTypes.find(__ => __.name === _.name))
-      ) {
-        ofItem.$fields[propertyNames.r] = 1
-      }
+      // // Indicate if the field is a "result field"
+      // // ------------------------------------------
+      // const memberTypes = Grafaid.Schema.isUnionType(outputFieldNamedType) ? outputFieldNamedType.getTypes() : null
+      // if (
+      //   config.schema.error.enabled
+      //   && memberTypes
+      //   && config.schema.error.objects.find(_ => memberTypes.find(__ => __.name === _.name))
+      // ) {
+      //   ofItem.$fields[propertyNames.r] = 1
+      // }
 
       if (condition(outputFieldNamedType)) {
         if (Grafaid.Schema.isScalarTypeAndCustom(outputFieldNamedType)) {

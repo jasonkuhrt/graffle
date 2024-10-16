@@ -10,8 +10,8 @@ export const propertyNames = {
   a: `a`,
   nt: `nt`,
   // schema errors
-  r: `r`,
-  e: `e`,
+  // r: `r`,
+  // e: `e`,
 } as const
 
 export interface SchemaDrivenDataMap {

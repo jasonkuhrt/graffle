@@ -18,22 +18,6 @@ const args = Command.create().description(`Generate a type safe GraphQL client.`
       `Path to where your GraphQL schema is. If a URL is given it will be introspected. Otherwise assumed to be a path to your GraphQL SDL file. If a directory path is given, then will look for a "schema.graphql" within that directory. Otherwise will attempt to load the exact file path given.`,
     ),
   )
-  .parametersExclusive(
-    `schemaErrorType`,
-    $ =>
-      $.parameter(
-        `schemaErrorTypes`,
-        z.boolean().describe(
-          `Use the schema error types pattern. All object types whose name starts with "Error" will be considered to be error types. If you want to specify a custom name pattern then use the other parameter "schemaErrorTypePattern".`,
-        ),
-      )
-        .parameter(
-          `schemaErrorTypePattern`,
-          z.string().min(1).describe(
-            `Designate objects whose name matches this JS regular expression as being error types in your schema.`,
-          ),
-        ).default(`schemaErrorTypes`, true),
-  )
   .parameter(
     `defaultSchemaUrl`,
     z.union([
@@ -107,11 +91,6 @@ await Generator.generate({
   defaultSchemaUrl,
   name: args.name,
   outputDirPath: args.output,
-  errorTypeNamePattern: args.schemaErrorType._tag === `schemaErrorTypePattern`
-    ? new RegExp(args.schemaErrorType.value)
-    : args.schemaErrorType.value
-    ? /^Error.+/
-    : undefined,
   libraryPaths: {
     client: args.libraryPathClient,
     schema: args.libraryPathSchema,

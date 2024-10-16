@@ -1,5 +1,5 @@
 import { buildClientSchema, printSchema } from 'graphql'
-import { buildSchema, type GraphQLObjectType, type GraphQLSchema } from 'graphql'
+import { buildSchema, type GraphQLSchema } from 'graphql'
 import fs from 'node:fs/promises'
 import * as Path from 'node:path'
 import { Graffle } from '../../entrypoints/__Graffle.js'
@@ -75,10 +75,10 @@ export interface Config {
     sdl: string
     instance: GraphQLSchema
     typeMapByKind: Grafaid.Schema.KindMap.KindMap
-    error: {
-      objects: GraphQLObjectType[]
-      enabled: boolean
-    }
+    // error: {
+    //   objects: GraphQLObjectType[]
+    //   enabled: boolean
+    // }
   }
   runtimeFeatures: {
     customScalars: boolean
@@ -137,9 +137,6 @@ export const createConfig = async (input: Input): Promise<Config> => {
 
   const schema = buildSchema(sourceSchema.content)
   const typeMapByKind = Grafaid.Schema.KindMap.getKindMap(schema)
-  const errorObjects = errorTypeNamePattern
-    ? Object.values(typeMapByKind.GraphQLObjectType).filter(_ => _.name.match(errorTypeNamePattern))
-    : []
 
   return {
     runtimeFeatures: {
@@ -171,10 +168,10 @@ export const createConfig = async (input: Input): Promise<Config> => {
       sdl: sourceSchema.content,
       instance: schema,
       typeMapByKind,
-      error: {
-        enabled: Boolean(errorTypeNamePattern),
-        objects: errorObjects,
-      },
+      // error: {
+      //   enabled: Boolean(errorTypeNamePattern),
+      //   objects: errorObjects,
+      // },
     },
     options: {
       defaultSchemaUrl,
