@@ -37,7 +37,7 @@ By default all objects whose name begin with `Error` will be considered to be "e
 
 ```ts
 // graffle.config.ts
-import { SchemaErrors } from 'graffle/extensions'
+import { SchemaErrors } from 'graffle/extensions/schema-errors/generator'
 import { Graffle } from 'graffle/generator'
 
 export default Graffle
