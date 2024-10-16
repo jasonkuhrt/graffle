@@ -39,7 +39,7 @@ export type RunTypeHookOnRequestResult<$Config extends Config, $Params extends E
     TypeFunction.CallPipeline<$Config['typeHooks']['onRequestResult'], $Params>
   >
 
-interface EmptyTypeHooks {
+export interface EmptyTypeHooks {
   property: undefined
   onRequestResult: undefined
   onRequestDocumentRootType: undefined

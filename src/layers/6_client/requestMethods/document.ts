@@ -9,7 +9,7 @@ import type { Config } from '../Settings/Config.js'
 // dprint-ignore
 export type DocumentRunner<
   $$Config extends Config,
-  $$Index extends SchemaIndex,
+  $$Schema extends SchemaIndex,
   $$Document extends Select.Document.SomeDocument,
   $$Name extends Select.Document.GetOperationNames<$$Document> = Select.Document.GetOperationNames<$$Document>
 > = {
@@ -21,15 +21,9 @@ export type DocumentRunner<
       HandleOutput<
         $$Config,
         InferResult.Root<
-        // todo iterate through extensions
-        //   AddTypenameToSelectedRootTypeResultFields<
-        //     $$Config,
-        //     $$Index,
-        //     Select.Document.GetRootTypeNameOfOperation<$$Document, $Name>,
-        //     Select.Document.GetOperation<$$Document, $Name>
-        //   >,
-        //   $$Index,
-        //   Select.Document.GetRootTypeNameOfOperation<$$Document, $Name>
+          Select.Document.GetOperation<$$Document, $Name>,
+          $$Schema,
+          Select.Document.GetRootTypeNameOfOperation<$$Document, $Name>
         >
       >
       & {}
