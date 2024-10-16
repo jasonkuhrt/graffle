@@ -11,7 +11,7 @@ export type WithInput<$Context extends IncrementableInputContext = Incrementable
       /**
        * Configure output behavior, such as if errors should be returned or thrown.
        */
-      output?: OutputInput<$Context>
+      output?: OutputInput
     }
   & (
       $Context['transport']['type'] extends TransportMemory

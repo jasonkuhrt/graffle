@@ -1,6 +1,6 @@
+import { ModuleGeneratorError } from '../../7_extensions/SchemaErrors/Error.js'
 import { createModuleGenerator } from '../helpers/moduleGenerator.js'
 import { ModuleGeneratorClient } from './Client.js'
-import { ModuleGeneratorError } from './Error.js'
 import { ModuleGeneratorSelect } from './Select.js'
 import { ModuleGeneratorSelectionSets } from './SelectionSets.js'
 

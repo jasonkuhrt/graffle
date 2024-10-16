@@ -57,16 +57,6 @@ export namespace GlobalRegistry {
       ? false
       : true
 
-  // dprint-ignore
-  export type HasSchemaErrors<$Schema extends SchemaUnion> =
-    $Schema['featureOptions']['schemaErrors']
-
-  export type HasSchemaErrorsViaName<$Name extends SchemaNames> =
-    // todo use conditional types?
-    // eslint-disable-next-line
-    // @ts-ignore passes after generation
-    GraffleGlobalTypes.Schemas[$Name]['featureOptions']['schemaErrors']
-
   // eslint-disable-next-line
   // @ts-ignore passes after generation
   export type GetSchemaIndex<$Name extends SchemaNames> = GraffleGlobalTypes.Schemas[$Name]['index']

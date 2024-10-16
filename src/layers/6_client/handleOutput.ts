@@ -126,6 +126,8 @@ export type HandleOutput<$Config extends Config, $Data extends SomeObjectData> =
 type HandleOutput_Extensions<$Config extends Config, $Envelope extends GraffleExecutionResultEnvelope> =
   HandleOutput_ErrorsReturn<
     $Config,
+    // eslint-disable-next-line
+    // @ts-ignore fixme
     RunTypeHookOnRequestResult<$Config, {
       result: $Envelope
       registeredSchema: GlobalRegistry.GetOrDefault<$Config['name']>

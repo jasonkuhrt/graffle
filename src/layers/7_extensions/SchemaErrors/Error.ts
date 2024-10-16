@@ -1,4 +1,4 @@
-import { createModuleGenerator } from '../helpers/moduleGenerator.js'
+import { createModuleGenerator } from '../../4_generator/helpers/moduleGenerator.js'
 
 export const ModuleGeneratorError = createModuleGenerator(
   `Error`,
