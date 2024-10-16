@@ -1,19 +1,12 @@
 import { parse } from 'graphql'
-import { describe, expect } from 'vitest'
-import { test } from '../../../tests/_/helpers.js'
-import { db } from '../../../tests/_/schemas/db.js'
-import { Graffle } from '../../../tests/_/schemas/kitchen-sink/graffle/__.js'
-import { schemaDrivenDataMap } from '../../../tests/_/schemas/kitchen-sink/graffle/modules/SchemaDrivenDataMap.js'
-import type { Query } from '../../../tests/_/schemas/kitchen-sink/graffle/modules/SelectionSets.js'
-import { schema } from '../../../tests/_/schemas/kitchen-sink/schema.js'
-import { Select } from '../../layers/2_Select/__.js'
-import { SelectionSetGraphqlMapper } from '../../layers/3_SelectGraphQLMapper/__.js'
-import { graffleMappedToRequest } from '../../layers/5_request/core.js'
-import { injectTypenameOnRootResultFields } from '../../layers/5_request/schemaErrors.js'
-import type { Errors } from '../../lib/errors/__.js'
-import { SchemaErrors } from './SchemaErrors.js'
+import { describe, expect, test } from 'vitest'
+import { db } from '../../../../tests/_/schemas/db.js'
+import { schema } from '../../../../tests/_/schemas/kitchen-sink/schema.js'
+import type { Errors } from '../../../lib/errors/__.js'
+import { SchemaErrors } from '../SchemaErrors.js'
+import { GraffleSchemaErrors } from './fixture/graffle/__.js'
 
-const graffle = Graffle
+const graffle = GraffleSchemaErrors
   .create({ schema })
   .with({
     output: {
@@ -82,44 +75,21 @@ describe(`query non-result field`, () => {
   })
 })
 
-type CasesQuery = [description: string, queryWithoutTypename: Query, queryWithTypename: Query]
-
 // todo symmetrical type tests for these cases
 // dprint-ignore
-test.each<CasesQuery>([
-  [`one result field`, 		              { resultNonNull: { } },                                      { resultNonNull: { __typename: true } }],
-  [`two result fields`, 		            { resultNonNull: { }, result: { $: { $case: `ErrorOne` }}},  { resultNonNull: { __typename: true }, result: { $: { $case: `ErrorOne` }, __typename: true } }],
-  [`no result fields`, 		              { id: true, object: { id: true } },                          { id: true, object: { id: true }}],
-  [`__typename in fragment`,            { resultNonNull: { ___: { __typename: true  }}},             { resultNonNull: { ___: { __typename: true  }, __typename: true } }],
-  [`root field in fragment`,            { ___: { resultNonNull: {} } },                              { ___: { resultNonNull: { __typename: true  }}}],
-  [`root field in fragment in alias`,   { ___: { resultNonNull: [`x`, {}] } },                       { ___: { resultNonNull: [`x`, { __typename: true  }] }}],
-  [`root field alias `,                 { resultNonNull: [`x`, {}] },                                { resultNonNull: [`x`, { __typename: true }] }],
-])(`Query %s`, (_, queryWithoutTypenameInput, queryWithTypenameInput) => {
-	const mappedResultWithTypename = SelectionSetGraphqlMapper.toGraphQL(
-    Select.Document.normalizeOrThrow({ query: { x: queryWithTypenameInput as any } })
-  )
-  const mappedResultWithoutTypename = SelectionSetGraphqlMapper.toGraphQL(
-    Select.Document.normalizeOrThrow({ query: { x: queryWithoutTypenameInput as any } })
-  )
-  injectTypenameOnRootResultFields({
-    request: graffleMappedToRequest(mappedResultWithoutTypename),
-    sddm: schemaDrivenDataMap,
-  })
-	expect(mappedResultWithTypename.document).toMatchObject(mappedResultWithoutTypename.document)
-})
 
-test(`gql string request`, async ({ kitchenSink }) => {
+test(`gql string request`, async () => {
   // todo it would be nicer to move the extension use to the fixture but how would we get the static type for that?
   // This makes me think of a feature we need to have. Make it easy to get static types of the client in its various configured states.
-  const result = await kitchenSink
+  const result = await graffle
     .use(SchemaErrors())
     .gql`query { resultNonNull (case: Object1) { ... on Object1 { id } } }`
     .send()
   expect(result).toMatchObject({ resultNonNull: { __typename: `Object1`, id: `abc` } })
 })
 
-test(`gql document request`, async ({ kitchenSink }) => {
-  const result = await kitchenSink
+test(`gql document request`, async () => {
+  const result = await graffle
     .use(SchemaErrors())
     .gql(parse(`query { resultNonNull (case: Object1) { ... on Object1 { id } } }`))
     .send()

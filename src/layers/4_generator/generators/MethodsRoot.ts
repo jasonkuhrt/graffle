@@ -3,7 +3,7 @@ import { Grafaid } from '../../../lib/grafaid/__.js'
 import { createModuleGenerator } from '../helpers/moduleGenerator.js'
 import { createCodeGenerator } from '../helpers/moduleGeneratorRunner.js'
 import { renderDocumentation, renderName } from '../helpers/render.js'
-import { ModuleGeneratorSchemaIndex } from './SchemaIndex.js'
+import { ModuleGeneratorSchema } from './Schema.js'
 import { ModuleGeneratorSelectionSets } from './SelectionSets.js'
 
 export const ModuleGeneratorMethodsRoot = createModuleGenerator(
@@ -12,13 +12,13 @@ export const ModuleGeneratorMethodsRoot = createModuleGenerator(
     code(`import { type Simplify } from 'type-fest'`)
     code(`import type * as Utils  from '${config.paths.imports.grafflePackage.utilitiesForGenerated}';`)
     code(`import type { InferResult } from '${config.paths.imports.grafflePackage.schema}';`)
-    code(`import type { Index } from './${ModuleGeneratorSchemaIndex.name}.js'`)
+    code(`import type { Index } from './${ModuleGeneratorSchema.name}.js'`)
     code(`import type * as SelectionSet from './${ModuleGeneratorSelectionSets.name}.js'`)
     code()
 
     code()
 
-    config.schema.typeMapByKind.GraphQLRootType.forEach(node => {
+    config.schema.kindMap.GraphQLRootType.forEach(node => {
       code(renderRootType({ config, node }))
       code()
     })
@@ -26,7 +26,7 @@ export const ModuleGeneratorMethodsRoot = createModuleGenerator(
     code(`
       export interface BuilderMethodsRoot<$Config extends Utils.Config> {
         ${
-      config.schema.typeMapByKind.GraphQLRootType.map(node => {
+      config.schema.kindMap.GraphQLRootType.map(node => {
         const operationName =
           Grafaid.RootTypeNameToOperationName[node.name as keyof typeof Grafaid.RootTypeNameToOperationName]
         return `${operationName}: ${node.name}Methods<$Config>`

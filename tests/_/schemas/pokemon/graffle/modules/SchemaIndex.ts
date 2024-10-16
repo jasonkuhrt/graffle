@@ -47,13 +47,4 @@ export interface Index {
     Being: Schema.Interface.Being
   }
   customScalars: Utilities.SchemaIndexBase['customScalars']
-  error: {
-    objects: {}
-    objectsTypename: {}
-    rootResultFields: {
-      Subscription: {}
-      Mutation: {}
-      Query: {}
-    }
-  }
 }

@@ -1,10 +1,10 @@
-import { injectTypenameOnRootResultFields } from '../../layers/5_request/schemaErrors.js'
 import { createExtension, type Extension } from '../../layers/6_client/extension/extension.js'
 import { Errors } from '../../lib/errors/__.js'
 import { normalizeRequestToNode } from '../../lib/grafaid/request.js'
 import { type ExcludeNullAndUndefined, isString } from '../../lib/prelude.js'
 import { isRecordLikeObject } from '../../lib/prelude.js'
-import { SchemaDrivenDataMap } from '../CustomScalars/schemaDrivenDataMap/types.js'
+import { SchemaDrivenDataMap } from '../CustomScalars/schemaDrivenDataMap/__.js'
+import { injectTypenameOnRootResultFields } from './injectTypenameOnRootResultFields.js'
 
 export const SchemaErrors = () => {
   return createExtension<SchemaErrorsExtension>({
@@ -87,7 +87,7 @@ type OnRequestResult<$Params extends Extension.Hooks.OnRequestResult.Params> =
             [$Key in keyof ExcludeNullAndUndefined<$Params['result']['data']>]:
               Exclude<
                 ExcludeNullAndUndefined<$Params['result']['data']>[$Key],
-                $Params['registeredSchema']['index']['error']['objectsTypename'][keyof $Params['registeredSchema']['index']['error']['objectsTypename']]
+                { __typename: $Params['registeredSchema']['index']['SchemaErrors']['objectNames'] }
               >
           }
     } & Omit<$Params['result'], 'data'>

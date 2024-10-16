@@ -5,7 +5,7 @@ import type * as MethodsSelect from './MethodsSelect.js'
 import type { Index } from './SchemaIndex.js'
 
 declare global {
-  export namespace GraffleGlobalTypes {
+  export namespace GraffleGlobal {
     export interface Schemas {
       Pokemon: {
         name: Data.Name

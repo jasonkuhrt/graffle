@@ -9,8 +9,9 @@ export const ModuleGeneratorClient = createModuleGenerator(
       `import { createPrefilled } from '${config.paths.imports.grafflePackage.client}'`,
       `import { defaultSchemaUrl } from './${ModuleGeneratorData.name}.js'`,
       `import { schemaDrivenDataMap } from './${ModuleGeneratorSchemaDrivenDataMap.name}.js'`,
+      `import { Name } from './${ModuleGeneratorData.name}.js'`,
       ``,
-      `export const create = createPrefilled(\`${config.name}\`, schemaDrivenDataMap, defaultSchemaUrl)`,
+      `export const create = createPrefilled(Name, schemaDrivenDataMap, defaultSchemaUrl)`,
     )
   },
 )

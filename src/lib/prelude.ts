@@ -553,14 +553,6 @@ export const getOptionalNullablePropertyOrThrow = <
   return value as ExcludeNullAndUndefined<$Record[$Key]>
 }
 
-export const omitUndefinedKeys = <T extends object>(obj: T): OmitUndefinedKeys<T> => {
-  return Object.fromEntries(Object.entries(obj).filter(([_, v]) => v !== undefined)) as any
-}
-
-type OmitUndefinedKeys<T extends object> = {
-  [K in keyof T as undefined extends T[K] ? K : never]: T[K]
-}
-
 export type StringKeyof<T> = keyof T & string
 
 export const keysStrict = <T extends object>(obj: T): (keyof T)[] => {
@@ -603,3 +595,21 @@ export type AssertConstraint<$Constraint, $Type> =
   $Type extends $Constraint
     ? $Type
     : never
+
+export const isNonNullObject = (value: unknown): value is object => {
+  return typeof value === 'object' && value !== null
+}
+
+export const isError = (value: unknown) => {
+  return value instanceof Error
+}
+
+export type GuardedType<T> = T extends (x: any) => x is infer U ? U : never
+
+export const isAnyFunction = (value: unknown): value is (...args: any[]) => any => {
+  return typeof value === 'function'
+}
+
+export const isDate = (value: unknown): value is Date => {
+  return value instanceof Date
+}

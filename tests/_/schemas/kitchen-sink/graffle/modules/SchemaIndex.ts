@@ -66,22 +66,4 @@ export interface Index {
     Interface: Schema.Interface.Interface
   }
   customScalars: Utilities.SchemaIndexBase['customScalars']
-  error: {
-    objects: {
-      ErrorOne: Schema.Object.ErrorOne
-      ErrorTwo: Schema.Object.ErrorTwo
-    }
-    objectsTypename: {
-      ErrorOne: { __typename: 'ErrorOne' }
-      ErrorTwo: { __typename: 'ErrorTwo' }
-    }
-    rootResultFields: {
-      Subscription: {}
-      Mutation: {}
-      Query: {
-        result: 'result'
-        resultNonNull: 'resultNonNull'
-      }
-    }
-  }
 }

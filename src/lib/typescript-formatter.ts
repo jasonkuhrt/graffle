@@ -8,7 +8,7 @@ export const passthroughFormatter: Formatter = {
   formatText: (content) => content,
 }
 
-export const getTypeScriptFormatterOrPassthrough = async (): Promise<Formatter> => {
+export const getTypescriptFormatterOrPassthrough = async (): Promise<Formatter> => {
   const formatter = await getTypeScriptFormatter()
   return formatter ?? passthroughFormatter
 }

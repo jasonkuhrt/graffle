@@ -21,6 +21,8 @@ import {
 import { GraphQLInputObjectType, isScalarType } from 'graphql'
 
 export {
+  buildClientSchema,
+  buildSchema,
   getNamedType,
   getNullableType,
   type GraphQLArgument as Argument,
@@ -51,6 +53,7 @@ export {
   isRequiredInputField,
   isScalarType,
   isUnionType,
+  printSchema as print,
 } from 'graphql'
 
 export * as Args from './args.js'
@@ -106,8 +109,16 @@ export const isScalarTypeCustom = (node: GraphQLScalarType): boolean => {
   return node.astNode !== undefined
 }
 
+export const standardScalarTypeNames = {
+  String: `String`,
+  ID: `ID`,
+  Int: `Int`,
+  Float: `Float`,
+  Boolean: `Boolean`,
+}
+
 export const isScalarTypeAndCustom = (node: unknown): node is GraphQLScalarType => {
-  return isScalarType(node) && node.astNode !== undefined
+  return isScalarType(node) && !(node.name in standardScalarTypeNames)
 }
 
 export const isAllInputObjectFieldsNullable = (node: GraphQLInputObjectType) => {

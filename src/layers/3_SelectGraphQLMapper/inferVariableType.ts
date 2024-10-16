@@ -1,4 +1,4 @@
-import type { SchemaDrivenDataMap } from '../../extensions/CustomScalars/schemaDrivenDataMap/types.js'
+import type { SchemaDrivenDataMap } from '../../extensions/CustomScalars/schemaDrivenDataMap/__.js'
 import { isScalar } from '../../layers/1_Schema/Hybrid/types/Scalar/Scalar.js'
 
 /**

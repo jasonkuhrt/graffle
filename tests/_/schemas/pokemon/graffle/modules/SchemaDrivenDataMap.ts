@@ -16,15 +16,15 @@ import * as $Scalar from './Scalar.js'
 //
 //
 
+const Boolean = $Scalar.Boolean
+
 const Float = $Scalar.Float
 
 const ID = $Scalar.ID
 
-const String = $Scalar.String
-
 const Int = $Scalar.Int
 
-const Boolean = $Scalar.Boolean
+const String = $Scalar.String
 
 //
 //
@@ -430,11 +430,11 @@ const $schemaDrivenDataMap: $Utilities.SchemaDrivenDataMap = {
   },
   directives: {},
   types: {
+    Boolean,
     Float,
     ID,
-    String,
     Int,
-    Boolean,
+    String,
     BattleWildResult,
     PokemonType,
     TrainerClass,

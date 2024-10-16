@@ -1,15 +1,16 @@
 import { describe, expectTypeOf, test } from 'vitest'
-import { Graffle } from '../../../tests/_/schemas/kitchen-sink/graffle/__.js'
-import { schema } from '../../../tests/_/schemas/kitchen-sink/schema.js'
-import { type Extension } from '../../layers/6_client/extension/extension.js'
-import { SchemaErrors } from './SchemaErrors.js'
+import { schema } from '../../../../tests/_/schemas/kitchen-sink/schema.js'
+import { type Extension } from '../../../layers/6_client/extension/extension.js'
+import { SchemaErrors } from '../SchemaErrors.js'
+import { GraffleSchemaErrors } from './fixture/graffle/__.js'
 
-const g = Graffle.create({ schema }).use(SchemaErrors())
+const g = GraffleSchemaErrors.create({ schema }).use(SchemaErrors())
 
 // todo move test to test suite for .use method
 test(`config type is augmented with type hook`, () => {
   expectTypeOf<typeof g._.config.typeHooks.onRequestResult>().toMatchTypeOf<[Extension.Hooks.OnRequestResult]>()
 })
+
 test(`config type is augmented with type hook after "with"`, () => {
   const g2 = g.with({ output: { defaults: { errorChannel: `throw` } } })
   g2._.config.typeHooks.onRequestResult
@@ -17,7 +18,7 @@ test(`config type is augmented with type hook after "with"`, () => {
 })
 
 const resultFieldSelect =
-  Graffle.Select.Query({ resultNonNull: { $: { $case: `Object1` }, __typename: true } })[`resultNonNull`]
+  GraffleSchemaErrors.Select.Query({ resultNonNull: { $: { $case: `Object1` }, __typename: true } })[`resultNonNull`]
 
 describe(`.errors.schema`, () => {
   describe(`throw`, () => {
