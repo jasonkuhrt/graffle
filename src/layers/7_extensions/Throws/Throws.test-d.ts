@@ -1,9 +1,8 @@
-import { describe, expectTypeOf, test } from 'vitest'
-import { Graffle } from '../../../../tests/_/schemas/kitchen-sink/graffle/__.js'
-import { schema } from '../../../../tests/_/schemas/kitchen-sink/schema.js'
-import { Throws } from './Throws.js'
+// import { Graffle } from '../../../../tests/_/schemas/kitchen-sink/graffle/__.js'
+// import { schema } from '../../../../tests/_/schemas/kitchen-sink/schema.js'
+// import { Throws } from './Throws.js'
 
-const graffle = Graffle.create({ schema }).use(Throws())
+// const graffle = Graffle.create({ schema }).use(Throws())
 
 // todo tests that don't rely on schema errors
 // describe(`document`, () => {

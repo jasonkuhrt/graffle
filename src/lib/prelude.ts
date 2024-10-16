@@ -1,7 +1,5 @@
 import type { IsEmptyObject, IsNever, IsUnknown, Simplify } from 'type-fest'
-
 import type { ConditionalSimplify, ConditionalSimplifyDeep } from 'type-fest/source/conditional-simplify.js'
-import type { TSError } from './TSError.js'
 
 /* eslint-disable */
 export type RemoveIndex<T> = {
