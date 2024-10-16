@@ -113,6 +113,7 @@ test(`gql string request`, async ({ kitchenSink }) => {
   // todo it would be nicer to move the extension use to the fixture but how would we get the static type for that?
   // This makes me think of a feature we need to have. Make it easy to get static types of the client in its various configured states.
   const result = await kitchenSink
+    .use(SchemaErrors())
     .with({ output: { errors: { schema: `default` } } })
     .gql`query { resultNonNull (case: Object1) { ... on Object1 { id } } }`
     .send()
@@ -121,6 +122,7 @@ test(`gql string request`, async ({ kitchenSink }) => {
 
 test(`gql document request`, async ({ kitchenSink }) => {
   const result = await kitchenSink
+    .use(SchemaErrors())
     .with({ output: { errors: { schema: `default` } } })
     .gql(parse(`query { resultNonNull (case: Object1) { ... on Object1 { id } } }`))
     .send()
