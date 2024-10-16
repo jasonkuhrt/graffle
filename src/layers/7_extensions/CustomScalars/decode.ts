@@ -10,7 +10,7 @@ export const decodeResultData = ({ request, data, sddm }: {
   /**
    * Result data to decode.
    */
-  data: Grafaid.SomeData | null | undefined
+  data: Grafaid.SomeObjectData | null | undefined
   /**
    * Schema Driven Data Map that contains codecs for custom scalars.
    */
@@ -31,7 +31,7 @@ export const decodeResultData = ({ request, data, sddm }: {
 }
 
 const decodeResultData_ = (input: {
-  data: Grafaid.SomeData | null | undefined
+  data: Grafaid.SomeObjectData | null | undefined
   sddmOutputObject: SchemaDrivenDataMap.OutputObject
   documentPart: null | Grafaid.Document.SelectionSetNode
 }): void => {

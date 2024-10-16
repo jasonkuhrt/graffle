@@ -37,7 +37,7 @@ export const ModuleGeneratorMethodsRoot = createModuleGenerator(
     code()
 
     code(`
-      export interface BuilderMethodsRootFn extends Utils.HKT.Fn {
+      export interface BuilderMethodsRootFn extends Utils.TypeFunction.Fn {
         // @ts-expect-error parameter is Untyped.
         return: BuilderMethodsRoot<this['params']['config']>
       }
@@ -56,13 +56,9 @@ const renderRootType = createCodeGenerator<{ node: Grafaid.Schema.ObjectType }>(
       $batch: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.${node.name}>) =>
         Promise<
           Simplify<
-            Utils.ResolveOutputReturnRootType<
+            Utils.HandleOutput<
               $Config,
-              Index,
-              InferResult.${node.name}<
-                Utils.AddTypenameToSelectedRootTypeResultFields<$Config, Index, '${node.name}', $SelectionSet>,
-                Index
-              >
+              InferResult.${node.name}<$SelectionSet, Index>
             >
           >
         >
@@ -70,11 +66,10 @@ const renderRootType = createCodeGenerator<{ node: Grafaid.Schema.ObjectType }>(
       __typename: () =>
         Promise<
           Simplify<
-            Utils.ResolveOutputReturnRootField<
+            Utils.HandleOutputGraffleRootField<
               $Config,
-              Index,
-              '__typename',
-              '${node.name}'
+              { __typename: '${node.name}' },
+              '__typename'
             >
           >
         >
@@ -105,11 +100,10 @@ namespace Helpers {
     return `
       Promise<
         Simplify<
-          Utils.ResolveOutputReturnRootField<
+          Utils.HandleOutputGraffleRootField<
             $Config,
-            Index,
-            '${fieldName}',
-            InferResult.Field<${selectionSet}, Index['Root']['${rootName}']['fields']['${fieldName}'], Index>
+            InferResult.${rootName}<{ ${fieldName}: ${selectionSet}}, Index>,
+            '${fieldName}'
           >
         >
       >

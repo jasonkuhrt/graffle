@@ -1,5 +1,5 @@
 import type { Simplify } from 'type-fest'
-import type { TSError } from '../../lib/TSError.js'
+import type { TSErrorDescriptive } from '../../lib/TSError.js'
 import type { Schema } from '../1_Schema/__.js'
 import type { Select } from '../2_Select/__.js'
 import type { SchemaIndex } from '../4_generator/generators/SchemaIndex.js'
@@ -33,7 +33,7 @@ type FieldType<
   $Type extends Schema.Object$2                             ? Object<$SelectionSet, $Schema, $Type> :
   $Type extends Schema.Interface                            ? Interface<$SelectionSet, $Schema, $Type> :
   $Type extends Schema.Union                                ? Union<$SelectionSet, $Schema, $Type> :
-                                                              TSError<'FieldType', `Unknown type`, { $Type: $Type; $SelectionSet: $SelectionSet; $Schema:$Schema }>
+                                                              TSErrorDescriptive<'FieldType', `Unknown type`, { $Type: $Type; $SelectionSet: $SelectionSet; $Schema:$Schema }>
 
 // dprint-ignore
 type FieldDirectiveInclude<$SelectionSet> =

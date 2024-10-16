@@ -1,24 +1,19 @@
 import { Errors } from '../../../lib/errors/__.js'
 import { normalizeRequestToNode } from '../../../lib/grafaid/request.js'
-import { isString } from '../../../lib/prelude.js'
+import { type ExcludeNullAndUndefined, isString } from '../../../lib/prelude.js'
 import { isRecordLikeObject } from '../../../lib/prelude.js'
 import { injectTypenameOnRootResultFields } from '../../5_request/schemaErrors.js'
-import { createExtension } from '../../6_client/extension/extension.js'
+import { createExtension, type Extension } from '../../6_client/extension/extension.js'
 import { SchemaDrivenDataMap } from '../CustomScalars/schemaDrivenDataMap/types.js'
 
-// todo?: augment config to include how schema errors should be handled in the output
-// todo: manipulate results: 1) schema errors should be thrown or returned (outside envelope) depending on config.
-// todo: manipulate the types
-
 export const SchemaErrors = () => {
-  return createExtension({
+  return createExtension<SchemaErrorsExtension>({
     name: `SchemaErrors`,
     onRequest: async ({ pack }) => {
       const state = pack.input.state
       const sddm = state.config.schemaMap
-      const config = state.config
 
-      if (!sddm || !config.output.errors.schema) return pack()
+      if (!sddm) return pack()
 
       const request = normalizeRequestToNode(pack.input.request)
 
@@ -72,4 +67,41 @@ export const SchemaErrors = () => {
       return result
     },
   })
+}
+
+type SchemaErrorsExtension = Extension<{
+  onRequestDocumentRootType: OnRequestDocumentRootTypeFn
+  onRequestResult: OnRequestResultFn
+}>
+
+type OnRequestDocumentRootType<$Params extends Extension.Hooks.OnRequestDocumentRootType.Params> =
+  $Params['selectionRootType']
+
+// dprint-ignore
+type OnRequestResult<$Params extends Extension.Hooks.OnRequestResult.Params> =
+  {
+    result: {
+      data?:
+        | null
+        | {
+            [$Key in keyof ExcludeNullAndUndefined<$Params['result']['data']>]:
+              Exclude<
+                ExcludeNullAndUndefined<$Params['result']['data']>[$Key],
+                $Params['registeredSchema']['index']['error']['objectsTypename'][keyof $Params['registeredSchema']['index']['error']['objectsTypename']]
+              >
+          }
+    } & Omit<$Params['result'], 'data'>
+    registeredSchema: $Params['registeredSchema']
+  }
+
+// --------- Boilerplate Types ---------
+
+interface OnRequestDocumentRootTypeFn extends Extension.Hooks.OnRequestDocumentRootType {
+  // @ts-expect-error untyped params
+  return: OnRequestDocumentRootType<this['params']>
+}
+
+interface OnRequestResultFn extends Extension.Hooks.OnRequestResult {
+  // @ts-expect-error untyped params
+  return: OnRequestResult<this['params']>
 }

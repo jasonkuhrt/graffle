@@ -1,4 +1,4 @@
-import type { HKT } from '../../../entrypoints/utilities-for-generated.js'
+import type { TypeFunction } from '../../../entrypoints/utilities-for-generated.js'
 import type { Fluent } from '../../../lib/fluent/__.js'
 import type { Grafaid } from '../../../lib/grafaid/__.js'
 import { isSymbol } from '../../../lib/prelude.js'
@@ -23,11 +23,11 @@ export type BuilderRequestMethods<$Context extends ClientContext>=
         (
           // eslint-disable-next-line
           // @ts-ignore Passes after generation
-          & HKT.Call<GlobalRegistry.GetOrDefault<$Context['config']['name']>['interfaces']['Root'], $Context>
+          & TypeFunction.Call<GlobalRegistry.GetOrDefault<$Context['config']['name']>['interfaces']['Root'], $Context>
           & {
               // eslint-disable-next-line
               // @ts-ignore Passes after generation
-              document: HKT.Call<GlobalRegistry.GetOrDefault<$Context['config']['name']>['interfaces']['Document'], $Context>
+              document: TypeFunction.Call<GlobalRegistry.GetOrDefault<$Context['config']['name']>['interfaces']['Document'], $Context>
             }
         )
   )

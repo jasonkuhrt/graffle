@@ -1,4 +1,5 @@
 import type { GraphQLError, OperationDefinitionNode, OperationTypeNode } from 'graphql'
+import type { StandardScalarRuntimeTypes } from '../../layers/1_Schema/Hybrid/types/Scalar/Scalar.js'
 import type { Errors } from '../errors/__.js'
 import { getOperationDefinition, normalizeDocumentToNode } from './document.js'
 import type { RootTypeName } from './schema/schema.js'
@@ -30,7 +31,8 @@ export type Variables = {
   [key: string]: string | boolean | null | number | Variables
 }
 
-export type SomeData = Record<string, any>
+export type SomeObjectData = Record<string, any>
+export type SomeFieldData = SomeObjectData | StandardScalarRuntimeTypes
 
 export type GraphQLExecutionResultError = Errors.ContextualAggregateError<GraphQLError>
 

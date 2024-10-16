@@ -1,5 +1,6 @@
+import type { ConfigManager } from '../../../lib/config-manager/__.js'
 import type { Fluent } from '../../../lib/fluent/__.js'
-import { defineProperties, type FnParametersProperty } from '../fluent.js'
+import { type ClientContext, defineProperties, type FnParametersProperty } from '../fluent.js'
 import type { Extension } from './extension.js'
 
 export interface UseFn extends Fluent.FnProperty<`use`> {
@@ -11,9 +12,27 @@ export interface Use<$Args extends FnParametersProperty> {
   /**
    * TODO Use Docs.
    */
-  <$Extension extends Extension>(extension?: $Extension): Fluent.IncrementUsingMerge<$Args, {
-    properties: $Extension['property'] extends Fluent.FnProperty ? Fluent.ToFnPropertyObject<$Extension['property']>
-      : {}
+  <$Extension extends Extension>(extension?: $Extension): Fluent.IncrementWithStateSet<ClientContext, $Args, {
+    context: {
+      config: ConfigManager.SetProperties<$Args['state']['context']['config'], {
+        typeHooks: ConfigManager.SetProperties<$Args['state']['context']['config']['typeHooks'], {
+          onRequestResult: $Extension['typeHooks']['onRequestResult'] extends undefined
+            ? $Args['state']['context']['config']['typeHooks']['onRequestResult']
+            // dprint-ignore
+            : [
+                ...$Args['state']['context']['config']['typeHooks']['onRequestResult'],
+                $Extension['typeHooks']['onRequestResult'],
+              ]
+        }>
+      }>
+    }
+    properties:
+      & $Args['state']['properties']
+      & (
+        $Extension['typeHooks']['property'] extends Fluent.FnProperty
+          ? Fluent.ToFnPropertyObject<$Extension['typeHooks']['property']>
+          : {}
+      )
   }>
 }
 

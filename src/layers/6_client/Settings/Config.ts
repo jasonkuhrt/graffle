@@ -1,12 +1,9 @@
 import type { GraphQLSchema } from 'graphql'
-import type { RequireProperties, StringKeyof } from '../../../lib/prelude.js'
-import type { Schema } from '../../1_Schema/__.js'
-import type { Select } from '../../2_Select/__.js'
-import type { SchemaIndex } from '../../4_generator/generators/SchemaIndex.js'
+import type { RequireProperties } from '../../../lib/prelude.js'
 import type { GlobalRegistry } from '../../4_generator/globalRegistry.js'
 import type { TransportHttp, TransportMemory } from '../../5_request/types.js'
 import type { SchemaDrivenDataMap } from '../../7_extensions/CustomScalars/schemaDrivenDataMap/types.js'
-import type { ConfigGetOutputError } from '../handleOutput.js'
+import type { Extension } from '../extension/extension.js'
 import type { TransportHttpInput } from '../transportHttp/request.js'
 import type { InputStatic } from './Input.js'
 
@@ -14,7 +11,7 @@ export type OutputChannel = 'throw' | 'return'
 
 export type OutputChannelConfig = 'throw' | 'return' | 'default'
 
-export type ErrorCategory = 'execution' | 'other' | 'schema'
+export type ErrorCategory = 'execution' | 'other'
 
 export const readConfigErrorCategoryOutputChannel = (
   config: Config,
@@ -28,8 +25,8 @@ export const readConfigErrorCategoryOutputChannel = (
 
 export const traditionalGraphqlOutput = {
   defaults: { errorChannel: `throw` },
-  envelope: { enabled: true, errors: { execution: true, other: false, schema: false } },
-  errors: { execution: `default`, other: `default`, schema: false },
+  envelope: { enabled: true, errors: { execution: true, other: false } },
+  errors: { execution: `default`, other: `default` },
 } satisfies OutputConfig
 
 export const traditionalGraphqlOutputThrowing: OutputConfig = {
@@ -45,7 +42,7 @@ export const traditionalGraphqlOutputThrowing: OutputConfig = {
 
 export const isContextConfigTraditionalGraphQLOutput = (config: Config) => {
   return config.output.envelope.enabled && config.output.envelope.errors.execution
-    && !config.output.envelope.errors.other && !config.output.envelope.errors.schema
+    && !config.output.envelope.errors.other
 }
 
 export type OutputConfig = {
@@ -57,13 +54,11 @@ export type OutputConfig = {
     errors: {
       execution: boolean
       other: boolean
-      schema: boolean
     }
   }
   errors: {
     execution: OutputChannelConfig
     other: OutputChannelConfig
-    schema: false | OutputChannelConfig
   }
 }
 
@@ -76,13 +71,11 @@ export const outputConfigDefault: OutputConfigDefault = {
     errors: {
       execution: true,
       other: false,
-      schema: false,
     },
   },
   errors: {
     execution: `default`,
     other: `default`,
-    schema: false,
   },
 }
 
@@ -95,13 +88,11 @@ export type OutputConfigDefault = {
     errors: {
       execution: true
       other: false
-      schema: false
     }
   }
   errors: {
     execution: 'default'
     other: 'default'
-    schema: false
   }
 }
 
@@ -121,56 +112,11 @@ export type Config = {
    * The initial input that was given to derive this config.
    */
   initialInput: InputStatic
+  typeHooks: {
+    onRequestResult: Extension.Hooks.OnRequestResult[]
+  }
   name: GlobalRegistry.SchemaNames
   output: OutputConfig
   schemaMap: SchemaDrivenDataMap | null
   transport: TransportConfigHttp | TransportConfigMemory
 }
-
-/**
- * We inject __typename select when:
- * 1. using schema errors
- * 2. using return mode dataSuccess
- */
-
-type TypenameSelection = { __typename: true }
-
-// dprint-ignore
-export type AddTypenameToSelectedRootTypeResultFields<
-  $Config extends Config,
-  $Index extends SchemaIndex,
-  $RootTypeName extends Schema.RootTypeName,
-  $Selection,
-> = IsNeedSelectionTypename<$Config, $Index> extends true
-  ? {
-      [$RootFieldName in StringKeyof<$Selection>]:
-        IsResultField<$Index, $RootTypeName, $RootFieldName> extends false
-        ? $Selection[$RootFieldName]
-        : $Selection[$RootFieldName] extends Select.SelectAlias.SelectAlias
-          ? AddTypenameToAliasInput<$Selection[$RootFieldName]>
-          : $Selection[$RootFieldName] & TypenameSelection
-    }
-  : $Selection
-
-// dprint-ignore
-type AddTypenameToAliasInput<$AliasInput extends Select.SelectAlias.SelectAlias> = {
-  [$Index in keyof $AliasInput]:
-    $AliasInput[$Index] extends Select.SelectAlias.SelectAlias
-      ? [$AliasInput[$Index][0], $AliasInput[$Index][1] & TypenameSelection]
-      : $AliasInput[$Index]
-}
-
-type IsResultField<
-  $Index extends SchemaIndex,
-  $RootTypeName extends Schema.RootTypeName,
-  $FieldName extends string,
-> = $FieldName & $Index['error']['rootResultFields'][$RootTypeName] extends never ? false
-  : true
-
-// dprint-ignore
-export type IsNeedSelectionTypename<$Config extends Config, $Index extends SchemaIndex> =
-  ConfigGetOutputError<$Config, 'schema'> extends 'throw'
-    ? GlobalRegistry.HasSchemaErrorsViaName<$Index['name']> extends true
-      ? true
-      : false
-    : false

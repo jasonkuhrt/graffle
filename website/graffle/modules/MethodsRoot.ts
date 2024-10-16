@@ -8,84 +8,73 @@ export interface QueryMethods<$Config extends Utils.Config> {
   // todo Use a static type here?
   $batch: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query>) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootType<
+      Utils.HandleOutput<
         $Config,
-        Index,
-        InferResult.Query<
-          Utils.AddTypenameToSelectedRootTypeResultFields<$Config, Index, 'Query', $SelectionSet>,
-          Index
-        >
+        InferResult.Query<$SelectionSet, Index>
       >
     >
   >
   // todo Use a static type here?
   __typename: () => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        '__typename',
-        'Query'
+        { __typename: 'Query' },
+        '__typename'
       >
     >
   >
   continent: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.continent>) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'continent',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['continent'], Index>
+        InferResult.Query<{ continent: $SelectionSet }, Index>,
+        'continent'
       >
     >
   >
   continents: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.continents>) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'continents',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['continents'], Index>
+        InferResult.Query<{ continents: $SelectionSet }, Index>,
+        'continents'
       >
     >
   >
   countries: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.countries>) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'countries',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['countries'], Index>
+        InferResult.Query<{ countries: $SelectionSet }, Index>,
+        'countries'
       >
     >
   >
   country: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.country>) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'country',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['country'], Index>
+        InferResult.Query<{ country: $SelectionSet }, Index>,
+        'country'
       >
     >
   >
   language: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.language>) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'language',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['language'], Index>
+        InferResult.Query<{ language: $SelectionSet }, Index>,
+        'language'
       >
     >
   >
   languages: <$SelectionSet>(selectionSet: Utils.Exact<$SelectionSet, SelectionSet.Query.languages>) => Promise<
     Simplify<
-      Utils.ResolveOutputReturnRootField<
+      Utils.HandleOutputGraffleRootField<
         $Config,
-        Index,
-        'languages',
-        InferResult.Field<$SelectionSet, Index['Root']['Query']['fields']['languages'], Index>
+        InferResult.Query<{ languages: $SelectionSet }, Index>,
+        'languages'
       >
     >
   >
@@ -95,7 +84,7 @@ export interface BuilderMethodsRoot<$Config extends Utils.Config> {
   query: QueryMethods<$Config>
 }
 
-export interface BuilderMethodsRootFn extends Utils.HKT.Fn {
+export interface BuilderMethodsRootFn extends Utils.TypeFunction.Fn {
   // @ts-expect-error parameter is Untyped.
   return: BuilderMethodsRoot<this['params']['config']>
 }

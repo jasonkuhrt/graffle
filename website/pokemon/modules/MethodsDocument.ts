@@ -12,7 +12,7 @@ export interface Document<$Config extends Utilities.Config> {
   >
 }
 
-export interface BuilderMethodsDocumentFn extends Utilities.HKT.Fn {
+export interface BuilderMethodsDocumentFn extends Utilities.TypeFunction.Fn {
   // @ts-expect-error parameter is Untyped.
   return: Document<this['params']['config']>
 }

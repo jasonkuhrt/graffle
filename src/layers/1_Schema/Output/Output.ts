@@ -1,4 +1,4 @@
-import type { TSError } from '../../../lib/TSError.js'
+import type { TSErrorDescriptive } from '../../../lib/TSError.js'
 import { readMaybeThunk } from '../core/helpers.js'
 import type { Any, Named } from './typeGroups.js'
 import type { __typename } from './types/__typename.js'
@@ -20,7 +20,7 @@ export type Unwrap<$Type extends any> =
       $Type extends Nullable<infer $innerType>  ? Unwrap<$innerType> :
       $Type extends __typename                  ? $Type['type'] :
       $Type extends Named         							? $Type : 
-                                                  TSError<'Unwrap', 'Unknown $Type', { $Type: $Type }>
+                                                  TSErrorDescriptive<'Unwrap', 'Unknown $Type', { $Type: $Type }>
 
 // dprint-ignore
 export type UnwrapNullable<$Type> =

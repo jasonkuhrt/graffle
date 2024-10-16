@@ -1,6 +1,6 @@
 import type { Simplify } from 'type-fest'
 import { type StringKeyof } from '../../lib/prelude.js'
-import type { TSError } from '../../lib/TSError.js'
+import type { TSErrorDescriptive } from '../../lib/TSError.js'
 import type { Schema } from '../1_Schema/__.js'
 import type { Select } from '../2_Select/__.js'
 import type { SchemaIndex } from '../4_generator/generators/SchemaIndex.js'
@@ -20,18 +20,18 @@ export type Object<$SelectionSet, $Schema extends SchemaIndex, $Node extends Sch
       )>
 
 // dprint-ignore
-type SelectionNonSelectAlias<$SelectionSet , $Schema extends SchemaIndex, $Node extends Schema.Output.Object$2> =
+type SelectionNonSelectAlias<$SelectionSet , $Schema extends SchemaIndex, $SchemaNode extends Schema.Output.Object$2> =
   {
-    [$Select in PickSelectsPositiveIndicatorAndNotSelectAlias<$SelectionSet>]:
-      $Select extends keyof $Node['fields']
-        ? Field<$SelectionSet[$Select], $Node['fields'][$Select], $Schema>
-        : Errors.UnknownFieldName<$Select, $Node>
+    [$Key in PickSelectsPositiveIndicatorAndNotSelectAlias<$SelectionSet>]:
+      $Key extends keyof $SchemaNode['fields']
+        ? Field<$SelectionSet[$Key], $SchemaNode['fields'][$Key], $Schema>
+        : Errors.UnknownFieldName<$Key, $SchemaNode>
   }
 
 // dprint-ignore
 export namespace Errors {
   export type UnknownFieldName<$FieldName extends string, $Object extends Schema.Object$2 | Schema.Output.RootType> =
-    TSError<'Object', `field "${$FieldName}" does not exist on object "${$Object['fields']['__typename']['type']['type']}"`>
+    TSErrorDescriptive<'Object', `field "${$FieldName}" does not exist on object "${$Object['fields']['__typename']['type']['type']}"`>
 }
 
 // dprint-ignore

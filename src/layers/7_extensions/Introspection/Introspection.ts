@@ -3,7 +3,7 @@ import type { Extension, SimplifyNullable } from '../../../entrypoints/main.js'
 import type { Fluent } from '../../../lib/fluent/__.js'
 import { createExtension } from '../../6_client/extension/extension.js'
 import type { FnParametersProperty } from '../../6_client/fluent.js'
-import type { ResolveOutputGql } from '../../6_client/handleOutput.js'
+import type { HandleOutput } from '../../6_client/handleOutput.js'
 import { createConfig, type Input } from './config.js'
 
 /**
@@ -50,9 +50,9 @@ export const Introspection = (input?: Input) => {
   })
 }
 
-interface IntrospectionExtension extends Extension {
+type IntrospectionExtension = Extension<{
   property: IntrospectFn
-}
+}>
 
 interface IntrospectFn extends Fluent.FnProperty<`introspect`> {
   // @ts-expect-error untyped params
@@ -60,5 +60,5 @@ interface IntrospectFn extends Fluent.FnProperty<`introspect`> {
 }
 
 interface Introspect<$Args extends FnParametersProperty> {
-  (): Promise<SimplifyNullable<ResolveOutputGql<$Args['state']['context']['config'], IntrospectionQuery>>>
+  (): Promise<SimplifyNullable<HandleOutput<$Args['state']['context']['config'], IntrospectionQuery>>>
 }

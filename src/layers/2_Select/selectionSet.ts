@@ -3,6 +3,8 @@ import type { Directive } from './Directive/__.js'
 import type { Indicator } from './Indicator/__.js'
 import { type SelectAlias } from './SelectAlias.js'
 
+export type RootType = AnySelectionSet
+
 export type AnySelectionSet = {
   [k: string]: FieldValue | ArgsObject
 } // & SpecialFields

@@ -1,11 +1,11 @@
 import type { DocumentNode } from 'graphql'
-import { AssertEqual } from '../../assert-equal.js'
+import { assertEqual } from '../../assert-equal.js'
 import type {
   GetVariablesInputKind,
   Node,
   Query,
   ResultOf,
-  SomeData,
+  SomeObjectData,
   String,
   Variables,
   VariablesInputKindNone,
@@ -18,23 +18,23 @@ import type { TypedDocumentNode as Node2 } from '@graphql-typed-document-node/co
 
 // dprint-ignore
 {
-  AssertEqual<GetVariablesInputKind<Variables>, VariablesInputKindOptional>()
-  AssertEqual<GetVariablesInputKind<never>, VariablesInputKindNone>()
-  AssertEqual<GetVariablesInputKind<{}>, VariablesInputKindNone>()
-  AssertEqual<GetVariablesInputKind<{ x: 1 }>, VariablesInputKindRequired>()
-  AssertEqual<GetVariablesInputKind<{ x: 1; y?: 1 }>, VariablesInputKindRequired>()
-  AssertEqual<GetVariablesInputKind<{ x?: 1 }>, VariablesInputKindOptional>()
-  AssertEqual<GetVariablesInputKind<{ x?: 2; y?: 1 }>, VariablesInputKindOptional>()
+  assertEqual<GetVariablesInputKind<Variables>, VariablesInputKindOptional>()
+  assertEqual<GetVariablesInputKind<never>, VariablesInputKindNone>()
+  assertEqual<GetVariablesInputKind<{}>, VariablesInputKindNone>()
+  assertEqual<GetVariablesInputKind<{ x: 1 }>, VariablesInputKindRequired>()
+  assertEqual<GetVariablesInputKind<{ x: 1; y?: 1 }>, VariablesInputKindRequired>()
+  assertEqual<GetVariablesInputKind<{ x?: 1 }>, VariablesInputKindOptional>()
+  assertEqual<GetVariablesInputKind<{ x?: 2; y?: 1 }>, VariablesInputKindOptional>()
 
-  AssertEqual<VariablesOf<DocumentNode      >, Variables>()
-  AssertEqual<VariablesOf<Node2   <{x:1},{}>>, {}>()
-  AssertEqual<VariablesOf<Node    <{x:1},{}>>, {}>()
-  AssertEqual<VariablesOf<Query   <{x:1},{}>>, {}>()
-  AssertEqual<VariablesOf<String  <{x:1},{}>>, {}>()
+  assertEqual<VariablesOf<DocumentNode      >, Variables>()
+  assertEqual<VariablesOf<Node2   <{x:1},{}>>, {}>()
+  assertEqual<VariablesOf<Node    <{x:1},{}>>, {}>()
+  assertEqual<VariablesOf<Query   <{x:1},{}>>, {}>()
+  assertEqual<VariablesOf<String  <{x:1},{}>>, {}>()
 
-  AssertEqual<ResultOf<string>           , SomeData>()
-  AssertEqual<ResultOf<Node2  <{x:1},{}>>, {x:1}>()
-  AssertEqual<ResultOf<Node   <{x:1},{}>>, {x:1}>()
-  AssertEqual<ResultOf<Query  <{x:1},{}>>, {x:1}>()
-  AssertEqual<ResultOf<String <{x:1},{}>>, {x:1}>()
+  assertEqual<ResultOf<string>           , SomeObjectData>()
+  assertEqual<ResultOf<Node2  <{x:1},{}>>, {x:1}>()
+  assertEqual<ResultOf<Node   <{x:1},{}>>, {x:1}>()
+  assertEqual<ResultOf<Query  <{x:1},{}>>, {x:1}>()
+  assertEqual<ResultOf<String <{x:1},{}>>, {x:1}>()
 }

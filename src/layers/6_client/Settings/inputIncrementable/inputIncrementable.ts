@@ -11,7 +11,7 @@ export type WithInput<$Context extends IncrementableInputContext = Incrementable
       /**
        * Configure output behavior, such as if errors should be returned or thrown.
        */
-      output?: OutputInput<$Context>
+      output?: OutputInput
     }
   & (
       $Context['transport']['type'] extends TransportMemory
@@ -28,4 +28,7 @@ export type IncrementableInputContext = {
 
 // dprint-ignore
 export type AddIncrementalInput<$Config extends Config, $Input extends WithInput> =
-  NormalizeInput<$Config['initialInput'] & $Input>
+  & Omit<NormalizeInput<$Config['initialInput'] & $Input>, 'typeHooks'>
+  & {
+      typeHooks: $Config['typeHooks']
+    }

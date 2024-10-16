@@ -1,6 +1,6 @@
-import type { HKT } from '../../entrypoints/utilities-for-generated.js'
+import type { TypeFunction } from '../../entrypoints/utilities-for-generated.js'
 import type { Values } from '../../lib/prelude.js'
-import type { TSError } from '../../lib/TSError.js'
+import type { TSErrorDescriptive } from '../../lib/TSError.js'
 import type { SchemaIndex } from './generators/SchemaIndex.js'
 
 declare global {
@@ -11,38 +11,34 @@ declare global {
   }
 }
 
-type SomeSchema = {
-  name: string
-  index: SchemaIndex
-  featureOptions: {
-    schemaErrors: boolean
-  }
-  interfaces: {
-    MethodsSelect: {}
-    MethodsRoot: HKT.Fn
-    Document: HKT.Fn
-  }
-  /**
-   * If the code was generated with introspection, the URL used is taken as the default schema URL.
-   */
-  defaultSchemaUrl: string | null
-}
-
 type ZeroSchema = {
   name: GlobalRegistry.DefaultSchemaName
   index: { name: never }
-  featureOptions: {
-    schemaErrors: false
-  }
+  featureOptions: {}
   interfaces: {
     MethodsSelect: {}
   }
   defaultSchemaUrl: null
 }
 
-export type GlobalRegistry = Record<string, SomeSchema>
+export type GlobalRegistry = Record<string, GlobalRegistry.RegisteredSchema>
 
 export namespace GlobalRegistry {
+  export interface RegisteredSchema {
+    name: string
+    index: SchemaIndex
+    featureOptions: {}
+    interfaces: {
+      Root: TypeFunction.Fn
+      Document: TypeFunction.Fn
+      MethodsSelect: {}
+    }
+    /**
+     * If the code was generated with introspection, the URL used is taken as the default schema URL.
+     */
+    defaultSchemaUrl: string | null
+  }
+
   export type DefaultSchemaName = 'default'
 
   export type Schemas = GraffleGlobalTypes.Schemas
@@ -52,7 +48,7 @@ export namespace GlobalRegistry {
   export type SchemaUnion = IsEmpty extends true ? ZeroSchema : Values<Schemas>
 
   export type SchemaNames = keyof GraffleGlobalTypes.Schemas extends never
-    ? TSError<'SchemaNames', 'No schemas have been registered. Did you run graffle generate?'>
+    ? TSErrorDescriptive<'SchemaNames', 'No schemas have been registered. Did you run graffle generate?'>
     : keyof GraffleGlobalTypes.Schemas
 
   // dprint-ignore
@@ -60,16 +56,6 @@ export namespace GlobalRegistry {
     $Schema['defaultSchemaUrl'] extends null
       ? false
       : true
-
-  // dprint-ignore
-  export type HasSchemaErrors<$Schema extends SchemaUnion> =
-    $Schema['featureOptions']['schemaErrors']
-
-  export type HasSchemaErrorsViaName<$Name extends SchemaNames> =
-    // todo use conditional types?
-    // eslint-disable-next-line
-    // @ts-ignore passes after generation
-    GraffleGlobalTypes.Schemas[$Name]['featureOptions']['schemaErrors']
 
   // eslint-disable-next-line
   // @ts-ignore passes after generation

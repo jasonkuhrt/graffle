@@ -11,6 +11,7 @@ import type { Client } from '../../6_client/client.js'
 import type { OutputConfigDefault, TransportConfigHttp } from '../../6_client/Settings/Config.js'
 
 let schemaServer: SchemaService
+
 let graffle: Client<{
   config: {
     schemaMap: null
@@ -18,6 +19,11 @@ let graffle: Client<{
     output: OutputConfigDefault
     initialInput: { schema: URL }
     name: 'default'
+    typeHooks: {
+      property: []
+      onRequestDocumentRootType: []
+      onRequestResult: []
+    }
   }
 }>
 
@@ -26,9 +32,8 @@ beforeAll(async () => {
 })
 
 beforeEach(() => {
-  // todo direct assignment leads to "excessive ..." error
   const graffle_ = Graffle.create({ schema: schemaServer.url }).use(Upload())
-  graffle = graffle_
+  graffle = graffle_ as any
 })
 
 afterAll(async () => {

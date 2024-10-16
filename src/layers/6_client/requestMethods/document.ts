@@ -3,13 +3,13 @@ import type { IsTupleMultiple } from '../../../lib/prelude.js'
 import type { Select } from '../../2_Select/__.js'
 import type { InferResult } from '../../3_InferResult/__.js'
 import type { SchemaIndex } from '../../4_generator/generators/SchemaIndex.js'
-import { type ResolveOutputReturnRootType } from '../handleOutput.js'
-import type { AddTypenameToSelectedRootTypeResultFields, Config } from '../Settings/Config.js'
+import { type HandleOutput } from '../handleOutput.js'
+import type { Config } from '../Settings/Config.js'
 
 // dprint-ignore
 export type DocumentRunner<
   $$Config extends Config,
-  $$Index extends SchemaIndex,
+  $$Schema extends SchemaIndex,
   $$Document extends Select.Document.SomeDocument,
   $$Name extends Select.Document.GetOperationNames<$$Document> = Select.Document.GetOperationNames<$$Document>
 > = {
@@ -18,20 +18,15 @@ export type DocumentRunner<
     const $Name extends string = $Params extends [] ? $$Name : $Params[0],
   >(...params: $Params) =>
     Promise<
-      ResolveOutputReturnRootType<
+      HandleOutput<
         $$Config,
-        $$Index,
         InferResult.Root<
-          AddTypenameToSelectedRootTypeResultFields<
-            $$Config,
-            $$Index,
-            Select.Document.GetRootTypeNameOfOperation<$$Document, $Name>,
-            Select.Document.GetOperation<$$Document, $Name>
-          >,
-          $$Index,
+          Select.Document.GetOperation<$$Document, $Name>,
+          $$Schema,
           Select.Document.GetRootTypeNameOfOperation<$$Document, $Name>
         >
       >
+      & {}
     >
 }
 
