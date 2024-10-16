@@ -1,1 +1,1 @@
-<!--@include: ../../../../src/layers/7_extensions/schemaErrors/documentation.md-->
+<!--@include: ../../../../src/layers/extensions/schemaErrors/documentation.md-->

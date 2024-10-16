@@ -1,4 +1,4 @@
-import type { RequestConfig } from '../../../lib/grafaid/http/http.js'
+import type { RequestConfig } from '../../lib/grafaid/http/http.js'
 import extractFiles from './extractFiles.js'
 
 export const createBody = (input: RequestConfig): FormData => {

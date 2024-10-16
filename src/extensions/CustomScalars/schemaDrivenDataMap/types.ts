@@ -1,5 +1,5 @@
-import type { Grafaid } from '../../../../lib/grafaid/__.js'
-import { Scalar, type Scalar as SchemaScalar } from '../../../1_Schema/_.js'
+import { Scalar, type Scalar as SchemaScalar } from '../../../layers/1_Schema/_.js'
+import type { Grafaid } from '../../../lib/grafaid/__.js'
 
 export const propertyNames = {
   k: `k`,

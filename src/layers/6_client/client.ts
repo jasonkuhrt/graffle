@@ -1,6 +1,6 @@
+import { CustomScalars } from '../../extensions/CustomScalars/CustomScalars.js'
 import type { Fluent } from '../../lib/fluent/__.js'
 import { proxyGet } from '../../lib/prelude.js'
-import { CustomScalars } from '../7_extensions/CustomScalars/CustomScalars.js'
 import { type UseFn, useProperties } from './extension/use.js'
 import { type ClientContext, createState, type FnParametersProperty, type StateWithoutConfig } from './fluent.js'
 import { type FnGql, gqlProperties } from './gql/gql.js'

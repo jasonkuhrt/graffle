@@ -1,9 +1,9 @@
 import { getIntrospectionQuery, type IntrospectionQuery } from 'graphql'
-import type { Extension, SimplifyNullable } from '../../../entrypoints/main.js'
-import type { Fluent } from '../../../lib/fluent/__.js'
-import { createExtension } from '../../6_client/extension/extension.js'
-import type { FnParametersProperty } from '../../6_client/fluent.js'
-import type { HandleOutput } from '../../6_client/handleOutput.js'
+import type { Extension, SimplifyNullable } from '../../entrypoints/main.js'
+import { createExtension } from '../../layers/6_client/extension/extension.js'
+import type { FnParametersProperty } from '../../layers/6_client/fluent.js'
+import type { HandleOutput } from '../../layers/6_client/handleOutput.js'
+import type { Fluent } from '../../lib/fluent/__.js'
 import { createConfig, type Input } from './config.js'
 
 /**

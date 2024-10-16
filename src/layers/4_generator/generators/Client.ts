@@ -1,4 +1,4 @@
-import { ModuleGeneratorSchemaDrivenDataMap } from '../../7_extensions/CustomScalars/schemaDrivenDataMap/generator.js'
+import { ModuleGeneratorSchemaDrivenDataMap } from '../../../extensions/CustomScalars/schemaDrivenDataMap/generator.js'
 import { createModuleGenerator } from '../helpers/moduleGenerator.js'
 import { ModuleGeneratorData } from './Data.js'
 

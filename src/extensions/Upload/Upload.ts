@@ -1,5 +1,5 @@
-import { createExtension } from '../../../entrypoints/main.js'
-import type { Variables } from '../../../lib/grafaid/graphql.js'
+import { createExtension } from '../../entrypoints/main.js'
+import type { Variables } from '../../lib/grafaid/graphql.js'
 import { createBody } from './createBody.js'
 
 /**
