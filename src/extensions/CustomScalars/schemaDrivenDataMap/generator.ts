@@ -206,11 +206,13 @@ const ObjectType = createCodeGenerator<
   ({ config, code, type, referenceAssignments }) => {
     const o: Code.TermObject = {}
 
-    // // Indicate if this is an error type.
-    // // ----------------------------------
-    // if (config.schema.error.objects.find(_ => _.name === type.name)) {
-    //   o[propertyNames.e] = 1
-    // }
+    config.extensions.forEach(_ => {
+      _.schemaDrivenDataMap?.onObjectType?.({
+        config,
+        sddmNode: o,
+        graphqlType: type,
+      })
+    })
 
     // Fields of this object.
     // ---------------------
@@ -222,17 +224,17 @@ const ObjectType = createCodeGenerator<
     const outputFields = Object.values(type.getFields()).filter(condition)
     for (const outputField of outputFields) {
       const outputFieldNamedType = Grafaid.Schema.getNamedType(outputField.type)
-      const ofItem: Code.TermObjectWithLike<Code.TermObject> = {
+      const sddmNodeOutputField: Code.TermObjectWithLike<Code.TermObject> = {
         $fields: {},
       }
-      of[outputField.name] = ofItem
+      of[outputField.name] = sddmNodeOutputField
 
       // Field Arguments
       const inputCondition = inputTypeCondition(config)
       const args = outputField.args.filter(inputCondition)
       if (args.length > 0) {
         const ofItemAs: Code.TermObject = {}
-        ofItem.$fields[propertyNames.a] = ofItemAs
+        sddmNodeOutputField.$fields[propertyNames.a] = ofItemAs
 
         for (const arg of args) {
           const ofItemA: Code.TermObject = {}
@@ -254,21 +256,18 @@ const ObjectType = createCodeGenerator<
         }
       }
 
-      // // Indicate if the field is a "result field"
-      // // ------------------------------------------
-      // const memberTypes = Grafaid.Schema.isUnionType(outputFieldNamedType) ? outputFieldNamedType.getTypes() : null
-      // if (
-      //   config.schema.error.enabled
-      //   && memberTypes
-      //   && config.schema.error.objects.find(_ => memberTypes.find(__ => __.name === _.name))
-      // ) {
-      //   ofItem.$fields[propertyNames.r] = 1
-      // }
+      config.extensions.forEach(_ => {
+        _.schemaDrivenDataMap?.onOutputField?.({
+          config,
+          sddmNode: sddmNodeOutputField,
+          graphqlType: outputField,
+        })
+      })
 
       if (condition(outputFieldNamedType)) {
         if (Grafaid.Schema.isScalarTypeAndCustom(outputFieldNamedType)) {
           if (config.runtimeFeatures.customScalars) {
-            ofItem.$fields[propertyNames.nt] = outputFieldNamedType.name
+            sddmNodeOutputField.$fields[propertyNames.nt] = outputFieldNamedType.name
           }
         } else if (
           Grafaid.Schema.isUnionType(outputFieldNamedType) || Grafaid.Schema.isObjectType(outputFieldNamedType)
@@ -276,7 +275,7 @@ const ObjectType = createCodeGenerator<
         ) {
           referenceAssignments.push(`${type.name}.f['${outputField.name}']!.nt = ${outputFieldNamedType.name}`)
           // dprint-ignore
-          ofItem.$literal = `// ${Code.termField(propertyNames.nt, outputFieldNamedType.name)} <-- Assigned later to avoid potential circular dependency.`
+          sddmNodeOutputField.$literal = `// ${Code.termField(propertyNames.nt, outputFieldNamedType.name)} <-- Assigned later to avoid potential circular dependency.`
           // // todo make kitchen sink schema have a pattern where this code path will be traversed.
           // // We just need to have arguments on a field on a nested object.
           // // Nested objects that in turn have custom scalar arguments
@@ -350,7 +349,7 @@ const InputObjectType = createCodeGenerator<
         && Grafaid.Schema.CustomScalars.isHasCustomScalarInputs(inputFieldType)
       ) {
         referenceAssignments.push(
-          `${type.name}.${propertyNames.f}!['${inputField.name}']!.${propertyNames.nt} = ${inputFieldType.name}`,
+          `${type.name}.${propertyNames.f}![\`${inputField.name}\`]!.${propertyNames.nt} = ${inputFieldType.name}`,
         )
         f[inputField.name]!.$literal = `// ${
           Code.termField(propertyNames.nt, inputFieldType.name)

@@ -155,6 +155,7 @@ const DateObject2: $Utilities.SchemaDrivenDataMap.OutputObject = {
 }
 
 const ErrorOne: $Utilities.SchemaDrivenDataMap.OutputObject = {
+  e: 1,
   f: {
     infoId: {},
     message: {},
@@ -162,6 +163,7 @@ const ErrorOne: $Utilities.SchemaDrivenDataMap.OutputObject = {
 }
 
 const ErrorTwo: $Utilities.SchemaDrivenDataMap.OutputObject = {
+  e: 1,
   f: {
     infoInt: {},
     message: {},
@@ -478,6 +480,7 @@ const Query: $Utilities.SchemaDrivenDataMap.OutputObject = {
           it: [1],
         },
       },
+      r: 1,
       // nt: Result, <-- Assigned later to avoid potential circular dependency.
     },
     resultNonNull: {
@@ -487,6 +490,7 @@ const Query: $Utilities.SchemaDrivenDataMap.OutputObject = {
           it: [0],
         },
       },
+      r: 1,
       // nt: Result, <-- Assigned later to avoid potential circular dependency.
     },
     string: {},

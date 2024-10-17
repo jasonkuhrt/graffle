@@ -26,7 +26,7 @@ import {
 } from './hooks.js'
 import { Transport } from './types.js'
 
-export const graffleMappedToRequest = (
+export const graffleMappedResultToRequest = (
   { document, operationsVariables }: SelectionSetGraphqlMapper.Encoded,
   operationName?: string,
 ): Grafaid.RequestAnalyzedDocumentNodeInput => {
@@ -69,7 +69,7 @@ export const anyware = Anyware.create<HookSequence, HookMap, ExecutionResult>({
       if (input.interfaceType === `raw`) {
         request = input.request
       } else {
-        request = graffleMappedToRequest(
+        request = graffleMappedResultToRequest(
           SelectionSetGraphqlMapper.toGraphQL(input.request.document, {
             sddm: input.state.config.schemaMap,
           }),
