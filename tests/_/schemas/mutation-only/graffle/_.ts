@@ -5,5 +5,6 @@
 import './modules/Global.js'
 
 export { create } from './modules/Client.js'
+export { schemaDrivenDataMap } from './modules/SchemaDrivenDataMap.js'
 export { Select } from './modules/Select.js'
 export * as SelectionSets from './modules/SelectionSets.js'

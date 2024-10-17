@@ -1,4 +1,4 @@
-import type { SchemaDrivenDataMap } from '../../../extensions/CustomScalars/schemaDrivenDataMap/types.js'
+import type { SchemaDrivenDataMap } from '../../../extensions/CustomScalars/schemaDrivenDataMap/__.js'
 import { Nodes } from '../../../lib/grafaid/_Nodes.js'
 import { Select } from '../../2_Select/__.js'
 import { type GraphQLPostOperationMapper } from '../mapper.js'

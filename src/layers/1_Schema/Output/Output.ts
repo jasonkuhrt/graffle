@@ -1,4 +1,4 @@
-import type { TSErrorDescriptive } from '../../../lib/TSError.js'
+import type { TSErrorDescriptive } from '../../../lib/ts-error.js'
 import { readMaybeThunk } from '../core/helpers.js'
 import type { Any, Named } from './typeGroups.js'
 import type { __typename } from './types/__typename.js'

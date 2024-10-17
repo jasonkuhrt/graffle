@@ -1,4 +1,4 @@
-import type { SchemaDrivenDataMap } from '../../../extensions/CustomScalars/schemaDrivenDataMap/types.js'
+import type { SchemaDrivenDataMap } from '../../../extensions/CustomScalars/schemaDrivenDataMap/__.js'
 import type { Grafaid } from '../../../lib/grafaid/__.js'
 import { Nodes } from '../../../lib/grafaid/_Nodes.js'
 import type { Select } from '../../2_Select/__.js'

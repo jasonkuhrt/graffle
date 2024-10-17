@@ -1,5 +1,5 @@
 // import type { Extension, HookName } from '../../layers/5_client/extension/types.js'
-import { analyzeFunction } from '../analyzeFunction.js'
+import { analyzeFunction } from '../analyze-function.js'
 import { ContextualError } from '../errors/ContextualError.js'
 import type { HookName } from './hook/definition.js'
 import type { NonRetryingExtensionInput } from './main.js'

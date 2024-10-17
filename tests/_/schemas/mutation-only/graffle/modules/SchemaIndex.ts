@@ -20,14 +20,4 @@ export interface Index {
   unions: {}
   interfaces: {}
   customScalars: Utilities.SchemaIndexBase['customScalars']
-  error: {
-    objects: {}
-    objectsTypename: {}
-    rootResultFields: {
-      Query: {}
-
-      Subscription: {}
-      Mutation: {}
-    }
-  }
 }

@@ -21,6 +21,8 @@ import {
 import { GraphQLInputObjectType, isScalarType } from 'graphql'
 
 export {
+  buildClientSchema,
+  buildSchema,
   getNamedType,
   getNullableType,
   type GraphQLArgument as Argument,
@@ -51,6 +53,7 @@ export {
   isRequiredInputField,
   isScalarType,
   isUnionType,
+  printSchema as print,
 } from 'graphql'
 
 export * as Args from './args.js'

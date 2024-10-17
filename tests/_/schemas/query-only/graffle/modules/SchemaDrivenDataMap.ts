@@ -16,9 +16,13 @@ import * as $Scalar from './Scalar.js'
 //
 //
 
+const Boolean = $Scalar.Boolean
+
+const Float = $Scalar.Float
+
 const ID = $Scalar.ID
 
-const Boolean = $Scalar.Boolean
+const Int = $Scalar.Int
 
 const String = $Scalar.String
 
@@ -194,8 +198,10 @@ const $schemaDrivenDataMap: $Utilities.SchemaDrivenDataMap = {
   },
   directives: {},
   types: {
-    ID,
     Boolean,
+    Float,
+    ID,
+    Int,
     String,
     Query,
   },
