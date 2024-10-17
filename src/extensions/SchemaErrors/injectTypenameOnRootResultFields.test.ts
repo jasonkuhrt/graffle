@@ -3,12 +3,12 @@ import { normalizeOrThrow } from '../../layers/2_Select/document.js'
 import { SelectionSetGraphqlMapper } from '../../layers/3_SelectGraphQLMapper/__.js'
 import { graffleMappedResultToRequest } from '../../layers/5_request/core.js'
 import { injectTypenameOnRootResultFields } from './injectTypenameOnRootResultFields.js'
-import { Graffle } from './tests/fixture/graffle/__.js'
+import { GraffleSchemaErrors } from './tests/fixture/graffle/__.js'
 
 type CasesQuery = [
   description: string,
-  queryWithoutTypename: Graffle.SelectionSets.Query,
-  queryWithTypename: Graffle.SelectionSets.Query,
+  queryWithoutTypename: GraffleSchemaErrors.SelectionSets.Query,
+  queryWithTypename: GraffleSchemaErrors.SelectionSets.Query,
 ]
 
 // dprint-ignore
@@ -43,7 +43,7 @@ test.each<CasesQuery>([
   )
   injectTypenameOnRootResultFields({
     request: graffleMappedResultToRequest(docWithout),
-    sddm: Graffle.schemaDrivenDataMap,
+    sddm: GraffleSchemaErrors.schemaDrivenDataMap,
   })
   expect(docWithout.document).toMatchObject(docWith.document)
 })

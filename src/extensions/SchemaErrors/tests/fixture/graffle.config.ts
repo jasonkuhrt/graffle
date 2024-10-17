@@ -4,7 +4,7 @@ import { SchemaErrors } from '../../generator.js'
 
 export default Generator
   .create({
-    name: `KitchenSink`,
+    name: `GraffleSchemaErrors`,
     schema,
     outputDirPath: `./graffle`,
     libraryPaths: {

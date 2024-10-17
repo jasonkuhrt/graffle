@@ -35,7 +35,7 @@ const args = Command.create().description(`Generate a type safe GraphQL client.`
       z.string().min(1).describe(
         `A GraphQL endpoint to be used as the default URL in the generated client for requests.`,
       ),
-    ]).default(true),
+    ]).optional(),
   )
   .parameter(
     `output`,
@@ -48,7 +48,7 @@ const args = Command.create().description(`Generate a type safe GraphQL client.`
     z.boolean().describe(
       `Try to format the generated files. At attempt to use dprint will be made. You need to have these dependencies installed in your project: @dprint/formatter, @dprint/typescript.`,
     )
-      .default(true),
+      .optional(),
   )
   .settings({
     parameters: {
@@ -90,14 +90,19 @@ if (!schema) {
 const currentWorkingDirectory = configModule.path ? Path.dirname(configModule.path) : process.cwd()
 console.log(currentWorkingDirectory)
 
-// --- Generate ---
+// --- Merge Inputs ---
 
-await Generator.generate({
+const input = {
   ...configModule.builder?._.input,
   currentWorkingDirectory,
   schema,
-  defaultSchemaUrl,
-  format: args.format,
-  name: args.name,
-  outputDirPath: args.output ? toAbsolutePath(process.cwd(), args.output) : undefined,
-})
+}
+
+if (defaultSchemaUrl !== undefined) input.defaultSchemaUrl = defaultSchemaUrl
+if (args.format !== undefined) input.format = args.format
+if (args.name !== undefined) input.name = args.name
+if (args.output !== undefined) input.outputDirPath = toAbsolutePath(process.cwd(), args.output)
+
+// --- Generate ---
+
+await Generator.generate(input)

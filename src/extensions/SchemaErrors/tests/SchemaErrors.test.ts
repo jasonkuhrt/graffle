@@ -4,9 +4,9 @@ import { db } from '../../../../tests/_/schemas/db.js'
 import { schema } from '../../../../tests/_/schemas/kitchen-sink/schema.js'
 import type { Errors } from '../../../lib/errors/__.js'
 import { SchemaErrors } from '../SchemaErrors.js'
-import { Graffle } from './fixture/graffle/__.js'
+import { GraffleSchemaErrors } from './fixture/graffle/__.js'
 
-const graffle = Graffle
+const graffle = GraffleSchemaErrors
   .create({ schema })
   .with({
     output: {

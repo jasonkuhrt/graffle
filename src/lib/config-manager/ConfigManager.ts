@@ -46,7 +46,9 @@ type MergeDefaultsInnerFn = (
 
 type CustomScalarGuard = (value: object) => boolean
 
-export const mergeDefaults = createMerger([isAnyFunction, isDate])
+const isUrl = (value: object): value is URL => value instanceof URL
+
+export const mergeDefaults = createMerger([isAnyFunction, isDate, isUrl])
 
 const mergeDefaults_: MergeDefaultsInnerFn = (
   defaults,

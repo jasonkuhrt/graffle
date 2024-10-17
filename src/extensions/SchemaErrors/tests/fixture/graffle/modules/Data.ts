@@ -1,4 +1,4 @@
-export const Name = `default`
-export type Name = 'default'
+export const Name = `GraffleSchemaErrors`
+export type Name = 'GraffleSchemaErrors'
 
 export const defaultSchemaUrl = undefined

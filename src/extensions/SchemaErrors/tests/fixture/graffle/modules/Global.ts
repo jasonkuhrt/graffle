@@ -7,7 +7,7 @@ import type { Index } from './SchemaIndex.js'
 declare global {
   export namespace GraffleGlobalTypes {
     export interface Schemas {
-      default: {
+      GraffleSchemaErrors: {
         name: Data.Name
         index: Index
         interfaces: {
