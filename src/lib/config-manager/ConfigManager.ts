@@ -3,13 +3,17 @@ import { isDate } from 'util/types'
 import { type ExcludeUndefined, type GuardedType, isAnyFunction, isNonNullObject } from '../prelude.js'
 
 // dprint-ignore
-export type MergeDefaults<$Defaults extends object, $Input extends object, $CustomScalars> =
-  {
-    [$Key in keyof $Defaults]:
-      $Key extends keyof $Input
-        ? MergeDefaultsValues<$Defaults[$Key], ExcludeUndefined<$Input[$Key]>, $CustomScalars>
-        : $Defaults[$Key]
-  }
+export type MergeDefaults<$Defaults extends object, $Input extends undefined | object, $CustomScalars> =
+  $Input extends undefined
+    ? $Defaults
+    : {
+        [$Key in keyof $Defaults]:
+          $Key extends keyof $Input
+            ? $Input[$Key] extends undefined
+              ? $Defaults[$Key]
+              : MergeDefaultsValues<$Defaults[$Key], ExcludeUndefined<$Input[$Key]>, $CustomScalars>
+            : $Defaults[$Key]
+      }
 
 // dprint-ignore
 type MergeDefaultsValues<$DefaultValue, $InputValue, $CustomScalars> =
@@ -29,14 +33,14 @@ export const createMerger = <$CustomScalars extends CustomScalarGuard[]>(
   return (defaults, input) => mergeDefaults_(defaults, input, customScalars) as any
 }
 
-type MergeDefaultsFn<$CustomScalars> = <$Defaults extends object, $Input extends PartialDeep<$Defaults>>(
+type MergeDefaultsFn<$CustomScalars> = <$Defaults extends object, $Input extends undefined | PartialDeep<$Defaults>>(
   defaults: $Defaults,
-  input: $Input,
+  input?: $Input,
 ) => Simplify<MergeDefaults<$Defaults, $Input, $CustomScalars>>
 
 type MergeDefaultsInnerFn = (
   defaults: object,
-  input: object,
+  input: object | undefined,
   customScalars: CustomScalarGuard[],
 ) => object
 
@@ -44,20 +48,23 @@ type CustomScalarGuard = (value: object) => boolean
 
 export const mergeDefaults = createMerger([isAnyFunction, isDate])
 
-export const mergeDefaults_: MergeDefaultsInnerFn = (
+const mergeDefaults_: MergeDefaultsInnerFn = (
   defaults,
   input,
   customScalars,
 ) => {
+  if (input === undefined) {
+    return defaults
+  }
+
   const i = input as Record<string, any>
   const d = defaults as Record<string, any>
 
   for (const key in d) {
     const defaultValue = d[key]
 
-    if (key in i) {
+    if (key in i && i[key] !== undefined) {
       const inputValue = i[key]
-
       if (isNonNullObject(defaultValue)) {
         if (isNonNullObject(inputValue)) {
           const isCustomScalar = customScalars.some(isCustomScalar => isCustomScalar(inputValue))

@@ -19,7 +19,9 @@ const defaults: Config = {
 
 const defaultExtensions = [`ts`, `js`, `mjs`, `mts`]
 
-export const load = async (input: Input): Promise<null | Builder | Errors.ContextualError> => {
+export const load = async (
+  input: Input,
+): Promise<null | { builder: Builder; path: string } | Errors.ContextualError> => {
   const config = ConfigManager.mergeDefaults(defaults, input)
   const extensionCandidates = Path.extname(config.filePath) ? [Path.extname(config.filePath)] : defaultExtensions
   const pathParsed = Path.parse(config.filePath)
@@ -48,5 +50,8 @@ export const load = async (input: Input): Promise<null | Builder | Errors.Contex
     )
   }
 
-  return builder.module
+  return {
+    builder: builder.module,
+    path: builder.path,
+  }
 }

@@ -553,14 +553,6 @@ export const getOptionalNullablePropertyOrThrow = <
   return value as ExcludeNullAndUndefined<$Record[$Key]>
 }
 
-export const omitUndefinedKeys = <T extends object>(obj: T): OmitUndefinedKeys<T> => {
-  return Object.fromEntries(Object.entries(obj).filter(([_, v]) => v !== undefined)) as any
-}
-
-type OmitUndefinedKeys<T extends object> = {
-  [K in keyof T as undefined extends T[K] ? K : never]: T[K]
-}
-
 export type StringKeyof<T> = keyof T & string
 
 export const keysStrict = <T extends object>(obj: T): (keyof T)[] => {

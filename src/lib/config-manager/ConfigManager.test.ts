@@ -9,6 +9,14 @@ test(`defaults are merged into input value`, () => {
   expect(result).toEqual({ a: 1 })
 })
 
+test(`keys with undefined are ignored`, () => {
+  const defaults = { a: 1 }
+  const input = { a: undefined }
+  const result = ConfigManager.mergeDefaults(defaults, input)
+  expectTypeOf(result).toEqualTypeOf<{ a: number }>()
+  expect(result).toEqual({ a: 1 })
+})
+
 test(`input value is mutated`, () => {
   const defaults = { a: 1 }
   const input = {}
@@ -85,6 +93,13 @@ test(`works with interface-typed nested-object values`, () => {
   const result = ConfigManager.mergeDefaults(defaults, input)
   expectTypeOf(result).toEqualTypeOf<{ a: { b: number } }>()
   expect(result).toEqual({ a: { b: 2 } })
+})
+
+test(`input can be undefined, returns defaults`, () => {
+  const defaults = { a: 1 }
+  const result = ConfigManager.mergeDefaults(defaults, undefined)
+  expectTypeOf(result).toEqualTypeOf(defaults)
+  expect(result).toBe(defaults)
 })
 
 describe(`default custom scalars`, () => {

@@ -16,15 +16,17 @@ import * as $Scalar from './Scalar.js'
 //
 //
 
-const Int = $Scalar.Int
+const Boolean = $Scalar.Boolean
 
-const String = $Scalar.String
+const Date = $Scalar.Date
+
+const Float = $Scalar.Float
 
 const ID = $Scalar.ID
 
-const Boolean = $Scalar.Boolean
+const Int = $Scalar.Int
 
-const Float = $Scalar.Float
+const String = $Scalar.String
 
 //
 //
@@ -42,7 +44,7 @@ const Float = $Scalar.Float
 //
 //
 
-const Date = $Scalar.Date
+// None of your GraphQLScalarTypeCustoms have custom scalars.
 
 //
 //
@@ -88,14 +90,9 @@ const Case: $Utilities.SchemaDrivenDataMap.Enum = {
 
 const InputObject: $Utilities.SchemaDrivenDataMap.InputObject = {
   n: 'InputObject',
-  fcs: ['date', 'dateRequired'],
   f: {
-    date: {
-      nt: Date,
-    },
-    dateRequired: {
-      nt: Date,
-    },
+    date: {},
+    dateRequired: {},
     id: {},
     idRequired: {},
   },
@@ -103,34 +100,23 @@ const InputObject: $Utilities.SchemaDrivenDataMap.InputObject = {
 
 const InputObjectCircular: $Utilities.SchemaDrivenDataMap.InputObject = {
   n: 'InputObjectCircular',
-  fcs: ['circular', 'date'],
   f: {
-    circular: {
-      // nt: InputObjectCircular, <-- Assigned later to avoid potential circular dependency.
-    },
-    date: {
-      nt: Date,
-    },
+    circular: {},
+    date: {},
   },
 }
 
 const InputObjectNested: $Utilities.SchemaDrivenDataMap.InputObject = {
   n: 'InputObjectNested',
-  fcs: ['InputObject'],
   f: {
-    InputObject: {
-      // nt: InputObject, <-- Assigned later to avoid potential circular dependency.
-    },
+    InputObject: {},
   },
 }
 
 const InputObjectNestedNonNull: $Utilities.SchemaDrivenDataMap.InputObject = {
   n: 'InputObjectNestedNonNull',
-  fcs: ['InputObject'],
   f: {
-    InputObject: {
-      // nt: InputObject, <-- Assigned later to avoid potential circular dependency.
-    },
+    InputObject: {},
   },
 }
 
@@ -158,22 +144,17 @@ const Bar: $Utilities.SchemaDrivenDataMap.OutputObject = {
 
 const DateObject1: $Utilities.SchemaDrivenDataMap.OutputObject = {
   f: {
-    date1: {
-      nt: Date,
-    },
+    date1: {},
   },
 }
 
 const DateObject2: $Utilities.SchemaDrivenDataMap.OutputObject = {
   f: {
-    date2: {
-      nt: Date,
-    },
+    date2: {},
   },
 }
 
 const ErrorOne: $Utilities.SchemaDrivenDataMap.OutputObject = {
-  e: 1,
   f: {
     infoId: {},
     message: {},
@@ -181,7 +162,6 @@ const ErrorOne: $Utilities.SchemaDrivenDataMap.OutputObject = {
 }
 
 const ErrorTwo: $Utilities.SchemaDrivenDataMap.OutputObject = {
-  e: 1,
   f: {
     infoInt: {},
     message: {},
@@ -264,9 +244,7 @@ const lowerCaseObject2: $Utilities.SchemaDrivenDataMap.OutputObject = {
 //
 
 const DateInterface1: $Utilities.SchemaDrivenDataMap.OutputObject = {
-  f: {
-    ...DateObject1.f,
-  },
+  f: {},
 }
 
 const Error: $Utilities.SchemaDrivenDataMap.OutputObject = {
@@ -294,10 +272,7 @@ const Interface: $Utilities.SchemaDrivenDataMap.OutputObject = {
 //
 
 const DateUnion: $Utilities.SchemaDrivenDataMap.OutputObject = {
-  f: {
-    ...DateObject1.f,
-    ...DateObject2.f,
-  },
+  f: {},
 }
 
 const FooBarUnion: $Utilities.SchemaDrivenDataMap.OutputObject = {
@@ -362,9 +337,7 @@ const Query: $Utilities.SchemaDrivenDataMap.OutputObject = {
         },
       },
     },
-    date: {
-      nt: Date,
-    },
+    date: {},
     dateArg: {
       a: {
         date: {
@@ -372,7 +345,6 @@ const Query: $Utilities.SchemaDrivenDataMap.OutputObject = {
           it: [0],
         },
       },
-      nt: Date,
     },
     dateArgInputObject: {
       a: {
@@ -381,7 +353,6 @@ const Query: $Utilities.SchemaDrivenDataMap.OutputObject = {
           it: [0],
         },
       },
-      nt: Date,
     },
     dateArgList: {
       a: {
@@ -390,7 +361,6 @@ const Query: $Utilities.SchemaDrivenDataMap.OutputObject = {
           it: [0, [1]],
         },
       },
-      nt: Date,
     },
     dateArgNonNull: {
       a: {
@@ -399,7 +369,6 @@ const Query: $Utilities.SchemaDrivenDataMap.OutputObject = {
           it: [1],
         },
       },
-      nt: Date,
     },
     dateArgNonNullList: {
       a: {
@@ -408,7 +377,6 @@ const Query: $Utilities.SchemaDrivenDataMap.OutputObject = {
           it: [1, [0]],
         },
       },
-      nt: Date,
     },
     dateArgNonNullListNonNull: {
       a: {
@@ -417,23 +385,14 @@ const Query: $Utilities.SchemaDrivenDataMap.OutputObject = {
           it: [1, [1]],
         },
       },
-      nt: Date,
     },
     dateInterface1: {
       // nt: DateInterface1, <-- Assigned later to avoid potential circular dependency.
     },
-    dateList: {
-      nt: Date,
-    },
-    dateListList: {
-      nt: Date,
-    },
-    dateListNonNull: {
-      nt: Date,
-    },
-    dateNonNull: {
-      nt: Date,
-    },
+    dateList: {},
+    dateListList: {},
+    dateListNonNull: {},
+    dateNonNull: {},
     dateObject1: {
       // nt: DateObject1, <-- Assigned later to avoid potential circular dependency.
     },
@@ -519,7 +478,6 @@ const Query: $Utilities.SchemaDrivenDataMap.OutputObject = {
           it: [1],
         },
       },
-      r: 1,
       // nt: Result, <-- Assigned later to avoid potential circular dependency.
     },
     resultNonNull: {
@@ -529,7 +487,6 @@ const Query: $Utilities.SchemaDrivenDataMap.OutputObject = {
           it: [0],
         },
       },
-      r: 1,
       // nt: Result, <-- Assigned later to avoid potential circular dependency.
     },
     string: {},
@@ -646,9 +603,6 @@ const Query: $Utilities.SchemaDrivenDataMap.OutputObject = {
 //
 //
 
-InputObjectCircular.f!['circular']!.nt = InputObjectCircular
-InputObjectNested.f!['InputObject']!.nt = InputObject
-InputObjectNestedNonNull.f!['InputObject']!.nt = InputObject
 ObjectNested.f['object']!.nt = Object1
 ObjectUnion.f['fooBarUnion']!.nt = FooBarUnion
 Query.f['dateInterface1']!.nt = DateInterface1
@@ -695,12 +649,12 @@ const $schemaDrivenDataMap: $Utilities.SchemaDrivenDataMap = {
   },
   directives: {},
   types: {
+    Boolean,
+    Date,
+    Float,
+    ID,
     Int,
     String,
-    ID,
-    Boolean,
-    Float,
-    Date,
     ABCEnum,
     Case,
     InputObject,

@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 
 import { Command } from '@molt/command'
+import * as Path from 'node:path'
 import { z } from 'zod'
 import { Generator } from '../layers/4_generator/__.js'
-import { urlParseSafe } from '../lib/prelude.js'
+import { isError, urlParseSafe } from '../lib/prelude.js'
 
 const args = Command.create().description(`Generate a type safe GraphQL client.`)
   .parameter(
@@ -14,8 +15,14 @@ const args = Command.create().description(`Generate a type safe GraphQL client.`
   )
   .parameter(
     `schema`,
-    z.string().min(1).describe(
-      `Path to where your GraphQL schema is. If a URL is given it will be introspected. Otherwise assumed to be a path to your GraphQL SDL file. If a directory path is given, then will look for a "schema.graphql" within that directory. Otherwise will attempt to load the exact file path given.`,
+    z.string().min(1).optional().describe(
+      `Path to where your GraphQL schema is. If a URL is given it will be introspected. Otherwise assumed to be a path to your GraphQL SDL file. If a directory path is given, then will look for a "schema.graphql" within that directory. Otherwise will attempt to load the exact file path given. If omitted, then your project must have a configuration file which supplies the schema source.`,
+    ),
+  )
+  .parameter(
+    `config`,
+    z.string().optional().describe(
+      `Path to your configuration file. By default will look for "graffle.config.{ts,js,mjs,mts}" in the current working directory.`,
     ),
   )
   .parameter(
@@ -42,30 +49,6 @@ const args = Command.create().description(`Generate a type safe GraphQL client.`
     )
       .default(true),
   )
-  .parameter(
-    `libraryPathClient`,
-    z.string().optional().describe(
-      `Custom location for where the generated code should import the Graffle "client" module from.`,
-    ),
-  )
-  .parameter(
-    `libraryPathSchema`,
-    z.string().optional().describe(
-      `Custom location for where the generated code should import the Graffle "schema" module from.`,
-    ),
-  )
-  .parameter(
-    `libraryPathScalars`,
-    z.string().optional().describe(
-      `Custom location for where the generated code should import the Graffle "scalars" module from.`,
-    ),
-  )
-  .parameter(
-    `libraryPathUtilitiesForGenerated`,
-    z.string().optional().describe(
-      `Custom location for where the generated code should import the Graffle "utilities-for-generated" module from.`,
-    ),
-  )
   .settings({
     parameters: {
       environment: false,
@@ -73,28 +56,43 @@ const args = Command.create().description(`Generate a type safe GraphQL client.`
   })
   .parse()
 
-const url = urlParseSafe(args.schema)
+// --- Resolve Config File ---
+
+const configModule = await Generator.Config.load({ filePath: args.config })
+if (isError(configModule)) throw configModule
+if (!configModule && args.config) {
+  throw new Error(`Could not find a configuration file at "${args.config}".`)
+}
+
+// --- Resolve Default Schema URL ---
 
 const defaultSchemaUrl = typeof args.defaultSchemaUrl === `string`
   ? new URL(args.defaultSchemaUrl)
   : args.defaultSchemaUrl
 
-const format = args.format
+// --- Resolve Schema ---
 
-const schemaSource = url
-  ? { type: `url` as const, url }
-  : { type: `sdl` as const, dirOrFilePath: args.schema }
+const url = args.schema ? urlParseSafe(args.schema) : null
+
+const schemaViaCLI = args.schema
+  ? url
+    ? { type: `url` as const, url }
+    : { type: `sdl` as const, dirOrFilePath: Path.join(process.cwd(), args.schema) }
+  : undefined
+
+const schema = schemaViaCLI ?? configModule?.builder._.input.schema
+
+if (!schema) {
+  throw new Error(`No schema source provided. Either specify a schema source in the config file or via the CLI.`)
+}
+
+// --- Generate ---
 
 await Generator.generate({
-  format,
-  schemaSource,
+  currentWorkingDirectory: configModule?.path ?? process.cwd(),
+  schema,
   defaultSchemaUrl,
+  format: args.format,
   name: args.name,
-  outputDirPath: args.output,
-  libraryPaths: {
-    client: args.libraryPathClient,
-    schema: args.libraryPathSchema,
-    scalars: args.libraryPathScalars,
-    utilitiesForGenerated: args.libraryPathUtilitiesForGenerated,
-  },
+  outputDirPath: Path.join(process.cwd(), args.output),
 })

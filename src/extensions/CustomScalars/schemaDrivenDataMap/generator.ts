@@ -1,4 +1,4 @@
-import type { Config } from '../../../layers/4_generator/config.js'
+import type { Config } from '../../../layers/4_generator/config/config.js'
 import { ModuleGeneratorScalar } from '../../../layers/4_generator/generators/Scalar.js'
 import { createModuleGenerator } from '../../../layers/4_generator/helpers/moduleGenerator.js'
 import { createCodeGenerator } from '../../../layers/4_generator/helpers/moduleGeneratorRunner.js'

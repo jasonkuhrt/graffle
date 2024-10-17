@@ -1,7 +1,7 @@
 import { Code } from '../../../lib/Code.js'
 import { Grafaid } from '../../../lib/grafaid/__.js'
 import { entries, values } from '../../../lib/prelude.js'
-import type { Config } from '../config.js'
+import type { Config } from '../config/config.js'
 import { createModuleGenerator } from '../helpers/moduleGenerator.js'
 import { getDocumentation } from '../helpers/render.js'
 import { ModuleGeneratorScalar } from './Scalar.js'

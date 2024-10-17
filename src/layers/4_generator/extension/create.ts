@@ -1,6 +1,7 @@
 import type { Code } from '../../../lib/Code.js'
 import type { Grafaid } from '../../../lib/grafaid/__.js'
-import type { Config } from '../config.js'
+import type { Config } from '../config/config.js'
+import type { Extension } from './types.js'
 
 export interface Input {
   name: string
@@ -22,6 +23,6 @@ interface OutputFieldHookParams {
   graphqlType: Grafaid.Schema.Field<any, any>
 }
 
-export const createExtension = (input: Input) => {
+export const createExtension = (input: Input): Extension => {
   return input
 }

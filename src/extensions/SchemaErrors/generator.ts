@@ -1,5 +1,5 @@
 import { createGeneratorExtension } from '../../entrypoints/extensionkit.js'
-import type { Config as GeneratorConfig } from '../../layers/4_generator/config.js'
+import type { Config as GeneratorConfig } from '../../layers/4_generator/config/config.js'
 import { ConfigManager } from '../../lib/config-manager/__.js'
 import { Grafaid } from '../../lib/grafaid/__.js'
 
@@ -41,8 +41,8 @@ const defaults: Config = {
   isErrorType: (_ => Boolean(_.name.match(defaultErrorTypeNamePattern))),
 }
 
-export const SchemaErrorsGenerator = (input: Input) => {
-  const config = ConfigManager.mergeDefaults(defaults, input)
+export const SchemaErrors = (input?: Input) => {
+  const config = ConfigManager.mergeDefaults(defaults, input ?? {})
 
   return createGeneratorExtension({
     name: `SchemaErrors`,
