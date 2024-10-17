@@ -1,3 +1,4 @@
+import { ModuleGeneratorSchemaDrivenDataMap } from '../../../extensions/CustomScalars/schemaDrivenDataMap/generator.js'
 import { createModuleGenerator } from '../helpers/moduleGenerator.js'
 import { ModuleGeneratorClient } from './Client.js'
 import { ModuleGeneratorSelect } from './Select.js'
@@ -16,6 +17,7 @@ export const ModuleGenerator_ = createModuleGenerator(
       `export { Select } from './modules/${ModuleGeneratorSelect.name}.js'`,
       `export { create } from './modules/${ModuleGeneratorClient.name}.js'`,
       `export * as SelectionSets from './modules/${ModuleGeneratorSelectionSets.name}.js'`,
+      `export { schemaDrivenDataMap } from './modules/${ModuleGeneratorSchemaDrivenDataMap.name}.js'`,
     )
 
     return code

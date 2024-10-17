@@ -1,6 +1,8 @@
 import { errorFromMaybeError } from './prelude.js'
 
-export const importFirst = async (paths: string[]): Promise<undefined | Error | { module: unknown; path: string }> => {
+export const importFirst = async (
+  paths: string[],
+): Promise<undefined | Error | { module: Record<string, unknown>; path: string }> => {
   for (const path of paths) {
     try {
       return {

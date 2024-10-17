@@ -4,6 +4,7 @@ import { Command } from '@molt/command'
 import * as Path from 'node:path'
 import { z } from 'zod'
 import { Generator } from '../layers/4_generator/__.js'
+import { toAbsolutePath } from '../lib/fs.js'
 import { isError, urlParseSafe } from '../lib/prelude.js'
 
 const args = Command.create().description(`Generate a type safe GraphQL client.`)
@@ -20,9 +21,9 @@ const args = Command.create().description(`Generate a type safe GraphQL client.`
     ),
   )
   .parameter(
-    `config`,
+    `project`,
     z.string().optional().describe(
-      `Path to your configuration file. By default will look for "graffle.config.{ts,js,mjs,mts}" in the current working directory.`,
+      `Path to your configuration file. By default will look for "graffle.config.{ts,js,mjs,mts}" in the current working directory. If a directory path is given, then will look for "graffle.config.{ts,js,mjs,mts}" in that directory.`,
     ),
   )
   .parameter(
@@ -38,8 +39,8 @@ const args = Command.create().description(`Generate a type safe GraphQL client.`
   )
   .parameter(
     `output`,
-    z.string().min(1).default(`./graffle`).describe(
-      `Directory path for where to output the generated TypeScript files.`,
+    z.string().min(1).optional().describe(
+      `Directory path for where to output the generated TypeScript files. By default will be './graffle' in the project root.`,
     ),
   )
   .parameter(
@@ -58,10 +59,10 @@ const args = Command.create().description(`Generate a type safe GraphQL client.`
 
 // --- Resolve Config File ---
 
-const configModule = await Generator.Config.load({ filePath: args.config })
+const configModule = await Generator.Config.load({ filePath: args.project })
 if (isError(configModule)) throw configModule
-if (!configModule && args.config) {
-  throw new Error(`Could not find a configuration file at "${args.config}".`)
+if (!configModule.builder && args.project) {
+  throw new Error(`Could not find a configuration file at "${configModule.paths.join(`, `)}".`)
 }
 
 // --- Resolve Default Schema URL ---
@@ -80,19 +81,23 @@ const schemaViaCLI = args.schema
     : { type: `sdl` as const, dirOrFilePath: Path.join(process.cwd(), args.schema) }
   : undefined
 
-const schema = schemaViaCLI ?? configModule?.builder._.input.schema
+const schema = schemaViaCLI ?? configModule.builder?._.input.schema
 
 if (!schema) {
   throw new Error(`No schema source provided. Either specify a schema source in the config file or via the CLI.`)
 }
 
+const currentWorkingDirectory = configModule.path ? Path.dirname(configModule.path) : process.cwd()
+console.log(currentWorkingDirectory)
+
 // --- Generate ---
 
 await Generator.generate({
-  currentWorkingDirectory: configModule?.path ?? process.cwd(),
+  ...configModule.builder?._.input,
+  currentWorkingDirectory,
   schema,
   defaultSchemaUrl,
   format: args.format,
   name: args.name,
-  outputDirPath: Path.join(process.cwd(), args.output),
+  outputDirPath: args.output ? toAbsolutePath(process.cwd(), args.output) : undefined,
 })

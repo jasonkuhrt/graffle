@@ -8,10 +8,10 @@ export default Generator
     schema,
     outputDirPath: `./graffle`,
     libraryPaths: {
-      client: `../../../../../../src/entrypoints/client.js`,
-      schema: `../../../../../../src/entrypoints/schema.js`,
-      scalars: `../../../../../../src/layers/1_Schema/Hybrid/types/Scalar/Scalar.js`,
-      utilitiesForGenerated: `../../../../../../src/entrypoints/utilities-for-generated.js`,
+      client: `../../../../entrypoints/client.ts`,
+      schema: `../../../../entrypoints/schema.ts`,
+      scalars: `../../../../layers/1_Schema/Hybrid/types/Scalar/Scalar.ts`,
+      utilitiesForGenerated: `../../../../entrypoints/utilities-for-generated.ts`,
     },
   })
   .use(SchemaErrors())
