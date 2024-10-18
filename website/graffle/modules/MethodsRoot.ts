@@ -1,7 +1,7 @@
 import type { InferResult } from 'graffle/schema'
 import type * as Utils from 'graffle/utilities-for-generated'
 import { type Simplify } from 'type-fest'
-import type { Index } from './Schema.js'
+import type { Schema } from './Schema.js'
 import type * as SelectionSet from './SelectionSets.js'
 
 export interface QueryMethods<$Config extends Utils.Config> {
@@ -10,7 +10,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutput<
         $Config,
-        InferResult.Query<$SelectionSet, Index>
+        InferResult.Query<$SelectionSet, Schema>
       >
     >
   >
@@ -28,7 +28,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ continent: $SelectionSet }, Index>,
+        InferResult.Query<{ continent: $SelectionSet }, Schema>,
         'continent'
       >
     >
@@ -37,7 +37,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ continents: $SelectionSet }, Index>,
+        InferResult.Query<{ continents: $SelectionSet }, Schema>,
         'continents'
       >
     >
@@ -46,7 +46,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ countries: $SelectionSet }, Index>,
+        InferResult.Query<{ countries: $SelectionSet }, Schema>,
         'countries'
       >
     >
@@ -55,7 +55,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ country: $SelectionSet }, Index>,
+        InferResult.Query<{ country: $SelectionSet }, Schema>,
         'country'
       >
     >
@@ -64,7 +64,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ language: $SelectionSet }, Index>,
+        InferResult.Query<{ language: $SelectionSet }, Schema>,
         'language'
       >
     >
@@ -73,7 +73,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ languages: $SelectionSet }, Index>,
+        InferResult.Query<{ languages: $SelectionSet }, Schema>,
         'languages'
       >
     >

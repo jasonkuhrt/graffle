@@ -1,6 +1,6 @@
 import type { InferResult } from 'graffle/schema'
 import * as Data from './Data.js'
-import type { Index } from './Schema.js'
+import type { Schema } from './Schema.js'
 import type * as SelectionSets from './SelectionSets.js'
 
 //
@@ -40,33 +40,33 @@ export const Select = createSelect(Data.Name)
 export namespace Select {
   // Root Types
   // ----------
-  export type Query<$SelectionSet extends SelectionSets.Query> = InferResult.Root<$SelectionSet, Index, 'Query'>
+  export type Query<$SelectionSet extends SelectionSets.Query> = InferResult.Root<$SelectionSet, Schema, 'Query'>
   // Object Types
   // ------------
   export type Continent<$SelectionSet extends SelectionSets.Continent> = InferResult.Object<
     $SelectionSet,
-    Index,
-    Index['allTypes']['Continent']
+    Schema,
+    Schema['allTypes']['Continent']
   >
   export type Country<$SelectionSet extends SelectionSets.Country> = InferResult.Object<
     $SelectionSet,
-    Index,
-    Index['allTypes']['Country']
+    Schema,
+    Schema['allTypes']['Country']
   >
   export type Language<$SelectionSet extends SelectionSets.Language> = InferResult.Object<
     $SelectionSet,
-    Index,
-    Index['allTypes']['Language']
+    Schema,
+    Schema['allTypes']['Language']
   >
   export type State<$SelectionSet extends SelectionSets.State> = InferResult.Object<
     $SelectionSet,
-    Index,
-    Index['allTypes']['State']
+    Schema,
+    Schema['allTypes']['State']
   >
   export type Subdivision<$SelectionSet extends SelectionSets.Subdivision> = InferResult.Object<
     $SelectionSet,
-    Index,
-    Index['allTypes']['Subdivision']
+    Schema,
+    Schema['allTypes']['Subdivision']
   >
   // Union Types
   // -----------

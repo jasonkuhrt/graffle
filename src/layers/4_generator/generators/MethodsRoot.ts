@@ -6,13 +6,17 @@ import { renderDocumentation, renderName } from '../helpers/render.js'
 import { ModuleGeneratorSchema } from './Schema.js'
 import { ModuleGeneratorSelectionSets } from './SelectionSets.js'
 
+const identifiers = {
+  Schema: `Schema`,
+}
+
 export const ModuleGeneratorMethodsRoot = createModuleGenerator(
   `MethodsRoot`,
   ({ config, code }) => {
     code(`import { type Simplify } from 'type-fest'`)
     code(`import type * as Utils  from '${config.paths.imports.grafflePackage.utilitiesForGenerated}';`)
     code(`import type { InferResult } from '${config.paths.imports.grafflePackage.schema}';`)
-    code(`import type { Index } from './${ModuleGeneratorSchema.name}.js'`)
+    code(`import type { ${identifiers.Schema} } from './${ModuleGeneratorSchema.name}.js'`)
     code(`import type * as SelectionSet from './${ModuleGeneratorSelectionSets.name}.js'`)
     code()
 
@@ -58,7 +62,7 @@ const renderRootType = createCodeGenerator<{ node: Grafaid.Schema.ObjectType }>(
           Simplify<
             Utils.HandleOutput<
               $Config,
-              InferResult.${node.name}<$SelectionSet, Index>
+              InferResult.${node.name}<$SelectionSet, ${identifiers.Schema}>
             >
           >
         >
@@ -102,7 +106,7 @@ namespace Helpers {
         Simplify<
           Utils.HandleOutputGraffleRootField<
             $Config,
-            InferResult.${rootName}<{ ${fieldName}: ${selectionSet}}, Index>,
+            InferResult.${rootName}<{ ${fieldName}: ${selectionSet}}, ${identifiers.Schema}>,
             '${fieldName}'
           >
         >

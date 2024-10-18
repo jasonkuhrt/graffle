@@ -1,6 +1,6 @@
 import type { InferResult } from '../../../../../../src/entrypoints/schema.js'
 import * as Data from './Data.js'
-import type { Index } from './Schema.js'
+import type { Schema } from './Schema.js'
 import type * as SelectionSets from './SelectionSets.js'
 
 //
@@ -42,7 +42,7 @@ export namespace Select {
   // ----------
   export type Mutation<$SelectionSet extends SelectionSets.Mutation> = InferResult.Root<
     $SelectionSet,
-    Index,
+    Schema,
     'Mutation'
   >
   // Object Types

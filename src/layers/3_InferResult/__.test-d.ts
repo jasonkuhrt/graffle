@@ -1,11 +1,10 @@
-import type { Index } from '../../../tests/_/schemas/kitchen-sink/graffle/modules/Schema.js'
-import type * as Schema from '../../../tests/_/schemas/kitchen-sink/graffle/modules/SchemaBuildtime.js'
+import type { Schema } from '../../../tests/_/schemas/kitchen-sink/graffle/modules/Schema.js'
 import type * as SelectionSets from '../../../tests/_/schemas/kitchen-sink/graffle/modules/SelectionSets.js'
 import { assertEqual } from '../../lib/assert-equal.js'
 import type { InferResult } from './__.js'
 import type { PickSelectsPositiveIndicatorAndNotSelectAlias } from './Object.js'
 
-type $<$SelectionSet extends SelectionSets.Query> = InferResult.Query<$SelectionSet, Index>
+type $<$SelectionSet extends SelectionSets.Query> = InferResult.Query<$SelectionSet, Schema>
 
 // dprint-ignore
 {

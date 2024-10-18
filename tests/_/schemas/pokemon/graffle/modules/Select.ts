@@ -1,6 +1,6 @@
 import type { InferResult } from '../../../../../../src/entrypoints/schema.js'
 import * as Data from './Data.js'
-import type { Index } from './Schema.js'
+import type { Schema } from './Schema.js'
 import type * as SelectionSets from './SelectionSets.js'
 
 //
@@ -42,64 +42,64 @@ export namespace Select {
   // ----------
   export type Mutation<$SelectionSet extends SelectionSets.Mutation> = InferResult.Root<
     $SelectionSet,
-    Index,
+    Schema,
     'Mutation'
   >
-  export type Query<$SelectionSet extends SelectionSets.Query> = InferResult.Root<$SelectionSet, Index, 'Query'>
+  export type Query<$SelectionSet extends SelectionSets.Query> = InferResult.Root<$SelectionSet, Schema, 'Query'>
   // Object Types
   // ------------
   export type BattleRoyale<$SelectionSet extends SelectionSets.BattleRoyale> = InferResult.Object<
     $SelectionSet,
-    Index,
-    Index['allTypes']['BattleRoyale']
+    Schema,
+    Schema['allTypes']['BattleRoyale']
   >
   export type BattleTrainer<$SelectionSet extends SelectionSets.BattleTrainer> = InferResult.Object<
     $SelectionSet,
-    Index,
-    Index['allTypes']['BattleTrainer']
+    Schema,
+    Schema['allTypes']['BattleTrainer']
   >
   export type BattleWild<$SelectionSet extends SelectionSets.BattleWild> = InferResult.Object<
     $SelectionSet,
-    Index,
-    Index['allTypes']['BattleWild']
+    Schema,
+    Schema['allTypes']['BattleWild']
   >
   export type CombatantMultiPokemon<$SelectionSet extends SelectionSets.CombatantMultiPokemon> = InferResult.Object<
     $SelectionSet,
-    Index,
-    Index['allTypes']['CombatantMultiPokemon']
+    Schema,
+    Schema['allTypes']['CombatantMultiPokemon']
   >
   export type CombatantSinglePokemon<$SelectionSet extends SelectionSets.CombatantSinglePokemon> = InferResult.Object<
     $SelectionSet,
-    Index,
-    Index['allTypes']['CombatantSinglePokemon']
+    Schema,
+    Schema['allTypes']['CombatantSinglePokemon']
   >
   export type Patron<$SelectionSet extends SelectionSets.Patron> = InferResult.Object<
     $SelectionSet,
-    Index,
-    Index['allTypes']['Patron']
+    Schema,
+    Schema['allTypes']['Patron']
   >
   export type Pokemon<$SelectionSet extends SelectionSets.Pokemon> = InferResult.Object<
     $SelectionSet,
-    Index,
-    Index['allTypes']['Pokemon']
+    Schema,
+    Schema['allTypes']['Pokemon']
   >
   export type Trainer<$SelectionSet extends SelectionSets.Trainer> = InferResult.Object<
     $SelectionSet,
-    Index,
-    Index['allTypes']['Trainer']
+    Schema,
+    Schema['allTypes']['Trainer']
   >
   // Union Types
   // -----------
   export type Battle<$SelectionSet extends SelectionSets.Battle> = InferResult.Union<
     $SelectionSet,
-    Index,
-    Index['allTypes']['Battle']
+    Schema,
+    Schema['allTypes']['Battle']
   >
   // Interface Types
   // ---------------
   export type Being<$SelectionSet extends SelectionSets.Being> = InferResult.Interface<
     $SelectionSet,
-    Index,
-    Index['allTypes']['Being']
+    Schema,
+    Schema['allTypes']['Being']
   >
 }

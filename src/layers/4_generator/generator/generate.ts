@@ -12,7 +12,6 @@ import { ModuleGeneratorMethodsRoot } from '../generators/MethodsRoot.js'
 import { ModuleGeneratorMethodsSelect } from '../generators/MethodsSelect.js'
 import { ModuleGeneratorScalar } from '../generators/Scalar.js'
 import { ModuleGeneratorSchema } from '../generators/Schema.js'
-import { ModuleGeneratorSchemaBuildtime } from '../generators/SchemaBuildtime.js'
 import { ModuleGeneratorSelect } from '../generators/Select.js'
 import { ModuleGeneratorSelectionSets } from '../generators/SelectionSets.js'
 
@@ -26,7 +25,6 @@ const moduleGenerators = [
   ModuleGenerator_,
   // Schema Stuff
   ModuleGeneratorSchema,
-  ModuleGeneratorSchemaBuildtime,
   ModuleGeneratorSchemaDrivenDataMap,
   // Interface Stuff
   ModuleGeneratorSelectionSets,

@@ -19,7 +19,7 @@ export const ModuleGeneratorGlobal = createModuleGenerator(
       `import type * as MethodsSelect from './${ModuleGeneratorMethodsSelect.name}.js'`,
       `import type * as MethodsDocument from './${ModuleGeneratorMethodsDocument.name}.js'`,
       `import type * as MethodsRoot from './${ModuleGeneratorMethodsRoot.name}.js'`,
-      `import type { Index } from './${ModuleGeneratorSchema.name}.js'`,
+      `import type { Schema } from './${ModuleGeneratorSchema.name}.js'`,
     )
 
     if (config.schema.kindMap.GraphQLScalarTypeCustom.length > 0) {
@@ -37,7 +37,7 @@ export const ModuleGeneratorGlobal = createModuleGenerator(
     const SchemasFields = Code.termObjectFields({
       [config.name]: {
         name: `Data.Name`,
-        index: `Index`,
+        index: `Schema`,
         interfaces: {
           MethodsSelect: `MethodsSelect.$MethodsSelect`,
           Document: `MethodsDocument.BuilderMethodsDocumentFn`,
