@@ -56,7 +56,9 @@ export const inputToConfig = <$Input extends InputStatic>(
 
   return {
     initialInput: input,
-    // @ts-expect-error conditional type fixme
+    // todo fixme: passes before generation
+    // eslint-disable-next-line
+    // @ts-ignore
     name: input.name ?? defaultSchemaName,
     transport,
     schemaMap: input.schemaMap ?? null as any,
