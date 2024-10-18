@@ -1,5 +1,6 @@
 import type { TypeFunction } from '../../entrypoints/utilities-for-generated.js'
-import type { Values } from '../../lib/prelude.js'
+import type { ConfigManager } from '../../lib/config-manager/__.js'
+import type { ExcludeUndefined, GetKeyOr, Values } from '../../lib/prelude.js'
 import type { TSErrorDescriptive } from '../../lib/ts-error.js'
 import type { Schema } from './generators/Schema.js'
 
@@ -24,10 +25,19 @@ type ZeroSchema = {
 export type GlobalRegistry = Record<string, GlobalRegistry.RegisteredSchema>
 
 export namespace GlobalRegistry {
-  export interface RegisteredSchema {
+  export type TypeExtensions = Record<string, Record<string, unknown>>
+
+  export type Extensions<
+    $Extensions extends { Schema?: TypeExtensions } = {
+      Schema: TypeExtensions
+    },
+  > = {
+    Schema: ConfigManager.OrDefault<$Extensions['Schema'], TypeExtensions>
+  }
+
+  export interface RegisteredSchema<$Extensions extends Extensions = Extensions> {
     name: string
-    index: Schema
-    // featureOptions: {}
+    index: Schema<$Extensions['Schema']>
     interfaces: {
       Root: TypeFunction.Fn
       Document: TypeFunction.Fn

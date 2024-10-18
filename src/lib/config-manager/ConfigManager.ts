@@ -91,7 +91,9 @@ const mergeDefaults_: MergeDefaultsInnerFn = (
 
 type Path = [...string[]]
 
-export type ReadOrDefault<$Obj, $Path extends Path, $Default> = OrDefault<Read<$Obj, $Path>, $Default>
+// dprint-ignore
+export type ReadOrDefault<$Obj, $Path extends Path, $Default> =
+  OrDefault<Read<$Obj, $Path>, $Default>
 
 // dprint-ignore
 export type OrDefault<$Value, $Default> =

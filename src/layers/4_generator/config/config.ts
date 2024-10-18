@@ -75,11 +75,18 @@ export const createConfig = async (input: Input): Promise<Config> => {
 
   const outputDirPathModules = Path.join(outputDirPathRoot, `/modules`)
 
-  const inputPathCustomScalarCodecs = input.sourceCustomScalarCodecsFilePath
-    ? toAbsolutePath(cwd, input.sourceCustomScalarCodecsFilePath)
+  const inputPathCustomScalarCodecs = input.customScalarCodecs
+    ? toAbsolutePath(cwd, input.customScalarCodecs)
     : Path.join(sourceDirPath, `customScalarCodecs.ts`)
 
   const customScalarCodecsPathExists = await fileExists(inputPathCustomScalarCodecs)
+  if (!customScalarCodecsPathExists && input.customScalarCodecs) {
+    throw new Error(
+      `Custom scalar codecs file not found. Given path: ${
+        String(input.customScalarCodecs)
+      }. Resolved to and looked at: ${inputPathCustomScalarCodecs}`,
+    )
+  }
 
   const customScalarCodecsImportPath = Path.relative(
     outputDirPathModules,

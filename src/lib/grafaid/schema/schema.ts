@@ -106,7 +106,7 @@ export const isGraphQLField = (value: object): value is GraphQLField<any, any> =
 }
 
 export const isScalarTypeCustom = (node: GraphQLScalarType): boolean => {
-  return node.astNode !== undefined
+  return !(node.name in standardScalarTypeNames)
 }
 
 export const standardScalarTypeNames = {
@@ -118,7 +118,7 @@ export const standardScalarTypeNames = {
 }
 
 export const isScalarTypeAndCustom = (node: unknown): node is GraphQLScalarType => {
-  return isScalarType(node) && !(node.name in standardScalarTypeNames)
+  return isScalarType(node) && isScalarTypeCustom(node)
 }
 
 export const isAllInputObjectFieldsNullable = (node: GraphQLInputObjectType) => {

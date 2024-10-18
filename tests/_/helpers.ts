@@ -7,7 +7,7 @@ import { CONTENT_TYPE_REC } from '../../src/lib/grafaid/http/http.js'
 import { type SchemaService, serveSchema } from './lib/serveSchema.js'
 import { db } from './schemas/db.js'
 import { Graffle as KitchenSink } from './schemas/kitchen-sink/graffle/__.js'
-import { type Index as KitchenSinkSchemaIndex } from './schemas/kitchen-sink/graffle/modules/SchemaIndex.js'
+import { type Index as KitchenSinkSchema } from './schemas/kitchen-sink/graffle/modules/Schema.js'
 import { schema as kitchenSinkSchema } from './schemas/kitchen-sink/schema.js'
 import { schema } from './schemas/pokemon/schema.js'
 
@@ -20,8 +20,8 @@ interface Fixtures {
   fetch: Mock<(request: Request) => Promise<Response>>
   pokemonService: SchemaService
   graffle: Client<{ config: Config; schemaIndex: null }>
-  kitchenSink: Client<{ config: Config & { name: 'default' }; schemaIndex: KitchenSinkSchemaIndex }>
-  kitchenSinkHttp: Client<{ config: Config & { name: 'default' }; schemaIndex: KitchenSinkSchemaIndex }>
+  kitchenSink: Client<{ config: Config & { name: 'default' }; schemaIndex: KitchenSinkSchema }>
+  kitchenSinkHttp: Client<{ config: Config & { name: 'default' }; schemaIndex: KitchenSinkSchema }>
   kitchenSinkData: typeof db
 }
 

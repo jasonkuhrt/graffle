@@ -4,30 +4,6 @@ import { Code } from '../../lib/Code.js'
 import { ConfigManager } from '../../lib/config-manager/__.js'
 import { Grafaid } from '../../lib/grafaid/__.js'
 
-declare global {
-  namespace GraffleGlobal {
-    interface Schema {
-      SchemaErrors: {
-        objectNames: string
-      }
-    }
-    namespace SchemaDrivenDataMap {
-      interface OutputObject {
-        /**
-         * Is this output object an error object?
-         */
-        e?: 1
-      }
-      interface OutputField {
-        /**
-         * Is this output field a result field?
-         */
-        r?: 1
-      }
-    }
-  }
-}
-
 const propertyNames = {
   r: `r`,
   e: `e`,

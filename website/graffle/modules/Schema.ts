@@ -4,7 +4,7 @@ import type * as Data from './Data.js'
 import type * as MethodsRoot from './MethodsRoot.js'
 import type * as Schema from './SchemaBuildtime.js'
 
-export interface Index {
+export interface Index extends Utilities.SchemaIndexBase {
   name: Data.Name
   RootTypesPresent: ['Query']
   RootUnion: Schema.Root.Query
@@ -31,13 +31,5 @@ export interface Index {
   unions: {}
   interfaces: {}
   customScalars: Utilities.SchemaIndexBase['customScalars']
-  error: {
-    objects: {}
-    objectsTypename: {}
-    rootResultFields: {
-      Mutation: {}
-      Subscription: {}
-      Query: {}
-    }
-  }
+  extensions: Utilities.GlobalRegistry.TypeExtensions
 }

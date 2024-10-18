@@ -92,9 +92,11 @@ export interface Input {
    */
   sourceDirPath?: string
   /**
-   * todo
+   * File path to your custom scalar codecs module.
+   *
+   * If not set, Graffle will look for a file called `customScalarCodecs.ts` in the project directory.
    */
-  sourceCustomScalarCodecsFilePath?: string
+  customScalarCodecs?: string
   /**
    * Override import paths to graffle package within the generated code.
    * Used by Graffle test suite to have generated clients point to source

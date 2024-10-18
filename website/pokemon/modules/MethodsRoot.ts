@@ -1,7 +1,7 @@
 import type { InferResult } from 'graffle/schema'
 import type * as Utils from 'graffle/utilities-for-generated'
 import { type Simplify } from 'type-fest'
-import type { Index } from './SchemaIndex.js'
+import type { Index } from './Schema.js'
 import type * as SelectionSet from './SelectionSets.js'
 
 export interface MutationMethods<$Config extends Utils.Config> {

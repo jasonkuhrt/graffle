@@ -8,41 +8,80 @@ import { ModuleGeneratorData } from './Data.js'
 import { ModuleGeneratorMethodsRoot } from './MethodsRoot.js'
 import { ModuleGeneratorSchemaBuildtime } from './SchemaBuildtime.js'
 
-declare global {
-  namespace GraffleGlobal {
-    /**
-     * A generic schema index type. Any particular schema index will be a subtype of this, with
-     * additional specificity such as on objects where here `Record` is used.
-     */
-    export interface Schema {
-      name: GlobalRegistry.SchemaNames
-      RootTypesPresent: ('Query' | 'Mutation' | 'Subscription')[]
-      RootUnion: SchemaKit.Output.RootType
-      Root: {
-        Query: null | SchemaKit.Output.ObjectQuery
-        Mutation: null | SchemaKit.Output.ObjectMutation
-        Subscription: null | SchemaKit.Output.ObjectSubscription
-      }
-      allTypes: Record<
-        string,
-        | SchemaKit.Hybrid.Enum
-        | SchemaKit.Output.ObjectQuery
-        | SchemaKit.Output.ObjectMutation
-        | SchemaKit.Output.Object$2
-        | SchemaKit.Output.Union
-        | SchemaKit.Output.Interface
-      >
-      objects: Record<string, SchemaKit.Output.Object$2>
-      unions: Record<string, SchemaKit.Output.Union>
-      interfaces: Record<string, SchemaKit.Output.Interface>
-      customScalars: {
-        input: SchemaDrivenDataMap
-      }
-    }
-  }
-}
+// todo: consider removing global approach since it doesn't play well with multiple schemas
+// declare global {
+//   namespace GraffleGlobal {
+//     /**
+//      * A generic schema index type. Any particular schema index will be a subtype of this, with
+//      * additional specificity such as on objects where here `Record` is used.
+//      */
+//     export interface Schema<
+//       $Extensions extends GlobalRegistry.TypeExtensions = GlobalRegistry.TypeExtensions,
+//     > {
+//       name: GlobalRegistry.SchemaNames
+//       RootTypesPresent: ('Query' | 'Mutation' | 'Subscription')[]
+//       RootUnion: SchemaKit.Output.RootType
+//       Root: {
+//         Query: null | SchemaKit.Output.ObjectQuery
+//         Mutation: null | SchemaKit.Output.ObjectMutation
+//         Subscription: null | SchemaKit.Output.ObjectSubscription
+//       }
+//       allTypes: Record<
+//         string,
+//         | SchemaKit.Hybrid.Enum
+//         | SchemaKit.Output.ObjectQuery
+//         | SchemaKit.Output.ObjectMutation
+//         | SchemaKit.Output.Object$2
+//         | SchemaKit.Output.Union
+//         | SchemaKit.Output.Interface
+//       >
+//       objects: Record<string, SchemaKit.Output.Object$2>
+//       unions: Record<string, SchemaKit.Output.Union>
+//       interfaces: Record<string, SchemaKit.Output.Interface>
+//       customScalars: {
+//         input: SchemaDrivenDataMap
+//       }
+//       extensions: $Extensions
+//     }
+//   }
+// }
 
-export type Schema = GraffleGlobal.Schema
+// export type Schema<
+//   $Extensions extends GlobalRegistry.TypeExtensions = GlobalRegistry.TypeExtensions,
+// > = GraffleGlobal.Schema<$Extensions>
+
+/**
+ * A generic schema type. Any particular schema will be a subtype of this, with
+ * additional specificity such as on objects where here `Record` is used.
+ */
+export interface Schema<
+  $Extensions extends GlobalRegistry.TypeExtensions = GlobalRegistry.TypeExtensions,
+> {
+  name: GlobalRegistry.SchemaNames
+  RootTypesPresent: ('Query' | 'Mutation' | 'Subscription')[]
+  RootUnion: SchemaKit.Output.RootType
+  Root: {
+    Query: null | SchemaKit.Output.ObjectQuery
+    Mutation: null | SchemaKit.Output.ObjectMutation
+    Subscription: null | SchemaKit.Output.ObjectSubscription
+  }
+  allTypes: Record<
+    string,
+    | SchemaKit.Hybrid.Enum
+    | SchemaKit.Output.ObjectQuery
+    | SchemaKit.Output.ObjectMutation
+    | SchemaKit.Output.Object$2
+    | SchemaKit.Output.Union
+    | SchemaKit.Output.Interface
+  >
+  objects: Record<string, SchemaKit.Output.Object$2>
+  unions: Record<string, SchemaKit.Output.Union>
+  interfaces: Record<string, SchemaKit.Output.Interface>
+  customScalars: {
+    input: SchemaDrivenDataMap
+  }
+  extensions: $Extensions
+}
 
 const identifiers = {
   Utilities: `Utilities`,
@@ -103,20 +142,36 @@ export const ModuleGeneratorSchema = createModuleGenerator(
         ...interfaces,
       ]),
       objects: Code.objectFromEntries(objects),
-      // schemaIndex: identifiers.customScalarsIndex,
       unions: Code.objectFromEntries(unions),
       interfaces: Code.objectFromEntries(interfaces),
       customScalars: `${identifiers.Utilities}.SchemaIndexBase['customScalars']`,
+      extensions: `Utilities.GlobalRegistry.TypeExtensions`,
     }
 
-    config.extensions.forEach(_ => {
-      _.onSchema?.({ config, schema })
-    })
+    // --- Extensions ---
+    // If the extensions object is populated it will override the default generic type.
 
-    code(Code.export$(
-      Code.interface$(`Index`, Code.termObject(schema)),
-    ))
+    const extensions: Code.TermObject = {}
+
+    config.extensions.forEach(_ => {
+      _.onSchema?.({ config, schema: extensions })
+    })
+    if (!isObjectEmpty(extensions)) {
+      schema[`extensions`] = extensions
+    }
+
+    // ---
+
+    code(
+      `export interface Index extends Utilities.SchemaIndexBase
+        ${Code.termObject(schema)}
+      `,
+    )
 
     return code
   },
 )
+
+const isObjectEmpty = (object: Record<string, unknown>) => {
+  return Object.keys(object).length === 0
+}

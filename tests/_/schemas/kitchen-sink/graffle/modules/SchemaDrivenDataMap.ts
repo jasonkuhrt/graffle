@@ -7,7 +7,7 @@ import * as $Scalar from './Scalar.js'
 //
 //
 // ==================================================================================================
-//                                         GraphQLScalarType
+//                                     GraphQLScalarTypeStandard
 // ==================================================================================================
 //
 //
@@ -17,8 +17,6 @@ import * as $Scalar from './Scalar.js'
 //
 
 const Boolean = $Scalar.Boolean
-
-const Date = $Scalar.Date
 
 const Float = $Scalar.Float
 
@@ -44,7 +42,7 @@ const String = $Scalar.String
 //
 //
 
-// None of your GraphQLScalarTypeCustoms have custom scalars.
+const Date = $Scalar.Date
 
 //
 //
@@ -90,9 +88,14 @@ const Case: $Utilities.SchemaDrivenDataMap.Enum = {
 
 const InputObject: $Utilities.SchemaDrivenDataMap.InputObject = {
   n: 'InputObject',
+  fcs: ['date', 'dateRequired'],
   f: {
-    date: {},
-    dateRequired: {},
+    date: {
+      nt: Date,
+    },
+    dateRequired: {
+      nt: Date,
+    },
     id: {},
     idRequired: {},
   },
@@ -100,23 +103,34 @@ const InputObject: $Utilities.SchemaDrivenDataMap.InputObject = {
 
 const InputObjectCircular: $Utilities.SchemaDrivenDataMap.InputObject = {
   n: 'InputObjectCircular',
+  fcs: ['circular', 'date'],
   f: {
-    circular: {},
-    date: {},
+    circular: {
+      // nt: InputObjectCircular, <-- Assigned later to avoid potential circular dependency.
+    },
+    date: {
+      nt: Date,
+    },
   },
 }
 
 const InputObjectNested: $Utilities.SchemaDrivenDataMap.InputObject = {
   n: 'InputObjectNested',
+  fcs: ['InputObject'],
   f: {
-    InputObject: {},
+    InputObject: {
+      // nt: InputObject, <-- Assigned later to avoid potential circular dependency.
+    },
   },
 }
 
 const InputObjectNestedNonNull: $Utilities.SchemaDrivenDataMap.InputObject = {
   n: 'InputObjectNestedNonNull',
+  fcs: ['InputObject'],
   f: {
-    InputObject: {},
+    InputObject: {
+      // nt: InputObject, <-- Assigned later to avoid potential circular dependency.
+    },
   },
 }
 
@@ -144,13 +158,17 @@ const Bar: $Utilities.SchemaDrivenDataMap.OutputObject = {
 
 const DateObject1: $Utilities.SchemaDrivenDataMap.OutputObject = {
   f: {
-    date1: {},
+    date1: {
+      nt: Date,
+    },
   },
 }
 
 const DateObject2: $Utilities.SchemaDrivenDataMap.OutputObject = {
   f: {
-    date2: {},
+    date2: {
+      nt: Date,
+    },
   },
 }
 
@@ -244,7 +262,9 @@ const lowerCaseObject2: $Utilities.SchemaDrivenDataMap.OutputObject = {
 //
 
 const DateInterface1: $Utilities.SchemaDrivenDataMap.OutputObject = {
-  f: {},
+  f: {
+    ...DateObject1.f,
+  },
 }
 
 const Error: $Utilities.SchemaDrivenDataMap.OutputObject = {
@@ -272,7 +292,10 @@ const Interface: $Utilities.SchemaDrivenDataMap.OutputObject = {
 //
 
 const DateUnion: $Utilities.SchemaDrivenDataMap.OutputObject = {
-  f: {},
+  f: {
+    ...DateObject1.f,
+    ...DateObject2.f,
+  },
 }
 
 const FooBarUnion: $Utilities.SchemaDrivenDataMap.OutputObject = {
@@ -337,7 +360,9 @@ const Query: $Utilities.SchemaDrivenDataMap.OutputObject = {
         },
       },
     },
-    date: {},
+    date: {
+      nt: Date,
+    },
     dateArg: {
       a: {
         date: {
@@ -345,6 +370,7 @@ const Query: $Utilities.SchemaDrivenDataMap.OutputObject = {
           it: [0],
         },
       },
+      nt: Date,
     },
     dateArgInputObject: {
       a: {
@@ -353,6 +379,7 @@ const Query: $Utilities.SchemaDrivenDataMap.OutputObject = {
           it: [0],
         },
       },
+      nt: Date,
     },
     dateArgList: {
       a: {
@@ -361,6 +388,7 @@ const Query: $Utilities.SchemaDrivenDataMap.OutputObject = {
           it: [0, [1]],
         },
       },
+      nt: Date,
     },
     dateArgNonNull: {
       a: {
@@ -369,6 +397,7 @@ const Query: $Utilities.SchemaDrivenDataMap.OutputObject = {
           it: [1],
         },
       },
+      nt: Date,
     },
     dateArgNonNullList: {
       a: {
@@ -377,6 +406,7 @@ const Query: $Utilities.SchemaDrivenDataMap.OutputObject = {
           it: [1, [0]],
         },
       },
+      nt: Date,
     },
     dateArgNonNullListNonNull: {
       a: {
@@ -385,14 +415,23 @@ const Query: $Utilities.SchemaDrivenDataMap.OutputObject = {
           it: [1, [1]],
         },
       },
+      nt: Date,
     },
     dateInterface1: {
       // nt: DateInterface1, <-- Assigned later to avoid potential circular dependency.
     },
-    dateList: {},
-    dateListList: {},
-    dateListNonNull: {},
-    dateNonNull: {},
+    dateList: {
+      nt: Date,
+    },
+    dateListList: {
+      nt: Date,
+    },
+    dateListNonNull: {
+      nt: Date,
+    },
+    dateNonNull: {
+      nt: Date,
+    },
     dateObject1: {
       // nt: DateObject1, <-- Assigned later to avoid potential circular dependency.
     },
@@ -603,28 +642,31 @@ const Query: $Utilities.SchemaDrivenDataMap.OutputObject = {
 //
 //
 
-ObjectNested.f['object']!.nt = Object1
-ObjectUnion.f['fooBarUnion']!.nt = FooBarUnion
-Query.f['dateInterface1']!.nt = DateInterface1
-Query.f['dateObject1']!.nt = DateObject1
-Query.f['dateUnion']!.nt = DateUnion
-Query.f['interface']!.nt = Interface
-Query.f['interfaceNonNull']!.nt = Interface
-Query.f['interfaceWithArgs']!.nt = Interface
-Query.f['lowerCaseUnion']!.nt = lowerCaseUnion
-Query.f['object']!.nt = Object1
-Query.f['objectList']!.nt = Object1
-Query.f['objectListNonNull']!.nt = Object1
-Query.f['objectNested']!.nt = ObjectNested
-Query.f['objectNonNull']!.nt = Object1
-Query.f['objectWithArgs']!.nt = Object1
-Query.f['result']!.nt = Result
-Query.f['resultNonNull']!.nt = Result
-Query.f['unionFooBar']!.nt = FooBarUnion
-Query.f['unionFooBarNonNull']!.nt = FooBarUnion
-Query.f['unionFooBarWithArgs']!.nt = FooBarUnion
-Query.f['unionObject']!.nt = ObjectUnion
-Query.f['unionObjectNonNull']!.nt = ObjectUnion
+InputObjectCircular.f![`circular`]!.nt = InputObjectCircular
+InputObjectNested.f![`InputObject`]!.nt = InputObject
+InputObjectNestedNonNull.f![`InputObject`]!.nt = InputObject
+ObjectNested.f[`object`]!.nt = Object1
+ObjectUnion.f[`fooBarUnion`]!.nt = FooBarUnion
+Query.f[`dateInterface1`]!.nt = DateInterface1
+Query.f[`dateObject1`]!.nt = DateObject1
+Query.f[`dateUnion`]!.nt = DateUnion
+Query.f[`interface`]!.nt = Interface
+Query.f[`interfaceNonNull`]!.nt = Interface
+Query.f[`interfaceWithArgs`]!.nt = Interface
+Query.f[`lowerCaseUnion`]!.nt = lowerCaseUnion
+Query.f[`object`]!.nt = Object1
+Query.f[`objectList`]!.nt = Object1
+Query.f[`objectListNonNull`]!.nt = Object1
+Query.f[`objectNested`]!.nt = ObjectNested
+Query.f[`objectNonNull`]!.nt = Object1
+Query.f[`objectWithArgs`]!.nt = Object1
+Query.f[`result`]!.nt = Result
+Query.f[`resultNonNull`]!.nt = Result
+Query.f[`unionFooBar`]!.nt = FooBarUnion
+Query.f[`unionFooBarNonNull`]!.nt = FooBarUnion
+Query.f[`unionFooBarWithArgs`]!.nt = FooBarUnion
+Query.f[`unionObject`]!.nt = ObjectUnion
+Query.f[`unionObjectNonNull`]!.nt = ObjectUnion
 
 //
 //
@@ -650,11 +692,11 @@ const $schemaDrivenDataMap: $Utilities.SchemaDrivenDataMap = {
   directives: {},
   types: {
     Boolean,
-    Date,
     Float,
     ID,
     Int,
     String,
+    Date,
     ABCEnum,
     Case,
     InputObject,

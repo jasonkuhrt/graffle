@@ -21,7 +21,6 @@ const generate = async (
     // todo funky between this and passing path to sdl
     sourceDirPath: inputPathRootDir,
     outputSDL: true,
-    sourceCustomScalarCodecsFilePath: join(`./tests/_/customScalarCodecs.ts`),
     outputDirPath: join(input.dirName, `graffle`),
     libraryPaths: {
       client: `../../../src/entrypoints/client.ts`,
@@ -59,4 +58,7 @@ await generate({
 
 await generate({
   dirName: `kitchen-sink`,
+  input: {
+    customScalarCodecs: `./kitchen-sink/customScalarCodecs.ts`,
+  },
 })

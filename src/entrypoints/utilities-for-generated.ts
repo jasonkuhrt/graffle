@@ -2,6 +2,7 @@ export { type Simplify } from 'type-fest'
 export { type SchemaDrivenDataMap } from '../extensions/CustomScalars/schemaDrivenDataMap/__.js'
 export * from '../layers/2_Select/__.js'
 export { type Schema as SchemaIndexBase } from '../layers/4_generator/generators/Schema.js'
+export { type GlobalRegistry } from '../layers/4_generator/globalRegistry.js'
 export type {
   ConfigGetOutputError,
   HandleOutput,

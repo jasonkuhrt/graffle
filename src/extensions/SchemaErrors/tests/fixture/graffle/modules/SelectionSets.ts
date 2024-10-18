@@ -439,7 +439,7 @@ export namespace Query {
   export type date = $Select.Indicator.NoArgsIndicator
 
   export type dateArg$SelectionSetArguments = {
-    date?: undefined | undefined | null
+    date?: $Scalar.DateDecoded | undefined | null
   }
   export type dateArg$SelectionSet = $Utilities.Simplify<
     $Select.Bases.Base & {
@@ -485,7 +485,7 @@ export namespace Query {
   export type dateArgInputObject = $Select.Indicator.Indicator | dateArgInputObject$SelectionSet
 
   export type dateArgList$SelectionSetArguments = {
-    date?: Array<undefined | undefined | null> | undefined | null
+    date?: Array<$Scalar.DateDecoded | undefined | null> | undefined | null
   }
   export type dateArgList$SelectionSet = $Utilities.Simplify<
     $Select.Bases.Base & {
@@ -507,7 +507,7 @@ export namespace Query {
   export type dateArgList = $Select.Indicator.Indicator | dateArgList$SelectionSet
 
   export type dateArgNonNull$SelectionSetArguments = {
-    date: undefined
+    date: $Scalar.DateDecoded
   }
   export interface dateArgNonNull extends $Select.Bases.Base {
     /**
@@ -518,7 +518,7 @@ export namespace Query {
   }
 
   export type dateArgNonNullList$SelectionSetArguments = {
-    date: Array<undefined | undefined | null>
+    date: Array<$Scalar.DateDecoded | undefined | null>
   }
   export interface dateArgNonNullList extends $Select.Bases.Base {
     /**
@@ -529,7 +529,7 @@ export namespace Query {
   }
 
   export type dateArgNonNullListNonNull$SelectionSetArguments = {
-    date: Array<undefined | undefined | null>
+    date: Array<$Scalar.DateDecoded | undefined | null>
   }
   export interface dateArgNonNullListNonNull extends $Select.Bases.Base {
     /**
@@ -924,15 +924,15 @@ export type Case = 'ErrorOne' | 'ErrorTwo' | 'Object1'
 //
 
 export interface InputObject {
-  date?: undefined | undefined | null
-  dateRequired: undefined
+  date?: $Scalar.DateDecoded | undefined | null
+  dateRequired: $Scalar.DateDecoded
   id?: string | undefined | null
   idRequired: string
 }
 
 export interface InputObjectCircular {
   circular?: _RefDefs._InputObjectCircular | undefined | null
-  date?: undefined | undefined | null
+  date?: $Scalar.DateDecoded | undefined | null
 }
 
 export interface InputObjectNested {

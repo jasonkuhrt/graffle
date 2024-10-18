@@ -1,6 +1,6 @@
 import type { InferResult } from '../../../../../../src/entrypoints/schema.js'
 import * as Data from './Data.js'
-import type { Index } from './SchemaIndex.js'
+import type { Index } from './Schema.js'
 import type * as SelectionSets from './SelectionSets.js'
 
 //
