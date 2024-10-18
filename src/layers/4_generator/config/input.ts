@@ -1,12 +1,36 @@
 import type { Grafaid } from '../../../lib/grafaid/__.js'
 import type { Extension } from '../extension/types.js'
 
+export interface InputLint {
+  /**
+   * Should a warning be raised if the GraphQL schema has a custom scalar defined for which your project has no corresponding custom scalar codec?
+   *
+   * @defaultValue `true`
+   */
+  missingCustomScalarCodec?: boolean
+}
+
 export interface Input {
+  /**
+   * The name of the client. This will affect:
+   *
+   * 1. The field name the generated client is referenced under in the global registry.
+   * 2. The exported namespace name.
+   * 3. Possible use by extensions. For example the Opentelemetry extension augments span attributes with this value.
+   *
+   * By default the globally registered name is "default" and the exported namespace name is "Graffle".
+   *
+   * Tip: Typically you would only set this if you had multiple Graffle clients (for different GraphQL schemas) in your project.
+   */
   name?: string
+  /**
+   * Control various checks that Graffle performs. For example you could disable the warning about missing custom scalar codecs.
+   */
+  lint?: InputLint
   /**
    * The directory path which paths will be considered relative to.
    *
-   * By default, uses the process current working directory.
+   * By default, is the process current working directory.
    */
   currentWorkingDirectory?: string
   /**

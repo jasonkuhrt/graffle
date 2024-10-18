@@ -37,8 +37,6 @@ interface Input {
   isErrorType?: (value: Grafaid.Schema.ObjectType) => boolean
 }
 
-const defaultErrorTypeNamePattern = /^Error.+/
-
 interface Config {
   isErrorType: (value: Grafaid.Schema.ObjectType) => boolean
 }
@@ -46,6 +44,8 @@ interface Config {
 const defaults: Config = {
   isErrorType: (_ => Boolean(_.name.match(defaultErrorTypeNamePattern))),
 }
+
+const defaultErrorTypeNamePattern = /^Error.+/
 
 export const SchemaErrors = (input?: Input) => {
   const config = ConfigManager.mergeDefaults(defaults, input ?? {})

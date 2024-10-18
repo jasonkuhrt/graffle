@@ -6,7 +6,9 @@ export default Generator
   .create({
     name: `GraffleSchemaErrors`,
     schema,
-    outputDirPath: `./graffle`,
+    lint: {
+      missingCustomScalarCodec: false,
+    },
     libraryPaths: {
       client: `../../../../entrypoints/client.ts`,
       schema: `../../../../entrypoints/schema.ts`,

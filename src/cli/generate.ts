@@ -88,7 +88,6 @@ if (!schema) {
 }
 
 const currentWorkingDirectory = configModule.path ? Path.dirname(configModule.path) : process.cwd()
-console.log(currentWorkingDirectory)
 
 // --- Merge Inputs ---
 

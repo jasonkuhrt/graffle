@@ -41,9 +41,11 @@ export const ModuleGeneratorScalar = createModuleGenerator(
     if (isNeedCustomScalarDefaults) {
       // code(`import * as ${identifiers.StandardScalar} from '${config.paths.imports.grafflePackage.scalars}'`)
       code()
-      console.log(
-        `WARNING: Custom scalars detected in the schema, but you have not created a custom scalars module to import implementations from.`,
-      )
+      if (config.lint.missingCustomScalarCodec) {
+        console.log(
+          `WARNING: Custom scalars detected in the schema, but you have not created a custom scalars module to import implementations from.`,
+        )
+      }
       code(`export * from '${config.paths.imports.grafflePackage.scalars}'`)
       code(`export {`)
       code(

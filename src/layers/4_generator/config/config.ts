@@ -14,10 +14,11 @@ import {
 import type { Extension } from '../extension/types.js'
 import { defaultLibraryPaths } from './defaults.js'
 import { defaultName } from './defaults.js'
-import type { Input, InputLibraryPaths } from './input.js'
+import type { Input, InputLibraryPaths, InputLint } from './input.js'
 
 export interface Config {
   name: string
+  lint: Required<InputLint>
   schema: ConfigSchema
   runtimeFeatures: {
     customScalars: boolean
@@ -122,6 +123,12 @@ export const createConfig = async (input: Input): Promise<Config> => {
       : undefined,
   }
 
+  // --- Lint ---
+
+  const lint: Config['lint'] = {
+    missingCustomScalarCodec: input.lint?.missingCustomScalarCodec ?? true,
+  }
+
   // --- Output SDL ---
 
   // dprint-ignore
@@ -136,6 +143,7 @@ export const createConfig = async (input: Input): Promise<Config> => {
 
   return {
     extensions: input.extensions ?? [],
+    lint,
     formatter,
     runtimeFeatures: {
       customScalars: true, // todo do not assume true
