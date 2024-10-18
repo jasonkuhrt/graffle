@@ -19,8 +19,8 @@ export type InputOutputEnvelopeLonghand = {
 /**
  * @remarks This input extends base with properties that can be filled with exports from the generated client.
  */
-export type InputStatic<$Schema extends GlobalRegistry.SchemaUnion = GlobalRegistry.SchemaUnion> =
-  & InputBase<$Schema>
+export type InputStatic<$RegisteredClient extends GlobalRegistry.ClientUnion = GlobalRegistry.ClientUnion> =
+  & InputBase<$RegisteredClient>
   & {
     /**
      * The schema to use.
@@ -29,7 +29,7 @@ export type InputStatic<$Schema extends GlobalRegistry.SchemaUnion = GlobalRegis
      *
      * @defaultValue 'default'
      */
-    name?: $Schema['index']['name']
+    name?: $RegisteredClient['name']
     /**
      * todo
      */
@@ -39,10 +39,10 @@ export type InputStatic<$Schema extends GlobalRegistry.SchemaUnion = GlobalRegis
 // TODO use code generation to display
 // TODO test that schema is optional when introspection was used to generate client.
 // dprint-ignore
-export type InputBase<$Schema extends GlobalRegistry.SchemaUnion> =
+export type InputBase<$RegisteredClient extends GlobalRegistry.ClientUnion> =
   | (
       & (
-          GlobalRegistry.HasDefaultUrlForSchema<$Schema> extends true
+          GlobalRegistry.HasDefaultUrlForSchema<$RegisteredClient> extends true
           ? {
               /**
                * @defaultValue The introspection URL used to generate this Graffle client.
@@ -55,11 +55,11 @@ export type InputBase<$Schema extends GlobalRegistry.SchemaUnion> =
         )
       // eslint-disable-next-line
       // @ts-ignore passes after generation
-      & WithInput<{ name: $Schema['name']; transport: { type: 'http'} }>
+      & WithInput<{ name: $RegisteredClient['name']; transport: { type: 'http'} }>
     )
   | (
       & (
-          GlobalRegistry.HasDefaultUrlForSchema<$Schema> extends true
+          GlobalRegistry.HasDefaultUrlForSchema<$RegisteredClient> extends true
           ? {
               /**
                * TODO this TSDoc is never rendered in VSCode...
@@ -71,5 +71,5 @@ export type InputBase<$Schema extends GlobalRegistry.SchemaUnion> =
         )
       // eslint-disable-next-line
       // @ts-ignore passes after generation
-      & WithInput<{ name: $Schema['name']; transport: { type: 'memory'} }>
+      & WithInput<{ name: $RegisteredClient['name']; transport: { type: 'memory'} }>
     )

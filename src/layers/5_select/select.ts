@@ -12,4 +12,4 @@ export const create: Create = (_name) => identityProxy as any
 // todo is an any type
 // eslint-disable-next-line
 // @ts-ignore generated types
-export const select: TypeSelectionSets<GlobalRegistry.SchemaIndexDefault> = identityProxy
+export const select: TypeSelectionSets<GlobalRegistry.SchemaDefault> = identityProxy
