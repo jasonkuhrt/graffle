@@ -36,30 +36,28 @@ export const ModuleGeneratorScalar = createModuleGenerator(
         code(`export type ${scalar.name}Encoded = SchemaKit.Scalar.GetEncoded<${scalar.name}_>`)
         code()
       }
-    } else {
-      for (const scalar of config.schema.kindMap.GraphQLScalarTypeCustom) {
-        code(typeTitle2(`custom scalar type`)(scalar))
-        code()
-        code(`export type ${scalar.name}Decoded = SchemaKit.Scalar.GetDecoded<${scalar.name}>`)
-        code(`export type ${scalar.name}Encoded = SchemaKit.Scalar.GetEncoded<${scalar.name}>`)
-        code()
-      }
     }
 
+    code(`export * from '${config.paths.imports.grafflePackage.scalars}'`)
+    code()
+
     if (isNeedCustomScalarDefaults) {
-      code()
       if (config.lint.missingCustomScalarCodec) {
         console.log(
           `WARNING: Custom scalars detected in the schema, but you have not created a custom scalars module to import implementations from.`,
         )
       }
-      code(`export {`)
-      code(
-        config.schema.kindMap.GraphQLScalarTypeCustom.map((_) => `String as ${_.name}`).join(`,`),
-      )
-      code(`} from '${config.paths.imports.grafflePackage.scalars}'`)
-    }
 
-    code(`export * from '${config.paths.imports.grafflePackage.scalars}'`)
+      for (const scalar of config.schema.kindMap.GraphQLScalarTypeCustom) {
+        code(typeTitle2(`custom scalar type`)(scalar))
+        code()
+        code(`import type { String as ${scalar.name} } from '${config.paths.imports.grafflePackage.scalars}'`)
+        code()
+        code(`export { String as ${scalar.name} } from '${config.paths.imports.grafflePackage.scalars}'`)
+        code(`export type ${scalar.name}Decoded = SchemaKit.Scalar.GetDecoded<${scalar.name}>`)
+        code(`export type ${scalar.name}Encoded = SchemaKit.Scalar.GetEncoded<${scalar.name}>`)
+        code()
+      }
+    }
   },
 )

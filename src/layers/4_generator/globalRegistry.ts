@@ -1,6 +1,6 @@
 import type { TypeFunction } from '../../entrypoints/utilities-for-generated.js'
 import type { ConfigManager } from '../../lib/config-manager/__.js'
-import type { ExcludeUndefined, GetKeyOr, Values } from '../../lib/prelude.js'
+import type { Values } from '../../lib/prelude.js'
 import type { TSErrorDescriptive } from '../../lib/ts-error.js'
 import type { Schema } from './generators/Schema.js'
 

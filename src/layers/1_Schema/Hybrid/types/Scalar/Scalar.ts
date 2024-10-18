@@ -1,3 +1,4 @@
+/* eslint-disable */
 import type { GlobalRegistry } from '../../../../4_generator/globalRegistry.js'
 import type { Codec, Mapper } from './codec.js'
 import { JavaScriptScalarCodecs } from './nativeScalarCodecs.js'
@@ -106,7 +107,6 @@ export type $Any =
   | Boolean
   | ID
   | Float
-  // eslint-disable-next-line
   | Values<GlobalRegistry.Schemas[keyof GlobalRegistry.Schemas]['customScalars']>
 
 type Values<T> = T extends any ? keyof T extends never ? never : T[keyof T] : never
