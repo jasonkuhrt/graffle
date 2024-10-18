@@ -1,4 +1,3 @@
-/* eslint-disable */
 import type { GlobalRegistry } from '../../../../4_generator/globalRegistry.js'
 import type { Codec, Mapper } from './codec.js'
 import { JavaScriptScalarCodecs } from './nativeScalarCodecs.js'
