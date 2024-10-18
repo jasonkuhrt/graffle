@@ -1,6 +1,6 @@
 > [!IMPORTANT]
 > The next version (`8`) of `graphql-request` is being renamed to `graffle`. It has the same base simplicity but with many fixes, enhancements, and major new type safe features.
-> It is not released yet but will be in the coming weeks/months and is already usable. Learn more about it [here](https://github.com/jasonkuhrt/graffle/discussions/1026). You can see the in progress website at https://graffle.js.org.
+> It is not released yet but will be in the coming weeks/months and is already usable. Learn more about it [here](https://github.com/graffle-js/graffle/discussions/1026). You can see the in progress website at https://graffle.js.org.
 >
 > The following README is still for `graphql-request@7.x.x`
 
@@ -8,7 +8,7 @@
 
 Minimal GraphQL client supporting Node and browsers for scripts or simple apps.
 
-![GitHub Action](https://github.com/jasonkuhrt/graffle/workflows/trunk/badge.svg) [![npm version](https://badge.fury.io/js/graffle.svg)](https://badge.fury.io/js/graffle)
+![GitHub Action](https://github.com/graffle-js/graffle/workflows/trunk/badge.svg) [![npm version](https://badge.fury.io/js/graffle.svg)](https://badge.fury.io/js/graffle)
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -107,26 +107,26 @@ await client.request(document)
 ## Examples
 
 - Request:
-  - [Authentication via HTTP header](https://github.com/jasonkuhrt/graffle/tree/graphql-request/examples/legacy/request-authentication-via-http-header.ts)
-  - [Method GET](https://github.com/jasonkuhrt/graffle/tree/graphql-request/examples/legacy/request-method-get.ts)
-  - [Cancellation](https://github.com/jasonkuhrt/graffle/tree/graphql-request/examples/legacy/request-cancellation.ts)
-  - [Headers Per Request (static)](https://github.com/jasonkuhrt/graffle/tree/graphql-request/examples/legacy/request-headers-static-per-request.ts)
-  - [Headers Per Request (dynamic)](https://github.com/jasonkuhrt/graffle/tree/graphql-request/examples/legacy/request-headers-dynamic-per-request.ts)
-  - [Handle Raw Response](https://github.com/jasonkuhrt/graffle/tree/graphql-request/examples/legacy/request-handle-raw-response.ts)
+  - [Authentication via HTTP header](https://github.com/graffle-js/graffle/tree/graphql-request/examples/legacy/request-authentication-via-http-header.ts)
+  - [Method GET](https://github.com/graffle-js/graffle/tree/graphql-request/examples/legacy/request-method-get.ts)
+  - [Cancellation](https://github.com/graffle-js/graffle/tree/graphql-request/examples/legacy/request-cancellation.ts)
+  - [Headers Per Request (static)](https://github.com/graffle-js/graffle/tree/graphql-request/examples/legacy/request-headers-static-per-request.ts)
+  - [Headers Per Request (dynamic)](https://github.com/graffle-js/graffle/tree/graphql-request/examples/legacy/request-headers-dynamic-per-request.ts)
+  - [Handle Raw Response](https://github.com/graffle-js/graffle/tree/graphql-request/examples/legacy/request-handle-raw-response.ts)
 - GraphQL:
-  - [Document Variables](https://github.com/jasonkuhrt/graffle/tree/graphql-request/examples/legacy/graphql-document-variables.ts)
-  - [Mutation](https://github.com/jasonkuhrt/graffle/tree/graphql-request/examples/legacy/graphql-mutations.ts)
-  - [Batching Requests](https://github.com/jasonkuhrt/graffle/tree/graphql-request/examples/legacy/graphql-batching-requests.ts)
+  - [Document Variables](https://github.com/graffle-js/graffle/tree/graphql-request/examples/legacy/graphql-document-variables.ts)
+  - [Mutation](https://github.com/graffle-js/graffle/tree/graphql-request/examples/legacy/graphql-mutations.ts)
+  - [Batching Requests](https://github.com/graffle-js/graffle/tree/graphql-request/examples/legacy/graphql-batching-requests.ts)
 - Configuration:
-  - [Fetch: Passing Options](https://github.com/jasonkuhrt/graffle/tree/graphql-request/examples/legacy/configuration-fetch-options.ts)
-  - [Custom JSON Serializer](https://github.com/jasonkuhrt/graffle/tree/graphql-request/examples/legacy/configuration-request-json-serializer.ts)
-  - [Incremental: Set Endpoint](https://github.com/jasonkuhrt/graffle/tree/graphql-request/examples/legacy/configuration-incremental-endpoint.ts)
-  - [Incremental: Set Request Headers](https://github.com/jasonkuhrt/graffle/tree/graphql-request/examples/legacy/configuration-incremental-request-headers.ts)
+  - [Fetch: Passing Options](https://github.com/graffle-js/graffle/tree/graphql-request/examples/legacy/configuration-fetch-options.ts)
+  - [Custom JSON Serializer](https://github.com/graffle-js/graffle/tree/graphql-request/examples/legacy/configuration-request-json-serializer.ts)
+  - [Incremental: Set Endpoint](https://github.com/graffle-js/graffle/tree/graphql-request/examples/legacy/configuration-incremental-endpoint.ts)
+  - [Incremental: Set Request Headers](https://github.com/graffle-js/graffle/tree/graphql-request/examples/legacy/configuration-incremental-request-headers.ts)
 - TypeScript:
-  - [Use `TypedDocumentNode`](https://github.com/jasonkuhrt/graffle/tree/graphql-request/examples/legacy/typescript-typed-document-node.ts)
+  - [Use `TypedDocumentNode`](https://github.com/graffle-js/graffle/tree/graphql-request/examples/legacy/typescript-typed-document-node.ts)
 - Other:
-  - [Middleware](https://github.com/jasonkuhrt/graffle/tree/graphql-request/examples/legacy/other-middleware.ts)
-  - [Error Handling](https://github.com/jasonkuhrt/graffle/tree/graphql-request/examples/legacy/other-error-handling.ts)
+  - [Middleware](https://github.com/graffle-js/graffle/tree/graphql-request/examples/legacy/other-middleware.ts)
+  - [Error Handling](https://github.com/graffle-js/graffle/tree/graphql-request/examples/legacy/other-error-handling.ts)
 
 ## Node Version Support
 
@@ -142,7 +142,7 @@ Any issue that exists solely for an unsupported version of Nodejs will be reject
 
 ## Reference
 
-⚠️ This reference is incomplete. Check out the [examples](https://github.com/jasonkuhrt/graffle/tree/graphql-request/examples/legacy/) for more reference material.
+⚠️ This reference is incomplete. Check out the [examples](https://github.com/graffle-js/graffle/tree/graphql-request/examples/legacy/) for more reference material.
 
 ### Configuration
 
@@ -169,7 +169,7 @@ Return both the errors and data, only works with `rawRequest`.
 
 ### IgnoreOperationName
 
-OperationName has been introduced to address issues reported here [Support operation name](https://github.com/jasonkuhrt/graffle/issues/64),
+OperationName has been introduced to address issues reported here [Support operation name](https://github.com/graffle-js/graffle/issues/64),
 However, on certain occasions this information may not be needed in requests. In such cases, you might consider ignoring operationName to avoid the extraction steps currently performed by a parsing operation when the document is provided in string format.
 
 By default the GraphQLClient tries to extract the operationName from the document.
@@ -191,7 +191,7 @@ const client = new GraphQLClient(endpoint, {
 
 #### Why was the file upload feature taken away? Will it return?
 
-In [this issue](https://github.com/jasonkuhrt/graffle/issues/500) we decided to make this library more stable and maintainable. In principal the feature is still in scope of this library and will make a return when we find time to do the feature right.
+In [this issue](https://github.com/graffle-js/graffle/issues/500) we decided to make this library more stable and maintainable. In principal the feature is still in scope of this library and will make a return when we find time to do the feature right.
 
 #### Why do I have to install `graphql`?
 
