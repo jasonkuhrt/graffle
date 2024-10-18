@@ -24,18 +24,18 @@ export type CreatePrefilled =
 	<
 		// eslint-disable-next-line
 		// @ts-ignore passes after generation
-		$Input extends InputPrefilled<GlobalRegistry.Schemas[$Name]>,
+		$Input extends InputPrefilled<GlobalRegistry.Clients[$Name]>,
 	>(...args:
 		// eslint-disable-next-line
 		// @ts-ignore passes after generation
-		HasRequiredKeys<InputPrefilled<GlobalRegistry.Schemas[$Name]>> extends true
+		HasRequiredKeys<InputPrefilled<GlobalRegistry.Clients[$Name]>> extends true
 			// eslint-disable-next-line
 			// @ts-ignore passes after generation
-			? [input: Exact<$Input, InputPrefilled<GlobalRegistry.Schemas[$Name]>>]
+			? [input: Exact<$Input, InputPrefilled<GlobalRegistry.Clients[$Name]>>]
 			// TODO test that input optional when no required properties
 			// eslint-disable-next-line
 			// @ts-ignore passes after generation
-			: ([input: Exact<$Input, InputPrefilled<GlobalRegistry.Schemas[$Name]>>] | [])
+			: ([input: Exact<$Input, InputPrefilled<GlobalRegistry.Clients[$Name]>>] | [])
 	) =>
 		// eslint-disable-next-line
 		// @ts-ignore passes after generation
@@ -45,7 +45,7 @@ export type CreatePrefilled =
 		}>
 
 // dprint-ignore
-export type InputPrefilled<$Schema extends GlobalRegistry.SchemaUnion> =
+export type InputPrefilled<$Schema extends GlobalRegistry.ClientUnion> =
 	$Schema extends any
 		? InputBase<$Schema>
 		: never

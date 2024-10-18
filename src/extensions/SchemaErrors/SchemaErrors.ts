@@ -88,7 +88,7 @@ interface OnRequestResult<$Params extends Extension.Hooks.OnRequestResult.Params
             [$Key in keyof ExcludeNullAndUndefined<$Params['result']['data']>]:
               Exclude<
                 ExcludeNullAndUndefined<$Params['result']['data']>[$Key],
-                { __typename: $Params['registeredSchema']['index']['extensions']['SchemaErrors']['objectNames'] }
+                { __typename: $Params['registeredSchema']['schema']['extensions']['SchemaErrors']['objectNames'] }
               >
           }
     } & Omit<$Params['result'], 'data'>

@@ -10,7 +10,7 @@ declare global {
     export interface Schemas {
       default: {
         name: Data.Name
-        index: Schema
+        schema: Schema
         interfaces: {
           MethodsSelect: MethodsSelect.$MethodsSelect
           Document: MethodsDocument.BuilderMethodsDocumentFn

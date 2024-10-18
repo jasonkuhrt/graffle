@@ -12,11 +12,12 @@ declare global {
   }
 }
 
-type ZeroSchema = {
+interface ZeroClient extends GlobalRegistry.RegisteredSchema {
   name: GlobalRegistry.DefaultSchemaName
-  index: { name: never }
-  // featureOptions: {}
+  schema: Schema
   interfaces: {
+    Root: TypeFunction.Fn
+    Document: TypeFunction.Fn
     MethodsSelect: {}
   }
   defaultSchemaUrl: null
@@ -37,7 +38,7 @@ export namespace GlobalRegistry {
 
   export interface RegisteredSchema<$Extensions extends Extensions = Extensions> {
     name: string
-    index: Schema<$Extensions['Schema']>
+    schema: Schema<$Extensions['Schema']>
     interfaces: {
       Root: TypeFunction.Fn
       Document: TypeFunction.Fn
@@ -51,29 +52,29 @@ export namespace GlobalRegistry {
 
   export type DefaultSchemaName = 'default'
 
-  export type Schemas = GraffleGlobal.Schemas
+  export type Clients = GraffleGlobal.Schemas // todo rename to Clients
 
-  export type IsEmpty = keyof Schemas extends never ? true : false
+  export type IsEmpty = keyof Clients extends never ? true : false
 
-  export type SchemaUnion = IsEmpty extends true ? ZeroSchema : Values<Schemas>
+  export type ClientUnion = IsEmpty extends true ? ZeroClient : Values<Clients>
 
   export type SchemaNames = keyof GraffleGlobal.Schemas extends never
     ? TSErrorDescriptive<'SchemaNames', 'No schemas have been registered. Did you run graffle generate?'>
     : keyof GraffleGlobal.Schemas
 
   // dprint-ignore
-  export type HasDefaultUrlForSchema<$Schema extends SchemaUnion> =
+  export type HasDefaultUrlForSchema<$Schema extends ClientUnion> =
     $Schema['defaultSchemaUrl'] extends null
       ? false
       : true
 
   // eslint-disable-next-line
   // @ts-ignore passes after generation
-  export type GetSchemaIndex<$Name extends SchemaNames> = GraffleGlobal.Schemas[$Name]['index']
+  export type GetSchema<$Name extends SchemaNames> = GraffleGlobal.Schemas[$Name]['schema']
 
   // eslint-disable-next-line
   // @ts-ignore passes after generation
-  export type SchemaIndexDefault = GetSchemaIndex<DefaultSchemaName>
+  export type SchemaDefault = GetSchema<DefaultSchemaName>
 
   // dprint-ignore
   export type GetOrDefault<$Name extends SchemaNames | undefined> =
@@ -86,8 +87,8 @@ export namespace GlobalRegistry {
       : GraffleGlobal.Schemas[DefaultSchemaName]
 
   // dprint-ignore
-  export type GetSchemaIndexOrDefault<$Name extends SchemaNames | undefined> =
+  export type GetSchemaOrDefault<$Name extends SchemaNames | undefined> =
     $Name extends SchemaNames
-      ? GetSchemaIndex<$Name>
-      : SchemaIndexDefault
+      ? GetSchema<$Name>
+      : SchemaDefault
 }

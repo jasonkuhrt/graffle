@@ -106,6 +106,6 @@ export type $Any =
   | Boolean
   | ID
   | Float
-  | Values<GlobalRegistry.Schemas[keyof GlobalRegistry.Schemas]['customScalars']>
+  | Values<GlobalRegistry.Clients[keyof GlobalRegistry.Clients]['customScalars']>
 
 type Values<T> = T extends any ? keyof T extends never ? never : T[keyof T] : never
