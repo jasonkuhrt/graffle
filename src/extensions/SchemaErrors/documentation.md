@@ -132,4 +132,4 @@ result // type is narrowed to just Bar case.
 
 ### Articles about schema errors.
 
-- ...
+- https://productionreadygraphql.com/2020-08-01-guide-to-graphql-errors
