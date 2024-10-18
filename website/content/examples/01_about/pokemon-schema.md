@@ -8,4 +8,4 @@ This is the GraphQL schema used in all examples throughout the Graffle documenta
 
 You can find its implementation in the repo at [tests/_/schemas/pokemon/schema.ts](https://github.com/jasonkuhrt/graffle/tree/main/tests/_/schemas/pokemon/schema.ts).
 
-<<< ../../../../tests/_/schemas/pokemon/schema.graphql
+<<< ../../../../tests/_/schemas/pokemon/graffle/schema.graphql
