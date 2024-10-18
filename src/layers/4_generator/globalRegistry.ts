@@ -12,10 +12,12 @@ declare global {
   }
 }
 
-type ZeroClient = {
+interface ZeroClient extends GlobalRegistry.RegisteredSchema {
   name: GlobalRegistry.DefaultSchemaName
-  schema: { name: never } // todo why name:never ?
+  schema: Schema
   interfaces: {
+    Root: TypeFunction.Fn
+    Document: TypeFunction.Fn
     MethodsSelect: {}
   }
   defaultSchemaUrl: null
