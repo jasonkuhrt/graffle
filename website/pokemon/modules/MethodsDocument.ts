@@ -1,5 +1,5 @@
 import type * as Utilities from 'graffle/utilities-for-generated'
-import type { Index } from './SchemaIndex.js'
+import type { Index } from './Schema.js'
 import type * as SelectionSets from './SelectionSets.js'
 
 export interface Document<$Config extends Utilities.Config> {

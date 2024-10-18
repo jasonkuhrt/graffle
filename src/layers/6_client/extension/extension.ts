@@ -59,9 +59,9 @@ export namespace Extension {
     }
     export interface OnRequestResult extends Fn {}
     export namespace OnRequestResult {
-      export interface Params {
+      export interface Params<$Extensions extends GlobalRegistry.Extensions = GlobalRegistry.Extensions> {
         result: GraffleExecutionResultEnvelope
-        registeredSchema: GlobalRegistry.RegisteredSchema
+        registeredSchema: GlobalRegistry.RegisteredSchema<$Extensions>
       }
     }
   }

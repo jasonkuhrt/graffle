@@ -7,7 +7,7 @@ import * as $Scalar from './Scalar.js'
 //
 //
 // ==================================================================================================
-//                                         GraphQLScalarType
+//                                     GraphQLScalarTypeStandard
 // ==================================================================================================
 //
 //
@@ -16,15 +16,15 @@ import * as $Scalar from './Scalar.js'
 //
 //
 
+const Boolean = $Scalar.Boolean
+
 const Float = $Scalar.Float
 
 const ID = $Scalar.ID
 
-const String = $Scalar.String
-
 const Int = $Scalar.Int
 
-const Boolean = $Scalar.Boolean
+const String = $Scalar.String
 
 //
 //
@@ -383,29 +383,29 @@ const Query: $Utilities.SchemaDrivenDataMap.OutputObject = {
 //
 //
 
-BattleRoyale.f['combatants']!.nt = CombatantMultiPokemon
-BattleRoyale.f['winner']!.nt = Trainer
-BattleTrainer.f['combatant1']!.nt = CombatantSinglePokemon
-BattleTrainer.f['combatant2']!.nt = CombatantSinglePokemon
-BattleTrainer.f['winner']!.nt = Trainer
-BattleWild.f['pokemon']!.nt = Pokemon
-BattleWild.f['trainer']!.nt = Trainer
-BattleWild.f['wildPokemons']!.nt = Pokemon
-CombatantMultiPokemon.f['pokemons']!.nt = Pokemon
-CombatantMultiPokemon.f['trainer']!.nt = Trainer
-CombatantSinglePokemon.f['pokemon']!.nt = Pokemon
-CombatantSinglePokemon.f['trainer']!.nt = Trainer
-Pokemon.f['trainer']!.nt = Trainer
-Trainer.f['fans']!.nt = Patron
-Trainer.f['pokemon']!.nt = Pokemon
-Mutation.f['addPokemon']!.nt = Pokemon
-Query.f['battles']!.nt = Battle
-Query.f['beings']!.nt = Being
-Query.f['pokemon']!.nt = Pokemon
-Query.f['pokemonByName']!.nt = Pokemon
-Query.f['pokemons']!.nt = Pokemon
-Query.f['trainerByName']!.nt = Trainer
-Query.f['trainers']!.nt = Trainer
+BattleRoyale.f[`combatants`]!.nt = CombatantMultiPokemon
+BattleRoyale.f[`winner`]!.nt = Trainer
+BattleTrainer.f[`combatant1`]!.nt = CombatantSinglePokemon
+BattleTrainer.f[`combatant2`]!.nt = CombatantSinglePokemon
+BattleTrainer.f[`winner`]!.nt = Trainer
+BattleWild.f[`pokemon`]!.nt = Pokemon
+BattleWild.f[`trainer`]!.nt = Trainer
+BattleWild.f[`wildPokemons`]!.nt = Pokemon
+CombatantMultiPokemon.f[`pokemons`]!.nt = Pokemon
+CombatantMultiPokemon.f[`trainer`]!.nt = Trainer
+CombatantSinglePokemon.f[`pokemon`]!.nt = Pokemon
+CombatantSinglePokemon.f[`trainer`]!.nt = Trainer
+Pokemon.f[`trainer`]!.nt = Trainer
+Trainer.f[`fans`]!.nt = Patron
+Trainer.f[`pokemon`]!.nt = Pokemon
+Mutation.f[`addPokemon`]!.nt = Pokemon
+Query.f[`battles`]!.nt = Battle
+Query.f[`beings`]!.nt = Being
+Query.f[`pokemon`]!.nt = Pokemon
+Query.f[`pokemonByName`]!.nt = Pokemon
+Query.f[`pokemons`]!.nt = Pokemon
+Query.f[`trainerByName`]!.nt = Trainer
+Query.f[`trainers`]!.nt = Trainer
 
 //
 //
@@ -430,11 +430,11 @@ const $schemaDrivenDataMap: $Utilities.SchemaDrivenDataMap = {
   },
   directives: {},
   types: {
+    Boolean,
     Float,
     ID,
-    String,
     Int,
-    Boolean,
+    String,
     BattleWildResult,
     PokemonType,
     TrainerClass,

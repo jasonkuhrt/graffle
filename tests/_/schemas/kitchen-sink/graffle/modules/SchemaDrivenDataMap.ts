@@ -7,7 +7,7 @@ import * as $Scalar from './Scalar.js'
 //
 //
 // ==================================================================================================
-//                                         GraphQLScalarType
+//                                     GraphQLScalarTypeStandard
 // ==================================================================================================
 //
 //
@@ -16,15 +16,15 @@ import * as $Scalar from './Scalar.js'
 //
 //
 
-const Int = $Scalar.Int
-
-const String = $Scalar.String
-
-const ID = $Scalar.ID
-
 const Boolean = $Scalar.Boolean
 
 const Float = $Scalar.Float
+
+const ID = $Scalar.ID
+
+const Int = $Scalar.Int
+
+const String = $Scalar.String
 
 //
 //
@@ -173,7 +173,6 @@ const DateObject2: $Utilities.SchemaDrivenDataMap.OutputObject = {
 }
 
 const ErrorOne: $Utilities.SchemaDrivenDataMap.OutputObject = {
-  e: 1,
   f: {
     infoId: {},
     message: {},
@@ -181,7 +180,6 @@ const ErrorOne: $Utilities.SchemaDrivenDataMap.OutputObject = {
 }
 
 const ErrorTwo: $Utilities.SchemaDrivenDataMap.OutputObject = {
-  e: 1,
   f: {
     infoInt: {},
     message: {},
@@ -519,7 +517,6 @@ const Query: $Utilities.SchemaDrivenDataMap.OutputObject = {
           it: [1],
         },
       },
-      r: 1,
       // nt: Result, <-- Assigned later to avoid potential circular dependency.
     },
     resultNonNull: {
@@ -529,7 +526,6 @@ const Query: $Utilities.SchemaDrivenDataMap.OutputObject = {
           it: [0],
         },
       },
-      r: 1,
       // nt: Result, <-- Assigned later to avoid potential circular dependency.
     },
     string: {},
@@ -646,31 +642,31 @@ const Query: $Utilities.SchemaDrivenDataMap.OutputObject = {
 //
 //
 
-InputObjectCircular.f!['circular']!.nt = InputObjectCircular
-InputObjectNested.f!['InputObject']!.nt = InputObject
-InputObjectNestedNonNull.f!['InputObject']!.nt = InputObject
-ObjectNested.f['object']!.nt = Object1
-ObjectUnion.f['fooBarUnion']!.nt = FooBarUnion
-Query.f['dateInterface1']!.nt = DateInterface1
-Query.f['dateObject1']!.nt = DateObject1
-Query.f['dateUnion']!.nt = DateUnion
-Query.f['interface']!.nt = Interface
-Query.f['interfaceNonNull']!.nt = Interface
-Query.f['interfaceWithArgs']!.nt = Interface
-Query.f['lowerCaseUnion']!.nt = lowerCaseUnion
-Query.f['object']!.nt = Object1
-Query.f['objectList']!.nt = Object1
-Query.f['objectListNonNull']!.nt = Object1
-Query.f['objectNested']!.nt = ObjectNested
-Query.f['objectNonNull']!.nt = Object1
-Query.f['objectWithArgs']!.nt = Object1
-Query.f['result']!.nt = Result
-Query.f['resultNonNull']!.nt = Result
-Query.f['unionFooBar']!.nt = FooBarUnion
-Query.f['unionFooBarNonNull']!.nt = FooBarUnion
-Query.f['unionFooBarWithArgs']!.nt = FooBarUnion
-Query.f['unionObject']!.nt = ObjectUnion
-Query.f['unionObjectNonNull']!.nt = ObjectUnion
+InputObjectCircular.f![`circular`]!.nt = InputObjectCircular
+InputObjectNested.f![`InputObject`]!.nt = InputObject
+InputObjectNestedNonNull.f![`InputObject`]!.nt = InputObject
+ObjectNested.f[`object`]!.nt = Object1
+ObjectUnion.f[`fooBarUnion`]!.nt = FooBarUnion
+Query.f[`dateInterface1`]!.nt = DateInterface1
+Query.f[`dateObject1`]!.nt = DateObject1
+Query.f[`dateUnion`]!.nt = DateUnion
+Query.f[`interface`]!.nt = Interface
+Query.f[`interfaceNonNull`]!.nt = Interface
+Query.f[`interfaceWithArgs`]!.nt = Interface
+Query.f[`lowerCaseUnion`]!.nt = lowerCaseUnion
+Query.f[`object`]!.nt = Object1
+Query.f[`objectList`]!.nt = Object1
+Query.f[`objectListNonNull`]!.nt = Object1
+Query.f[`objectNested`]!.nt = ObjectNested
+Query.f[`objectNonNull`]!.nt = Object1
+Query.f[`objectWithArgs`]!.nt = Object1
+Query.f[`result`]!.nt = Result
+Query.f[`resultNonNull`]!.nt = Result
+Query.f[`unionFooBar`]!.nt = FooBarUnion
+Query.f[`unionFooBarNonNull`]!.nt = FooBarUnion
+Query.f[`unionFooBarWithArgs`]!.nt = FooBarUnion
+Query.f[`unionObject`]!.nt = ObjectUnion
+Query.f[`unionObjectNonNull`]!.nt = ObjectUnion
 
 //
 //
@@ -695,11 +691,11 @@ const $schemaDrivenDataMap: $Utilities.SchemaDrivenDataMap = {
   },
   directives: {},
   types: {
-    Int,
-    String,
-    ID,
     Boolean,
     Float,
+    ID,
+    Int,
+    String,
     Date,
     ABCEnum,
     Case,

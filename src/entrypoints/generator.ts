@@ -1,1 +1,1 @@
-export { generate } from '../layers/4_generator/_.js'
+export * from './__Generator.js'

@@ -1,7 +1,7 @@
 import { type Simplify } from 'type-fest'
 import type { InferResult } from '../../../../../../src/entrypoints/schema.js'
 import type * as Utils from '../../../../../../src/entrypoints/utilities-for-generated.js'
-import type { Index } from './SchemaIndex.js'
+import type { Index } from './Schema.js'
 import type * as SelectionSet from './SelectionSets.js'
 
 export interface QueryMethods<$Config extends Utils.Config> {

@@ -1,7 +1,7 @@
 // todo remove use of Utils.Aug when schema errors not in use
 // todo jsdoc
 import { createModuleGenerator } from '../helpers/moduleGenerator.js'
-import { ModuleGeneratorSchemaIndex } from './SchemaIndex.js'
+import { ModuleGeneratorSchema } from './Schema.js'
 import { ModuleGeneratorSelectionSets } from './SelectionSets.js'
 
 export const ModuleGeneratorMethodsDocument = createModuleGenerator(
@@ -9,7 +9,7 @@ export const ModuleGeneratorMethodsDocument = createModuleGenerator(
   ({ config, code }) => {
     code(`import type * as SelectionSets from './${ModuleGeneratorSelectionSets.name}.js'`)
     code(`import type * as Utilities from '${config.paths.imports.grafflePackage.utilitiesForGenerated}'`)
-    code(`import type { Index } from './${ModuleGeneratorSchemaIndex.name}.js'`)
+    code(`import type { Index } from './${ModuleGeneratorSchema.name}.js'`)
     code()
 
     code(`export interface Document<$Config extends Utilities.Config> {

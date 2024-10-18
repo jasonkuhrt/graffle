@@ -2,7 +2,7 @@ import { Code } from '../../../lib/Code.js'
 import { Grafaid } from '../../../lib/grafaid/__.js'
 import { getNodeDisplayName } from '../../../lib/grafaid/graphql.js'
 import { borderThickFullWidth, borderThinFullWidth, centerTo } from '../../../lib/text.js'
-import type { Config } from '../config.js'
+import type { Config } from '../config/config.js'
 
 export const title1 = (title: string, subTitle?: string) => {
   const titleDecorated = `
@@ -49,7 +49,7 @@ export const typeTitle2 = (category: string) => (type: Grafaid.Schema.NamedTypes
 export const typeTitle2SelectionSet = typeTitle2(`GRAPHQL SELECTION SET`)
 
 export const typeTitle = (config: Config, typeKind: Grafaid.Schema.NamedTypeKind) => {
-  const hasItems = config.schema.typeMapByKind[`GraphQL${typeKind}Type`].length > 0
+  const hasItems = config.schema.kindMap[`GraphQL${typeKind}Type`].length > 0
   const title = `${typeKind} Types`
   const titleDecorated = `// ${title}\n// ${`-`.repeat(title.length)}\n`
   if (hasItems) {

@@ -20,7 +20,7 @@ export type KindMap =
 export const getKindMap = (schema: GraphQLSchema): KindMap => {
   const typeMap = schema.getTypeMap()
   const typeMapValues = Object.values(typeMap)
-  const typeMapByKind: KindMap = {
+  const kindMap: KindMap = {
     GraphQLRootType: [],
     GraphQLScalarType: [],
     GraphQLScalarTypeCustom: [],
@@ -35,38 +35,38 @@ export const getKindMap = (schema: GraphQLSchema): KindMap => {
     if (type.name.startsWith(`__`)) continue
     switch (true) {
       case type instanceof GraphQLScalarType:
-        typeMapByKind.GraphQLScalarType.push(type)
+        kindMap.GraphQLScalarType.push(type)
         if (isScalarTypeAndCustom(type)) {
-          typeMapByKind.GraphQLScalarTypeCustom.push(type)
+          kindMap.GraphQLScalarTypeCustom.push(type)
         } else {
-          typeMapByKind.GraphQLScalarTypeStandard.push(type)
+          kindMap.GraphQLScalarTypeStandard.push(type)
         }
         break
       case type instanceof GraphQLEnumType:
-        typeMapByKind.GraphQLEnumType.push(type)
+        kindMap.GraphQLEnumType.push(type)
         break
       case type instanceof GraphQLInputObjectType:
-        typeMapByKind.GraphQLInputObjectType.push(type)
+        kindMap.GraphQLInputObjectType.push(type)
         break
       case type instanceof GraphQLInterfaceType:
-        typeMapByKind.GraphQLInterfaceType.push(type)
+        kindMap.GraphQLInterfaceType.push(type)
         break
       case type instanceof GraphQLObjectType:
         if (type.name === `Query` || type.name === `Mutation` || type.name === `Subscription`) {
-          typeMapByKind.GraphQLRootType.push(type)
+          kindMap.GraphQLRootType.push(type)
         } else {
-          typeMapByKind.GraphQLObjectType.push(type)
+          kindMap.GraphQLObjectType.push(type)
         }
         break
       case type instanceof GraphQLUnionType:
-        typeMapByKind.GraphQLUnionType.push(type)
+        kindMap.GraphQLUnionType.push(type)
         break
       default:
         // skip
         break
     }
   }
-  return typeMapByKind
+  return kindMap
 }
 
 export const hasMutation = (typeMapByKind: KindMap) => typeMapByKind.GraphQLRootType.find((_) => _.name === `Mutation`)

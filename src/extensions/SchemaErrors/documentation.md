@@ -4,16 +4,52 @@ This extension supports a GraphQL schema design pattern that advocates for encod
 
 ## Getting Started
 
+This extension requires generation and also itself extends the generator. You must apply it at gentime and runtime.
+
+```ts
+// graffle.config.ts
+
+import { SchemaErrors } from 'graffle/extensions'
+import { Graffle } from 'graffle/generator'
+
+export default Graffle
+  .create()
+  .use(SchemaErrors())
+```
+
 ```ts twoslash
+// your/app/code.ts
 import { Graffle } from 'graffle'
 import { SchemaErrors } from 'graffle/extensions'
 
 const graffle = Graffle.create({ schema: '...' }).use(SchemaErrors())
 ```
 
-By default all objects whose name begin with `Error` will be considered to be "error objects". You can customize this at generate time with your own regular expression.
+## Configuration
 
-## `isError`
+Configuration is split between gentime and runtime since this extension extends the Graffle generator as well.
+
+### Gentime
+
+#### Identifying Error Objects
+
+By default all objects whose name begin with `Error` will be considered to be "error objects". You can customize this with your own function.
+
+```ts
+// graffle.config.ts
+import { SchemaErrors } from 'graffle/extensions/schema-errors/generator'
+import { Graffle } from 'graffle/generator'
+
+export default Graffle
+  .create()
+  .use(SchemaErrors({
+    isErrorType: (type) => type.name.match(/^Foo/),
+  }))
+```
+
+## Methods
+
+### `isError`
 
 You can use a helper method `isError` that will narrow objects to just error objects. For example:
 
@@ -26,7 +62,7 @@ if (graffle.isError(result)) {
 }
 ```
 
-## How It Works
+## About Runtime Behavior
 
 This is achieved by automatically adding `__typename` field to each object-like root field's selection set. Then the returned object name can be analyzed. Example:
 
@@ -96,4 +132,4 @@ result // type is narrowed to just Bar case.
 
 ### Articles about schema errors.
 
-- ...
+- https://productionreadygraphql.com/2020-08-01-guide-to-graphql-errors

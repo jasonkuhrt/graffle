@@ -7,7 +7,7 @@ import * as $Scalar from './Scalar.js'
 //
 //
 // ==================================================================================================
-//                                         GraphQLScalarType
+//                                     GraphQLScalarTypeStandard
 // ==================================================================================================
 //
 //
@@ -16,11 +16,15 @@ import * as $Scalar from './Scalar.js'
 //
 //
 
+const Boolean = $Scalar.Boolean
+
+const Float = $Scalar.Float
+
 const ID = $Scalar.ID
 
-const String = $Scalar.String
+const Int = $Scalar.Int
 
-const Boolean = $Scalar.Boolean
+const String = $Scalar.String
 
 //
 //
@@ -325,18 +329,18 @@ const Query: $Utilities.SchemaDrivenDataMap.OutputObject = {
 //
 //
 
-Continent.f['countries']!.nt = Country
-Country.f['continent']!.nt = Continent
-Country.f['languages']!.nt = Language
-Country.f['states']!.nt = State
-Country.f['subdivisions']!.nt = Subdivision
-State.f['country']!.nt = Country
-Query.f['continent']!.nt = Continent
-Query.f['continents']!.nt = Continent
-Query.f['countries']!.nt = Country
-Query.f['country']!.nt = Country
-Query.f['language']!.nt = Language
-Query.f['languages']!.nt = Language
+Continent.f[`countries`]!.nt = Country
+Country.f[`continent`]!.nt = Continent
+Country.f[`languages`]!.nt = Language
+Country.f[`states`]!.nt = State
+Country.f[`subdivisions`]!.nt = Subdivision
+State.f[`country`]!.nt = Country
+Query.f[`continent`]!.nt = Continent
+Query.f[`continents`]!.nt = Continent
+Query.f[`countries`]!.nt = Country
+Query.f[`country`]!.nt = Country
+Query.f[`language`]!.nt = Language
+Query.f[`languages`]!.nt = Language
 
 //
 //
@@ -360,9 +364,11 @@ const $schemaDrivenDataMap: $Utilities.SchemaDrivenDataMap = {
   },
   directives: {},
   types: {
-    ID,
-    String,
     Boolean,
+    Float,
+    ID,
+    Int,
+    String,
     ContinentFilterInput,
     CountryFilterInput,
     LanguageFilterInput,

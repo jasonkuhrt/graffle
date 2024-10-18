@@ -1,5 +1,5 @@
+import type { Index } from '../../../tests/_/schemas/kitchen-sink/graffle/modules/Schema.js'
 import type * as Schema from '../../../tests/_/schemas/kitchen-sink/graffle/modules/SchemaBuildtime.js'
-import type { Index } from '../../../tests/_/schemas/kitchen-sink/graffle/modules/SchemaIndex.js'
 import type * as SelectionSets from '../../../tests/_/schemas/kitchen-sink/graffle/modules/SelectionSets.js'
 import { assertEqual } from '../../lib/assert-equal.js'
 import type { InferResult } from './__.js'

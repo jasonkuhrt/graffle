@@ -18,7 +18,7 @@ export const ModuleGeneratorSelectionSets = createModuleGenerator(
 
     code(`import type { Select as $Select } from '${config.paths.imports.grafflePackage.schema}'`)
     code(`import type * as $Utilities from '${config.paths.imports.grafflePackage.utilitiesForGenerated}'`)
-    if (Grafaid.Schema.KindMap.hasCustomScalars(config.schema.typeMapByKind)) {
+    if (Grafaid.Schema.KindMap.hasCustomScalars(config.schema.kindMap)) {
       code(`import type * as $Scalar from './${ModuleGeneratorScalar.name}.js'`)
     }
     code()
@@ -30,19 +30,19 @@ export const ModuleGeneratorSelectionSets = createModuleGenerator(
     )
     code(
       `export interface $Document {`,
-      Grafaid.Schema.KindMap.hasQuery(config.schema.typeMapByKind) ? `query?: Record<string, Query>` : null,
-      Grafaid.Schema.KindMap.hasMutation(config.schema.typeMapByKind) ? `mutation?: Record<string, Mutation>` : null,
+      Grafaid.Schema.KindMap.hasQuery(config.schema.kindMap) ? `query?: Record<string, Query>` : null,
+      Grafaid.Schema.KindMap.hasMutation(config.schema.kindMap) ? `mutation?: Record<string, Mutation>` : null,
       `}`,
     )
     code()
 
     const typesToRender = [
-      config.schema.typeMapByKind.GraphQLRootType,
-      config.schema.typeMapByKind.GraphQLEnumType,
-      config.schema.typeMapByKind.GraphQLInputObjectType,
-      config.schema.typeMapByKind.GraphQLInterfaceType,
-      config.schema.typeMapByKind.GraphQLObjectType,
-      config.schema.typeMapByKind.GraphQLUnionType,
+      config.schema.kindMap.GraphQLRootType,
+      config.schema.kindMap.GraphQLEnumType,
+      config.schema.kindMap.GraphQLInputObjectType,
+      config.schema.kindMap.GraphQLInterfaceType,
+      config.schema.kindMap.GraphQLObjectType,
+      config.schema.kindMap.GraphQLUnionType,
     ].filter(_ => _.length > 0)
 
     typesToRender.forEach((nodes) => {
@@ -137,7 +137,7 @@ const renderInterface = createCodeGenerator<{ node: Grafaid.Schema.InterfaceType
     const fieldsRendered = fields.map(field => {
       return Helpers.outputField(field.name, `${renderName(node)}.${renderName(field)}`)
     }).join(`\n`)
-    const implementorTypes = Grafaid.Schema.KindMap.getInterfaceImplementors(config.schema.typeMapByKind, node)
+    const implementorTypes = Grafaid.Schema.KindMap.getInterfaceImplementors(config.schema.kindMap, node)
     const onTypesRendered = implementorTypes.map(type =>
       Helpers.outputField(`${Select.InlineFragment.typeConditionPRefix}${type.name}`, renderName(type))
     ).join(

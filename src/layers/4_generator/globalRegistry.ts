@@ -1,10 +1,11 @@
 import type { TypeFunction } from '../../entrypoints/utilities-for-generated.js'
+import type { ConfigManager } from '../../lib/config-manager/__.js'
 import type { Values } from '../../lib/prelude.js'
-import type { TSErrorDescriptive } from '../../lib/TSError.js'
-import type { SchemaIndex } from './generators/SchemaIndex.js'
+import type { TSErrorDescriptive } from '../../lib/ts-error.js'
+import type { Schema } from './generators/Schema.js'
 
 declare global {
-  export namespace GraffleGlobalTypes {
+  export namespace GraffleGlobal {
     interface Schemas {}
     // Use this is for manual internal type testing.
     interface SchemasAlwaysEmpty {}
@@ -14,7 +15,7 @@ declare global {
 type ZeroSchema = {
   name: GlobalRegistry.DefaultSchemaName
   index: { name: never }
-  featureOptions: {}
+  // featureOptions: {}
   interfaces: {
     MethodsSelect: {}
   }
@@ -24,10 +25,19 @@ type ZeroSchema = {
 export type GlobalRegistry = Record<string, GlobalRegistry.RegisteredSchema>
 
 export namespace GlobalRegistry {
-  export interface RegisteredSchema {
+  export type TypeExtensions = Record<string, Record<string, unknown>>
+
+  export type Extensions<
+    $Extensions extends { Schema?: TypeExtensions } = {
+      Schema: TypeExtensions
+    },
+  > = {
+    Schema: ConfigManager.OrDefault<$Extensions['Schema'], TypeExtensions>
+  }
+
+  export interface RegisteredSchema<$Extensions extends Extensions = Extensions> {
     name: string
-    index: SchemaIndex
-    // featureOptions: {}
+    index: Schema<$Extensions['Schema']>
     interfaces: {
       Root: TypeFunction.Fn
       Document: TypeFunction.Fn
@@ -41,15 +51,15 @@ export namespace GlobalRegistry {
 
   export type DefaultSchemaName = 'default'
 
-  export type Schemas = GraffleGlobalTypes.Schemas
+  export type Schemas = GraffleGlobal.Schemas
 
   export type IsEmpty = keyof Schemas extends never ? true : false
 
   export type SchemaUnion = IsEmpty extends true ? ZeroSchema : Values<Schemas>
 
-  export type SchemaNames = keyof GraffleGlobalTypes.Schemas extends never
+  export type SchemaNames = keyof GraffleGlobal.Schemas extends never
     ? TSErrorDescriptive<'SchemaNames', 'No schemas have been registered. Did you run graffle generate?'>
-    : keyof GraffleGlobalTypes.Schemas
+    : keyof GraffleGlobal.Schemas
 
   // dprint-ignore
   export type HasDefaultUrlForSchema<$Schema extends SchemaUnion> =
@@ -59,7 +69,7 @@ export namespace GlobalRegistry {
 
   // eslint-disable-next-line
   // @ts-ignore passes after generation
-  export type GetSchemaIndex<$Name extends SchemaNames> = GraffleGlobalTypes.Schemas[$Name]['index']
+  export type GetSchemaIndex<$Name extends SchemaNames> = GraffleGlobal.Schemas[$Name]['index']
 
   // eslint-disable-next-line
   // @ts-ignore passes after generation
@@ -70,10 +80,10 @@ export namespace GlobalRegistry {
     $Name extends SchemaNames
       // eslint-disable-next-line
       // @ts-ignore passes after generation
-      ? GraffleGlobalTypes.Schemas[$Name]
+      ? GraffleGlobal.Schemas[$Name]
       // eslint-disable-next-line
       // @ts-ignore passes after generation
-      : GraffleGlobalTypes.Schemas[DefaultSchemaName]
+      : GraffleGlobal.Schemas[DefaultSchemaName]
 
   // dprint-ignore
   export type GetSchemaIndexOrDefault<$Name extends SchemaNames | undefined> =

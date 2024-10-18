@@ -1,62 +1,64 @@
-import { pascalCase } from 'es-toolkit'
-import { printSchema } from 'graphql'
-import fs from 'node:fs/promises'
-import { dirname, join } from 'node:path'
+import { join } from 'node:path'
 import { Generator } from '../../../src/layers/4_generator/__.js'
+import { Grafaid } from '../../../src/lib/grafaid/__.js'
 
 const generate = async (
   input: {
     dirName: string
-    name?: boolean
-    generatorInput?: Omit<Generator.Input, 'schemaSource'>
-    defaultSchemaUrl?: URL
+    input?: Generator.Config.BuilderInput
   },
 ) => {
-  const name = input.name === false ? undefined : pascalCase(input.dirName)
-
-  const rootDir = join(`./tests/_/schemas/`, input.dirName)
-
-  const outputSchemaPath = join(rootDir, `schema.graphql`)
   const { schema } = await import(`./${input.dirName}/schema.js`)
-  await fs.writeFile(outputSchemaPath, printSchema(schema))
+  if (!(schema instanceof Grafaid.Schema.Schema)) {
+    throw new Error(`Expected schema to be an instance of Grafaid.Schema.Schema`)
+  }
 
-  const inputPathRootDir = dirname(outputSchemaPath)
-  const outputPathRootDir = join(rootDir, `/graffle`)
+  const inputPathRootDir = join(import.meta.dirname, input.dirName)
 
   await Generator.generate({
-    schemaSource: { type: `sdl` },
+    currentWorkingDirectory: import.meta.dirname,
+    schema,
     // todo funky between this and passing path to sdl
     sourceDirPath: inputPathRootDir,
-    defaultSchemaUrl: input.defaultSchemaUrl,
-    sourceCustomScalarCodecsFilePath: join(`./tests/_/customScalarCodecs.ts`),
-    outputDirPath: outputPathRootDir,
+    outputSDL: true,
+    outputDirPath: join(input.dirName, `graffle`),
     libraryPaths: {
-      client: `../../../../../../src/entrypoints/client.js`,
-      schema: `../../../../../../src/entrypoints/schema.js`,
-      scalars: `../../../../../../src/layers/1_Schema/Hybrid/types/Scalar/Scalar.js`,
-      utilitiesForGenerated: `../../../../../../src/entrypoints/utilities-for-generated.js`,
+      client: `../../../src/entrypoints/client.ts`,
+      schema: `../../../src/entrypoints/schema.ts`,
+      scalars: `../../../src/layers/1_Schema/Hybrid/types/Scalar/Scalar.ts`,
+      utilitiesForGenerated: `../../../src/entrypoints/utilities-for-generated.ts`,
     },
-    name,
-    ...input.generatorInput,
+    ...input.input,
   })
+
   console.log(`generated at`, inputPathRootDir)
 }
 
 await generate({
   dirName: `pokemon`,
-  defaultSchemaUrl: new URL(`http://localhost:3000/graphql`),
+  input: {
+    defaultSchemaUrl: new URL(`http://localhost:3000/graphql`),
+    name: `Pokemon`,
+  },
 })
 
 await generate({
   dirName: `query-only`,
+  input: {
+    name: `QueryOnly`,
+  },
 })
 
 await generate({
   dirName: `mutation-only`,
+  input: {
+    name: `MutationOnly`,
+  },
 })
 
 await generate({
   dirName: `kitchen-sink`,
-  name: false,
-  generatorInput: { errorTypeNamePattern: /^Error.+/ },
+  input: {
+    customScalarCodecs: `./kitchen-sink/customScalarCodecs.ts`,
+  },
 })

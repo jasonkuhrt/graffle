@@ -12,10 +12,10 @@ export const ModuleGeneratorMethodsSelect = createModuleGenerator(
     code()
 
     const graphqlTypeGroups = [
-      config.schema.typeMapByKind.GraphQLRootType,
-      config.schema.typeMapByKind.GraphQLObjectType,
-      config.schema.typeMapByKind.GraphQLUnionType,
-      config.schema.typeMapByKind.GraphQLInterfaceType,
+      config.schema.kindMap.GraphQLRootType,
+      config.schema.kindMap.GraphQLObjectType,
+      config.schema.kindMap.GraphQLUnionType,
+      config.schema.kindMap.GraphQLInterfaceType,
     ].filter(_ => _.length > 0)
 
     code(title1(`Select Methods Interface`))

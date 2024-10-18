@@ -2,14 +2,14 @@ import type { UnionToTuple } from 'type-fest'
 import type { IsTupleMultiple } from '../../../lib/prelude.js'
 import type { Select } from '../../2_Select/__.js'
 import type { InferResult } from '../../3_InferResult/__.js'
-import type { SchemaIndex } from '../../4_generator/generators/SchemaIndex.js'
+import type { Schema } from '../../4_generator/generators/Schema.js'
 import { type HandleOutput } from '../handleOutput.js'
 import type { Config } from '../Settings/Config.js'
 
 // dprint-ignore
 export type DocumentRunner<
   $$Config extends Config,
-  $$Schema extends SchemaIndex,
+  $$Schema extends Schema,
   $$Document extends Select.Document.SomeDocument,
   $$Name extends Select.Document.GetOperationNames<$$Document> = Select.Document.GetOperationNames<$$Document>
 > = {
