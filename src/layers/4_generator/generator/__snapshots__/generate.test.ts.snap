@@ -8,6 +8,7 @@ exports[`kitchen-sink generated modules > _.ts 1`] = `
 import './modules/Global.js'
 
 export { create } from './modules/Client.js'
+export { schemaDrivenDataMap } from './modules/SchemaDrivenDataMap.js'
 export { Select } from './modules/Select.js'
 export * as SelectionSets from './modules/SelectionSets.js'
 "
@@ -21,9 +22,10 @@ exports[`kitchen-sink generated modules > __.ts 1`] = `
 exports[`kitchen-sink generated modules > modules/Client.ts 1`] = `
 "import { createPrefilled } from '../../../../../../src/entrypoints/client.js'
 import { defaultSchemaUrl } from './Data.js'
+import { Name } from './Data.js'
 import { schemaDrivenDataMap } from './SchemaDrivenDataMap.js'
 
-export const create = createPrefilled(\`default\`, schemaDrivenDataMap, defaultSchemaUrl)
+export const create = createPrefilled(Name, schemaDrivenDataMap, defaultSchemaUrl)
 "
 `;
 
@@ -41,10 +43,10 @@ import type * as MethodsDocument from './MethodsDocument.js'
 import type * as MethodsRoot from './MethodsRoot.js'
 import type * as MethodsSelect from './MethodsSelect.js'
 import type * as Scalar from './Scalar.js'
-import type { Index } from './SchemaIndex.js'
+import type { Index } from './Schema.js'
 
 declare global {
-  export namespace GraffleGlobalTypes {
+  export namespace GraffleGlobal {
     export interface Schemas {
       default: {
         name: Data.Name
@@ -57,7 +59,6 @@ declare global {
         customScalars: {
           Date: Scalar.Date
         }
-
         defaultSchemaUrl: null
       }
     }
@@ -68,7 +69,7 @@ declare global {
 
 exports[`kitchen-sink generated modules > modules/MethodsDocument.ts 1`] = `
 "import type * as Utilities from '../../../../../../src/entrypoints/utilities-for-generated.js'
-import type { Index } from './SchemaIndex.js'
+import type { Index } from './Schema.js'
 import type * as SelectionSets from './SelectionSets.js'
 
 export interface Document<$Config extends Utilities.Config> {
@@ -92,7 +93,7 @@ exports[`kitchen-sink generated modules > modules/MethodsRoot.ts 1`] = `
 "import { type Simplify } from 'type-fest'
 import type { InferResult } from '../../../../../../src/entrypoints/schema.js'
 import type * as Utils from '../../../../../../src/entrypoints/utilities-for-generated.js'
-import type { Index } from './SchemaIndex.js'
+import type { Index } from './Schema.js'
 import type * as SelectionSet from './SelectionSets.js'
 
 export interface MutationMethods<$Config extends Utils.Config> {
@@ -881,13 +882,12 @@ export interface Interface {
 `;
 
 exports[`kitchen-sink generated modules > modules/Scalar.ts 1`] = `
-"import type { Schema } from '../../../../../../src/entrypoints/schema.js'
-import * as CustomScalars from '../../../../customScalarCodecs.js'
+"import type { SchemaKit } from '../../../../../../src/entrypoints/schema.js'
 
-export * from '../../../../../../src/layers/1_Schema/Hybrid/types/Scalar/Scalar.js'
-export * from '../../../../customScalarCodecs.js'
-export { Date } from '../../../../customScalarCodecs.js'
+import * as CustomScalars from '../../customScalarCodecs.js'
 
+export * from '../../customScalarCodecs.js'
+export { Date } from '../../customScalarCodecs.js'
 //
 //
 //
@@ -904,8 +904,84 @@ export type Date = typeof CustomScalars.Date
 // Without this we get error:
 // "Exported type alias 'DateDecoded' has or is using private name 'Date'."
 type Date_ = typeof CustomScalars.Date
-export type DateDecoded = Schema.Scalar.GetDecoded<Date_>
-export type DateEncoded = Schema.Scalar.GetEncoded<Date_>
+export type DateDecoded = SchemaKit.Scalar.GetDecoded<Date_>
+export type DateEncoded = SchemaKit.Scalar.GetEncoded<Date_>
+
+export * from '../../../../../../src/layers/1_Schema/Hybrid/types/Scalar/Scalar.js'
+"
+`;
+
+exports[`kitchen-sink generated modules > modules/Schema.ts 1`] = `
+"/* eslint-disable */
+import type * as Utilities from '../../../../../../src/entrypoints/utilities-for-generated.js'
+import type * as Data from './Data.js'
+import type * as MethodsRoot from './MethodsRoot.js'
+import type * as Schema from './SchemaBuildtime.js'
+
+export interface Index extends Utilities.SchemaIndexBase {
+  name: Data.Name
+  RootTypesPresent: ['Mutation', 'Query']
+  RootUnion: Schema.Root.Mutation | Schema.Root.Query
+  Root: {
+    Query: Schema.Root.Query
+    Mutation: Schema.Root.Mutation
+    Subscription: null
+  }
+  allTypes: {
+    Mutation: Schema.Root.Mutation
+    Query: Schema.Root.Query
+    ABCEnum: Schema.Enum.ABCEnum
+    Case: Schema.Enum.Case
+    Bar: Schema.Object.Bar
+    DateObject1: Schema.Object.DateObject1
+    DateObject2: Schema.Object.DateObject2
+    ErrorOne: Schema.Object.ErrorOne
+    ErrorTwo: Schema.Object.ErrorTwo
+    Foo: Schema.Object.Foo
+    Object1: Schema.Object.Object1
+    Object1ImplementingInterface: Schema.Object.Object1ImplementingInterface
+    Object2ImplementingInterface: Schema.Object.Object2ImplementingInterface
+    ObjectNested: Schema.Object.ObjectNested
+    ObjectUnion: Schema.Object.ObjectUnion
+    lowerCaseObject: Schema.Object.lowerCaseObject
+    lowerCaseObject2: Schema.Object.lowerCaseObject2
+    DateUnion: Schema.Union.DateUnion
+    FooBarUnion: Schema.Union.FooBarUnion
+    Result: Schema.Union.Result
+    lowerCaseUnion: Schema.Union.lowerCaseUnion
+    DateInterface1: Schema.Interface.DateInterface1
+    Error: Schema.Interface.Error
+    Interface: Schema.Interface.Interface
+  }
+  objects: {
+    Bar: Schema.Object.Bar
+    DateObject1: Schema.Object.DateObject1
+    DateObject2: Schema.Object.DateObject2
+    ErrorOne: Schema.Object.ErrorOne
+    ErrorTwo: Schema.Object.ErrorTwo
+    Foo: Schema.Object.Foo
+    Object1: Schema.Object.Object1
+    Object1ImplementingInterface: Schema.Object.Object1ImplementingInterface
+    Object2ImplementingInterface: Schema.Object.Object2ImplementingInterface
+    ObjectNested: Schema.Object.ObjectNested
+    ObjectUnion: Schema.Object.ObjectUnion
+    lowerCaseObject: Schema.Object.lowerCaseObject
+    lowerCaseObject2: Schema.Object.lowerCaseObject2
+  }
+  unions: {
+    DateUnion: Schema.Union.DateUnion
+    FooBarUnion: Schema.Union.FooBarUnion
+    Result: Schema.Union.Result
+    lowerCaseUnion: Schema.Union.lowerCaseUnion
+  }
+  interfaces: {
+    DateInterface1: Schema.Interface.DateInterface1
+    Error: Schema.Interface.Error
+    Interface: Schema.Interface.Interface
+  }
+  customScalars: Utilities.SchemaIndexBase['customScalars']
+  extensions: Utilities.GlobalRegistry.TypeExtensions
+}
 "
 `;
 
@@ -1282,7 +1358,7 @@ import * as $Scalar from './Scalar.js'
 //
 //
 // ==================================================================================================
-//                                         GraphQLScalarType
+//                                     GraphQLScalarTypeStandard
 // ==================================================================================================
 //
 //
@@ -1291,15 +1367,15 @@ import * as $Scalar from './Scalar.js'
 //
 //
 
-const Int = $Scalar.Int
-
-const String = $Scalar.String
-
-const ID = $Scalar.ID
-
 const Boolean = $Scalar.Boolean
 
 const Float = $Scalar.Float
+
+const ID = $Scalar.ID
+
+const Int = $Scalar.Int
+
+const String = $Scalar.String
 
 //
 //
@@ -1448,7 +1524,6 @@ const DateObject2: $Utilities.SchemaDrivenDataMap.OutputObject = {
 }
 
 const ErrorOne: $Utilities.SchemaDrivenDataMap.OutputObject = {
-  e: 1,
   f: {
     infoId: {},
     message: {},
@@ -1456,7 +1531,6 @@ const ErrorOne: $Utilities.SchemaDrivenDataMap.OutputObject = {
 }
 
 const ErrorTwo: $Utilities.SchemaDrivenDataMap.OutputObject = {
-  e: 1,
   f: {
     infoInt: {},
     message: {},
@@ -1794,7 +1868,6 @@ const Query: $Utilities.SchemaDrivenDataMap.OutputObject = {
           it: [1],
         },
       },
-      r: 1,
       // nt: Result, <-- Assigned later to avoid potential circular dependency.
     },
     resultNonNull: {
@@ -1804,7 +1877,6 @@ const Query: $Utilities.SchemaDrivenDataMap.OutputObject = {
           it: [0],
         },
       },
-      r: 1,
       // nt: Result, <-- Assigned later to avoid potential circular dependency.
     },
     string: {},
@@ -1921,31 +1993,31 @@ const Query: $Utilities.SchemaDrivenDataMap.OutputObject = {
 //
 //
 
-InputObjectCircular.f!['circular']!.nt = InputObjectCircular
-InputObjectNested.f!['InputObject']!.nt = InputObject
-InputObjectNestedNonNull.f!['InputObject']!.nt = InputObject
-ObjectNested.f['object']!.nt = Object1
-ObjectUnion.f['fooBarUnion']!.nt = FooBarUnion
-Query.f['dateInterface1']!.nt = DateInterface1
-Query.f['dateObject1']!.nt = DateObject1
-Query.f['dateUnion']!.nt = DateUnion
-Query.f['interface']!.nt = Interface
-Query.f['interfaceNonNull']!.nt = Interface
-Query.f['interfaceWithArgs']!.nt = Interface
-Query.f['lowerCaseUnion']!.nt = lowerCaseUnion
-Query.f['object']!.nt = Object1
-Query.f['objectList']!.nt = Object1
-Query.f['objectListNonNull']!.nt = Object1
-Query.f['objectNested']!.nt = ObjectNested
-Query.f['objectNonNull']!.nt = Object1
-Query.f['objectWithArgs']!.nt = Object1
-Query.f['result']!.nt = Result
-Query.f['resultNonNull']!.nt = Result
-Query.f['unionFooBar']!.nt = FooBarUnion
-Query.f['unionFooBarNonNull']!.nt = FooBarUnion
-Query.f['unionFooBarWithArgs']!.nt = FooBarUnion
-Query.f['unionObject']!.nt = ObjectUnion
-Query.f['unionObjectNonNull']!.nt = ObjectUnion
+InputObjectCircular.f![\`circular\`]!.nt = InputObjectCircular
+InputObjectNested.f![\`InputObject\`]!.nt = InputObject
+InputObjectNestedNonNull.f![\`InputObject\`]!.nt = InputObject
+ObjectNested.f[\`object\`]!.nt = Object1
+ObjectUnion.f[\`fooBarUnion\`]!.nt = FooBarUnion
+Query.f[\`dateInterface1\`]!.nt = DateInterface1
+Query.f[\`dateObject1\`]!.nt = DateObject1
+Query.f[\`dateUnion\`]!.nt = DateUnion
+Query.f[\`interface\`]!.nt = Interface
+Query.f[\`interfaceNonNull\`]!.nt = Interface
+Query.f[\`interfaceWithArgs\`]!.nt = Interface
+Query.f[\`lowerCaseUnion\`]!.nt = lowerCaseUnion
+Query.f[\`object\`]!.nt = Object1
+Query.f[\`objectList\`]!.nt = Object1
+Query.f[\`objectListNonNull\`]!.nt = Object1
+Query.f[\`objectNested\`]!.nt = ObjectNested
+Query.f[\`objectNonNull\`]!.nt = Object1
+Query.f[\`objectWithArgs\`]!.nt = Object1
+Query.f[\`result\`]!.nt = Result
+Query.f[\`resultNonNull\`]!.nt = Result
+Query.f[\`unionFooBar\`]!.nt = FooBarUnion
+Query.f[\`unionFooBarNonNull\`]!.nt = FooBarUnion
+Query.f[\`unionFooBarWithArgs\`]!.nt = FooBarUnion
+Query.f[\`unionObject\`]!.nt = ObjectUnion
+Query.f[\`unionObjectNonNull\`]!.nt = ObjectUnion
 
 //
 //
@@ -1970,11 +2042,11 @@ const $schemaDrivenDataMap: $Utilities.SchemaDrivenDataMap = {
   },
   directives: {},
   types: {
-    Int,
-    String,
-    ID,
     Boolean,
     Float,
+    ID,
+    Int,
+    String,
     Date,
     ABCEnum,
     Case,
@@ -2011,101 +2083,10 @@ export { $schemaDrivenDataMap as schemaDrivenDataMap }
 "
 `;
 
-exports[`kitchen-sink generated modules > modules/SchemaIndex.ts 1`] = `
-"/* eslint-disable */
-import type * as Utilities from '../../../../../../src/entrypoints/utilities-for-generated.js'
-import type * as Data from './Data.js'
-import type * as MethodsRoot from './MethodsRoot.js'
-import type * as Schema from './SchemaBuildtime.js'
-
-export interface Index {
-  name: Data.Name
-  RootTypesPresent: ['Mutation', 'Query']
-  RootUnion: Schema.Root.Mutation | Schema.Root.Query
-  Root: {
-    Query: Schema.Root.Query
-    Mutation: Schema.Root.Mutation
-    Subscription: null
-  }
-  allTypes: {
-    Mutation: Schema.Root.Mutation
-    Query: Schema.Root.Query
-    ABCEnum: Schema.Enum.ABCEnum
-    Case: Schema.Enum.Case
-    Bar: Schema.Object.Bar
-    DateObject1: Schema.Object.DateObject1
-    DateObject2: Schema.Object.DateObject2
-    ErrorOne: Schema.Object.ErrorOne
-    ErrorTwo: Schema.Object.ErrorTwo
-    Foo: Schema.Object.Foo
-    Object1: Schema.Object.Object1
-    Object1ImplementingInterface: Schema.Object.Object1ImplementingInterface
-    Object2ImplementingInterface: Schema.Object.Object2ImplementingInterface
-    ObjectNested: Schema.Object.ObjectNested
-    ObjectUnion: Schema.Object.ObjectUnion
-    lowerCaseObject: Schema.Object.lowerCaseObject
-    lowerCaseObject2: Schema.Object.lowerCaseObject2
-    DateUnion: Schema.Union.DateUnion
-    FooBarUnion: Schema.Union.FooBarUnion
-    Result: Schema.Union.Result
-    lowerCaseUnion: Schema.Union.lowerCaseUnion
-    DateInterface1: Schema.Interface.DateInterface1
-    Error: Schema.Interface.Error
-    Interface: Schema.Interface.Interface
-  }
-  objects: {
-    Bar: Schema.Object.Bar
-    DateObject1: Schema.Object.DateObject1
-    DateObject2: Schema.Object.DateObject2
-    ErrorOne: Schema.Object.ErrorOne
-    ErrorTwo: Schema.Object.ErrorTwo
-    Foo: Schema.Object.Foo
-    Object1: Schema.Object.Object1
-    Object1ImplementingInterface: Schema.Object.Object1ImplementingInterface
-    Object2ImplementingInterface: Schema.Object.Object2ImplementingInterface
-    ObjectNested: Schema.Object.ObjectNested
-    ObjectUnion: Schema.Object.ObjectUnion
-    lowerCaseObject: Schema.Object.lowerCaseObject
-    lowerCaseObject2: Schema.Object.lowerCaseObject2
-  }
-  unions: {
-    DateUnion: Schema.Union.DateUnion
-    FooBarUnion: Schema.Union.FooBarUnion
-    Result: Schema.Union.Result
-    lowerCaseUnion: Schema.Union.lowerCaseUnion
-  }
-  interfaces: {
-    DateInterface1: Schema.Interface.DateInterface1
-    Error: Schema.Interface.Error
-    Interface: Schema.Interface.Interface
-  }
-  customScalars: Utilities.SchemaIndexBase['customScalars']
-  error: {
-    objects: {
-      ErrorOne: Schema.Object.ErrorOne
-      ErrorTwo: Schema.Object.ErrorTwo
-    }
-    objectsTypename: {
-      ErrorOne: { __typename: 'ErrorOne' }
-      ErrorTwo: { __typename: 'ErrorTwo' }
-    }
-    rootResultFields: {
-      Subscription: {}
-      Mutation: {}
-      Query: {
-        result: 'result'
-        resultNonNull: 'resultNonNull'
-      }
-    }
-  }
-}
-"
-`;
-
 exports[`kitchen-sink generated modules > modules/Select.ts 1`] = `
 "import type { InferResult } from '../../../../../../src/entrypoints/schema.js'
 import * as Data from './Data.js'
-import type { Index } from './SchemaIndex.js'
+import type { Index } from './Schema.js'
 import type * as SelectionSets from './SelectionSets.js'
 
 //
