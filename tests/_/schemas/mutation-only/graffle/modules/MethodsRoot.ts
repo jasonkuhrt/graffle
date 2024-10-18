@@ -1,7 +1,7 @@
 import { type Simplify } from 'type-fest'
 import type { InferResult } from '../../../../../../src/entrypoints/schema.js'
 import type * as Utils from '../../../../../../src/entrypoints/utilities-for-generated.js'
-import type { Index } from './Schema.js'
+import type { Schema } from './Schema.js'
 import type * as SelectionSet from './SelectionSets.js'
 
 export interface MutationMethods<$Config extends Utils.Config> {
@@ -10,7 +10,7 @@ export interface MutationMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutput<
         $Config,
-        InferResult.Mutation<$SelectionSet, Index>
+        InferResult.Mutation<$SelectionSet, Schema>
       >
     >
   >
@@ -28,7 +28,7 @@ export interface MutationMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Mutation<{ id: $SelectionSet }, Index>,
+        InferResult.Mutation<{ id: $SelectionSet }, Schema>,
         'id'
       >
     >
@@ -37,7 +37,7 @@ export interface MutationMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Mutation<{ idNonNull: $SelectionSet }, Index>,
+        InferResult.Mutation<{ idNonNull: $SelectionSet }, Schema>,
         'idNonNull'
       >
     >

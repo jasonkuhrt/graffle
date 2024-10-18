@@ -613,3 +613,7 @@ export const isAnyFunction = (value: unknown): value is (...args: any[]) => any 
 export const isDate = (value: unknown): value is Date => {
   return value instanceof Date
 }
+
+export const isObjectEmpty = (object: Record<string, unknown>) => {
+  return Object.keys(object).length === 0
+}

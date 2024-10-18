@@ -43,14 +43,14 @@ import type * as MethodsDocument from './MethodsDocument.js'
 import type * as MethodsRoot from './MethodsRoot.js'
 import type * as MethodsSelect from './MethodsSelect.js'
 import type * as Scalar from './Scalar.js'
-import type { Index } from './Schema.js'
+import type { Schema } from './Schema.js'
 
 declare global {
   export namespace GraffleGlobal {
     export interface Schemas {
       default: {
         name: Data.Name
-        index: Index
+        index: Schema
         interfaces: {
           MethodsSelect: MethodsSelect.$MethodsSelect
           Document: MethodsDocument.BuilderMethodsDocumentFn
@@ -69,13 +69,13 @@ declare global {
 
 exports[`kitchen-sink generated modules > modules/MethodsDocument.ts 1`] = `
 "import type * as Utilities from '../../../../../../src/entrypoints/utilities-for-generated.js'
-import type { Index } from './Schema.js'
+import type { Schema } from './Schema.js'
 import type * as SelectionSets from './SelectionSets.js'
 
 export interface Document<$Config extends Utilities.Config> {
   <$Document>(document: Utilities.ExactNonEmpty<$Document, SelectionSets.$Document>): Utilities.DocumentRunner<
     $Config,
-    Index,
+    Schema,
     // @ts-expect-error We use Exact instead of constraint on this function. TypeScript does not see that as
     // Satisfying the constraint on the DocumentRunner type.
     $Document
@@ -93,7 +93,7 @@ exports[`kitchen-sink generated modules > modules/MethodsRoot.ts 1`] = `
 "import { type Simplify } from 'type-fest'
 import type { InferResult } from '../../../../../../src/entrypoints/schema.js'
 import type * as Utils from '../../../../../../src/entrypoints/utilities-for-generated.js'
-import type { Index } from './Schema.js'
+import type { Schema } from './Schema.js'
 import type * as SelectionSet from './SelectionSets.js'
 
 export interface MutationMethods<$Config extends Utils.Config> {
@@ -102,7 +102,7 @@ export interface MutationMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutput<
         $Config,
-        InferResult.Mutation<$SelectionSet, Index>
+        InferResult.Mutation<$SelectionSet, Schema>
       >
     >
   >
@@ -120,7 +120,7 @@ export interface MutationMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Mutation<{ id: $SelectionSet }, Index>,
+        InferResult.Mutation<{ id: $SelectionSet }, Schema>,
         'id'
       >
     >
@@ -129,7 +129,7 @@ export interface MutationMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Mutation<{ idNonNull: $SelectionSet }, Index>,
+        InferResult.Mutation<{ idNonNull: $SelectionSet }, Schema>,
         'idNonNull'
       >
     >
@@ -142,7 +142,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutput<
         $Config,
-        InferResult.Query<$SelectionSet, Index>
+        InferResult.Query<$SelectionSet, Schema>
       >
     >
   >
@@ -162,7 +162,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ InputObjectNested: $SelectionSet }, Index>,
+        InferResult.Query<{ InputObjectNested: $SelectionSet }, Schema>,
         'InputObjectNested'
       >
     >
@@ -173,7 +173,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ InputObjectNestedNonNull: $SelectionSet }, Index>,
+        InferResult.Query<{ InputObjectNestedNonNull: $SelectionSet }, Schema>,
         'InputObjectNestedNonNull'
       >
     >
@@ -185,7 +185,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ abcEnum: $SelectionSet }, Index>,
+        InferResult.Query<{ abcEnum: $SelectionSet }, Schema>,
         'abcEnum'
       >
     >
@@ -196,7 +196,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ argInputObjectCircular: $SelectionSet }, Index>,
+        InferResult.Query<{ argInputObjectCircular: $SelectionSet }, Schema>,
         'argInputObjectCircular'
       >
     >
@@ -205,7 +205,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ date: $SelectionSet }, Index>,
+        InferResult.Query<{ date: $SelectionSet }, Schema>,
         'date'
       >
     >
@@ -214,7 +214,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ dateArg: $SelectionSet }, Index>,
+        InferResult.Query<{ dateArg: $SelectionSet }, Schema>,
         'dateArg'
       >
     >
@@ -225,7 +225,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ dateArgInputObject: $SelectionSet }, Index>,
+        InferResult.Query<{ dateArgInputObject: $SelectionSet }, Schema>,
         'dateArgInputObject'
       >
     >
@@ -234,7 +234,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ dateArgList: $SelectionSet }, Index>,
+        InferResult.Query<{ dateArgList: $SelectionSet }, Schema>,
         'dateArgList'
       >
     >
@@ -245,7 +245,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ dateArgNonNull: $SelectionSet }, Index>,
+        InferResult.Query<{ dateArgNonNull: $SelectionSet }, Schema>,
         'dateArgNonNull'
       >
     >
@@ -256,7 +256,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ dateArgNonNullList: $SelectionSet }, Index>,
+        InferResult.Query<{ dateArgNonNullList: $SelectionSet }, Schema>,
         'dateArgNonNullList'
       >
     >
@@ -267,7 +267,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ dateArgNonNullListNonNull: $SelectionSet }, Index>,
+        InferResult.Query<{ dateArgNonNullListNonNull: $SelectionSet }, Schema>,
         'dateArgNonNullListNonNull'
       >
     >
@@ -278,7 +278,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ dateInterface1: $SelectionSet }, Index>,
+        InferResult.Query<{ dateInterface1: $SelectionSet }, Schema>,
         'dateInterface1'
       >
     >
@@ -287,7 +287,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ dateList: $SelectionSet }, Index>,
+        InferResult.Query<{ dateList: $SelectionSet }, Schema>,
         'dateList'
       >
     >
@@ -296,7 +296,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ dateListList: $SelectionSet }, Index>,
+        InferResult.Query<{ dateListList: $SelectionSet }, Schema>,
         'dateListList'
       >
     >
@@ -307,7 +307,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ dateListNonNull: $SelectionSet }, Index>,
+        InferResult.Query<{ dateListNonNull: $SelectionSet }, Schema>,
         'dateListNonNull'
       >
     >
@@ -316,7 +316,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ dateNonNull: $SelectionSet }, Index>,
+        InferResult.Query<{ dateNonNull: $SelectionSet }, Schema>,
         'dateNonNull'
       >
     >
@@ -325,7 +325,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ dateObject1: $SelectionSet }, Index>,
+        InferResult.Query<{ dateObject1: $SelectionSet }, Schema>,
         'dateObject1'
       >
     >
@@ -334,7 +334,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ dateUnion: $SelectionSet }, Index>,
+        InferResult.Query<{ dateUnion: $SelectionSet }, Schema>,
         'dateUnion'
       >
     >
@@ -343,7 +343,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ error: $SelectionSet }, Index>,
+        InferResult.Query<{ error: $SelectionSet }, Schema>,
         'error'
       >
     >
@@ -352,7 +352,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ id: $SelectionSet }, Index>,
+        InferResult.Query<{ id: $SelectionSet }, Schema>,
         'id'
       >
     >
@@ -361,7 +361,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ idNonNull: $SelectionSet }, Index>,
+        InferResult.Query<{ idNonNull: $SelectionSet }, Schema>,
         'idNonNull'
       >
     >
@@ -370,7 +370,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ interface: $SelectionSet }, Index>,
+        InferResult.Query<{ interface: $SelectionSet }, Schema>,
         'interface'
       >
     >
@@ -381,7 +381,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ interfaceNonNull: $SelectionSet }, Index>,
+        InferResult.Query<{ interfaceNonNull: $SelectionSet }, Schema>,
         'interfaceNonNull'
       >
     >
@@ -392,7 +392,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ interfaceWithArgs: $SelectionSet }, Index>,
+        InferResult.Query<{ interfaceWithArgs: $SelectionSet }, Schema>,
         'interfaceWithArgs'
       >
     >
@@ -401,7 +401,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ listInt: $SelectionSet }, Index>,
+        InferResult.Query<{ listInt: $SelectionSet }, Schema>,
         'listInt'
       >
     >
@@ -412,7 +412,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ listIntNonNull: $SelectionSet }, Index>,
+        InferResult.Query<{ listIntNonNull: $SelectionSet }, Schema>,
         'listIntNonNull'
       >
     >
@@ -421,7 +421,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ listListInt: $SelectionSet }, Index>,
+        InferResult.Query<{ listListInt: $SelectionSet }, Schema>,
         'listListInt'
       >
     >
@@ -432,7 +432,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ listListIntNonNull: $SelectionSet }, Index>,
+        InferResult.Query<{ listListIntNonNull: $SelectionSet }, Schema>,
         'listListIntNonNull'
       >
     >
@@ -443,7 +443,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ lowerCaseUnion: $SelectionSet }, Index>,
+        InferResult.Query<{ lowerCaseUnion: $SelectionSet }, Schema>,
         'lowerCaseUnion'
       >
     >
@@ -452,7 +452,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ object: $SelectionSet }, Index>,
+        InferResult.Query<{ object: $SelectionSet }, Schema>,
         'object'
       >
     >
@@ -461,7 +461,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ objectList: $SelectionSet }, Index>,
+        InferResult.Query<{ objectList: $SelectionSet }, Schema>,
         'objectList'
       >
     >
@@ -472,7 +472,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ objectListNonNull: $SelectionSet }, Index>,
+        InferResult.Query<{ objectListNonNull: $SelectionSet }, Schema>,
         'objectListNonNull'
       >
     >
@@ -481,7 +481,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ objectNested: $SelectionSet }, Index>,
+        InferResult.Query<{ objectNested: $SelectionSet }, Schema>,
         'objectNested'
       >
     >
@@ -490,7 +490,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ objectNonNull: $SelectionSet }, Index>,
+        InferResult.Query<{ objectNonNull: $SelectionSet }, Schema>,
         'objectNonNull'
       >
     >
@@ -501,7 +501,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ objectWithArgs: $SelectionSet }, Index>,
+        InferResult.Query<{ objectWithArgs: $SelectionSet }, Schema>,
         'objectWithArgs'
       >
     >
@@ -510,7 +510,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ result: $SelectionSet }, Index>,
+        InferResult.Query<{ result: $SelectionSet }, Schema>,
         'result'
       >
     >
@@ -519,7 +519,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ resultNonNull: $SelectionSet }, Index>,
+        InferResult.Query<{ resultNonNull: $SelectionSet }, Schema>,
         'resultNonNull'
       >
     >
@@ -528,7 +528,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ string: $SelectionSet }, Index>,
+        InferResult.Query<{ string: $SelectionSet }, Schema>,
         'string'
       >
     >
@@ -539,7 +539,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ stringWithArgEnum: $SelectionSet }, Index>,
+        InferResult.Query<{ stringWithArgEnum: $SelectionSet }, Schema>,
         'stringWithArgEnum'
       >
     >
@@ -550,7 +550,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ stringWithArgInputObject: $SelectionSet }, Index>,
+        InferResult.Query<{ stringWithArgInputObject: $SelectionSet }, Schema>,
         'stringWithArgInputObject'
       >
     >
@@ -561,7 +561,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ stringWithArgInputObjectRequired: $SelectionSet }, Index>,
+        InferResult.Query<{ stringWithArgInputObjectRequired: $SelectionSet }, Schema>,
         'stringWithArgInputObjectRequired'
       >
     >
@@ -575,7 +575,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ stringWithArgs: $SelectionSet }, Index>,
+        InferResult.Query<{ stringWithArgs: $SelectionSet }, Schema>,
         'stringWithArgs'
       >
     >
@@ -586,7 +586,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ stringWithListArg: $SelectionSet }, Index>,
+        InferResult.Query<{ stringWithListArg: $SelectionSet }, Schema>,
         'stringWithListArg'
       >
     >
@@ -597,7 +597,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ stringWithListArgRequired: $SelectionSet }, Index>,
+        InferResult.Query<{ stringWithListArgRequired: $SelectionSet }, Schema>,
         'stringWithListArgRequired'
       >
     >
@@ -608,7 +608,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ stringWithRequiredArg: $SelectionSet }, Index>,
+        InferResult.Query<{ stringWithRequiredArg: $SelectionSet }, Schema>,
         'stringWithRequiredArg'
       >
     >
@@ -617,7 +617,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ unionFooBar: $SelectionSet }, Index>,
+        InferResult.Query<{ unionFooBar: $SelectionSet }, Schema>,
         'unionFooBar'
       >
     >
@@ -628,7 +628,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ unionFooBarNonNull: $SelectionSet }, Index>,
+        InferResult.Query<{ unionFooBarNonNull: $SelectionSet }, Schema>,
         'unionFooBarNonNull'
       >
     >
@@ -639,7 +639,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ unionFooBarWithArgs: $SelectionSet }, Index>,
+        InferResult.Query<{ unionFooBarWithArgs: $SelectionSet }, Schema>,
         'unionFooBarWithArgs'
       >
     >
@@ -648,7 +648,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ unionObject: $SelectionSet }, Index>,
+        InferResult.Query<{ unionObject: $SelectionSet }, Schema>,
         'unionObject'
       >
     >
@@ -659,7 +659,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ unionObjectNonNull: $SelectionSet }, Index>,
+        InferResult.Query<{ unionObjectNonNull: $SelectionSet }, Schema>,
         'unionObjectNonNull'
       >
     >
@@ -912,13 +912,471 @@ export * from '../../../../../../src/layers/1_Schema/Hybrid/types/Scalar/Scalar.
 `;
 
 exports[`kitchen-sink generated modules > modules/Schema.ts 1`] = `
-"/* eslint-disable */
+"import type * as $ from '../../../../../../src/entrypoints/schema.js'
+import type * as $Scalar from './Scalar.js'
+
+export namespace Schema {
+  //
+  //
+  //
+  //
+  //
+  //
+  // ==================================================================================================
+  //                                                Root
+  // ==================================================================================================
+  //
+  //
+  //
+  //
+  //
+  //
+
+  export namespace Root {
+    export type Mutation = $.Output.ObjectMutation<{
+      id: $.Field<'id', $.Output.Nullable<$Scalar.ID>, null>
+      idNonNull: $.Field<'idNonNull', $Scalar.ID, null>
+    }>
+
+    export type Query = $.Output.ObjectQuery<{
+      InputObjectNested: $.Field<
+        'InputObjectNested',
+        $.Output.Nullable<$Scalar.ID>,
+        $.Args<{
+          input: $.Input.Field<$.Input.Nullable<InputObject.InputObjectNested>>
+        }, true>
+      >
+      InputObjectNestedNonNull: $.Field<
+        'InputObjectNestedNonNull',
+        $.Output.Nullable<$Scalar.ID>,
+        $.Args<{
+          input: $.Input.Field<InputObject.InputObjectNestedNonNull>
+        }, false>
+      >
+      /**
+       * Query enum field documentation.
+       */
+      abcEnum: $.Field<'abcEnum', $.Output.Nullable<Enum.ABCEnum>, null>
+      argInputObjectCircular: $.Field<
+        'argInputObjectCircular',
+        $.Output.Nullable<$Scalar.String>,
+        $.Args<{
+          input: $.Input.Field<$.Input.Nullable<InputObject.InputObjectCircular>>
+        }, true>
+      >
+      date: $.Field<'date', $.Output.Nullable<$Scalar.Date>, null>
+      dateArg: $.Field<
+        'dateArg',
+        $.Output.Nullable<$Scalar.Date>,
+        $.Args<{
+          date: $.Input.Field<$.Input.Nullable<$Scalar.Date>>
+        }, true>
+      >
+      dateArgInputObject: $.Field<
+        'dateArgInputObject',
+        $.Output.Nullable<$Scalar.Date>,
+        $.Args<{
+          input: $.Input.Field<$.Input.Nullable<InputObject.InputObject>>
+        }, true>
+      >
+      dateArgList: $.Field<
+        'dateArgList',
+        $.Output.Nullable<$Scalar.Date>,
+        $.Args<{
+          date: $.Input.Field<$.Input.Nullable<$.Input.List<$Scalar.Date>>>
+        }, true>
+      >
+      dateArgNonNull: $.Field<
+        'dateArgNonNull',
+        $.Output.Nullable<$Scalar.Date>,
+        $.Args<{
+          date: $.Input.Field<$Scalar.Date>
+        }, false>
+      >
+      dateArgNonNullList: $.Field<
+        'dateArgNonNullList',
+        $.Output.Nullable<$Scalar.Date>,
+        $.Args<{
+          date: $.Input.Field<$.Input.List<$.Input.Nullable<$Scalar.Date>>>
+        }, false>
+      >
+      dateArgNonNullListNonNull: $.Field<
+        'dateArgNonNullListNonNull',
+        $.Output.Nullable<$Scalar.Date>,
+        $.Args<{
+          date: $.Input.Field<$.Input.List<$Scalar.Date>>
+        }, false>
+      >
+      dateInterface1: $.Field<'dateInterface1', $.Output.Nullable<Interface.DateInterface1>, null>
+      dateList: $.Field<'dateList', $.Output.Nullable<$.Output.List<$Scalar.Date>>, null>
+      dateListList: $.Field<'dateListList', $.Output.Nullable<$.Output.List<$.Output.List<$Scalar.Date>>>, null>
+      dateListNonNull: $.Field<'dateListNonNull', $.Output.List<$Scalar.Date>, null>
+      dateNonNull: $.Field<'dateNonNull', $Scalar.Date, null>
+      dateObject1: $.Field<'dateObject1', $.Output.Nullable<Object.DateObject1>, null>
+      dateUnion: $.Field<'dateUnion', $.Output.Nullable<Union.DateUnion>, null>
+      error: $.Field<
+        'error',
+        $.Output.Nullable<$Scalar.String>,
+        $.Args<{
+          case: $.Input.Field<$.Input.Nullable<$Scalar.String>>
+        }, true>
+      >
+      id: $.Field<'id', $.Output.Nullable<$Scalar.ID>, null>
+      idNonNull: $.Field<'idNonNull', $Scalar.ID, null>
+      interface: $.Field<'interface', $.Output.Nullable<Interface.Interface>, null>
+      interfaceNonNull: $.Field<'interfaceNonNull', Interface.Interface, null>
+      interfaceWithArgs: $.Field<
+        'interfaceWithArgs',
+        $.Output.Nullable<Interface.Interface>,
+        $.Args<{
+          id: $.Input.Field<$Scalar.ID>
+        }, false>
+      >
+      listInt: $.Field<'listInt', $.Output.Nullable<$.Output.List<$.Output.Nullable<$Scalar.Int>>>, null>
+      listIntNonNull: $.Field<'listIntNonNull', $.Output.List<$Scalar.Int>, null>
+      listListInt: $.Field<
+        'listListInt',
+        $.Output.Nullable<$.Output.List<$.Output.Nullable<$.Output.List<$.Output.Nullable<$Scalar.Int>>>>>,
+        null
+      >
+      listListIntNonNull: $.Field<'listListIntNonNull', $.Output.List<$.Output.List<$Scalar.Int>>, null>
+      lowerCaseUnion: $.Field<'lowerCaseUnion', $.Output.Nullable<Union.lowerCaseUnion>, null>
+      object: $.Field<'object', $.Output.Nullable<Object.Object1>, null>
+      objectList: $.Field<'objectList', $.Output.Nullable<$.Output.List<Object.Object1>>, null>
+      objectListNonNull: $.Field<'objectListNonNull', $.Output.List<Object.Object1>, null>
+      objectNested: $.Field<'objectNested', $.Output.Nullable<Object.ObjectNested>, null>
+      objectNonNull: $.Field<'objectNonNull', Object.Object1, null>
+      objectWithArgs: $.Field<
+        'objectWithArgs',
+        $.Output.Nullable<Object.Object1>,
+        $.Args<{
+          boolean: $.Input.Field<$.Input.Nullable<$Scalar.Boolean>>
+          float: $.Input.Field<$.Input.Nullable<$Scalar.Float>>
+          id: $.Input.Field<$.Input.Nullable<$Scalar.ID>>
+          int: $.Input.Field<$.Input.Nullable<$Scalar.Int>>
+          string: $.Input.Field<$.Input.Nullable<$Scalar.String>>
+        }, true>
+      >
+      result: $.Field<
+        'result',
+        $.Output.Nullable<Union.Result>,
+        $.Args<{
+          case: $.Input.Field<Enum.Case>
+        }, false>
+      >
+      resultNonNull: $.Field<
+        'resultNonNull',
+        Union.Result,
+        $.Args<{
+          case: $.Input.Field<$.Input.Nullable<Enum.Case>>
+        }, true>
+      >
+      string: $.Field<'string', $.Output.Nullable<$Scalar.String>, null>
+      stringWithArgEnum: $.Field<
+        'stringWithArgEnum',
+        $.Output.Nullable<$Scalar.String>,
+        $.Args<{
+          ABCEnum: $.Input.Field<$.Input.Nullable<Enum.ABCEnum>>
+        }, true>
+      >
+      stringWithArgInputObject: $.Field<
+        'stringWithArgInputObject',
+        $.Output.Nullable<$Scalar.String>,
+        $.Args<{
+          input: $.Input.Field<$.Input.Nullable<InputObject.InputObject>>
+        }, true>
+      >
+      stringWithArgInputObjectRequired: $.Field<
+        'stringWithArgInputObjectRequired',
+        $.Output.Nullable<$Scalar.String>,
+        $.Args<{
+          input: $.Input.Field<InputObject.InputObject>
+        }, false>
+      >
+      /**
+       * The given arguments are reflected back as a JSON string.
+       */
+      stringWithArgs: $.Field<
+        'stringWithArgs',
+        $.Output.Nullable<$Scalar.String>,
+        $.Args<{
+          boolean: $.Input.Field<$.Input.Nullable<$Scalar.Boolean>>
+          float: $.Input.Field<$.Input.Nullable<$Scalar.Float>>
+          id: $.Input.Field<$.Input.Nullable<$Scalar.ID>>
+          int: $.Input.Field<$.Input.Nullable<$Scalar.Int>>
+          string: $.Input.Field<$.Input.Nullable<$Scalar.String>>
+        }, true>
+      >
+      stringWithListArg: $.Field<
+        'stringWithListArg',
+        $.Output.Nullable<$Scalar.String>,
+        $.Args<{
+          ints: $.Input.Field<$.Input.Nullable<$.Input.List<$.Input.Nullable<$Scalar.Int>>>>
+        }, true>
+      >
+      stringWithListArgRequired: $.Field<
+        'stringWithListArgRequired',
+        $.Output.Nullable<$Scalar.String>,
+        $.Args<{
+          ints: $.Input.Field<$.Input.List<$Scalar.Int>>
+        }, false>
+      >
+      stringWithRequiredArg: $.Field<
+        'stringWithRequiredArg',
+        $.Output.Nullable<$Scalar.String>,
+        $.Args<{
+          string: $.Input.Field<$Scalar.String>
+        }, false>
+      >
+      unionFooBar: $.Field<'unionFooBar', $.Output.Nullable<Union.FooBarUnion>, null>
+      unionFooBarNonNull: $.Field<'unionFooBarNonNull', Union.FooBarUnion, null>
+      unionFooBarWithArgs: $.Field<
+        'unionFooBarWithArgs',
+        $.Output.Nullable<Union.FooBarUnion>,
+        $.Args<{
+          id: $.Input.Field<$.Input.Nullable<$Scalar.ID>>
+        }, true>
+      >
+      unionObject: $.Field<'unionObject', $.Output.Nullable<Object.ObjectUnion>, null>
+      unionObjectNonNull: $.Field<'unionObjectNonNull', Object.ObjectUnion, null>
+    }>
+  }
+
+  //
+  //
+  //
+  //
+  //
+  //
+  // ==================================================================================================
+  //                                                Enum
+  // ==================================================================================================
+  //
+  //
+  //
+  //
+  //
+  //
+
+  export namespace Enum {
+    /**
+     * Enum documentation.
+     *
+     * Members
+     * "A" - (DEPRECATED: Enum value A is deprecated.)
+     * "B" - Enum B member documentation.
+     * "C" - (DEPRECATED: Enum value C is deprecated.)
+     */
+    export type ABCEnum = $.Enum<'ABCEnum', ['A', 'B', 'C']>
+
+    export type Case = $.Enum<'Case', ['ErrorOne', 'ErrorTwo', 'Object1']>
+  }
+
+  //
+  //
+  //
+  //
+  //
+  //
+  // ==================================================================================================
+  //                                            InputObject
+  // ==================================================================================================
+  //
+  //
+  //
+  //
+  //
+  //
+
+  export namespace InputObject {
+    export type InputObject = $.InputObject<'InputObject', {
+      date: $.Input.Field<$.Input.Nullable<$Scalar.Date>>
+      dateRequired: $.Input.Field<$Scalar.Date>
+      id: $.Input.Field<$.Input.Nullable<$Scalar.ID>>
+      idRequired: $.Input.Field<$Scalar.ID>
+    }, true>
+
+    export type InputObjectCircular = $.InputObject<'InputObjectCircular', {
+      circular: $.Input.Field<$.Input.Nullable<InputObject.InputObjectCircular>>
+      date: $.Input.Field<$.Input.Nullable<$Scalar.Date>>
+    }, true>
+
+    export type InputObjectNested = $.InputObject<'InputObjectNested', {
+      InputObject: $.Input.Field<$.Input.Nullable<InputObject.InputObject>>
+    }, true>
+
+    export type InputObjectNestedNonNull = $.InputObject<'InputObjectNestedNonNull', {
+      InputObject: $.Input.Field<InputObject.InputObject>
+    }, false>
+  }
+
+  //
+  //
+  //
+  //
+  //
+  //
+  // ==================================================================================================
+  //                                             Interface
+  // ==================================================================================================
+  //
+  //
+  //
+  //
+  //
+  //
+
+  export namespace Interface {
+    export type DateInterface1 = $.Interface<'DateInterface1', {
+      date1: $.Field<'date1', $.Output.Nullable<$Scalar.Date>, null>
+    }, [Object.DateObject1]>
+
+    export type Error = $.Interface<'Error', {
+      message: $.Field<'message', $Scalar.String, null>
+    }, [Object.ErrorOne, Object.ErrorTwo]>
+
+    export type Interface = $.Interface<'Interface', {
+      id: $.Field<'id', $.Output.Nullable<$Scalar.ID>, null>
+    }, [Object.Object1ImplementingInterface, Object.Object2ImplementingInterface]>
+  }
+
+  //
+  //
+  //
+  //
+  //
+  //
+  // ==================================================================================================
+  //                                               Object
+  // ==================================================================================================
+  //
+  //
+  //
+  //
+  //
+  //
+
+  export namespace Object {
+    export type Bar = $.Object$2<'Bar', {
+      int: $.Field<'int', $.Output.Nullable<$Scalar.Int>, null>
+    }>
+
+    export type DateObject1 = $.Object$2<'DateObject1', {
+      date1: $.Field<'date1', $.Output.Nullable<$Scalar.Date>, null>
+    }>
+
+    export type DateObject2 = $.Object$2<'DateObject2', {
+      date2: $.Field<'date2', $.Output.Nullable<$Scalar.Date>, null>
+    }>
+
+    export type ErrorOne = $.Object$2<'ErrorOne', {
+      infoId: $.Field<'infoId', $.Output.Nullable<$Scalar.ID>, null>
+      message: $.Field<'message', $Scalar.String, null>
+    }>
+
+    export type ErrorTwo = $.Object$2<'ErrorTwo', {
+      infoInt: $.Field<'infoInt', $.Output.Nullable<$Scalar.Int>, null>
+      message: $.Field<'message', $Scalar.String, null>
+    }>
+
+    /**
+     * Object documentation.
+     */
+    export type Foo = $.Object$2<'Foo', {
+      /**
+       * Field documentation.
+       *
+       * @deprecated Field a is deprecated.
+       */
+      id: $.Field<'id', $.Output.Nullable<$Scalar.ID>, null>
+    }>
+
+    export type Object1 = $.Object$2<'Object1', {
+      boolean: $.Field<'boolean', $.Output.Nullable<$Scalar.Boolean>, null>
+      float: $.Field<'float', $.Output.Nullable<$Scalar.Float>, null>
+      id: $.Field<'id', $.Output.Nullable<$Scalar.ID>, null>
+      int: $.Field<'int', $.Output.Nullable<$Scalar.Int>, null>
+      string: $.Field<'string', $.Output.Nullable<$Scalar.String>, null>
+    }>
+
+    export type Object1ImplementingInterface = $.Object$2<'Object1ImplementingInterface', {
+      id: $.Field<'id', $.Output.Nullable<$Scalar.ID>, null>
+      int: $.Field<'int', $.Output.Nullable<$Scalar.Int>, null>
+    }>
+
+    export type Object2ImplementingInterface = $.Object$2<'Object2ImplementingInterface', {
+      boolean: $.Field<'boolean', $.Output.Nullable<$Scalar.Boolean>, null>
+      id: $.Field<'id', $.Output.Nullable<$Scalar.ID>, null>
+    }>
+
+    export type ObjectNested = $.Object$2<'ObjectNested', {
+      id: $.Field<'id', $.Output.Nullable<$Scalar.ID>, null>
+      object: $.Field<'object', $.Output.Nullable<Object.Object1>, null>
+    }>
+
+    export type ObjectUnion = $.Object$2<'ObjectUnion', {
+      fooBarUnion: $.Field<'fooBarUnion', $.Output.Nullable<Union.FooBarUnion>, null>
+    }>
+
+    export type lowerCaseObject = $.Object$2<'lowerCaseObject', {
+      id: $.Field<'id', $.Output.Nullable<$Scalar.ID>, null>
+    }>
+
+    export type lowerCaseObject2 = $.Object$2<'lowerCaseObject2', {
+      int: $.Field<'int', $.Output.Nullable<$Scalar.Int>, null>
+    }>
+  }
+
+  //
+  //
+  //
+  //
+  //
+  //
+  // ==================================================================================================
+  //                                               Union
+  // ==================================================================================================
+  //
+  //
+  //
+  //
+  //
+  //
+
+  export namespace Union {
+    export type DateUnion = $.Union<'DateUnion', [Object.DateObject1, Object.DateObject2]>
+
+    /**
+     * Union documentation.
+     */
+    export type FooBarUnion = $.Union<'FooBarUnion', [Object.Bar, Object.Foo]>
+
+    export type Result = $.Union<'Result', [Object.ErrorOne, Object.ErrorTwo, Object.Object1]>
+
+    export type lowerCaseUnion = $.Union<'lowerCaseUnion', [Object.lowerCaseObject, Object.lowerCaseObject2]>
+  }
+}
+//
+//
+//
+//
+//
+//
+// ==================================================================================================
+//                                               Schema
+// ==================================================================================================
+//
+//
+//
+//
+//
+//
+
 import type * as Utilities from '../../../../../../src/entrypoints/utilities-for-generated.js'
 import type * as Data from './Data.js'
 import type * as MethodsRoot from './MethodsRoot.js'
-import type * as Schema from './SchemaBuildtime.js'
 
-export interface Index extends Utilities.SchemaIndexBase {
+export interface Schema extends Utilities.SchemaIndexBase {
   name: Data.Name
   RootTypesPresent: ['Mutation', 'Query']
   RootUnion: Schema.Root.Mutation | Schema.Root.Query
@@ -981,369 +1439,6 @@ export interface Index extends Utilities.SchemaIndexBase {
   }
   customScalars: Utilities.SchemaIndexBase['customScalars']
   extensions: Utilities.GlobalRegistry.TypeExtensions
-}
-"
-`;
-
-exports[`kitchen-sink generated modules > modules/SchemaBuildtime.ts 1`] = `
-"import type * as $ from '../../../../../../src/entrypoints/schema.js'
-import type * as $Scalar from './Scalar.js'
-
-// ------------------------------------------------------------ //
-//                             Root                             //
-// ------------------------------------------------------------ //
-export namespace Root {
-  export type Mutation = $.Output.ObjectMutation<{
-    id: $.Field<'id', $.Output.Nullable<$Scalar.ID>, null>
-    idNonNull: $.Field<'idNonNull', $Scalar.ID, null>
-  }>
-
-  export type Query = $.Output.ObjectQuery<{
-    InputObjectNested: $.Field<
-      'InputObjectNested',
-      $.Output.Nullable<$Scalar.ID>,
-      $.Args<{
-        input: $.Input.Field<$.Input.Nullable<InputObject.InputObjectNested>>
-      }, true>
-    >
-    InputObjectNestedNonNull: $.Field<
-      'InputObjectNestedNonNull',
-      $.Output.Nullable<$Scalar.ID>,
-      $.Args<{
-        input: $.Input.Field<InputObject.InputObjectNestedNonNull>
-      }, false>
-    >
-    /**
-     * Query enum field documentation.
-     */
-    abcEnum: $.Field<'abcEnum', $.Output.Nullable<Enum.ABCEnum>, null>
-    argInputObjectCircular: $.Field<
-      'argInputObjectCircular',
-      $.Output.Nullable<$Scalar.String>,
-      $.Args<{
-        input: $.Input.Field<$.Input.Nullable<InputObject.InputObjectCircular>>
-      }, true>
-    >
-    date: $.Field<'date', $.Output.Nullable<$Scalar.Date>, null>
-    dateArg: $.Field<
-      'dateArg',
-      $.Output.Nullable<$Scalar.Date>,
-      $.Args<{
-        date: $.Input.Field<$.Input.Nullable<$Scalar.Date>>
-      }, true>
-    >
-    dateArgInputObject: $.Field<
-      'dateArgInputObject',
-      $.Output.Nullable<$Scalar.Date>,
-      $.Args<{
-        input: $.Input.Field<$.Input.Nullable<InputObject.InputObject>>
-      }, true>
-    >
-    dateArgList: $.Field<
-      'dateArgList',
-      $.Output.Nullable<$Scalar.Date>,
-      $.Args<{
-        date: $.Input.Field<$.Input.Nullable<$.Input.List<$Scalar.Date>>>
-      }, true>
-    >
-    dateArgNonNull: $.Field<
-      'dateArgNonNull',
-      $.Output.Nullable<$Scalar.Date>,
-      $.Args<{
-        date: $.Input.Field<$Scalar.Date>
-      }, false>
-    >
-    dateArgNonNullList: $.Field<
-      'dateArgNonNullList',
-      $.Output.Nullable<$Scalar.Date>,
-      $.Args<{
-        date: $.Input.Field<$.Input.List<$.Input.Nullable<$Scalar.Date>>>
-      }, false>
-    >
-    dateArgNonNullListNonNull: $.Field<
-      'dateArgNonNullListNonNull',
-      $.Output.Nullable<$Scalar.Date>,
-      $.Args<{
-        date: $.Input.Field<$.Input.List<$Scalar.Date>>
-      }, false>
-    >
-    dateInterface1: $.Field<'dateInterface1', $.Output.Nullable<Interface.DateInterface1>, null>
-    dateList: $.Field<'dateList', $.Output.Nullable<$.Output.List<$Scalar.Date>>, null>
-    dateListList: $.Field<'dateListList', $.Output.Nullable<$.Output.List<$.Output.List<$Scalar.Date>>>, null>
-    dateListNonNull: $.Field<'dateListNonNull', $.Output.List<$Scalar.Date>, null>
-    dateNonNull: $.Field<'dateNonNull', $Scalar.Date, null>
-    dateObject1: $.Field<'dateObject1', $.Output.Nullable<Object.DateObject1>, null>
-    dateUnion: $.Field<'dateUnion', $.Output.Nullable<Union.DateUnion>, null>
-    error: $.Field<
-      'error',
-      $.Output.Nullable<$Scalar.String>,
-      $.Args<{
-        case: $.Input.Field<$.Input.Nullable<$Scalar.String>>
-      }, true>
-    >
-    id: $.Field<'id', $.Output.Nullable<$Scalar.ID>, null>
-    idNonNull: $.Field<'idNonNull', $Scalar.ID, null>
-    interface: $.Field<'interface', $.Output.Nullable<Interface.Interface>, null>
-    interfaceNonNull: $.Field<'interfaceNonNull', Interface.Interface, null>
-    interfaceWithArgs: $.Field<
-      'interfaceWithArgs',
-      $.Output.Nullable<Interface.Interface>,
-      $.Args<{
-        id: $.Input.Field<$Scalar.ID>
-      }, false>
-    >
-    listInt: $.Field<'listInt', $.Output.Nullable<$.Output.List<$.Output.Nullable<$Scalar.Int>>>, null>
-    listIntNonNull: $.Field<'listIntNonNull', $.Output.List<$Scalar.Int>, null>
-    listListInt: $.Field<
-      'listListInt',
-      $.Output.Nullable<$.Output.List<$.Output.Nullable<$.Output.List<$.Output.Nullable<$Scalar.Int>>>>>,
-      null
-    >
-    listListIntNonNull: $.Field<'listListIntNonNull', $.Output.List<$.Output.List<$Scalar.Int>>, null>
-    lowerCaseUnion: $.Field<'lowerCaseUnion', $.Output.Nullable<Union.lowerCaseUnion>, null>
-    object: $.Field<'object', $.Output.Nullable<Object.Object1>, null>
-    objectList: $.Field<'objectList', $.Output.Nullable<$.Output.List<Object.Object1>>, null>
-    objectListNonNull: $.Field<'objectListNonNull', $.Output.List<Object.Object1>, null>
-    objectNested: $.Field<'objectNested', $.Output.Nullable<Object.ObjectNested>, null>
-    objectNonNull: $.Field<'objectNonNull', Object.Object1, null>
-    objectWithArgs: $.Field<
-      'objectWithArgs',
-      $.Output.Nullable<Object.Object1>,
-      $.Args<{
-        boolean: $.Input.Field<$.Input.Nullable<$Scalar.Boolean>>
-        float: $.Input.Field<$.Input.Nullable<$Scalar.Float>>
-        id: $.Input.Field<$.Input.Nullable<$Scalar.ID>>
-        int: $.Input.Field<$.Input.Nullable<$Scalar.Int>>
-        string: $.Input.Field<$.Input.Nullable<$Scalar.String>>
-      }, true>
-    >
-    result: $.Field<
-      'result',
-      $.Output.Nullable<Union.Result>,
-      $.Args<{
-        case: $.Input.Field<Enum.Case>
-      }, false>
-    >
-    resultNonNull: $.Field<
-      'resultNonNull',
-      Union.Result,
-      $.Args<{
-        case: $.Input.Field<$.Input.Nullable<Enum.Case>>
-      }, true>
-    >
-    string: $.Field<'string', $.Output.Nullable<$Scalar.String>, null>
-    stringWithArgEnum: $.Field<
-      'stringWithArgEnum',
-      $.Output.Nullable<$Scalar.String>,
-      $.Args<{
-        ABCEnum: $.Input.Field<$.Input.Nullable<Enum.ABCEnum>>
-      }, true>
-    >
-    stringWithArgInputObject: $.Field<
-      'stringWithArgInputObject',
-      $.Output.Nullable<$Scalar.String>,
-      $.Args<{
-        input: $.Input.Field<$.Input.Nullable<InputObject.InputObject>>
-      }, true>
-    >
-    stringWithArgInputObjectRequired: $.Field<
-      'stringWithArgInputObjectRequired',
-      $.Output.Nullable<$Scalar.String>,
-      $.Args<{
-        input: $.Input.Field<InputObject.InputObject>
-      }, false>
-    >
-    /**
-     * The given arguments are reflected back as a JSON string.
-     */
-    stringWithArgs: $.Field<
-      'stringWithArgs',
-      $.Output.Nullable<$Scalar.String>,
-      $.Args<{
-        boolean: $.Input.Field<$.Input.Nullable<$Scalar.Boolean>>
-        float: $.Input.Field<$.Input.Nullable<$Scalar.Float>>
-        id: $.Input.Field<$.Input.Nullable<$Scalar.ID>>
-        int: $.Input.Field<$.Input.Nullable<$Scalar.Int>>
-        string: $.Input.Field<$.Input.Nullable<$Scalar.String>>
-      }, true>
-    >
-    stringWithListArg: $.Field<
-      'stringWithListArg',
-      $.Output.Nullable<$Scalar.String>,
-      $.Args<{
-        ints: $.Input.Field<$.Input.Nullable<$.Input.List<$.Input.Nullable<$Scalar.Int>>>>
-      }, true>
-    >
-    stringWithListArgRequired: $.Field<
-      'stringWithListArgRequired',
-      $.Output.Nullable<$Scalar.String>,
-      $.Args<{
-        ints: $.Input.Field<$.Input.List<$Scalar.Int>>
-      }, false>
-    >
-    stringWithRequiredArg: $.Field<
-      'stringWithRequiredArg',
-      $.Output.Nullable<$Scalar.String>,
-      $.Args<{
-        string: $.Input.Field<$Scalar.String>
-      }, false>
-    >
-    unionFooBar: $.Field<'unionFooBar', $.Output.Nullable<Union.FooBarUnion>, null>
-    unionFooBarNonNull: $.Field<'unionFooBarNonNull', Union.FooBarUnion, null>
-    unionFooBarWithArgs: $.Field<
-      'unionFooBarWithArgs',
-      $.Output.Nullable<Union.FooBarUnion>,
-      $.Args<{
-        id: $.Input.Field<$.Input.Nullable<$Scalar.ID>>
-      }, true>
-    >
-    unionObject: $.Field<'unionObject', $.Output.Nullable<Object.ObjectUnion>, null>
-    unionObjectNonNull: $.Field<'unionObjectNonNull', Object.ObjectUnion, null>
-  }>
-}
-// ------------------------------------------------------------ //
-//                             Enum                             //
-// ------------------------------------------------------------ //
-export namespace Enum {
-  /**
-   * Enum documentation.
-   *
-   * Members
-   * "A" - (DEPRECATED: Enum value A is deprecated.)
-   * "B" - Enum B member documentation.
-   * "C" - (DEPRECATED: Enum value C is deprecated.)
-   */
-  export type ABCEnum = $.Enum<'ABCEnum', ['A', 'B', 'C']>
-
-  export type Case = $.Enum<'Case', ['ErrorOne', 'ErrorTwo', 'Object1']>
-}
-// ------------------------------------------------------------ //
-//                         InputObject                          //
-// ------------------------------------------------------------ //
-export namespace InputObject {
-  export type InputObject = $.InputObject<'InputObject', {
-    date: $.Input.Field<$.Input.Nullable<$Scalar.Date>>
-    dateRequired: $.Input.Field<$Scalar.Date>
-    id: $.Input.Field<$.Input.Nullable<$Scalar.ID>>
-    idRequired: $.Input.Field<$Scalar.ID>
-  }, true>
-
-  export type InputObjectCircular = $.InputObject<'InputObjectCircular', {
-    circular: $.Input.Field<$.Input.Nullable<InputObject.InputObjectCircular>>
-    date: $.Input.Field<$.Input.Nullable<$Scalar.Date>>
-  }, true>
-
-  export type InputObjectNested = $.InputObject<'InputObjectNested', {
-    InputObject: $.Input.Field<$.Input.Nullable<InputObject.InputObject>>
-  }, true>
-
-  export type InputObjectNestedNonNull = $.InputObject<'InputObjectNestedNonNull', {
-    InputObject: $.Input.Field<InputObject.InputObject>
-  }, false>
-}
-// ------------------------------------------------------------ //
-//                          Interface                           //
-// ------------------------------------------------------------ //
-export namespace Interface {
-  export type DateInterface1 = $.Interface<'DateInterface1', {
-    date1: $.Field<'date1', $.Output.Nullable<$Scalar.Date>, null>
-  }, [Object.DateObject1]>
-
-  export type Error = $.Interface<'Error', {
-    message: $.Field<'message', $Scalar.String, null>
-  }, [Object.ErrorOne, Object.ErrorTwo]>
-
-  export type Interface = $.Interface<'Interface', {
-    id: $.Field<'id', $.Output.Nullable<$Scalar.ID>, null>
-  }, [Object.Object1ImplementingInterface, Object.Object2ImplementingInterface]>
-}
-// ------------------------------------------------------------ //
-//                            Object                            //
-// ------------------------------------------------------------ //
-export namespace Object {
-  export type Bar = $.Object$2<'Bar', {
-    int: $.Field<'int', $.Output.Nullable<$Scalar.Int>, null>
-  }>
-
-  export type DateObject1 = $.Object$2<'DateObject1', {
-    date1: $.Field<'date1', $.Output.Nullable<$Scalar.Date>, null>
-  }>
-
-  export type DateObject2 = $.Object$2<'DateObject2', {
-    date2: $.Field<'date2', $.Output.Nullable<$Scalar.Date>, null>
-  }>
-
-  export type ErrorOne = $.Object$2<'ErrorOne', {
-    infoId: $.Field<'infoId', $.Output.Nullable<$Scalar.ID>, null>
-    message: $.Field<'message', $Scalar.String, null>
-  }>
-
-  export type ErrorTwo = $.Object$2<'ErrorTwo', {
-    infoInt: $.Field<'infoInt', $.Output.Nullable<$Scalar.Int>, null>
-    message: $.Field<'message', $Scalar.String, null>
-  }>
-
-  /**
-   * Object documentation.
-   */
-  export type Foo = $.Object$2<'Foo', {
-    /**
-     * Field documentation.
-     *
-     * @deprecated Field a is deprecated.
-     */
-    id: $.Field<'id', $.Output.Nullable<$Scalar.ID>, null>
-  }>
-
-  export type Object1 = $.Object$2<'Object1', {
-    boolean: $.Field<'boolean', $.Output.Nullable<$Scalar.Boolean>, null>
-    float: $.Field<'float', $.Output.Nullable<$Scalar.Float>, null>
-    id: $.Field<'id', $.Output.Nullable<$Scalar.ID>, null>
-    int: $.Field<'int', $.Output.Nullable<$Scalar.Int>, null>
-    string: $.Field<'string', $.Output.Nullable<$Scalar.String>, null>
-  }>
-
-  export type Object1ImplementingInterface = $.Object$2<'Object1ImplementingInterface', {
-    id: $.Field<'id', $.Output.Nullable<$Scalar.ID>, null>
-    int: $.Field<'int', $.Output.Nullable<$Scalar.Int>, null>
-  }>
-
-  export type Object2ImplementingInterface = $.Object$2<'Object2ImplementingInterface', {
-    boolean: $.Field<'boolean', $.Output.Nullable<$Scalar.Boolean>, null>
-    id: $.Field<'id', $.Output.Nullable<$Scalar.ID>, null>
-  }>
-
-  export type ObjectNested = $.Object$2<'ObjectNested', {
-    id: $.Field<'id', $.Output.Nullable<$Scalar.ID>, null>
-    object: $.Field<'object', $.Output.Nullable<Object.Object1>, null>
-  }>
-
-  export type ObjectUnion = $.Object$2<'ObjectUnion', {
-    fooBarUnion: $.Field<'fooBarUnion', $.Output.Nullable<Union.FooBarUnion>, null>
-  }>
-
-  export type lowerCaseObject = $.Object$2<'lowerCaseObject', {
-    id: $.Field<'id', $.Output.Nullable<$Scalar.ID>, null>
-  }>
-
-  export type lowerCaseObject2 = $.Object$2<'lowerCaseObject2', {
-    int: $.Field<'int', $.Output.Nullable<$Scalar.Int>, null>
-  }>
-}
-// ------------------------------------------------------------ //
-//                            Union                             //
-// ------------------------------------------------------------ //
-export namespace Union {
-  export type DateUnion = $.Union<'DateUnion', [Object.DateObject1, Object.DateObject2]>
-
-  /**
-   * Union documentation.
-   */
-  export type FooBarUnion = $.Union<'FooBarUnion', [Object.Bar, Object.Foo]>
-
-  export type Result = $.Union<'Result', [Object.ErrorOne, Object.ErrorTwo, Object.Object1]>
-
-  export type lowerCaseUnion = $.Union<'lowerCaseUnion', [Object.lowerCaseObject, Object.lowerCaseObject2]>
 }
 "
 `;
@@ -2086,7 +2181,7 @@ export { $schemaDrivenDataMap as schemaDrivenDataMap }
 exports[`kitchen-sink generated modules > modules/Select.ts 1`] = `
 "import type { InferResult } from '../../../../../../src/entrypoints/schema.js'
 import * as Data from './Data.js'
-import type { Index } from './Schema.js'
+import type { Schema } from './Schema.js'
 import type * as SelectionSets from './SelectionSets.js'
 
 //
@@ -2128,109 +2223,109 @@ export namespace Select {
   // ----------
   export type Mutation<$SelectionSet extends SelectionSets.Mutation> = InferResult.Root<
     $SelectionSet,
-    Index,
+    Schema,
     'Mutation'
   >
-  export type Query<$SelectionSet extends SelectionSets.Query> = InferResult.Root<$SelectionSet, Index, 'Query'>
+  export type Query<$SelectionSet extends SelectionSets.Query> = InferResult.Root<$SelectionSet, Schema, 'Query'>
   // Object Types
   // ------------
   export type Bar<$SelectionSet extends SelectionSets.Bar> = InferResult.Object<
     $SelectionSet,
-    Index,
-    Index['allTypes']['Bar']
+    Schema,
+    Schema['allTypes']['Bar']
   >
   export type DateObject1<$SelectionSet extends SelectionSets.DateObject1> = InferResult.Object<
     $SelectionSet,
-    Index,
-    Index['allTypes']['DateObject1']
+    Schema,
+    Schema['allTypes']['DateObject1']
   >
   export type DateObject2<$SelectionSet extends SelectionSets.DateObject2> = InferResult.Object<
     $SelectionSet,
-    Index,
-    Index['allTypes']['DateObject2']
+    Schema,
+    Schema['allTypes']['DateObject2']
   >
   export type ErrorOne<$SelectionSet extends SelectionSets.ErrorOne> = InferResult.Object<
     $SelectionSet,
-    Index,
-    Index['allTypes']['ErrorOne']
+    Schema,
+    Schema['allTypes']['ErrorOne']
   >
   export type ErrorTwo<$SelectionSet extends SelectionSets.ErrorTwo> = InferResult.Object<
     $SelectionSet,
-    Index,
-    Index['allTypes']['ErrorTwo']
+    Schema,
+    Schema['allTypes']['ErrorTwo']
   >
   export type Foo<$SelectionSet extends SelectionSets.Foo> = InferResult.Object<
     $SelectionSet,
-    Index,
-    Index['allTypes']['Foo']
+    Schema,
+    Schema['allTypes']['Foo']
   >
   export type Object1<$SelectionSet extends SelectionSets.Object1> = InferResult.Object<
     $SelectionSet,
-    Index,
-    Index['allTypes']['Object1']
+    Schema,
+    Schema['allTypes']['Object1']
   >
   export type Object1ImplementingInterface<$SelectionSet extends SelectionSets.Object1ImplementingInterface> =
-    InferResult.Object<$SelectionSet, Index, Index['allTypes']['Object1ImplementingInterface']>
+    InferResult.Object<$SelectionSet, Schema, Schema['allTypes']['Object1ImplementingInterface']>
   export type Object2ImplementingInterface<$SelectionSet extends SelectionSets.Object2ImplementingInterface> =
-    InferResult.Object<$SelectionSet, Index, Index['allTypes']['Object2ImplementingInterface']>
+    InferResult.Object<$SelectionSet, Schema, Schema['allTypes']['Object2ImplementingInterface']>
   export type ObjectNested<$SelectionSet extends SelectionSets.ObjectNested> = InferResult.Object<
     $SelectionSet,
-    Index,
-    Index['allTypes']['ObjectNested']
+    Schema,
+    Schema['allTypes']['ObjectNested']
   >
   export type ObjectUnion<$SelectionSet extends SelectionSets.ObjectUnion> = InferResult.Object<
     $SelectionSet,
-    Index,
-    Index['allTypes']['ObjectUnion']
+    Schema,
+    Schema['allTypes']['ObjectUnion']
   >
   export type lowerCaseObject<$SelectionSet extends SelectionSets.lowerCaseObject> = InferResult.Object<
     $SelectionSet,
-    Index,
-    Index['allTypes']['lowerCaseObject']
+    Schema,
+    Schema['allTypes']['lowerCaseObject']
   >
   export type lowerCaseObject2<$SelectionSet extends SelectionSets.lowerCaseObject2> = InferResult.Object<
     $SelectionSet,
-    Index,
-    Index['allTypes']['lowerCaseObject2']
+    Schema,
+    Schema['allTypes']['lowerCaseObject2']
   >
   // Union Types
   // -----------
   export type DateUnion<$SelectionSet extends SelectionSets.DateUnion> = InferResult.Union<
     $SelectionSet,
-    Index,
-    Index['allTypes']['DateUnion']
+    Schema,
+    Schema['allTypes']['DateUnion']
   >
   export type FooBarUnion<$SelectionSet extends SelectionSets.FooBarUnion> = InferResult.Union<
     $SelectionSet,
-    Index,
-    Index['allTypes']['FooBarUnion']
+    Schema,
+    Schema['allTypes']['FooBarUnion']
   >
   export type Result<$SelectionSet extends SelectionSets.Result> = InferResult.Union<
     $SelectionSet,
-    Index,
-    Index['allTypes']['Result']
+    Schema,
+    Schema['allTypes']['Result']
   >
   export type lowerCaseUnion<$SelectionSet extends SelectionSets.lowerCaseUnion> = InferResult.Union<
     $SelectionSet,
-    Index,
-    Index['allTypes']['lowerCaseUnion']
+    Schema,
+    Schema['allTypes']['lowerCaseUnion']
   >
   // Interface Types
   // ---------------
   export type DateInterface1<$SelectionSet extends SelectionSets.DateInterface1> = InferResult.Interface<
     $SelectionSet,
-    Index,
-    Index['allTypes']['DateInterface1']
+    Schema,
+    Schema['allTypes']['DateInterface1']
   >
   export type Error<$SelectionSet extends SelectionSets.Error> = InferResult.Interface<
     $SelectionSet,
-    Index,
-    Index['allTypes']['Error']
+    Schema,
+    Schema['allTypes']['Error']
   >
   export type Interface<$SelectionSet extends SelectionSets.Interface> = InferResult.Interface<
     $SelectionSet,
-    Index,
-    Index['allTypes']['Interface']
+    Schema,
+    Schema['allTypes']['Interface']
   >
 }
 "

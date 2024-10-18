@@ -1,7 +1,7 @@
 import { type Simplify } from 'type-fest'
 import type { InferResult } from '../../../../../../src/entrypoints/schema.js'
 import type * as Utils from '../../../../../../src/entrypoints/utilities-for-generated.js'
-import type { Index } from './Schema.js'
+import type { Schema } from './Schema.js'
 import type * as SelectionSet from './SelectionSets.js'
 
 export interface MutationMethods<$Config extends Utils.Config> {
@@ -10,7 +10,7 @@ export interface MutationMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutput<
         $Config,
-        InferResult.Mutation<$SelectionSet, Index>
+        InferResult.Mutation<$SelectionSet, Schema>
       >
     >
   >
@@ -28,7 +28,7 @@ export interface MutationMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Mutation<{ addPokemon: $SelectionSet }, Index>,
+        InferResult.Mutation<{ addPokemon: $SelectionSet }, Schema>,
         'addPokemon'
       >
     >
@@ -41,7 +41,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutput<
         $Config,
-        InferResult.Query<$SelectionSet, Index>
+        InferResult.Query<$SelectionSet, Schema>
       >
     >
   >
@@ -59,7 +59,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ battles: $SelectionSet }, Index>,
+        InferResult.Query<{ battles: $SelectionSet }, Schema>,
         'battles'
       >
     >
@@ -68,7 +68,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ beings: $SelectionSet }, Index>,
+        InferResult.Query<{ beings: $SelectionSet }, Schema>,
         'beings'
       >
     >
@@ -77,7 +77,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ pokemon: $SelectionSet }, Index>,
+        InferResult.Query<{ pokemon: $SelectionSet }, Schema>,
         'pokemon'
       >
     >
@@ -86,7 +86,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ pokemonByName: $SelectionSet }, Index>,
+        InferResult.Query<{ pokemonByName: $SelectionSet }, Schema>,
         'pokemonByName'
       >
     >
@@ -95,7 +95,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ pokemons: $SelectionSet }, Index>,
+        InferResult.Query<{ pokemons: $SelectionSet }, Schema>,
         'pokemons'
       >
     >
@@ -104,7 +104,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ trainerByName: $SelectionSet }, Index>,
+        InferResult.Query<{ trainerByName: $SelectionSet }, Schema>,
         'trainerByName'
       >
     >
@@ -113,7 +113,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ trainers: $SelectionSet }, Index>,
+        InferResult.Query<{ trainers: $SelectionSet }, Schema>,
         'trainers'
       >
     >

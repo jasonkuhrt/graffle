@@ -1,7 +1,7 @@
 import { type Simplify } from 'type-fest'
 import type { InferResult } from '../../../../../../src/entrypoints/schema.js'
 import type * as Utils from '../../../../../../src/entrypoints/utilities-for-generated.js'
-import type { Index } from './Schema.js'
+import type { Schema } from './Schema.js'
 import type * as SelectionSet from './SelectionSets.js'
 
 export interface MutationMethods<$Config extends Utils.Config> {
@@ -10,7 +10,7 @@ export interface MutationMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutput<
         $Config,
-        InferResult.Mutation<$SelectionSet, Index>
+        InferResult.Mutation<$SelectionSet, Schema>
       >
     >
   >
@@ -28,7 +28,7 @@ export interface MutationMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Mutation<{ id: $SelectionSet }, Index>,
+        InferResult.Mutation<{ id: $SelectionSet }, Schema>,
         'id'
       >
     >
@@ -37,7 +37,7 @@ export interface MutationMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Mutation<{ idNonNull: $SelectionSet }, Index>,
+        InferResult.Mutation<{ idNonNull: $SelectionSet }, Schema>,
         'idNonNull'
       >
     >
@@ -50,7 +50,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutput<
         $Config,
-        InferResult.Query<$SelectionSet, Index>
+        InferResult.Query<$SelectionSet, Schema>
       >
     >
   >
@@ -70,7 +70,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ InputObjectNested: $SelectionSet }, Index>,
+        InferResult.Query<{ InputObjectNested: $SelectionSet }, Schema>,
         'InputObjectNested'
       >
     >
@@ -81,7 +81,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ InputObjectNestedNonNull: $SelectionSet }, Index>,
+        InferResult.Query<{ InputObjectNestedNonNull: $SelectionSet }, Schema>,
         'InputObjectNestedNonNull'
       >
     >
@@ -93,7 +93,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ abcEnum: $SelectionSet }, Index>,
+        InferResult.Query<{ abcEnum: $SelectionSet }, Schema>,
         'abcEnum'
       >
     >
@@ -104,7 +104,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ argInputObjectCircular: $SelectionSet }, Index>,
+        InferResult.Query<{ argInputObjectCircular: $SelectionSet }, Schema>,
         'argInputObjectCircular'
       >
     >
@@ -113,7 +113,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ date: $SelectionSet }, Index>,
+        InferResult.Query<{ date: $SelectionSet }, Schema>,
         'date'
       >
     >
@@ -122,7 +122,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ dateArg: $SelectionSet }, Index>,
+        InferResult.Query<{ dateArg: $SelectionSet }, Schema>,
         'dateArg'
       >
     >
@@ -133,7 +133,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ dateArgInputObject: $SelectionSet }, Index>,
+        InferResult.Query<{ dateArgInputObject: $SelectionSet }, Schema>,
         'dateArgInputObject'
       >
     >
@@ -142,7 +142,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ dateArgList: $SelectionSet }, Index>,
+        InferResult.Query<{ dateArgList: $SelectionSet }, Schema>,
         'dateArgList'
       >
     >
@@ -153,7 +153,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ dateArgNonNull: $SelectionSet }, Index>,
+        InferResult.Query<{ dateArgNonNull: $SelectionSet }, Schema>,
         'dateArgNonNull'
       >
     >
@@ -164,7 +164,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ dateArgNonNullList: $SelectionSet }, Index>,
+        InferResult.Query<{ dateArgNonNullList: $SelectionSet }, Schema>,
         'dateArgNonNullList'
       >
     >
@@ -175,7 +175,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ dateArgNonNullListNonNull: $SelectionSet }, Index>,
+        InferResult.Query<{ dateArgNonNullListNonNull: $SelectionSet }, Schema>,
         'dateArgNonNullListNonNull'
       >
     >
@@ -186,7 +186,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ dateInterface1: $SelectionSet }, Index>,
+        InferResult.Query<{ dateInterface1: $SelectionSet }, Schema>,
         'dateInterface1'
       >
     >
@@ -195,7 +195,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ dateList: $SelectionSet }, Index>,
+        InferResult.Query<{ dateList: $SelectionSet }, Schema>,
         'dateList'
       >
     >
@@ -204,7 +204,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ dateListList: $SelectionSet }, Index>,
+        InferResult.Query<{ dateListList: $SelectionSet }, Schema>,
         'dateListList'
       >
     >
@@ -215,7 +215,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ dateListNonNull: $SelectionSet }, Index>,
+        InferResult.Query<{ dateListNonNull: $SelectionSet }, Schema>,
         'dateListNonNull'
       >
     >
@@ -224,7 +224,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ dateNonNull: $SelectionSet }, Index>,
+        InferResult.Query<{ dateNonNull: $SelectionSet }, Schema>,
         'dateNonNull'
       >
     >
@@ -233,7 +233,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ dateObject1: $SelectionSet }, Index>,
+        InferResult.Query<{ dateObject1: $SelectionSet }, Schema>,
         'dateObject1'
       >
     >
@@ -242,7 +242,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ dateUnion: $SelectionSet }, Index>,
+        InferResult.Query<{ dateUnion: $SelectionSet }, Schema>,
         'dateUnion'
       >
     >
@@ -251,7 +251,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ error: $SelectionSet }, Index>,
+        InferResult.Query<{ error: $SelectionSet }, Schema>,
         'error'
       >
     >
@@ -260,7 +260,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ id: $SelectionSet }, Index>,
+        InferResult.Query<{ id: $SelectionSet }, Schema>,
         'id'
       >
     >
@@ -269,7 +269,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ idNonNull: $SelectionSet }, Index>,
+        InferResult.Query<{ idNonNull: $SelectionSet }, Schema>,
         'idNonNull'
       >
     >
@@ -278,7 +278,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ interface: $SelectionSet }, Index>,
+        InferResult.Query<{ interface: $SelectionSet }, Schema>,
         'interface'
       >
     >
@@ -289,7 +289,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ interfaceNonNull: $SelectionSet }, Index>,
+        InferResult.Query<{ interfaceNonNull: $SelectionSet }, Schema>,
         'interfaceNonNull'
       >
     >
@@ -300,7 +300,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ interfaceWithArgs: $SelectionSet }, Index>,
+        InferResult.Query<{ interfaceWithArgs: $SelectionSet }, Schema>,
         'interfaceWithArgs'
       >
     >
@@ -309,7 +309,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ listInt: $SelectionSet }, Index>,
+        InferResult.Query<{ listInt: $SelectionSet }, Schema>,
         'listInt'
       >
     >
@@ -320,7 +320,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ listIntNonNull: $SelectionSet }, Index>,
+        InferResult.Query<{ listIntNonNull: $SelectionSet }, Schema>,
         'listIntNonNull'
       >
     >
@@ -329,7 +329,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ listListInt: $SelectionSet }, Index>,
+        InferResult.Query<{ listListInt: $SelectionSet }, Schema>,
         'listListInt'
       >
     >
@@ -340,7 +340,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ listListIntNonNull: $SelectionSet }, Index>,
+        InferResult.Query<{ listListIntNonNull: $SelectionSet }, Schema>,
         'listListIntNonNull'
       >
     >
@@ -351,7 +351,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ lowerCaseUnion: $SelectionSet }, Index>,
+        InferResult.Query<{ lowerCaseUnion: $SelectionSet }, Schema>,
         'lowerCaseUnion'
       >
     >
@@ -360,7 +360,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ object: $SelectionSet }, Index>,
+        InferResult.Query<{ object: $SelectionSet }, Schema>,
         'object'
       >
     >
@@ -369,7 +369,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ objectList: $SelectionSet }, Index>,
+        InferResult.Query<{ objectList: $SelectionSet }, Schema>,
         'objectList'
       >
     >
@@ -380,7 +380,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ objectListNonNull: $SelectionSet }, Index>,
+        InferResult.Query<{ objectListNonNull: $SelectionSet }, Schema>,
         'objectListNonNull'
       >
     >
@@ -389,7 +389,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ objectNested: $SelectionSet }, Index>,
+        InferResult.Query<{ objectNested: $SelectionSet }, Schema>,
         'objectNested'
       >
     >
@@ -398,7 +398,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ objectNonNull: $SelectionSet }, Index>,
+        InferResult.Query<{ objectNonNull: $SelectionSet }, Schema>,
         'objectNonNull'
       >
     >
@@ -409,7 +409,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ objectWithArgs: $SelectionSet }, Index>,
+        InferResult.Query<{ objectWithArgs: $SelectionSet }, Schema>,
         'objectWithArgs'
       >
     >
@@ -418,7 +418,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ result: $SelectionSet }, Index>,
+        InferResult.Query<{ result: $SelectionSet }, Schema>,
         'result'
       >
     >
@@ -427,7 +427,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ resultNonNull: $SelectionSet }, Index>,
+        InferResult.Query<{ resultNonNull: $SelectionSet }, Schema>,
         'resultNonNull'
       >
     >
@@ -436,7 +436,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ string: $SelectionSet }, Index>,
+        InferResult.Query<{ string: $SelectionSet }, Schema>,
         'string'
       >
     >
@@ -447,7 +447,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ stringWithArgEnum: $SelectionSet }, Index>,
+        InferResult.Query<{ stringWithArgEnum: $SelectionSet }, Schema>,
         'stringWithArgEnum'
       >
     >
@@ -458,7 +458,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ stringWithArgInputObject: $SelectionSet }, Index>,
+        InferResult.Query<{ stringWithArgInputObject: $SelectionSet }, Schema>,
         'stringWithArgInputObject'
       >
     >
@@ -469,7 +469,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ stringWithArgInputObjectRequired: $SelectionSet }, Index>,
+        InferResult.Query<{ stringWithArgInputObjectRequired: $SelectionSet }, Schema>,
         'stringWithArgInputObjectRequired'
       >
     >
@@ -483,7 +483,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ stringWithArgs: $SelectionSet }, Index>,
+        InferResult.Query<{ stringWithArgs: $SelectionSet }, Schema>,
         'stringWithArgs'
       >
     >
@@ -494,7 +494,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ stringWithListArg: $SelectionSet }, Index>,
+        InferResult.Query<{ stringWithListArg: $SelectionSet }, Schema>,
         'stringWithListArg'
       >
     >
@@ -505,7 +505,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ stringWithListArgRequired: $SelectionSet }, Index>,
+        InferResult.Query<{ stringWithListArgRequired: $SelectionSet }, Schema>,
         'stringWithListArgRequired'
       >
     >
@@ -516,7 +516,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ stringWithRequiredArg: $SelectionSet }, Index>,
+        InferResult.Query<{ stringWithRequiredArg: $SelectionSet }, Schema>,
         'stringWithRequiredArg'
       >
     >
@@ -525,7 +525,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ unionFooBar: $SelectionSet }, Index>,
+        InferResult.Query<{ unionFooBar: $SelectionSet }, Schema>,
         'unionFooBar'
       >
     >
@@ -536,7 +536,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ unionFooBarNonNull: $SelectionSet }, Index>,
+        InferResult.Query<{ unionFooBarNonNull: $SelectionSet }, Schema>,
         'unionFooBarNonNull'
       >
     >
@@ -547,7 +547,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ unionFooBarWithArgs: $SelectionSet }, Index>,
+        InferResult.Query<{ unionFooBarWithArgs: $SelectionSet }, Schema>,
         'unionFooBarWithArgs'
       >
     >
@@ -556,7 +556,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ unionObject: $SelectionSet }, Index>,
+        InferResult.Query<{ unionObject: $SelectionSet }, Schema>,
         'unionObject'
       >
     >
@@ -567,7 +567,7 @@ export interface QueryMethods<$Config extends Utils.Config> {
     Simplify<
       Utils.HandleOutputGraffleRootField<
         $Config,
-        InferResult.Query<{ unionObjectNonNull: $SelectionSet }, Index>,
+        InferResult.Query<{ unionObjectNonNull: $SelectionSet }, Schema>,
         'unionObjectNonNull'
       >
     >

@@ -7,7 +7,7 @@ import { CONTENT_TYPE_REC } from '../../src/lib/grafaid/http/http.js'
 import { type SchemaService, serveSchema } from './lib/serveSchema.js'
 import { db } from './schemas/db.js'
 import { Graffle as KitchenSink } from './schemas/kitchen-sink/graffle/__.js'
-import { type Index as KitchenSinkSchema } from './schemas/kitchen-sink/graffle/modules/Schema.js'
+import { type Schema as KitchenSinkSchema } from './schemas/kitchen-sink/graffle/modules/Schema.js'
 import { schema as kitchenSinkSchema } from './schemas/kitchen-sink/schema.js'
 import { schema } from './schemas/pokemon/schema.js'
 
