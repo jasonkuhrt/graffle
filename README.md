@@ -2,7 +2,7 @@
 
 Minimal GraphQL client supporting Node and browsers for scripts or simple apps.
 
-![GitHub Action](https://github.com/jasonkuhrt/graphql-request/workflows/trunk/badge.svg) [![npm version](https://badge.fury.io/js/graphql-request.svg)](https://badge.fury.io/js/graphql-request)
+![GitHub Action](https://github.com/graffle/graffle/workflows/trunk/badge.svg) [![npm version](https://badge.fury.io/js/graphql-request.svg)](https://badge.fury.io/js/graphql-request)
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -163,7 +163,7 @@ Return both the errors and data, only works with `rawRequest`.
 
 ### IgnoreOperationName
 
-OperationName has been introduced to address issues reported here [Support operation name](https://github.com/jasonkuhrt/graphql-request/issues/64),
+OperationName has been introduced to address issues reported here [Support operation name](https://github.com/graffle/graffle/issues/64),
 However, on certain occasions this information may not be needed in requests. In such cases, you might consider ignoring operationName to avoid the extraction steps currently performed by a parsing operation when the document is provided in string format.
 
 By default the GraphQLClient tries to extract the operationName from the document.
@@ -185,7 +185,7 @@ const client = new GraphQLClient(endpoint, {
 
 #### Why was the file upload feature taken away? Will it return?
 
-In [this issue](https://github.com/jasonkuhrt/graphql-request/issues/500) we decided to make this library more stable and maintainable. In principal the feature is still in scope of this library and will make a return when we find time to do the feature right.
+In [this issue](https://github.com/graffle/graffle/issues/500) we decided to make this library more stable and maintainable. In principal the feature is still in scope of this library and will make a return when we find time to do the feature right.
 
 #### Why do I have to install `graphql`?
 
